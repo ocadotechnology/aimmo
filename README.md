@@ -7,7 +7,7 @@ A **M**assively **M**ultiplayer **O**nline game, where players create **A**rtifi
 - Simulate environment events
 - Run player actions
 
-### Sandboxed User-Submitted AI Players
+### Sandboxed User-Submitted AI Players (Avatars)
 - Each player in their own sandbox: http://pypy.readthedocs.org/en/latest/sandbox.html
 - API into core game to get state and perform actions
 
