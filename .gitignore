@@ -56,6 +56,9 @@ docs/_build/
 # PyBuilder
 target/
 
-#IntelliJ
+# DB
+db.sqlite3
+
+# IntelliJ
 .idea
 *.iml
