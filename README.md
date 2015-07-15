@@ -2,7 +2,7 @@
 A **M**assively **M**ultiplayer **O**nline game, where players create **A**rtificially **I**ntelligent programs to play on their behalf.
 
 ## Architecture
-### Core Game
+### Core Game (Simulation)
 - Maintain state
 - Simulate environment events
 - Run player actions
