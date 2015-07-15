@@ -1,5 +1,5 @@
 # AI:MMO
-A **M**assively **M**ultiplayer **O**nline game, where players create **A**rtificially **I**ntelligent programs to play on their behalf.
+A **M**assively **M**ulti-player **O**nline game, where players create **A**rtificially **I**ntelligent programs to play on their behalf.
 
 ## Architecture
 ### Core Game (Simulation)

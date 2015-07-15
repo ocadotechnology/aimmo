@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {# The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags #}
+
+        <title>AI:MMO</title>
+        <meta name="description" content="A Massively Multi-player Online game, where players create Artificially Intelligent programs to play on their behalf.">
+
+        {# TODO: favicon #}
+
+        {# bootstrap #}
+        {# Latest compiled and minified CSS #}
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+        {# Optional theme #}
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    </head>
+
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">AI:MMO</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        {# TODO: find decent way of setting active and sr of (current) #}
+                        <li class="active"><a href="{% url 'program' %}">Program<span class="sr-only"> (current)</span></a></li>
+                        <li><a href="{% url 'watch' %}">Watch</a></li>
+                        <li><a href="{% url 'statistics' %}">Statistics</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><p class="navbar-text">Logged in details / login or register links go here</p></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            {% block content %}
+            {% endblock %}
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+        {# Latest compiled and minified JavaScript #}
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+        {# HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries #}
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </body>
+</html>
