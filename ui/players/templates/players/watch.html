@@ -1,5 +1,83 @@
 {% extends 'players/base.html' %}
 
 {% block content %}
-        watch
+<span id="watch-world-canvas"></span>
+{% endblock %}
+
+{% block additionalHeaderStyles %}
+<link rel="stylesheet" type="text/css" href="/static/css/watch.css"/>
+{% endblock %}
+
+{% block additionalHeaderScripts %}
+<script type="text/javascript" src="/static/js/lib/raphael-min.js"></script>
+<script type="text/javascript" src="/static/js/watch/world-viewer.js"></script>
+<script type="text/javascript" src="/static/js/watch/world-model.js"></script>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+    function generateVanillaWorld() {
+        WORLD.width = 15;
+        WORLD.height = 15;
+
+        var primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59,
+            61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139,
+            149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263];
+
+        for (var y = 0; y < WORLD.height; y++) {
+            WORLD.layout[y] = [];
+            for (var x = 0; x < WORLD.width; x++) {
+                WORLD.layout[y][x] = (x == primes[y] % WORLD.width) ? 1 : 0;
+            }
+        }
+
+        WORLD.players = [
+            {
+                id: "43242",
+                x: 2,
+                y: 3,
+                rotation: Math.PI,
+                colours : {
+                    bodyStroke : "#f00",
+                    bodyFill : "#fbb",
+                    eyeStroke : "#faa",
+                    eyeFill : "#fee"
+                }
+            },
+            {
+                id: "435",
+                x: 6,
+                y: 11,
+                rotation: Math.PI * 0.5,
+                colours : {
+                    bodyStroke : "#00f",
+                    bodyFill : "#bbf",
+                    eyeStroke : "#aaf",
+                    eyeFill : "#eef"
+                }
+            },
+            {
+                id: "4897635",
+                x: 3,
+                y: 12,
+                rotation: Math.PI * 1.5,
+                colours : {
+                    bodyStroke : "#0ff",
+                    bodyFill : "#bff",
+                    eyeStroke : "#aff",
+                    eyeFill : "#eff"
+                }
+            }
+        ]
+    }
+</script>
+
+<script type="text/javascript">
+    VIEWER.init(document.getElementById("watch-world-canvas"), WORLD);
+
+    generateVanillaWorld();
+
+    VIEWER.drawWorldLayout();
+    VIEWER.reDrawState();
+</script>
 {% endblock %}

@@ -1,0 +1,9 @@
+#watch-world-canvas {
+    display: block;
+    /*height: 95%;*/
+    height: 800px;
+
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
