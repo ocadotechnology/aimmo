@@ -4,20 +4,18 @@ const WORLD = Object.create(
         width: 1,
         height: 1,
         layout: [[0]],
-        players: []
+        players: {}
     }
 );
 
+// Raw world appearance settings
 const APPEARANCE = Object.create(
     {
-
-    }
-);
-
-// World Manipulation
-const MODEL = Object.create(
-    {
-
+        cellSize : 50,
+        worldColours : {
+            0 : "#efe",
+            1 : "#777"
+        }
     }
 );
 

@@ -9,75 +9,51 @@
 {% endblock %}
 
 {% block additionalHeaderScripts %}
+<script type="text/javascript" src="/static/js/lib/jquery-1.11.3.js"></script>
 <script type="text/javascript" src="/static/js/lib/raphael-min.js"></script>
 <script type="text/javascript" src="/static/js/watch/world-viewer.js"></script>
 <script type="text/javascript" src="/static/js/watch/world-model.js"></script>
+<script type="text/javascript" src="/static/js/watch/world-controls.js"></script>
 {% endblock %}
 
 {% block scripts %}
 <script type="text/javascript">
-    function generateVanillaWorld() {
-        WORLD.width = 15;
-        WORLD.height = 15;
+    VIEWER.init(document.getElementById("watch-world-canvas"), WORLD, APPEARANCE);
+    CONTROLS.init(WORLD, VIEWER);
 
-        var primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59,
-            61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139,
-            149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263];
+    function refreshWorld() {
+        console.log("Refreshing world...");
+        jQuery.ajax("/api/watch/world", {
+            ____timeout : 500,
+            success : function(data) {
+                CONTROLS.initialiseWorld(data.width, data.height, data.layout);
+                console.log("World refresh successful.");
 
-        for (var y = 0; y < WORLD.height; y++) {
-            WORLD.layout[y] = [];
-            for (var x = 0; x < WORLD.width; x++) {
-                WORLD.layout[y][x] = (x == primes[y] % WORLD.width) ? 1 : 0;
-            }
-        }
-
-        WORLD.players = [
-            {
-                id: "43242",
-                x: 2,
-                y: 3,
-                rotation: Math.PI,
-                colours : {
-                    bodyStroke : "#f00",
-                    bodyFill : "#fbb",
-                    eyeStroke : "#faa",
-                    eyeFill : "#fee"
-                }
+                console.log("Refreshing state...");
+                refreshState()
             },
-            {
-                id: "435",
-                x: 6,
-                y: 11,
-                rotation: Math.PI * 0.5,
-                colours : {
-                    bodyStroke : "#00f",
-                    bodyFill : "#bbf",
-                    eyeStroke : "#aaf",
-                    eyeFill : "#eef"
-                }
-            },
-            {
-                id: "4897635",
-                x: 3,
-                y: 12,
-                rotation: Math.PI * 1.5,
-                colours : {
-                    bodyStroke : "#0ff",
-                    bodyFill : "#bff",
-                    eyeStroke : "#aff",
-                    eyeFill : "#eff"
-                }
+            error : function(jqXHR, textStatus, errorThrown) {
+                console.error("World refresh failed.", jqXHR, textStatus, errorThrown);
+                setTimeout(refreshWorld, 500);
             }
-        ]
+        });
     }
-</script>
 
-<script type="text/javascript">
-    VIEWER.init(document.getElementById("watch-world-canvas"), WORLD);
+    function refreshState() {
+        jQuery.ajax("/api/watch/state", {
+            complete : function(jqXHR, textStatus) {
+                setTimeout(refreshState, 100);
+            },
+            success : function(data) {
+                CONTROLS.setState(data.players, data.items);
+            },
+            error : function(jqXHR, textStatus, errorThrown) {
+                console.error("State refresh failed.", jqXHR, textStatus, errorThrown);
+                setTimeout(refreshState, 500);
+            }
+        });
+    }
 
-    generateVanillaWorld();
-
-    VIEWER.drawWorldLayout();
-    VIEWER.reDrawState();
+    refreshWorld();
 </script>
 {% endblock %}
