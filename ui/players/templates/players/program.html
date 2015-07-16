@@ -1,5 +1,24 @@
 {% extends 'players/base.html' %}
 
 {% block content %}
-        program
+<div class="row">
+    <h2>Program</h2>
+    <p>Use the box below to program your . Save using the button on the right</p>
+</div>
+<div class="row">
+    <div id="alerts" class="alert alert-danger collapse" role="alert">
+    </div>
+</div>
+<div class="row">
+    <div id="editor" class="col-md-9"></div>
+    <div id="buttons" class="col-md-3">
+        <button id="saveBtn" type="button" class="btn btn-lg btn-primary text-center" disabled>Save</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="/static/css/program.css">
+<script src="//cdn.jsdelivr.net/ace/1.2.0/min/ace.js"></script>
+<script src="/static/js/program.js"></script>
 {% endblock %}
