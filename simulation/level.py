@@ -2,7 +2,7 @@ import random
 
 class Level:
 
-    def generate_special_square_and_return_coords(self, special_square_map, special_square_list, limit):
+    def generate_special_square_and_return_coords(self, special_square_list, special_square_map, limit):
         while len(special_square_list) < limit:
             new_coords = self.empty_squares.pop([random.randint(0, len(self.empty_squares))])
             special_square_list.append(new_coords)
