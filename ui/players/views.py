@@ -5,6 +5,7 @@ from threading import Thread
 from simulation.avatar_manager import AvatarManager
 from simulation.level import Level
 from simulation.turn_manager import TurnManager
+from simulation.turn_manager import world_state_provider
 from simulation.world_map import WorldMap
 from simulation.world_state import WorldState
 import logging
@@ -66,7 +67,12 @@ def code(request):
         logger.info('POST ' + str(request.POST))
         request.user.player.code = request.POST['code']
         request.user.player.save()
-        player_manager.player_changed_code(request.user.id, request.user.player.code)
+        try:
+            world = world_state_provider.lock_and_get_world()
+            world.avatar_manager.player_changed_code(request.user.id, request.user.player.code)
+        finally:
+            world_state_provider.release_lock()
+        
         return HttpResponse("")
     else :
         logger.info('GET ' + str(request.GET))

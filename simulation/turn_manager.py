@@ -34,9 +34,9 @@ class TurnManager(object):
 
         self._update_environment()
 
-        actions = [(p, p.handle_turn(self.world_state.get_state_for(p))) for p in world_state.avatar_manager.avatarsById.values()]
+        actions = [(p, p.handle_turn(world_state.get_state_for(p))) for p in world_state.avatar_manager.avatarsById.values()]
         for avatar, action in actions:
-            action.apply(self.world_state, avatar)
+            action.apply(world_state, avatar)
 
         world_state_provider.release_lock()
 
