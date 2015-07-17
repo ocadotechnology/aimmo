@@ -40,6 +40,7 @@ def code(request):
         logger.info('POST ' + str(request.POST))
         request.user.player.code = request.POST['code']
         request.user.player.save()
+        player_manager.player_changed_code(request.user.id, request.user.player.code)
         return HttpResponse("")
     else :
         logger.info('GET ' + str(request.GET))

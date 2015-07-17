@@ -1,7 +1,8 @@
-from simulation.action import MoveAction
+dummy = '''from simulation.action import MoveAction
 from simulation import direction
 
 
-class DummyPlayer(object):
-    def get_next_action(self, world_state, events):
+class Avatar(object):
+    def handle_turn(self, world_state, events):
         return MoveAction(direction.EAST)
+'''
