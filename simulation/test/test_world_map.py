@@ -28,7 +28,7 @@ class TestWorldMap(unittest.TestCase):
             [41, 42, 43, 44, 45],
             [49, 50, 51, 52, 53],
         ])
-        assert_array_equal(world_view.grid, expected_grid)
+        assert_array_equal(world_view, expected_grid)
 
     def test_get_world_view_centre_near_bottom_left_edge(self):
         world_map = WorldMap(self.build_8x8())
@@ -42,7 +42,7 @@ class TestWorldMap(unittest.TestCase):
             [-1, 56, 57, 58, 59],
             [-1, -1, -1, -1, -1],
         ])
-        assert_array_equal(world_view.grid, expected_grid)
+        assert_array_equal(world_view, expected_grid)
 
     def test_get_world_view_centre_near_top_right_edge(self):
         world_map = WorldMap(self.build_8x8())
@@ -56,7 +56,7 @@ class TestWorldMap(unittest.TestCase):
             [20, 21, 22, 23, -1],
             [28, 29, 30, 31, -1],
         ])
-        assert_array_equal(world_view.grid, expected_grid)
+        assert_array_equal(world_view, expected_grid)
 
     def test_get_world_view_centre_pad_entire(self):
         world_map = WorldMap(self.build_8x8())
@@ -76,7 +76,7 @@ class TestWorldMap(unittest.TestCase):
              [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
              [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
         ])
-        assert_array_equal(world_view.grid, expected_grid)
+        assert_array_equal(world_view, expected_grid)
 
     def test_get_world_view_centre_pad_entire(self):
         world_map = WorldMap(self.build_8x8())
@@ -84,4 +84,4 @@ class TestWorldMap(unittest.TestCase):
             Location(row=7, col=3), distance_to_edge=0)
 
         expected_grid = np.array([[59]])
-        assert_array_equal(world_view.grid, expected_grid)
+        assert_array_equal(world_view, expected_grid)

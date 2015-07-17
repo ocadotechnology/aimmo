@@ -7,11 +7,12 @@ class WorldMap(object):
         self.grid = grid
 
     def can_move_to(self, target_location):
-        return True
+        num_rows, num_cols = self.grid.shape
+        return (0 <= target_location.row < num_rows) and (0 <= target_location.col < num_cols)
 
     def get_world_view_centred_at(self, view_location, distance_to_edge):
         '''
-                            world_map
+                       world map = self.grid
         +-----------------------------------------------+
         |                                               |
         |                                               |
@@ -19,7 +20,7 @@ class WorldMap(object):
         |                + map_corner                   |
         |                |                              |
         |                v                              |
-        |                     view_map                  |
+        |                     view map                  |
         |                +----------------+             |
         |                |                |             |
         |                |                |             |
@@ -72,4 +73,4 @@ class WorldMap(object):
                                  mode='constant', constant_values=-1
                                  )
 
-        return WorldMap(padded_view_map)
+        return padded_view_map
