@@ -44,7 +44,10 @@ class TestAction(unittest.TestCase):
         self.assertEqual(self.other_avatar.location, Location(0, 1))
 
         self.assertEqual(self.avatar.events,
-                         [PerformedAttackEvent(self.other_avatar, target_location, damage_dealt)])
+                         [PerformedAttackEvent(
+                             self.other_avatar,
+                             target_location,
+                             damage_dealt)])
         self.assertEqual(self.other_avatar.events,
                          [ReceivedAttackEvent(self.avatar, damage_dealt)])
 

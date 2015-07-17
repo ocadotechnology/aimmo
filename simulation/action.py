@@ -30,7 +30,9 @@ class AttackAction(Action):
         if attacked_avatars:
             for other_avatar in attacked_avatars:
                 damage_dealt = 1
-                avatar.add_event(PerformedAttackEvent(other_avatar, target_location, damage_dealt))
-                other_avatar.add_event(ReceivedAttackEvent(avatar, damage_dealt))
+                avatar.add_event(PerformedAttackEvent(
+                    other_avatar, target_location, damage_dealt))
+                other_avatar.add_event(
+                    ReceivedAttackEvent(avatar, damage_dealt))
         else:
             avatar.add_event(FailedAttackEvent(target_location))

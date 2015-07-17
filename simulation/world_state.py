@@ -7,4 +7,5 @@ class WorldState(object):
         return self
 
     def get_avatars_at(self, location):
-        return [p for p in self.avatar_manager.avatars if p.location == location]
+        return [p for p in self.avatar_manager.avatars
+                if p.location == location]
