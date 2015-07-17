@@ -10,38 +10,43 @@ from simulation.action import *
 from simulation.avatar_manager import AvatarManager
 
 
+ORIGIN = Location(row=0, col=0)
+RIGHT_OF_ORIGIN = Location(row=0, col=1)
+ABOVE_ORIGIN = Location(row=-1, col=0)
+
+
 class TestAction(unittest.TestCase):
     def setUp(self):
         player = DummyPlayer()
-        self.avatar = Avatar(Location(0, 0), player)
-        self.other_avatar = Avatar(Location(0, 1), player)
+        self.avatar = Avatar(ORIGIN, player)
+        self.other_avatar = Avatar(RIGHT_OF_ORIGIN, player)
         self.avatar_manager = AvatarManager([self.avatar, self.other_avatar])
 
     def test_successful_move_action(self):
         world_state = WorldState(InfiniteMap(), self.avatar_manager)
         MoveAction(direction.NORTH).apply(world_state, self.avatar)
 
-        self.assertEqual(self.avatar.location, Location(0, 1))
+        self.assertEqual(self.avatar.location, ABOVE_ORIGIN)
         self.assertEqual(self.avatar.events,
-                         [MovedEvent(Location(0, 0), Location(0, 1))])
+                         [MovedEvent(ORIGIN, ABOVE_ORIGIN)])
 
     def test_failed_move_action(self):
         world_state = WorldState(EmptyMap(), self.avatar_manager)
         MoveAction(direction.NORTH).apply(world_state, self.avatar)
 
-        self.assertEqual(self.avatar.location, Location(0, 0))
+        self.assertEqual(self.avatar.location, ORIGIN)
         self.assertEqual(self.avatar.events,
-                         [FailedMoveEvent(Location(0, 0), Location(0, 1))])
+                         [FailedMoveEvent(ORIGIN, ABOVE_ORIGIN)])
 
     def test_successful_attack_action(self):
         world_state = WorldState(InfiniteMap(), self.avatar_manager)
-        AttackAction(direction.NORTH).apply(world_state, self.avatar)
+        AttackAction(direction.EAST).apply(world_state, self.avatar)
 
-        target_location = Location(0, 1)
+        target_location = RIGHT_OF_ORIGIN
         damage_dealt = 1
 
-        self.assertEqual(self.avatar.location, Location(0, 0))
-        self.assertEqual(self.other_avatar.location, Location(0, 1))
+        self.assertEqual(self.avatar.location, ORIGIN)
+        self.assertEqual(self.other_avatar.location, RIGHT_OF_ORIGIN)
 
         self.assertEqual(self.avatar.events,
                          [PerformedAttackEvent(
@@ -53,12 +58,12 @@ class TestAction(unittest.TestCase):
 
     def test_failed_attack_action(self):
         world_state = WorldState(InfiniteMap(), self.avatar_manager)
-        AttackAction(direction.EAST).apply(world_state, self.avatar)
+        AttackAction(direction.NORTH).apply(world_state, self.avatar)
 
-        target_location = Location(1, 0)
+        target_location = ABOVE_ORIGIN
 
-        self.assertEqual(self.avatar.location, Location(0, 0))
-        self.assertEqual(self.other_avatar.location, Location(0, 1))
+        self.assertEqual(self.avatar.location, ORIGIN)
+        self.assertEqual(self.other_avatar.location, RIGHT_OF_ORIGIN)
 
         self.assertEqual(self.avatar.events,
                          [FailedAttackEvent(target_location)])

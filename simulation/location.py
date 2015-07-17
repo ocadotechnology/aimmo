@@ -1,13 +1,16 @@
 class Location(object):
-    def __init__(self, x=0, y=0):
-        self.x = x
-        self.y = y
+    def __init__(self, row=0, col=0):
+        self.row = row
+        self.col = col
 
     def __add__(self, direction):
-        return Location(self.x + direction.x, self.y + direction.y)
+        return Location(self.row + direction.row, self.col + direction.col)
+
+    def __sub__(self, direction):
+        return Location(self.row - direction.row, self.col - direction.col)
 
     def __repr__(self):
-        return 'Location(%d, %d)' % (self.x, self.y)
+        return 'Location(row=%d, col=%d)' % (self.row, self.col)
 
     def __eq__(self, other):
-        return (self.x, self.y) == (other.x, other.y)
+        return (self.row, self.col) == (other.row, other.col)

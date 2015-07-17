@@ -8,6 +8,14 @@ from simulation.world_state import WorldState
 from simulation.avatar import Avatar
 from simulation.test.dummy_player import DummyPlayer
 
+ORIGIN = Location(row=0, col=0)
+
+RIGHT_OF_ORIGIN = Location(row=0, col=1)
+FIVE_RIGHT_OF_ORIGIN = Location(row=0, col=5)
+
+ABOVE_ORIGIN = Location(row=-1, col=0)
+FIVE_RIGHT_OF_ORIGIN_AND_ONE_ABOVE = Location(row=-1, col=5)
+
 
 class TestTurnManager(unittest.TestCase):
     def setUp(self):
@@ -19,24 +27,24 @@ class TestTurnManager(unittest.TestCase):
         self.turn_manager = TurnManager(self.world_state, self.avatar_manager)
 
     def test_run_turn(self):
-        avatar = Avatar(Location(0, 0), self.player)
+        avatar = Avatar(ORIGIN, self.player)
         self.construct_turn_manager(avatar)
         self.turn_manager.run_turn()
-        self.assertEqual(avatar.location, Location(1, 0))
+        self.assertEqual(avatar.location, RIGHT_OF_ORIGIN)
 
     def test_run_several_turns(self):
-        avatar = Avatar(Location(0, 0), self.player)
+        avatar = Avatar(ORIGIN, self.player)
         self.construct_turn_manager(avatar)
         [self.turn_manager.run_turn() for _ in xrange(5)]
-        self.assertEqual(avatar.location, Location(5, 0))
+        self.assertEqual(avatar.location, FIVE_RIGHT_OF_ORIGIN)
 
     def test_run_several_turns_and_avatars(self):
-        avatar1 = Avatar(Location(0, 0), self.player)
-        avatar2 = Avatar(Location(0, 1), self.player)
+        avatar1 = Avatar(ORIGIN, self.player)
+        avatar2 = Avatar(ABOVE_ORIGIN, self.player)
         self.construct_turn_manager(avatar1, avatar2)
         [self.turn_manager.run_turn() for _ in xrange(5)]
-        self.assertEqual(avatar1.location, Location(5, 0))
-        self.assertEqual(avatar2.location, Location(5, 1))
+        self.assertEqual(avatar1.location, FIVE_RIGHT_OF_ORIGIN)
+        self.assertEqual(avatar2.location, FIVE_RIGHT_OF_ORIGIN_AND_ONE_ABOVE)
 
 if __name__ == '__main__':
     unittest.main()
