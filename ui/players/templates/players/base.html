@@ -47,7 +47,12 @@
                         <li><a href="{% url 'start_game' %}">Start Game</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><p class="navbar-text">Logged in details / login or register links go here</p></li>
+                        {% if request.user.is_authenticated %}
+                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                        {% else %}
+                        <li><a href="{% url 'login' %}">Login</a></li>
+                        <li><a href="{% url 'register' %}">Register</a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
