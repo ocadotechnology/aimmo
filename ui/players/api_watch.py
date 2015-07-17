@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from random import randint
 from math import pi, sin, cos
-
+from simulation.turn_manager import world_state_provider
 
 __world_parameters = {
     "width": 15,
@@ -70,7 +70,16 @@ __world_state = {
 }
 
 def get_world_parameters(request):
-    return JsonResponse(__world_parameters)
+    world = world_state_provider.lock_and_get_world()
+    try:
+        response = JsonResponse({
+            "width": 15,
+            "height": 15,
+            "layout": [[x.key for x in y] for y in world.world_map.level.matrix_of_level]
+        }, safe=False)
+    finally:
+        world_state_provider.release_lock()
+    return response
 
 
 

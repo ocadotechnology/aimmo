@@ -3,8 +3,8 @@ from simulation.direction import Direction
 
 
 class WorldMap(object):
-    def __init__(self, grid=np.empty((0, 0), dtype=object)):
-        self.grid = grid
+    def __init__(self, level):
+        self.grid = level
 
     def can_move_to(self, target_location):
         num_rows, num_cols = self.grid.shape

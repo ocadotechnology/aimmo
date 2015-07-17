@@ -1,9 +1,8 @@
 import unittest
 
-from simulation.avatar import Avatar
 from simulation.location import Location
 from simulation import direction
-from simulation.test.dummy_player import DummyPlayer
+from simulation.test.dummy_avatar import DummyAvatarRunner
 from simulation.test.maps import InfiniteMap, EmptyMap
 from simulation.world_state import WorldState
 from simulation.action import *
@@ -17,9 +16,8 @@ ABOVE_ORIGIN = Location(row=-1, col=0)
 
 class TestAction(unittest.TestCase):
     def setUp(self):
-        player = DummyPlayer()
-        self.avatar = Avatar(ORIGIN, player)
-        self.other_avatar = Avatar(RIGHT_OF_ORIGIN, player)
+        self.avatar = DummyAvatarRunner(ORIGIN, player_id=1)
+        self.other_avatar = DummyAvatarRunner(RIGHT_OF_ORIGIN, player_id=2)
         self.avatar_manager = AvatarManager([self.avatar, self.other_avatar])
 
     def test_successful_move_action(self):

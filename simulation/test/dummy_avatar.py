@@ -2,15 +2,14 @@ from simulation.action import MoveAction
 from simulation import direction
 
 
-class AvatarRunner(object):
-    def __init__(self, initial_location, initial_code, player_id):
+class DummyAvatarRunner(object):
+    def __init__(self, initial_location, player_id):
         self.location = initial_location
-        self.events = []
         self.player_id = player_id
-        self.set_code(initial_code)
+        self.events = []
 
     def handle_turn(self, state):
-        next_action = self.avatar.handle_turn(state, self.events)
+        next_action = MoveAction(direction.EAST)
 
         # Reset event log
         self.events = []
@@ -19,8 +18,3 @@ class AvatarRunner(object):
 
     def add_event(self, event):
         self.events.append(event)
-
-    def set_code(self, code):
-        self.code = code
-        exec(code)
-        self.avatar = Avatar()
