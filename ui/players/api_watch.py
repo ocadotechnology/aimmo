@@ -75,15 +75,42 @@ def get_world_parameters(request):
         response = JsonResponse({
             "width": 15,
             "height": 15,
-            "layout": [[x.key for x in y] for y in world.world_map.level.matrix_of_level]
+            "layout": [[x.key for x in y] for y in world.world_map.grid.matrix_of_level]
         }, safe=False)
     finally:
         world_state_provider.release_lock()
     return response
 
 
+def player_dict(avatar):
+    return {
+        'id': avatar.id,
+        'x': avatar.location.col,
+        'y': avatar.location.row,
+        'rotation': 0,
+        "colours": {
+            "bodyStroke": "#0ff",
+            "bodyFill": "#bff",
+            "eyeStroke": "#aff",
+            "eyeFill": "#eff"
+            }
+        }
+
 
 def get_world_state(request):
+    world = world_state_provider.lock_and_get_world()
+
+    player_data = {p.id: player_dict(p) for p in world.avatar_manager.avatarsById.values()}
+
+    data = {'players': player_data}
+    try:
+        response = JsonResponse(data)
+    finally:
+        world_state_provider.release_lock()
+    return response
+
+
+def get_world_state_old(request):
     for playerKey in __world_state["players"].keys():
         player = __world_state["players"][playerKey]
 
