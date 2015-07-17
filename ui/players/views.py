@@ -43,7 +43,7 @@ def register(request):
 def run_game():
     print "Running game..."
     level = Level(15, 15, 0.1, 0.1)
-    world_map = WorldMap(level)
+    world_map = WorldMap(level.matrix_of_level)
     player_manager = AvatarManager([])
     world_state = WorldState(world_map, player_manager)
     turn_manager = TurnManager(world_state)

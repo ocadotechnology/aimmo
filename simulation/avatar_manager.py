@@ -1,4 +1,5 @@
 from simulation.avatar import AvatarRunner
+from simulation.avatar import AvatarAppearance
 from simulation.location import Location
 
 
@@ -9,7 +10,7 @@ class AvatarManager(object):
     def player_changed_code(self, player_id, code):
         avatar = self.avatarsById.get(player_id)
         if not avatar:
-            avatar = AvatarRunner(Location(0, 0), code, player_id)
+            avatar = AvatarRunner(Location(0, 0), code, player_id, AvatarAppearance("#000", "#ddd", "#777", "#fff"))
             self.avatarsById[player_id] = avatar
         avatar.set_code(code)
 

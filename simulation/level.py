@@ -1,19 +1,20 @@
 import random
+import numpy as np
 
 class Level:
     def __init__(self, height, width, obstacle_ratio, scoring_square_ratio):
-        self.matrix_of_level = [[None for _ in xrange(width)] for _ in xrange(height)]
+        self.matrix_of_level = np.empty((height, width), dtype = object)
 
         for y in xrange(height):
             for x in xrange(width):
                 if random.random() < obstacle_ratio:
-                    self.matrix_of_level[y][x] = OBSTACLE
+                    self.matrix_of_level[y, x] = OBSTACLE
                 elif random.random() < scoring_square_ratio:
-                    self.matrix_of_level[y][x] = SCORE
+                    self.matrix_of_level[y, x] = SCORE
                 else:
-                    self.matrix_of_level[y][x] = EMPTY
+                    self.matrix_of_level[y, x] = EMPTY
 
-        print [[x.key for x in y] for y in self.matrix_of_level]
+        # print self.matrix_of_level
 
 class SquareType:
     def __init__(self, name, key):
