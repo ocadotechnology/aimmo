@@ -21,7 +21,7 @@ $( document ).ready(function() {
 
     $.ajax({
         //TODO - get URL
-        url: 'http://localhost:1111/this-doesnt-exist',
+        url: '/api/code/',
         type: 'GET',
         dataType: 'text',
         success: function(data) {
@@ -41,12 +41,13 @@ $( document ).ready(function() {
         }       
     });
 
-    $('#saveBtn').click(function(){
+    $('#saveBtn').click(function(event){
+        event.preventDefault();
         $.ajax({
             //TODO - get URL
-            url: 'http://localhost:1111/this-doesnt-exist',
+            url: '/api/code/',
             type: 'POST',
-            data: 'text',
+            data: {code: editor.getValue(), csrfmiddlewaretoken: $('#saveForm input[name=csrfmiddlewaretoken]').val()},
             success: function(data) {
                 setButtonsEnabled(false);
             },

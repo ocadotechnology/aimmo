@@ -103,3 +103,26 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATIC_ROOT = "./static/"
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'console':{
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler'
+        },
+    },
+    'loggers': {
+        'views': {
+            'handlers': ['console'],
+            'level': 'DEBUG'
+        },
+
+    }
+}
