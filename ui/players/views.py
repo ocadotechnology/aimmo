@@ -1,16 +1,15 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from threading import Thread
 from simulation.avatar_manager import AvatarManager
 from simulation.level import Level
 from simulation.turn_manager import TurnManager
 from simulation.world_map import WorldMap
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
-
-import logging
-logger = logging.getLogger("views")
 from simulation.world_state import WorldState
+import logging
 
+logger = logging.getLogger("views")
 
 def home(request):
     return render(request, 'players/home.html')
