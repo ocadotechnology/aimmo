@@ -1,3 +1,7 @@
+import os
+import sys
+sys.path.append(os.path.abspath('.'))
+
 import unittest
 
 from simulation.location import Location
@@ -7,7 +11,6 @@ from simulation.world_map import WorldMap
 from simulation.world_state import WorldState
 from simulation.avatar import AvatarRunner
 from simulation.test.dummy_player import dummy
-
 
 class TestTurnManager(unittest.TestCase):
     def construct_turn_manager(self, *avatars):
