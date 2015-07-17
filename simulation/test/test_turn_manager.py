@@ -1,3 +1,7 @@
+import os
+import sys
+sys.path.append(os.path.abspath('.'))
+
 import unittest
 
 from simulation.location import Location
