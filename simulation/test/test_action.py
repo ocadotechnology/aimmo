@@ -1,8 +1,9 @@
 import unittest
 
-from simulation.test.dummy_avatar import DummyAvatar
+from simulation.avatar import Avatar
 from simulation.location import Location
 from simulation import direction
+from simulation.test.dummy_player import DummyPlayer
 from simulation.test.maps import InfiniteMap, EmptyMap
 from simulation.world_state import WorldState
 from simulation.action import *
@@ -11,9 +12,9 @@ from simulation.avatar_manager import AvatarManager
 
 class TestAction(unittest.TestCase):
     def setUp(self):
-        self.maxDiff = None
-        self.avatar = DummyAvatar(Location(0, 0))
-        self.other_avatar = DummyAvatar(Location(0, 1))
+        player = DummyPlayer()
+        self.avatar = Avatar(Location(0, 0), player)
+        self.other_avatar = Avatar(Location(0, 1), player)
         self.avatar_manager = AvatarManager([self.avatar, self.other_avatar])
 
     def test_successful_move_action(self):
