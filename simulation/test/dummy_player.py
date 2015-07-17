@@ -2,7 +2,7 @@ from simulation.action import MoveAction
 from simulation import direction
 
 
-class DummyPlayer(object):
+class DummyAvatar(object):
     def __init__(self, initial_location):
         self.location = initial_location
         self.events = []

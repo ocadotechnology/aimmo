@@ -1,8 +1,8 @@
 from collections import namedtuple
 
-ReceivedAttackEvent = namedtuple('ReceivedAttackEvent', ['attacking_player', 'damage_dealt'])
+ReceivedAttackEvent = namedtuple('ReceivedAttackEvent', ['attacking_avatar', 'damage_dealt'])
 
-PerformedAttackEvent = namedtuple('PerformedAttackEvent', ['attacked_player', 'target_location', 'damage_dealt'])
+PerformedAttackEvent = namedtuple('PerformedAttackEvent', ['attacked_avatar', 'target_location', 'damage_dealt'])
 
 FailedAttackEvent = namedtuple('FailedAttackEvent', ['target_location'])
 
