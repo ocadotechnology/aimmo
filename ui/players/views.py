@@ -16,10 +16,13 @@ from players.models import Player
 INITIAL_CODE = '''from simulation.action import MoveAction
 from simulation import direction
 
+import random
 
 class Avatar(object):
-    def handle_turn(self, world_state, events):
-        return MoveAction(direction.EAST)
+   def handle_turn(self, world_state, events):
+       directions = (direction.EAST, direction.SOUTH, direction.WEST, direction.NORTH)
+       return MoveAction(random.choice(directions))
+
 '''
 
 logger = logging.getLogger("views")
