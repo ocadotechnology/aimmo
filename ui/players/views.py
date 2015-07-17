@@ -16,12 +16,12 @@ from players.models import Player
 INITIAL_CODE = '''from simulation.action import MoveAction
 from simulation import direction
 
-import random
 
 class Avatar(object):
-   def handle_turn(self, world_state, events):
-       directions = (direction.EAST, direction.SOUTH, direction.WEST, direction.NORTH)
-       return MoveAction(random.choice(directions))
+    def handle_turn(self, world_state, events):
+        import random
+        directions = (direction.EAST, direction.SOUTH, direction.WEST, direction.NORTH)
+        return MoveAction(random.choice(directions))
 
 '''
 
