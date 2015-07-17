@@ -1,4 +1,5 @@
 import numpy as np
+from simulation import level
 from simulation.direction import Direction
 
 
@@ -8,7 +9,11 @@ class WorldMap(object):
 
     def can_move_to(self, target_location):
         num_rows, num_cols = self.grid.shape
-        return (0 <= target_location.row < num_rows) and (0 <= target_location.col < num_cols)
+        return (
+            (0 <= target_location.row < num_rows)
+            and (0 <= target_location.col < num_cols)
+            and self.grid[target_location.row, target_location.col] != level.OBSTACLE
+        )
 
     def get_world_view_centred_at(self, view_location, distance_to_edge):
         '''
