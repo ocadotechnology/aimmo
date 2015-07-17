@@ -14,7 +14,8 @@ const APPEARANCE = Object.create(
         cellSize : 50,
         worldColours : {
             0 : "#efe",
-            1 : "#777"
+            1 : "#777",
+            2 : "#fbb"
         }
     }
 );

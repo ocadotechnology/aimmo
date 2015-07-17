@@ -17,8 +17,8 @@ def home(request):
 
 def run_game():
     print "Running game..."
-    level = Level(15, 15, 10, 4, 0, 0)
-    world_map = WorldMap()
+    level = Level(15, 15, 0.1, 0.1)
+    world_map = WorldMap(level)
     player_manager = AvatarManager([])
     world_state = WorldState(world_map, player_manager)
     turn_manager = TurnManager(world_state)
@@ -28,7 +28,7 @@ def run_game():
 def start_game(request):
     thread = Thread(target=run_game)
     thread.start()
-    return redirect('watch')
+    return redirect('home')
 
 @login_required
 def program(request):

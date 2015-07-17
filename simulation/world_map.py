@@ -1,6 +1,6 @@
 class WorldMap(object):
-    def __init__(self):
-        self.grid = [[0, 1]]
+    def __init__(self, level):
+        self.level = level
 
     def can_move_to(self, target_location):
         return True
