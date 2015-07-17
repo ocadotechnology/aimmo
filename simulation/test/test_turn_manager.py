@@ -12,7 +12,7 @@ class TestTurnManager(unittest.TestCase):
     def construct_turn_manager(self, *players):
         self.player_manager = PlayerManager(players)
         self.world_state = WorldState(WorldMap(), self.player_manager)
-        self.turn_manager = TurnManager(self.world_state, self.player_manager)
+        self.turn_manager = TurnManager(self.world_state)
 
     def test_run_turn(self):
         player = DummyPlayer(Location(0, 0))

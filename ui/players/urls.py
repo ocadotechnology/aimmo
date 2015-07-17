@@ -4,6 +4,7 @@ from players import api_watch
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
+    url(r'^start_game/$', views.start_game, name='start_game'),
     url(r'^program/$', views.program, name='program'),
     url(r'^watch/$', views.watch, name='watch'),
     url(r'^statistics/$', views.statistics, name='statistics'),
