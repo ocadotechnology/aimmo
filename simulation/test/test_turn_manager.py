@@ -1,42 +1,59 @@
 import os
 import sys
+from simulation.avatar_manager import AvatarManager
+
 sys.path.append(os.path.abspath('.'))
 
 import unittest
+from simulation.level import Level
 
 from simulation.location import Location
-from simulation.avatar_manager import AvatarManager
 from simulation.turn_manager import TurnManager
-from simulation.world_map import WorldMap
+from simulation.test.maps import InfiniteMap
+from simulation.test.dummy_avatar import DummyAvatarRunner
+from simulation.avatar import AvatarAppearance
 from simulation.world_state import WorldState
-from simulation.avatar import AvatarRunner
-from simulation.test.dummy_player import dummy
+
+ORIGIN = Location(row=0, col=0)
+
+RIGHT_OF_ORIGIN = Location(row=0, col=1)
+FIVE_RIGHT_OF_ORIGIN = Location(row=0, col=5)
+
+ABOVE_ORIGIN = Location(row=-1, col=0)
+FIVE_RIGHT_OF_ORIGIN_AND_ONE_ABOVE = Location(row=-1, col=5)
+
 
 class TestTurnManager(unittest.TestCase):
+    def construct_default_avatar_appearance(self):
+        return AvatarAppearance("#000", "#ddd", "#777", "#fff")
+
+    def construct_default_level(self):
+        return Level(15, 15, 0.1, 0.1)
+
     def construct_turn_manager(self, *avatars):
         self.avatar_manager = AvatarManager(avatars)
-        self.world_state = WorldState(WorldMap(), self.avatar_manager)
+        self.world_state = WorldState(InfiniteMap(), self.avatar_manager)
         self.turn_manager = TurnManager(self.world_state)
 
     def test_run_turn(self):
-        avatar = AvatarRunner(Location(0, 0), dummy, 0)
+        avatar = DummyAvatarRunner(ORIGIN, player_id=1)
         self.construct_turn_manager(avatar)
         self.turn_manager.run_turn()
-        self.assertEqual(avatar.location, Location(1, 0))
+        self.assertEqual(avatar.location, RIGHT_OF_ORIGIN)
 
     def test_run_several_turns(self):
-        avatar = AvatarRunner(Location(0, 0), dummy, 0)
+        avatar = DummyAvatarRunner(ORIGIN, player_id=1)
         self.construct_turn_manager(avatar)
         [self.turn_manager.run_turn() for _ in xrange(5)]
-        self.assertEqual(avatar.location, Location(5, 0))
+        self.assertEqual(avatar.location, FIVE_RIGHT_OF_ORIGIN)
 
     def test_run_several_turns_and_avatars(self):
-        avatar1 = AvatarRunner(Location(0, 0), dummy, 0)
-        avatar2 = AvatarRunner(Location(0, 1), dummy, 1)
+        avatar1 = DummyAvatarRunner(ORIGIN, player_id=1)
+        avatar2 = DummyAvatarRunner(ABOVE_ORIGIN, player_id=2)
         self.construct_turn_manager(avatar1, avatar2)
         [self.turn_manager.run_turn() for _ in xrange(5)]
-        self.assertEqual(avatar1.location, Location(5, 0))
-        self.assertEqual(avatar2.location, Location(5, 1))
+        self.assertEqual(avatar1.location, FIVE_RIGHT_OF_ORIGIN)
+        self.assertEqual(avatar2.location, FIVE_RIGHT_OF_ORIGIN_AND_ONE_ABOVE)
 
 if __name__ == '__main__':
     unittest.main()

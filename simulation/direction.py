@@ -1,9 +1,9 @@
-class _Direction:
-    def __init__(self, x=0, y=0):
-        self.x = x
-        self.y = y
+class Direction:
+    def __init__(self, row=0, col=0):
+        self.row = row
+        self.col = col
 
-NORTH = _Direction(0, 1)
-EAST = _Direction(1, 0)
-SOUTH = _Direction(0, -1)
-WEST = _Direction(-1, 0)
+NORTH = Direction(-1, 0)
+EAST = Direction(0, 1)
+SOUTH = Direction(1, 0)
+WEST = Direction(0, -1)
