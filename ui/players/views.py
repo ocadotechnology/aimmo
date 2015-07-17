@@ -8,11 +8,35 @@ from simulation.turn_manager import TurnManager
 from simulation.world_map import WorldMap
 from simulation.world_state import WorldState
 import logging
+from django.contrib.auth.forms import UserCreationForm
+from players.models import Player
+
+
+INITIAL_CODE = '''from simulation.action import MoveAction
+from simulation import direction
+
+
+class Avatar(object):
+    def handle_turn(self, world_state, events):
+        return MoveAction(direction.EAST)
+'''
 
 logger = logging.getLogger("views")
 
 def home(request):
     return render(request, 'players/home.html')
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            Player(user=user, code=INITIAL_CODE).save()
+            return redirect('program')
+    else:
+        form = UserCreationForm()
+    return render(request, 'accounts/register.html', {'form': form})
 
 
 def run_game():
@@ -30,9 +54,11 @@ def start_game(request):
     thread.start()
     return redirect('home')
 
+
 @login_required
 def program(request):
     return render(request, 'players/program.html')
+
 
 @login_required
 def code(request):
@@ -45,7 +71,6 @@ def code(request):
     else :
         logger.info('GET ' + str(request.GET))
         return HttpResponse(request.user.player.code)
-        
 
 
 def watch(request):
