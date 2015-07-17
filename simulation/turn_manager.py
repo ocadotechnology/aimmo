@@ -1,3 +1,4 @@
+import time
 from threading import Lock
 
 class WorldStateProvider:
@@ -43,3 +44,5 @@ class TurnManager(object):
     def run_game(self):
         while True:
             self.run_turn()
+            time.sleep(0.5)
+
