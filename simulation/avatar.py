@@ -1,7 +1,3 @@
-from simulation.action import MoveAction
-from simulation import direction
-
-
 class Avatar(object):
     def __init__(self, initial_location, player):
         self.location = initial_location
@@ -15,7 +11,6 @@ class Avatar(object):
         self.events = []
 
         return next_action
-        return MoveAction(direction.EAST)
 
     def add_event(self, event):
         self.events.append(event)
