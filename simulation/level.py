@@ -13,20 +13,22 @@ class Level:
         self.remove_all_scoring_squares()
         self.generate_scoring_squares(self.initial_number_of_scoring_squares)
 
-    def generate_special_square_and_return_coords(self, special_square_list, special_square_map, limit):
+    def generate_special_square_and_return_coords(self, special_square_list, special_square_map, limit, type):
         while len(special_square_list) < limit:
             new_coords = tuple(self.empty_squares.pop(random.randint(0, len(self.empty_squares))))
             special_square_list.append(new_coords)
             special_square_map[new_coords] = SpecialSquare(random.randint(1, 5))
+        for c in range(special_square_list):
+            self.matrix_of_level[c[0]][c[1]] = type
 
     def generate_scoring_squares(self, limit):
-        self.generate_special_square_and_return_coords(self.coords_of_scoring_squares, self.scoring_squares, limit)
+        self.generate_special_square_and_return_coords(self.coords_of_scoring_squares, self.scoring_squares, limit, SCORE)
 
     def generate_health_squares(self, limit):
-        self.generate_special_square_and_return_coords(self.coords_of_health_squares, self.health_squares, limit)
+        self.generate_special_square_and_return_coords(self.coords_of_health_squares, self.health_squares, limit, HEALTH)
 
     def generate_attack_squares(self, limit):
-        self.generate_special_square_and_return_coords(self.coords_of_attack_squares, self.attack_squares, limit)
+        self.generate_special_square_and_return_coords(self.coords_of_attack_squares, self.attack_squares, limit, ATTACK)
 
     def __init__(self, height, width, number_of_obstacle_squares, number_of_scoring_squares, number_of_health_squares, number_of_attack_squares):
         def verify_enough_space_for_specified_squares():
@@ -44,6 +46,8 @@ class Level:
         def generate_obstacle_squares(limit):
             while len(self.coords_of_obstacle_squares) < limit:
                 self.coords_of_obstacle_squares.append(self.empty_squares.pop(random.randint(0, len(self.empty_squares))))
+            for c in range(self.coords_of_obstacle_squares):
+                self.matrix_of_level[c[0]][c[1]] = OBSTACLE
 
         def initialise_special_squares():
             generate_obstacle_squares(number_of_obstacle_squares)
