@@ -3,11 +3,12 @@ from simulation import direction
 
 
 class AvatarRunner(object):
-    def __init__(self, initial_location, initial_code, player_id):
+    def __init__(self, initial_location, initial_code, player_id, avatar_appearance):
         self.location = initial_location
         self.events = []
         self.player_id = player_id
         self.set_code(initial_code)
+        self.avatar_appearance = avatar_appearance
 
     def handle_turn(self, state):
         next_action = self.avatar.handle_turn(state, self.events)
@@ -24,3 +25,12 @@ class AvatarRunner(object):
         self.code = code
         exec(code)
         self.avatar = Avatar()
+
+
+class AvatarAppearance:
+    def __init__(self, body_stroke, body_fill, eye_stroke, eye_fill):
+        self.body_stroke = body_stroke
+        self.body_fill = body_fill
+        self.eye_stroke = eye_stroke
+        self.eye_fill = eye_fill
+
