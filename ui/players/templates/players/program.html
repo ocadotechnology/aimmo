@@ -11,9 +11,12 @@
 </div>
 <div class="row">
     <div id="editor" class="col-md-9"></div>
-    <div id="buttons" class="col-md-3">
-        <button id="saveBtn" type="button" class="btn btn-lg btn-primary text-center" disabled>Save</button>
-    </div>
+    <form id="saveForm" action="{% url 'code' %}" method="POST">
+        {% csrf_token %}
+        <div id="buttons" class="col-md-3">
+            <input type="submit" id="saveBtn" type="button" class="btn btn-lg btn-primary text-center" value="Save" disabled />
+        </div>
+    </form>
 </div>
 {% endblock %}
 

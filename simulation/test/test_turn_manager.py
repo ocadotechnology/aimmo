@@ -3,7 +3,7 @@ import unittest
 from simulation.location import Location
 from simulation.avatar_manager import AvatarManager
 from simulation.turn_manager import TurnManager
-from simulation.world_map import WorldMap
+from simulation.test.maps import InfiniteMap
 from simulation.world_state import WorldState
 from simulation.avatar import Avatar
 from simulation.test.dummy_player import DummyPlayer
@@ -23,8 +23,8 @@ class TestTurnManager(unittest.TestCase):
 
     def construct_turn_manager(self, *avatars):
         self.avatar_manager = AvatarManager(avatars)
-        self.world_state = WorldState(WorldMap(), self.avatar_manager)
-        self.turn_manager = TurnManager(self.world_state, self.avatar_manager)
+        self.world_state = WorldState(InfiniteMap(), self.avatar_manager)
+        self.turn_manager = TurnManager(self.world_state)
 
     def test_run_turn(self):
         avatar = Avatar(ORIGIN, self.player)
