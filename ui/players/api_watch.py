@@ -75,7 +75,7 @@ def get_world_parameters(request):
         response = JsonResponse({
             "width": 15,
             "height": 15,
-            "layout": [[x.key for x in y] for y in world.world_map.grid.matrix_of_level]
+            "layout": [[x.key for x in y] for y in world.world_map.grid.tolist()]
         }, safe=False)
     finally:
         world_state_provider.release_lock()
@@ -84,7 +84,7 @@ def get_world_parameters(request):
 
 def player_dict(avatar):
     return {
-        'id': avatar.id,
+        'id': avatar.player_id,
         'x': avatar.location.col,
         'y': avatar.location.row,
         'rotation': 0,
@@ -100,7 +100,7 @@ def player_dict(avatar):
 def get_world_state(request):
     world = world_state_provider.lock_and_get_world()
 
-    player_data = {p.id: player_dict(p) for p in world.avatar_manager.avatarsById.values()}
+    player_data = {p.player_id: player_dict(p) for p in world.avatar_manager.avatarsById.values()}
 
     data = {'players': player_data}
     try:
