@@ -1,4 +1,4 @@
-from simulation.avatar import AvatarRunner
+from simulation.avatar import AvatarRunner, AvatarAppearance
 from simulation.avatar import AvatarAppearance
 from simulation.location import Location
 
