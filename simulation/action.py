@@ -2,7 +2,7 @@ from event import *
 
 
 class Action(object):
-    def apply(self, world_state, player):
+    def apply(self, world_state, avatar):
         raise NotImplementedError('Abstract method')
 
 
@@ -10,27 +10,29 @@ class MoveAction(Action):
     def __init__(self, direction):
         self.direction = direction
 
-    def apply(self, world_state, player):
-        current_location = player.location
+    def apply(self, world_state, avatar):
+        current_location = avatar.location
         target_location = current_location + self.direction
         if world_state.world_map.can_move_to(target_location):
-            player.add_event(MovedEvent(player.location, target_location))
-            player.location = target_location
+            avatar.add_event(MovedEvent(avatar.location, target_location))
+            avatar.location = target_location
         else:
-            player.add_event(MovedEvent(player.location, target_location))
+            avatar.add_event(MovedEvent(avatar.location, target_location))
 
 
 class AttackAction(Action):
     def __init__(self, direction):
         self.direction = direction
 
-    def apply(self, world_state, player):
-        target_location = player.location + self.direction
-        attacked_players = world_state.get_players_at(target_location)
-        if attacked_players:
-            for other_player in attacked_players:
+    def apply(self, world_state, avatar):
+        target_location = avatar.location + self.direction
+        attacked_avatars = world_state.get_avatars_at(target_location)
+        if attacked_avatars:
+            for other_avatar in attacked_avatars:
                 damage_dealt = 1
-                player.add_event(PerformedAttackEvent(other_player, target_location, damage_dealt))
-                other_player.add_event(ReceivedAttackEvent(player, damage_dealt))
+                avatar.add_event(PerformedAttackEvent(
+                    other_avatar, target_location, damage_dealt))
+                other_avatar.add_event(
+                    ReceivedAttackEvent(avatar, damage_dealt))
         else:
-            player.add_event(FailedAttackEvent(target_location))
+            avatar.add_event(FailedAttackEvent(target_location))

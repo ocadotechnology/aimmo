@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from threading import Thread
+from simulation.avatar_manager import AvatarManager
 from simulation.level import Level
-from simulation.player_manager import PlayerManager
 from simulation.turn_manager import TurnManager
 from simulation.world_map import WorldMap
 from simulation.world_state import WorldState
@@ -15,7 +15,7 @@ def run_game():
     print "Running game..."
     level = Level(15, 15, 10, 4, 0, 0)
     world_map = WorldMap()
-    player_manager = PlayerManager([])
+    player_manager = AvatarManager([])
     world_state = WorldState(world_map, player_manager)
     turn_manager = TurnManager(world_state)
 

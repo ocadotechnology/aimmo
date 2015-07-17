@@ -10,9 +10,12 @@ $( document ).ready(function() {
         $('#saveBtn').prop('disabled', !enableStatus);
     };
     
-    var showAlert = function(alert){
+    var showAlert = function(alertString){
         var alertText = $('#alerts');
-        alertText.html(alert);
+        alertText.html(alertString + '<button type="button" class="close" aria-hidden="true">x</button>');
+        $(".close").click(function(){
+            alertText.hide();
+        });
         alertText.show();
     };
 
