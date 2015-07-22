@@ -1,5 +1,4 @@
 $( document ).ready(function() {
-
     var defaultProgram = "print 'Hello, world!'\nprint 'New line'";
 
     var editor = ace.edit("editor");
@@ -57,6 +56,4 @@ $( document ).ready(function() {
             }       
         });
     });
-
-    
 });

@@ -9,4 +9,3 @@ class Player(models.Model):
 
 class Avatar(models.Model):
     player = models.ForeignKey(User)
-    

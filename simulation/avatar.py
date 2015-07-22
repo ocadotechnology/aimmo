@@ -33,4 +33,3 @@ class AvatarAppearance:
         self.body_fill = body_fill
         self.eye_stroke = eye_stroke
         self.eye_fill = eye_fill
-

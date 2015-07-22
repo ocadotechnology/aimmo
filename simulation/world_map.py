@@ -16,7 +16,7 @@ class WorldMap(object):
         )
 
     def get_world_view_centred_at(self, view_location, distance_to_edge):
-        '''
+        """
                        world map = self.grid
         +-----------------------------------------------+
         |                                               |
@@ -43,7 +43,7 @@ class WorldMap(object):
                      -------------------->
                       increasing columns
 
-        '''
+        """
         num_grid_rows, num_grid_cols = self.grid.shape
         num_view_rows, num_view_cols = 2 * distance_to_edge + 1, 2 * distance_to_edge + 1
 

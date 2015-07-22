@@ -11,7 +11,7 @@ const VIEWER = Object.create(
 
         init : function(canvasDomElement, world, appearance) {
             this.world = world;
-            this.appearance = appearance
+            this.appearance = appearance;
             this.paper = Raphael(canvasDomElement);
         },
 

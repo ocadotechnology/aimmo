@@ -69,6 +69,7 @@ __world_state = {
     ]
 }
 
+
 def get_world_parameters(request):
     world = world_state_provider.lock_and_get_world()
     try:

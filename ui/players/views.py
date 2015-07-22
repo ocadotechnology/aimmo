@@ -27,6 +27,7 @@ class Avatar(object):
 
 logger = logging.getLogger("views")
 
+
 def home(request):
     return render(request, 'players/home.html')
 
@@ -53,6 +54,7 @@ def run_game():
 
     turn_manager.run_game()
 
+
 def start_game(request):
     thread = Thread(target=run_game)
     thread.start()
@@ -66,7 +68,7 @@ def program(request):
 
 @login_required
 def code(request):
-    if request.method == 'POST' :
+    if request.method == 'POST':
         logger.info('POST ' + str(request.POST))
         request.user.player.code = request.POST['code']
         request.user.player.save()
@@ -77,7 +79,7 @@ def code(request):
             world_state_provider.release_lock()
         
         return HttpResponse("")
-    else :
+    else:
         logger.info('GET ' + str(request.GET))
         return HttpResponse(request.user.player.code)
 
