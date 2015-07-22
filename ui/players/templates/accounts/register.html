@@ -1,9 +1,74 @@
 {% extends 'players/base.html' %}
 
 {%  block content %}
-<form action="{% url 'register' %}" method="POST">
-{% csrf_token %}
-{{ form }}
-<input type="submit"/>
-</form>
+<div class="container">
+    <div class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <div class="panel-title">Register</div>
+            </div>
+            <div class="panel-body" >
+                <form class="form-horizontal" role="form" action="{% url 'register' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <div class="col-md-offset-3 col-md-9">
+                            Already registered? <a href="{% url 'login' %}">Login</a>
+                        </div>
+                    </div>
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
+                    {% if form.username.errors %}
+                    <div class="alert alert-danger">
+                        {{ form.username.errors }}
+                    </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label for="username" class="col-md-3 control-label">Username</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" name="username" placeholder="Username">
+                        </div>
+                    </div>
+
+                    {% if form.password1.errors %}
+                    <div class="alert alert-danger">
+                        {{ form.password1.errors }}
+                    </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label for="password1" class="col-md-3 control-label">Password</label>
+                        <div class="col-md-9">
+                            <input type="password" class="form-control" name="password1" placeholder="Password">
+                        </div>
+                    </div>
+
+                    {% if form.password2.errors %}
+                    <div class="alert alert-danger">
+                        {{ form.password2.errors }}
+                    </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label for="password2" class="col-md-3 control-label">Password confirmation</label>
+                        <div class="col-md-9">
+                            <input type="password" class="form-control" name="password2" placeholder="Password confirmation">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-offset-3 col-md-9">
+                            <button type="submit" class="btn btn-success">Register</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login
 from threading import Thread
 from simulation.avatar_manager import AvatarManager
 from simulation.level import Level
@@ -38,6 +39,8 @@ def register(request):
         if form.is_valid():
             user = form.save()
             Player(user=user, code=INITIAL_CODE).save()
+            authenticated_user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
+            login(request, authenticated_user)
             return redirect('program')
     else:
         form = UserCreationForm()
