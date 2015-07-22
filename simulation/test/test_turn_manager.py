@@ -5,7 +5,6 @@ from simulation.avatar_manager import AvatarManager
 sys.path.append(os.path.abspath('.'))
 
 import unittest
-from simulation.level import Level
 
 from simulation.location import Location
 from simulation.turn_manager import TurnManager
@@ -26,9 +25,6 @@ FIVE_RIGHT_OF_ORIGIN_AND_ONE_ABOVE = Location(row=-1, col=5)
 class TestTurnManager(unittest.TestCase):
     def construct_default_avatar_appearance(self):
         return AvatarAppearance("#000", "#ddd", "#777", "#fff")
-
-    def construct_default_level(self):
-        return Level(15, 15, 0.1, 0.1)
 
     def construct_turn_manager(self, *avatars):
         self.avatar_manager = AvatarManager(avatars)

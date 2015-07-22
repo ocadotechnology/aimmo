@@ -1,6 +1,8 @@
-import random
 from django.http import JsonResponse
 from simulation.turn_manager import world_state_provider
+
+
+# TODO: rename to something more djangoey or merge with views.py
 
 
 def get_world_parameters(request):

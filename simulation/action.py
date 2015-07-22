@@ -11,13 +11,12 @@ class MoveAction(Action):
         self.direction = direction
 
     def apply(self, world_state, avatar):
-        current_location = avatar.location
-        target_location = current_location + self.direction
+        target_location = avatar.location + self.direction
         if world_state.world_map.can_move_to(target_location):
             avatar.add_event(MovedEvent(avatar.location, target_location))
             avatar.location = target_location
         else:
-            avatar.add_event(MovedEvent(avatar.location, target_location))
+            avatar.add_event(FailedMoveEvent(avatar.location, target_location))
 
 
 class AttackAction(Action):
@@ -30,9 +29,8 @@ class AttackAction(Action):
         if attacked_avatars:
             for other_avatar in attacked_avatars:
                 damage_dealt = 1
-                avatar.add_event(PerformedAttackEvent(
-                    other_avatar, target_location, damage_dealt))
-                other_avatar.add_event(
-                    ReceivedAttackEvent(avatar, damage_dealt))
+                avatar.add_event(PerformedAttackEvent(other_avatar, target_location, damage_dealt))
+                other_avatar.add_event(ReceivedAttackEvent(avatar, damage_dealt))
+                # TODO: actually damage them in the world state
         else:
             avatar.add_event(FailedAttackEvent(target_location))

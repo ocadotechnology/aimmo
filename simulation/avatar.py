@@ -2,6 +2,10 @@ from simulation.action import MoveAction
 from simulation import direction
 
 
+# This class will be implemented by the player
+Avatar = None
+
+
 class AvatarRunner(object):
     def __init__(self, initial_location, initial_code, player_id, avatar_appearance):
         self.location = initial_location
@@ -9,6 +13,7 @@ class AvatarRunner(object):
         self.player_id = player_id
         self.set_code(initial_code)
         self.avatar_appearance = avatar_appearance
+        self.avatar = None
 
     def handle_turn(self, state):
         next_action = self.avatar.handle_turn(state, self.events)

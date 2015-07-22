@@ -1,5 +1,6 @@
+# TODO: investigate using x and y
 class Direction:
-    def __init__(self, row=0, col=0):
+    def __init__(self, row, col):
         self.row = row
         self.col = col
 

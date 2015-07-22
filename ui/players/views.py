@@ -4,14 +4,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from threading import Thread
 from simulation.avatar_manager import AvatarManager
-from simulation.level import Level
 from simulation.turn_manager import TurnManager
 from simulation.turn_manager import world_state_provider
-from simulation.world_map import WorldMap
+from simulation import world_map
 from simulation.world_state import WorldState
 import logging
 from django.contrib.auth.forms import UserCreationForm
-from players.models import Player
+from models import Player
 
 
 INITIAL_CODE = '''from simulation.action import MoveAction
@@ -23,8 +22,9 @@ class Avatar(object):
         import random
         directions = (direction.EAST, direction.SOUTH, direction.WEST, direction.NORTH)
         return MoveAction(random.choice(directions))
-
 '''
+
+# TODO: move all views that just render a template over to using django generic views
 
 logger = logging.getLogger("views")
 
@@ -49,10 +49,9 @@ def register(request):
 
 def run_game():
     print "Running game..."
-    level = Level(15, 15, 0.1, 0.1)
-    world_map = WorldMap(level.matrix_of_level)
+    my_map = world_map.generate_map(15, 15, 0.1, 0.1)
     player_manager = AvatarManager([])
-    world_state = WorldState(world_map, player_manager)
+    world_state = WorldState(my_map, player_manager)
     turn_manager = TurnManager(world_state)
 
     turn_manager.run_game()
@@ -69,6 +68,7 @@ def program(request):
     return render(request, 'players/program.html')
 
 
+# TODO: on exception when submitting code, catch it and return response with details (so players can debug their code)
 @login_required
 def code(request):
     if request.method == 'POST':

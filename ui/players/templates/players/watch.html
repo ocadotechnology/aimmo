@@ -22,8 +22,7 @@
 
     function refreshWorld() {
         console.log("Refreshing world...");
-        jQuery.ajax("/api/watch/world", {
-            ____timeout : 500,
+        $.ajax("/api/watch/world", {
             success : function(data) {
                 CONTROLS.initialiseWorld(data.width, data.height, data.layout);
                 console.log("World refresh successful.");
@@ -39,12 +38,10 @@
     }
 
     function refreshState() {
-        jQuery.ajax("/api/watch/state", {
-            complete : function(jqXHR, textStatus) {
-                setTimeout(refreshState, 100);
-            },
+        $.ajax("/api/watch/state", {
             success : function(data) {
                 CONTROLS.setState(data.players, data.items);
+                setTimeout(refreshState, 100);
             },
             error : function(jqXHR, textStatus, errorThrown) {
                 console.error("State refresh failed.", jqXHR, textStatus, errorThrown);

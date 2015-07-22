@@ -49,11 +49,11 @@ $( document ).ready(function() {
             data: {code: editor.getValue(), csrfmiddlewaretoken: $('#saveForm input[name=csrfmiddlewaretoken]').val()},
             success: function(data) {
                 setButtonsEnabled(false);
+                $('#alerts').hide();
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 showAlert('An error has occurred whilst saving: ' + errorThrown);
-                
-            }       
+            }
         });
     });
 });
