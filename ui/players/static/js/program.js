@@ -5,10 +5,6 @@ $( document ).ready(function() {
     editor.setTheme("ace/theme/monokai");
     editor.getSession().setMode("ace/mode/python");
 
-    var setButtonsEnabled = function(enableStatus){
-        $('#saveBtn').prop('disabled', !enableStatus);
-    };
-    
     var showAlert = function(alertString){
         var alertText = $('#alerts');
         alertText.html(alertString + '<button type="button" class="close" aria-hidden="true">x</button>');
@@ -26,18 +22,12 @@ $( document ).ready(function() {
         success: function(data) {
             editor.setValue(data);
             editor.selection.moveCursorFileStart();
-            editor.getSession().on('change', function(e) {
-                setButtonsEnabled(true);
-            });
         },
         error: function(jqXHR, textStatus, errorThrown) {
             showAlert('Could not retrieve saved data');
             editor.setValue(defaultProgram);
             editor.selection.moveCursorFileStart();
-            editor.getSession().on('change', function(e) {
-                setButtonsEnabled(true);
-            });
-        }       
+        }
     });
 
     $('#saveBtn').click(function(event){
@@ -48,7 +38,6 @@ $( document ).ready(function() {
             type: 'POST',
             data: {code: editor.getValue(), csrfmiddlewaretoken: $('#saveForm input[name=csrfmiddlewaretoken]').val()},
             success: function(data) {
-                setButtonsEnabled(false);
                 $('#alerts').hide();
             },
             error: function(jqXHR, textStatus, errorThrown) {
