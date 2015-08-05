@@ -28,7 +28,7 @@ def generate_map(height, width, obstacle_ratio, scoring_square_ratio):
     return WorldMap(matrix_of_level)
 
 
-# TODO: investigte switch from numpy to 2d lists to avoid making users know numpy and having to install it
+# TODO: investigate switch from numpy to 2d lists to avoid making users know numpy and having to install it
 class WorldMap(object):
     def __init__(self, grid):
         self.grid = grid

@@ -1,9 +1,18 @@
+import traceback
+import sys
 from simulation.action import MoveAction
 from simulation import direction
 
 
 # This class will be implemented by the player
 Avatar = None
+
+
+class UserCodeException(Exception):
+    def to_user_string(self):
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
+        return '<br/>'.join(lines)
 
 
 class AvatarRunner(object):
@@ -28,7 +37,10 @@ class AvatarRunner(object):
 
     def set_code(self, code):
         self.code = code
-        exec(code)
+        try:
+            exec(code)
+        except Exception as ex:
+            raise UserCodeException("Exception in user code", ex)
         self.avatar = Avatar()
 
 

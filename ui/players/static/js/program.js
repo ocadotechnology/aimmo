@@ -5,6 +5,14 @@ $( document ).ready(function() {
     editor.setTheme("ace/theme/monokai");
     editor.getSession().setMode("ace/mode/python");
 
+    var setButtonsEnabled = function(enableStatus){
+        $('#saveBtn').prop('disabled', !enableStatus);
+    };
+
+    var startsWith = function(string, prefix) {
+        return string.slice(0, prefix.length) == prefix;
+    };
+
     var showAlert = function(alertString){
         var alertText = $('#alerts');
         alertText.html(alertString + '<button type="button" class="close" aria-hidden="true">x</button>');
@@ -39,9 +47,18 @@ $( document ).ready(function() {
             data: {code: editor.getValue(), csrfmiddlewaretoken: $('#saveForm input[name=csrfmiddlewaretoken]').val()},
             success: function(data) {
                 $('#alerts').hide();
+
+                ERROR_RESPONSE = "ERROR\n\n";
+                if (data == "OK") {
+                  // do nothing
+                } else if (startsWith(data, ERROR_RESPONSE)) {
+                    showAlert('Your code has some problems:<br/><br/>' + data.slice(ERROR_RESPONSE.length, data.length));
+                } else {
+                    showAlert('Unknown response from server');
+                }
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                showAlert('An error has occurred whilst saving: ' + errorThrown);
+                showAlert('An error has occurred whilst saving:' + errorThrown);
             }
         });
     });

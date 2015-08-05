@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from threading import Thread
+from simulation.avatar import UserCodeException
 from simulation.avatar_manager import AvatarManager
 from simulation.turn_manager import TurnManager
 from simulation.turn_manager import world_state_provider
@@ -78,10 +79,12 @@ def code(request):
         try:
             world = world_state_provider.lock_and_get_world()
             world.avatar_manager.player_changed_code(request.user.id, request.user.player.code)
+        except UserCodeException as ex:
+            return HttpResponse("ERROR\n\n" + ex.to_user_string())
         finally:
             world_state_provider.release_lock()
         
-        return HttpResponse("")
+        return HttpResponse("OK")
     else:
         logger.info('GET ' + str(request.GET))
         return HttpResponse(request.user.player.code)
