@@ -1,18 +1,19 @@
+from threading import Thread
+import logging
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
-from threading import Thread
+from django.contrib.auth.forms import UserCreationForm
+
 from simulation.avatar import UserCodeException
 from simulation.avatar_manager import AvatarManager
 from simulation.turn_manager import TurnManager
 from simulation.turn_manager import world_state_provider
 from simulation import world_map
 from simulation.world_state import WorldState
-import logging
-from django.contrib.auth.forms import UserCreationForm
 from models import Player
-
 
 INITIAL_CODE = '''from simulation.action import MoveAction
 from simulation import direction
@@ -69,7 +70,6 @@ def program(request):
     return render(request, 'players/program.html')
 
 
-# TODO: on exception when submitting code, catch it and return response with details (so players can debug their code)
 @login_required
 def code(request):
     if request.method == 'POST':
