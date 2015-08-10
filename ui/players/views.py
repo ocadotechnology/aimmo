@@ -3,8 +3,11 @@ import logging
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+
 from django.contrib.auth.decorators import login_required
+
 from django.contrib.auth import authenticate, login
+
 from django.contrib.auth.forms import UserCreationForm
 
 from simulation.avatar import UserCodeException
@@ -29,10 +32,6 @@ class Avatar(object):
 # TODO: move all views that just render a template over to using django generic views
 
 logger = logging.getLogger("views")
-
-
-def home(request):
-    return render(request, 'players/home.html')
 
 
 def register(request):
@@ -66,11 +65,6 @@ def start_game(request):
 
 
 @login_required
-def program(request):
-    return render(request, 'players/program.html')
-
-
-@login_required
 def code(request):
     if request.method == 'POST':
         logger.info('POST ' + str(request.POST))
@@ -88,11 +82,3 @@ def code(request):
     else:
         logger.info('GET ' + str(request.GET))
         return HttpResponse(request.user.player.code)
-
-
-def watch(request):
-    return render(request, 'players/watch.html')
-
-
-def statistics(request):
-    return render(request, 'players/statistics.html')
