@@ -36,6 +36,8 @@ class AttackAction(Action):
             avatar.add_event(PerformedAttackEvent(attacked_avatar, target_location, damage_dealt))
             attacked_avatar.add_event(ReceivedAttackEvent(avatar, damage_dealt))
             attacked_avatar.health -= damage_dealt
-            print attacked_avatar.health  # TODO: if <= 0, kill and respawn
+            print '{} dealt {} damage to {}'.format(avatar, damage_dealt, attacked_avatar)
+            if attacked_avatar.health <= 0:
+                attacked_avatar.die()
         else:
             avatar.add_event(FailedAttackEvent(target_location))

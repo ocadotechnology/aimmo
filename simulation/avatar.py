@@ -1,6 +1,7 @@
 import traceback
 import sys
 from action import WaitAction
+from location import Location
 from simulation.action import MoveAction
 from simulation import direction
 
@@ -19,7 +20,7 @@ class UserCodeException(Exception):
 class AvatarRunner(object):
     def __init__(self, initial_location, initial_code, player_id, avatar_appearance):
         self.location = initial_location
-        self.health = 10
+        self.health = 5
         self.events = []
         self.player_id = player_id
         self.set_code(initial_code)
@@ -38,6 +39,10 @@ class AvatarRunner(object):
         self.events = []
 
         return next_action
+
+    def die(self):
+        self.health = 5
+        self.location = Location(0, 0)
 
     def add_event(self, event):
         self.events.append(event)
