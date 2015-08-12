@@ -6,6 +6,11 @@ class Action(object):
         raise NotImplementedError('Abstract method')
 
 
+class WaitAction(Action):
+    def apply(self, world_state, avatar):
+        pass
+
+
 class MoveAction(Action):
     def __init__(self, direction):
         self.direction = direction
