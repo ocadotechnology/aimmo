@@ -11,7 +11,7 @@ class Location(object):
         return Location(self.row - direction.row, self.col - direction.col)
 
     def __repr__(self):
-        return 'Location(row=%d, col=%d)' % (self.row, self.col)
+        return 'Location(row={}, col={})'.format(self.row, self.col)
 
     def __eq__(self, other):
         return (self.row, self.col) == (other.row, other.col)

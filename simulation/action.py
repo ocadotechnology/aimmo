@@ -30,12 +30,12 @@ class AttackAction(Action):
 
     def apply(self, world_state, avatar):
         target_location = avatar.location + self.direction
-        attacked_avatars = world_state.get_avatars_at(target_location)
-        if attacked_avatars:
-            for other_avatar in attacked_avatars:
-                damage_dealt = 1
-                avatar.add_event(PerformedAttackEvent(other_avatar, target_location, damage_dealt))
-                other_avatar.add_event(ReceivedAttackEvent(avatar, damage_dealt))
-                # TODO: actually damage them in the world state
+        attacked_avatar = world_state.avatar_manager.get_avatar_at(target_location)
+        if attacked_avatar:
+            damage_dealt = 1
+            avatar.add_event(PerformedAttackEvent(attacked_avatar, target_location, damage_dealt))
+            attacked_avatar.add_event(ReceivedAttackEvent(avatar, damage_dealt))
+            attacked_avatar.health -= damage_dealt
+            print attacked_avatar.health  # TODO: if <= 0, kill and respawn
         else:
             avatar.add_event(FailedAttackEvent(target_location))

@@ -1,5 +1,6 @@
 import traceback
 import sys
+from action import WaitAction
 from simulation.action import MoveAction
 from simulation import direction
 
@@ -18,6 +19,7 @@ class UserCodeException(Exception):
 class AvatarRunner(object):
     def __init__(self, initial_location, initial_code, player_id, avatar_appearance):
         self.location = initial_location
+        self.health = 10
         self.events = []
         self.player_id = player_id
         self.set_code(initial_code)
@@ -25,8 +27,13 @@ class AvatarRunner(object):
         self.avatar = None
 
     def handle_turn(self, state):
-        next_action = self.avatar.handle_turn(state, self.events)
-
+        try:
+            next_action = self.avatar.handle_turn(state, self.events)
+        except Exception as e:
+            # TODO: tell user their program threw an exception during execution somehow...
+            print 'avatar threw exception during handle_turn:', e
+            traceback.print_exc()
+            next_action = WaitAction()
         # Reset event log
         self.events = []
 
@@ -42,6 +49,9 @@ class AvatarRunner(object):
         except Exception as ex:
             raise UserCodeException("Exception in user code", ex)
         self.avatar = Avatar()
+
+    def __repr__(self):
+        return 'Avatar(id={}, location={}, health={})'.format(self.player_id, self.location, self.health)
 
 
 class AvatarAppearance:
