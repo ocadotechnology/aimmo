@@ -4,6 +4,7 @@ from simulation import direction
 
 class DummyAvatarRunner(object):
     def __init__(self, initial_location, player_id):
+        self.health = 5
         self.location = initial_location
         self.player_id = player_id
         self.events = []

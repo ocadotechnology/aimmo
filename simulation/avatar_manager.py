@@ -7,12 +7,8 @@ class AvatarManager(object):
     def __init__(self, initial_avatars):
         self.avatarsById = {p.player_id: p for p in initial_avatars}
 
-    def player_changed_code(self, player_id, code):
-        avatar = self.avatarsById.get(player_id)
-        if not avatar:
-            avatar = AvatarRunner(Location(0, 0), code, player_id, AvatarAppearance("#000", "#ddd", "#777", "#fff"))
-            self.avatarsById[player_id] = avatar
-        avatar.set_code(code)
+    def spawn(self, player_id, code, location):
+        self.avatarsById[player_id] = AvatarRunner(location, code, player_id, AvatarAppearance("#000", "#ddd", "#777", "#fff"))
 
     @property
     def avatars(self):

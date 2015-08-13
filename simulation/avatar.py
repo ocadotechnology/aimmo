@@ -23,16 +23,17 @@ class AvatarRunner(object):
         self.health = 5
         self.events = []
         self.player_id = player_id
-        self.set_code(initial_code)
         self.avatar_appearance = avatar_appearance
         self.avatar = None
+
+        self.set_code(initial_code)
 
     def handle_turn(self, state):
         try:
             next_action = self.avatar.handle_turn(state, self.events)
         except Exception as e:
             # TODO: tell user their program threw an exception during execution somehow...
-            print 'avatar threw exception during handle_turn:', e
+            print('avatar threw exception during handle_turn:', e)
             traceback.print_exc()
             next_action = WaitAction()
         # Reset event log
@@ -40,9 +41,9 @@ class AvatarRunner(object):
 
         return next_action
 
-    def die(self):
+    def die(self, respawn_location):
         self.health = 5
-        self.location = Location(0, 0)
+        self.location = respawn_location
 
     def add_event(self, event):
         self.events.append(event)

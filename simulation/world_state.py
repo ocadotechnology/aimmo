@@ -8,3 +8,8 @@ class WorldState(object):
 
     def get_state_for(self, avatar):
         return WorldView(avatar, self.world_map, self.avatar_manager)
+
+    def player_changed_code(self, player_id, code):
+        avatar = self.avatar_manager.avatarsById.get(player_id)
+        if not avatar:
+            self.avatar_manager.spawn(player_id, code, self.world_map.get_spawn_location())

@@ -49,7 +49,7 @@ def register(request):
 
 
 def run_game():
-    print "Running game..."
+    print("Running game...")
     my_map = world_map.generate_map(15, 15, 0.1, 0.1)
     player_manager = AvatarManager([])
     world_state = WorldState(my_map, player_manager)
@@ -72,7 +72,7 @@ def code(request):
         request.user.player.save()
         try:
             world = world_state_provider.lock_and_get_world()
-            world.avatar_manager.player_changed_code(request.user.id, request.user.player.code)
+            world.player_changed_code(request.user.id, request.user.player.code)
         except UserCodeException as ex:
             return HttpResponse("ERROR\n\n" + ex.to_user_string())
         finally:

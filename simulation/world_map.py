@@ -1,7 +1,7 @@
 import random
 import numpy as np
 from simulation.direction import Direction
-
+from simulation.location import Location
 
 class SquareType:
     def __init__(self, name, key):
@@ -32,6 +32,13 @@ def generate_map(height, width, obstacle_ratio, scoring_square_ratio):
 class WorldMap(object):
     def __init__(self, grid):
         self.grid = grid
+
+    def get_spawn_location(self):
+        while True:
+            row = random.randint(0, self.grid.shape[0] - 1)
+            col = random.randint(0, self.grid.shape[1] - 1)
+            if self.grid[row, col] == EMPTY:
+                return Location(row, col)
 
     # TODO: cope with negative coords (here and possibly in other places
     def can_move_to(self, target_location):
