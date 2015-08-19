@@ -3,6 +3,7 @@ import numpy as np
 from simulation.direction import Direction
 from simulation.location import Location
 
+
 class SquareType:
     def __init__(self, name, key):
         self.name = name
@@ -48,6 +49,9 @@ class WorldMap(object):
             and (0 <= target_location.col < num_cols)
             and self.grid[target_location.row, target_location.col] != OBSTACLE
         )
+
+    def get_square(self, location):
+        return self.grid[location.row, location.col]
 
     # TODO: switch to always deal in fixed coord space rather than floating origin
     def get_world_view_centred_at(self, view_location, distance_to_edge):

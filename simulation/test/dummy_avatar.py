@@ -4,7 +4,10 @@ from simulation import direction
 
 class DummyAvatarRunner(object):
     def __init__(self, initial_location, player_id):
+        # TODO: extract avatar state and state-altering methods into a new class.
+        #       The new class is to be shared between DummyAvatarRunner and AvatarRunner
         self.health = 5
+        self.score = 0
         self.location = initial_location
         self.player_id = player_id
         self.events = []

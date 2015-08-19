@@ -21,6 +21,7 @@ class AvatarRunner(object):
     def __init__(self, initial_location, initial_code, player_id, avatar_appearance):
         self.location = initial_location
         self.health = 5
+        self.score = 0
         self.events = []
         self.player_id = player_id
         self.avatar_appearance = avatar_appearance
@@ -42,7 +43,9 @@ class AvatarRunner(object):
         return next_action
 
     def die(self, respawn_location):
+        # TODO: move business logic (deciding values for health and score) from here?
         self.health = 5
+        self.score = max(0, self.score - 2)
         self.location = respawn_location
 
     def add_event(self, event):
@@ -57,7 +60,8 @@ class AvatarRunner(object):
         self.avatar = Avatar()
 
     def __repr__(self):
-        return 'Avatar(id={}, location={}, health={})'.format(self.player_id, self.location, self.health)
+        return 'Avatar(id={}, location={}, health={}, score={})'.format(self.player_id, self.location,
+                                                                        self.health, self.score)
 
 
 class AvatarAppearance:

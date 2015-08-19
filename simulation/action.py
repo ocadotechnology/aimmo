@@ -1,4 +1,5 @@
 from event import *
+import world_map as world_map_module
 
 
 class Action(object):
@@ -20,6 +21,7 @@ class MoveAction(Action):
         if world_state.world_map.can_move_to(target_location):
             avatar.add_event(MovedEvent(avatar.location, target_location))
             avatar.location = target_location
+            _on_move(avatar, world_state)
         else:
             avatar.add_event(FailedMoveEvent(avatar.location, target_location))
 
@@ -41,3 +43,9 @@ class AttackAction(Action):
                 attacked_avatar.die(world_state.world_map.get_spawn_location())
         else:
             avatar.add_event(FailedAttackEvent(target_location))
+
+
+def _on_move(avatar, world_state):
+    square_type = world_state.world_map.get_square(avatar.location)
+    if square_type == world_map_module.SCORE:
+        avatar.score += 1

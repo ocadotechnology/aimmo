@@ -3,7 +3,7 @@ import unittest
 from simulation.location import Location
 from simulation import direction
 from simulation.test.dummy_avatar import DummyAvatarRunner
-from simulation.test.maps import InfiniteMap, EmptyMap
+from simulation.test.maps import InfiniteMap, EmptyMap, ScoreOnOddColumnsMap
 from simulation.world_state import WorldState
 from simulation.action import *
 from simulation.avatar_manager import AvatarManager
@@ -35,6 +35,19 @@ class TestAction(unittest.TestCase):
         self.assertEqual(self.avatar.location, ORIGIN)
         self.assertEqual(self.avatar.events,
                          [FailedMoveEvent(ORIGIN, ABOVE_ORIGIN)])
+
+    def test_move_action_to_score_square(self):
+        world_state = WorldState(ScoreOnOddColumnsMap(), self.avatar_manager)
+        self.assertEqual(self.avatar.score, 0)
+
+        MoveAction(direction.EAST).apply(world_state, self.avatar)
+        self.assertEqual(self.avatar.score, 1)
+
+        MoveAction(direction.EAST).apply(world_state, self.avatar)
+        self.assertEqual(self.avatar.score, 1)
+
+        MoveAction(direction.EAST).apply(world_state, self.avatar)
+        self.assertEqual(self.avatar.score, 2)
 
     def test_successful_attack_action(self):
         world_state = WorldState(InfiniteMap(), self.avatar_manager)
