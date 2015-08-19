@@ -64,6 +64,18 @@ def start_game(request):
     return redirect('home')
 
 
+def _post_code_error_response(message):
+    return HttpResponse("USER_ERROR\n\n" + message)
+
+
+def _post_server_error_response(message):
+    return HttpResponse("SERVER_ERROR\n\n" + message)
+
+
+def _post_code_ok_response():
+    return HttpResponse("OK")
+
+
 @login_required
 def code(request):
     if request.method == 'POST':
@@ -72,13 +84,17 @@ def code(request):
         request.user.player.save()
         try:
             world = world_state_provider.lock_and_get_world()
+            # TODO: deal with this in a better way
+            if world is None:
+                return _post_server_error_response('Your code was saved, but the game has not started yet!')
+
             world.player_changed_code(request.user.id, request.user.player.code)
         except UserCodeException as ex:
-            return HttpResponse("ERROR\n\n" + ex.to_user_string())
+            return _post_code_error_response(ex.to_user_string())
         finally:
             world_state_provider.release_lock()
         
-        return HttpResponse("OK")
+        return _post_code_ok_response()
     else:
         logger.info('GET ' + str(request.GET))
         return HttpResponse(request.user.player.code)
