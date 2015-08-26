@@ -1,5 +1,6 @@
 import time
 from threading import Lock
+from simulation import world_map
 
 
 class WorldStateProvider:
@@ -27,18 +28,20 @@ class TurnManager(object):
     def __init__(self, world_state):
         world_state_provider.set_world(world_state)
 
-    def _update_environment(self):
-        pass
+    def _update_environment(self, world_state):
+        num_avatars = len(world_state.avatar_manager.avatarsById)
+        world_state.world_map.update_score_locations(num_avatars)
 
     def run_turn(self):
         try:
             world_state = world_state_provider.lock_and_get_world()
 
-            self._update_environment()
-
             actions = [(p, p.handle_turn(world_state.get_state_for(p))) for p in world_state.avatar_manager.avatarsById.values()]
             for avatar, action in actions:
                 action.apply(world_state, avatar)
+
+            self._update_environment(world_state)
+
         finally:
             world_state_provider.release_lock()
 

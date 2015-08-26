@@ -3,14 +3,12 @@ import numpy as np
 from simulation.direction import Direction
 from simulation.location import Location
 
-class SquareType:
-    def __init__(self, name, key):
-        self.name = name
-        self.key = key
 
-EMPTY = SquareType("empty", 0)
-OBSTACLE = SquareType("obstacle", 1)
-SCORE = SquareType("score", 2)
+class Cell(object):
+    def __init__(self, location, can_move_to=True, generates_score=False):
+        self.location = location
+        self.can_move_to = can_move_to
+        self.generates_score = generates_score
 
 
 def generate_map(height, width, obstacle_ratio, scoring_square_ratio):
@@ -19,11 +17,11 @@ def generate_map(height, width, obstacle_ratio, scoring_square_ratio):
     for y in xrange(height):
         for x in xrange(width):
             if random.random() < obstacle_ratio:
-                matrix_of_level[y, x] = OBSTACLE
+                matrix_of_level[y, x] = Cell(Location(x, y), can_move_to=False)
             elif random.random() < scoring_square_ratio:
-                matrix_of_level[y, x] = SCORE
+                matrix_of_level[y, x] = Cell(Location(x, y), can_move_to=True, generates_score=True)
             else:
-                matrix_of_level[y, x] = EMPTY
+                matrix_of_level[y, x] = Cell(Location(x, y))
 
     return WorldMap(matrix_of_level)
 
@@ -33,20 +31,23 @@ class WorldMap(object):
     def __init__(self, grid):
         self.grid = grid
 
+    def update_score_locations(self, num_avatars):
+        pass
+
     def get_spawn_location(self):
         while True:
             row = random.randint(0, self.grid.shape[0] - 1)
             col = random.randint(0, self.grid.shape[1] - 1)
-            if self.grid[row, col] == EMPTY:
+            if self.grid[row, col].can_move_to:
                 return Location(row, col)
 
-    # TODO: cope with negative coords (here and possibly in other places
+    # TODO: cope with negative coords (here and possibly in other places)
     def can_move_to(self, target_location):
         num_rows, num_cols = self.grid.shape
         return (
             (0 <= target_location.row < num_rows)
             and (0 <= target_location.col < num_cols)
-            and self.grid[target_location.row, target_location.col] != OBSTACLE
+            and self.grid[target_location.row, target_location.col].can_move_to
         )
 
     # TODO: switch to always deal in fixed coord space rather than floating origin

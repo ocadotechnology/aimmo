@@ -4,6 +4,13 @@ from simulation.turn_manager import world_state_provider
 
 # TODO: rename to something more djangoey or merge with views.py
 
+def to_cell_type(cell):
+    if not cell.can_move_to:
+        return 1
+    if cell.generates_score:
+        return 2
+    return 0
+
 
 def get_world_parameters(request):
     world = world_state_provider.lock_and_get_world()
@@ -11,7 +18,7 @@ def get_world_parameters(request):
         response = JsonResponse({
             "width": 15,
             "height": 15,
-            "layout": [[x.key for x in y] for y in world.world_map.grid.tolist()]
+            "layout": [[to_cell_type(x) for x in y] for y in world.world_map.grid.tolist()]
         }, safe=False)
     finally:
         world_state_provider.release_lock()
