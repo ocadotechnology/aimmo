@@ -1,5 +1,4 @@
 import random
-import numpy as np
 from simulation.direction import Direction
 from simulation.location import Location
 
@@ -12,84 +11,62 @@ class Cell(object):
 
 
 def generate_map(height, width, obstacle_ratio, scoring_square_ratio):
-    matrix_of_level = np.empty((height, width), dtype=object)
+    grid = [[None for x in xrange(width)] for y in xrange(height)]
 
-    for y in xrange(height):
-        for x in xrange(width):
+    for x in xrange(width):
+        for y in xrange(height):
             if random.random() < obstacle_ratio:
-                matrix_of_level[y, x] = Cell(Location(x, y), can_move_to=False)
+                grid[x][y] = Cell(Location(x, y), can_move_to=False)
             elif random.random() < scoring_square_ratio:
-                matrix_of_level[y, x] = Cell(Location(x, y), can_move_to=True, generates_score=True)
+                grid[x][y] = Cell(Location(x, y), can_move_to=True, generates_score=True)
             else:
-                matrix_of_level[y, x] = Cell(Location(x, y))
+                grid[x][y] = Cell(Location(x, y))
 
-    return WorldMap(matrix_of_level)
+    return WorldMap(grid)
 
 
-# TODO: investigate switch from numpy to 2d lists to avoid making users know numpy and having to install it
 class WorldMap(object):
     def __init__(self, grid):
         self.grid = grid
+
+    @property
+    def all_cells(self):
+        return [cell for sublist in self.grid for cell in sublist]
+
+    def is_on_map(self, location):
+        num_cols = len(self.grid)
+        num_rows = len(self.grid[0])
+        return (0 <= location.y < num_rows) and (0 <= location.x < num_cols)
+
+    def get_cell(self, location):
+        cell = self.grid[location.x][location.y]
+        assert cell.location == location, 'location lookup mismatch: arg={}, found={}'.format(location, cell.location)
+        return cell
 
     def update_score_locations(self, num_avatars):
         pass
 
     def get_spawn_location(self):
-        while True:
-            row = random.randint(0, self.grid.shape[0] - 1)
-            col = random.randint(0, self.grid.shape[1] - 1)
-            if self.grid[row, col].can_move_to:
-                return Location(row, col)
+        return random.choice(filter(lambda cell: cell.can_move_to and not cell.generates_score, self.all_cells)).location
 
     # TODO: cope with negative coords (here and possibly in other places)
     def can_move_to(self, target_location):
-        num_rows, num_cols = self.grid.shape
-        return (
-            (0 <= target_location.row < num_rows)
-            and (0 <= target_location.col < num_cols)
-            and self.grid[target_location.row, target_location.col].can_move_to
-        )
+        return self.is_on_map(target_location) and self.get_cell(target_location).can_move_to
 
     # TODO: switch to always deal in fixed coord space rather than floating origin
+    # FIXME: make this work with list of lists instead of numpy
+    # FIXME: make this work with x and y instead of row and col
     def get_world_view_centred_at(self, view_location, distance_to_edge):
-        """
-                       world map = self.grid
-        +-----------------------------------------------+
-        |                                               |
-        |                                               |
-        |                                               |
-        |                + view_map_corner              |
-        |                |                              |
-        |                v                              |
-        |                     view map                  |   |
-        |                +---------------+              |   | increasing
-        |                |               |              |   |   rows
-        |                |               |              |   |
-        |                |       X       |              |   v
-        |                |               |              |
-        |                |               |              |
-        |                +---------------+              |
-        |                                               |
-        |                                               |
-        |                                               |
-        |                                               |
-        |                                               |
-        +-----------------------------------------------+
-
-                     -------------------->
-                      increasing columns
-
-        """
         num_grid_rows, num_grid_cols = self.grid.shape
         view_diameter = 2 * distance_to_edge + 1
 
         view_map_corner = view_location - Direction(distance_to_edge, distance_to_edge)
 
         # Non-cropped indices
-        row_start = view_map_corner.row
+        row_start = view_map_corner.y
         row_exclusive_end = row_start + view_diameter
 
-        col_start = view_map_corner.col
+        col_start = view_map_corner.x
         col_exclusive_end = col_start + view_diameter
 
         # Cropped indices
@@ -112,9 +89,9 @@ class WorldMap(object):
         num_pad_cols_before = cropped_col_start - col_start
         num_pad_cols_after = col_exclusive_end - cropped_col_exclusive_end
 
-        padded_view_map = np.pad(cropped_view_map,
-                                 ((num_pad_rows_before, num_pad_rows_after), (num_pad_cols_before, num_pad_cols_after)),
-                                 mode='constant', constant_values=-1
-                                 )
-
-        return padded_view_map
+        # padded_view_map = np.pad(cropped_view_map,
+        #                          ((num_pad_rows_before, num_pad_rows_after), (num_pad_cols_before, num_pad_cols_after)),
+        #                          mode='constant', constant_values=-1
+        #                          )
+        #
+        # return padded_view_map

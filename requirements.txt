@@ -1,2 +1,1 @@
-numpy
 django==1.8.3

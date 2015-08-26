@@ -1,17 +1,17 @@
 # TODO: investigate using x and y
 class Location(object):
-    def __init__(self, row, col):
-        self.row = row
-        self.col = col
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
 
     def __add__(self, direction):
-        return Location(self.row + direction.row, self.col + direction.col)
+        return Location(self.x + direction.x, self.y + direction.y)
 
     def __sub__(self, direction):
-        return Location(self.row - direction.row, self.col - direction.col)
+        return Location(self.x - direction.x, self.y - direction.y)
 
     def __repr__(self):
-        return 'Location(row={}, col={})'.format(self.row, self.col)
+        return 'Location(x={}, y={})'.format(self.x, self.y)
 
     def __eq__(self, other):
-        return (self.row, self.col) == (other.row, other.col)
+        return self.x == other.x and self.y == other.y

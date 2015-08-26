@@ -13,13 +13,13 @@ from simulation.test.dummy_avatar import DummyAvatarRunner
 from simulation.avatar import AvatarAppearance
 from simulation.world_state import WorldState
 
-ORIGIN = Location(row=0, col=0)
+ORIGIN = Location(x=0, y=0)
 
-RIGHT_OF_ORIGIN = Location(row=0, col=1)
-FIVE_RIGHT_OF_ORIGIN = Location(row=0, col=5)
+RIGHT_OF_ORIGIN = Location(x=1, y=0)
+FIVE_RIGHT_OF_ORIGIN = Location(x=5, y=0)
 
-ABOVE_ORIGIN = Location(row=-1, col=0)
-FIVE_RIGHT_OF_ORIGIN_AND_ONE_ABOVE = Location(row=-1, col=5)
+ABOVE_ORIGIN = Location(x=0, y=1)
+FIVE_RIGHT_OF_ORIGIN_AND_ONE_ABOVE = Location(x=5, y=1)
 
 
 class TestTurnManager(unittest.TestCase):

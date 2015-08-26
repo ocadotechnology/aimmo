@@ -15,10 +15,15 @@ def to_cell_type(cell):
 def get_world_parameters(request):
     world = world_state_provider.lock_and_get_world()
     try:
+        num_cols = len(world.world_map.grid)
+        num_rows = len(world.world_map.grid[0])
+        grid = [[None for x in xrange(num_cols)] for y in xrange(num_rows)]
+        for cell in world.world_map.all_cells:
+            grid[cell.location.x][cell.location.y] = to_cell_type(cell)
         response = JsonResponse({
             "width": 15,
             "height": 15,
-            "layout": [[to_cell_type(x) for x in y] for y in world.world_map.grid.tolist()]
+            "layout": grid,
         }, safe=False)
     finally:
         world_state_provider.release_lock()
@@ -30,8 +35,9 @@ def player_dict(avatar):
     colour = "#%06x" % (avatar.player_id * 929)
     return {
         'id': avatar.player_id,
-        'x': avatar.location.col,
-        'y': avatar.location.row,
+        'x': avatar.location.x,
+        'y': avatar.location.y,
+        'health': avatar.health,
         'rotation': 0,
         "colours": {
             "bodyStroke": "#0ff",
