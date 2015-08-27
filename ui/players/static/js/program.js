@@ -48,11 +48,14 @@ $( document ).ready(function() {
             success: function(data) {
                 $('#alerts').hide();
 
-                ERROR_RESPONSE = "ERROR\n\n";
+                const USER_ERROR_RESPONSE = "USER_ERROR\n\n";
+                const SERVER_ERROR_RESPONSE = "SERVER_ERROR\n\n";
                 if (data == "OK") {
                   // do nothing
-                } else if (startsWith(data, ERROR_RESPONSE)) {
-                    showAlert('Your code has some problems:<br/><br/>' + data.slice(ERROR_RESPONSE.length, data.length));
+                } else if (startsWith(data, USER_ERROR_RESPONSE)) {
+                    showAlert('Your code has some problems:<br/><br/>' + data.slice(USER_ERROR_RESPONSE.length, data.length));
+                } else if (startsWith(data, SERVER_ERROR_RESPONSE)) {
+                    showAlert(data.slice(SERVER_ERROR_RESPONSE.length, data.length));
                 } else {
                     showAlert('Unknown response from server');
                 }
