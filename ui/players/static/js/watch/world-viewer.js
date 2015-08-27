@@ -77,14 +77,16 @@ const VIEWER = Object.create(
             playerEyeRight.attr("fill", playerData.colours.eyeFill);
             playerEyeRight.attr("stroke", playerData.colours.eyeStroke);
 
-            var playerText = this.paper.text(playerX, playerY + 20, playerData.health + 'hp, (' + playerData.x + ', ' + playerData.y + ')');
+            var playerTextAbove = this.paper.text(playerX, playerY - 20, 'Score: ' + playerData.score);
+            var playerTextBelow = this.paper.text(playerX, playerY + 20, playerData.health + 'hp, (' + playerData.x + ', ' + playerData.y + ')');
 
             var player = this.paper.set();
             player.push(
                 playerBody,
                 playerEyeLeft,
                 playerEyeRight,
-                playerText
+                playerTextAbove,
+                playerTextBelow
             );
             return player;
         },

@@ -38,6 +38,7 @@ def player_dict(avatar):
         'x': avatar.location.x,
         'y': avatar.location.y,
         'health': avatar.health,
+        'score': avatar.score,
         'rotation': 0,
         "colours": {
             "bodyStroke": "#0ff",
