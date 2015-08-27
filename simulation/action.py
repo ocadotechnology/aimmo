@@ -9,7 +9,7 @@ class Action(object):
 
 class WaitAction(Action):
     def apply(self, world_state, avatar):
-        pass
+        _add_score_from_cell_if_needed(avatar, world_state)
 
 
 class MoveAction(Action):
@@ -21,9 +21,9 @@ class MoveAction(Action):
         if world_state.world_map.can_move_to(target_location):
             avatar.add_event(MovedEvent(avatar.location, target_location))
             avatar.location = target_location
-            _on_move(avatar, world_state)
         else:
             avatar.add_event(FailedMoveEvent(avatar.location, target_location))
+        _add_score_from_cell_if_needed(avatar, world_state)
 
 
 class AttackAction(Action):
@@ -43,9 +43,11 @@ class AttackAction(Action):
                 attacked_avatar.die(world_state.world_map.get_spawn_location())
         else:
             avatar.add_event(FailedAttackEvent(target_location))
+        _add_score_from_cell_if_needed(avatar, world_state)
 
 
-def _on_move(avatar, world_state):
-    square_type = world_state.world_map.get_square(avatar.location)
-    if square_type == world_map_module.SCORE:
+# TODO: investigate moving this to after an action is handled - it is not specific to an action
+def _add_score_from_cell_if_needed(avatar, world_state):
+    cell = world_state.world_map.get_cell(avatar.location)
+    if cell.generates_score:
         avatar.score += 1
