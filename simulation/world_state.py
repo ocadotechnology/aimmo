@@ -11,5 +11,7 @@ class WorldState(object):
 
     def player_changed_code(self, player_id, code):
         avatar = self.avatar_manager.avatarsById.get(player_id)
-        if not avatar:
+        if avatar:
+            avatar.set_code(code)
+        else:
             self.avatar_manager.spawn(player_id, code, self.world_map.get_spawn_location())

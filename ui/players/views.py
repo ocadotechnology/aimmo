@@ -79,7 +79,6 @@ def _post_code_ok_response():
 @login_required
 def code(request):
     if request.method == 'POST':
-        logger.info('POST ' + str(request.POST))
         request.user.player.code = request.POST['code']
         request.user.player.save()
         try:
@@ -96,5 +95,4 @@ def code(request):
         
         return _post_code_ok_response()
     else:
-        logger.info('GET ' + str(request.GET))
         return HttpResponse(request.user.player.code)
