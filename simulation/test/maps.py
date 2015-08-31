@@ -1,4 +1,5 @@
 from simulation import world_map
+from simulation.location import Location
 
 
 class InfiniteMap(world_map.WorldMap):
@@ -7,6 +8,9 @@ class InfiniteMap(world_map.WorldMap):
 
     def can_move_to(self, target_location):
         return True
+
+    def generate_all_cells(self):
+        yield world_map.Cell(Location(0, 0))
 
     def get_cell(self, location):
         return world_map.Cell(location)
@@ -17,6 +21,9 @@ class EmptyMap(world_map.WorldMap):
     
     def can_move_to(self, target_location):
         return False
+
+    def generate_all_cells(self):
+        return iter(())
 
     def get_cell(self, location):
         return world_map.Cell(location)

@@ -50,7 +50,7 @@ def register(request):
 
 def run_game():
     print("Running game...")
-    my_map = world_map.generate_map(15, 15, 0.1, 0.1)
+    my_map = world_map.generate_map(15, 15, 0.1)
     player_manager = AvatarManager([])
     world_state = WorldState(my_map, player_manager)
     turn_manager = TurnManager(world_state)

@@ -1,6 +1,11 @@
 import random
+import math
 from simulation.direction import Direction
 from simulation.location import Location
+
+
+TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR = 0.5  # TODO: extract to settings
+SCORE_DESPAWN_CHANCE = 0.02  # TODO: extract to settings
 
 
 class Cell(object):
@@ -10,15 +15,14 @@ class Cell(object):
         self.generates_score = generates_score
 
 
-def generate_map(height, width, obstacle_ratio, scoring_square_ratio):
+def generate_map(height, width, obstacle_ratio):
     grid = [[None for x in xrange(width)] for y in xrange(height)]
 
+    # TODO: ensure all cells that an avatar can_move_to are connected (no areas of the map are cut off from others)
     for x in xrange(width):
         for y in xrange(height):
             if random.random() < obstacle_ratio:
                 grid[x][y] = Cell(Location(x, y), can_move_to=False)
-            elif random.random() < scoring_square_ratio:
-                grid[x][y] = Cell(Location(x, y), can_move_to=True, generates_score=True)
             else:
                 grid[x][y] = Cell(Location(x, y))
 
@@ -29,9 +33,18 @@ class WorldMap(object):
     def __init__(self, grid):
         self.grid = grid
 
+    def generate_all_cells(self):
+        return (cell for sublist in self.grid for cell in sublist)
+
     @property
     def all_cells(self):
-        return [cell for sublist in self.grid for cell in sublist]
+        return list(self.generate_all_cells())
+
+    def generate_score_cells(self):
+        return (c for c in self.generate_all_cells() if c.generates_score)
+
+    def generate_occupiable_non_score_cells(self):
+        return (c for c in self.generate_all_cells() if c.can_move_to and not c.generates_score)
 
     def is_on_map(self, location):
         num_cols = len(self.grid)
@@ -44,10 +57,19 @@ class WorldMap(object):
         return cell
 
     def update_score_locations(self, num_avatars):
-        pass
+        for cell in self.generate_score_cells():
+            if random.random() < SCORE_DESPAWN_CHANCE:
+                cell.generates_score = False
+
+        new_num_score_locations = len(list(self.generate_score_cells()))
+        target_num_score_locations = int(math.ceil(num_avatars * TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR))
+        num_score_locations_to_add = target_num_score_locations - new_num_score_locations
+        if num_score_locations_to_add > 0:
+            for cell in random.sample(list(self.generate_occupiable_non_score_cells()), num_score_locations_to_add):
+                cell.generates_score = True
 
     def get_spawn_location(self):
-        return random.choice(filter(lambda cell: cell.can_move_to and not cell.generates_score, self.all_cells)).location
+        return random.choice(list(self.generate_occupiable_non_score_cells())).location
 
     # TODO: cope with negative coords (here and possibly in other places)
     def can_move_to(self, target_location):

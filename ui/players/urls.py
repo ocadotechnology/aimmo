@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 
 from players import views
-from players import api_watch
+from players import watch_views
 
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='players/home.html'), name='home'),
@@ -18,6 +18,5 @@ urlpatterns = [
     url(r'^statistics/$', TemplateView.as_view(template_name='players/statistics.html'), name='statistics'),
 
     url(r'^api/code/$', views.code, name='code'),
-    url(r'^api/watch/world$', api_watch.get_world_parameters, name='watch_api_world'),
-    url(r'^api/watch/state$', api_watch.get_world_state, name='watch_api_state'),
+    url(r'^api/watch/state$', watch_views.get_world_state, name='get_world_state'),
 ]

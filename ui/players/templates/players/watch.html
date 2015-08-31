@@ -1,55 +1,15 @@
 {% extends 'players/base.html' %}
 
-{% block content %}
-<span id="watch-world-canvas"></span>
-{% endblock %}
-
-{% block additionalHeaderStyles %}
+{% block styles %}
 <link rel="stylesheet" type="text/css" href="/static/css/watch.css"/>
 {% endblock %}
 
-{% block additionalHeaderScripts %}
+{% block scripts %}
 <script type="text/javascript" src="/static/js/lib/raphael-min.js"></script>
 <script type="text/javascript" src="/static/js/watch/world-viewer.js"></script>
-<script type="text/javascript" src="/static/js/watch/world-model.js"></script>
 <script type="text/javascript" src="/static/js/watch/world-controls.js"></script>
 {% endblock %}
 
-{% block scripts %}
-<script type="text/javascript">
-    VIEWER.init(document.getElementById("watch-world-canvas"), WORLD, APPEARANCE);
-    CONTROLS.init(WORLD, VIEWER);
-
-    function refreshWorld() {
-        console.log("Refreshing world...");
-        $.ajax("/api/watch/world", {
-            success : function(data) {
-                CONTROLS.initialiseWorld(data.width, data.height, data.layout);
-                console.log("World refresh successful.");
-
-                console.log("Refreshing state...");
-                refreshState()
-            },
-            error : function(jqXHR, textStatus, errorThrown) {
-                console.error("World refresh failed.", jqXHR, textStatus, errorThrown);
-                setTimeout(refreshWorld, 500);
-            }
-        });
-    }
-
-    function refreshState() {
-        $.ajax("/api/watch/state", {
-            success : function(data) {
-                CONTROLS.setState(data.players, data.items);
-                setTimeout(refreshState, 100);
-            },
-            error : function(jqXHR, textStatus, errorThrown) {
-                console.error("State refresh failed.", jqXHR, textStatus, errorThrown);
-                setTimeout(refreshState, 500);
-            }
-        });
-    }
-
-    refreshWorld();
-</script>
+{% block content %}
+<span id="watch-world-canvas"></span>
 {% endblock %}
