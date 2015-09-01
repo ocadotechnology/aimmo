@@ -53,6 +53,8 @@ class WorldMap(object):
         return (0 <= location.y < num_rows) and (0 <= location.x < num_cols)
 
     def get_cell(self, location):
+        if not self.is_on_map(location):
+            return None
         cell = self.grid[location.x][location.y]
         assert cell.location == location, 'location lookup mismatch: arg={}, found={}'.format(location, cell.location)
         return cell
