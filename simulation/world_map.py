@@ -1,6 +1,6 @@
 import random
 import math
-from simulation.direction import Direction
+from simulation.direction import Direction, ALL_DIRECTIONS
 from simulation.location import Location
 
 
@@ -15,19 +15,70 @@ class Cell(object):
         self.generates_score = generates_score
         self.avatar = None
 
+    def __repr__(self):
+        return 'Cell({} h={} s={} a={})'.format(self.location, self.habitable, self.generates_score, self.avatar)
+
+    def __eq__(self, other):
+        return self.location == other.location
+
+
+def get_shortest_path_between(cell1, cell2, m):
+    branches = [[cell1]]
+    visited_cells = []
+
+    while True:
+        # TODO: avoid two lookups by using a priority queue and popping
+        branch = min(branches, key=lambda b: len(b))
+        branches.remove(branch)
+
+        for cell in get_adjacent_habitable_cells(branch[-1], m):
+            if cell in visited_cells:
+                continue
+
+            visited_cells.append(cell)
+
+            new_branch = list(branch)
+            new_branch.append(cell)
+
+            if cell == cell2:
+                return new_branch
+
+            branches.append(new_branch)
+
+        if not branches:
+            return None
+
+
+def get_adjacent_habitable_cells(cell, m):
+    return [c for c in (m.get_cell(cell.location + d) for d in ALL_DIRECTIONS) if c and c.habitable]
+
+
+def bisects_map(cell, m):
+    adjacent_cells = get_adjacent_habitable_cells(cell, m)
+    if len(adjacent_cells) < 2:
+        return False
+
+    last_cell = adjacent_cells[-1]
+    for c in adjacent_cells[:-1]:
+        if not get_shortest_path_between(c, last_cell, m):
+            return True
+
+    return False
+
 
 def generate_map(height, width, obstacle_ratio):
-    grid = [[None for x in xrange(width)] for y in xrange(height)]
+    grid = [[Cell(Location(x, y)) for y in xrange(height)] for x in xrange(width)]
+    m = WorldMap(grid)
 
-    # TODO: ensure all cells that an avatar can_move_to are connected (no areas of the map are cut off from others)
     for x in xrange(width):
         for y in xrange(height):
             if random.random() < obstacle_ratio:
-                grid[x][y] = Cell(Location(x, y), habitable=False)
-            else:
-                grid[x][y] = Cell(Location(x, y))
+                cell = grid[x][y]
+                cell.habitable = False
+                if bisects_map(cell, m):
+                    cell.habitable = True
 
-    return WorldMap(grid)
+    return m
 
 
 class WorldMap(object):
@@ -124,3 +175,6 @@ class WorldMap(object):
         #                          )
         #
         # return padded_view_map
+
+    def __repr__(self):
+        return repr(self.grid)

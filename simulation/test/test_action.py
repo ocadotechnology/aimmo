@@ -5,6 +5,7 @@ from simulation import direction
 from simulation.test.dummy_avatar import DummyAvatarRunner
 from simulation.test.maps import InfiniteMap, EmptyMap, ScoreOnOddColumnsMap
 from simulation.world_state import WorldState
+from simulation import world_map
 from simulation.action import *
 from simulation.avatar_manager import AvatarManager
 
@@ -48,7 +49,10 @@ class TestAction(unittest.TestCase):
         self.assertEqual(self.avatar.score, 2)
 
     def test_successful_attack_action(self):
-        world_state = WorldState(InfiniteMap(), self.avatar_manager)
+        m = world_map.generate_map(2, 2, 0)
+        for a in self.avatar_manager.avatars:
+            m.get_cell(a.location).avatar = a
+        world_state = WorldState(m, self.avatar_manager)
         AttackAction(direction.EAST).apply(world_state, self.avatar)
 
         target_location = EAST_OF_ORIGIN
