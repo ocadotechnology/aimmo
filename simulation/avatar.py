@@ -43,7 +43,7 @@ class AvatarRunner(object):
         return next_action
 
     def die(self, respawn_location):
-        # TODO: move business logic (deciding values for health and score) from here?
+        # TODO: extract settings for health and score loss on death
         self.health = 5
         self.score = max(0, self.score - 2)
         self.location = respawn_location
