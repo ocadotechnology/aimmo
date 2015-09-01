@@ -9,10 +9,11 @@ SCORE_DESPAWN_CHANCE = 0.02  # TODO: extract to settings
 
 
 class Cell(object):
-    def __init__(self, location, can_move_to=True, generates_score=False):
+    def __init__(self, location, habitable=True, generates_score=False):
         self.location = location
-        self.can_move_to = can_move_to
+        self.habitable = habitable
         self.generates_score = generates_score
+        self.avatar = None
 
 
 def generate_map(height, width, obstacle_ratio):
@@ -22,7 +23,7 @@ def generate_map(height, width, obstacle_ratio):
     for x in xrange(width):
         for y in xrange(height):
             if random.random() < obstacle_ratio:
-                grid[x][y] = Cell(Location(x, y), can_move_to=False)
+                grid[x][y] = Cell(Location(x, y), habitable=False)
             else:
                 grid[x][y] = Cell(Location(x, y))
 
@@ -44,7 +45,7 @@ class WorldMap(object):
         return (c for c in self.generate_all_cells() if c.generates_score)
 
     def generate_occupiable_non_score_cells(self):
-        return (c for c in self.generate_all_cells() if c.can_move_to and not c.generates_score)
+        return (c for c in self.generate_all_cells() if c.habitable and not c.generates_score)
 
     def is_on_map(self, location):
         num_cols = len(self.grid)
@@ -69,11 +70,15 @@ class WorldMap(object):
                 cell.generates_score = True
 
     def get_spawn_location(self):
-        return random.choice(list(self.generate_occupiable_non_score_cells())).location
+        return random.choice([c for c in self.generate_all_cells() if not c.generates_score and self.can_move_to(c.location)]).location
 
     # TODO: cope with negative coords (here and possibly in other places)
     def can_move_to(self, target_location):
-        return self.is_on_map(target_location) and self.get_cell(target_location).can_move_to
+        if not self.is_on_map(target_location):
+            return False
+
+        cell = self.get_cell(target_location)
+        return cell.habitable and not cell.avatar
 
     # TODO: switch to always deal in fixed coord space rather than floating origin
     # FIXME: make this work with list of lists instead of numpy

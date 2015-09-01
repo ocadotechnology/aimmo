@@ -34,4 +34,4 @@ class ScoreOnOddColumnsMap(InfiniteMap):
         if location.x % 2 == 0:
             return world_map.Cell(location)
         else:
-            return world_map.Cell(location, can_move_to=True, generates_score=True)
+            return world_map.Cell(location, habitable=True, generates_score=True)

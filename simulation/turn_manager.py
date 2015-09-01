@@ -36,9 +36,8 @@ class TurnManager(object):
         try:
             world_state = world_state_provider.lock_and_get_world()
 
-            actions = [(p, p.handle_turn(world_state.get_state_for(p))) for p in world_state.avatar_manager.avatarsById.values()]
-            for avatar, action in actions:
-                action.apply(world_state, avatar)
+            for avatar in world_state.avatar_manager.avatarsById.values():
+                avatar.handle_turn(world_state.get_state_for(avatar)).apply(world_state, avatar)
 
             self._update_environment(world_state)
 

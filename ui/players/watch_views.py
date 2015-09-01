@@ -3,7 +3,7 @@ from simulation.turn_manager import world_state_provider
 
 
 def to_cell_type(cell):
-    if not cell.can_move_to:
+    if not cell.habitable:
         return 1
     if cell.generates_score:
         return 2

@@ -14,4 +14,6 @@ class WorldState(object):
         if avatar:
             avatar.set_code(code)
         else:
-            self.avatar_manager.spawn(player_id, code, self.world_map.get_spawn_location())
+            spawn_location = self.world_map.get_spawn_location()
+            avatar = self.avatar_manager.spawn(player_id, code, spawn_location)
+            self.world_map.get_cell(spawn_location).avatar = avatar

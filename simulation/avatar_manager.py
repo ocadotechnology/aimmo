@@ -8,7 +8,9 @@ class AvatarManager(object):
         self.avatarsById = {p.player_id: p for p in initial_avatars}
 
     def spawn(self, player_id, code, location):
-        self.avatarsById[player_id] = AvatarRunner(location, code, player_id, AvatarAppearance("#000", "#ddd", "#777", "#fff"))
+        avatar = AvatarRunner(location, code, player_id, AvatarAppearance("#000", "#ddd", "#777", "#fff"))
+        self.avatarsById[player_id] = avatar
+        return avatar
 
     @property
     def avatars(self):
