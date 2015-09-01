@@ -15,6 +15,3 @@ class AvatarManager(object):
     @property
     def avatars(self):
         return self.avatarsById.viewvalues()
-
-    def get_avatar_at(self, location):
-        return next((a for a in self.avatars if a.location == location), None)

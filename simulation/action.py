@@ -34,7 +34,7 @@ class AttackAction(Action):
 
     def apply(self, world_state, avatar):
         target_location = avatar.location + self.direction
-        attacked_avatar = world_state.avatar_manager.get_avatar_at(target_location)
+        attacked_avatar = world_state.world_map.get_cell(target_location).avatar
         if attacked_avatar:
             damage_dealt = 1
             avatar.add_event(PerformedAttackEvent(attacked_avatar, target_location, damage_dealt))
