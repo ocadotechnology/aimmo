@@ -30,7 +30,7 @@ class TurnManager(object):
 
     def _update_environment(self, world_state):
         num_avatars = len(world_state.avatar_manager.avatarsById)
-        world_state.world_map.update_score_locations(num_avatars)
+        world_state.world_map.update(num_avatars)
 
     def run_turn(self):
         try:

@@ -22,7 +22,12 @@ class MoveAction(Action):
             avatar.add_event(MovedEvent(avatar.location, target_location))
             world_state.world_map.get_cell(avatar.location).avatar = None
             avatar.location = target_location
-            world_state.world_map.get_cell(target_location).avatar = avatar
+            new_cell = world_state.world_map.get_cell(target_location)
+            new_cell.avatar = avatar
+            if new_cell.pickup:
+                # TODO: potentially extract pickup logic into pickup when adding multiple types
+                avatar.health = min(10, avatar.health + new_cell.pickup.health_restored)
+                new_cell.pickup = None
         else:
             avatar.add_event(FailedMoveEvent(avatar.location, target_location))
         _add_score_from_cell_if_needed(avatar, world_state)
@@ -42,7 +47,7 @@ class AttackAction(Action):
             attacked_avatar.health -= damage_dealt
             print('{} dealt {} damage to {}'.format(avatar, damage_dealt, attacked_avatar))
             if attacked_avatar.health <= 0:
-                respawn_location = world_state.world_map.get_spawn_location()
+                respawn_location = world_state.world_map.get_random_spawn_location()
                 attacked_avatar.die(respawn_location)
                 world_state.world_map.get_cell(target_location).avatar = None
                 world_state.world_map.get_cell(respawn_location).avatar = attacked_avatar

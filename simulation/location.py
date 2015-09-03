@@ -1,4 +1,3 @@
-# TODO: investigate using x and y
 class Location(object):
     def __init__(self, x, y):
         self.x = x
@@ -11,7 +10,7 @@ class Location(object):
         return Location(self.x - direction.x, self.y - direction.y)
 
     def __repr__(self):
-        return 'Location(x={}, y={})'.format(self.x, self.y)
+        return 'Location({}, {})'.format(self.x, self.y)
 
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y

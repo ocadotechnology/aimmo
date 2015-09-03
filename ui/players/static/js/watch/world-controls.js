@@ -12,9 +12,10 @@ const CONTROLS = Object.create({
 
         this.viewer.reDrawWorldLayout();
     },
-    setState: function (players, scoreLocations) {
+    setState: function (players, scoreLocations, pickupLocations) {
         this.world.players = players;
-        this.world.scoreLocations = scoreLocations;
+        this.world.scoreLocations = scoreLocations; //TODO: use instead of relying on world.layout (and remove score from there)
+        this.world.pickupLocations = pickupLocations;
 
         this.viewer.reDrawState();
     }
@@ -26,7 +27,7 @@ function refreshState() {
             if(data.map_changed){
                 CONTROLS.initialiseWorld(data.width, data.height, data.layout);
             }
-            CONTROLS.setState(data.players, data.score_locations);
+            CONTROLS.setState(data.players, data.score_locations, data.pickup_locations);
             setTimeout(refreshState, 200);
         },
         error : function(jqXHR, textStatus, errorThrown) {

@@ -11,7 +11,8 @@ const APPEARANCE = Object.create({
 
 const VIEWER = Object.create({
     drawnElements: {
-        drawnPlayers: [],
+        players: [],
+        pickups: []
     },
 
     init: function(canvasDomElement, world, appearance) {
@@ -27,7 +28,6 @@ const VIEWER = Object.create({
     reDrawWorldLayout: function() {
         this.paper.clear();
         this.paper.setViewBox(0, 0, this.world.width * this.appearance.cellSize, this.world.height * this.appearance.cellSize, true);
-        this.drawnPlayers = [];
 
         for (var x = 0; x < this.world.width; x++) {
             for (var y = 0; y < this.world.height; y++) {
@@ -88,20 +88,40 @@ const VIEWER = Object.create({
         return player;
     },
 
-    reDrawPlayers: function() {
-        while (this.drawnElements.drawnPlayers.length > 0) {
-            var elementToRemove = this.drawnElements.drawnPlayers.pop();
+    clearDrawnElements: function(elements) {
+        while (elements.length > 0) {
+            var elementToRemove = elements.pop();
             elementToRemove.remove();
         }
+    },
+
+    reDrawPlayers: function() {
+        this.clearDrawnElements(this.drawnElements.players);
 
         for (var playerKey in this.world.players) {
-            var playerData = this.world.players[playerKey];
-            var playerElement = this.constructNewPlayerElement(playerData);
-            this.drawnElements.drawnPlayers.push(playerElement);
+            if (this.world.players.hasOwnProperty(playerKey)) {
+                var playerData = this.world.players[playerKey];
+                var playerElement = this.constructNewPlayerElement(playerData);
+                this.drawnElements.players.push(playerElement);
+            }
+        }
+    },
+
+    reDrawPickups: function() {
+        this.clearDrawnElements(this.drawnElements.pickups);
+
+        for (var i = 0; i < this.world.pickupLocations.length; i++) {
+            var pickupLocation = this.world.pickupLocations[i];
+            var x = (0.5 + pickupLocation[0]) * this.appearance.cellSize;
+            var y = (0.5 + this.invertY(pickupLocation[1])) * this.appearance.cellSize;
+            var radius = this.appearance.cellSize * 0.5 * 0.75;
+            var pickup = this.paper.circle(x, y, radius);
+            this.drawnElements.pickups.push(pickup);
         }
     },
 
     reDrawState: function() {
+        this.reDrawPickups();
         this.reDrawPlayers();
     }
 });

@@ -1,5 +1,8 @@
 from django.http import JsonResponse
+from simulation.location import Location
 from simulation.turn_manager import world_state_provider
+from simulation.world_map import Cell
+from django.core.serializers.json import DjangoJSONEncoder
 
 
 def to_cell_type(cell):
@@ -12,7 +15,7 @@ def to_cell_type(cell):
 
 def player_dict(avatar):
     # TODO: implement better colour functionality: will eventually fall off end of numbers
-    colour = "#%06x" % (avatar.player_id * 929)
+    colour = "#%06x" % (avatar.player_id * 4999)
     return {
         'id': avatar.player_id,
         'x': avatar.location.x,
@@ -41,10 +44,12 @@ def get_world_state(request):
         return JsonResponse({
             'players': player_data,
             'score_locations': [(cell.location.x, cell.location.y) for cell in world.world_map.generate_score_cells()],
-            "width": num_cols,
-            "height": num_rows,
-            "layout": grid,
-            "map_changed": True,  # TODO: experiment with only sending deltas (not if not required)
+            'pickup_locations': [(cell.location.x, cell.location.y) for cell in world.world_map.generate_pickup_cells()],
+
+            'map_changed': True,  # TODO: experiment with only sending deltas (not if not required)
+            'width': num_cols,
+            'height': num_rows,
+            'layout': grid,
         })
     finally:
         world_state_provider.release_lock()
