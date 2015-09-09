@@ -18,6 +18,12 @@ from simulation import world_map
 from simulation.world_state import WorldState
 from models import Player
 
+import json
+
+GAME_NOT_STARTED = "GAME_NOT_STARTED"
+OK = "OK"
+USER_ERROR = "USER_ERROR"
+
 INITIAL_CODE = '''from simulation.action import MoveAction
 from simulation import direction
 
@@ -65,15 +71,14 @@ def start_game(request):
 
 
 def _post_code_error_response(message):
-    return HttpResponse("USER_ERROR\n\n" + message)
+    return HttpResponse(json.dumps({"status": USER_ERROR, "message": message}))
 
-
-def _post_server_error_response(message):
-    return HttpResponse("SERVER_ERROR\n\n" + message)
+def _post_server_error_response(typ):
+    return HttpResponse(json.dumps({"status": typ}))
 
 
 def _post_code_ok_response():
-    return HttpResponse("OK")
+    return HttpResponse(json.dumps({"status": OK }))
 
 
 @login_required
@@ -85,7 +90,7 @@ def code(request):
             world = world_state_provider.lock_and_get_world()
             # TODO: deal with this in a better way
             if world is None:
-                return _post_server_error_response('Your code was saved, but the game has not started yet!')
+                return _post_server_error_response(GAME_NOT_STARTED)
 
             world.player_changed_code(request.user.id, request.user.player.code)
         except UserCodeException as ex:
