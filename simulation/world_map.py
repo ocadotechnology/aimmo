@@ -1,3 +1,4 @@
+import heapq
 import random
 import math
 from simulation.direction import Direction, ALL_DIRECTIONS
@@ -35,31 +36,48 @@ class Cell(object):
         return self.location == other.location
 
 
-def get_shortest_path_between(cell1, cell2, m):
-    branches = [[cell1]]
-    visited_cells = []
+class PriorityQueue(object):
+    def __init__(self, key, init_items=[]):
+        self.key = key
+        self.heap = [self._build_tuple(i) for i in init_items]
+        heapq.heapify(self.heap)
 
-    while True:
-        # TODO: avoid two lookups by using a priority queue and popping
-        branch = min(branches, key=lambda b: len(b))
-        branches.remove(branch)
+    def _build_tuple(self, item):
+        return self.key(item), item
+
+    def push(self, item):
+        to_push = self._build_tuple(item)
+        heapq.heappush(self.heap, to_push)
+
+    def pop(self):
+        _, item = heapq.heappop(self.heap)
+        return item
+
+    def __len__(self):
+        return len(self.heap)
+
+
+def get_shortest_path_between(cell1, cell2, m):
+    branches = PriorityQueue(key=lambda b: len(b), init_items=[[cell1]])
+    visited_cells = set()
+
+    while branches:
+        branch = branches.pop()
 
         for cell in get_adjacent_habitable_cells(branch[-1], m):
             if cell in visited_cells:
                 continue
 
-            visited_cells.append(cell)
+            visited_cells.add(cell)
 
-            new_branch = list(branch)
-            new_branch.append(cell)
+            new_branch = branch + [cell]
 
             if cell == cell2:
                 return new_branch
 
-            branches.append(new_branch)
+            branches.push(new_branch)
 
-        if not branches:
-            return None
+    return None
 
 
 def get_adjacent_habitable_cells(cell, m):
