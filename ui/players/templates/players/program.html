@@ -3,7 +3,7 @@
 {% block content %}
 <div class="row">
     <h2>Program</h2>
-    <p>Use the box below to program your Avatar. Save using the button on the right.</p>
+    <p id="aimmo-program-description"></p>
 </div>
 <div class="row">
     <div id="alerts" class="alert alert-danger collapse" role="alert">
@@ -13,8 +13,6 @@
             <br>
             <span id="aimmo-alert-message-inner"></span>
         </span>
-        <!-- TODO use font awesome here -->
-        <button type="button" class="close" aria-hidden="true">x</button>
     </div>
 </div>
 <div class="row">
@@ -22,7 +20,7 @@
     <form id="saveForm" action="{% url 'code' %}" method="POST">
         {% csrf_token %}
         <div id="buttons" class="col-md-3">
-            <input type="submit" id="saveBtn" type="button" class="btn btn-lg btn-primary text-center" value="Save" />
+            <input type="submit" id="saveBtn" type="button" class="btn btn-lg btn-primary text-center" />
         </div>
     </form>
 </div>

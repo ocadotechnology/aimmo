@@ -7,10 +7,10 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 def to_cell_type(cell):
     if not cell.habitable:
-        return 1
+        return "WALL"
     if cell.generates_score:
-        return 2
-    return 0
+        return "SCORE"
+    return "GRASS"
 
 
 def player_dict(avatar):

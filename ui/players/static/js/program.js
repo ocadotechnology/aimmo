@@ -8,7 +8,14 @@ $( document ).ready(function() {
         UNKNOWN_ERROR: "Could not connect to the game. Try refreshing the page?",
         COULD_NOT_RETRIEVE_SAVED_DATA: "Could not retrieve saved data.",
         ERROR_OCCURRED_WHILST_SAVING: "An error occurred whilst saving.",
+        save: "Save",
+        description: "Use the box below to program your Avatar. Save using the button on the right.",
     };
+
+    $('#saveBtn').attr('value', messages.save);
+    $('#aimmo-program-description').text(messages.description);
+
+
 
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
@@ -19,7 +26,6 @@ $( document ).ready(function() {
     };
 
     var startsWith = function(string, prefix) {
-        // Triple equals?
         return string.slice(0, prefix.length) === prefix;
     };
 

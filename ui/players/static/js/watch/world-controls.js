@@ -6,18 +6,11 @@ const CONTROLS = Object.create({
     },
 
     initialiseWorld: function (width, height, worldLayout) {
-        this.world.width = width;
-        this.world.height = height;
-        this.world.layout = worldLayout;
-
-        this.viewer.reDrawWorldLayout();
+        // TODO is width/height ever incosnistent with layout?!
+        this.viewer.reDrawWorldLayout({width: width, height: height, layout: worldLayout});
     },
     setState: function (players, scoreLocations, pickupLocations) {
-        this.world.players = players;
-        this.world.scoreLocations = scoreLocations; //TODO: use instead of relying on world.layout (and remove score from there)
-        this.world.pickupLocations = pickupLocations;
-
-        this.viewer.reDrawState();
+        this.viewer.drawnElements = this.viewer.reDrawState({players: players, pickupLocations: pickupLocations});
     }
 });
 

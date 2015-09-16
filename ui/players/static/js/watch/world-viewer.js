@@ -3,45 +3,45 @@
 const APPEARANCE = Object.create({
     cellSize: 50,
     worldColours: {
-        0: "#efe",
-        1: "#777",
-        2: "#fbb"
+        "GRASS": "#efe",
+        "WALL": "#777",
+        "SCORE": "#fbb"
     }
 });
 
 const VIEWER = Object.create({
-    drawnElements: {
-        players: [],
-        pickups: []
-    },
-
     init: function(canvasDomElement, world, appearance) {
         this.world = world;
         this.appearance = appearance;
         this.paper = Raphael(canvasDomElement);
     },
 
-    invertY: function(y) {
-        return this.world.height - y - 1;
+    drawnElements: {
+        players: [],
+        pickups: [],
     },
 
-    reDrawWorldLayout: function() {
-        this.paper.clear();
-        this.paper.setViewBox(0, 0, this.world.width * this.appearance.cellSize, this.world.height * this.appearance.cellSize, true);
+    invertY: function(world, y) {
+        return world.height - y - 1;
+    },
 
-        for (var x = 0; x < this.world.width; x++) {
-            for (var y = 0; y < this.world.height; y++) {
-                var currentCellValue = this.world.layout[x][y];
+    reDrawWorldLayout: function(world) {
+        var self = this;
+        self.paper.clear();
+        self.paper.setViewBox(0, 0, world.width * self.appearance.cellSize, world.height * self.appearance.cellSize, true);
+        for (x = 0; x < world.width; x++) {
+            for (y = 0; y < world.height; y++) {
+                currentCellValue = world.layout[x][y];
 
-                var square = this.paper.rect(x * this.appearance.cellSize,
-                    this.invertY(y) * this.appearance.cellSize,
-                    this.appearance.cellSize,
-                    this.appearance.cellSize);
+                var square = self.paper.rect(x * self.appearance.cellSize,
+                    self.invertY(world, y) * self.appearance.cellSize,
+                    self.appearance.cellSize,
+                    self.appearance.cellSize);
 
-                square.attr("fill", this.appearance.worldColours[currentCellValue]);
+                square.attr("fill", self.appearance.worldColours[currentCellValue]);
                 square.attr("stroke", "#000");
 
-                this.paper.text((x + 0.5) * this.appearance.cellSize,  (this.invertY(y) + 0.5) * this.appearance.cellSize, x + ', ' + y)
+                self.paper.text((x + 0.5) * self.appearance.cellSize, (self.invertY(y) + 0.5) * self.appearance.cellSize, x + ', ' + y)
             }
         }
     },
@@ -89,39 +89,40 @@ const VIEWER = Object.create({
     },
 
     clearDrawnElements: function(elements) {
-        while (elements.length > 0) {
-            var elementToRemove = elements.pop();
+        elements.forEach(function(elementToRemove) {
             elementToRemove.remove();
-        }
+        });
     },
 
-    reDrawPlayers: function() {
-        this.clearDrawnElements(this.drawnElements.players);
-
-        for (var playerKey in this.world.players) {
-            if (this.world.players.hasOwnProperty(playerKey)) {
-                var playerData = this.world.players[playerKey];
-                var playerElement = this.constructNewPlayerElement(playerData);
-                this.drawnElements.players.push(playerElement);
-            }
-        }
+    drawnElements: {
+        players: [],
+        pickups: [],
     },
 
-    reDrawPickups: function() {
-        this.clearDrawnElements(this.drawnElements.pickups);
-
-        for (var i = 0; i < this.world.pickupLocations.length; i++) {
-            var pickupLocation = this.world.pickupLocations[i];
-            var x = (0.5 + pickupLocation[0]) * this.appearance.cellSize;
-            var y = (0.5 + this.invertY(pickupLocation[1])) * this.appearance.cellSize;
-            var radius = this.appearance.cellSize * 0.5 * 0.75;
-            var pickup = this.paper.circle(x, y, radius);
-            this.drawnElements.pickups.push(pickup);
-        }
+    reDrawPlayers: function(players) {
+        var self = this;
+        self.clearDrawnElements(self.drawnElements.players);
+        return Object.keys(players).map(function(playerKey) {
+            var playerData = players[playerKey];
+            return self.constructNewPlayerElement(playerData);
+        });
     },
 
-    reDrawState: function() {
-        this.reDrawPickups();
-        this.reDrawPlayers();
+    reDrawPickups: function(pickupLocations) {
+        var self = this;
+        self.clearDrawnElements(self.drawnElements.pickups);
+        return pickupLocations.map(function(pickupLocation) {
+            var x = (0.5 + pickupLocation[0]) * self.appearance.cellSize;
+            var y = (0.5 + self.invertY(pickupLocation[1])) * self.appearance.cellSize;
+            var radius = self.appearance.cellSize * 0.5 * 0.75;
+            return self.paper.circle(x, y, radius);
+        });
+    },
+
+    reDrawState: function(world) {
+        return {
+            pickups: this.reDrawPickups(world.pickupLocations),
+            players: this.reDrawPlayers(world.players),
+        };
     }
 });
