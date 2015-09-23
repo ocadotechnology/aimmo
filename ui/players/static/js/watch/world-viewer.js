@@ -115,7 +115,12 @@ const VIEWER = Object.create({
             var x = (0.5 + pickupLocation[0]) * this.appearance.cellSize;
             var y = (0.5 + this.invertY(pickupLocation[1])) * this.appearance.cellSize;
             var radius = this.appearance.cellSize * 0.5 * 0.75;
-            var pickup = this.paper.circle(x, y, radius);
+            var circle = this.paper.circle(x, y, radius);
+            circle.attr("fill", '#FFFFFF');
+            var crossX = this.paper.rect(x - 10, y - 3, 20, 6).attr({fill: '#FF0000', stroke: '#FF0000'});
+            var crossY = this.paper.rect(x - 3, y - 10, 6, 20).attr({fill: '#FF0000', stroke: '#FF0000'});
+            var pickup = this.paper.set();
+            pickup.push(circle, crossX, crossY);
             this.drawnElements.pickups.push(pickup);
         }
     },
