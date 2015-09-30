@@ -1,6 +1,5 @@
-from simulation.avatar import AvatarRunner, AvatarAppearance
-from simulation.avatar import AvatarAppearance
-from simulation.location import Location
+from simulation.avatar.avatar_wrapper import AvatarWrapper
+from simulation.avatar.avatar_appearance import AvatarAppearance
 
 
 class AvatarManager(object):
@@ -8,7 +7,7 @@ class AvatarManager(object):
         self.avatarsById = {p.player_id: p for p in initial_avatars}
 
     def spawn(self, player_id, code, location):
-        avatar = AvatarRunner(location, code, player_id, AvatarAppearance("#000", "#ddd", "#777", "#fff"))
+        avatar = AvatarWrapper(location, code, player_id, AvatarAppearance("#000", "#ddd", "#777", "#fff"))
         self.avatarsById[player_id] = avatar
         return avatar
 

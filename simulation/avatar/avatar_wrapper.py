@@ -1,9 +1,7 @@
 import traceback
 import sys
-from action import WaitAction
-from location import Location
-from simulation.action import MoveAction
-from simulation import direction
+
+from simulation.action import WaitAction
 
 
 # This class will be implemented by the player
@@ -17,7 +15,7 @@ class UserCodeException(Exception):
         return '<br/>'.join(lines)
 
 
-class AvatarRunner(object):
+class AvatarWrapper(object):
     def __init__(self, initial_location, initial_code, player_id, avatar_appearance):
         self.location = initial_location
         self.health = 5
@@ -63,10 +61,3 @@ class AvatarRunner(object):
         return 'Avatar(id={}, location={}, health={}, score={})'.format(self.player_id, self.location,
                                                                         self.health, self.score)
 
-
-class AvatarAppearance:
-    def __init__(self, body_stroke, body_fill, eye_stroke, eye_fill):
-        self.body_stroke = body_stroke
-        self.body_fill = body_fill
-        self.eye_stroke = eye_stroke
-        self.eye_fill = eye_fill
