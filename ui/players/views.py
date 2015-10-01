@@ -3,19 +3,16 @@ import logging
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-
 from django.contrib.auth.decorators import login_required
-
 from django.contrib.auth import authenticate, login
-
 from django.contrib.auth.forms import UserCreationForm
 
-from simulation.avatar import UserCodeException
-from simulation.avatar_manager import AvatarManager
+from simulation.avatar.avatar_wrapper import UserCodeException
+from simulation.avatar.avatar_manager import AvatarManager
+import simulation.map_generator
 from simulation.turn_manager import TurnManager
 from simulation.turn_manager import world_state_provider
-from simulation import world_map
-from simulation.world_state import WorldState
+from simulation.game_state import GameState
 from models import Player
 
 import json
@@ -45,7 +42,11 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            Player(user=user, code=INITIAL_CODE).save()
+
+            with open("simulation/avatar_examples/dumb_avatar.py") as initial_code_file:
+                initial_code = initial_code_file.read()
+
+            Player(user=user, code=initial_code).save()
             authenticated_user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
             login(request, authenticated_user)
             return redirect('program')
@@ -56,10 +57,10 @@ def register(request):
 
 def run_game():
     print("Running game...")
-    my_map = world_map.generate_map(15, 15, 0.1)
+    my_map = simulation.map_generator.generate_map(15, 15, 0.1)
     player_manager = AvatarManager([])
-    world_state = WorldState(my_map, player_manager)
-    turn_manager = TurnManager(world_state)
+    game_state = GameState(my_map, player_manager)
+    turn_manager = TurnManager(game_state)
 
     turn_manager.run_game()
 

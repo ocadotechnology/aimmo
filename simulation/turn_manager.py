@@ -25,21 +25,21 @@ world_state_provider = WorldStateProvider()
 
 
 class TurnManager(object):
-    def __init__(self, world_state):
-        world_state_provider.set_world(world_state)
+    def __init__(self, game_state):
+        world_state_provider.set_world(game_state)
 
-    def _update_environment(self, world_state):
-        num_avatars = len(world_state.avatar_manager.avatarsById)
-        world_state.world_map.update(num_avatars)
+    def _update_environment(self, game_state):
+        num_avatars = len(game_state.avatar_manager.avatarsById)
+        game_state.world_map.update(num_avatars)
 
     def run_turn(self):
         try:
-            world_state = world_state_provider.lock_and_get_world()
+            game_state = world_state_provider.lock_and_get_world()
 
-            for avatar in world_state.avatar_manager.avatarsById.values():
-                avatar.handle_turn(world_state.get_state_for(avatar)).apply(world_state, avatar)
+            for avatar in game_state.avatar_manager.avatarsById.values():
+                avatar.handle_turn(game_state.get_state_for(avatar)).apply(game_state, avatar)
 
-            self._update_environment(world_state)
+            self._update_environment(game_state)
 
         finally:
             world_state_provider.release_lock()

@@ -21,8 +21,11 @@ const VIEWER = Object.create({
         pickups: [],
     },
 
-    invertY: function(world, y) {
-        return world.height - y - 1;
+    invertY: function(height, y) {
+        if(y == undefined) {
+            debugger;
+        }
+        return height - y - 1;
     },
 
     reDrawWorldLayout: function(world) {
@@ -34,21 +37,21 @@ const VIEWER = Object.create({
                 currentCellValue = world.layout[x][y];
 
                 var square = self.paper.rect(x * self.appearance.cellSize,
-                    self.invertY(world, y) * self.appearance.cellSize,
+                    self.invertY(world.height, y) * self.appearance.cellSize,
                     self.appearance.cellSize,
                     self.appearance.cellSize);
 
                 square.attr("fill", self.appearance.worldColours[currentCellValue]);
                 square.attr("stroke", "#000");
 
-                self.paper.text((x + 0.5) * self.appearance.cellSize, (self.invertY(y) + 0.5) * self.appearance.cellSize, x + ', ' + y)
+                self.paper.text((x + 0.5) * self.appearance.cellSize, (self.invertY(world.height, y) + 0.5) * self.appearance.cellSize, x + ', ' + y)
             }
         }
     },
 
-    constructNewPlayerElement: function(playerData) {
+    constructNewPlayerElement: function(playerData, height) {
         const playerX = (0.5 + playerData.x) * this.appearance.cellSize;
-        const playerY = (0.5 + this.invertY(playerData.y)) * this.appearance.cellSize;
+        const playerY = (0.5 + this.invertY(height, playerData.y)) * this.appearance.cellSize;
         const playerRadius = this.appearance.cellSize * 0.5 * 0.75;
         const playerHeadRadius = playerRadius * 0.6;
         const playerEyeRadius = playerRadius * 0.2;
@@ -94,35 +97,39 @@ const VIEWER = Object.create({
         });
     },
 
-    drawnElements: {
-        players: [],
-        pickups: [],
-    },
-
-    reDrawPlayers: function(players) {
+    reDrawPlayers: function(players, height) {
         var self = this;
-        self.clearDrawnElements(self.drawnElements.players);
         return Object.keys(players).map(function(playerKey) {
             var playerData = players[playerKey];
-            return self.constructNewPlayerElement(playerData);
+            return self.constructNewPlayerElement(playerData, height);
         });
     },
 
-    reDrawPickups: function(pickupLocations) {
+    reDrawPickups: function(pickupLocations, height) {
         var self = this;
-        self.clearDrawnElements(self.drawnElements.pickups);
-        return pickupLocations.map(function(pickupLocation) {
+        return pickupLocations.map(function(pickupLocation, i) {
             var x = (0.5 + pickupLocation[0]) * self.appearance.cellSize;
-            var y = (0.5 + self.invertY(pickupLocation[1])) * self.appearance.cellSize;
+            var y = (0.5 + self.invertY(height, pickupLocation[1])) * self.appearance.cellSize;
             var radius = self.appearance.cellSize * 0.5 * 0.75;
-            return self.paper.circle(x, y, radius);
+            var circle = self.paper.circle(x, y, radius);
+            circle.attr("fill", '#FFFFFF');
+            var crossX = self.paper.rect(x - 10, y - 3, 20, 6).attr({fill: '#FF0000', stroke: '#FF0000'});
+            var crossY = self.paper.rect(x - 3, y - 10, 6, 20).attr({fill: '#FF0000', stroke: '#FF0000'});
+            var pickup = self.paper.set();
+            pickup.push(circle, crossX, crossY);
+            return pickup;
         });
     },
 
-    reDrawState: function(world) {
+    reDrawState: function(drawnElements, world) {
+        this.clearDrawnElements(drawnElements.pickups);
+        this.clearDrawnElements(drawnElements.players);
         return {
-            pickups: this.reDrawPickups(world.pickupLocations),
-            players: this.reDrawPlayers(world.players),
+            drawnElements: {
+                pickups: this.reDrawPickups(world.pickupLocations, world.height),
+                players: this.reDrawPlayers(world.players, world.height),
+            },
+            height: world.height,
         };
     }
 });
