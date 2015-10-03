@@ -90,7 +90,6 @@
                 playerTextBelow = this.paper.text(playerX, playerY + self.appearance.playerTextOffset, playerData.health + 'hp, (' + playerData.x + ', ' + playerData.y + ')'),
                 player = this.paper.set(),
                 playerColor = cycle(this.appearance.worldColours.PLAYERS, playerData.id);
-            console.log("Player color", playerColor);
 
             playerBody.attr("fill", playerColor);
             playerBody.attr("stroke", this.appearance.BODY_STROKE);
