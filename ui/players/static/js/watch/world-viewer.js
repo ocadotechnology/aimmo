@@ -6,12 +6,14 @@
     // TODO can CSS help eleminate these magic numbers?
     window.APPEARANCE = Object.create({
         cellSize: 50,
+        crossLengthScaleFactor: 0.4,
+        crossWidthScaleFactor: 0.12,
+        playerTextOffsetScaleFactor: 0.4,
         pickupScaleFactor: 0.5 * 0.75,
         playerScaleFactor: 0.5 * 0.75,
         playerHeadScaleFactor: 0.6,
         playerEyeScaleFactor: 0.2,
-        playerEyeOffset: 1,
-        playerTextOffset: 20,
+        playerEyeOffsetRadians: 1, // TODO would Math.PI / 4  or Math.PI / 6 make more sense?
         worldColours: {
             HEALTH_CROSS: "#ff0000",
             HEALTH_BACKGROUND: '#FFFFFF',
@@ -21,6 +23,7 @@
             BODY_STROKE: "#0FF",
             EYE_STROKE: "#AFF",
             EYE_FILL: "#EFF",
+            CELL_STROKE: "#000",
             PLAYERS: [
                "#001387",
                "#00270e",
@@ -54,7 +57,7 @@
                         self.appearance.cellSize);
 
                     square.attr("fill", self.appearance.worldColours[currentCellValue]);
-                    square.attr("stroke", "#000");
+                    square.attr("stroke", self.appearance.worldColours.CELL_STROKE);
 
                     self.paper.text((x + 0.5) * self.appearance.cellSize,
                         (self.invertY(world.height, y) + 0.5) * self.appearance.cellSize, x + ', ' + y);
@@ -74,8 +77,16 @@
                 playerHeadRadius = playerRadius * this.appearance.playerHeadScaleFactor,
                 playerEyeRadius = playerRadius * this.appearance.playerEyeScaleFactor,
                 playerBody = this.paper.circle(playerX, playerY, playerRadius),
-                leftEyeAngle = playerData.rotation - self.appearance.playerEyeOffset,
-                rightEyeAngle = playerData.rotation + self.appearance.playerEyeOffset,
+                directionToRotationRadians = {
+                    SOUTH: Math.PI / 2,
+                    EAST: 0,
+                    NORTH: -Math.PI / 2,
+                    WEST: Math.PI,
+
+                },
+                rotationRadians = directionToRotationRadians[playerData.lastMove],
+                leftEyeAngle = rotationRadians - self.appearance.playerEyeOffsetRadians,
+                rightEyeAngle = rotationRadians + self.appearance.playerEyeOffsetRadians,
                 playerEyeLeft = this.paper.circle(
                     playerX + playerHeadRadius * Math.cos(leftEyeAngle),
                     playerY + playerHeadRadius * Math.sin(leftEyeAngle),
@@ -86,8 +97,16 @@
                     playerY + playerHeadRadius * Math.sin(rightEyeAngle),
                     playerEyeRadius
                 ),
-                playerTextAbove = this.paper.text(playerX, playerY - self.appearance.playerTextOffset, 'Score: ' + playerData.score),
-                playerTextBelow = this.paper.text(playerX, playerY + self.appearance.playerTextOffset, playerData.health + 'hp, (' + playerData.x + ', ' + playerData.y + ')'),
+                playerTextAbove = this.paper.text(
+                    playerX,
+                    playerY - self.appearance.playerTextOffsetScaleFactor * self.appearance.cellSize,
+                    'Score: ' + playerData.score
+                ),
+                playerTextBelow = this.paper.text(
+                    playerX,
+                    playerY + self.appearance.playerTextOffsetScaleFactor * self.appearance.cellSize,
+                    playerData.health + 'hp, (' + playerData.x + ', ' + playerData.y + ')'
+                ),
                 player = this.paper.set(),
                 playerColor = cycle(this.appearance.worldColours.PLAYERS, playerData.id);
 
@@ -135,11 +154,20 @@
                     y = (0.5 + self.invertY(height, pickupLocation[1])) * self.appearance.cellSize,
                     radius = self.appearance.cellSize * self.appearance.pickupScaleFactor,
                     circle = self.paper.circle(x, y, radius),
-                    crossX = self.paper.rect(x - 10, y - 3, 20, 6).attr({
+                    crossX = self.paper.rect(
+                        x - (self.appearance.crossLengthScaleFactor * self.appearance.cellSize / 2),
+                        y - (self.appearance.crossWidthScaleFactor * self.appearance.cellSize / 2),
+                        self.appearance.crossLengthScaleFactor * self.appearance.cellSize,
+                        self.appearance.crossWidthScaleFactor * self.appearance.cellSize).attr({
+
                         fill: self.appearance.worldColours.HEALTH_CROSS,
                         stroke: self.appearance.worldColours.HEALTH_CROSS
                     }),
-                    crossY = self.paper.rect(x - 3, y - 10, 6, 20).attr({
+                    crossY = self.paper.rect(
+                        x - (self.appearance.crossWidthScaleFactor * self.appearance.cellSize / 2),
+                        y - (self.appearance.crossLengthScaleFactor * self.appearance.cellSize / 2),
+                        self.appearance.crossWidthScaleFactor * self.appearance.cellSize,
+                        self.appearance.crossLengthScaleFactor * self.appearance.cellSize).attr({
                         fill: self.appearance.worldColours.HEALTH_CROSS,
                         stroke: self.appearance.worldColours.HEALTH_CROSS,
                     }),

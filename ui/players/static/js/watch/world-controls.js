@@ -41,7 +41,6 @@
 
 
     window.refreshState = function (eventualState) {
-        // TODO should be 500ms timeout for error.
         var newPromise = Promise.all([eventualState, jsonAsync("/api/watch/state", 200)]).then(function (arr) {
             var data = arr[1],
                 height = data.map_changed ?
