@@ -1,13 +1,45 @@
 import unittest
-from simulation.location import Location
-import simulation.map_generator
+from simulation.map_generator import get_random_edge_index
 
 
-class TestWorldMap(unittest.TestCase):
-    def test_bisects_map(self):
-        m = simulation.map_generator.generate_map(3, 1, 0)
-        middle_cell = m.get_cell(Location(0, 1))
-        self.assertFalse(simulation.map_generator.bisects_map(middle_cell, m))
-        middle_cell.habitable = False
-        self.assertTrue(simulation.map_generator.bisects_map(middle_cell, m))
+class ConstantRng:
 
+    def __init__(self, value):
+        self.value = value
+
+    def randint(self, minimum, maximum):
+        if not minimum <= self.value <= maximum:
+            raise ValueError('Beyond range')
+        return self.value
+
+
+class TestMapGenerator(unittest.TestCase):
+
+    def test_get_random_edge_index(self):
+        height, width = 3, 4
+        # First row
+        self.assertEqual(
+            (1, 0), get_random_edge_index(height, width, rng=ConstantRng(0)))
+        self.assertEqual(
+            (2, 0), get_random_edge_index(height, width, rng=ConstantRng(1)))
+
+        # Last row
+        self.assertEqual(
+            (1, 2), get_random_edge_index(height, width, rng=ConstantRng(2)))
+        self.assertEqual(
+            (2, 2), get_random_edge_index(height, width, rng=ConstantRng(3)))
+
+        # First column
+        self.assertEqual(
+            (0, 1), get_random_edge_index(height, width, rng=ConstantRng(4)))
+
+        # Last column
+        self.assertEqual(
+            (3, 1), get_random_edge_index(height, width, rng=ConstantRng(5)))
+
+        # Verify no out of bounds
+        with self.assertRaisesRegexp(ValueError, 'Beyond range'):
+            get_random_edge_index(height, width, rng=ConstantRng(-1))
+
+        with self.assertRaisesRegexp(ValueError, 'Beyond range'):
+            get_random_edge_index(height, width, rng=ConstantRng(6))

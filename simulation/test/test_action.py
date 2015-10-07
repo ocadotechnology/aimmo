@@ -49,7 +49,7 @@ class TestAction(unittest.TestCase):
         self.assertEqual(self.avatar.score, 2)
 
     def test_successful_attack_action(self):
-        m = simulation.map_generator.generate_map(2, 2, 0)
+        m = simulation.map_generator.generate_map(3, 3, 0)
         for a in self.avatar_manager.avatars:
             m.get_cell(a.location).avatar = a
         game_state = GameState(m, self.avatar_manager)

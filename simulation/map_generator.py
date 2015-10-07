@@ -9,12 +9,18 @@ def generate_map(height, width, obstacle_ratio):
     grid = [[Cell(Location(x, y)) for y in xrange(height)] for x in xrange(width)]
     m = WorldMap(grid)
 
+    # We designate one (non-corner) edge cell as empty, with two effects:
+    #   - We ensure that the map can be expanded
+    #   - If we ensure that this cell is always reachable, then the map cannot get bisected
+    edge_x, edge_y = get_random_edge_index(height, width)
+    always_empty_edge_cell = grid[edge_x][edge_y]
+
     for x in xrange(width):
         for y in xrange(height):
-            if random.random() < obstacle_ratio:
+            if (x, y) != (edge_x, edge_y) and random.random() < obstacle_ratio:
                 cell = grid[x][y]
                 cell.habitable = False
-                if bisects_map(cell, m):
+                if not get_shortest_path_between(always_empty_edge_cell, cell, m):
                     cell.habitable = True
 
     return m
@@ -43,21 +49,37 @@ def get_shortest_path_between(cell1, cell2, m):
     return None
 
 
+def get_random_edge_index(height, width, rng=random):
+    assert height >= 2 and width >= 2
+
+    num_row_cells = width - 2
+    num_col_cells = height - 2
+    num_edge_cells = 2*num_row_cells + 2*num_col_cells
+    random_cell = rng.randint(0, num_edge_cells-1)
+
+    if 0 <= random_cell < num_row_cells:
+        # random non-corner cell on the first row
+        return random_cell+1, 0
+    elif num_row_cells <= random_cell < 2*num_row_cells:
+        # random non-corner cell on the last row
+        random_cell -= num_row_cells
+        return random_cell + 1, height - 1
+
+    random_cell -= 2*num_row_cells
+
+    if 0 <= random_cell < num_col_cells:
+        # random non-corner cell on the first column
+        return 0, random_cell + 1
+    elif num_col_cells <= random_cell < 2*num_col_cells:
+        # random non-corner cell on the last column
+        random_cell -= num_col_cells
+        return width - 1, random_cell + 1
+
+    raise ValueError('Should not be reachable')
+
+
 def get_adjacent_habitable_cells(cell, m):
     return [c for c in (m.get_cell(cell.location + d) for d in ALL_DIRECTIONS) if c and c.habitable]
-
-
-def bisects_map(cell, m):
-    adjacent_cells = get_adjacent_habitable_cells(cell, m)
-    if len(adjacent_cells) < 2:
-        return False
-
-    last_cell = adjacent_cells[-1]
-    for c in adjacent_cells[:-1]:
-        if not get_shortest_path_between(c, last_cell, m):
-            return True
-
-    return False
 
 
 class PriorityQueue(object):
