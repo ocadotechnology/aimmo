@@ -10,7 +10,7 @@
         crossWidthScaleFactor: 0.12,
         playerTextOffsetScaleFactor: 0.4,
         pickupScaleFactor: 0.5 * 0.75,
-        playerScaleFactor: 0.5 * 0.75,
+        playerScaleFactor: 0.5 * 0.6,
         playerHeadScaleFactor: 0.6,
         playerEyeScaleFactor: 0.2,
         playerEyeOffsetRadians: 1, // TODO would Math.PI / 4  or Math.PI / 6 make more sense?
@@ -25,12 +25,13 @@
             EYE_FILL: "#EFF",
             CELL_STROKE: "#000",
             PLAYERS: [
-               "#001387",
-               "#00270e",
-               "#003A95",
-               "#004E1C",
-               "#0061A3",
-               "#00752A"
+               "#B58900",
+               "#CB4B16",
+               "#DC322F",
+               "#D33682",
+               "#6C71C4",
+               "#268BD2",
+               "#2AA1982AA198"
             ]
         }
     };
@@ -111,14 +112,16 @@
                 playerData.health + 'hp, (' + playerData.x + ', ' + playerData.y + ')'
             ),
             player = this.paper.set(),
-            playerColor = cycle(this.appearance.worldColours.PLAYERS, playerData.id);
+            playerBodyCol = this.appearance.worldColours.PLAYERS[playerData.customization % 5],
+            playerEdgeCol = this.appearance.worldColours.PLAYERS[~~(playerData.customization / 5)];
 
-        playerBody.attr("fill", playerColor);
-        playerBody.attr("stroke", this.appearance.BODY_STROKE);
+        playerBody.attr("fill", playerBodyCol);
+        playerBody.attr("stroke", playerEdgeCol);
+        playerBody.attr("stroke-width", 5);
 
         [playerEyeLeft, playerEyeRight].forEach(function(eye) {
-            eye.attr("fill", self.appearance.worldColours.EYE_FILL);
-            eye.attr("stroke", self.appearance.worldColours.EYE_STROKE);
+            eye.attr("fill", playerEdgeCol);
+           eye.attr("stroke-width", 0);
         });
 
         player.push(
