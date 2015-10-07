@@ -17,12 +17,6 @@
         });
     }
 
-    function sleep(timeout) {
-        return new Promise(function (res) {
-            setTimeout(res, timeout);
-        });
-    }
-
     window.CONTROLS = Object.create({
         init: function (viewer) {
             this.viewer = viewer;
@@ -41,7 +35,7 @@
 
 
     window.refreshState = function (eventualState) {
-        var newPromise = Promise.all([eventualState, jsonAsync("/api/watch/state", 200)]).then(function (arr) {
+        var newPromise = Promise.all([eventualState, jsonAsync("/api/watch/state")]).then(function (arr) {
             var data = arr[1],
                 height = data.map_changed ?
                         CONTROLS.initialiseWorld(data.width, data.height, data.layout) :
@@ -50,12 +44,11 @@
                     data.pickup_locations,
                     height,
                     arr[0].drawnElements);
-            return sleep(200).then(function () { return output; });
+            setTimeout(function () { window.refreshState(output); }, 200);
         }).catch(function (er) {
             console.error(er);
-            return sleep(500).then(function () { return eventualState; });
+            setTimeout(function () { window.refreshState(eventualState); }, 500);
         });
-        setTimeout(function () {window.refreshState(newPromise); }, 0);
     };
 
 }());
