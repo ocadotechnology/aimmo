@@ -1,5 +1,4 @@
 import unittest
-from simulation import world_map
 from simulation.location import Location
 import simulation.map_generator
 
