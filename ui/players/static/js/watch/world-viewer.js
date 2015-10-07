@@ -1,7 +1,7 @@
 // All calls to paper.* should call invertY to get from simulation coordinate system into visualisation coordinate system, then scale up by appearance.cellSize
 'use strict';
 (function () {
-    var raphael = window.Raphael; // TODO not a constructor?
+    var raphael = window.Raphael; // not a constructor?
 
     // TODO can CSS help eleminate these magic numbers?
     window.APPEARANCE = {
@@ -47,9 +47,10 @@
     };
 
     window.Viewer.prototype.reDrawWorldLayout = function (world) {
-        var self = this;
+        var self = this,
+            width = world.layout.length;
         self.paper.clear();
-        self.paper.setViewBox(0, 0, world.width * self.appearance.cellSize, world.height * self.appearance.cellSize, true);
+        self.paper.setViewBox(0, 0, width * self.appearance.cellSize, world.height * self.appearance.cellSize, true);
         world.layout.forEach(function (row, x) {
             row.forEach(function (currentCellValue, y) {
 

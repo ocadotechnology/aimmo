@@ -23,9 +23,9 @@
 
     window.Controls.prototype = {};
 
-    window.Controls.prototype.initialiseWorld = function (width, height, worldLayout) {
+    window.Controls.prototype.initialiseWorld = function (height, worldLayout) {
        // TODO is width/height ever incosnistent with layout?!
-        this.viewer.reDrawWorldLayout({width: width, height: height, layout: worldLayout});
+        this.viewer.reDrawWorldLayout({height: height, layout: worldLayout});
         return height;
     };
 
@@ -39,7 +39,7 @@
         var newPromise = Promise.all([eventualState, jsonAsync("/api/watch/state")]).then(function (arr) {
             var data = arr[1],
                 height = data.map_changed ?
-                        controls.initialiseWorld(data.width, data.height, data.layout) :
+                        controls.initialiseWorld(data.height, data.layout) :
                         arr[0].height,
                 output = controls.setState(data.players,
                     data.pickup_locations,
