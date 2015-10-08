@@ -15,13 +15,16 @@
             password: "Password",
             passwordConfirmation: "Password Confirmation",
         },
-        program: {
+        statuses: {
             OK: "Your game was successfully saved.",
             USER_ERROR: "Your code has some problems:",
             GAME_NOT_STARTED: "The game has not started yet. Please start the game.",
+            LOST_CONNECTION: "Lost connection to the game. Try refreshing the page?",
             UNKNOWN_ERROR: "Could not connect to the game. Try refreshing the page?",
             COULD_NOT_RETRIEVE_SAVED_DATA: "Could not retrieve saved data.",
             ERROR_OCCURRED_WHILST_SAVING: "An error occurred whilst saving.",
+        },
+        program: {
             save: "Save",
             description: "Use the box below to program your Avatar. Save using the button on the right.",
         },
@@ -29,7 +32,16 @@
 }());
 window.$(function () {
     var $ = window.$,
-        messages = window.messages;
+        messages = window.messages,
+        pageName = document.location.pathname.split('/')[1],
+        pageMessaages = messages[pageName];
+    $('#aimmo-page-heading').text(messages.common[pageName]);
+
+
+    // Deliberate use of != not !==
+    if(pageMessaages != undefined) {
+        $('#aimmo-page-description').text(pageMessaages.description);
+    } 
     $('.aimmo-messages-program').text(messages.common.program);
     $('.aimmo-messages-watch').text(messages.common.watch);
     $('.aimmo-messages-stats').text(messages.common.stats);

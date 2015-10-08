@@ -10,6 +10,19 @@
 <script type="text/javascript" src="/static/js/watch/world-controls.js"></script>
 {% endblock %}
 
+
+
 {% block content %}
+{# TODO dont copy and paste this from program.html #}
+<div class="row">
+    <div id="alerts" class="alert alert-danger collapse" role="alert">
+        <span id="aimmo-alert-text"></span>
+        <span id="aimmo-alert-message-outer">
+            <br>
+            <br>
+            <span id="aimmo-alert-message-inner"></span>
+        </span>
+    </div>
+</div>
 <span id="watch-world-canvas"></span>
 {% endblock %}

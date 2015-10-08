@@ -54,6 +54,20 @@
         </nav>
 
         <div class="container">
+            <div class="row">
+                <h2 id="aimmo-page-heading"></h2>
+                <p id="aimmo-page-description"></p>
+            </div>
+            <div class="row">
+                <div id="alerts" class="alert alert-danger collapse" role="alert">
+                    <span id="aimmo-alert-text"></span>
+                    <span id="aimmo-alert-message-outer">
+                        <br>
+                        <br>
+                        <span id="aimmo-alert-message-inner"></span>
+                    </span>
+                </div>
+            </div>
             {% block content %}
             {% endblock %}
         </div>
@@ -72,5 +86,6 @@
         {% endblock %}
 
         <script src="/static/js/base.js"></script>
+        <script src="/static/js/alerts.js"></script>
     </body>
 </html>

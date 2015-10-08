@@ -23,10 +23,8 @@
 
     window.Controls.prototype = {};
 
-    window.Controls.prototype.initialiseWorld = function (height, worldLayout) {
-       // TODO is width/height ever incosnistent with layout?!
-        this.viewer.reDrawWorldLayout({height: height, layout: worldLayout});
-        return height;
+    window.Controls.prototype.initialiseWorld = function (worldLayout) {
+        return this.viewer.reDrawWorldLayout(worldLayout);
     };
 
     window.Controls.prototype.setState = function (players, pickupLocations, height, drawnElements) {
@@ -39,7 +37,7 @@
         var newPromise = Promise.all([eventualState, jsonAsync("/api/watch/state")]).then(function (arr) {
             var data = arr[1],
                 height = data.map_changed ?
-                        controls.initialiseWorld(data.height, data.layout) :
+                        controls.initialiseWorld(data.layout) :
                         arr[0].height,
                 output = controls.setState(data.players,
                     data.pickup_locations,
@@ -47,8 +45,10 @@
                     arr[0].drawnElements);
             setTimeout(function () { window.refreshState(controls, output); }, 200);
         }).catch(function (er) {
+            var didSuccessfullyRender = $("svg > text").length,
+                status = didSuccessfullyRender ? "LOST_CONNECTION" : "GAME_NOT_STARTED";
             console.error(er);
-            setTimeout(function () { window.refreshState(controls, eventualState); }, 500);
+            showAlert({status: status});
         });
     };
 
