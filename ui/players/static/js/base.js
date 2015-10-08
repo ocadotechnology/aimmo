@@ -4,7 +4,7 @@
         common: {
             program: "Program",
             watch: "Watch",
-            stats: "Statistics",
+            statistics: "Statistics",
             startGame: "Start Game",
             login: "Login",
             logout: "Logout",
@@ -33,18 +33,24 @@
 window.$(function () {
     var $ = window.$,
         messages = window.messages,
-        pageName = document.location.pathname.split('/')[1],
-        pageMessaages = messages[pageName];
+        pathArray = document.location.pathname.split('/').filter(function (x) { return x; }),
+        pageName = pathArray[pathArray.length - 1],
+        pageMessages = messages[pageName];
     $('#aimmo-page-heading').text(messages.common[pageName]);
 
 
     // Deliberate use of != not !==
-    if(pageMessaages != undefined) {
-        $('#aimmo-page-description').text(pageMessaages.description);
+    if(pageMessages != undefined) {
+        $('#aimmo-page-description').text(pageMessages.description);
     } 
+    $(".aimmo-title-icon").each(function (_, elem) {
+        var selection = $(elem),
+            isThisPage = $(elem).hasClass("aimmo-messages-" + pageName);
+        selection.closest("li").toggleClass("active", isThisPage);
+    });
     $('.aimmo-messages-program').text(messages.common.program);
     $('.aimmo-messages-watch').text(messages.common.watch);
-    $('.aimmo-messages-stats').text(messages.common.stats);
+    $('.aimmo-messages-statistics').text(messages.common.statistics);
     $('.aimmo-messages-start-game').text(messages.common.startGame);
     $('.aimmo-messages-login').text(messages.common.login);
     $('.aimmo-messages-logout').text(messages.common.logout);

@@ -36,17 +36,17 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         {# TODO: find decent way of setting active and sr of (current) #}
-                        <li class="active"><a class="aimmo-messages-program" href="{% url 'program' %}"></a></li>
-                        <li><a class="aimmo-messages-watch" href="{% url 'watch' %}"></a></li>
-                        <li><a class="aimmo-messages-stats" href="{% url 'statistics' %}"></a></li>
-                        <li><a class="aimmo-messages-start-game" href="{% url 'start_game' %}"></a></li>
+                        <li><a class="aimmo-title-icon aimmo-messages-program" href="{% url 'program' %}"></a></li>
+                        <li><a class="aimmo-title-icon aimmo-messages-watch" href="{% url 'watch' %}"></a></li>
+                        <li><a class="aimmo-title-icon aimmo-messages-statistics" href="{% url 'statistics' %}"></a></li>
+                        <li><a class="aimmo-title-icon aimmo-messages-start-game" href="{% url 'start_game' %}"></a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if request.user.is_authenticated %}
-                        <li><a class="aimmo-messages-logout" href="{% url 'logout' %}?next={{ request.path }}"></a></li>
+                        <li><a class="aimmo-messages-logout aimmo-title-icon" href="{% url 'logout' %}?next={{ request.path }}"></a></li>
                         {% else %}
-                        <li><a class="aimmo-messages-login" href="{% url 'login' %}?next={{ request.path }}"></a></li>
-                        <li><a class="aimmo-messages-register" href="{% url 'register' %}"></a></li>
+                        <li><a class="aimmo-messages-login aimmo-title-icon" href="{% url 'login' %}?next={{ request.path }}"></a></li>
+                        <li><a class="aimmo-messages-register aimmo-title-icon" href="{% url 'register' %}"></a></li>
                         {% endif %}
                     </ul>
                 </div>
