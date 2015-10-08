@@ -14,7 +14,6 @@ def to_cell_type(cell):
 
 
 def player_dict(avatar):
-    print avatar
     return {
         'id': avatar.player_id,
         'x': avatar.location.x,
