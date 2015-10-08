@@ -14,6 +14,7 @@ def to_cell_type(cell):
 
 
 def player_dict(avatar):
+    print avatar
     return {
         'id': avatar.player_id,
         'x': avatar.location.x,
@@ -21,7 +22,7 @@ def player_dict(avatar):
         'health': avatar.health,
         'score': avatar.score,
         'customization': hash(avatar.player_id) % 25,
-        'lastMove': 'WEST' # TODO determine the player's real last move. Also should we use snake_case?
+        'lastMove': avatar.last_move.name if avatar.last_move else None
     }
 
 

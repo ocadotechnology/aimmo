@@ -16,15 +16,14 @@ class UserCodeException(Exception):
 
 
 class AvatarWrapper(object):
-    def __init__(self, initial_location, initial_code, player_id, avatar_appearance):
+    def __init__(self, initial_location, initial_code, player_id):
         self.location = initial_location
         self.health = 5
         self.score = 0
         self.events = []
         self.player_id = player_id
-        self.avatar_appearance = avatar_appearance
         self.avatar = None
-
+        self.last_move = None
         self.set_code(initial_code)
 
     def handle_turn(self, state):
@@ -37,6 +36,8 @@ class AvatarWrapper(object):
             next_action = WaitAction()
         # Reset event log
         self.events = []
+        if next_action.direction:
+            self.last_move = next_action.direction
 
         return next_action
 
@@ -58,6 +59,10 @@ class AvatarWrapper(object):
         self.avatar = Avatar()
 
     def __repr__(self):
-        return 'Avatar(id={}, location={}, health={}, score={})'.format(self.player_id, self.location,
-                                                                        self.health, self.score)
+        return 'Avatar(id={}, location={}, health={}, score={}, last_move={})'.format(
+            self.player_id,
+            self.location,
+           self.health,
+           self.score,
+           self.last_move)
 
