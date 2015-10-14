@@ -1,5 +1,5 @@
 import unittest
-from simulation.map_generator import get_random_edge_index
+from simulation.map_generator import get_random_edge_index, generate_map
 
 
 class ConstantRng:
@@ -43,3 +43,22 @@ class TestMapGenerator(unittest.TestCase):
 
         with self.assertRaisesRegexp(ValueError, 'Beyond range'):
             get_random_edge_index(height, width, rng=ConstantRng(6))
+
+    def test_map_contains_some_non_habitable_cell(self):
+        m = generate_map(4, 4, 1.0)
+        obstacle_cells = [cell for row in m.grid for cell in row if not cell.habitable]
+        self.assertGreaterEqual(len(obstacle_cells), 1)
+
+    def test_map_contains_some_habitable_cell_on_border(self):
+        m = generate_map(4, 4, 1.0)
+
+        edge_coordinates = [
+            (0, 0), (1, 0), (2, 0), (3, 0),
+            (0, 1), (3, 1),
+            (0, 2), (3, 2),
+            (0, 3), (1, 3), (2, 3), (3, 3)
+        ]
+        edge_cells = (m.grid[x][y] for (x, y) in edge_coordinates)
+        habitable_edge_cells = [cell for cell in edge_cells if cell.habitable]
+
+        self.assertGreaterEqual(len(habitable_edge_cells ), 1)
