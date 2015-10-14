@@ -24,15 +24,16 @@
             EYE_STROKE: "#AFF",
             EYE_FILL: "#EFF",
             CELL_STROKE: "#000",
-            PLAYERS: [
-               "#B58900",
-               "#CB4B16",
-               "#DC322F",
-               "#D33682",
-               "#6C71C4",
-               "#268BD2",
-               "#2AA198"
-            ]
+            PLAYERS: {
+               YELLOW: "#B58900",
+               ORANGE: "#CB4B16",
+               RED: "#DC322F",
+               MAGENTA: "#D33682",
+               VIOLET: "#6C71C4",
+               BLUE: "#268BD2",
+               CYAN: "#2AA198",
+               GREEN: "#859900"
+            }
         }
     };
 
@@ -114,8 +115,8 @@
                 playerData.health + 'hp, (' + playerData.x + ', ' + playerData.y + ')'
             ),
             player = this.paper.set(),
-            playerBodyCol = this.appearance.worldColours.PLAYERS[playerData.customization % 5],
-            playerEdgeCol = this.appearance.worldColours.PLAYERS[~~(playerData.customization / 5)];
+            playerBodyCol = this.appearance.worldColours.PLAYERS[playerData.customization[0]],
+            playerEdgeCol = this.appearance.worldColours.PLAYERS[playerData.customization[1]];
 
         playerBody.attr("fill", playerBodyCol);
         playerBody.attr("stroke", playerEdgeCol);

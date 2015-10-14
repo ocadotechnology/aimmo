@@ -14,13 +14,21 @@ def to_cell_type(cell):
 
 
 def player_dict(avatar):
+    colors = [
+        'RED',
+        'ORANGE',
+        'YELLOW',
+        'GREEN',
+        'BLUE',
+        'VIOLET'
+    ]
     return {
         'id': avatar.player_id,
         'x': avatar.location.x,
         'y': avatar.location.y,
         'health': avatar.health,
         'score': avatar.score,
-        'customization': hash(avatar.player_id) % 25,
+        'customization': [colors[hash(avatar.player_id) % len(colors)], colors[hash(avatar.player_id) // len(colors)]],
         'lastMove': avatar.last_move.name if avatar.last_move else None
     }
 
