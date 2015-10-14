@@ -10,7 +10,6 @@ window.$(function () {
             COULD_NOT_RETRIEVE_SAVED_DATA: "Could not retrieve saved data.",
             ERROR_OCCURRED_WHILST_SAVING: "An error occurred whilst saving.",
         },
-        defaultProgram = "print 'Hello, world!'\nprint 'New line'",
         editor = ace.edit("editor");
 
 
@@ -20,6 +19,7 @@ window.$(function () {
     editor.$blockScrolling = Infinity;
     editor.setTheme("ace/theme/monokai");
     editor.getSession().setMode("ace/mode/python");
+    editor.setReadOnly(true);
 
     $.ajax({
         //TODO - get URL
@@ -28,11 +28,11 @@ window.$(function () {
         dataType: 'text',
         success: function (data) {
             editor.setValue(data);
+            editor.setReadOnly(false);
             editor.selection.moveCursorFileStart();
         },
         error: function () {
             showAlert({status: 'COULD_NOT_RETRIEVE_SAVED_DATA'});
-            editor.setValue(defaultProgram);
             editor.selection.moveCursorFileStart();
         }
     });
