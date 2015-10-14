@@ -13,13 +13,10 @@
 
         {# bootstrap #}
         {# Latest compiled and minified CSS #}
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
-
-        {# Font awesome #}
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
         {# Optional theme #}
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 
         {% block styles %}
         {% endblock %}
@@ -29,24 +26,29 @@
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false"></button>
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
                     <a class="navbar-brand" href="/">AI:MMO</a>
                 </div>
 
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         {# TODO: find decent way of setting active and sr of (current) #}
-                        <li class="active"><a class="aimmo-messages-program" href="{% url 'program' %}"></a></li>
-                        <li><a class="aimmo-messages-watch" href="{% url 'watch' %}"></a></li>
-                        <li><a class="aimmo-messages-stats" href="{% url 'statistics' %}"></a></li>
-                        <li><a class="aimmo-messages-start-game" href="{% url 'start_game' %}"></a></li>
+                        <li class="active"><a href="{% url 'program' %}">Program<span class="sr-only"> (current)</span></a></li>
+                        <li><a href="{% url 'watch' %}">Watch</a></li>
+                        <li><a href="{% url 'statistics' %}">Statistics</a></li>
+                        <li><a href="{% url 'start_game' %}">Start Game</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if request.user.is_authenticated %}
-                        <li><a class="aimmo-messages-logout" href="{% url 'logout' %}?next={{ request.path }}"></a></li>
+                        <li><a href="{% url 'logout' %}?next={{ request.path }}">Logout</a></li>
                         {% else %}
-                        <li><a class="aimmo-messages-login" href="{% url 'login' %}?next={{ request.path }}"></a></li>
-                        <li><a class="aimmo-messages-register" href="{% url 'register' %}"></a></li>
+                        <li><a href="{% url 'login' %}?next={{ request.path }}">Login</a></li>
+                        <li><a href="{% url 'register' %}">Register</a></li>
                         {% endif %}
                     </ul>
                 </div>
@@ -70,7 +72,5 @@
         <![endif]-->
         {% block scripts %}
         {% endblock %}
-
-        <script src="/static/js/base.js"></script>
     </body>
 </html>
