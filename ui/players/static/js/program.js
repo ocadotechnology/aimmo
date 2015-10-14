@@ -2,7 +2,16 @@
 window.$(function () {
     var $ = window.$,
         ace = window.ace,
-        messages = window.messages.program,
+        messages = {
+            OK: "Your game was successfully saved.",
+            USER_ERROR: "Your code has some problems:",
+            GAME_NOT_STARTED: "The game has not started yet. Please start the game.",
+            UNKNOWN_ERROR: "Could not connect to the game. Try refreshing the page?",
+            COULD_NOT_RETRIEVE_SAVED_DATA: "Could not retrieve saved data.",
+            ERROR_OCCURRED_WHILST_SAVING: "An error occurred whilst saving.",
+            save: "Save",
+            description: "Use the box below to program your Avatar. Save using the button on the right.",
+        },
         defaultProgram = "print 'Hello, world!'\nprint 'New line'",
         editor = ace.edit("editor");
 
