@@ -15,18 +15,29 @@ def generate_map(height, width, obstacle_ratio):
     edge_x, edge_y = get_random_edge_index(height, width)
     always_empty_edge_cell = grid[edge_x][edge_y]
 
-    for x in xrange(width):
-        for y in xrange(height):
-            if (x, y) != (edge_x, edge_y) and random.random() < obstacle_ratio:
-                cell = grid[x][y]
-                cell.habitable = False
-                if not all_habitable_neighbours_of_cell1_can_reach_cell2(cell, always_empty_edge_cell, m):
-                    cell.habitable = True
+    for x, y in shuffled(_get_edge_coordinates(height, width)):
+        if (x, y) != (edge_x, edge_y) and random.random() < obstacle_ratio:
+            cell = grid[x][y]
+            cell.habitable = False
+            if not _all_habitable_neighbours_of_cell1_can_reach_cell2(cell, always_empty_edge_cell, m):
+                cell.habitable = True
 
     return m
 
 
-def all_habitable_neighbours_of_cell1_can_reach_cell2(cell1, cell2, m):
+def _get_edge_coordinates(height, width):
+    for x in xrange(width):
+        for y in xrange(height):
+            yield x, y
+
+
+def shuffled(iterable):
+    values = list(iterable)
+    random.shuffle(values)
+    return iter(values)
+
+
+def _all_habitable_neighbours_of_cell1_can_reach_cell2(cell1, cell2, m):
     neighbours = get_adjacent_habitable_cells(cell1, m)
     shortest_paths = (get_shortest_path_between(cell2, neighbour_cell, m) for neighbour_cell in neighbours)
     reachable = (path is not None for path in shortest_paths)
