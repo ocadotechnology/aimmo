@@ -47,16 +47,17 @@
         return height - y - 1;
     };
 
-    window.Viewer.prototype.reDrawWorldLayout = function (world) {
+    window.Viewer.prototype.reDrawWorldLayout = function (layout) {
         var self = this,
-            width = world.layout.length;
+            width = layout.length,
+            height = width ? layout[0].length : 0;
         self.paper.clear();
-        self.paper.setViewBox(0, 0, width * self.appearance.cellSize, world.height * self.appearance.cellSize, true);
-        world.layout.forEach(function (row, x) {
+        self.paper.setViewBox(0, 0, width * self.appearance.cellSize, height * self.appearance.cellSize, true);
+        layout.forEach(function (row, x) {
             row.forEach(function (currentCellValue, y) {
 
                 var square = self.paper.rect(x * self.appearance.cellSize,
-                    self.invertY(world.height, y) * self.appearance.cellSize,
+                    self.invertY(height, y) * self.appearance.cellSize,
                     self.appearance.cellSize,
                     self.appearance.cellSize);
 
@@ -64,9 +65,10 @@
                 square.attr("stroke", self.appearance.worldColours.CELL_STROKE);
 
                 self.paper.text((x + 0.5) * self.appearance.cellSize,
-                    (self.invertY(world.height, y) + 0.5) * self.appearance.cellSize, x + ', ' + y);
+                    (self.invertY(height, y) + 0.5) * self.appearance.cellSize, x + ', ' + y);
             });
         });
+        return height;
     };
 
     window.Viewer.prototype.constructNewPlayerElement = function (playerData, height) {

@@ -2,20 +2,6 @@
 
 {% block content %}
 <div class="row">
-    <h2>Program</h2>
-    <p id="aimmo-program-description"></p>
-</div>
-<div class="row">
-    <div id="alerts" class="alert alert-danger collapse" role="alert">
-        <span id="aimmo-alert-text"></span>
-        <span id="aimmo-alert-message-outer">
-            <br>
-            <br>
-            <span id="aimmo-alert-message-inner"></span>
-        </span>
-    </div>
-</div>
-<div class="row">
     <div id="editor" class="col-md-9"></div>
     <form id="saveForm" action="{% url 'code' %}" method="POST">
         {% csrf_token %}
