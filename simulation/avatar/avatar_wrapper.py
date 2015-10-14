@@ -54,9 +54,9 @@ class AvatarWrapper(object):
         self.code = code
         try:
             exec(code)
+            self.avatar = Avatar()
         except Exception as ex:
-            raise UserCodeException("Exception in user code", ex)
-        self.avatar = Avatar()
+            raise UserCodeException(ex)
 
     def __repr__(self):
         return 'Avatar(id={}, location={}, health={}, score={}, last_move={})'.format(
