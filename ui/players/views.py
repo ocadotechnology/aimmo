@@ -15,6 +15,22 @@ from simulation.turn_manager import world_state_provider
 from simulation.game_state import GameState
 from models import Player
 
+import json
+
+GAME_NOT_STARTED = "GAME_NOT_STARTED"
+OK = "OK"
+USER_ERROR = "USER_ERROR"
+
+INITIAL_CODE = '''from simulation.action import MoveAction
+from simulation import direction
+
+
+class Avatar(object):
+    def handle_turn(self, world_state, events):
+        import random
+        directions = (direction.EAST, direction.SOUTH, direction.WEST, direction.NORTH)
+        return MoveAction(random.choice(directions))
+'''
 
 # TODO: move all views that just render a template over to using django generic views
 
@@ -56,15 +72,14 @@ def start_game(request):
 
 
 def _post_code_error_response(message):
-    return HttpResponse("USER_ERROR\n\n" + message)
+    return HttpResponse(json.dumps({"status": USER_ERROR, "message": message}))
 
-
-def _post_server_error_response(message):
-    return HttpResponse("SERVER_ERROR\n\n" + message)
+def _post_server_error_response(typ):
+    return HttpResponse(json.dumps({"status": typ}))
 
 
 def _post_code_ok_response():
-    return HttpResponse("OK")
+    return HttpResponse(json.dumps({"status": OK }))
 
 
 @login_required
@@ -76,7 +91,7 @@ def code(request):
             world = world_state_provider.lock_and_get_world()
             # TODO: deal with this in a better way
             if world is None:
-                return _post_server_error_response('Your code was saved, but the game has not started yet!')
+                return _post_server_error_response(GAME_NOT_STARTED)
 
             world.player_changed_code(request.user.id, request.user.player.code)
         except UserCodeException as ex:

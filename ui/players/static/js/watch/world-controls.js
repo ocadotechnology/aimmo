@@ -1,45 +1,54 @@
+/*jslint browser: true*/
 // World Manipulation
-const CONTROLS = Object.create({
-    init: function (world, viewer) {
-        this.world = world;
-        this.viewer = viewer;
-    },
+'use strict';
+(function () {
+    var Promise = window.Promise,
+        $ = window.$;
 
-    initialiseWorld: function (width, height, worldLayout) {
-        this.world.width = width;
-        this.world.height = height;
-        this.world.layout = worldLayout;
-
-        this.viewer.reDrawWorldLayout();
-    },
-    setState: function (players, scoreLocations, pickupLocations) {
-        this.world.players = players;
-        this.world.scoreLocations = scoreLocations; //TODO: use instead of relying on world.layout (and remove score from there)
-        this.world.pickupLocations = pickupLocations;
-
-        this.viewer.reDrawState();
+    function jsonAsync(url) {
+        return new Promise(function (res, rej) {
+            $.ajax(url, {
+                success: function (data) {
+                    res(data);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    rej({jqXHR: jqXHR, textStatus: textStatus, errorThrown: errorThrown});
+                }
+            });
+        });
     }
-});
 
-function refreshState() {
-    $.ajax("/api/watch/state", {
-        success : function(data) {
-            if(data.map_changed){
-                CONTROLS.initialiseWorld(data.width, data.height, data.layout);
-            }
-            CONTROLS.setState(data.players, data.score_locations, data.pickup_locations);
-            setTimeout(refreshState, 200);
-        },
-        error : function(jqXHR, textStatus, errorThrown) {
-            setTimeout(refreshState, 500);
-        }
-    });
-}
+    window.refreshState = function (viewer, state) {
+        debugger;
+        jsonAsync("/api/watch/state").then(function (data) {
+            var height = data.map_changed ?
+                            viewer.reDrawWorldLayout(data.layout) :
+                            state.height,
+                world = {
+                    pickupLocations: data.pickup_locations,
+                    height: height,
+                    players: data.players
+                },
+                output = viewer.reDrawState(state.drawnElements, world);
+            setTimeout(function () { window.refreshState(viewer, output); }, 500);
+        }).catch(function (er) {
+            var didSuccessfullyRender = $("svg > text").length,
+                status = didSuccessfullyRender ? "LOST_CONNECTION" : "GAME_NOT_STARTED",
+                showAlert = window.showAlert;
+            console.error(er);
+            showAlert({status: status});
+        });
+    };
 
-$(function(){
-    var world = {};
-    VIEWER.init(document.getElementById("watch-world-canvas"), world, APPEARANCE);
-    CONTROLS.init(world, VIEWER);
+}());
 
-    refreshState();
+window.$(function () {
+    var Viewer = window.Viewer,
+        APPEARANCE = window.APPEARANCE,
+        Promise = window.Promise,
+        refreshState = window.refreshState,
+        initialState = {drawnElements: {players: [], pickups: []}},
+        viewer = new Viewer(document.getElementById("watch-world-canvas"), APPEARANCE);
+
+    refreshState(viewer, initialState);
 });

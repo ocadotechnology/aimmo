@@ -7,28 +7,29 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 def to_cell_type(cell):
     if not cell.habitable:
-        return 1
+        return "WALL"
     if cell.generates_score:
-        return 2
-    return 0
+        return "SCORE"
+    return "GRASS"
 
 
 def player_dict(avatar):
-    # TODO: implement better colour functionality: will eventually fall off end of numbers
-    colour = "#%06x" % (avatar.player_id * 4999)
+    colors = [
+        'RED',
+        'ORANGE',
+        'YELLOW',
+        'GREEN',
+        'BLUE',
+        'VIOLET'
+    ]
     return {
         'id': avatar.player_id,
         'x': avatar.location.x,
         'y': avatar.location.y,
         'health': avatar.health,
         'score': avatar.score,
-        'rotation': 0,
-        "colours": {
-            "bodyStroke": "#0ff",
-            "bodyFill": colour,
-            "eyeStroke": "#aff",
-            "eyeFill": "#eff",
-        }
+        'customization': [colors[hash(avatar.player_id) % len(colors)], colors[hash(avatar.player_id) // len(colors)]],
+        'lastMove': avatar.last_move.name if avatar.last_move else None
     }
 
 
