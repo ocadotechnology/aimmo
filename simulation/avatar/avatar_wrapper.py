@@ -16,6 +16,10 @@ class UserCodeException(Exception):
 
 
 class AvatarWrapper(object):
+    """
+    The application's view of a character, not to be confused with "Avatar", the player-supplied code.
+    """
+
     def __init__(self, initial_location, initial_code, player_id, avatar_appearance):
         self.location = initial_location
         self.health = 5

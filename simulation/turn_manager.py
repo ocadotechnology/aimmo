@@ -4,7 +4,12 @@ from simulation import world_map
 
 
 class WorldStateProvider:
-    """TODO: think about changing to snapshot rather than lock?"""
+    """
+    Thread-safe container for the world state.
+
+    TODO: think about changing to snapshot rather than lock?
+    """
+
     def __init__(self):
         self._world_state = None
         self._lock = Lock()
@@ -25,12 +30,16 @@ world_state_provider = WorldStateProvider()
 
 
 class TurnManager(object):
+    """
+    Game loop
+    """
+
     def __init__(self, game_state):
         world_state_provider.set_world(game_state)
 
     def _update_environment(self, game_state):
         num_avatars = len(game_state.avatar_manager.avatarsById)
-        game_state.world_map.update(num_avatars)
+        game_state.world_map.reconstruct_interactive_state(num_avatars)
 
     def run_turn(self):
         try:

@@ -3,6 +3,10 @@ from simulation.avatar.avatar_appearance import AvatarAppearance
 
 
 class AvatarManager(object):
+    """
+    Stores all game avatars.
+    """
+
     def __init__(self, initial_avatars):
         self.avatarsById = {p.player_id: p for p in initial_avatars}
 

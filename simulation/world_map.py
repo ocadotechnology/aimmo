@@ -22,6 +22,10 @@ class HealthPickup(object):
 
 
 class Cell(object):
+    """
+    Any position on the world grid.
+    """
+
     def __init__(self, location, habitable=True, generates_score=False):
         self.location = location
         self.habitable = habitable
@@ -37,6 +41,10 @@ class Cell(object):
 
 
 class WorldMap(object):
+    """
+    The non-player world state.
+    """
+
     def __init__(self, grid):
         self.grid = grid
 
@@ -68,11 +76,11 @@ class WorldMap(object):
         assert cell.location == location, 'location lookup mismatch: arg={}, found={}'.format(location, cell.location)
         return cell
 
-    def update(self, num_avatars):
-        self.update_score_locations(num_avatars)
-        self.update_pickups(num_avatars)
+    def reconstruct_interactive_state(self, num_avatars):
+        self.reset_score_locations(num_avatars)
+        self.add_pickups(num_avatars)
 
-    def update_score_locations(self, num_avatars):
+    def reset_score_locations(self, num_avatars):
         for cell in self.generate_score_cells():
             if random.random() < SCORE_DESPAWN_CHANCE:
                 cell.generates_score = False
@@ -84,7 +92,7 @@ class WorldMap(object):
             for cell in random.sample(list(self.generate_potential_spawn_locations()), num_score_locations_to_add):
                 cell.generates_score = True
 
-    def update_pickups(self, num_avatars):
+    def add_pickups(self, num_avatars):
         target_num_pickups = int(math.ceil(num_avatars * TARGET_NUM_PICKUPS_PER_AVATAR))
         max_num_pickups_to_add = target_num_pickups - len(list(self.generate_pickup_cells()))
         if max_num_pickups_to_add > 0:

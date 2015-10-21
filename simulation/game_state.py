@@ -3,6 +3,10 @@ from simulation.avatar import fog_of_war
 
 
 class GameState(object):
+    """
+    Encapsulates the entire game state, including avatars, their code, and the world.
+    """
+
     def __init__(self, world_map, avatar_manager):
         self.world_map = world_map
         self.avatar_manager = avatar_manager
