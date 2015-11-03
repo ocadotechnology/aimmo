@@ -62,3 +62,6 @@ db.sqlite3
 # IntelliJ
 .idea
 *.iml
+
+# Probable VIRTUALENV directories
+VIRTUALENV
