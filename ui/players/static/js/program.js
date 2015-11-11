@@ -1,67 +1,73 @@
-$( document ).ready(function() {
-    var defaultProgram = "print 'Hello, world!'\nprint 'New line'";
+'use strict';
+window.$(function () {
+    var $ = window.$,
+        ace = window.ace,
+        messages = window.messages.program,
+        defaultProgram = "print 'Hello, world!'\nprint 'New line'",
+        editor = ace.edit("editor");
 
-    var editor = ace.edit("editor");
+
+    $('#saveBtn').attr('value', messages.save);
+    $('#aimmo-program-description').text(messages.description);
+
+    editor.$blockScrolling = Infinity;
     editor.setTheme("ace/theme/monokai");
     editor.getSession().setMode("ace/mode/python");
 
-    var setButtonsEnabled = function(enableStatus){
-        $('#saveBtn').prop('disabled', !enableStatus);
-    };
+    function showAlert(data) {
+        var alerts = $('#alerts'),
+            outer = $('#aimmo-alert-message-outer'),
+            inner = $('#aimmo-alert-message-inner');
 
-    var startsWith = function(string, prefix) {
-        return string.slice(0, prefix.length) == prefix;
-    };
+        alerts.toggleClass('alert-success', data.status === "OK");
+        alerts.toggleClass('alert-danger', data.status !== "OK");
 
-    var showAlert = function(alertString){
-        var alertText = $('#alerts');
-        alertText.html(alertString + '<button type="button" class="close" aria-hidden="true">x</button>');
-        $(".close").click(function(){
-            alertText.hide();
-        });
-        alertText.show();
-    };
+        if (data.message) {
+            outer.show();
+            if (data.message.constructor === Array) {
+                data.message.forEach(function (stackframe) {
+                    inner.append("<div>" + stackframe.trim() + "<div>");
+                });
+            } else {
+                inner.text(data.message);
+            }
+        } else {
+            outer.hide();
+        }
+
+        $('#aimmo-alert-text').text(messages[data.status] || messages.UNKNOWN_ERROR);
+        $('#alerts').show();
+    }
 
     $.ajax({
         //TODO - get URL
         url: '/api/code/',
         type: 'GET',
         dataType: 'text',
-        success: function(data) {
+        success: function (data) {
             editor.setValue(data);
             editor.selection.moveCursorFileStart();
         },
-        error: function(jqXHR, textStatus, errorThrown) {
-            showAlert('Could not retrieve saved data');
+        error: function () {
+            showAlert({status: 'COULD_NOT_RETRIEVE_SAVED_DATA'});
             editor.setValue(defaultProgram);
             editor.selection.moveCursorFileStart();
         }
     });
 
-    $('#saveBtn').click(function(event){
+    $('#saveBtn').click(function (event) {
         event.preventDefault();
         $.ajax({
             //TODO - get URL
             url: '/api/code/',
             type: 'POST',
             data: {code: editor.getValue(), csrfmiddlewaretoken: $('#saveForm input[name=csrfmiddlewaretoken]').val()},
-            success: function(data) {
+            success: function (data) {
                 $('#alerts').hide();
-
-                const USER_ERROR_RESPONSE = "USER_ERROR\n\n";
-                const SERVER_ERROR_RESPONSE = "SERVER_ERROR\n\n";
-                if (data == "OK") {
-                  // do nothing
-                } else if (startsWith(data, USER_ERROR_RESPONSE)) {
-                    showAlert('Your code has some problems:<br/><br/>' + data.slice(USER_ERROR_RESPONSE.length, data.length));
-                } else if (startsWith(data, SERVER_ERROR_RESPONSE)) {
-                    showAlert(data.slice(SERVER_ERROR_RESPONSE.length, data.length));
-                } else {
-                    showAlert('Unknown response from server');
-                }
+                showAlert(JSON.parse(data));
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                showAlert('An error has occurred whilst saving:' + errorThrown);
+                showAlert({status: 'ERROR_OCCURRED_WHILST_SAVING', message: errorThrown});
             }
         });
     });

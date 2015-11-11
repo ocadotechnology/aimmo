@@ -11,8 +11,8 @@ Avatar = None
 class UserCodeException(Exception):
     def to_user_string(self):
         exc_type, exc_value, exc_traceback = sys.exc_info()
-        lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
-        return '<br/>'.join(lines)
+        a = traceback.format_exception(exc_type, exc_value, exc_traceback)
+        return a
 
 
 class AvatarWrapper(object):
