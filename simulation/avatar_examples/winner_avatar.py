@@ -24,7 +24,7 @@ class Avatar(object):
         return abs(a.x - b.x) + abs(a.y - b.y)
         
     def get_closest_score_location(self):
-        return min(self.world_state.map_centred_at_me.generate_score_cells(), key=lambda cell: self.distance_between(cell.location, self.world_state.my_avatar.location)).location
+        return min(self.world_state.map_centred_at_me.score_cells(), key=lambda cell: self.distance_between(cell.location, self.world_state.my_avatar.location)).location
 
     def get_possible_directions(self):
         from simulation.direction import ALL_DIRECTIONS
