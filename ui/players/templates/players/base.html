@@ -40,7 +40,6 @@
                         {% block nav-program %}<li><a href="{% url 'program' %}">Program<span class="sr-only"> (current)</span></a></li>{% endblock %}
                         {% block nav-watch %}<li><a href="{% url 'watch' %}">Watch</a></li>{% endblock %}
                         {% block nav-statistics %}<li><a href="{% url 'statistics' %}">Statistics</a></li>{% endblock %}
-                        {% block nav-startgame %}<li><a href="{% url 'start_game' %}">Start Game</a></li>{% endblock %}
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if request.user.is_authenticated %}
