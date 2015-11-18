@@ -1,5 +1,7 @@
 {% extends 'players/base.html' %}
 
+{% block nav-watch %}<li class="active"><a href="{% url 'watch' %}">Watch</a></li>{% endblock %}
+
 {% block styles %}
 <link rel="stylesheet" type="text/css" href="/static/css/watch.css"/>
 {% endblock %}
