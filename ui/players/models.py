@@ -1,4 +1,5 @@
 from threading import Thread
+import os
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -29,5 +30,9 @@ def run_game():
 
     turn_manager.run_game()
 
-thread = Thread(target=run_game)
-thread.start()
+
+# TODO: this is temporary until we split the UI from the back-end
+if os.environ.get("RUN_MAIN") == "true":
+    thread = Thread(target=run_game)
+    thread.daemon = True
+    thread.start()
