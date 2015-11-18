@@ -7,7 +7,7 @@ from simulation.world_map import Cell, WorldMap
 
 def generate_map(height, width, obstacle_ratio):
     grid = [[Cell(Location(x, y)) for y in xrange(height)] for x in xrange(width)]
-    map = WorldMap(grid)
+    world_map = WorldMap(grid)
 
     # We designate one (non-corner) edge cell as empty, with two effects:
     #   - We ensure that the map can be expanded
@@ -19,10 +19,10 @@ def generate_map(height, width, obstacle_ratio):
         if (x, y) != (edge_x, edge_y) and random.random() < obstacle_ratio:
             cell = grid[x][y]
             cell.habitable = False
-            if not _all_habitable_neighbours_of_cell1_can_reach_cell2(cell, always_empty_edge_cell, map):
+            if not _all_habitable_neighbours_of_cell1_can_reach_cell2(cell, always_empty_edge_cell, world_map):
                 cell.habitable = True
 
-    return map
+    return world_map
 
 
 def _get_edge_coordinates(height, width):
@@ -37,21 +37,21 @@ def shuffled(iterable):
     return iter(values)
 
 
-def _all_habitable_neighbours_of_cell1_can_reach_cell2(cell1, cell2, map):
-    neighbours = get_adjacent_habitable_cells(cell1, map)
-    shortest_paths = (get_shortest_path_between(cell2, neighbour_cell, map) for neighbour_cell in neighbours)
+def _all_habitable_neighbours_of_cell1_can_reach_cell2(cell1, cell2, world_map):
+    neighbours = get_adjacent_habitable_cells(cell1, world_map)
+    shortest_paths = (get_shortest_path_between(cell2, neighbour_cell, world_map) for neighbour_cell in neighbours)
     reachable = (path is not None for path in shortest_paths)
     return all(reachable)
 
 
-def get_shortest_path_between(cell1, cell2, map):
+def get_shortest_path_between(cell1, cell2, world_map):
     branches = PriorityQueue(key=lambda b: len(b), init_items=[[cell1]])
     visited_cells = set()
 
     while branches:
         branch = branches.pop()
 
-        for cell in get_adjacent_habitable_cells(branch[-1], map):
+        for cell in get_adjacent_habitable_cells(branch[-1], world_map):
             if cell in visited_cells:
                 continue
 
@@ -96,8 +96,8 @@ def get_random_edge_index(height, width, rng=random):
     raise ValueError('Should not be reachable')
 
 
-def get_adjacent_habitable_cells(cell, map):
-    return [c for c in (map.get_cell(cell.location + d) for d in ALL_DIRECTIONS) if c and c.habitable]
+def get_adjacent_habitable_cells(cell, world_map):
+    return [c for c in (world_map.get_cell(cell.location + d) for d in ALL_DIRECTIONS) if c and c.habitable]
 
 
 class PriorityQueue(object):
