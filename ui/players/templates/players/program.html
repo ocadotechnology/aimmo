@@ -1,5 +1,7 @@
 {% extends 'players/base.html' %}
 
+{% block nav-program %}<li class="active"><a href="{% url 'program' %}">Program<span class="sr-only"> (current)</span></a></li>{% endblock %}
+
 {% block content %}
 <div class="row">
     <h2>Program</h2>
