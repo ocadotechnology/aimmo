@@ -45,7 +45,12 @@ def _all_habitable_neighbours_of_cell1_can_reach_cell2(cell1, cell2, world_map):
 
 
 def get_shortest_path_between(cell1, cell2, world_map):
-    branches = PriorityQueue(key=lambda b: len(b), init_items=[[cell1]])
+
+    def manhattan_distance_to_cell2(this_branch):
+        branch_tip_location = this_branch[-1].location
+        abs(branch_tip_location.x - cell2.location.x) + abs(branch_tip_location.y - cell2.location.y) + len(this_branch)
+
+    branches = PriorityQueue(key=manhattan_distance_to_cell2, init_items=[[cell1]])
     visited_cells = set()
 
     while branches:
