@@ -101,7 +101,7 @@ def get_adjacent_habitable_cells(cell, world_map):
 
 
 class PriorityQueue(object):
-    def __init__(self, key, init_items=[]):
+    def __init__(self, key, init_items=tuple()):
         self.key = key
         self.heap = [self._build_tuple(i) for i in init_items]
         heapq.heapify(self.heap)
