@@ -66,6 +66,10 @@ def _post_server_error_response(message):
 def _post_code_ok_response():
     return HttpResponse("OK")
 
+def _post_code_success_response(message):
+    return HttpResponse("SUCCESS\n\n" + message)
+
+
 
 @login_required
 def code(request):
@@ -84,6 +88,6 @@ def code(request):
         finally:
             world_state_provider.release_lock()
         
-        return _post_code_ok_response()
+        return _post_code_success_response("dsdsd")
     else:
         return HttpResponse(request.user.player.code)

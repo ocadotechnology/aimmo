@@ -13,9 +13,22 @@ $( document ).ready(function() {
         return string.slice(0, prefix.length) == prefix;
     };
 
-    var showAlert = function(alertString){
+    var showGreenAlert = function(alertString) {
         var alertText = $('#alerts');
         alertText.html(alertString + '<button type="button" class="close" aria-hidden="true">x</button>');
+        if (alertText.addClass('alert-danger')) { alertText.removeClass('alert-danger'); }
+        alertText.addClass('alert-success');
+        $(".close").click(function() {
+            alertText.hide();
+        });
+        alertText.show();
+    };
+
+    var showAlert = function(alertString) {
+        var alertText = $('#alerts');
+        alertText.html(alertString + '<button type="button" class="close" aria-hidden="true">x</button>');
+        if (alertText.addClass('alert-success')) { alertText.removeClass('alert-success'); }
+        alertText.addClass('alert-danger');
         $(".close").click(function(){
             alertText.hide();
         });
@@ -50,8 +63,11 @@ $( document ).ready(function() {
 
                 const USER_ERROR_RESPONSE = "USER_ERROR\n\n";
                 const SERVER_ERROR_RESPONSE = "SERVER_ERROR\n\n";
+                const SUCCESS_RESPONSE = "SUCCESS\n\n";
                 if (data == "OK") {
                   // do nothing
+                } else if (startsWith(data, SUCCESS_RESPONSE)) {
+                    showGreenAlert('Your operation was completed!<br/><br/>' + data.slice(SUCCESS_RESPONSE.length, data.length));
                 } else if (startsWith(data, USER_ERROR_RESPONSE)) {
                     showAlert('Your code has some problems:<br/><br/>' + data.slice(USER_ERROR_RESPONSE.length, data.length));
                 } else if (startsWith(data, SERVER_ERROR_RESPONSE)) {
