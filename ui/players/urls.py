@@ -12,7 +12,6 @@ urlpatterns = [
 
     url('^accounts/register/', views.register, name='register'),
 
-    url(r'^start_game/$', views.start_game, name='start_game'),
     url(r'^program/$', login_required(TemplateView.as_view(template_name='players/program.html')), name='program'),
     url(r'^watch/$', TemplateView.as_view(template_name='players/watch.html'), name='watch'),
     url(r'^statistics/$', TemplateView.as_view(template_name='players/statistics.html'), name='statistics'),

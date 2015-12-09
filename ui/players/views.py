@@ -1,19 +1,14 @@
-from threading import Thread
 import logging
 
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
 
-from simulation.avatar.avatar_wrapper import UserCodeException
-from simulation.avatar.avatar_manager import AvatarManager
-import simulation.map_generator
-from simulation.turn_manager import TurnManager
-from simulation.turn_manager import world_state_provider
-from simulation.game_state import GameState
 from models import Player
+from simulation.avatar.avatar_wrapper import UserCodeException
+from simulation.turn_manager import world_state_provider
 
 
 # TODO: move all views that just render a template over to using django generic views
@@ -37,22 +32,6 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'accounts/register.html', {'form': form})
-
-
-def run_game():
-    print("Running game...")
-    my_map = simulation.map_generator.generate_map(15, 15, 0.1)
-    player_manager = AvatarManager([])
-    game_state = GameState(my_map, player_manager)
-    turn_manager = TurnManager(game_state)
-
-    turn_manager.run_game()
-
-
-def start_game(request):
-    thread = Thread(target=run_game)
-    thread.start()
-    return redirect('home')
 
 
 def _post_code_error_response(message):
