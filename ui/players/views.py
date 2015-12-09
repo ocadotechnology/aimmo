@@ -67,6 +67,6 @@ def code(request):
         finally:
             world_state_provider.release_lock()
         
-        return _post_code_success_response("dsdsd")
+        return _post_code_success_response("Your code was saved!")
     else:
         return HttpResponse(request.user.player.code)
