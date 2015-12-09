@@ -51,13 +51,13 @@ def _all_habitable_neighbours_can_reach_each_other(cell, world_map):
     return all(get_shortest_path_between(n1, n2, world_map) is not None for n1, n2 in pairwise(neighbours))
 
 
-def get_shortest_path_between(cell1, cell2, world_map):
+def get_shortest_path_between(source_cell, destination_cell, world_map):
 
-    def manhattan_distance_to_cell2(this_branch):
+    def manhattan_distance_to_destination_cell(this_branch):
         branch_tip_location = this_branch[-1].location
-        abs(branch_tip_location.x - cell2.location.x) + abs(branch_tip_location.y - cell2.location.y) + len(this_branch)
+        abs(branch_tip_location.x - destination_cell.location.x) + abs(branch_tip_location.y - destination_cell.location.y) + len(this_branch)
 
-    branches = PriorityQueue(key=manhattan_distance_to_cell2, init_items=[[cell1]])
+    branches = PriorityQueue(key=manhattan_distance_to_destination_cell, init_items=[[source_cell]])
     visited_cells = set()
 
     while branches:
@@ -71,7 +71,7 @@ def get_shortest_path_between(cell1, cell2, world_map):
 
             new_branch = branch + [cell]
 
-            if cell == cell2:
+            if cell == destination_cell:
                 return new_branch
 
             branches.push(new_branch)
