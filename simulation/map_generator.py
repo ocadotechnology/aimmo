@@ -11,14 +11,14 @@ def generate_map(height, width, obstacle_ratio):
     grid = [[Cell(Location(x, y)) for y in xrange(height)] for x in xrange(width)]
     world_map = WorldMap(grid)
 
-    # We designate one (non-corner) edge cell as empty, to ensure that the map can be expanded
+    # We designate one non-corner edge cell as empty, to ensure that the map can be expanded
     always_empty_edge_x, always_empty_edge_y = get_random_edge_index(height, width)
 
     for x, y in shuffled(_get_edge_coordinates(height, width)):
         if (x, y) != (always_empty_edge_x, always_empty_edge_y) and random.random() < obstacle_ratio:
             cell = grid[x][y]
             cell.habitable = False
-            #   So long as all neighbours can still reach other, then the map cannot get bisected
+            #   So long as all habitable neighbours can still reach each other, then the map cannot get bisected
             if not _all_habitable_neighbours_can_reach_each_other(cell, world_map):
                 cell.habitable = True
 
@@ -38,7 +38,7 @@ def shuffled(iterable):
 
 
 def pairwise(iterable):
-    "s -> (s0,s1), (s1,s2), (s2, s3), ..."
+    """s -> (s0,s1), (s1,s2), (s2, s3), ..."""
     a, b = tee(iterable)
     next(b, None)
     return izip(a, b)
