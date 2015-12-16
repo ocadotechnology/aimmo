@@ -45,7 +45,6 @@ def get_world_state(request):
             'players': player_data,
             'score_locations': [(cell.location.x, cell.location.y) for cell in world.world_map.score_cells()],
             'pickup_locations': [(cell.location.x, cell.location.y) for cell in world.world_map.pickup_cells()],
-
             'map_changed': True,  # TODO: experiment with only sending deltas (not if not required)
             'width': num_cols,
             'height': num_rows,
