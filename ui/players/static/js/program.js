@@ -59,9 +59,7 @@ $( document ).ready(function() {
                 const USER_ERROR_RESPONSE = "USER_ERROR\n\n";
                 const SERVER_ERROR_RESPONSE = "SERVER_ERROR\n\n";
                 const SUCCESS_RESPONSE = "SUCCESS\n\n";
-                if (data == "OK") {
-                  // do nothing
-                } else if (startsWith(data, SUCCESS_RESPONSE)) {
+                if (startsWith(data, SUCCESS_RESPONSE)) {
                     showAlert('Success:<br/><br/>' + data.slice(SUCCESS_RESPONSE.length, data.length), SUCCESS_CLASS);
                 } else if (startsWith(data, USER_ERROR_RESPONSE)) {
                     showAlert('Your code has some problems:<br/><br/>' + data.slice(USER_ERROR_RESPONSE.length, data.length), DANGER_CLASS);

@@ -42,12 +42,8 @@ def _post_server_error_response(message):
     return HttpResponse("SERVER_ERROR\n\n" + message)
 
 
-def _post_code_ok_response():
-    return HttpResponse("OK")
-
 def _post_code_success_response(message):
     return HttpResponse("SUCCESS\n\n" + message)
-
 
 
 @login_required
