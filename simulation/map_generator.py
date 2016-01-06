@@ -1,7 +1,6 @@
 import heapq
 import random
 from itertools import tee, izip
-
 from simulation.direction import ALL_DIRECTIONS
 from simulation.location import Location
 from simulation.world_map import Cell, WorldMap
@@ -109,7 +108,11 @@ def get_random_edge_index(height, width, rng=random):
 
 
 def get_adjacent_habitable_cells(cell, world_map):
-    return [c for c in (world_map.get_cell(cell.location + d) for d in ALL_DIRECTIONS) if c and c.habitable]
+    adjacent_locations = [cell.location + d for d in ALL_DIRECTIONS]
+    adjacent_locations = [location for location in adjacent_locations if world_map.is_on_map(location)]
+
+    adjacent_cells = [world_map.get_cell(location) for location in adjacent_locations]
+    return [c for c in adjacent_cells if c.habitable]
 
 
 class PriorityQueue(object):

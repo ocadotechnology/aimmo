@@ -61,16 +61,22 @@ class WorldMap(object):
         return (c for c in self.all_cells() if c.pickup)
 
     def is_on_map(self, location):
-        num_cols = len(self.grid)
-        num_rows = len(self.grid[0])
-        return (0 <= location.y < num_rows) and (0 <= location.x < num_cols)
+        return (0 <= location.y < self.num_rows) and (0 <= location.x < self.num_cols)
 
     def get_cell(self, location):
         if not self.is_on_map(location):
-            return None
+            raise ValueError('Location %s is not on the map' % location)
         cell = self.grid[location.x][location.y]
         assert cell.location == location, 'location lookup mismatch: arg={}, found={}'.format(location, cell.location)
         return cell
+
+    @property
+    def num_rows(self):
+        return len(self.grid[0])
+
+    @property
+    def num_cols(self):
+        return len(self.grid)
 
     def reconstruct_interactive_state(self, num_avatars):
         self.reset_score_locations(num_avatars)
