@@ -28,7 +28,7 @@ $( document ).ready(function() {
     });
 
     var checkStatus = function(data) {
-        if (data !== null && StatusCode[data.status] !== null) {
+        if (data != undefined && StatusCode[data.status] != undefined) {
             return StatusCode[data.status](data.message);
         } else {
             return showAlert('An unknown error has occurred whilst saving:', DANGER_CLASS);
