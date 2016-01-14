@@ -53,7 +53,7 @@ def create_response(status, message):
         "status": status,
         "message": message
     }
-    return HttpResponse(json.dumps(response))
+    return HttpResponse(json.dumps(response), content_type='application/json')
 
 
 @login_required
