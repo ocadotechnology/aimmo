@@ -1,5 +1,5 @@
 import logging
-import json
+from django.http import JsonResponse
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -53,7 +53,7 @@ def create_response(status, message):
         "status": status,
         "message": message
     }
-    return HttpResponse(json.dumps(response))
+    return JsonResponse(response)
 
 
 @login_required
