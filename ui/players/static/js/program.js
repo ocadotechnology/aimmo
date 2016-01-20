@@ -1,7 +1,6 @@
 $( document ).ready(function() {
-
     const DANGER_CLASS = 'alert-danger';
-    const SUCCESS_CLASS = 'alert-success'
+    const SUCCESS_CLASS = 'alert-success';
 
     var defaultProgram = "print 'Hello, world!'\nprint 'New line'";
 
@@ -9,16 +8,8 @@ $( document ).ready(function() {
     editor.setTheme("ace/theme/monokai");
     editor.getSession().setMode("ace/mode/python");
 
-    var setButtonsEnabled = function(enableStatus) {
-        $('#saveBtn').prop('disabled', !enableStatus);
-    };
-
-    var startsWith = function(string, prefix) {
-        return string.slice(0, prefix.length) == prefix;
-    };
-
     var showAlert = function(alertString, alertType) {
-        if (alertType == DANGER_CLASS || alertType == SUCCESS_CLASS) {
+        if (alertType === DANGER_CLASS || alertType === SUCCESS_CLASS) {
             var alertText = $('#alerts');
             alertText.removeClass('alert-success alert-danger');
             alertText.addClass(alertType);
@@ -27,6 +18,20 @@ $( document ).ready(function() {
                 alertText.hide();
             });
             alertText.show();
+        }
+    };
+
+    const StatusCode = Object.freeze({
+        "SUCCESS": function(message) { showAlert('Success:<br/><br/>' + message, SUCCESS_CLASS); },
+        "SERVER_ERROR": function(message) { showAlert(message, DANGER_CLASS); },
+        "USER_ERROR": function(message) { showAlert('Your code has some problems:<br/><br/>' + message, DANGER_CLASS); },
+    });
+
+    var checkStatus = function(data) {
+        if (data != undefined && StatusCode[data.status] != undefined) {
+            return StatusCode[data.status](data.message);
+        } else {
+            return showAlert('An unknown error has occurred whilst saving:', DANGER_CLASS);
         }
     };
 
@@ -52,25 +57,14 @@ $( document ).ready(function() {
             //TODO - get URL
             url: '/api/code/',
             type: 'POST',
+            dataType: 'json',
             data: {code: editor.getValue(), csrfmiddlewaretoken: $('#saveForm input[name=csrfmiddlewaretoken]').val()},
             success: function(data) {
                 $('#alerts').hide();
-
-                const USER_ERROR_RESPONSE = "USER_ERROR\n\n";
-                const SERVER_ERROR_RESPONSE = "SERVER_ERROR\n\n";
-                const SUCCESS_RESPONSE = "SUCCESS\n\n";
-                if (startsWith(data, SUCCESS_RESPONSE)) {
-                    showAlert('Success:<br/><br/>' + data.slice(SUCCESS_RESPONSE.length, data.length), SUCCESS_CLASS);
-                } else if (startsWith(data, USER_ERROR_RESPONSE)) {
-                    showAlert('Your code has some problems:<br/><br/>' + data.slice(USER_ERROR_RESPONSE.length, data.length), DANGER_CLASS);
-                } else if (startsWith(data, SERVER_ERROR_RESPONSE)) {
-                    showAlert(data.slice(SERVER_ERROR_RESPONSE.length, data.length), DANGER_CLASS);
-                } else {
-                    showAlert('Unknown response from server');
-                }
+                checkStatus(data);
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                showAlert('An error has occurred whilst saving:' + errorThrown);
+                showAlert('An error has occurred whilst saving: ' + errorThrown, DANGER_CLASS);
             }
         });
     });

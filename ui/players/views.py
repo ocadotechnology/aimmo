@@ -1,4 +1,5 @@
 import logging
+from django.http import JsonResponse
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -9,6 +10,7 @@ from django.shortcuts import render, redirect
 from models import Player
 from simulation.avatar.avatar_wrapper import UserCodeException
 from simulation.turn_manager import world_state_provider
+
 
 
 # TODO: move all views that just render a template over to using django generic views
@@ -35,15 +37,23 @@ def register(request):
 
 
 def _post_code_error_response(message):
-    return HttpResponse("USER_ERROR\n\n" + message)
+    return create_response("USER_ERROR", message)
 
 
 def _post_server_error_response(message):
-    return HttpResponse("SERVER_ERROR\n\n" + message)
+    return create_response("SERVER_ERROR", message)
 
 
 def _post_code_success_response(message):
-    return HttpResponse("SUCCESS\n\n" + message)
+    return create_response("SUCCESS", message)
+
+
+def create_response(status, message):
+    response = {
+        "status": status,
+        "message": message
+    }
+    return JsonResponse(response)
 
 
 @login_required
