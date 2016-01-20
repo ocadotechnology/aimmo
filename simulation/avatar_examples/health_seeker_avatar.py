@@ -23,7 +23,7 @@ class Avatar(object):
         return abs(a.x - b.x) + abs(a.y - b.y)
 
     def get_closest_pickup_location(self):
-        c = min(self.world_state.map_centred_at_me.generate_pickup_cells(), key=lambda cell: self.distance_between(cell.location, self.world_state.my_avatar.location))
+        c = min(self.world_state.map_centred_at_me.pickup_cells(), key=lambda cell: self.distance_between(cell.location, self.world_state.my_avatar.location))
         print 'targeting', c
         return c.location
 

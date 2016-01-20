@@ -1,12 +1,14 @@
 {% extends 'players/base.html' %}
 
+{% block nav-program %}<li class="active"><a href="{% url 'program' %}">Program<span class="sr-only"> (current)</span></a></li>{% endblock %}
+
 {% block content %}
 <div class="row">
     <h2>Program</h2>
     <p>Use the box below to program your Avatar. Save using the button on the right.</p>
 </div>
 <div class="row">
-    <div id="alerts" class="alert alert-danger collapse" role="alert">
+    <div id="alerts" class="alert collapse" role="alert">
     </div>
 </div>
 <div class="row">

@@ -63,5 +63,5 @@ db.sqlite3
 .idea
 *.iml
 
-# Probable VIRTUALENV directories
-VIRTUALENV
+# static folder
+static/

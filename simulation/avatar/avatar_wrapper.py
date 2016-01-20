@@ -9,9 +9,12 @@ Avatar = None
 
 
 class UserCodeException(Exception):
+    def __init__(self, *args, **kwargs):
+        super(Exception, self).__init__(*args, **kwargs)
+        self.exc_type, self.exc_value, self.exc_traceback = sys.exc_info()
+
     def to_user_string(self):
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
+        lines = traceback.format_exception(self.exc_type, self.exc_value, self.exc_traceback)
         return '<br/>'.join(lines)
 
 

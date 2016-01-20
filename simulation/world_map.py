@@ -48,60 +48,62 @@ class WorldMap(object):
     def __init__(self, grid):
         self.grid = grid
 
-    def generate_all_cells(self):
+    def all_cells(self):
         return (cell for sublist in self.grid for cell in sublist)
 
-    @property
-    def all_cells(self):
-        return list(self.generate_all_cells())
+    def score_cells(self):
+        return (c for c in self.all_cells() if c.generates_score)
 
-    def generate_score_cells(self):
-        return (c for c in self.generate_all_cells() if c.generates_score)
+    def potential_spawn_locations(self):
+        return (c for c in self.all_cells() if c.habitable and not c.generates_score and not c.avatar and not c.pickup)
 
-    def generate_potential_spawn_locations(self):
-        return (c for c in self.generate_all_cells() if c.habitable and not c.generates_score and not c.avatar and not c.pickup)
-
-    def generate_pickup_cells(self):
-        return (c for c in self.generate_all_cells() if c.pickup)
+    def pickup_cells(self):
+        return (c for c in self.all_cells() if c.pickup)
 
     def is_on_map(self, location):
-        num_cols = len(self.grid)
-        num_rows = len(self.grid[0])
-        return (0 <= location.y < num_rows) and (0 <= location.x < num_cols)
+        return (0 <= location.y < self.num_rows) and (0 <= location.x < self.num_cols)
 
     def get_cell(self, location):
         if not self.is_on_map(location):
-            return None
+            raise ValueError('Location %s is not on the map' % location)
         cell = self.grid[location.x][location.y]
         assert cell.location == location, 'location lookup mismatch: arg={}, found={}'.format(location, cell.location)
         return cell
+
+    @property
+    def num_rows(self):
+        return len(self.grid[0])
+
+    @property
+    def num_cols(self):
+        return len(self.grid)
 
     def reconstruct_interactive_state(self, num_avatars):
         self.reset_score_locations(num_avatars)
         self.add_pickups(num_avatars)
 
     def reset_score_locations(self, num_avatars):
-        for cell in self.generate_score_cells():
+        for cell in self.score_cells():
             if random.random() < SCORE_DESPAWN_CHANCE:
                 cell.generates_score = False
 
-        new_num_score_locations = len(list(self.generate_score_cells()))
+        new_num_score_locations = len(list(self.score_cells()))
         target_num_score_locations = int(math.ceil(num_avatars * TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR))
         num_score_locations_to_add = target_num_score_locations - new_num_score_locations
         if num_score_locations_to_add > 0:
-            for cell in random.sample(list(self.generate_potential_spawn_locations()), num_score_locations_to_add):
+            for cell in random.sample(list(self.potential_spawn_locations()), num_score_locations_to_add):
                 cell.generates_score = True
 
     def add_pickups(self, num_avatars):
         target_num_pickups = int(math.ceil(num_avatars * TARGET_NUM_PICKUPS_PER_AVATAR))
-        max_num_pickups_to_add = target_num_pickups - len(list(self.generate_pickup_cells()))
+        max_num_pickups_to_add = target_num_pickups - len(list(self.pickup_cells()))
         if max_num_pickups_to_add > 0:
-            for cell in random.sample(list(self.generate_potential_spawn_locations()), max_num_pickups_to_add):
+            for cell in random.sample(list(self.potential_spawn_locations()), max_num_pickups_to_add):
                 if random.random() < PICKUP_SPAWN_CHANCE:
                     cell.pickup = HealthPickup()
 
     def get_random_spawn_location(self):
-        return random.choice(list(self.generate_potential_spawn_locations())).location
+        return random.choice(list(self.potential_spawn_locations())).location
 
     # TODO: cope with negative coords (here and possibly in other places)
     def can_move_to(self, target_location):

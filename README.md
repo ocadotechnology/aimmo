@@ -16,3 +16,16 @@ A **M**assively **M**ulti-player **O**nline game, where players create **A**rtif
 - In-browser editor: https://c9.io/ or http://ace.c9.io/#nav=about (think cloud9 just uses Ace) or https://codemirror.net/
 - Game view (so players can see their avatars play the game)
 - Statistics
+
+### Setting up
+Initial installation:
+
+    pip install -r requirements.txt
+
+Start the game server:
+
+    python ui/manage.py runserver
+
+If you encounter migration issues, run:
+
+    python ui/manage.py migrate
