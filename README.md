@@ -18,14 +18,13 @@ A **M**assively **M**ulti-player **O**nline game, where players create **A**rtif
 - Statistics
 
 ### Setting up
-Initial installation:
-
-    pip install -r requirements.txt
-
-Start the game server:
-
-    python ui/manage.py runserver
-
-If you encounter migration issues, run:
-
-    python ui/manage.py migrate
+* Clone the repo
+* Make and activate a virtualenv (We recommend [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/index.html) - [this blog post](http://mkelsey.com/2013/04/30/how-i-setup-virtualenv-and-virtualenvwrapper-on-my-mac/) may also be
+ useful if you're using a Mac)
+    * e.g. the first time, `mkvirtualenv -a path/to/aimmo aimmo`
+    * and thereafter `workon aimmo`
+* `./run` in your aimmo dir - This will:
+    * install all of the dependencies using pip
+    * sync the database
+    * collect the static files
+    * run the server

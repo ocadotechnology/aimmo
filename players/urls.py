@@ -18,4 +18,6 @@ urlpatterns = [
 
     url(r'^api/code/$', views.code, name='code'),
     url(r'^api/watch/state$', watch_views.get_world_state, name='get_world_state'),
+
+    url(r'^jsreverse/$', 'django_js_reverse.views.urls_js', name='js_reverse'),  # TODO: Pull request to make django_js_reverse.urls
 ]
