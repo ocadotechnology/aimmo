@@ -64,4 +64,4 @@ db.sqlite3
 *.iml
 
 # static folder
-static/
+example_project/example_project/static/

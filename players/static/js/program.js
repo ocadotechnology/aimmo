@@ -36,8 +36,7 @@ $( document ).ready(function() {
     };
 
     $.ajax({
-        //TODO - get URL
-        url: '/api/code/',
+        url: Urls.code(),
         type: 'GET',
         dataType: 'text',
         success: function(data) {
@@ -54,8 +53,7 @@ $( document ).ready(function() {
     $('#saveBtn').click(function(event) {
         event.preventDefault();
         $.ajax({
-            //TODO - get URL
-            url: '/api/code/',
+            url: Urls.code(),
             type: 'POST',
             dataType: 'json',
             data: {code: editor.getValue(), csrfmiddlewaretoken: $('#saveForm input[name=csrfmiddlewaretoken]').val()},
