@@ -8,8 +8,6 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 from models import Player
-from simulation.avatar.avatar_wrapper import UserCodeException
-from simulation.turn_manager import world_state_provider
 
 
 
@@ -24,7 +22,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
 
-            with open("simulation/avatar_examples/dumb_avatar.py") as initial_code_file:
+            with open("players/avatar_examples/dumb_avatar.py") as initial_code_file:
                 initial_code = initial_code_file.read()
 
             Player(user=user, code=initial_code).save()
@@ -61,18 +59,21 @@ def code(request):
     if request.method == 'POST':
         request.user.player.code = request.POST['code']
         request.user.player.save()
-        try:
-            world = world_state_provider.lock_and_get_world()
-            # TODO: deal with this in a better way
-            if world is None:
-                return _post_server_error_response('Your code was saved, but the game has not started yet!')
 
-            world.player_changed_code(request.user.id, request.user.player.code)
-        except UserCodeException as ex:
-            return _post_code_error_response(ex.to_user_string())
-        finally:
-            world_state_provider.release_lock()
-        
         return _post_code_success_response("Your code was saved!")
     else:
         return HttpResponse(request.user.player.code)
+
+def games(request):
+    response = {
+        'main': {
+            'parameters': [],
+            'users': [
+                {
+                    'id': player.user.pk,
+                    'code': player.code,
+                } for player in Player.objects.all()
+            ]
+        }
+    }
+    return JsonResponse(response)

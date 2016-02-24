@@ -47,7 +47,7 @@ const CONTROLS = Object.create({
 });
 
 function refreshState() {
-    $.ajax(Urls.get_world_state(), {
+    $.ajax('http://localhost:5000', {
         success : function(data) {
             if(data.map_changed){
                 CONTROLS.initialiseWorld(data.width, data.height, data.layout);
