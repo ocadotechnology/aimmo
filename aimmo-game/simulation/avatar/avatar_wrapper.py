@@ -32,6 +32,7 @@ class AvatarWrapper(object):
         self.avatar_appearance = avatar_appearance
         self.avatar = None
 
+        self.code = ''
         self.set_code(initial_code)
 
     def handle_turn(self, state):
@@ -57,14 +58,14 @@ class AvatarWrapper(object):
         self.events.append(event)
 
     def set_code(self, code):
-        self.code = code
-        try:
-            exec(code)
-            self.avatar = Avatar()
-        except Exception as ex:
-            raise UserCodeException("Exception in user code", ex)
+        if self.code != code:
+            self.code = code
+            try:
+                exec(code)
+                self.avatar = Avatar()
+            except Exception as ex:
+                raise UserCodeException("Exception in user code", ex)
 
     def __repr__(self):
         return 'Avatar(id={}, location={}, health={}, score={})'.format(self.player_id, self.location,
                                                                         self.health, self.score)
-

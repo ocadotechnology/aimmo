@@ -1,8 +1,20 @@
-from django.http import JsonResponse
-from simulation.location import Location
+#!/usr/bin/env python
+import logging
+
 from simulation.turn_manager import world_state_provider
-from simulation.world_map import Cell
-from django.core.serializers.json import DjangoJSONEncoder
+
+from simulation import map_generator
+from simulation.avatar.avatar_manager import AvatarManager
+from simulation.game_state import GameState
+from simulation.turn_manager import TurnManager
+
+from threading import Thread
+import os
+
+import flask
+from flask.ext.cors import CORS
+app = flask.Flask(__name__)
+CORS(app)
 
 
 def to_cell_type(cell):
@@ -32,7 +44,8 @@ def player_dict(avatar):
     }
 
 
-def get_world_state(request):
+@app.route('/')
+def get_world_state():
     try:
         world = world_state_provider.lock_and_get_world()
         num_cols = len(world.world_map.grid)
@@ -40,8 +53,8 @@ def get_world_state(request):
         grid = [[None for x in xrange(num_cols)] for y in xrange(num_rows)]
         for cell in world.world_map.all_cells():
             grid[cell.location.x][cell.location.y] = to_cell_type(cell)
-        player_data = {p.player_id: player_dict(p) for p in world.avatar_manager.avatarsById.values()}
-        return JsonResponse({
+        player_data = {p.player_id: player_dict(p) for p in world.avatar_manager.avatars}
+        return flask.jsonify(**{
             'players': player_data,
             'score_locations': [(cell.location.x, cell.location.y) for cell in world.world_map.score_cells()],
             'pickup_locations': [(cell.location.x, cell.location.y) for cell in world.world_map.pickup_cells()],
@@ -52,3 +65,23 @@ def get_world_state(request):
         })
     finally:
         world_state_provider.release_lock()
+
+
+def run_game():
+    print("Running game...")
+    my_map = map_generator.generate_map(15, 15, 0.1)
+    player_manager = AvatarManager([])
+    game_state = GameState(my_map, player_manager)
+    turn_manager = TurnManager(game_state)
+
+    turn_manager.run_game()
+
+
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
+
+    thread = Thread(target=run_game)
+    thread.daemon = True
+    thread.start()
+    app.config['DEBUG'] = True
+    app.run()

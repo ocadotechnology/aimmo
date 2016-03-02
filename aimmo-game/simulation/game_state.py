@@ -1,5 +1,11 @@
-from client.world_view import WorldView
 from simulation.avatar import fog_of_war
+
+
+class WorldView(object):
+    def __init__(self, avatar_state, terrain_view, avatar_manager):
+        self.avatar_state = avatar_state
+        self.world_view = terrain_view
+        self.avatar_manager = avatar_manager
 
 
 class GameState(object):
