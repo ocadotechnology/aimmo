@@ -42,7 +42,7 @@ class TurnManager(object):
         world_state_provider.set_world(game_state)
 
     def _update_environment(self, game_state):
-        num_avatars = len(game_state.avatar_manager.avatarsById)
+        num_avatars = len(game_state.avatar_manager.active_avatars)
         game_state.world_map.reconstruct_interactive_state(num_avatars)
 
     def run_turn(self):
@@ -51,7 +51,7 @@ class TurnManager(object):
 
             self.update_avatars(game_state)
 
-            for avatar in game_state.avatar_manager.avatarsById.values():
+            for avatar in game_state.avatar_manager.active_avatars:
                 avatar.handle_turn(game_state.get_state_for(avatar)).apply(game_state, avatar)
 
             self._update_environment(game_state)

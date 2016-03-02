@@ -18,3 +18,7 @@ class AvatarManager(object):
     @property
     def avatars(self):
         return self.avatarsById.viewvalues()
+
+    @property
+    def active_avatars(self):
+        return [player for player in self.avatars if player.code]

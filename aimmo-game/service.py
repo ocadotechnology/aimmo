@@ -53,7 +53,7 @@ def get_world_state():
         grid = [[None for x in xrange(num_cols)] for y in xrange(num_rows)]
         for cell in world.world_map.all_cells():
             grid[cell.location.x][cell.location.y] = to_cell_type(cell)
-        player_data = {p.player_id: player_dict(p) for p in world.avatar_manager.avatarsById.values()}
+        player_data = {p.player_id: player_dict(p) for p in world.avatar_manager.avatars}
         return flask.jsonify(**{
             'players': player_data,
             'score_locations': [(cell.location.x, cell.location.y) for cell in world.world_map.score_cells()],
