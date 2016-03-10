@@ -1,23 +1,44 @@
 # AI:MMO
 A **M**assively **M**ulti-player **O**nline game, where players create **A**rtificially **I**ntelligent programs to play on their behalf.
 
+## Objective
+People program Avatars. Avatars play the game. A player's aim is to create a better Avatar than other people's Avatars. A "better" Avatar is one that scores points faster than other people's Avatars.
+
+By getting people to compete to program better Avatars, we can teach them all sorts of algorithms and optimisation techniques. For example, a really good Avatar might incorporate AI techniques such as neural networks in order to make more optimal decisions.
+
+## The Game
+The world is a 2D grid. Some cells are impassable. Some cells generate score. Some cells contain pick-ups.
+
+There are other Avatars in the world. The more Avatars there are, the bigger the world gets.
+
+Time passes in turns. An Avatar may perform a single action every turn. They only have visibility of a small amount of the world around them.
+
+Avatars can only wait, move or attack.
+
+Even with these basic mechanics, there is quite a lot of complexity in creating an Avatar that is good at gaining score. For example, you may need to be able to find optimal paths from A to B. You may need to program your Avatar to remember the parts of the world that it has already encountered, so that you can find faster paths between locations. You may need to program your Avatar to machine learn when it is optimal to:
+- attack another player
+- run away from another player
+- try to find a health pick up
+- run to the score location
+- ...
+
 ## Architecture
 ### Core Game (Simulation)
-- Maintain state
-- Simulate environment events
-- Run player actions
+- Maintains game state
+- Simulates environment events
+- Runs player actions
 
 ### Sandboxed User-Submitted AI Players (Avatars)
-- Each player in their own sandbox: http://pypy.readthedocs.org/en/latest/sandbox.html
-- API into core game to get state and perform actions
+- Each avatar will run in their own sandbox so that we can securely deal with user-submitted code
+- Each avatar will interact with the core game to get state and perform actions
 
 ### Web Interface
 - Django
-- In-browser editor: https://c9.io/ or http://ace.c9.io/#nav=about (think cloud9 just uses Ace) or https://codemirror.net/
+- In-browser avatar code editor: http://ace.c9.io/#nav=about
 - Game view (so players can see their avatars play the game)
 - Statistics
 
-### Setting up
+## Running Locally
 * Clone the repo
 * Make and activate a virtualenv (We recommend [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/index.html) - [this blog post](http://mkelsey.com/2013/04/30/how-i-setup-virtualenv-and-virtualenvwrapper-on-my-mac/) may also be
  useful if you're using a Mac)
