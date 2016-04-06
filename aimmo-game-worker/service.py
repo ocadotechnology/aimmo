@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import logging
 
-from simulation.world_map import WorldMap
-
 import flask
+
+from simulation.world_map import WorldMap
 app = flask.Flask(__name__)
 
 avatar = None
@@ -14,7 +14,7 @@ def initialise():
     global avatar
 
     if avatar:
-        raise NotImplementedError
+        flask.abort(400, 'Unable to initialise Avatar service more than once.')
 
     data = flask.request.get_json()
 
@@ -38,7 +38,6 @@ def process_turn():
     return flask.jsonify(**{
         'action': action.serialise(),
     })
-
 
 
 if __name__ == '__main__':
