@@ -1,8 +1,3 @@
-import traceback
-import sys
-
-from simulation.action import WaitAction
-
 class AvatarWrapper(object):
     """
     The application's view of a character, not to be confused with "Avatar", the player-supplied code.

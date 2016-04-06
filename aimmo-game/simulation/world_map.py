@@ -1,8 +1,6 @@
 import random
 import math
 
-from simulation.direction import Direction
-
 
 
 # TODO: extract to settings
