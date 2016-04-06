@@ -2,7 +2,7 @@
 import requests
 import sys
 
-url = 'http://localhost:5000/initialise/'
+url = 'http://localhost:5001/initialise/'
 
 if len(sys.argv) > 1:
     avatar_file = sys.argv[1]

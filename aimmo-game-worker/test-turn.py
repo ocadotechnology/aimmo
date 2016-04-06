@@ -2,7 +2,7 @@
 import requests
 import sys
 
-url = 'http://localhost:5000/turn/'
+url = 'http://localhost:5001/turn/'
 
 api_data = {
     'world_map': {

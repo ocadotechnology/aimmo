@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import logging
+import sys
 
 from simulation.world_map import WorldMap
 
@@ -45,4 +46,4 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
     app.config['DEBUG'] = True
-    app.run()
+    app.run(port=int(sys.argv[1]))

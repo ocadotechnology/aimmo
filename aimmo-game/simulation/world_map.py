@@ -20,6 +20,11 @@ class HealthPickup(object):
     def __repr__(self):
         return 'HealthPickup(health_restored={})'.format(self.health_restored)
 
+    def serialise(self):
+        return {
+            'health_restored': self.health_restored,
+        }
+
 
 class Cell(object):
     """
@@ -38,6 +43,15 @@ class Cell(object):
 
     def __eq__(self, other):
         return self.location == other.location
+
+    def serialise(self):
+        return {
+            'avatar': self.avatar.serialise() if self.avatar else None,
+            'generates_score': self.generates_score,
+            'habitable': self.habitable,
+            'location': self.location.serialise(),
+            'pickup': self.pickup.serialise() if self.pickup else None,
+        }
 
 
 class WorldMap(object):

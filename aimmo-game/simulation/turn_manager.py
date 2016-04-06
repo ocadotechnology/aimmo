@@ -1,5 +1,6 @@
 import logging
 import requests
+import threading
 import time
 from threading import Lock
 from simulation import world_map
@@ -33,13 +34,15 @@ class WorldStateProvider:
 world_state_provider = WorldStateProvider()
 
 
-class TurnManager(object):
+class TurnManager(threading.Thread):
     """
     Game loop
     """
+    daemon = True
 
     def __init__(self, game_state):
         world_state_provider.set_world(game_state)
+        super(TurnManager, self).__init__()
 
     def _update_environment(self, game_state):
         num_avatars = len(game_state.avatar_manager.active_avatars)
@@ -49,27 +52,18 @@ class TurnManager(object):
         try:
             game_state = world_state_provider.lock_and_get_world()
 
-            self.update_avatars(game_state)
-
             for avatar in game_state.avatar_manager.active_avatars:
-                avatar.handle_turn(game_state.get_state_for(avatar)).apply(game_state, avatar)
+                turn_state = game_state.get_state_for(avatar)
+                action_data = requests.post(avatar.worker_url, json=turn_state)
+                # TODO: Turn action_data into action
+                action.apply(game_state, avatar)
 
             self._update_environment(game_state)
 
         finally:
             world_state_provider.release_lock()
 
-    def update_avatars(self, game_state):
-        try:
-            game_data = requests.get('http://localhost:8000/players/api/games/').json()
-        except (requests.RequestException, ValueError) as err:
-            LOGGER.error("Obtaining game data failed: %s", err)
-        else:
-            game = game_data['main']
-            for user in game['users']:
-                game_state.player_changed_code(user['id'], user['code'])
-
-    def run_game(self):
+    def run(self):
         while True:
             self.run_turn()
             time.sleep(0.5)
