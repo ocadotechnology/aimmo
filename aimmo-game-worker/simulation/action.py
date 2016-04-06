@@ -22,7 +22,7 @@ class MoveAction(Action):
         return {
             'action_type': 'move',
             'options': {
-                'direction': self.direction.name
+                'direction': self.direction.serialise()
             },
         }
 
@@ -35,6 +35,6 @@ class AttackAction(Action):
         return {
             'action_type': 'attack',
             'options': {
-                'direction': self.direction.name
+                'direction': self.direction.serialise()
             },
         }

@@ -1,5 +1,5 @@
 from event import *
-from simulation.direction import DIRECTIONS
+from simulation.direction import Direction
 import world_map as world_map_module
 
 
@@ -16,7 +16,7 @@ class WaitAction(Action):
 class MoveAction(Action):
     def __init__(self, direction):
         # Untrusted data!
-        self.direction = DIRECTIONS[direction]
+        self.direction = Direction(**direction)
 
     def apply(self, game_state, avatar):
         target_location = avatar.location + self.direction
@@ -38,7 +38,7 @@ class MoveAction(Action):
 class AttackAction(Action):
     def __init__(self, direction):
         # Untrusted data!
-        self.direction = DIRECTIONS[direction]
+        self.direction = Direction(**direction)
 
     def apply(self, game_state, avatar):
         target_location = avatar.location + self.direction

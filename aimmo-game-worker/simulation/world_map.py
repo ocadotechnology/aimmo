@@ -50,6 +50,9 @@ class WorldMap(object):
     def pickup_cells(self):
         return (c for c in self.all_cells() if c.pickup)
 
+    def is_on_map(self, location):
+        return location in self.cells
+
     def get_cell(self, location):
         cell = self.cells[location]
         assert cell.location == location, 'location lookup mismatch: arg={}, found={}'.format(location, cell.location)
