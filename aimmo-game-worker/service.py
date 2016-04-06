@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import logging
+import sys
 
 import flask
 
@@ -43,4 +44,4 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
     app.config['DEBUG'] = True
-    app.run()
+    app.run(port=int(sys.argv[1]))

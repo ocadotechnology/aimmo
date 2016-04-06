@@ -1,12 +1,6 @@
 from simulation.avatar import fog_of_war
 
 
-class WorldView(object):
-    def __init__(self, avatar_state, terrain_view, avatar_manager):
-        self.avatar_state = avatar_state
-        self.world_view = terrain_view
-        self.avatar_manager = avatar_manager
-
 
 class GameState(object):
     """
@@ -19,13 +13,23 @@ class GameState(object):
 
     def get_state_for(self, avatar_wrapper):
         processed_world_map = fog_of_war.apply_fog_of_war(self.world_map, avatar_wrapper)
+        return {
+            'avatar_state': avatar_wrapper.serialise(),
+            'world_map': {
+                'cells': [cell.serialise() for cell in processed_world_map.all_cells()]
+            }
+        }
         return WorldView(avatar_wrapper, processed_world_map, self.avatar_manager)
 
-    def player_changed_code(self, player_id, code):
-        avatar = self.avatar_manager.avatarsById.get(player_id)
-        if avatar:
-            avatar.set_code(code)
-        else:
-            spawn_location = self.world_map.get_random_spawn_location()
-            avatar = self.avatar_manager.spawn(player_id, code, spawn_location)
-            self.world_map.get_cell(spawn_location).avatar = avatar
+    def add_avatar(self, user_id, worker_url):
+        spawn_location = self.world_map.get_random_spawn_location()
+        avatar = self.avatar_manager.add_avatar(user_id, worker_url, spawn_location)
+        self.world_map.get_cell(spawn_location).avatar = avatar
+
+    def remove_avatar(self, user_id):
+        try:
+            avatar = self.avatar_manager.avatarsById[user_id]
+        except KeyError:
+            return
+        self.world_map.get_cell(avatar.location).avatar = None
+        self.avatar_manager.remove(user_id)

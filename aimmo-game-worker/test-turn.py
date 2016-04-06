@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import requests
 
-url = 'http://localhost:5000/turn/'
+url = 'http://localhost:5001/turn/'
 
 avatar = {'location': {'x': 0, 'y': 0}, 'health': 5, 'score': 0, 'events': []}
 api_data = {

@@ -7,13 +7,16 @@ class AvatarManager(object):
     Stores all game avatars.
     """
 
-    def __init__(self, initial_avatars):
-        self.avatarsById = {p.player_id: p for p in initial_avatars}
+    def __init__(self):
+        self.avatarsById = {}
 
-    def spawn(self, player_id, code, location):
-        avatar = AvatarWrapper(location, code, player_id, AvatarAppearance("#000", "#ddd", "#777", "#fff"))
+    def add_avatar(self, player_id, worker_url, location):
+        avatar = AvatarWrapper(location, player_id, worker_url, AvatarAppearance("#000", "#ddd", "#777", "#fff"))
         self.avatarsById[player_id] = avatar
         return avatar
+
+    def remove_avatar(self, user_id):
+        del self.avatarsById[user_id]
 
     @property
     def avatars(self):
@@ -21,4 +24,4 @@ class AvatarManager(object):
 
     @property
     def active_avatars(self):
-        return [player for player in self.avatars if player.code]
+        return [player for player in self.avatars]
