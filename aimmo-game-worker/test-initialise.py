@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-import requests
 import sys
+
+import requests
 
 url = 'http://localhost:5000/initialise/'
 
@@ -19,4 +20,5 @@ api_data = {
 
 print 'Posting: ', api_data
 result = requests.post(url, json=api_data)
+print result.content
 result.raise_for_status()
