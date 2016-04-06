@@ -3,13 +3,8 @@ import world_map as world_map_module
 
 
 class Action(object):
-    pass
-
     def serialise(self):
-        return {
-            'action_type': self.action_type,
-            'options': self.__dict__,
-        }
+        raise NotImplementedError
 
 
 class WaitAction(Action):

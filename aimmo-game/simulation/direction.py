@@ -12,4 +12,10 @@ EAST = Direction(1, 0)
 SOUTH = Direction(0, -1)
 WEST = Direction(-1, 0)
 
-ALL_DIRECTIONS = (NORTH, EAST, SOUTH, WEST)
+DIRECTIONS = {
+    'north': NORTH,
+    'east': EAST,
+    'south': SOUTH,
+    'west': WEST,
+}
+ALL_DIRECTIONS = DIRECTIONS.values()

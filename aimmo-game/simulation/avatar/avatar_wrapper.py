@@ -29,10 +29,14 @@ class AvatarWrapper(object):
 
     def serialise(self):
         return {
-            'events': [event.serialise() for event in self.events],
+            'events': [
+            #    {
+            #        'event_name': event.__class__.__name__.lower(),
+            #        'event_options': event.__dict__,
+            #    } for event in self.events
+            ],
             'health': self.health,
             'location': self.location.serialise(),
-            'player_id': self.player_id,  # TODO: Change this to something that doesn't expose player info
             'score': self.score,
         }
 

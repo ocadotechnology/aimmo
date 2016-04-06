@@ -23,8 +23,6 @@ class WorkerManager(threading.Thread):
             else:
                 game = game_data['main']
                 for user in game['users']:
-                    print 'user_codes', self.user_codes.keys()
-                    print user['id'], 'old_code', self.user_codes.get(user['id'], None), 'new_code', user['code']
                     if self.user_codes.get(user['id'], None) != user['code']:
                         # Remove avatar from the game, so it stops being called for turns
                         self.game_state.remove_avatar(user['id'])
