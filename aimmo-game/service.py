@@ -1,18 +1,15 @@
 #!/usr/bin/env python
 import logging
+from threading import Thread
+
+import flask
+from flask.ext.cors import CORS
 
 from simulation.turn_manager import world_state_provider
-
 from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.game_state import GameState
 from simulation.turn_manager import TurnManager
-
-from threading import Thread
-import os
-
-import flask
-from flask.ext.cors import CORS
 app = flask.Flask(__name__)
 CORS(app)
 
@@ -54,15 +51,15 @@ def get_world_state():
         for cell in world.world_map.all_cells():
             grid[cell.location.x][cell.location.y] = to_cell_type(cell)
         player_data = {p.player_id: player_dict(p) for p in world.avatar_manager.avatars}
-        return flask.jsonify(**{
-            'players': player_data,
-            'score_locations': [(cell.location.x, cell.location.y) for cell in world.world_map.score_cells()],
-            'pickup_locations': [(cell.location.x, cell.location.y) for cell in world.world_map.pickup_cells()],
-            'map_changed': True,  # TODO: experiment with only sending deltas (not if not required)
-            'width': num_cols,
-            'height': num_rows,
-            'layout': grid,
-        })
+        return flask.jsonify(
+            players=player_data,
+            score_locations=[(cell.location.x, cell.location.y) for cell in world.world_map.score_cells()],
+            pickup_locations=[(cell.location.x, cell.location.y) for cell in world.world_map.pickup_cells()],
+            map_changed=True,  # TODO: experiment with only sending deltas (not if not required)
+            width=num_cols,
+            height=num_rows,
+            layout=grid,
+        )
     finally:
         world_state_provider.release_lock()
 
