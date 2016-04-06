@@ -4,6 +4,8 @@ import logging
 import flask
 
 from simulation.world_map import WorldMap
+from simulation.avatar_state import AvatarState
+
 app = flask.Flask(__name__)
 
 avatar = None
@@ -32,12 +34,11 @@ def process_turn():
     data = flask.request.get_json()
 
     world_map = WorldMap(**data['world_map'])
+    avatar_state = AvatarState(**data['avatar_state'])
 
-    action = avatar.handle_turn(world_map, events=[])
+    action = avatar.handle_turn(avatar_state, world_map)
 
-    return flask.jsonify(**{
-        'action': action.serialise(),
-    })
+    return flask.jsonify(action=action.serialise())
 
 
 if __name__ == '__main__':
