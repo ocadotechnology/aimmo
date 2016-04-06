@@ -19,4 +19,5 @@ api_data = {
 
 print 'Posting: ', api_data
 result = requests.post(url, json=api_data)
+print result.content
 result.raise_for_status()
