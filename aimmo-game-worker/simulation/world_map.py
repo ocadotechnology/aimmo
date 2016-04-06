@@ -42,7 +42,7 @@ class WorldMap(object):
             self.cells[cell.location] = cell
 
     def all_cells(self):
-        return self.cells
+        return self.cells.values()
 
     def score_cells(self):
         return (c for c in self.all_cells() if c.generates_score)

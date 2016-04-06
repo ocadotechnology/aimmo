@@ -60,8 +60,11 @@ class TurnManager(threading.Thread):
                 except ValueError as err:
                     LOGGER.info("Failed to get turn result: %s", err)
                 else:
-                    action_data = data['action']
-                    action = ACTIONS[action_data['action_type']](**action_data['options'])
+                    try:
+                        action_data = data['action']
+                        action = ACTIONS[action_data['action_type']](**action_data.get('options', {}))
+                    except KeyError as err:
+                        LOGGER.info("Bad action data supplied: %s", err)
                     action.apply(game_state, avatar)
 
             self._update_environment(game_state)
