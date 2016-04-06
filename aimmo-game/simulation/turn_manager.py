@@ -1,9 +1,9 @@
 import logging
-import requests
 import threading
 import time
 from threading import Lock
-from simulation import world_map
+
+import requests
 
 LOGGER = logging.getLogger(__name__)
 

@@ -1,7 +1,8 @@
 import logging
-import requests
 import threading
 import time
+
+import requests
 
 LOGGER = logging.getLogger(__name__)
 

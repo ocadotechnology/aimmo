@@ -25,9 +25,7 @@ def initialise():
 
     avatar = Avatar(**data['options'])
 
-    return flask.jsonify(**{
-        'result': 'success',
-    })
+    return flask.jsonify(result='success')
 
 
 @app.route('/turn/', methods=['POST'])
