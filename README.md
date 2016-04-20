@@ -40,8 +40,7 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
 
 ## Running Locally
 * Clone the repo
-* Make and activate a virtualenv (We recommend [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/index.html) - [this blog post](http://mkelsey.com/2013/04/30/how-i-setup-virtualenv-and-virtualenvwrapper-on-my-mac/) may also be
- useful if you're using a Mac)
+* Make and activate a virtualenv (We recommend [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/index.html)) - if you have a Mac see the following section.
     * e.g. the first time, `mkvirtualenv -a path/to/aimmo aimmo`
     * and thereafter `workon aimmo`
 * `./run` in your aimmo dir - This will:
@@ -49,3 +48,13 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
     * sync the database
     * collect the static files
     * run the server
+
+### Installing virtualenvwrapper on Mac
+* Run `pip install virtualenvwrapper`
+* Add the following to ~/.bashrc:
+```
+ export WORKON_HOME=$HOME/.virtualenvs
+ source /usr/local/bin/virtualenvwrapper.sh
+```
+* [This blog post](http://mkelsey.com/2013/04/30/how-i-setup-virtualenv-and-virtualenvwrapper-on-my-mac/) may also be
+ useful.
