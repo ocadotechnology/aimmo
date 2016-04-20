@@ -62,6 +62,8 @@ class AvatarWrapper(object):
             self.code = code
             try:
                 exec(code)
+                if Avatar is None:
+                    raise Exception('You need to define the class "Avatar"')
                 self.avatar = Avatar()
             except Exception as ex:
                 raise UserCodeException("Exception in user code", ex)
