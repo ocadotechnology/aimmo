@@ -1,4 +1,3 @@
-# TODO: investigate using x and y
 class Direction:
     def __init__(self, x, y):
         self.x = x

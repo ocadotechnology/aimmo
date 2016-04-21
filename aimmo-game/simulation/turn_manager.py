@@ -65,7 +65,8 @@ class TurnManager(threading.Thread):
                         action = ACTIONS[action_data['action_type']](**action_data.get('options', {}))
                     except (KeyError, ValueError) as err:
                         LOGGER.info("Bad action data supplied: %s", err)
-                    action.apply(game_state, avatar)
+                    else:
+                        action.apply(game_state, avatar)
 
             self._update_environment(game_state)
 
