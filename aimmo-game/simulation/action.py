@@ -1,4 +1,5 @@
 from event import *
+from simulation.direction import Direction
 import world_map as world_map_module
 
 
@@ -14,7 +15,8 @@ class WaitAction(Action):
 
 class MoveAction(Action):
     def __init__(self, direction):
-        self.direction = direction
+        # Untrusted data!
+        self.direction = Direction(**direction)
 
     def apply(self, game_state, avatar):
         target_location = avatar.location + self.direction
@@ -35,7 +37,8 @@ class MoveAction(Action):
 
 class AttackAction(Action):
     def __init__(self, direction):
-        self.direction = direction
+        # Untrusted data!
+        self.direction = Direction(**direction)
 
     def apply(self, game_state, avatar):
         target_location = avatar.location + self.direction
@@ -61,3 +64,9 @@ def _add_score_from_cell_if_needed(avatar, game_state):
     cell = game_state.world_map.get_cell(avatar.location)
     if cell.generates_score:
         avatar.score += 1
+
+ACTIONS = {
+    'attack': AttackAction,
+    'move': MoveAction,
+    'wait': WaitAction,
+}

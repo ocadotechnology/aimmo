@@ -1,4 +1,5 @@
 class Location(object):
+
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -15,5 +16,5 @@ class Location(object):
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
 
-    def serialise(self):
-        return {'x': self.x, 'y': self.y}
+    def __hash__(self):
+        return hash((self.x, self.y))
