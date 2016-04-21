@@ -1,7 +1,3 @@
-from event import *
-import world_map as world_map_module
-
-
 class Action(object):
 
     def serialise(self):
