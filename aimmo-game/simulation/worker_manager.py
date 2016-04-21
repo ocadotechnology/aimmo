@@ -6,6 +6,7 @@ import requests
 
 LOGGER = logging.getLogger(__name__)
 
+
 class WorkerManager(threading.Thread):
     daemon = True
 
@@ -25,14 +26,17 @@ class WorkerManager(threading.Thread):
                 game = game_data['main']
                 for user in game['users']:
                     if self.user_codes.get(user['id'], None) != user['code']:
-                        # Remove avatar from the game, so it stops being called for turns
+                        # Remove avatar from the game, so it stops being called
+                        # for turns
                         self.game_state.remove_avatar(user['id'])
                         # Get persistent state from worker
                         # TODO
                         # Kill worker
                         # TODO
                         # Spawn worker
-                        worker_url = 'http://localhost:%d' % (5000 + int(user['id'])) # Comes from spawning
+                        # Comes from spawning
+                        worker_url = 'http://localhost:%d' % (
+                            5000 + int(user['id']))
                         # TODO
                         # Initialise worker
                         requests.post("%s/initialise/" % worker_url, json={
@@ -40,7 +44,8 @@ class WorkerManager(threading.Thread):
                             'options': {},
                         })
                         # Add avatar back into game
-                        self.game_state.add_avatar(user_id=user['id'], worker_url="%s/turn/" % worker_url)
+                        self.game_state.add_avatar(
+                            user_id=user['id'], worker_url="%s/turn/" % worker_url)
                         self.user_codes[user['id']] = user['code']
 
             time.sleep(10)

@@ -8,9 +8,12 @@ api_data = {
     'avatar_state': avatar,
     'world_map': {
         'cells': [
-            {'location': {'x': 0, 'y': 0}, 'habitable': True, 'generates_score': True, 'avatar': avatar, 'pickup': None},
-            {'location': {'x': 1, 'y': 0}, 'habitable': False, 'generates_score': False, 'avatar': None, 'pickup': None},
-            {'location': {'x': -1, 'y': 0}, 'habitable': True, 'generates_score': False, 'avatar': avatar, 'pickup': {'health_restored': 3}},
+            {'location': {'x': 0, 'y': 0}, 'habitable': True,
+                'generates_score': True, 'avatar': avatar, 'pickup': None},
+            {'location': {'x': 1, 'y': 0}, 'habitable': False,
+                'generates_score': False, 'avatar': None, 'pickup': None},
+            {'location': {'x': -1, 'y': 0}, 'habitable': True, 'generates_score':
+                False, 'avatar': avatar, 'pickup': {'health_restored': 3}},
         ],
     }
 }
