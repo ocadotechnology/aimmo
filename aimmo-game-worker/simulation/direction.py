@@ -1,5 +1,5 @@
-# TODO: investigate using x and y
-class Direction:
+class Direction(object):
+
     def __init__(self, x, y):
         self.x = x
         self.y = y

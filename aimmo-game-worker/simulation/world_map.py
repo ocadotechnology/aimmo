@@ -4,6 +4,7 @@ from simulation.avatar_state import AvatarState
 
 
 class HealthPickup(object):
+
     def __init__(self, health_restored=3):
         self.health_restored = health_restored
 
@@ -12,6 +13,7 @@ class HealthPickup(object):
 
 
 class Cell(object):
+
     """
     Any position on the world grid.
     """
@@ -31,6 +33,7 @@ class Cell(object):
 
 
 class WorldMap(object):
+
     """
     The non-player world state.
     """
@@ -55,7 +58,8 @@ class WorldMap(object):
 
     def get_cell(self, location):
         cell = self.cells[location]
-        assert cell.location == location, 'location lookup mismatch: arg={}, found={}'.format(location, cell.location)
+        assert cell.location == location, 'location lookup mismatch: arg={}, found={}'.format(
+            location, cell.location)
         return cell
 
     def can_move_to(self, target_location):

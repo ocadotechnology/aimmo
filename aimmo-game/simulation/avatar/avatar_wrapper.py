@@ -12,7 +12,6 @@ class AvatarWrapper(object):
         self.avatar_appearance = avatar_appearance
         self.worker_url = worker_url
 
-
     def die(self, respawn_location):
         # TODO: extract settings for health and score loss on death
         self.health = 5
