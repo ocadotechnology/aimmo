@@ -23,20 +23,26 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
 - ...
 
 ## Architecture
-### Core Game (Simulation)
-- Maintains game state
-- Simulates environment events
-- Runs player actions
-
-### Sandboxed User-Submitted AI Players (Avatars)
-- Each avatar will run in their own sandbox so that we can securely deal with user-submitted code
-- Each avatar will interact with the core game to get state and perform actions
-
-### Web Interface
+### Web Interface - `players`
 - Django
 - In-browser avatar code editor: http://ace.c9.io/#nav=about
 - Game view (so players can see their avatars play the game)
 - Statistics
+- Has a sample deployment in `example_project`
+
+### Game creator - `aimmo-game-creator`
+- Maintains the set of games
+
+### Core Game (Simulation) - `aimmo-game`
+- Maintains game state
+- Simulates environment events
+- Runs player actions
+
+### Sandboxed User-Submitted AI Players (Avatars) - `aimmo-game-worker`
+- Each avatar will run in their own sandbox so that we can securely deal with user-submitted code
+- Each avatar will interact with the core game to get state and perform actions
+
+
 
 ## Running Locally
 * Clone the repo
