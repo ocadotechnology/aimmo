@@ -9,7 +9,7 @@ from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.game_state import GameState
 from simulation.turn_manager import TurnManager
-from simulation.worker_manager import WorkerManager
+from simulation.worker_manager import LocalWorkerManager
 
 app = flask.Flask(__name__)
 CORS(app)
@@ -71,7 +71,7 @@ def run_game():
     player_manager = AvatarManager()
     game_state = GameState(my_map, player_manager)
     turn_manager = TurnManager(game_state=game_state)
-    worker_manager = WorkerManager(game_state=game_state, users_url='http://localhost:8000/players/api/games/')
+    worker_manager = LocalWorkerManager(game_state=game_state, users_url='http://localhost:8000/players/api/games/')
     worker_manager.start()
     turn_manager.start()
 
