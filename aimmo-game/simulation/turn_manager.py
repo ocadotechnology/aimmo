@@ -41,8 +41,9 @@ class TurnManager(threading.Thread):
     """
     daemon = True
 
-    def __init__(self, game_state):
+    def __init__(self, game_state, end_turn_callback):
         world_state_provider.set_world(game_state)
+        self.end_turn_callback = end_turn_callback
         super(TurnManager, self).__init__()
 
     def _update_environment(self, game_state):
@@ -76,4 +77,5 @@ class TurnManager(threading.Thread):
     def run(self):
         while True:
             self.run_turn()
+            self.end_turn_callback()
             time.sleep(0.5)

@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 import logging
 
+import eventlet
+eventlet.monkey_patch()
+
 import flask
-from flask.ext.cors import CORS
+from flask.ext.socketio import SocketIO, emit
 
 from simulation.turn_manager import world_state_provider
 from simulation import map_generator
@@ -12,7 +15,7 @@ from simulation.turn_manager import TurnManager
 from simulation.worker_manager import LocalWorkerManager
 
 app = flask.Flask(__name__)
-CORS(app)
+socketio = SocketIO(app)
 
 
 def to_cell_type(cell):
@@ -42,7 +45,6 @@ def player_dict(avatar):
     }
 
 
-@app.route('/')
 def get_world_state():
     try:
         world = world_state_provider.lock_and_get_world()
@@ -52,17 +54,33 @@ def get_world_state():
         for cell in world.world_map.all_cells():
             grid[cell.location.x][cell.location.y] = to_cell_type(cell)
         player_data = {p.player_id: player_dict(p) for p in world.avatar_manager.avatars}
-        return flask.jsonify(
-            players=player_data,
-            score_locations=[(cell.location.x, cell.location.y) for cell in world.world_map.score_cells()],
-            pickup_locations=[(cell.location.x, cell.location.y) for cell in world.world_map.pickup_cells()],
-            map_changed=True,  # TODO: experiment with only sending deltas (not if not required)
-            width=num_cols,
-            height=num_rows,
-            layout=grid,
-        )
+        return {
+                'players': player_data,
+                'score_locations': [(cell.location.x, cell.location.y) for cell in world.world_map.score_cells()],
+                'pickup_locations': [(cell.location.x, cell.location.y) for cell in world.world_map.pickup_cells()],
+                'map_changed': True,  # TODO: experiment with only sending deltas (not if not required)
+                'width': num_cols,
+                'height': num_rows,
+                'layout': grid,
+            }
     finally:
         world_state_provider.release_lock()
+
+
+@socketio.on('connect')
+def world_update_on_connect():
+    emit(
+        'world-update',
+        get_world_state(),
+    )
+
+
+def send_world_update():
+    socketio.emit(
+        'world-update',
+        get_world_state(),
+        broadcast=True,
+    )
 
 
 def run_game():
@@ -70,7 +88,7 @@ def run_game():
     my_map = map_generator.generate_map(15, 15, 0.1)
     player_manager = AvatarManager()
     game_state = GameState(my_map, player_manager)
-    turn_manager = TurnManager(game_state=game_state)
+    turn_manager = TurnManager(game_state=game_state, end_turn_callback=send_world_update)
     worker_manager = LocalWorkerManager(game_state=game_state, users_url='http://localhost:8000/players/api/games/')
     worker_manager.start()
     turn_manager.start()
@@ -80,4 +98,4 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
     run_game()
-    app.run(debug=True, use_reloader=False)
+    socketio.run(app, debug=True, use_reloader=False)
