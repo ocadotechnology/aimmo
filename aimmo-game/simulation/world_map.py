@@ -42,6 +42,9 @@ class Cell(object):
     def __eq__(self, other):
         return self.location == other.location
 
+    def __hash__(self):
+        return hash(self.location)
+
     def serialise(self):
         return {
             'avatar': self.avatar.serialise() if self.avatar else None,
