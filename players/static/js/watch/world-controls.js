@@ -46,26 +46,21 @@ const CONTROLS = Object.create({
     }
 });
 
-function refreshState() {
-    $.ajax('http://localhost:5000', {
-        success : function(data) {
-            if(data.map_changed){
-                CONTROLS.initialiseWorld(data.width, data.height, data.layout);
-            }
-            CONTROLS.setState(data.players, data.score_locations, data.pickup_locations);
-            setTimeout(refreshState, 200);
-        },
-        error : function(jqXHR, textStatus, errorThrown) {
-            setTimeout(refreshState, 500);
-        }
-    });
+function refreshState(data) {
+    if(data.map_changed){
+        CONTROLS.initialiseWorld(data.width, data.height, data.layout);
+    }
+    CONTROLS.setState(data.players, data.score_locations, data.pickup_locations);
 }
 
-$(function(){
+$(document).ready(function(){
     var world = {};
     world.players = {};
     VIEWER.init(document.getElementById("watch-world-canvas"), world, APPEARANCE);
     CONTROLS.init(world, VIEWER);
 
-    refreshState();
+    var socket = io.connect('http://localhost:5000');
+    socket.on('world-update', function(msg) {
+        refreshState(msg);
+  });
 });
