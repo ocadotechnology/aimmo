@@ -7,6 +7,8 @@ sys.path.append(os.path.abspath('.'))
 
 import unittest
 
+from sys.moves import range
+
 from simulation.location import Location
 from simulation.turn_manager import TurnManager
 from simulation.test.maps import InfiniteMap
@@ -41,14 +43,14 @@ class TestTurnManager(unittest.TestCase):
     def test_run_several_turns(self):
         avatar = DummyAvatarRunner(ORIGIN, player_id=1)
         self.construct_turn_manager(avatar)
-        [self.turn_manager.run_turn() for _ in xrange(5)]
+        [self.turn_manager.run_turn() for _ in range(5)]
         self.assertEqual(avatar.location, FIVE_RIGHT_OF_ORIGIN)
 
     def test_run_several_turns_and_avatars(self):
         avatar1 = DummyAvatarRunner(ORIGIN, player_id=1)
         avatar2 = DummyAvatarRunner(ABOVE_ORIGIN, player_id=2)
         self.construct_turn_manager(avatar1, avatar2)
-        [self.turn_manager.run_turn() for _ in xrange(5)]
+        [self.turn_manager.run_turn() for _ in range(5)]
         self.assertEqual(avatar1.location, FIVE_RIGHT_OF_ORIGIN)
         self.assertEqual(avatar2.location, FIVE_RIGHT_OF_ORIGIN_AND_ONE_ABOVE)
 

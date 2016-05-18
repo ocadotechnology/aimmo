@@ -4,11 +4,11 @@ from itertools import tee
 from simulation.direction import ALL_DIRECTIONS
 from simulation.location import Location
 from simulation.world_map import Cell, WorldMap
-from six.moves import zip
+from six.moves import zip, range
 
 
 def generate_map(height, width, obstacle_ratio):
-    grid = [[Cell(Location(x, y)) for y in xrange(height)] for x in xrange(width)]
+    grid = [[Cell(Location(x, y)) for y in range(height)] for x in range(width)]
     world_map = WorldMap(grid)
 
     # We designate one non-corner edge cell as empty, to ensure that the map can be expanded
@@ -26,8 +26,8 @@ def generate_map(height, width, obstacle_ratio):
 
 
 def _get_edge_coordinates(height, width):
-    for x in xrange(width):
-        for y in xrange(height):
+    for x in range(width):
+        for y in range(height):
             yield x, y
 
 

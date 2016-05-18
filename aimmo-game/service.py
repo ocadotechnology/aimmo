@@ -7,6 +7,8 @@ eventlet.monkey_patch()
 import flask
 from flask.ext.socketio import SocketIO, emit
 
+from six.moves import range
+
 from simulation.turn_manager import world_state_provider
 from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
@@ -50,7 +52,7 @@ def get_world_state():
         world = world_state_provider.lock_and_get_world()
         num_cols = len(world.world_map.grid)
         num_rows = len(world.world_map.grid[0])
-        grid = [[None for x in xrange(num_cols)] for y in xrange(num_rows)]
+        grid = [[None for x in range(num_cols)] for y in range(num_rows)]
         for cell in world.world_map.all_cells():
             grid[cell.location.x][cell.location.y] = to_cell_type(cell)
         player_data = {p.player_id: player_dict(p) for p in world.avatar_manager.avatars}
