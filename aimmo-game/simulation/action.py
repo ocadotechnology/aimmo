@@ -1,6 +1,6 @@
 from simulation.direction import Direction
 from simulation.event import FailedAttackEvent, FailedMoveEvent, MovedEvent, PerformedAttackEvent, ReceivedAttackEvent
-import world_map as world_map_module
+import simulation.world_map as world_map_module
 
 
 class Action(object):
