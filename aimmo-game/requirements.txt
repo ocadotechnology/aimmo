@@ -3,3 +3,4 @@ flask
 flask-socketio
 pykube
 requests
+six

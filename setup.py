@@ -12,6 +12,7 @@ setup(name='aimmo',
         'flask',
         'flask-socketio',
         'requests',
+        'six',
     ],
     tests_require=[
         'django-setuptest',

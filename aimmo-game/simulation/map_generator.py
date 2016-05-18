@@ -1,9 +1,10 @@
 import heapq
 import random
-from itertools import tee, izip
+from itertools import tee
 from simulation.direction import ALL_DIRECTIONS
 from simulation.location import Location
 from simulation.world_map import Cell, WorldMap
+from six.moves import zip
 
 
 def generate_map(height, width, obstacle_ratio):
@@ -40,7 +41,7 @@ def pairwise(iterable):
     """s -> (s0,s1), (s1,s2), (s2, s3), ..."""
     a, b = tee(iterable)
     next(b, None)
-    return izip(a, b)
+    return zip(a, b)
 
 
 def _all_habitable_neighbours_can_reach_each_other(cell, world_map):
