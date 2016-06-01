@@ -2,7 +2,7 @@ $( document ).ready(function() {
     const DANGER_CLASS = 'alert-danger';
     const SUCCESS_CLASS = 'alert-success';
 
-    var defaultProgram = "print 'Hello, world!'\nprint 'New line'";
+    var defaultProgram = "print 'Sorry, could not retrieve saved data'\n";
 
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
@@ -44,7 +44,7 @@ $( document ).ready(function() {
             editor.selection.moveCursorFileStart();
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            showAlert('Could not retrieve saved data');
+            showAlert('Could not retrieve saved data', DANGER_CLASS);
             editor.setValue(defaultProgram);
             editor.selection.moveCursorFileStart();
         }
