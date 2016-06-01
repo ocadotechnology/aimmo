@@ -22,24 +22,12 @@ def register(request):
         if form.is_valid():
             user = form.save()
 
-            with open("players/avatar_examples/dumb_avatar.py") as initial_code_file:
-                initial_code = initial_code_file.read()
-
-            Player(user=user, code=initial_code).save()
             authenticated_user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
             login(request, authenticated_user)
             return redirect('program')
     else:
         form = UserCreationForm()
     return render(request, 'accounts/register.html', {'form': form})
-
-
-def _post_code_error_response(message):
-    return create_response("USER_ERROR", message)
-
-
-def _post_server_error_response(message):
-    return create_response("SERVER_ERROR", message)
 
 
 def _post_code_success_response(message):
@@ -56,13 +44,19 @@ def create_response(status, message):
 
 @login_required
 def code(request):
+    try:
+        player = request.user.player
+    except Player.DoesNotExist:
+        with open("players/avatar_examples/dumb_avatar.py") as initial_code_file:
+            initial_code = initial_code_file.read()
+        player = Player.objects.create(user=request.user, code=initial_code)
     if request.method == 'POST':
-        request.user.player.code = request.POST['code']
-        request.user.player.save()
+        player.code = request.POST['code']
+        player.save()
 
         return _post_code_success_response("Your code was saved!")
     else:
-        return HttpResponse(request.user.player.code)
+        return HttpResponse(player.code)
 
 def games(request):
     response = {
