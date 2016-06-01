@@ -1,6 +1,6 @@
 import logging
-from django.http import JsonResponse
 
+from django.http import JsonResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -63,6 +63,7 @@ def code(request):
         return _post_code_success_response("Your code was saved!")
     else:
         return HttpResponse(request.user.player.code)
+
 
 def games(request):
     response = {
