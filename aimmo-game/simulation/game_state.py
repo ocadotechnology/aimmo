@@ -32,4 +32,4 @@ class GameState(object):
         except KeyError:
             return
         self.world_map.get_cell(avatar.location).avatar = None
-        self.avatar_manager.remove(user_id)
+        self.avatar_manager.remove_avatar(user_id)
