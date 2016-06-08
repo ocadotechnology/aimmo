@@ -11,6 +11,7 @@ class AvatarWrapper(object):
         self.player_id = player_id
         self.avatar_appearance = avatar_appearance
         self.worker_url = worker_url
+        self.fog_of_war_modifier = 0
 
     def die(self, respawn_location):
         # TODO: extract settings for health and score loss on death
