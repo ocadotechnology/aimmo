@@ -8,8 +8,6 @@ from players import views
 urlpatterns = [
     url(r'^$', staff_member_required(TemplateView.as_view(template_name='players/home.html')), name='home'),
 
-    url('^accounts/register/', staff_member_required(views.register), name='register'),
-
     url(r'^program/$', staff_member_required(login_required(TemplateView.as_view(template_name='players/program.html'))), name='program'),
     url(r'^watch/$', staff_member_required(TemplateView.as_view(template_name='players/watch.html')), name='watch'),
     url(r'^statistics/$', staff_member_required(TemplateView.as_view(template_name='players/statistics.html')), name='statistics'),

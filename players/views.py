@@ -1,32 +1,12 @@
 import logging
 
 from django.http import JsonResponse
-from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+
+import os
 
 from models import Player
-
-
-# TODO: move all views that just render a template over to using django generic views
-
-logger = logging.getLogger("views")
-
-
-def register(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-
-            authenticated_user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
-            login(request, authenticated_user)
-            return redirect('program')
-    else:
-        form = UserCreationForm()
-    return render(request, 'accounts/register.html', {'form': form})
 
 
 def _post_code_success_response(message):
@@ -46,7 +26,11 @@ def code(request):
     try:
         player = request.user.player
     except Player.DoesNotExist:
-        with open("players/avatar_examples/dumb_avatar.py") as initial_code_file:
+        initial_code_file_name = os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            'avatar_examples/dumb_avatar.py',
+        )
+        with open(initial_code_file_name) as initial_code_file:
             initial_code = initial_code_file.read()
         player = Player.objects.create(user=request.user, code=initial_code)
     if request.method == 'POST':

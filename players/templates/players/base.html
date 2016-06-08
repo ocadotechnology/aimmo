@@ -41,14 +41,6 @@
                         {% block nav-watch %}<li><a href="{% url 'watch' %}">Watch</a></li>{% endblock %}
                         {% block nav-statistics %}<li><a href="{% url 'statistics' %}">Statistics</a></li>{% endblock %}
                     </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        {% if request.user.is_authenticated %}
-                        <li><a href="{% url 'logout' %}?next={{ request.path }}">Logout</a></li>
-                        {% else %}
-                        {% block nav-login %}<li><a href="{% url 'login' %}?next={{ request.path }}">Login</a></li> {% endblock%}
-                        {% block nav-register %}<li><a href="{% url 'register' %}">Register</a></li> {% endblock %}
-                        {% endif %}
-                    </ul>
                 </div>
             </div>
         </nav>
