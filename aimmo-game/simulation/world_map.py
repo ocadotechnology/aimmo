@@ -1,9 +1,13 @@
 import random
 import math
 
+from location import Location
+
 
 
 # TODO: extract to settings
+TARGET_NUM_CELLS_PER_AVATAR = 16
+
 TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR = 0.5
 SCORE_DESPAWN_CHANCE = 0.02
 
@@ -93,9 +97,23 @@ class WorldMap(object):
     def num_cols(self):
         return len(self.grid)
 
+    @property
+    def num_cells(self):
+        return self.num_rows * self.num_cols
+
     def reconstruct_interactive_state(self, num_avatars):
+        self.expand(num_avatars)
         self.reset_score_locations(num_avatars)
         self.add_pickups(num_avatars)
+
+    def expand(self, num_avatars):
+        target_num_cells = int(math.ceil(num_avatars * TARGET_NUM_CELLS_PER_AVATAR))
+        num_cells_to_add = target_num_cells - self.num_cells
+        if num_cells_to_add > 0:
+            self.add_layer_to_edge()
+
+    def add_layer_to_edge(self):
+        self.grid.append([Cell(Location(self.num_cols, y)) for y in range(self.num_rows)])
 
     def reset_score_locations(self, num_avatars):
         for cell in self.score_cells():

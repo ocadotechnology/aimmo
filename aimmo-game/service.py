@@ -52,7 +52,7 @@ def get_world_state():
         world = world_state_provider.lock_and_get_world()
         num_cols = len(world.world_map.grid)
         num_rows = len(world.world_map.grid[0])
-        grid = [[None for x in range(num_cols)] for y in range(num_rows)]
+        grid = [[None for y in range(num_rows)] for x in range(num_cols)]
         for cell in world.world_map.all_cells():
             grid[cell.location.x][cell.location.y] = to_cell_type(cell)
         player_data = {p.player_id: player_dict(p) for p in world.avatar_manager.avatars}
@@ -87,7 +87,7 @@ def send_world_update():
 
 def run_game():
     print("Running game...")
-    my_map = map_generator.generate_map(15, 15, 0.1)
+    my_map = map_generator.generate_map(10, 10, 0.1)
     player_manager = AvatarManager()
     game_state = GameState(my_map, player_manager)
     turn_manager = TurnManager(game_state=game_state, end_turn_callback=send_world_update)
