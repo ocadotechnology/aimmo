@@ -19,15 +19,18 @@ class WorkerManager(threading.Thread):
         super(WorkerManager, self).__init__()
 
     def get_persistent_state(self, player_id):
-        '''Get the persistent state for a worker.'''
+        """Get the persistent state for a worker."""
+
         return None
 
     def create_worker(self, player_id):
-        '''Create a worker.'''
+        """Create a worker."""
+
         raise NotImplemented
 
     def remove_worker(self, player_id):
-        '''Remove a worker for the given player.'''
+        """Remove a worker for the given player."""
+
         raise NotImplemented
 
     def run(self):
@@ -48,9 +51,7 @@ class WorkerManager(threading.Thread):
                         # Kill worker
                         self.remove_worker(user['id'])
                         # Spawn worker
-                        worker_url = self.create_worker(
-                            user['id'],
-                        )
+                        worker_url = self.create_worker(user['id'])
                         # Initialise worker
                         requests.post("%s/initialise/" % worker_url, json={
                             'code': user['code'],
@@ -69,12 +70,14 @@ class WorkerManager(threading.Thread):
 
             time.sleep(10)
 
+
 class LocalWorkerManager(WorkerManager):
-    '''Relies on them already being created already.'''
+    """Relies on them already being created already."""
+
     host = '127.0.0.1'
     worker_path = os.path.join(
         os.path.dirname(__file__),
-        '../../aimmo-game-worker/service.py' ,
+        '../../aimmo-game-worker/service.py',
     )
 
     def __init__(self, *args, **kwargs):

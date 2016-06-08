@@ -10,7 +10,6 @@ from django.shortcuts import render, redirect
 from models import Player
 
 
-
 # TODO: move all views that just render a template over to using django generic views
 
 logger = logging.getLogger("views")
