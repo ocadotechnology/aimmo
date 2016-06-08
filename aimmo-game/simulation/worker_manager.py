@@ -1,10 +1,10 @@
 import logging
 import os
-import requests
 import subprocess
 import threading
 import time
 
+import requests
 
 LOGGER = logging.getLogger(__name__)
 
@@ -85,13 +85,13 @@ class LocalWorkerManager(WorkerManager):
     def create_worker(self, player_id):
         assert(player_id not in self.workers)
         self.next_port += 1
-        self.workers[player_id] = subprocess.Popen(
-            [
-                self.worker_path,
-                self.host,
-                str(self.next_port),
-            ],
-        )
+        process_args = [
+            'python',
+            self.worker_path,
+            self.host,
+            str(self.next_port),
+        ]
+        self.workers[player_id] = subprocess.Popen(process_args)
         worker_url = 'http://%s:%d' % (
             self.host,
             self.next_port,
