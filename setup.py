@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from setuptools import find_packages, setup
+import versioneer
 
 setup(name='aimmo',
+    cmdclass=versioneer.get_cmdclass(),
     packages=find_packages(),
     include_package_data=True,
     install_requires = [
@@ -18,6 +20,6 @@ setup(name='aimmo',
         'django-setuptest',
     ],
     test_suite='setuptest.setuptest.SetupTestSuite',
-    version='0.0.0',
+    version=versioneer.get_version(),
     zip_safe=False,
 )
