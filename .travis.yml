@@ -1,6 +1,9 @@
 language: python
 python:
   - 2.7
+env:
+  global:
+    - secure: "UCpLs9fA5Ok2A1wYz1luSQx0f58agVHkJcnYaLZdAmTed8cLCVDDlo4mBlE3Q3KXGkctgtBL06+e6uO+gNlhpYX7ex8mW5w18ydjG3huFSCeb2Tqhs4DqqOY1C7eib9q6kO4uxItSeKtC+4GkN0rpAqhA+fVD8d8QnLSWiaOE6qHGvUNnTkvupOBoIrAQRWvYDkkKuMoijY10Aotdq2W1gjQok8u8vsipxgIdLGOIrdPmgxqfuGedDvoy8lakxmGLLFUHY8VBrzwPe47ydVtt1VSvqdWj/+u0DX0s9P2kyqTfnHpjeFydPDQFoI9d0xX3CyFlOsjiA+Yxo1TKCLeqFcUkiRN6fwBs5fgyne+rZKDurf6d1vXLQ3c+SwCg0deqwRx7bqFpVocxfu4WgsMrpz7bq+FKMlCobBM3U0Ns9qE0UiH57XqLRDfOByxG90/Zl9VguKIRKAmVbQ6Hgowz8szKYPJhVu36SIOvNklJ9wJJ9RWygUYv5n88NkHwR7uQlGbeFR3mKVyVVAuwfpyKVanMhJjdfe2rZvIjEeXOUWJzKrkHXAkWJSf4wc/k8lBpYQexeTa7hZP6GJwQ66cWYsu1Tk0qbyY6Yb+ZvMvvY5ENt2vRwGyxonBVuFL6naRghctZQ2ZyS7u8U8SsWiuJCghWMdyWflbqH78Na6PWDk=" # SNAP_API_AUTH
 git:
   depth: 9999999 # Building untagged builds needs enough depth to get the latest tag
 install:
@@ -19,3 +22,5 @@ deploy:
   on:
     all_branches: true
     repo: ocadotechnology/aimmo
+after_deploy:
+  - "curl -u ${SNAP_API_AUTH} -X POST -H 'Accept: application/vnd.snap-ci.com.v1+json' -H 'Content-type: application/json' https://api.snap-ci.com/project/ocadotechnology/codeforlife-deploy-appengine/branch/master/trigger"
