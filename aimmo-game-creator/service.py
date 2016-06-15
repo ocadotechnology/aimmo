@@ -86,6 +86,7 @@ def create_game_service(api, name, _config):
                         'targetPort': 5000,
                     },
                 ],
+                'type': 'NodePort',
             },
         },
     )
