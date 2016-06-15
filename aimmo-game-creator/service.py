@@ -135,7 +135,7 @@ def maintain_games(api, games):
                                     'path': "/game/%s/" % name,
                                     'backend': {
                                         'serviceName': "game-%s" % name,
-                                        'servicePort': 5000,
+                                        'servicePort': 80,
                                     },
                                 } for name in games.keys()
                             ],
