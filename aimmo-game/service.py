@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import logging
+import sys
 
 import eventlet
 eventlet.monkey_patch()
@@ -100,4 +101,10 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
     run_game()
-    socketio.run(app, debug=True, use_reloader=False)
+    socketio.run(
+        app,
+        debug=True,
+        host=sys.argv[1],
+        port=int(sys.argv[2]),
+        use_reloader=False,
+    )
