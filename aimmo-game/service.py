@@ -98,7 +98,7 @@ def run_game():
     player_manager = AvatarManager()
     game_state = GameState(my_map, player_manager)
     turn_manager = TurnManager(game_state=game_state, end_turn_callback=send_world_update)
-    worker_manager = LocalWorkerManager(game_state=game_state, users_url='http://localhost:8000/players/api/games/')
+    worker_manager = LocalWorkerManager(game_state=game_state, users_url=os.environ.get('GAME_API_URL', 'http://localhost:8000/players/api/games/'))
     worker_manager.start()
     turn_manager.start()
 
