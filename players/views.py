@@ -3,10 +3,12 @@ import logging
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.views.generic import TemplateView
 
 import os
 
 from models import Player
+from . import app_settings
 
 
 def _post_code_success_response(message):
@@ -55,3 +57,12 @@ def games(request):
         }
     }
     return JsonResponse(response)
+
+
+class WatchView(TemplateView):
+    template_name = 'players/watch.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(WatchView, self).get_context_data(**kwargs)
+        context['game_url_base'], context['game_url_path'] = app_settings.GAME_SERVER_LOCATION_FUNCTION('main')
+        return context
