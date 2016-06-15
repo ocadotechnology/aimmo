@@ -86,6 +86,11 @@ def send_world_update():
     )
 
 
+@app.route('/')
+def healthcheck():
+    return 'HEALTHY'
+
+
 def run_game():
     print("Running game...")
     my_map = map_generator.generate_map(10, 10, 0.1)
