@@ -130,7 +130,6 @@ def maintain_games(api, games):
             'spec': {
                 'rules': [
                     {
-                        'host': 'aimmo.hostname',
                         'http': {
                             'paths': [
                                 {
