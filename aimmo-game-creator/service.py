@@ -9,6 +9,7 @@ import time
 LOGGER = logging.getLogger(__name__)
 
 def create_game_rc(api, name, environment_variables):
+    environment_variables['SOCKETIO_RESOURCE'] = "game/%s/socket.io" % name
     rc = ReplicationController(
         api,
         {

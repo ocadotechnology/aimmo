@@ -9,7 +9,7 @@ urlpatterns = [
     url(r'^$', staff_member_required(TemplateView.as_view(template_name='players/home.html')), name='home'),
 
     url(r'^program/$', staff_member_required(login_required(TemplateView.as_view(template_name='players/program.html'))), name='program'),
-    url(r'^watch/$', staff_member_required(TemplateView.as_view(template_name='players/watch.html')), name='watch'),
+    url(r'^watch/$', staff_member_required(views.WatchView.as_view()), name='watch'),
     url(r'^statistics/$', staff_member_required(TemplateView.as_view(template_name='players/statistics.html')), name='statistics'),
 
     url(r'^api/code/$', staff_member_required(views.code), name='code'),

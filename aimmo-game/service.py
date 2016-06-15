@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import logging
+import os
 import sys
 
 import eventlet
@@ -18,7 +19,7 @@ from simulation.turn_manager import TurnManager
 from simulation.worker_manager import LocalWorkerManager
 
 app = flask.Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO()
 
 
 def to_cell_type(cell):
@@ -105,6 +106,7 @@ def run_game():
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
+    socketio.init_app(app, resource=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
     run_game()
     socketio.run(
         app,
