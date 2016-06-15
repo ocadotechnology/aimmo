@@ -3,19 +3,19 @@
 import logging
 from pykube import HTTPClient
 from pykube import KubeConfig
-from pykube import ReplicationController
+from pykube import Ingress, ReplicationController, Service
 import time
 
 LOGGER = logging.getLogger(__name__)
 
-def create_game(api, name, environment_variables):
+def create_game_rc(api, name, environment_variables):
     rc = ReplicationController(
         api,
         {
             'kind': 'ReplicationController',
             'apiVersion': 'v1',
             'metadata': {
-                'name': name,
+                'name': "game-%s" % name,
                 'namespace': 'default',
                 'labels': {
                     'app': 'aimmo-game',
@@ -47,7 +47,7 @@ def create_game(api, name, environment_variables):
                                 'image': 'ocadotechnology/aimmo-game:latest',
                                 'ports': [
                                     {
-                                        'containerPort': 80,
+                                        'containerPort': 5000,
                                     },
                                 ],
                                 'name': 'aimmo-game',
@@ -58,8 +58,38 @@ def create_game(api, name, environment_variables):
             },
         },
     )
-
     rc.create()
+
+
+def create_game_service(api, name, _config):
+    service = Service(
+        api,
+        {
+            'kind': 'Service',
+            'apiVersion': 'v1',
+            'metadata': {
+                'name': "game-%s" % name,
+                'labels': {
+                    'app': 'aimmo-game',
+                    'game': name,
+                },
+            },
+            'spec': {
+                'selector': {
+                    'app': 'aimmo-game',
+                    'game': name,
+                },
+                'ports': [
+                    {
+                        'protocol': 'TCP',
+                        'port': 80,
+                        'targetPort': 5000,
+                    },
+                ],
+            },
+        },
+    )
+    service.create()
 
 
 def get_games():
@@ -71,16 +101,53 @@ def get_games():
 
 
 def maintain_games(api, games):
-    current_game_names = set()
-    for game in ReplicationController.objects(api).filter(selector={'app': 'aimmo-game'}):
-        current_game_names.add(game.name)
-        if game.name not in games:
-            LOGGER.info("Deleting game %s", game.name)
-            game.delete()
-    for game_id, game_config in games.items():
-        if game_id not in current_game_names:
-            LOGGER.info("Creating game %s", game_id)
-            create_game(api, game_id, game_config)
+    for object_type, creation_callback in (
+        (ReplicationController, create_game_rc),
+        (Service, create_game_service),
+    ):
+        current_game_names = set()
+        for game in object_type.objects(api).filter(selector={'app': 'aimmo-game'}):
+            game_name = game.obj['metadata']['labels']['game']
+            current_game_names.add(game_name)
+            if game_name not in games:
+                LOGGER.info("Deleting game %s", game_name)
+                game.delete()
+        for game_id, game_config in games.items():
+            if game_id not in current_game_names:
+                LOGGER.info("Creating game %s", game_id)
+                creation_callback(api, game_id, game_config)
+    ingress = Ingress(
+        api,
+        {
+            'apiVersion': 'extensions/v1beta1',
+            'kind': 'Ingress',
+            'metadata': {
+                'name': 'game',
+            },
+            'spec': {
+                'rules': [
+                    {
+                        'host': 'aimmo.hostname',
+                        'http': {
+                            'paths': [
+                                {
+                                    'path': "/game/%s/" % name,
+                                    'backend': {
+                                        'serviceName': "game-%s" % name,
+                                        'servicePort': 5000,
+                                    },
+                                } for name in games.keys()
+                            ],
+                        },
+                    },
+                ],
+            },
+        },
+    )
+    if ingress.exists():
+        ingress.update()
+    else:
+        ingress.create()
 
 
 def main():
