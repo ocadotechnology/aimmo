@@ -36,7 +36,7 @@ $( document ).ready(function() {
     };
 
     $.ajax({
-        url: Urls.code(),
+        url: Urls['aimmo/code'](),
         type: 'GET',
         dataType: 'text',
         success: function(data) {
@@ -53,7 +53,7 @@ $( document ).ready(function() {
     $('#saveBtn').click(function(event) {
         event.preventDefault();
         $.ajax({
-            url: Urls.code(),
+            url: Urls['aimmo/code'](),
             type: 'POST',
             dataType: 'json',
             data: {code: editor.getValue(), csrfmiddlewaretoken: $('#saveForm input[name=csrfmiddlewaretoken]').val()},
