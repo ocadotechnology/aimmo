@@ -131,7 +131,7 @@ class KubernetesWorkerManager(WorkerManager):
                 'labels': {
                     'app': 'aimmo-game-worker',
                     'game': self.game_name,
-                    'player': player_id,
+                    'player': str(player_id),
                 },
             },
             'spec': {
@@ -160,7 +160,7 @@ class KubernetesWorkerManager(WorkerManager):
         for pod in Pod.objects(self.api).filter(selector={
             'app': 'aimmo-game-worker',
             'game': self.game_name,
-            'player': player_id,
+            'player': str(player_id),
         }):
             pod.delete()
 
