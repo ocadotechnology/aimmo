@@ -11,6 +11,7 @@ LOGGER = logging.getLogger(__name__)
 def create_game_rc(api, name, environment_variables):
     environment_variables['SOCKETIO_RESOURCE'] = "game/%s/socket.io" % name
     environment_variables['GAME_API_URL'] = 'https://staging-dot-decent-digit-629.appspot.com/aimmo/api/games/'
+    environment_vairables['GAME_NAME'] = name
     rc = ReplicationController(
         api,
         {
