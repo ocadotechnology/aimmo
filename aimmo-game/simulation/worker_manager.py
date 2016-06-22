@@ -121,7 +121,9 @@ class KubernetesWorkerManager(WorkerManager):
         super(KubernetesWorkerManager, self).__init__(*args, **kwargs)
 
     def create_worker(self, player_id):
-        pod = Pod({
+        pod = Pod(
+            self.api,
+            {
             'kind': 'Pod',
             'apiVersion': 'v1',
             'metadata': {
@@ -155,7 +157,7 @@ class KubernetesWorkerManager(WorkerManager):
         return worker_url
 
     def remove_worker(self, player_id):
-        for pod in Pod.objects(api).filter(selector={
+        for pod in Pod.objects(self.api).filter(selector={
             'app': 'aimmo-game-worker',
             'game': self.game_name,
             'player': player_id,
