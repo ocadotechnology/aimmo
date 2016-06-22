@@ -139,6 +139,7 @@ def maintain_games(api, games):
             'spec': {
                 'rules': [
                     {
+                        'host': 'staging.aimmo.codeforlife.education',
                         'http': {
                             'paths': [
                                 {
