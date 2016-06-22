@@ -110,10 +110,19 @@ class WorldMap(object):
         target_num_cells = int(math.ceil(num_avatars * TARGET_NUM_CELLS_PER_AVATAR))
         num_cells_to_add = target_num_cells - self.num_cells
         if num_cells_to_add > 0:
-            self.add_layer_to_edge()
+            self.add_outer_layer()
 
-    def add_layer_to_edge(self):
+    def add_outer_layer(self):
+        self.add_layer_to_vertical_edge()
+        self.add_layer_to_horizontal_edge()
+
+    def add_layer_to_vertical_edge(self):
         self.grid.append([Cell(Location(self.num_cols, y)) for y in range(self.num_rows)])
+
+    def add_layer_to_horizontal_edge(self):
+        columns = self.num_cols
+        rowss = self.num_rows
+        ([self.grid[x].append(Cell(Location(x, rowss))) for x in range(columns)])
 
     def reset_score_locations(self, num_avatars):
         for cell in self.score_cells():
