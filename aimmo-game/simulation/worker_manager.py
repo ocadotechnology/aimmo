@@ -1,5 +1,8 @@
 import logging
 import os
+from pykube import HTTPClient
+from pykube import KubeConfig
+from pykube import Pod
 import subprocess
 import threading
 import time
@@ -107,3 +110,59 @@ class LocalWorkerManager(WorkerManager):
         if player_id in self.workers:
             self.workers[player_id].kill()
             del self.workers[player_id]
+
+
+class KubernetesWorkerManager(WorkerManager):
+    '''Kubernetes worker manager.'''
+
+    def __init__(self, *args, **kwargs):
+        self.api = HTTPClient(KubeConfig.from_service_account())
+        self.game_name = os.environ['GAME_NAME']
+        super(KubernetesWorkerManager, self).__init__(*args, **kwargs)
+
+    def create_worker(self, player_id):
+        pod = Pod({
+            'kind': 'Pod',
+            'apiVersion': 'v1',
+            'metadata': {
+                'name': "aimmo-%s-worker-%s" % (self.game_name, player_id),
+                'labels': {
+                    'app': 'aimmo-game-worker',
+                    'game': self.game_name,
+                    'player': player_id,
+                },
+            },
+            'spec': {
+                'containers': [
+                    {
+                        'name': 'aimmo-game-worker',
+                        'image': 'ocadotechnology/aimmo-game-worker:latest',
+                        'ports': [
+                            {
+                                'containerPort': 5000,
+                                'protocol': 'TCP'
+                            }
+                        ],
+                    },
+                ],
+            },
+        })
+        pod.create()
+        time.sleep(5)
+        pod.reload()
+        worker_url = "http://%s:5000" % pod.obj['status']['podIP']
+        LOGGER.info("Worker started for %s, listening at %s", player_id, worker_url)
+        return worker_url
+
+    def remove_worker(self, player_id):
+        for pod in Pod.objects(api).filter(selector={
+            'app': 'aimmo-game-worker',
+            'game': self.game_name,
+            'player': player_id,
+        }):
+            pod.delete()
+
+WORKER_MANAGERS = {
+    'local': LocalWorkerManager,
+    'kubernetes': KubernetesWorkerManager,
+}
