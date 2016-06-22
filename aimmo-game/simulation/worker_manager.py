@@ -150,7 +150,7 @@ class KubernetesWorkerManager(WorkerManager):
             },
         })
         pod.create()
-        time.sleep(5)
+        time.sleep(20)
         pod.reload()
         worker_url = "http://%s:5000" % pod.obj['status']['podIP']
         LOGGER.info("Worker started for %s, listening at %s", player_id, worker_url)
