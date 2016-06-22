@@ -120,9 +120,8 @@ class WorldMap(object):
         self.grid.append([Cell(Location(self.num_cols, y)) for y in range(self.num_rows)])
 
     def add_layer_to_horizontal_edge(self):
-        columns = self.num_cols
-        rowss = self.num_rows
-        ([self.grid[x].append(Cell(Location(x, rowss))) for x in range(columns)])
+        rows = self.num_rows
+        ([self.grid[x].append(Cell(Location(x, rows))) for x in range(self.num_cols)])
 
     def reset_score_locations(self, num_avatars):
         for cell in self.score_cells():
