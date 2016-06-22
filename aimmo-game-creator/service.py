@@ -122,12 +122,6 @@ def maintain_games(api, games):
                 LOGGER.info("Creating game %s", game_id)
                 creation_callback(api, game_id, game_config)
 
-    services = Service.objects(api).filter(selector={
-        'app': 'aimmo-game',
-    })
-    nodeports = {}
-    for service in services:
-        nodeports[service.obj['metadata']['labels']['game']] = service.obj['spec']['ports'][0]['nodePort']
     ingress = Ingress(
         api,
         {
@@ -146,7 +140,7 @@ def maintain_games(api, games):
                                     'path': "/game/%s/*" % name,
                                     'backend': {
                                         'serviceName': "game-%s" % name,
-                                        'servicePort': nodeports[name],
+                                        'servicePort': 80,
                                     },
                                 } for name in games.keys()
                             ],
