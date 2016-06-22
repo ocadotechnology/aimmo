@@ -3,6 +3,7 @@ import os
 import subprocess
 import threading
 import time
+from eventlet.greenpool import GreenPool
 
 import requests
 
@@ -63,6 +64,7 @@ class WorkerManager(threading.Thread):
         """
         self._data = _WorkerManagerData(game_state, {})
         self.users_url = users_url
+        self._pool = GreenPool(size=3)
         super(WorkerManager, self).__init__()
 
     def get_persistent_state(self, player_id):
@@ -86,28 +88,32 @@ class WorkerManager(threading.Thread):
         persistent_state = self.get_persistent_state(user['id'])
 
         # Kill worker
+        LOGGER.info("LOL removing %s" % user['id'])
         self.remove_worker(user['id'])
 
         # Spawn worker
+        LOGGER.info("LOL creating %s" % user['id'])
         worker_url = self.create_worker(user['id'])
 
         # Initialise worker
+        LOGGER.info("LOL initting %s" % user['id'])
         requests.post("%s/initialise/" % worker_url, json={
             'code': user['code'],
             'options': {},
             'persistent_state': persistent_state,
         })
+        LOGGER.info("LOL innitted %s" % user['id'])
 
         # Add avatar back into game
         self._data.add_avatar(user, worker_url)
 
-    # multiprocessing.pool.imap does not work with eventlet.monkey_patch
     def _parallel_map(self, func, iterable_args):
-        jobs = [threading.Thread(target=func, args=[arg]) for arg in iterable_args]
-        for j in jobs:
-            j.start()
-        for j in jobs:
-            j.join()
+        self._pool.imap(func, iterable_args)
+        # jobs = [threading.Thread(target=func, args=[arg]) for arg in iterable_args]
+        # for j in jobs:
+        #     j.start()
+        # for j in jobs:
+        #     j.join()
 
 
     def run(self):
@@ -115,7 +121,7 @@ class WorkerManager(threading.Thread):
             try:
                 game_data = requests.get(self.users_url).json()
             except (requests.RequestException, ValueError) as err:
-                LOGGER.error("Obtaining game data failed: %s", err)
+                LOGGER.error("LOL Obtaining game data failed: %s", err)
             else:
                 game = game_data['main']
 
@@ -124,16 +130,20 @@ class WorkerManager(threading.Thread):
                 for user in game['users']:
                     if self._data.remove_user_if_code_is_different(user):
                         users_to_add.append(user)
+                LOGGER.info("LOL Need to add users: %s" % [x['id'] for x in users_to_add])
 
-                # Add removed users
+                # Add missing users
                 self._parallel_map(self.spawn_and_init, users_to_add)
 
                 # Delete extra users
                 known_avatars = set(user['id'] for user in game['users'])
                 removed_user_ids = self._data.remove_unknown_avatars(known_avatars)
+                LOGGER.info("LOL Users removed: %s" % removed_user_ids)
                 self._parallel_map(self.remove_worker, removed_user_ids)
 
+            LOGGER.info("LOL Sleeping for 10")
             time.sleep(10)
+            LOGGER.info("LOL AWAAAAAAAAAAAAAKE")
 
 
 class LocalWorkerManager(WorkerManager):
