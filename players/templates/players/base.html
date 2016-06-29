@@ -37,17 +37,9 @@
 
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        {% block nav-program %}<li><a href="{% url 'program' %}">Program<span class="sr-only"> (current)</span></a></li>{% endblock %}
-                        {% block nav-watch %}<li><a href="{% url 'watch' %}">Watch</a></li>{% endblock %}
-                        {% block nav-statistics %}<li><a href="{% url 'statistics' %}">Statistics</a></li>{% endblock %}
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        {% if request.user.is_authenticated %}
-                        <li><a href="{% url 'logout' %}?next={{ request.path }}">Logout</a></li>
-                        {% else %}
-                        {% block nav-login %}<li><a href="{% url 'login' %}?next={{ request.path }}">Login</a></li> {% endblock%}
-                        {% block nav-register %}<li><a href="{% url 'register' %}">Register</a></li> {% endblock %}
-                        {% endif %}
+                        {% block nav-program %}<li><a href="{% url 'aimmo/program' %}">Program<span class="sr-only"> (current)</span></a></li>{% endblock %}
+                        {% block nav-watch %}<li><a href="{% url 'aimmo/watch' %}">Watch</a></li>{% endblock %}
+                        {% block nav-statistics %}<li><a href="{% url 'aimmo/statistics' %}">Statistics</a></li>{% endblock %}
                     </ul>
                 </div>
             </div>
@@ -63,7 +55,7 @@
         {# Latest compiled and minified JavaScript #}
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-        <script src="{% url 'js_reverse' %}" type="text/javascript"></script>
+        <script src="{% url 'aimmo/js_reverse' %}" type="text/javascript"></script>
 
         {# HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries #}
         <!--[if lt IE 9]>

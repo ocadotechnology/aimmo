@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from setuptools import find_packages, setup
+
 import versioneer
 
 setup(name='aimmo',
@@ -15,6 +16,7 @@ setup(name='aimmo',
         'flask-socketio',
         'requests',
         'six',
+        'pykube',
     ],
     tests_require=[
         'django-setuptest',

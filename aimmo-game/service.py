@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 import logging
+import os
+import sys
 
 import eventlet
 eventlet.monkey_patch()
@@ -14,10 +16,10 @@ from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.game_state import GameState
 from simulation.turn_manager import TurnManager
-from simulation.worker_manager import LocalWorkerManager
+from simulation.worker_manager import WORKER_MANAGERS
 
 app = flask.Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO()
 
 
 def to_cell_type(cell):
@@ -52,7 +54,7 @@ def get_world_state():
         world = world_state_provider.lock_and_get_world()
         num_cols = len(world.world_map.grid)
         num_rows = len(world.world_map.grid[0])
-        grid = [[None for x in range(num_cols)] for y in range(num_rows)]
+        grid = [[None for y in range(num_rows)] for x in range(num_cols)]
         for cell in world.world_map.all_cells():
             grid[cell.location.x][cell.location.y] = to_cell_type(cell)
         player_data = {p.player_id: player_dict(p) for p in world.avatar_manager.avatars}
@@ -85,13 +87,19 @@ def send_world_update():
     )
 
 
+@app.route('/')
+def healthcheck():
+    return 'HEALTHY'
+
+
 def run_game():
     print("Running game...")
-    my_map = map_generator.generate_map(15, 15, 0.1)
+    my_map = map_generator.generate_map(10, 10, 0.1)
     player_manager = AvatarManager()
     game_state = GameState(my_map, player_manager)
     turn_manager = TurnManager(game_state=game_state, end_turn_callback=send_world_update)
-    worker_manager = LocalWorkerManager(game_state=game_state, users_url='http://localhost:8000/players/api/games/')
+    WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
+    worker_manager = WorkerManagerClass(game_state=game_state, users_url=os.environ.get('GAME_API_URL', 'http://localhost:8000/players/api/games/'))
     worker_manager.start()
     turn_manager.start()
 
@@ -99,5 +107,12 @@ def run_game():
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
+    socketio.init_app(app, resource=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
     run_game()
-    socketio.run(app, debug=True, use_reloader=False)
+    socketio.run(
+        app,
+        debug=True,
+        host=sys.argv[1],
+        port=int(sys.argv[2]),
+        use_reloader=False,
+    )

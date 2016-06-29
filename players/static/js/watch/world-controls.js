@@ -59,7 +59,7 @@ $(document).ready(function(){
     VIEWER.init(document.getElementById("watch-world-canvas"), world, APPEARANCE);
     CONTROLS.init(world, VIEWER);
 
-    var socket = io.connect('http://localhost:5000');
+    var socket = io.connect(GAME_URL_BASE, { path: GAME_URL_PATH });
     socket.on('world-update', function(msg) {
         refreshState(msg);
   });

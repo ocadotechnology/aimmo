@@ -37,9 +37,7 @@
 '''Players autoconfig'''
 
 DEFAULT_SETTINGS = {
-    'AUTOCONFIG_INDEX_VIEW': 'home',
-    'LOGIN_URL': 'login',
-    'LOGOUT_URL': 'logout',
+    'AUTOCONFIG_INDEX_VIEW': 'aimmo/home',
     'STATIC_URL': '/static/',
 }
 
