@@ -18,15 +18,16 @@ class Cell(object):
     Any position on the world grid.
     """
 
-    def __init__(self, location, habitable, generates_score, avatar, pickup):
+    def __init__(self, location, habitable, generates_score, avatar, pickup, partially_fogged):
         self.location = Location(**location)
         self.habitable = habitable
         self.generates_score = generates_score
         self.avatar = AvatarState(**avatar) if avatar else None
         self.pickup = HealthPickup(**pickup) if pickup else None
+        self.partially_fogged = partially_fogged
 
     def __repr__(self):
-        return 'Cell({} h={} s={} a={} p={})'.format(self.location, self.habitable, self.generates_score, self.avatar, self.pickup)
+        return 'Cell({} h={} s={} a={} p={} f={})'.format(self.location, self.habitable, self.generates_score, self.avatar, self.pickup, self.partially_fogged)
 
     def __eq__(self, other):
         return self.location == other.location
@@ -52,6 +53,9 @@ class WorldMap(object):
 
     def pickup_cells(self):
         return (c for c in self.all_cells() if c.pickup)
+
+    def partially_fogged_cells(self):
+        return (c for c in self.all_cells() if c.partially_fogged)
 
     def is_on_map(self, location):
         return location in self.cells
