@@ -1,13 +1,13 @@
 import logging
 import os
-from pykube import HTTPClient
-from pykube import KubeConfig
-from pykube import Pod
 import subprocess
 import threading
 import time
 
 import requests
+from pykube import HTTPClient
+from pykube import KubeConfig
+from pykube import Pod
 
 LOGGER = logging.getLogger(__name__)
 
@@ -127,7 +127,7 @@ class KubernetesWorkerManager(WorkerManager):
             'kind': 'Pod',
             'apiVersion': 'v1',
             'metadata': {
-                'name': "aimmo-%s-worker-%s" % (self.game_name, player_id),
+                'generateName': "aimmo-%s-worker-%s-" % (self.game_name, player_id),
                 'labels': {
                     'app': 'aimmo-game-worker',
                     'game': self.game_name,
