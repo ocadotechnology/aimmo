@@ -99,5 +99,5 @@ def run_game():
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
-    # run_game()
+    run_game()
     socketio.run(app, debug=True, use_reloader=False)
