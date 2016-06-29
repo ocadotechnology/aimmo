@@ -1,9 +1,7 @@
-import random
 import math
+import random
 
 from location import Location
-
-
 
 # TODO: extract to settings
 TARGET_NUM_CELLS_PER_AVATAR = 16
@@ -120,8 +118,9 @@ class WorldMap(object):
         self.grid.append([Cell(Location(self.num_cols, y)) for y in range(self.num_rows)])
 
     def add_layer_to_horizontal_edge(self):
-        rows = self.num_rows
-        ([self.grid[x].append(Cell(Location(x, rows))) for x in range(self.num_cols)])
+        rows = self.num_rows  # Read rows once here, as we'll mutate it as part of the first iteration
+        for x in range(self.num_cols):
+            self.grid[x].append(Cell(Location(x, rows)))
 
     def reset_score_locations(self, num_avatars):
         for cell in self.score_cells():
