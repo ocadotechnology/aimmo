@@ -14,6 +14,7 @@ def run_command(args):
         subprocess.check_call(args)
     except CalledProcessError as e:
         log('Command failed with exit status %d: %s' % (e.returncode, ' '.join(args)))
+        raise
 
 
 PROCESSES = []
