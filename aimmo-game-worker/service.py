@@ -21,11 +21,13 @@ def initialise():
 
     data = flask.request.get_json()
 
-    exec(data['code'])
-
-    avatar = Avatar(**data['options'])
-
-    return flask.jsonify(result='success')
+    try:
+        exec(data['code'])
+        avatar = Avatar(**data['options'])
+    except Exception as e:
+        return flask.jsonify(result='code_error', details=str(e))
+    else:
+        return flask.jsonify(result='success')
 
 
 @app.route('/turn/', methods=['POST'])

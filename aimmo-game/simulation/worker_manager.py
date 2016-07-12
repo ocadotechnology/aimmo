@@ -101,15 +101,19 @@ class WorkerManager(threading.Thread):
 
         # Initialise worker
         LOGGER.info("Initialising worker for %s" % user['id'])
-        requests.post("%s/initialise/" % worker_url, json={
+        result = requests.post("%s/initialise/" % worker_url, json={
             'code': user['code'],
             'options': {},
             'persistent_state': persistent_state,
-        })
-        LOGGER.info("Initialised worker %s" % user['id'])
-
-        # Add avatar back into game
-        self._data.add_avatar(user, worker_url)
+        }).json()['result']
+        if result == 'success':
+            LOGGER.info("Initialised worker %s" % user['id'])
+            # Add avatar back into game
+            self._data.add_avatar(user, worker_url)
+        elif result == 'code_error':
+            LOGGER.info("User %s has invalid code, avatar not added" % user['id'])
+        else:
+            LOGGER.error("Unknown result when initialising worker %s" % user['id'])
 
     def _parallel_map(self, func, iterable_args):
         list(self._pool.imap(func, iterable_args))
