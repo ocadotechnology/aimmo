@@ -61,6 +61,10 @@ def create_game_rc(api, name, environment_variables):
                                         'cpu': '1000m',
                                         'memory': '128Mi',
                                     },
+                                    'requests': {
+                                        'cpu': '100m',
+                                        'memory': '64Mi',
+                                    },
                                 },
                             },
                         ],

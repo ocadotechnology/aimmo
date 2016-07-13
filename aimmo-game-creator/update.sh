@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -e
 kubectl delete rc aimmo-game-creator || true
+sleep 5
 kubectl delete rc -l app=aimmo-game
+sleep 5
 kubectl delete pod -l app=aimmo-game-worker
 kubectl delete service -l app=aimmo-game
 sleep 5
