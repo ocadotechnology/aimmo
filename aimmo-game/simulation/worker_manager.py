@@ -217,7 +217,7 @@ class KubernetesWorkerManager(WorkerManager):
                         'env': [
                             {
                                 'name': 'DATA_URL',
-                                'value': "%s/players/%d" % (self.game_url, player_id),
+                                'value': "%s/player/%d" % (self.game_url, player_id),
                             },
                         ],
                         'name': 'aimmo-game-worker',
