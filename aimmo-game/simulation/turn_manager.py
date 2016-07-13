@@ -1,9 +1,7 @@
 import logging
-import requests
 import threading
 import time
 from threading import Lock
-from simulation.action import ACTIONS
 
 LOGGER = logging.getLogger(__name__)
 
@@ -55,19 +53,7 @@ class TurnManager(threading.Thread):
 
             for avatar in game_state.avatar_manager.active_avatars:
                 turn_state = game_state.get_state_for(avatar)
-                try:
-                    data = requests.post(avatar.worker_url, json=turn_state).json()
-                except ValueError as err:
-                    LOGGER.info("Failed to get turn result: %s", err)
-                else:
-                    try:
-                        action_data = data['action']
-                        action_class = ACTIONS[action_data['action_type']]
-                        action = action_class(**action_data.get('options', {}))
-                    except (KeyError, ValueError) as err:
-                        LOGGER.info("Bad action data supplied: %s", err)
-                    else:
-                        action.apply(game_state, avatar)
+                avatar.take_turn(game_state, turn_state)
 
             self._update_environment(game_state)
 

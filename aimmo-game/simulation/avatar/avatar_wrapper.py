@@ -1,3 +1,10 @@
+from simulation.action import ACTIONS
+import requests
+import logging
+
+LOGGER = logging.getLogger(__name__)
+
+
 class AvatarWrapper(object):
     """
     The application's view of a character, not to be confused with "Avatar",
@@ -12,6 +19,30 @@ class AvatarWrapper(object):
         self.player_id = player_id
         self.avatar_appearance = avatar_appearance
         self.worker_url = worker_url
+        self.effects = set()
+
+    def take_turn(self, game_state, game_view):
+        action = self._get_action(game_view)
+        if action is not None:
+            action.apply(game_state, self)
+            LOGGER.debug("%s took %s" % (self.player_id, action))
+        for effect in self.effects:
+            effect.turn()
+
+    def _get_action(self, game_view):
+        try:
+            data = requests.post(self.worker_url, json=game_view).json()
+        except ValueError as err:
+            LOGGER.info("Failed to get turn result: %s", err)
+        else:
+            try:
+                action_data = data['action']
+                action = ACTIONS[action_data['action_type']](**action_data.get('options', {}))
+            except (KeyError, ValueError) as err:
+                LOGGER.info("Bad action data supplied: %s", err)
+                return None
+            else:
+                return action
 
     def die(self, respawn_location):
         # TODO: extract settings for health and score loss on death

@@ -1,5 +1,6 @@
 import math
 import random
+from pickups import ALL_PICKUPS
 
 from location import Location
 from logging import getLogger
@@ -13,20 +14,7 @@ TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR = 0.5
 SCORE_DESPAWN_CHANCE = 0.02
 
 TARGET_NUM_PICKUPS_PER_AVATAR = 0.5
-PICKUP_SPAWN_CHANCE = 0.02
-
-
-class HealthPickup(object):
-    def __init__(self, health_restored=3):
-        self.health_restored = health_restored
-
-    def __repr__(self):
-        return 'HealthPickup(health_restored={})'.format(self.health_restored)
-
-    def serialise(self):
-        return {
-            'health_restored': self.health_restored,
-        }
+PICKUP_SPAWN_CHANCE = 1
 
 
 class Cell(object):
@@ -152,7 +140,7 @@ class WorldMap(object):
         for cell in locations:
             if random.random() < PICKUP_SPAWN_CHANCE:
                 LOGGER.info('Adding new pickup at %s', cell)
-                cell.pickup = HealthPickup()
+                cell.pickup = random.choice(ALL_PICKUPS)(cell)
 
     def _get_random_spawn_locations(self, max_locations):
         if max_locations <= 0:

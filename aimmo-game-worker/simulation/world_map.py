@@ -3,15 +3,6 @@ from .location import Location
 from .avatar_state import AvatarState
 
 
-class HealthPickup(object):
-
-    def __init__(self, health_restored=3):
-        self.health_restored = health_restored
-
-    def __repr__(self):
-        return 'HealthPickup(health_restored={})'.format(self.health_restored)
-
-
 class Cell(object):
 
     """
@@ -23,7 +14,7 @@ class Cell(object):
         self.habitable = habitable
         self.generates_score = generates_score
         self.avatar = AvatarState(**avatar) if avatar else None
-        self.pickup = HealthPickup(**pickup) if pickup else None
+        self.pickup = pickup if pickup else None
 
     def __repr__(self):
         return 'Cell({} h={} s={} a={} p={})'.format(self.location, self.habitable, self.generates_score, self.avatar, self.pickup)

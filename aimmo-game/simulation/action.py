@@ -1,19 +1,36 @@
 from logging import getLogger
+from abc import ABCMeta, abstractmethod
 from simulation.direction import Direction
 from simulation.event import FailedAttackEvent, FailedMoveEvent, MovedEvent, PerformedAttackEvent, ReceivedAttackEvent
-import simulation.world_map as world_map_module
 
 LOGGER = getLogger(__name__)
 
 
 class Action(object):
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def _do_action(self, game_state, avatar):
+        raise NotImplementedError()
+
     def apply(self, game_state, avatar):
-        raise NotImplementedError('Abstract method')
+        self._do_action(game_state, avatar)
+        cell = game_state.world_map.get_cell(avatar.location)
+        self._add_score_from_cell_if_needed(avatar, cell)
+        if cell.pickup is not None:
+            cell.pickup.pickup(avatar)
+
+    def _add_score_from_cell_if_needed(self, avatar, cell):
+        if cell.generates_score:
+            avatar.score += 1
+
+    def __str__(self):
+        return self.__class__.__name__
 
 
 class WaitAction(Action):
-    def apply(self, game_state, avatar):
-        _add_score_from_cell_if_needed(avatar, game_state)
+    def _do_action(self, game_state, avatar):
+        pass
 
 
 class MoveAction(Action):
@@ -21,7 +38,7 @@ class MoveAction(Action):
         # Untrusted data!
         self.direction = Direction(**direction)
 
-    def apply(self, game_state, avatar):
+    def _do_action(self, game_state, avatar):
         target_location = avatar.location + self.direction
         if game_state.world_map.can_move_to(target_location):
             avatar.add_event(MovedEvent(avatar.location, target_location))
@@ -29,13 +46,8 @@ class MoveAction(Action):
             avatar.location = target_location
             new_cell = game_state.world_map.get_cell(target_location)
             new_cell.avatar = avatar
-            if new_cell.pickup:
-                # TODO: potentially extract pickup logic into pickup when adding multiple types
-                avatar.health = min(10, avatar.health + new_cell.pickup.health_restored)
-                new_cell.pickup = None
         else:
             avatar.add_event(FailedMoveEvent(avatar.location, target_location))
-        _add_score_from_cell_if_needed(avatar, game_state)
 
 
 class AttackAction(Action):
@@ -43,7 +55,7 @@ class AttackAction(Action):
         # Untrusted data!
         self.direction = Direction(**direction)
 
-    def apply(self, game_state, avatar):
+    def _do_action(self, game_state, avatar):
         target_location = avatar.location + self.direction
         attacked_avatar = game_state.world_map.get_cell(target_location).avatar
         if attacked_avatar:
@@ -59,14 +71,7 @@ class AttackAction(Action):
                 game_state.world_map.get_cell(respawn_location).avatar = attacked_avatar
         else:
             avatar.add_event(FailedAttackEvent(target_location))
-        _add_score_from_cell_if_needed(avatar, game_state)
 
-
-# TODO: investigate moving this to after an action is handled - it is not specific to an action
-def _add_score_from_cell_if_needed(avatar, game_state):
-    cell = game_state.world_map.get_cell(avatar.location)
-    if cell.generates_score:
-        avatar.score += 1
 
 ACTIONS = {
     'attack': AttackAction,
