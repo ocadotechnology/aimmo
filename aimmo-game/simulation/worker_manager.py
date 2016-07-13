@@ -45,7 +45,14 @@ class _WorkerManagerData(object):
             # Add avatar back into game
             self._game_state.add_avatar(
                 user_id=user['id'], worker_url="%s/turn/" % worker_url)
+
+    def set_code(self, user):
+        with self._lock:
             self._user_codes[user['id']] = user['code']
+
+    def get_code(self, player_id):
+        with self._lock:
+            return self._user_codes[player_id]
 
     def remove_unknown_avatars(self, known_user_ids):
         with self._lock:
@@ -71,6 +78,9 @@ class WorkerManager(threading.Thread):
         self._pool = GreenPool(size=3)
         super(WorkerManager, self).__init__()
 
+    def get_code(self, player_id):
+        return self._data.get_code(player_id)
+
     def get_persistent_state(self, player_id):
         """Get the persistent state for a worker."""
 
@@ -87,7 +97,7 @@ class WorkerManager(threading.Thread):
         raise NotImplemented
 
     # TODO handle failure
-    def spawn_and_init(self, user):
+    def spawn(self, user):
         # Get persistent state from worker
         persistent_state = self.get_persistent_state(user['id'])
 
@@ -95,18 +105,11 @@ class WorkerManager(threading.Thread):
         LOGGER.info("Removing worker for user %s" % user['id'])
         self.remove_worker(user['id'])
 
+        self._data.set_code(user)
+
         # Spawn worker
         LOGGER.info("Spawning worker for user %s" % user['id'])
         worker_url = self.create_worker(user['id'])
-
-        # Initialise worker
-        LOGGER.info("Initialising worker for %s" % user['id'])
-        requests.post("%s/initialise/" % worker_url, json={
-            'code': user['code'],
-            'options': {},
-            'persistent_state': persistent_state,
-        })
-        LOGGER.info("Initialised worker %s" % user['id'])
 
         # Add avatar back into game
         self._data.add_avatar(user, worker_url)
@@ -132,7 +135,7 @@ class WorkerManager(threading.Thread):
                 LOGGER.debug("Need to add users: %s" % [x['id'] for x in users_to_add])
 
                 # Add missing users
-                self._parallel_map(self.spawn_and_init, users_to_add)
+                self._parallel_map(self.spawn, users_to_add)
 
                 # Delete extra users
                 known_avatars = set(user['id'] for user in game['users'])
@@ -148,10 +151,11 @@ class LocalWorkerManager(WorkerManager):
     """Relies on them already being created already."""
 
     host = '127.0.0.1'
-    worker_path = os.path.join(
+    worker_directory = os.path.join(
         os.path.dirname(__file__),
-        '../../aimmo-game-worker/service.py',
+        '../../aimmo-game-worker/',
     )
+    worker_path = os.path.join(worker_directory, 'run.sh')
 
     def __init__(self, *args, **kwargs):
         self.workers = {}
@@ -162,12 +166,14 @@ class LocalWorkerManager(WorkerManager):
         assert(player_id not in self.workers)
         self.next_port += 1
         process_args = [
-            'python',
+            'bash',
             self.worker_path,
             self.host,
             str(self.next_port),
         ]
-        self.workers[player_id] = subprocess.Popen(process_args)
+        env = os.environ.copy()
+        env['DATA_URL'] = "http://127.0.0.1:5000/player/%d" % player_id
+        self.workers[player_id] = subprocess.Popen(process_args, cwd=self.worker_directory, env=env)
         worker_url = 'http://%s:%d' % (
             self.host,
             self.next_port,
@@ -188,6 +194,7 @@ class KubernetesWorkerManager(WorkerManager):
     def __init__(self, *args, **kwargs):
         self.api = HTTPClient(KubeConfig.from_service_account())
         self.game_name = os.environ['GAME_NAME']
+        self.game_url = os.environ['GAME_URL']
         super(KubernetesWorkerManager, self).__init__(*args, **kwargs)
 
     def create_worker(self, player_id):
@@ -207,6 +214,12 @@ class KubernetesWorkerManager(WorkerManager):
             'spec': {
                 'containers': [
                     {
+                        'env': [
+                            {
+                                'name': 'DATA_URL',
+                                'value': "%s/players/%d" % (self.game_url, player_id),
+                            },
+                        ],
                         'name': 'aimmo-game-worker',
                         'image': 'ocadotechnology/aimmo-game-worker:latest',
                         'ports': [
@@ -215,6 +228,12 @@ class KubernetesWorkerManager(WorkerManager):
                                 'protocol': 'TCP'
                             }
                         ],
+                        'resources': {
+                            'limits': {
+                                'cpu': '10m',
+                                'memory': '64Mi',
+                            },
+                        },
                     },
                 ],
             },
