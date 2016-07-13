@@ -21,6 +21,8 @@ from simulation.worker_manager import WORKER_MANAGERS
 app = flask.Flask(__name__)
 socketio = SocketIO()
 
+worker_manager = None
+
 
 def to_cell_type(cell):
     if not cell.habitable:
@@ -92,7 +94,19 @@ def healthcheck():
     return 'HEALTHY'
 
 
+@app.route('/player/<player_id>')
+def player_data(player_id):
+    player_id = int(player_id)
+    return flask.jsonify({
+        'code': worker_manager.get_code(player_id),
+        'options': {}, # Game options
+        'state': None,
+    })
+
+
 def run_game():
+    global worker_manager
+
     print("Running game...")
     my_map = map_generator.generate_map(10, 10, 0.1)
     player_manager = AvatarManager()
@@ -111,7 +125,7 @@ if __name__ == '__main__':
     run_game()
     socketio.run(
         app,
-        debug=True,
+        debug=False,
         host=sys.argv[1],
         port=int(sys.argv[2]),
         use_reloader=False,
