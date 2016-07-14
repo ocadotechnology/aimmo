@@ -31,3 +31,7 @@ class DummyAvatarRunner(object):
 
     def serialise(self):
         return 'Dummy'
+
+    def damage(self, amount):
+        self.health -= amount
+        return amount

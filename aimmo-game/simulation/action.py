@@ -18,7 +18,7 @@ class Action(object):
         cell = game_state.world_map.get_cell(avatar.location)
         self._add_score_from_cell_if_needed(avatar, cell)
         if cell.pickup is not None:
-            cell.pickup.pickup(avatar)
+            cell.pickup.apply(avatar)
 
     def _add_score_from_cell_if_needed(self, avatar, cell):
         if cell.generates_score:
@@ -59,11 +59,11 @@ class AttackAction(Action):
         target_location = avatar.location + self.direction
         attacked_avatar = game_state.world_map.get_cell(target_location).avatar
         if attacked_avatar:
-            damage_dealt = 1
+            damage_dealt = attacked_avatar.damage(1)
             avatar.add_event(PerformedAttackEvent(attacked_avatar, target_location, damage_dealt))
             attacked_avatar.add_event(ReceivedAttackEvent(avatar, damage_dealt))
-            attacked_avatar.health -= damage_dealt
             LOGGER.debug('{} dealt {} damage to {}'.format(avatar, damage_dealt, attacked_avatar))
+            # TODO: refactor into AvatarWrapper.damage method
             if attacked_avatar.health <= 0:
                 respawn_location = game_state.world_map.get_random_spawn_location()
                 attacked_avatar.die(respawn_location)

@@ -20,14 +20,19 @@ class AvatarWrapper(object):
         self.avatar_appearance = avatar_appearance
         self.worker_url = worker_url
         self.effects = set()
+        self.resistance = 0
 
     def take_turn(self, game_state, game_view):
         action = self._get_action(game_view)
         if action is not None:
             action.apply(game_state, self)
             LOGGER.debug("%s took %s" % (self.player_id, action))
+        effects_to_remove = set()
         for effect in self.effects:
-            effect.turn()
+            if not effect.turn():
+                effects_to_remove.add(effect)
+        for effect in effects_to_remove:
+            effect.remove()
 
     def _get_action(self, game_view):
         try:
@@ -52,6 +57,11 @@ class AvatarWrapper(object):
 
     def add_event(self, event):
         self.events.append(event)
+
+    def damage(self, amount):
+        applied_dmg = max(0, amount - self.resistance)
+        self.health -= applied_dmg
+        return applied_dmg
 
     def serialise(self):
         return {

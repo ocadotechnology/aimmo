@@ -1,4 +1,5 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta, abstractmethod, abstractproperty
+import effects
 
 
 class _Pickup(object):
@@ -13,7 +14,7 @@ class _Pickup(object):
     def delete(self):
         self.cell.pickup = None
 
-    def pickup(self, avatar):
+    def apply(self, avatar):
         self._apply(avatar)
         self.delete()
 
@@ -44,6 +45,27 @@ class HealthPickup(_Pickup):
         avatar.health += self.health_restored
 
 
+class _PickupEffect(_Pickup):
+    __metaclass__ = ABCMeta
+
+    @abstractproperty
+    def EFFECT(self):
+        raise NotImplementedError()
+
+    def _apply(self, avatar):
+        avatar.effects.add(self.EFFECT(avatar))
+
+
+class InvulnerabilityPickup(_PickupEffect):
+    EFFECT = effects.InvulnerabilityEffect
+
+    def serialise(self):
+        return {
+                'type': 'invulnerability',
+        }
+
+
 ALL_PICKUPS = (
     HealthPickup,
+    InvulnerabilityPickup,
 )
