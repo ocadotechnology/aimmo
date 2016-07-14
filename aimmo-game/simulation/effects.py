@@ -36,3 +36,14 @@ class InvulnerabilityEffect(_TimedEffect):
     def remove(self):
         super(InvulnerabilityEffect, self).remove()
         self._avatar.resistance -= 1000
+
+
+class DamageEffect(_TimedEffect):
+    def __init__(self, damage_boost, *args):
+        self._damage_boost = damage_boost
+        super(DamageEffect, self).__init__(*args)
+        self._avatar.attack_strength += self._damage_boost
+
+    def remove(self):
+        super(DamageEffect, self).remove()
+        self._avatar.attack_strength -= self._damage_boost

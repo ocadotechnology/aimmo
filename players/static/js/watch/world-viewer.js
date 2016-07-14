@@ -136,6 +136,9 @@ const VIEWER = Object.create({
                 case 'invulnerability':
                     pickup = this.drawInvulnerability(x, y);
                     break;
+                case 'damage':
+                    pickup = this.drawDamage(x, y);
+                    break;
                 default:
                     console.log('Unknown pickup: ' + this.world.pickups[i].type);
                     pickup = undefined;
@@ -167,6 +170,14 @@ const VIEWER = Object.create({
         return pickup;
     },
 
+    drawDamage: function(x, y) {
+        var radius = this.appearance.cellSize * 0.5 * 0.75;
+        var circle = this.paper.circle(x, y, radius);
+        circle.attr('fill', '#ff0000');
+        var pickup = this.paper.set();
+        pickup.push(circle);
+        return pickup;
+    },
 
     reDrawState: function() {
         this.reDrawPickups();

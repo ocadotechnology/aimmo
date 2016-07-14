@@ -59,7 +59,7 @@ class AttackAction(Action):
         target_location = avatar.location + self.direction
         attacked_avatar = game_state.world_map.get_cell(target_location).avatar
         if attacked_avatar:
-            damage_dealt = attacked_avatar.damage(1)
+            damage_dealt = attacked_avatar.damage(avatar.attack_strength)
             avatar.add_event(PerformedAttackEvent(attacked_avatar, target_location, damage_dealt))
             attacked_avatar.add_event(ReceivedAttackEvent(avatar, damage_dealt))
             LOGGER.debug('{} dealt {} damage to {}'.format(avatar, damage_dealt, attacked_avatar))

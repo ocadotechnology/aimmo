@@ -21,6 +21,7 @@ class AvatarWrapper(object):
         self.worker_url = worker_url
         self.effects = set()
         self.resistance = 0
+        self.attack_strength = 1
 
     def take_turn(self, game_state, game_view):
         action = self._get_action(game_view)
