@@ -1,0 +1,10 @@
+{% extends 'players/base.html' %}
+{% block extra_nav %}
+    <ul class="nav navbar-nav" id="games">
+        {% for game in games %}
+        <li data-pk="{{ game.pk }}" class="nav-item {% if game.pk == active_game %} active" id="active-code{% endif %}">
+            <a class="nav-link" href="{% url 'aimmo/watch' id=game.id %}">{{ game.name }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,4 +1,4 @@
-{% extends 'players/base.html' %}
+{% extends 'players/base_game_chooser.html' %}
 
 {% block nav-program %}<li class="active"><a href="{% url 'aimmo/program' %}">Program<span class="sr-only"> (current)</span></a></li>{% endblock %}
 
@@ -12,8 +12,8 @@
     </div>
 </div>
 <div class="row">
-    <div id="editor" class="col-md-9"></div>
-    <form id="saveForm" action="{% url 'aimmo/code' %}" method="POST">
+    <div id="editor" class="col-md-9"># First select a game from the menu above.</div>
+    <form id="saveForm" action="" method="POST">
         {% csrf_token %}
         <div id="buttons" class="col-md-3">
             <input type="submit" id="saveBtn" type="button" class="btn btn-lg btn-primary text-center" value="Save" />

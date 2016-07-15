@@ -1,0 +1,15 @@
+{% extends 'players/base_game_chooser.html' %}
+
+{% block nav-watch %}<li class="active"><a href="{% url 'aimmo/games_list' %}">Watch</a></li>{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="/static/css/watch.css"/>
+{% endblock %}
+
+{% block content %}
+<ul>
+    {% for game in object_list %}
+    <li><a href="{% url 'aimmo/watch' id=game.id %}">{{ game.name }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

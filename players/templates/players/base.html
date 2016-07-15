@@ -38,13 +38,14 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         {% block nav-program %}<li><a href="{% url 'aimmo/program' %}">Program<span class="sr-only"> (current)</span></a></li>{% endblock %}
-                        {% block nav-watch %}<li><a href="{% url 'aimmo/watch' %}">Watch</a></li>{% endblock %}
+                        {% block nav-watch %}<li><a href="{% url 'aimmo/games_list' %}">Watch</a></li>{% endblock %}
                         {% block nav-statistics %}<li><a href="{% url 'aimmo/statistics' %}">Statistics</a></li>{% endblock %}
+                        <li><a href="{% url 'aimmo/new_game' %}">Add a new game</a></li>
                     </ul>
                 </div>
             </div>
+            {% block extra_nav %}{% endblock %}
         </nav>
-
         <div class="container">
             {% block content %}
             {% endblock %}

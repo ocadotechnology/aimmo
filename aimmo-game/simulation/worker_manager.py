@@ -68,7 +68,7 @@ class WorkerManager(threading.Thread):
     """
     daemon = True
 
-    def __init__(self, game_state, users_url):
+    def __init__(self, game_state, users_url, port=5000):
         """
 
         :param thread_pool:
@@ -76,6 +76,7 @@ class WorkerManager(threading.Thread):
         self._data = _WorkerManagerData(game_state, {})
         self.users_url = users_url
         self._pool = GreenPool(size=3)
+        self.port = port
         super(WorkerManager, self).__init__()
 
     def get_code(self, player_id):
@@ -161,8 +162,8 @@ class LocalWorkerManager(WorkerManager):
 
     def __init__(self, *args, **kwargs):
         self.workers = {}
-        self.next_port = 1989
         super(LocalWorkerManager, self).__init__(*args, **kwargs)
+        self.next_port = self.port
 
     def create_worker(self, player_id):
         assert(player_id not in self.workers)
@@ -174,7 +175,7 @@ class LocalWorkerManager(WorkerManager):
             str(self.next_port),
         ]
         env = os.environ.copy()
-        env['DATA_URL'] = "http://127.0.0.1:5000/player/%d" % player_id
+        env['DATA_URL'] = "http://127.0.0.1:%d/player/%d" % (self.port, player_id)
         self.workers[player_id] = subprocess.Popen(process_args, cwd=self.worker_directory, env=env)
         worker_url = 'http://%s:%d' % (
             self.host,
@@ -195,7 +196,7 @@ class KubernetesWorkerManager(WorkerManager):
 
     def __init__(self, *args, **kwargs):
         self.api = HTTPClient(KubeConfig.from_service_account())
-        self.game_name = os.environ['GAME_NAME']
+        self.game_id = os.environ['GAME_ID']
         self.game_url = os.environ['GAME_URL']
         super(KubernetesWorkerManager, self).__init__(*args, **kwargs)
 
@@ -206,10 +207,10 @@ class KubernetesWorkerManager(WorkerManager):
              'kind': 'Pod',
              'apiVersion': 'v1',
              'metadata': {
-                'generateName': "aimmo-%s-worker-%s-" % (self.game_name, player_id),
+                'generateName': "aimmo-%s-worker-%s-" % (self.game_id, player_id),
                 'labels': {
                     'app': 'aimmo-game-worker',
-                    'game': self.game_name,
+                    'game': self.game_id,
                     'player': str(player_id),
                     },
                 },
@@ -251,7 +252,7 @@ class KubernetesWorkerManager(WorkerManager):
     def remove_worker(self, player_id):
         for pod in Pod.objects(self.api).filter(selector={
             'app': 'aimmo-game-worker',
-            'game': self.game_name,
+            'game': self.game_id,
             'player': str(player_id),
         }):
             pod.delete()
