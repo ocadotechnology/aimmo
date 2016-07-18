@@ -65,4 +65,5 @@ class WatchView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(WatchView, self).get_context_data(**kwargs)
         context['game_url_base'], context['game_url_path'] = app_settings.GAME_SERVER_LOCATION_FUNCTION('main')
+        context['current_user_player_key'] = self.request.user.pk
         return context
