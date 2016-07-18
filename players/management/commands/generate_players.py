@@ -12,11 +12,13 @@ from players.views import code as code_view
 
 _AVATAR_CODES_DIRECTORY = 'players/avatar_examples'
 
-## Code file listing
+# Code file listing
+
 
 def _strip_prefix(prefix, string):
     if string.startswith(prefix):
         return string[len(prefix):]
+
 
 def _get_available_code_files(base_directory):
     for dirpath, dirnames, filenames in os.walk(base_directory):
@@ -27,7 +29,8 @@ def _get_available_code_files(base_directory):
 
 _AVATAR_CODES = list(_get_available_code_files(_AVATAR_CODES_DIRECTORY))
 
-## Code file loading
+# Code file loading
+
 
 def _load_code_file(filename):
     if not filename.endswith('.py'):
@@ -40,6 +43,7 @@ def _load_code_file(filename):
 
 
 class LoadCodeAction(argparse.Action):
+
     def __init__(self, option_strings, dest, **kwargs):
         super(LoadCodeAction, self).__init__(option_strings, dest, **kwargs)
 
@@ -57,14 +61,12 @@ class Command(BaseCommand):
         self.engine = import_module(settings.SESSION_ENGINE)
         self.request_factory = RequestFactory()
 
-
     def add_arguments(self, parser):
         parser.add_argument('--num-users', type=int, required=True,
-            help='Number of users to create')
+                            help='Number of users to create')
         parser.add_argument('--avatar-code', choices=_AVATAR_CODES,
-            action=LoadCodeAction, required=True,
-            help='The code to use for the avatar.')
-
+                            action=LoadCodeAction, required=True,
+                            help='The code to use for the avatar.')
 
     # A command must define handle()
     def handle(self, *args, **options):
