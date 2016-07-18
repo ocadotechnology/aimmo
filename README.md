@@ -56,6 +56,8 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
     * sync the database
     * collect the static files
     * run the server
+* You can quickly create players as desired using the following command:
+`python example_project/manage.py generate_players --num-users 5 --avatar-code dumb_avatar.py`
 
 ### Installing virtualenvwrapper on Mac
 * Run `pip install virtualenvwrapper`
