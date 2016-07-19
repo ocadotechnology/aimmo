@@ -1,0 +1,14 @@
+from django.core.management import BaseCommand
+from django.contrib.auth.models import User
+
+class Command(BaseCommand):
+    # Show this when the user types help
+    help = "Delete generated users"
+
+    # A command must define handle()
+    def handle(self, *args, **options):
+        for user in User.objects.iterator():
+            user_name = user.get_username()
+            if user_name.startswith('zombie-'):
+                self.stdout.write('Deleting %s' % user_name)
+                user.delete()

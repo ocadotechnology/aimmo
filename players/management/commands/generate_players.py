@@ -81,7 +81,7 @@ class Command(BaseCommand):
             self.post_code(user, code)
 
     def create_user(self, username, password):
-        user = User.objects.create_superuser(username, 'user@generated.com', password)
+        user = User.objects.create_user(username, 'user@generated.com', password)
         self.stdout.write('Created user %s with password: %s' % (username, password))
         return user
 
