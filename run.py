@@ -40,12 +40,12 @@ def main():
     server_args = []
 
     run_command(['pip', 'install', '-e', '.'])
-    run_command(['./example_project/manage.py', 'migrate', '--noinput'])
-    run_command(['./example_project/manage.py', 'collectstatic', '--noinput'])
+    run_command(['python', './example_project/manage.py', 'migrate', '--noinput'])
+    run_command(['python', './example_project/manage.py', 'collectstatic', '--noinput'])
 
-    server = run_command_async(['./example_project/manage.py', 'runserver'] + server_args)
+    server = run_command_async(['python', './example_project/manage.py', 'runserver'] + server_args)
     time.sleep(2)
-    game = run_command_async(['./aimmo-game/service.py', '127.0.0.1', '5000'])
+    game = run_command_async(['python', './aimmo-game/service.py', '127.0.0.1', '5000'])
 
     server.wait()
     game.wait()
