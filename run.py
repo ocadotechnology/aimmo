@@ -2,6 +2,14 @@ import subprocess
 import sys
 import time
 
+if __name__ == '__main__':
+    import os
+
+    sys.path.append('example_project')
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
+
+
+from django.contrib.auth.models import User
 from subprocess import CalledProcessError
 
 
@@ -36,7 +44,17 @@ def cleanup_processes():
             pass
 
 
+def create_superuser_if_missing(username, password):
+    try:
+        User.objects.get_by_natural_key(username)
+    except User.DoesNotExist:
+        log('Creating superuser %s with password %s' % (username, password))
+        User.objects.create_superuser(username=username, email='admin@admin.com', password=password)
+
+
 def main():
+    create_superuser_if_missing(username='admin', password='admin')
+
     server_args = []
 
     run_command(['pip', 'install', '-e', '.'])
