@@ -4,6 +4,7 @@ import subprocess
 import sys
 import time
 
+from subprocess import CalledProcessError
 
 _SCRIPT_LOCATION = os.path.abspath(os.path.dirname(__file__))
 _MANAGE_PY = os.path.join(_SCRIPT_LOCATION, 'example_project', 'manage.py')
@@ -17,7 +18,6 @@ if __name__ == '__main__':
 
 
 from django.contrib.auth.models import User
-from subprocess import CalledProcessError
 
 
 def log(message):
