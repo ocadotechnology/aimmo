@@ -1,11 +1,18 @@
+import logging
+import os
 import subprocess
 import sys
 import time
 
-if __name__ == '__main__':
-    import os
 
-    sys.path.append('example_project')
+_SCRIPT_LOCATION = os.path.abspath(os.path.dirname(__file__))
+_MANAGE_PY = os.path.join(_SCRIPT_LOCATION, 'example_project', 'manage.py')
+_SERVICE_PY = os.path.join(_SCRIPT_LOCATION, 'aimmo-game', 'service.py')
+
+
+if __name__ == '__main__':
+    logging.basicConfig()
+    sys.path.append(os.path.join(_SCRIPT_LOCATION, 'example_project'))
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
 
 
@@ -57,13 +64,13 @@ def main():
 
     server_args = []
 
-    run_command(['pip', 'install', '-e', '.'])
-    run_command(['python', './example_project/manage.py', 'migrate', '--noinput'])
-    run_command(['python', './example_project/manage.py', 'collectstatic', '--noinput'])
+    run_command(['pip', 'install', '-e', _SCRIPT_LOCATION])
+    run_command(['python', _MANAGE_PY, 'migrate', '--noinput'])
+    run_command(['python', _MANAGE_PY, 'collectstatic', '--noinput'])
 
-    server = run_command_async(['python', './example_project/manage.py', 'runserver'] + server_args)
+    server = run_command_async(['python', _MANAGE_PY, 'runserver'] + server_args)
     time.sleep(2)
-    game = run_command_async(['python', './aimmo-game/service.py', '127.0.0.1', '5000'])
+    game = run_command_async(['python', _SERVICE_PY, '127.0.0.1', '5000'])
 
     server.wait()
     game.wait()
