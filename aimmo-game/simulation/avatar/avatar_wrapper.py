@@ -47,9 +47,9 @@ class AvatarWrapper(object):
                 action = ACTIONS[action_data['action_type']](**action_data.get('options', {}))
             except (KeyError, ValueError) as err:
                 LOGGER.info("Bad action data supplied: %s", err)
-                return None
             else:
                 return action
+        return None
 
     def die(self, respawn_location):
         # TODO: extract settings for health and score loss on death
