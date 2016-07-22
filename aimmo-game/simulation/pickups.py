@@ -62,7 +62,7 @@ class _PickupEffect(_Pickup):
 
 
 class InvulnerabilityPickup(_PickupEffect):
-    EFFECT = effects.InvulnerabilityEffect
+    EFFECT = effects.InvulnerabilityPickupEffect
 
     def serialise(self):
         return {
@@ -71,7 +71,7 @@ class InvulnerabilityPickup(_PickupEffect):
 
 
 class DamagePickup(_PickupEffect):
-    EFFECT = effects.DamageEffect
+    EFFECT = effects.DamagePickupEffect
 
     def __init__(self, *args):
         super(DamagePickup, self).__init__(*args)
