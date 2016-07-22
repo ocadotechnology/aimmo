@@ -21,7 +21,7 @@ setup(name='aimmo',
     tests_require=[
         'django-setuptest',
     ],
-    test_suite='setuptest.setuptest.SetupTestSuite',
+    test_suite='tests.AllTests',
     version=versioneer.get_version(),
     zip_safe=False,
 )
