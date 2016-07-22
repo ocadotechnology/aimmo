@@ -20,6 +20,7 @@ setup(name='aimmo',
     ],
     tests_require=[
         'django-setuptest',
+        'httmock',
     ],
     test_suite='tests.AllTests',
     version=versioneer.get_version(),

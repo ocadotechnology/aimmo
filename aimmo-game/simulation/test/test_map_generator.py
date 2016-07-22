@@ -2,7 +2,7 @@ import unittest
 from simulation.map_generator import get_random_edge_index, generate_map
 
 
-class ConstantRng:
+class ConstantRng(object):
 
     def __init__(self, value):
         self.value = value
@@ -44,6 +44,21 @@ class TestMapGenerator(unittest.TestCase):
         with self.assertRaisesRegexp(ValueError, 'Beyond range'):
             get_random_edge_index(height, width, rng=ConstantRng(6))
 
+    def test_map_dimensions(self):
+        m = generate_map(4, 3, 1.0)
+        grid = list(m.all_cells())
+        self.assertEqual(len(set(grid)), len(grid), "Repeats in list")
+        for c in grid:
+            self.assertLess(c.location.x, 3)
+            self.assertLess(c.location.y, 4)
+            self.assertGreaterEqual(c.location.x, 0)
+            self.assertGreaterEqual(c.location.y, 0)
+
+    def test_obstable_ratio(self):
+        m = generate_map(10, 10, 0.0)
+        obstacle_cells = [cell for row in m.grid for cell in row if not cell.habitable]
+        self.assertEqual(len(obstacle_cells), 0)
+
     def test_map_contains_some_non_habitable_cell(self):
         m = generate_map(4, 4, 1.0)
         obstacle_cells = [cell for row in m.grid for cell in row if not cell.habitable]
@@ -61,4 +76,4 @@ class TestMapGenerator(unittest.TestCase):
         edge_cells = (m.grid[x][y] for (x, y) in edge_coordinates)
         habitable_edge_cells = [cell for cell in edge_cells if cell.habitable]
 
-        self.assertGreaterEqual(len(habitable_edge_cells ), 1)
+        self.assertGreaterEqual(len(habitable_edge_cells), 1)
