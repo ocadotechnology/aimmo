@@ -79,7 +79,8 @@ class WorldMap(object):
         if not self.is_on_map(location):
             raise ValueError('Location %s is not on the map' % location)
         cell = self.grid[location.x][location.y]
-        assert cell.location == location, 'location lookup mismatch: arg={}, found={}'.format(location, cell.location)
+        assert cell.location == location,\
+            'location lookup mismatch: arg={}, found={}'.format(location, cell.location)
         return cell
 
     @property

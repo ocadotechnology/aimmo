@@ -5,6 +5,8 @@ from simulation.event import FailedAttackEvent, FailedMoveEvent, MovedEvent, Per
 
 LOGGER = getLogger(__name__)
 
+LOGGER = getLogger(__name__)
+
 
 class Action(object):
     __metaclass__ = ABCMeta

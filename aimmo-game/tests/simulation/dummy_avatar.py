@@ -13,6 +13,7 @@ class DummyAvatarRunner(object):
         self.player_id = player_id
         self.events = []
         self.times_died = 0
+        self.attack_strength = 1
 
     def handle_turn(self, state):
         next_action = MoveAction(direction.EAST)

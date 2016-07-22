@@ -15,7 +15,8 @@ def generate_map(height, width, obstacle_ratio):
     always_empty_edge_x, always_empty_edge_y = get_random_edge_index(height, width)
 
     for x, y in shuffled(_get_edge_coordinates(height, width)):
-        if (x, y) != (always_empty_edge_x, always_empty_edge_y) and random.random() < obstacle_ratio:
+        if (x, y) != (always_empty_edge_x, always_empty_edge_y) and\
+                random.random() < obstacle_ratio:
             cell = grid[x][y]
             cell.habitable = False
             # So long as all habitable neighbours can still reach each other,
