@@ -201,17 +201,17 @@ class KubernetesWorkerManager(WorkerManager):
         pod = Pod(
             self.api,
             {
-            'kind': 'Pod',
-            'apiVersion': 'v1',
-            'metadata': {
+             'kind': 'Pod',
+             'apiVersion': 'v1',
+             'metadata': {
                 'generateName': "aimmo-%s-worker-%s-" % (self.game_name, player_id),
                 'labels': {
                     'app': 'aimmo-game-worker',
                     'game': self.game_name,
                     'player': str(player_id),
+                    },
                 },
-            },
-            'spec': {
+             'spec': {
                 'containers': [
                     {
                         'env': [
@@ -236,8 +236,9 @@ class KubernetesWorkerManager(WorkerManager):
                         },
                     },
                 ],
-            },
-        })
+             },
+            }
+        )
         pod.create()
         time.sleep(20)
         pod.reload()

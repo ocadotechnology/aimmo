@@ -3,7 +3,6 @@ import requests
 import threading
 import time
 from threading import Lock
-from simulation import world_map
 from simulation.action import ACTIONS
 
 LOGGER = logging.getLogger(__name__)
@@ -63,7 +62,8 @@ class TurnManager(threading.Thread):
                 else:
                     try:
                         action_data = data['action']
-                        action = ACTIONS[action_data['action_type']](**action_data.get('options', {}))
+                        action_class = ACTIONS[action_data['action_type']]
+                        action = action_class(**action_data.get('options', {}))
                     except (KeyError, ValueError) as err:
                         LOGGER.info("Bad action data supplied: %s", err)
                     else:

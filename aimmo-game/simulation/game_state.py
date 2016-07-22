@@ -18,7 +18,6 @@ class GameState(object):
                 'cells': [cell.serialise() for cell in processed_world_map.all_cells()]
             }
         }
-        return WorldView(avatar_wrapper, processed_world_map, self.avatar_manager)
 
     def add_avatar(self, user_id, worker_url):
         spawn_location = self.world_map.get_random_spawn_location()

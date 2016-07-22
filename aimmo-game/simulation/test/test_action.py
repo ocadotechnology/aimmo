@@ -6,7 +6,7 @@ import simulation.map_generator
 from simulation.test.dummy_avatar import DummyAvatarRunner
 from simulation.test.maps import InfiniteMap, EmptyMap, ScoreOnOddColumnsMap
 from simulation.game_state import GameState
-from simulation.action import *
+from simulation import action
 from simulation.avatar.avatar_manager import AvatarManager
 
 
@@ -23,14 +23,14 @@ class TestAction(unittest.TestCase):
 
     def test_successful_move_action(self):
         game_state = GameState(InfiniteMap(), self.avatar_manager)
-        MoveAction(direction.NORTH).apply(game_state, self.avatar)
+        action.MoveAction(direction.NORTH).apply(game_state, self.avatar)
 
         self.assertEqual(self.avatar.location, NORTH_OF_ORIGIN)
         self.assertEqual(self.avatar.events, [MovedEvent(ORIGIN, NORTH_OF_ORIGIN)])
 
     def test_failed_move_action(self):
         game_state = GameState(EmptyMap(), self.avatar_manager)
-        MoveAction(direction.NORTH).apply(game_state, self.avatar)
+        action.MoveAction(direction.NORTH).apply(game_state, self.avatar)
 
         self.assertEqual(self.avatar.location, ORIGIN)
         self.assertEqual(self.avatar.events, [FailedMoveEvent(ORIGIN, NORTH_OF_ORIGIN)])
@@ -39,13 +39,13 @@ class TestAction(unittest.TestCase):
         game_state = GameState(ScoreOnOddColumnsMap(), self.avatar_manager)
         self.assertEqual(self.avatar.score, 0)
 
-        MoveAction(direction.EAST).apply(game_state, self.avatar)
+        action.MoveAction(direction.EAST).apply(game_state, self.avatar)
         self.assertEqual(self.avatar.score, 1)
 
-        MoveAction(direction.EAST).apply(game_state, self.avatar)
+        action.MoveAction(direction.EAST).apply(game_state, self.avatar)
         self.assertEqual(self.avatar.score, 1)
 
-        MoveAction(direction.EAST).apply(game_state, self.avatar)
+        action.MoveAction(direction.EAST).apply(game_state, self.avatar)
         self.assertEqual(self.avatar.score, 2)
 
     def test_successful_attack_action(self):
@@ -53,7 +53,7 @@ class TestAction(unittest.TestCase):
         for a in self.avatar_manager.avatars:
             m.get_cell(a.location).avatar = a
         game_state = GameState(m, self.avatar_manager)
-        AttackAction(direction.EAST).apply(game_state, self.avatar)
+        action.AttackAction(direction.EAST).apply(game_state, self.avatar)
 
         target_location = EAST_OF_ORIGIN
         damage_dealt = 1
@@ -70,7 +70,7 @@ class TestAction(unittest.TestCase):
 
     def test_failed_attack_action(self):
         game_state = GameState(InfiniteMap(), self.avatar_manager)
-        AttackAction(direction.NORTH).apply(game_state, self.avatar)
+        action.AttackAction(direction.NORTH).apply(game_state, self.avatar)
 
         target_location = NORTH_OF_ORIGIN
 

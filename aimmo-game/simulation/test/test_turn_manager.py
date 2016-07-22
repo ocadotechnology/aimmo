@@ -1,14 +1,6 @@
-import os
-import sys
-
-from simulation.avatar.avatar_manager import AvatarManager
-
-sys.path.append(os.path.abspath('.'))
-
 import unittest
 
-from sys.moves import range
-
+from simulation.avatar.avatar_manager import AvatarManager
 from simulation.location import Location
 from simulation.turn_manager import TurnManager
 from simulation.test.maps import InfiniteMap

@@ -7,7 +7,7 @@ import eventlet
 eventlet.monkey_patch()
 
 import flask
-from flask.ext.socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit
 
 from six.moves import range
 
@@ -62,9 +62,12 @@ def get_world_state():
         player_data = {p.player_id: player_dict(p) for p in world.avatar_manager.avatars}
         return {
                 'players': player_data,
-                'score_locations': [(cell.location.x, cell.location.y) for cell in world.world_map.score_cells()],
-                'pickup_locations': [(cell.location.x, cell.location.y) for cell in world.world_map.pickup_cells()],
-                'map_changed': True,  # TODO: experiment with only sending deltas (not if not required)
+                'score_locations': [(cell.location.x, cell.location.y)
+                                    for cell in world.world_map.score_cells()],
+                'pickup_locations': [(cell.location.x, cell.location.y)
+                                     for cell in world.world_map.pickup_cells()],
+                # TODO: experiment with only sending deltas (not if not required)
+                'map_changed': True,
                 'width': num_cols,
                 'height': num_rows,
                 'layout': grid,
@@ -99,7 +102,7 @@ def player_data(player_id):
     player_id = int(player_id)
     return flask.jsonify({
         'code': worker_manager.get_code(player_id),
-        'options': {}, # Game options
+        'options': {},       # Game options
         'state': None,
     })
 
@@ -113,7 +116,10 @@ def run_game():
     game_state = GameState(my_map, player_manager)
     turn_manager = TurnManager(game_state=game_state, end_turn_callback=send_world_update)
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
-    worker_manager = WorkerManagerClass(game_state=game_state, users_url=os.environ.get('GAME_API_URL', 'http://localhost:8000/players/api/games/'))
+    worker_manager = WorkerManagerClass(
+        game_state=game_state,
+        users_url=os.environ.get('GAME_API_URL', 'http://localhost:8000/players/api/games/')
+    )
     worker_manager.start()
     turn_manager.start()
 
