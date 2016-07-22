@@ -30,7 +30,8 @@ class AvatarWrapper(object):
             LOGGER.debug("%s took %s" % (self.player_id, action))
         effects_to_remove = set()
         for effect in self.effects:
-            if not effect.turn():
+            effect.on_turn()
+            if effect.is_expired:
                 effects_to_remove.add(effect)
         for effect in effects_to_remove:
             effect.remove()

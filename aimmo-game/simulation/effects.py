@@ -6,9 +6,10 @@ class _Effect(object):
 
     def __init__(self, avatar):
         self._avatar = avatar
+        self.is_expired = False
 
     @abstractmethod
-    def turn(self):
+    def on_turn(self):
         raise NotImplementedError()
 
 
@@ -23,9 +24,10 @@ class _TimedEffect(_Effect):
     def remove(self):
         self._avatar.effects.remove(self)
 
-    def turn(self):
+    def on_turn(self):
         self._time_remaining -= 1
-        return self._time_remaining != 0
+        if self._time_remaining <= 0:
+            self.is_expired = True
 
 
 class InvulnerabilityEffect(_TimedEffect):
