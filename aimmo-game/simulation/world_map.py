@@ -2,6 +2,9 @@ import math
 import random
 
 from location import Location
+from logging import getLogger
+
+LOGGER = getLogger(__name__)
 
 # TODO: extract to settings
 TARGET_NUM_CELLS_PER_AVATAR = 16
@@ -137,26 +140,38 @@ class WorldMap(object):
             num_avatars * TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR
         ))
         num_score_locations_to_add = target_num_score_locations - new_num_score_locations
-        if num_score_locations_to_add > 0:
-            for cell in random.sample(
-                   list(self.potential_spawn_locations()),
-                   num_score_locations_to_add
-            ):
-                cell.generates_score = True
+        locations = self._get_random_spawn_locations(num_score_locations_to_add)
+        for cell in locations:
+            cell.generates_score = True
 
     def _add_pickups(self, num_avatars):
         target_num_pickups = int(math.ceil(num_avatars * TARGET_NUM_PICKUPS_PER_AVATAR))
+        LOGGER.debug('Aiming for %s new pickups', target_num_pickups)
         max_num_pickups_to_add = target_num_pickups - len(list(self.pickup_cells()))
-        if max_num_pickups_to_add > 0:
-            for cell in random.sample(
-                list(self.potential_spawn_locations()),
-                max_num_pickups_to_add
-            ):
-                if random.random() < PICKUP_SPAWN_CHANCE:
-                    cell.pickup = HealthPickup()
+        locations = self._get_random_spawn_locations(max_num_pickups_to_add)
+        for cell in locations:
+            if random.random() < PICKUP_SPAWN_CHANCE:
+                LOGGER.info('Adding new pickup at %s', cell)
+                cell.pickup = HealthPickup()
+
+    def _get_random_spawn_locations(self, max_locations):
+        if max_locations <= 0:
+            return []
+        potential_locations = list(self.potential_spawn_locations())
+        try:
+            return random.sample(potential_locations, max_locations)
+        except ValueError:
+            LOGGER.debug('Not enough potential locations')
+            return potential_locations
 
     def get_random_spawn_location(self):
-        return random.choice(list(self.potential_spawn_locations())).location
+        """Return a single random spawn location.
+
+        Throws:
+            IndexError: if there are no possible locations.
+
+        """
+        return self._get_random_spawn_locations(1)[0].location
 
     # TODO: cope with negative coords (here and possibly in other places)
     def can_move_to(self, target_location):
