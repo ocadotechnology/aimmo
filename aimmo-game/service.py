@@ -14,6 +14,7 @@ from six.moves import range
 from simulation.turn_manager import world_state_provider
 from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
+from simulation.location import Location
 from simulation.game_state import GameState
 from simulation.turn_manager import TurnManager
 from simulation.worker_manager import WORKER_MANAGERS
@@ -54,11 +55,11 @@ def player_dict(avatar):
 def get_world_state():
     try:
         world = world_state_provider.lock_and_get_world()
-        num_cols = len(world.world_map.grid)
-        num_rows = len(world.world_map.grid[0])
-        grid = [[None for y in range(num_rows)] for x in range(num_cols)]
-        for cell in world.world_map.all_cells():
-            grid[cell.location.x][cell.location.y] = to_cell_type(cell)
+        num_cols = world.world_map.num_cols
+        num_rows = world.world_map.num_rows
+        grid = [[to_cell_type(world.world_map.get_cell(Location(x, y)))
+                 for y in xrange(num_rows)]
+                for x in xrange(num_cols)]
         player_data = {p.player_id: player_dict(p) for p in world.avatar_manager.avatars}
         return {
                 'players': player_data,
