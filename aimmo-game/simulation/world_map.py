@@ -12,8 +12,8 @@ SCORE_DESPAWN_CHANCE = 0.02
 TARGET_NUM_PICKUPS_PER_AVATAR = 0.5
 PICKUP_SPAWN_CHANCE = 0.02
 
-NO_FOG_OF_WAR_DISTIANCE = 2
-PARTIAL_FOG_OF_WAR_DISTIANCE = 3
+NO_FOG_OF_WAR_DISTANCE = 2
+PARTIAL_FOG_OF_WAR_DISTANCE = 3
 
 
 class HealthPickup(object):
@@ -159,10 +159,10 @@ class WorldMap(object):
         return cell.habitable and not cell.avatar
 
     def get_no_fog_distance(self):
-        return NO_FOG_OF_WAR_DISTIANCE
+        return NO_FOG_OF_WAR_DISTANCE
 
     def get_partial_fog_distance(self):
-        return PARTIAL_FOG_OF_WAR_DISTIANCE
+        return PARTIAL_FOG_OF_WAR_DISTANCE
 
     def __repr__(self):
         return repr(self.grid)
