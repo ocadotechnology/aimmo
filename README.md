@@ -49,13 +49,16 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
 * Make and activate a virtualenv (We recommend [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/index.html)) - if you have a Mac see the following section.
     * e.g. the first time, `mkvirtualenv -a path/to/aimmo aimmo`
     * and thereafter `workon aimmo`
-* You might need to create an admin account the first time around:
-`python example_project/manage.py createsuperuser`
-* `./run` in your aimmo dir - This will:
+* `./run.py` in your aimmo dir - This will:
+    * if necessary, create a superuser 'admin' with password 'admin'
     * install all of the dependencies using pip
     * sync the database
     * collect the static files
     * run the server
+
+## Useful commands
+* To create an admin account:
+`python example_project/manage.py createsuperuser`
 
 ### Installing virtualenvwrapper on Mac
 * Run `pip install virtualenvwrapper`
