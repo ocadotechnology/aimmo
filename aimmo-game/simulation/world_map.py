@@ -52,14 +52,20 @@ class Cell(object):
         return hash(self.location)
 
     def serialise(self):
-        return {
-            'avatar': self.avatar.serialise() if self.avatar else None,
-            'generates_score': self.generates_score,
-            'habitable': self.habitable,
-            'location': self.location.serialise(),
-            'pickup': self.pickup.serialise() if self.pickup else None,
-            'partially_fogged': self.partially_fogged
-        }
+        if self.partially_fogged:
+            return {
+                'generates_score': self.generates_score,
+                'location': self.location.serialise(),
+            }
+        else:
+            return {
+                'avatar': self.avatar.serialise() if self.avatar else None,
+                'generates_score': self.generates_score,
+                'habitable': self.habitable,
+                'location': self.location.serialise(),
+                'pickup': self.pickup.serialise() if self.pickup else None,
+                'partially_fogged': self.partially_fogged
+            }
 
 
 class WorldMap(object):

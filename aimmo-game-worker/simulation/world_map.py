@@ -18,16 +18,17 @@ class Cell(object):
     Any position on the world grid.
     """
 
-    def __init__(self, location, habitable, generates_score, avatar, pickup, partially_fogged):
+    def __init__(self, location, generates_score, habitable=None, avatar=None, pickup=None, partially_fogged=True):
         self.location = Location(**location)
-        self.habitable = habitable
         self.generates_score = generates_score
-        self.avatar = AvatarState(**avatar) if avatar else None
-        self.pickup = HealthPickup(**pickup) if pickup else None
         self.partially_fogged = partially_fogged
+        if not partially_fogged:
+            self.habitable = habitable
+            self.avatar = AvatarState(**avatar) if avatar else None
+            self.pickup = HealthPickup(**pickup) if pickup else None
 
     def __repr__(self):
-        return 'Cell({} h={} s={} a={} p={} f={})'.format(self.location, self.habitable, self.generates_score, self.avatar, self.pickup, self.partially_fogged)
+        return 'Cell({} h={} s={} a={} p={} f={})'.format(self.location, getattr(self, 'habitable', 0), self.generates_score, getattr(self, 'avatar', 0), getattr(self, 'pickup', 0), self.partially_fogged)
 
     def __eq__(self, other):
         return self.location == other.location
@@ -52,7 +53,7 @@ class WorldMap(object):
         return (c for c in self.all_cells() if c.generates_score)
 
     def pickup_cells(self):
-        return (c for c in self.all_cells() if c.pickup)
+        return (c for c in self.all_cells() if getattr(self, 'pickup', False))
 
     def partially_fogged_cells(self):
         return (c for c in self.all_cells() if c.partially_fogged)
@@ -71,7 +72,7 @@ class WorldMap(object):
             cell = self.get_cell(target_location)
         except KeyError:
             return False
-        return cell.habitable and not cell.avatar
+        return getattr(cell, 'habitable', False) and not getattr(cell, 'avatar', False)
 
     def __repr__(self):
         return repr(self.cells)
