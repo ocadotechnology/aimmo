@@ -38,7 +38,8 @@ def apply_fog_of_war(world_map, avatar_wrapper):
 
 
 def should_partially_fog(no_fog_distance, partial_fog_distance, x_dist, y_dist):
-    return x_dist > no_fog_distance or y_dist > no_fog_distance;
+    return x_dist > no_fog_distance or y_dist > no_fog_distance
+
 
 def partially_fog_cell(cell):
     partially_fogged_cell = copy.deepcopy(cell)
@@ -46,4 +47,4 @@ def partially_fog_cell(cell):
     partially_fogged_cell.avatar = None
     partially_fogged_cell.pickup = None
     partially_fogged_cell.partially_fogged = True
-    return partially_fogged_cell;
+    return partially_fogged_cell
