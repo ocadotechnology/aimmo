@@ -58,7 +58,7 @@ class TurnManager(threading.Thread):
         for avatar in active_avatars:
             action = self._get_action(avatar)
             with game_state_provider as game_state:
-                action.apply(game_state, avatar)
+                action.apply(game_state)
 
         with game_state_provider as game_state:
             self._update_environment(game_state)
