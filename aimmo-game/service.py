@@ -13,7 +13,7 @@ from flask_socketio import SocketIO, emit
 
 from six.moves import range
 
-from simulation.turn_manager import world_state_provider
+from simulation.turn_manager import game_state_provider
 from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.location import Location
@@ -55,28 +55,23 @@ def player_dict(avatar):
 
 
 def get_world_state():
-    try:
-        world = world_state_provider.lock_and_get_world()
-        num_cols = world.world_map.num_cols
-        num_rows = world.world_map.num_rows
-        grid = [[to_cell_type(world.world_map.get_cell(Location(x, y)))
-                 for y in xrange(num_rows)]
-                for x in xrange(num_cols)]
-        player_data = {p.player_id: player_dict(p) for p in world.avatar_manager.avatars}
+    with game_state_provider as game_state:
+        world = game_state.world_map
+        num_cols = world.num_cols
+        num_rows = world.num_rows
+        grid = [[to_cell_type(world.get_cell(Location(x, y)))
+                 for y in range(num_rows)]
+                for x in range(num_cols)]
+        player_data = {p.player_id: player_dict(p) for p in game_state.avatar_manager.avatars}
         return {
-                'players': player_data,
-                'score_locations': [(cell.location.x, cell.location.y)
-                                    for cell in world.world_map.score_cells()],
-                'pickup_locations': [(cell.location.x, cell.location.y)
-                                     for cell in world.world_map.pickup_cells()],
-                # TODO: experiment with only sending deltas (not if not required)
-                'map_changed': True,
-                'width': num_cols,
-                'height': num_rows,
-                'layout': grid,
-            }
-    finally:
-        world_state_provider.release_lock()
+            'players': player_data,
+            'score_locations': [(cell.location.x, cell.location.y) for cell in world.score_cells()],
+            'pickup_locations': [(cell.location.x, cell.location.y) for cell in world.pickup_cells()],
+            'map_changed': True,  # TODO: experiment with only sending deltas (not if not required)
+            'width': num_cols,
+            'height': num_rows,
+            'layout': grid,
+        }
 
 
 @socketio.on('connect')
