@@ -40,6 +40,7 @@ class Cell(object):
         self.generates_score = generates_score
         self.avatar = None
         self.pickup = None
+        self.actions = []
 
     def __repr__(self):
         return 'Cell({} h={} s={} a={} p={})'.format(
@@ -93,6 +94,13 @@ class WorldMap(object):
         cell = self.grid[location.x][location.y]
         assert cell.location == location, 'location lookup mismatch: arg={}, found={}'.format(location, cell.location)
         return cell
+
+    def clear_cell_actions(self, location):
+        try:
+            cell = self.get_cell(location)
+            cell.actions = []
+        except ValueError:
+            return
 
     @property
     def num_rows(self):
@@ -177,9 +185,25 @@ class WorldMap(object):
     def can_move_to(self, target_location):
         if not self.is_on_map(target_location):
             return False
-
         cell = self.get_cell(target_location)
-        return cell.habitable and not cell.avatar
+
+        return cell.habitable and not cell.avatar and len(cell.actions) == 1
+
+    def attackable_avatar(self, target_location):
+        '''
+        Return the avatar attackable at the given location, or None.
+        '''
+        if not self.is_on_map(target_location):
+            return False
+        cell = self.get_cell(target_location)
+
+        if cell.avatar:
+            return cell.avatar
+
+        if len(cell.actions) == 1:
+            return cell.actions[0].avatar
+
+        return None
 
     def __repr__(self):
         return repr(self.grid)

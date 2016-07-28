@@ -2,6 +2,7 @@ import logging
 import requests
 import threading
 import time
+from Queue import PriorityQueue
 from threading import Lock
 from threading import Thread
 from simulation.action import ACTIONS
@@ -52,27 +53,35 @@ class TurnManager(threading.Thread):
         game_state.world_map.reconstruct_interactive_state(num_avatars)
 
     def run_turn(self):
+        '''
+        Concurrently get the intended actions from all avatars and register
+        them on the world map. Then apply actions in order of priority.
+        '''
         with game_state_provider as game_state:
-            active_avatars = game_state.avatar_manager.active_avatars
+            avatars = game_state.avatar_manager.active_avatars
 
-        for avatar in active_avatars:
-            action = self._get_action(avatar)
-            with game_state_provider as game_state:
-                action.apply(game_state)
+        action_queue = PriorityQueue()
+        threads = [Thread(target=self._register_action,
+                          args=(avatar, action_queue)) for avatar in avatars]
 
+        [thread.start() for thread in threads]
+        [thread.join() for thread in threads]
+
+        cells_to_clear = set()
         with game_state_provider as game_state:
+            while not action_queue.empty():
+                action = action_queue.get()[1]
+                action.apply(game_state.world_map)
+                cells_to_clear.add(action.target_location)
+
+            for cell in cells_to_clear:
+                game_state.world_map.clear_cell_actions(cell)
+
             self._update_environment(game_state)
 
-    def get_actions(self):
+    def _register_action(self, avatar, action_queue):
         '''
-        Concurrently get the intended actions from all avatars, and register
-        them with the game state.
-        '''
-        raise NotImplementedError()
-
-    def _get_action(self, avatar):
-        '''
-        Send an avatar its view of the game state and return its chosen action.
+        Send an avatar its view of the game state and register its chosen action.
         '''
         with game_state_provider as game_state:
             state_view = game_state.get_state_for(avatar)
@@ -85,12 +94,15 @@ class TurnManager(threading.Thread):
             try:
                 action_data = data['action']
                 action_type = action_data['action_type']
-                action = ACTIONS[action_type](**action_data.get('options', {}))
+                action_args = action_data.get('options', {})
+                action_args['avatar'] = avatar
+                action = ACTIONS[action_type](**action_args)
             except (KeyError, ValueError) as err:
                 LOGGER.info('Bad action data supplied: %s', err)
             else:
-                action.avatar = avatar
-                return action
+                with game_state_provider as game_state:
+                    action.target(game_state.world_map)
+                action_queue.put((action.priority, action))
 
     def run(self):
         while True:
