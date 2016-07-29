@@ -31,3 +31,7 @@ class GameState(object):
             return
         self.world_map.get_cell(avatar.location).avatar = None
         self.avatar_manager.remove_avatar(user_id)
+
+    def update_environment(self):
+        num_avatars = len(self.avatar_manager.active_avatars)
+        self.world_map.reconstruct_interactive_state(num_avatars)

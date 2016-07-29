@@ -40,7 +40,7 @@ class WaitAction(Action):
         super(WaitAction, self).__init__(avatar, priority=0)
 
     def apply(self, world_map):
-        _add_score_from_cell_if_needed(self._avatar, world_map)
+        pass
 
 
 class MoveAction(Action):
@@ -67,7 +67,6 @@ class MoveAction(Action):
                 new_cell.pickup = None
         else:
             self._avatar.add_event(FailedMoveEvent(self._avatar.location, self._target_location))
-        _add_score_from_cell_if_needed(self._avatar, world_map)
 
 
 class AttackAction(Action):
@@ -91,7 +90,6 @@ class AttackAction(Action):
                 world_map.get_cell(respawn_location).avatar = attacked_avatar
         else:
             self._avatar.add_event(FailedAttackEvent(self._target_location))
-        _add_score_from_cell_if_needed(self._avatar, world_map)
 
 
 # TODO: investigate moving this to after an action is handled - it is not specific to an action

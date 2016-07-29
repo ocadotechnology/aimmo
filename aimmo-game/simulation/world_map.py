@@ -116,6 +116,13 @@ class WorldMap(object):
     def num_cells(self):
         return self.num_rows * self.num_cols
 
+    def apply_score(self):
+        for cell in self.score_cells():
+            try:
+                cell.avatar.score += 1
+            except AttributeError:
+                pass
+
     def reconstruct_interactive_state(self, num_avatars):
         self._expand(num_avatars)
         self._reset_score_locations(num_avatars)

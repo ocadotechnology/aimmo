@@ -1,6 +1,5 @@
 import logging
 import requests
-import threading
 import time
 from Queue import PriorityQueue
 from threading import Lock
@@ -49,10 +48,6 @@ class TurnManager(Thread):
         self.concurrent_turns = concurrent_turns
         super(TurnManager, self).__init__()
 
-    def _update_environment(self, game_state):
-        num_avatars = len(game_state.avatar_manager.active_avatars)
-        game_state.world_map.reconstruct_interactive_state(num_avatars)
-
     def run_sequential_turn(self):
         '''
         Get and apply each avatar's action in turn.
@@ -68,9 +63,6 @@ class TurnManager(Thread):
             with game_state_provider as game_state:
                 action.apply(game_state.world_map)
                 game_state.world_map.clear_cell_actions(action.target_location)
-
-        with game_state_provider as game_state:
-            self._update_environment(game_state)
 
     def run_concurrent_turn(self):
         '''
@@ -96,8 +88,6 @@ class TurnManager(Thread):
 
             for cell in cells_to_clear:
                 game_state.world_map.clear_cell_actions(cell)
-
-            self._update_environment(game_state)
 
     def _register_action(self, avatar, action_queue):
         '''
@@ -130,6 +120,10 @@ class TurnManager(Thread):
                 self.run_concurrent_turn()
             else:
                 self.run_sequential_turn()
+
+            with game_state_provider as game_state:
+                game_state.update_environment()
+                game_state.world_map.apply_score()
 
             self.end_turn_callback()
             time.sleep(0.5)
