@@ -1,7 +1,6 @@
 from logging import getLogger
 from simulation.direction import Direction
 from simulation.event import FailedAttackEvent, FailedMoveEvent, MovedEvent, PerformedAttackEvent, ReceivedAttackEvent
-import simulation.world_map as world_map_module
 
 LOGGER = getLogger(__name__)
 

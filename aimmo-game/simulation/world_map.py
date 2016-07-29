@@ -1,8 +1,10 @@
 import math
 import random
 
-from location import Location
 from logging import getLogger
+
+from simulation.location import Location
+from simulation.action import MoveAction
 
 LOGGER = getLogger(__name__)
 
@@ -194,14 +196,15 @@ class WorldMap(object):
         Return the avatar attackable at the given location, or None.
         '''
         if not self.is_on_map(target_location):
-            return False
+            return None
         cell = self.get_cell(target_location)
 
         if cell.avatar:
             return cell.avatar
 
-        if len(cell.actions) == 1:
-            return cell.actions[0].avatar
+        moves = [action for action in cell.actions if isinstance(action, MoveAction)]
+        if len(moves) == 1:
+            return moves[0].avatar
 
         return None
 

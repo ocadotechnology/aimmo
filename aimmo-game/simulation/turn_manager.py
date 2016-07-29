@@ -18,41 +18,61 @@ class GameStateProvider:
     """
 
     def __init__(self):
-        self._world_state = None
+        self._game_state = None
         self._lock = Lock()
 
     def __enter__(self):
         self._lock.acquire()
-        return self._world_state
+        return self._game_state
 
     def __exit__(self, type, value, traceback):
         self._lock.release()
 
-    def set_world(self, new_world_state):
+    def set_world(self, new_game_state):
         self._lock.acquire()
-        self._world_state = new_world_state
+        self._game_state = new_game_state
         self._lock.release()
 
 
 game_state_provider = GameStateProvider()
 
 
-class TurnManager(threading.Thread):
+class TurnManager(Thread):
     """
     Game loop
     """
     daemon = True
 
-    def __init__(self, game_state, end_turn_callback):
+    def __init__(self, game_state, end_turn_callback, concurrent_turns=False):
         game_state_provider.set_world(game_state)
         self.end_turn_callback = end_turn_callback
+        self.concurrent_turns = concurrent_turns
         super(TurnManager, self).__init__()
 
     def _update_environment(self, game_state):
         num_avatars = len(game_state.avatar_manager.active_avatars)
         game_state.world_map.reconstruct_interactive_state(num_avatars)
 
-    def run_turn(self):
+    def run_sequential_turn(self):
+        '''
+        Get and apply each avatar's action in turn.
+        '''
+        with game_state_provider as game_state:
+            avatars = game_state.avatar_manager.active_avatars
+
+        action_queue = PriorityQueue()
+
+        for avatar in avatars:
+            self._register_action(avatar, action_queue)
+            action = action_queue.get()[1]
+            with game_state_provider as game_state:
+                action.apply(game_state.world_map)
+                game_state.world_map.clear_cell_actions(action.target_location)
+
+        with game_state_provider as game_state:
+            self._update_environment(game_state)
+
+    def run_concurrent_turn(self):
         '''
         Concurrently get the intended actions from all avatars and register
         them on the world map. Then apply actions in order of priority.
@@ -106,6 +126,10 @@ class TurnManager(threading.Thread):
 
     def run(self):
         while True:
-            self.run_turn()
+            if self.concurrent_turns:
+                self.run_concurrent_turn()
+            else:
+                self.run_sequential_turn()
+
             self.end_turn_callback()
             time.sleep(0.5)
