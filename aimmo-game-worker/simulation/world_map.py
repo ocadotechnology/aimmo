@@ -1,6 +1,6 @@
-from simulation.location import Location
+from .location import Location
 
-from simulation.avatar_state import AvatarState
+from .avatar_state import AvatarState
 
 
 class HealthPickup(object):
