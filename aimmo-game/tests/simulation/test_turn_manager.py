@@ -1,10 +1,11 @@
+from __future__ import absolute_import
 import unittest
 
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.location import Location
 from simulation.turn_manager import TurnManager
-from simulation.test.maps import InfiniteMap
-from simulation.test.dummy_avatar import DummyAvatarRunner
+from .maps import InfiniteMap
+from .dummy_avatar import DummyAvatarRunner
 from simulation.avatar.avatar_appearance import AvatarAppearance
 from simulation.game_state import GameState
 

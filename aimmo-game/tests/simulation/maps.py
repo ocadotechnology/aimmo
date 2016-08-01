@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from simulation import world_map
 from simulation.location import Location
 from simulation.world_map import Cell

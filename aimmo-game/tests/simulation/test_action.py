@@ -1,9 +1,10 @@
+from __future__ import absolute_import
 import unittest
 
 from simulation import event
 from simulation.location import Location
-from simulation.test.dummy_avatar import DummyAvatarRunner
-from simulation.test.maps import InfiniteMap, EmptyMap, ScoreOnOddColumnsMap, AvatarMap
+from .dummy_avatar import DummyAvatarRunner
+from .maps import InfiniteMap, EmptyMap, ScoreOnOddColumnsMap, AvatarMap
 from simulation.game_state import GameState
 from simulation import action
 from simulation.avatar.avatar_manager import AvatarManager

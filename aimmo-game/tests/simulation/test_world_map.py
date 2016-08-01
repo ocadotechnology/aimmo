@@ -1,7 +1,8 @@
+from __future__ import absolute_import
 from string import ascii_uppercase
 from simulation import world_map
 from simulation.location import Location
-from simulation.test.maps import MockCell
+from .maps import MockCell
 from simulation.world_map import Cell, WorldMap
 from unittest import TestCase
 

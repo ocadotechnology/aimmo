@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import unittest
 from simulation.map_generator import get_random_edge_index, generate_map
 

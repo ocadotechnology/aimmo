@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from simulation.location import Location
 from unittest import TestCase
 

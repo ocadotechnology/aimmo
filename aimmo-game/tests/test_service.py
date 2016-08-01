@@ -1,8 +1,9 @@
+from __future__ import absolute_import
 import service
 from simulation.game_state import GameState
 from simulation.location import Location
-from simulation.test.dummy_avatar import DummyAvatarRunner
-from simulation.test.test_world_map import MockCell
+from .simulation.dummy_avatar import DummyAvatarRunner
+from .simulation.test_world_map import MockCell
 from simulation.turn_manager import world_state_provider
 from simulation.world_map import WorldMap
 from unittest import TestCase

@@ -1,5 +1,6 @@
-from simulation.test.maps import InfiniteMap, AvatarMap, EmptyMap
-from simulation.test.dummy_avatar import DummyAvatarRunner
+from __future__ import absolute_import
+from .maps import InfiniteMap, AvatarMap, EmptyMap
+from .dummy_avatar import DummyAvatarRunner
 from simulation.game_state import GameState
 from unittest import TestCase
 

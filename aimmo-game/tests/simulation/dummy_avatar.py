@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from simulation.action import MoveAction
 from simulation import direction
 

@@ -1,8 +1,9 @@
+from __future__ import absolute_import
 from httmock import HTTMock
 from json import dumps
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.game_state import GameState
-from simulation.test.maps import InfiniteMap
+from .maps import InfiniteMap
 from simulation.worker_manager import WorkerManager
 import unittest
 
