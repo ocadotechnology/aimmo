@@ -46,6 +46,9 @@ class EmptyMap(WorldMap):
     def __init__(self):
         pass
 
+    def get_random_spawn_location(self):
+        return Location(10, 10)
+
     def can_move_to(self, target_location):
         return False
 
