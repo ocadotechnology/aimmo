@@ -89,10 +89,21 @@ class WorldMap(object):
     """
 
     def __init__(self, grid):
-        self.grid = grid
+        try:
+            grid[Location(0, 0)]
+        except TypeError:
+            self._convert_grid_from_list(grid)
+        except KeyError:
+            # Allow an empty grid
+            self._grid = grid
+        else:
+            self._grid = grid
+
+    def _convert_grid_from_list(self, grid):
+        self._grid = {cell.location: cell for row in grid for cell in row}
 
     def all_cells(self):
-        return (cell for sublist in self.grid for cell in sublist)
+        return self._grid.itervalues()
 
     def score_cells(self):
         return (c for c in self.all_cells() if c.generates_score)
@@ -109,11 +120,14 @@ class WorldMap(object):
         return (0 <= location.y < self.num_rows) and (0 <= location.x < self.num_cols)
 
     def get_cell(self, location):
-        if not self.is_on_map(location):
+        try:
+            return self._grid[location]
+        except KeyError:
+            # For backwards-compatibility, this throws ValueError
             raise ValueError('Location %s is not on the map' % location)
-        cell = self.grid[location.x][location.y]
-        assert cell.location == location, 'location lookup mismatch: arg={}, found={}'.format(location, cell.location)
-        return cell
+
+    def get_cell_by_coords(self, x, y):
+        return self.get_cell(Location(x, y))
 
     def clear_cell_actions(self, location):
         try:
@@ -124,11 +138,25 @@ class WorldMap(object):
 
     @property
     def num_rows(self):
-        return len(self.grid[0])
+        y = 0
+        while True:
+            try:
+                self._grid[Location(0, y)]
+            except KeyError:
+                return y
+            else:
+                y += 1
 
     @property
     def num_cols(self):
-        return len(self.grid)
+        x = 0
+        while True:
+            try:
+                self._grid[Location(x, 0)]
+            except KeyError:
+                return x
+            else:
+                x += 1
 
     @property
     def num_cells(self):
@@ -157,13 +185,16 @@ class WorldMap(object):
         self._add_layer_to_horizontal_edge()
 
     def _add_layer_to_vertical_edge(self):
-        self.grid.append([Cell(Location(self.num_cols, y)) for y in range(self.num_rows)])
+        # Read cols once here, as we'll mutate it as part of the first iteration
+        cols = self.num_cols
+        for y in xrange(self.num_rows):
+            self._grid[Location(cols, y)] = Cell(Location(cols, y))
 
     def _add_layer_to_horizontal_edge(self):
         # Read rows once here, as we'll mutate it as part of the first iteration
         rows = self.num_rows
-        for x in range(self.num_cols):
-            self.grid[x].append(Cell(Location(x, rows)))
+        for x in xrange(self.num_cols):
+            self._grid[Location(x, rows)] = Cell(Location(x, rows))
 
     def _reset_score_locations(self, num_avatars):
         for cell in self.score_cells():
@@ -241,4 +272,4 @@ class WorldMap(object):
         return PARTIAL_FOG_OF_WAR_DISTANCE
 
     def __repr__(self):
-        return repr(self.grid)
+        return repr(self._grid)
