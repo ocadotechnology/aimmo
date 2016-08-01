@@ -17,7 +17,7 @@ ABOVE_ORIGIN = Location(x=0, y=1)
 FIVE_RIGHT_OF_ORIGIN_AND_ONE_ABOVE = Location(x=5, y=1)
 
 
-@unittest.skip("Needs Fix")
+@unittest.expectedFailure
 class TestTurnManager(unittest.TestCase):
     def construct_default_avatar_appearance(self):
         return AvatarAppearance("#000", "#ddd", "#777", "#fff")
