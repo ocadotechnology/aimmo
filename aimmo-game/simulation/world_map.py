@@ -117,7 +117,11 @@ class WorldMap(object):
         return (c for c in self.all_cells() if c.pickup)
 
     def is_on_map(self, location):
-        return (0 <= location.y < self.num_rows) and (0 <= location.x < self.num_cols)
+        try:
+            self._grid[location]
+        except KeyError:
+            return False
+        return True
 
     def get_cell(self, location):
         try:
@@ -138,25 +142,47 @@ class WorldMap(object):
 
     @property
     def num_rows(self):
-        y = 0
+        max_y = 0
         while True:
             try:
-                self._grid[Location(0, y)]
+                self._grid[Location(0, max_y)]
             except KeyError:
-                return y
+                max_y -= 1
+                break
             else:
-                y += 1
+                max_y += 1
+        min_y = 0
+        while True:
+            try:
+                self._grid[Location(0, min_y)]
+            except KeyError:
+                min_y += 1
+                break
+            else:
+                min_y -= 1
+        return max_y - min_y + 1
 
     @property
     def num_cols(self):
-        x = 0
+        max_x = 0
         while True:
             try:
-                self._grid[Location(x, 0)]
+                self._grid[Location(max_x, 0)]
             except KeyError:
-                return x
+                max_x -= 1
+                break
             else:
-                x += 1
+                max_x += 1
+        min_x = 0
+        while True:
+            try:
+                self._grid[Location(min_x, 0)]
+            except KeyError:
+                min_x += 1
+                break
+            else:
+                min_x -= 1
+        return max_x - min_x + 1
 
     @property
     def num_cells(self):
@@ -238,7 +264,6 @@ class WorldMap(object):
         """
         return self._get_random_spawn_locations(1)[0].location
 
-    # TODO: cope with negative coords (here and possibly in other places)
     def can_move_to(self, target_location):
         if not self.is_on_map(target_location):
             return False
@@ -273,3 +298,8 @@ class WorldMap(object):
 
     def __repr__(self):
         return repr(self._grid)
+
+    def __iter__(self):
+        return ((self.get_cell(Location(x, y))
+                for y in xrange(self._min_y(), self._max_y()+1))
+                for x in xrange(self._min_x(), self._max_x()+1))

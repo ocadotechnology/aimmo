@@ -33,7 +33,7 @@ class TestService(TestCase):
                 {},
             ],
         ]
-        grid = [[MockCell(Location(x, y), **CELLS[x][y])
+        grid = [[MockCell(Location(x, y-1), **CELLS[x][y])
                  for y in xrange(3)] for x in xrange(2)]
         state_provider.set_world(GameState(WorldMap(grid), SimpleAvatarManager()))
         return service.get_world_state()
@@ -51,7 +51,7 @@ class TestService(TestCase):
 
     def test_grid(self):
         result = self.setup_world()
-        self.assertEqual(result['score_locations'], [(0, 2)])
+        self.assertEqual(result['score_locations'], [(0, 1)])
         self.assertEqual(result['width'], 2)
         self.assertEqual(result['height'], 3)
         self.assertEqual(result['layout'], [[0, 0, 2], [0, 1, 0]])

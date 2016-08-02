@@ -331,3 +331,62 @@ class TestWorldMap(TestCase):
         map = WorldMap({target: cell})
         target = Location(0, 0)
         self.assertFalse(map.can_move_to(target))
+
+    def test_empty_list_grid(self):
+        map = WorldMap([])
+        self.assertFalse(map.is_on_map(Location(0, 0)))
+
+    def test_empty_dict_grid(self):
+        map = WorldMap({})
+        self.assertFalse(map.is_on_map(Location(0, 0)))
+
+    def test_iter(self):
+        grid = [[MockCell(Location(-1, -1), name='A'), MockCell(Location(-1, 0), name='B'), MockCell(Location(-1, 1), name='C')],
+                [MockCell(Location(0, -1), name='D'), MockCell(Location(0, 0), name='E'), MockCell(Location(0, 1), name='F')],
+                [MockCell(Location(1, -1), name='E'), MockCell(Location(1, 0), name='G'), MockCell(Location(1, 1), name='H')],]
+        map = WorldMap(self._grid_from_list(grid))
+        self.assertEqual([list(column) for column in map], grid)
+
+
+class TestWorldMapWithOriginCentre(TestWorldMap):
+    def setUp(self):
+        world_map.TARGET_NUM_CELLS_PER_AVATAR = 0
+        world_map.TARGET_NUM_PICKUPS_PER_AVATAR = 0
+        world_map.TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR = 0
+        world_map.SCORE_DESPAWN_CHANCE = 0
+        world_map.PICKUP_SPAWN_CHANCE = 0
+
+    def _generate_grid(self, columns=2, rows=2):
+        alphabet = iter(ascii_uppercase)
+        grid = {Location(x, y): MockCell(Location(x, y), name=next(alphabet))
+                for x in xrange(-columns/2+1, columns/2+1) for y in xrange(-rows/2+1, rows/2+1)}
+        return grid
+
+    def _generate_list_grid(self, columns=2, rows=2):
+        alphabet = iter(ascii_uppercase)
+        grid = []
+        for x in xrange(-columns/2+1, columns/2+1):
+            column = []
+            for y in xrange(-rows/2+1, rows/2+1):
+                column.append(MockCell(Location(x, y), name=next(alphabet)))
+            grid.append(column)
+        return grid
+
+    def _grid_from_list(self, in_list):
+        out = {}
+        min_x = -len(in_list)/2 + 1
+        min_y = -len(in_list[0])/2 + 1
+        for i, column in enumerate(in_list):
+            x = i + min_x
+            for j, cell in enumerate(column):
+                y = j + min_y
+                out[Location(x, y)] = cell
+        return out
+
+    def test_retrieve_negative(self):
+        map = WorldMap(self._generate_grid(3, 3))
+        self.assertTrue(map.is_on_map(Location(-1, -1)))
+
+    def test_retrieve_negative_from_list(self):
+        map = WorldMap(self._generate_list_grid(2, 3))
+        self.assertTrue(map.is_on_map(Location(0, -1)))
