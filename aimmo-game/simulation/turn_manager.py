@@ -4,6 +4,7 @@ import time
 from Queue import PriorityQueue
 from threading import Lock
 from threading import Thread
+
 from simulation.action import ACTIONS
 
 LOGGER = logging.getLogger(__name__)
@@ -42,7 +43,7 @@ class TurnManager(Thread):
     """
     daemon = True
 
-    def __init__(self, game_state, end_turn_callback, concurrent_turns=False):
+    def __init__(self, game_state, end_turn_callback, concurrent_turns=True):
         game_state_provider.set_world(game_state)
         self.end_turn_callback = end_turn_callback
         self.concurrent_turns = concurrent_turns
@@ -61,7 +62,10 @@ class TurnManager(Thread):
             self._register_action(avatar, action_queue)
             action = action_queue.get()[1]
             with game_state_provider as game_state:
-                action.apply(game_state.world_map)
+                if action.is_legal(game_state.world_map):
+                    action.apply(game_state.world_map)
+                else:
+                    action.reject()
                 game_state.world_map.clear_cell_actions(action.target_location)
 
     def run_concurrent_turn(self):
@@ -80,13 +84,18 @@ class TurnManager(Thread):
         [thread.join() for thread in threads]
 
         cells_to_clear = set()
-        with game_state_provider as game_state:
-            while not action_queue.empty():
-                action = action_queue.get()[1]
-                action.apply(game_state.world_map)
-                cells_to_clear.add(action.target_location)
 
-            for cell in cells_to_clear:
+        while not action_queue.empty():
+            action = action_queue.get()[1]
+            with game_state_provider as game_state:
+                if action.is_legal(game_state.world_map):
+                    action.apply(game_state.world_map)
+                else:
+                    action.reject()
+            cells_to_clear.add(action.target_location)
+
+        for cell in cells_to_clear:
+            with game_state_provider as game_state:
                 game_state.world_map.clear_cell_actions(cell)
 
     def _register_action(self, avatar, action_queue):
