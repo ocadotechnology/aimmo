@@ -102,6 +102,19 @@ class WorldMap(object):
     def _convert_grid_from_list(self, grid):
         self._grid = {cell.location: cell for row in grid for cell in row}
 
+    @classmethod
+    def generate_empty_map(cls, height, width):
+        start_x = -width / 2 + 1
+        end_x = width / 2 + 1
+        start_y = -height / 2 + 1
+        end_y = height / 2 + 1
+        grid = {}
+        for x in xrange(start_x, end_x):
+            for y in xrange(start_y, end_y):
+                location = Location(x, y)
+                grid[location] = Cell(location)
+        return cls(grid)
+
     def all_cells(self):
         return self._grid.itervalues()
 
@@ -140,7 +153,7 @@ class WorldMap(object):
         except ValueError:
             return
 
-    def _max_y(self):
+    def max_y(self):
         max_y = 0
         while True:
             try:
@@ -166,9 +179,9 @@ class WorldMap(object):
 
     @property
     def num_rows(self):
-        return self._max_y() - self.min_y() + 1
+        return self.max_y() - self.min_y() + 1
 
-    def _max_x(self):
+    def max_x(self):
         max_x = 0
         while True:
             try:
@@ -194,7 +207,7 @@ class WorldMap(object):
 
     @property
     def num_cols(self):
-        return self._max_x() - self.min_x() + 1
+        return self.max_x() - self.min_x() + 1
 
     @property
     def num_cells(self):
@@ -223,16 +236,16 @@ class WorldMap(object):
 
     def _add_outer_layer(self):
         self._add_vertical_layer(self.min_x()-1)
-        self._add_vertical_layer(self._max_x()+1)
+        self._add_vertical_layer(self.max_x()+1)
         self._add_horizontal_layer(self.min_y()-1)
-        self._add_horizontal_layer(self._max_y()+1)
+        self._add_horizontal_layer(self.max_y()+1)
 
     def _add_vertical_layer(self, x):
-        for y in xrange(self.min_y(), self._max_y()+1):
+        for y in xrange(self.min_y(), self.max_y()+1):
             self._grid[Location(x, y)] = Cell(Location(x, y))
 
     def _add_horizontal_layer(self, y):
-        for x in xrange(self.min_x(), self._max_x()+1):
+        for x in xrange(self.min_x(), self.max_x()+1):
             self._grid[Location(x, y)] = Cell(Location(x, y))
 
     def _reset_score_locations(self, num_avatars):
@@ -314,5 +327,5 @@ class WorldMap(object):
 
     def __iter__(self):
         return ((self.get_cell(Location(x, y))
-                for y in xrange(self.min_y(), self._max_y()+1))
-                for x in xrange(self.min_x(), self._max_x()+1))
+                for y in xrange(self.min_y(), self.max_y()+1))
+                for x in xrange(self.min_x(), self.max_x()+1))

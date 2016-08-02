@@ -108,6 +108,10 @@ class TestWorldMap(TestCase):
         map = WorldMap(self._generate_list_grid(1, 3))
         self.assertGridSize(map, 1, 3)
 
+    def test_generated_map(self):
+        map = WorldMap.generate_empty_map(2, 5)
+        self.assertGridSize(map, 5, 2)
+
     def test_all_cells_from_dict(self):
         map = WorldMap(self._generate_grid())
         cell_names = [c.name for c in map.all_cells()]
