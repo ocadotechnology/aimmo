@@ -41,7 +41,7 @@ const VIEWER = Object.create({
                 square.attr("fill", this.appearance.worldColours[currentCellValue]);
                 square.attr("stroke", "#000");
 
-                this.paper.text((x + 0.5) * this.appearance.cellSize,  (this.invertY(y) + 0.5) * this.appearance.cellSize, x + ', ' + y)
+                this.paper.text((x + 0.5) * this.appearance.cellSize,  (this.invertY(y) + 0.5) * this.appearance.cellSize, (x+this.world.minX) + ', ' + (y+this.world.minY))
             }
         }
     },

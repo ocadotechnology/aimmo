@@ -4,10 +4,12 @@ const CONTROLS = Object.create({
         this.world = world;
         this.viewer = viewer;
     },
-    initialiseWorld: function (width, height, worldLayout) {
+    initialiseWorld: function (width, height, minX, minY, worldLayout) {
         this.world.width = width;
         this.world.height = height;
         this.world.layout = worldLayout;
+        this.world.minX = minX;
+        this.world.minY = minY;
 
         this.viewer.reDrawWorldLayout();
     },
@@ -48,7 +50,7 @@ const CONTROLS = Object.create({
 
 function refreshState(data) {
     if(data.map_changed){
-        CONTROLS.initialiseWorld(data.width, data.height, data.layout);
+        CONTROLS.initialiseWorld(data.width, data.height, data.min_x, data.min_y, data.layout);
     }
     CONTROLS.setState(data.players, data.score_locations, data.pickup_locations);
 }
