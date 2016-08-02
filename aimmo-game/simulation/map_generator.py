@@ -3,20 +3,19 @@ import random
 from itertools import tee
 from simulation.direction import ALL_DIRECTIONS
 from simulation.location import Location
-from simulation.world_map import Cell, WorldMap
+from simulation.world_map import WorldMap
 from six.moves import zip, range
 
 
 def generate_map(height, width, obstacle_ratio=0.1):
-    grid = [[Cell(Location(x, y)) for y in range(height)] for x in range(width)]
-    world_map = WorldMap(grid)
+    world_map = WorldMap.generate_empty_map(height, width)
 
     # We designate one non-corner edge cell as empty, to ensure that the map can be expanded
-    always_empty_edge_x, always_empty_edge_y = get_random_edge_index(height, width)
+    always_empty_edge_x, always_empty_edge_y = get_random_edge_index(world_map)
+    always_empty_location = Location(always_empty_edge_x, always_empty_edge_y)
 
-    for x, y in shuffled(_get_edge_coordinates(height, width)):
-        if (x, y) != (always_empty_edge_x, always_empty_edge_y) and random.random() < obstacle_ratio:
-            cell = grid[x][y]
+    for cell in shuffled(world_map.all_cells()):
+        if cell.location != always_empty_location and random.random() < obstacle_ratio:
             cell.habitable = False
             # So long as all habitable neighbours can still reach each other,
             # then the map cannot get bisected
@@ -85,31 +84,30 @@ def get_shortest_path_between(source_cell, destination_cell, world_map):
     return None
 
 
-def get_random_edge_index(height, width, rng=random):
-    assert height >= 2 and width >= 2
-
-    num_row_cells = width - 2
-    num_col_cells = height - 2
+def get_random_edge_index(map, rng=random):
+    num_row_cells = map.num_rows - 2
+    num_col_cells = map.num_cols - 2
     num_edge_cells = 2*num_row_cells + 2*num_col_cells
     random_cell = rng.randint(0, num_edge_cells-1)
-
-    if 0 <= random_cell < num_row_cells:
+    # import pdb; pdb.set_trace()
+    if 0 <= random_cell < num_col_cells:
         # random non-corner cell on the first row
-        return random_cell+1, 0
-    elif num_row_cells <= random_cell < 2*num_row_cells:
-        # random non-corner cell on the last row
-        random_cell -= num_row_cells
-        return random_cell + 1, height - 1
-
-    random_cell -= 2*num_row_cells
+        return random_cell + 1 + map.min_x(), map.min_y()
+    random_cell -= num_col_cells
 
     if 0 <= random_cell < num_col_cells:
-        # random non-corner cell on the first column
-        return 0, random_cell + 1
-    assert num_col_cells <= random_cell < 2*num_col_cells
-    # random non-corner cell on the last column
+        # random non-corner cell on the last row
+        return random_cell + 1 + map.min_x(), map.max_y()
     random_cell -= num_col_cells
-    return width - 1, random_cell + 1
+
+    if 0 <= random_cell < num_row_cells:
+        # random non-corner cell on the first column
+        return map.min_x(), map.min_y() + random_cell + 1
+    random_cell -= num_row_cells
+
+    assert 0 <= random_cell < num_row_cells
+    # random non-corner cell on the last column
+    return map.max_x(), map.min_y() + random_cell + 1
 
 
 def get_adjacent_habitable_cells(cell, world_map):
