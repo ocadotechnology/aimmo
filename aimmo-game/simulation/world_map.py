@@ -140,8 +140,7 @@ class WorldMap(object):
         except ValueError:
             return
 
-    @property
-    def num_rows(self):
+    def _max_y(self):
         max_y = 0
         while True:
             try:
@@ -151,6 +150,9 @@ class WorldMap(object):
                 break
             else:
                 max_y += 1
+        return max_y
+
+    def _min_y(self):
         min_y = 0
         while True:
             try:
@@ -160,10 +162,13 @@ class WorldMap(object):
                 break
             else:
                 min_y -= 1
-        return max_y - min_y + 1
+        return min_y
 
     @property
-    def num_cols(self):
+    def num_rows(self):
+        return self._max_y() - self._min_y() + 1
+
+    def _max_x(self):
         max_x = 0
         while True:
             try:
@@ -173,6 +178,9 @@ class WorldMap(object):
                 break
             else:
                 max_x += 1
+        return max_x
+
+    def _min_x(self):
         min_x = 0
         while True:
             try:
@@ -182,7 +190,11 @@ class WorldMap(object):
                 break
             else:
                 min_x -= 1
-        return max_x - min_x + 1
+        return min_x
+
+    @property
+    def num_cols(self):
+        return self._max_x() - self._min_x() + 1
 
     @property
     def num_cells(self):
@@ -201,26 +213,27 @@ class WorldMap(object):
         self._add_pickups(num_avatars)
 
     def _expand(self, num_avatars):
+        LOGGER.info('Expanding map')
+        start_size = self.num_cells
         target_num_cells = int(math.ceil(num_avatars * TARGET_NUM_CELLS_PER_AVATAR))
         num_cells_to_add = target_num_cells - self.num_cells
         if num_cells_to_add > 0:
             self._add_outer_layer()
+            assert self.num_cells > start_size
 
     def _add_outer_layer(self):
-        self._add_layer_to_vertical_edge()
-        self._add_layer_to_horizontal_edge()
+        self._add_vertical_layer(self._min_x()-1)
+        self._add_vertical_layer(self._max_x()+1)
+        self._add_horizontal_layer(self._min_y()-1)
+        self._add_horizontal_layer(self._max_y()+1)
 
-    def _add_layer_to_vertical_edge(self):
-        # Read cols once here, as we'll mutate it as part of the first iteration
-        cols = self.num_cols
-        for y in xrange(self.num_rows):
-            self._grid[Location(cols, y)] = Cell(Location(cols, y))
+    def _add_vertical_layer(self, x):
+        for y in xrange(self._min_y(), self._max_y()+1):
+            self._grid[Location(x, y)] = Cell(Location(x, y))
 
-    def _add_layer_to_horizontal_edge(self):
-        # Read rows once here, as we'll mutate it as part of the first iteration
-        rows = self.num_rows
-        for x in xrange(self.num_cols):
-            self._grid[Location(x, rows)] = Cell(Location(x, rows))
+    def _add_horizontal_layer(self, y):
+        for x in xrange(self._min_x(), self._max_x()+1):
+            self._grid[Location(x, y)] = Cell(Location(x, y))
 
     def _reset_score_locations(self, num_avatars):
         for cell in self.score_cells():
@@ -289,7 +302,7 @@ class WorldMap(object):
             return cell.moves[0].avatar
 
         return None
-        
+
     def get_no_fog_distance(self):
         return NO_FOG_OF_WAR_DISTANCE
 

@@ -97,6 +97,7 @@ class TestWorldMap(TestCase):
             expected_rows = expected_columns
         self.assertEqual(map.num_rows, expected_rows)
         self.assertEqual(map.num_cols, expected_columns)
+        self.assertEqual(map.num_cells, expected_rows*expected_columns)
         self.assertEqual(len(list(map.all_cells())), expected_rows*expected_columns)
 
     def test_grid_size_from_dict(self):
@@ -208,10 +209,17 @@ class TestWorldMap(TestCase):
         world_map.TARGET_NUM_CELLS_PER_AVATAR = 5
         map = WorldMap(self._generate_grid())
         map.reconstruct_interactive_state(1)
-        self.assertGridSize(map, 3)
-
-        map.reconstruct_interactive_state(2)
+        self.assertTrue(map.is_on_map(Location(-1, -1)))
+        self.assertTrue(map.is_on_map(Location(-1, 2)))
+        self.assertTrue(map.is_on_map(Location(2, 2)))
+        self.assertTrue(map.is_on_map(Location(2, -1)))
         self.assertGridSize(map, 4)
+        map.reconstruct_interactive_state(4)
+        self.assertGridSize(map, 6)
+        self.assertTrue(map.is_on_map(Location(0, 3)))
+        self.assertTrue(map.is_on_map(Location(3, 0)))
+        self.assertTrue(map.is_on_map(Location(-2, 0)))
+        self.assertTrue(map.is_on_map(Location(0, -2)))
 
     def test_grid_doesnt_expand(self):
         world_map.TARGET_NUM_CELLS_PER_AVATAR = 4
