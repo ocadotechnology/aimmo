@@ -45,13 +45,15 @@ class TestService(TestCase):
         details = player_dict[1]
         self.assertEqual(details['id'], 1)
         self.assertEqual(details['x'], 0)
-        self.assertEqual(details['y'], 1)
+        self.assertEqual(details['y'], 0)
         self.assertEqual(details['health'], 5)
         self.assertEqual(details['score'], 0)
 
     def test_grid(self):
         result = self.setup_world()
-        self.assertEqual(result['score_locations'], [(0, 1)])
+        self.assertEqual(result['score_locations'], [(0, 2)])
         self.assertEqual(result['width'], 2)
         self.assertEqual(result['height'], 3)
         self.assertEqual(result['layout'], [[0, 0, 2], [0, 1, 0]])
+        self.assertEqual(result['min_x'], 0)
+        self.assertEqual(result['min_y'], -1)

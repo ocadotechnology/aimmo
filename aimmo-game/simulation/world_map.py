@@ -152,7 +152,7 @@ class WorldMap(object):
                 max_y += 1
         return max_y
 
-    def _min_y(self):
+    def min_y(self):
         min_y = 0
         while True:
             try:
@@ -166,7 +166,7 @@ class WorldMap(object):
 
     @property
     def num_rows(self):
-        return self._max_y() - self._min_y() + 1
+        return self._max_y() - self.min_y() + 1
 
     def _max_x(self):
         max_x = 0
@@ -180,7 +180,7 @@ class WorldMap(object):
                 max_x += 1
         return max_x
 
-    def _min_x(self):
+    def min_x(self):
         min_x = 0
         while True:
             try:
@@ -194,7 +194,7 @@ class WorldMap(object):
 
     @property
     def num_cols(self):
-        return self._max_x() - self._min_x() + 1
+        return self._max_x() - self.min_x() + 1
 
     @property
     def num_cells(self):
@@ -222,17 +222,17 @@ class WorldMap(object):
             assert self.num_cells > start_size
 
     def _add_outer_layer(self):
-        self._add_vertical_layer(self._min_x()-1)
+        self._add_vertical_layer(self.min_x()-1)
         self._add_vertical_layer(self._max_x()+1)
-        self._add_horizontal_layer(self._min_y()-1)
+        self._add_horizontal_layer(self.min_y()-1)
         self._add_horizontal_layer(self._max_y()+1)
 
     def _add_vertical_layer(self, x):
-        for y in xrange(self._min_y(), self._max_y()+1):
+        for y in xrange(self.min_y(), self._max_y()+1):
             self._grid[Location(x, y)] = Cell(Location(x, y))
 
     def _add_horizontal_layer(self, y):
-        for x in xrange(self._min_x(), self._max_x()+1):
+        for x in xrange(self.min_x(), self._max_x()+1):
             self._grid[Location(x, y)] = Cell(Location(x, y))
 
     def _reset_score_locations(self, num_avatars):
@@ -314,5 +314,5 @@ class WorldMap(object):
 
     def __iter__(self):
         return ((self.get_cell(Location(x, y))
-                for y in xrange(self._min_y(), self._max_y()+1))
-                for x in xrange(self._min_x(), self._max_x()+1))
+                for y in xrange(self.min_y(), self._max_y()+1))
+                for x in xrange(self.min_x(), self._max_x()+1))
