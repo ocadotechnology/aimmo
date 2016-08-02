@@ -105,23 +105,10 @@ class TurnManager(Thread):
         with game_state_provider as game_state:
             state_view = game_state.get_state_for(avatar)
 
-        try:
-            data = requests.post(avatar.worker_url, json=state_view).json()
-        except ValueError as err:
-            LOGGER.info('Failed to get turn result: %s', err)
-        else:
-            try:
-                action_data = data['action']
-                action_type = action_data['action_type']
-                action_args = action_data.get('options', {})
-                action_args['avatar'] = avatar
-                action = ACTIONS[action_type](**action_args)
-            except (KeyError, ValueError) as err:
-                LOGGER.info('Bad action data supplied: %s', err)
-            else:
-                with game_state_provider as game_state:
-                    action.target(game_state.world_map)
-                action_queue.put((action.priority, action))
+        if avatar.decide_action(state_view):
+            with game_state_provider as game_state:
+                avatar.action.target(game_state.world_map)
+            action_queue.put((avatar.action.priority, avatar.action))
 
     def run(self):
         while True:
