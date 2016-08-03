@@ -18,7 +18,8 @@ def generate_map(height, width, obstacle_ratio):
         if (x, y) != (always_empty_edge_x, always_empty_edge_y) and random.random() < obstacle_ratio:
             cell = grid[x][y]
             cell.habitable = False
-            #   So long as all habitable neighbours can still reach each other, then the map cannot get bisected
+            # So long as all habitable neighbours can still reach each other,
+            # then the map cannot get bisected
             if not _all_habitable_neighbours_can_reach_each_other(cell, world_map):
                 cell.habitable = True
 
@@ -48,14 +49,19 @@ def _all_habitable_neighbours_can_reach_each_other(cell, world_map):
     neighbours = get_adjacent_habitable_cells(cell, world_map)
 
     assert len(neighbours) >= 1
-    return all(get_shortest_path_between(n1, n2, world_map) is not None for n1, n2 in pairwise(neighbours))
+    neighbour_pairs = ((n1, n2) for n1, n2 in pairwise(neighbours))
+    shortest_path_exists = (get_shortest_path_between(n1, n2, world_map) is not None
+                            for n1, n2 in neighbour_pairs)
+    return all(shortest_path_exists)
 
 
 def get_shortest_path_between(source_cell, destination_cell, world_map):
 
     def manhattan_distance_to_destination_cell(this_branch):
         branch_tip_location = this_branch[-1].location
-        abs(branch_tip_location.x - destination_cell.location.x) + abs(branch_tip_location.y - destination_cell.location.y) + len(this_branch)
+        x_distance = abs(branch_tip_location.x - destination_cell.location.x)
+        y_distance = abs(branch_tip_location.y - destination_cell.location.y)
+        return x_distance + y_distance + len(this_branch)
 
     branches = PriorityQueue(key=manhattan_distance_to_destination_cell, init_items=[[source_cell]])
     visited_cells = set()
@@ -100,17 +106,16 @@ def get_random_edge_index(height, width, rng=random):
     if 0 <= random_cell < num_col_cells:
         # random non-corner cell on the first column
         return 0, random_cell + 1
-    elif num_col_cells <= random_cell < 2*num_col_cells:
-        # random non-corner cell on the last column
-        random_cell -= num_col_cells
-        return width - 1, random_cell + 1
-
-    raise ValueError('Should not be reachable')
+    assert num_col_cells <= random_cell < 2*num_col_cells
+    # random non-corner cell on the last column
+    random_cell -= num_col_cells
+    return width - 1, random_cell + 1
 
 
 def get_adjacent_habitable_cells(cell, world_map):
     adjacent_locations = [cell.location + d for d in ALL_DIRECTIONS]
-    adjacent_locations = [location for location in adjacent_locations if world_map.is_on_map(location)]
+    adjacent_locations = [location for location in adjacent_locations
+                          if world_map.is_on_map(location)]
 
     adjacent_cells = [world_map.get_cell(location) for location in adjacent_locations]
     return [c for c in adjacent_cells if c.habitable]
@@ -135,4 +140,3 @@ class PriorityQueue(object):
 
     def __len__(self):
         return len(self.heap)
-

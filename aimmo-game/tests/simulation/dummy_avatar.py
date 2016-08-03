@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from simulation.action import MoveAction
 from simulation import direction
 
@@ -11,6 +12,7 @@ class DummyAvatarRunner(object):
         self.location = initial_location
         self.player_id = player_id
         self.events = []
+        self.times_died = 0
 
     def handle_turn(self, state):
         next_action = MoveAction(direction.EAST)
@@ -22,3 +24,10 @@ class DummyAvatarRunner(object):
 
     def add_event(self, event):
         self.events.append(event)
+
+    def die(self, respawn_loc):
+        self.location = respawn_loc
+        self.times_died += 1
+
+    def serialise(self):
+        return 'Dummy'

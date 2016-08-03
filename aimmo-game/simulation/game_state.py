@@ -10,7 +10,7 @@ class GameState(object):
         self.world_map = world_map
         self.avatar_manager = avatar_manager
 
-    def get_state_for(self, avatar_wrapper):
+    def get_state_for(self, avatar_wrapper, fog_of_war=fog_of_war):
         processed_world_map = fog_of_war.apply_fog_of_war(self.world_map, avatar_wrapper)
         return {
             'avatar_state': avatar_wrapper.serialise(),
@@ -18,7 +18,6 @@ class GameState(object):
                 'cells': [cell.serialise() for cell in processed_world_map.all_cells()]
             }
         }
-        return WorldView(avatar_wrapper, processed_world_map, self.avatar_manager)
 
     def add_avatar(self, user_id, worker_url):
         spawn_location = self.world_map.get_random_spawn_location()

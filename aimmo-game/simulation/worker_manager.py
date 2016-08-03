@@ -117,32 +117,34 @@ class WorkerManager(threading.Thread):
     def _parallel_map(self, func, iterable_args):
         list(self._pool.imap(func, iterable_args))
 
+    def update(self):
+        try:
+            LOGGER.info("Waking up")
+            game_data = requests.get(self.users_url).json()
+        except (requests.RequestException, ValueError) as err:
+            LOGGER.error("Failed to obtain game data : %s", err)
+        else:
+            game = game_data['main']
+
+            # Remove users with different code
+            users_to_add = []
+            for user in game['users']:
+                if self._data.remove_user_if_code_is_different(user):
+                    users_to_add.append(user)
+            LOGGER.debug("Need to add users: %s" % [x['id'] for x in users_to_add])
+
+            # Add missing users
+            self._parallel_map(self.spawn, users_to_add)
+
+            # Delete extra users
+            known_avatars = set(user['id'] for user in game['users'])
+            removed_user_ids = self._data.remove_unknown_avatars(known_avatars)
+            LOGGER.debug("Removing users: %s" % removed_user_ids)
+            self._parallel_map(self.remove_worker, removed_user_ids)
+
     def run(self):
         while True:
-            try:
-                LOGGER.info("Waking up")
-                game_data = requests.get(self.users_url).json()
-            except (requests.RequestException, ValueError) as err:
-                LOGGER.error("Failed to obtain game data : %s", err)
-            else:
-                game = game_data['main']
-
-                # Remove users with different code
-                users_to_add = []
-                for user in game['users']:
-                    if self._data.remove_user_if_code_is_different(user):
-                        users_to_add.append(user)
-                LOGGER.debug("Need to add users: %s" % [x['id'] for x in users_to_add])
-
-                # Add missing users
-                self._parallel_map(self.spawn, users_to_add)
-
-                # Delete extra users
-                known_avatars = set(user['id'] for user in game['users'])
-                removed_user_ids = self._data.remove_unknown_avatars(known_avatars)
-                LOGGER.debug("Removing users: %s" % removed_user_ids)
-                self._parallel_map(self.remove_worker, removed_user_ids)
-
+            self.update()
             LOGGER.info("Sleeping")
             time.sleep(10)
 
@@ -201,17 +203,17 @@ class KubernetesWorkerManager(WorkerManager):
         pod = Pod(
             self.api,
             {
-            'kind': 'Pod',
-            'apiVersion': 'v1',
-            'metadata': {
+             'kind': 'Pod',
+             'apiVersion': 'v1',
+             'metadata': {
                 'generateName': "aimmo-%s-worker-%s-" % (self.game_name, player_id),
                 'labels': {
                     'app': 'aimmo-game-worker',
                     'game': self.game_name,
                     'player': str(player_id),
+                    },
                 },
-            },
-            'spec': {
+             'spec': {
                 'containers': [
                     {
                         'env': [
@@ -236,8 +238,9 @@ class KubernetesWorkerManager(WorkerManager):
                         },
                     },
                 ],
-            },
-        })
+             },
+            }
+        )
         pod.create()
         time.sleep(20)
         pod.reload()

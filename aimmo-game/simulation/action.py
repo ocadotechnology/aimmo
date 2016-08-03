@@ -1,6 +1,9 @@
+from logging import getLogger
 from simulation.direction import Direction
 from simulation.event import FailedAttackEvent, FailedMoveEvent, MovedEvent, PerformedAttackEvent, ReceivedAttackEvent
 import simulation.world_map as world_map_module
+
+LOGGER = getLogger(__name__)
 
 
 class Action(object):
@@ -48,7 +51,7 @@ class AttackAction(Action):
             avatar.add_event(PerformedAttackEvent(attacked_avatar, target_location, damage_dealt))
             attacked_avatar.add_event(ReceivedAttackEvent(avatar, damage_dealt))
             attacked_avatar.health -= damage_dealt
-            print('{} dealt {} damage to {}'.format(avatar, damage_dealt, attacked_avatar))
+            LOGGER.debug('{} dealt {} damage to {}'.format(avatar, damage_dealt, attacked_avatar))
             if attacked_avatar.health <= 0:
                 respawn_location = game_state.world_map.get_random_spawn_location()
                 attacked_avatar.die(respawn_location)

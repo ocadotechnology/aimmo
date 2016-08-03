@@ -1,18 +1,11 @@
-import os
-import sys
-
-from simulation.avatar.avatar_manager import AvatarManager
-
-sys.path.append(os.path.abspath('.'))
-
+from __future__ import absolute_import
 import unittest
 
-from sys.moves import range
-
+from simulation.avatar.avatar_manager import AvatarManager
 from simulation.location import Location
 from simulation.turn_manager import TurnManager
-from simulation.test.maps import InfiniteMap
-from simulation.test.dummy_avatar import DummyAvatarRunner
+from .maps import InfiniteMap
+from .dummy_avatar import DummyAvatarRunner
 from simulation.avatar.avatar_appearance import AvatarAppearance
 from simulation.game_state import GameState
 
@@ -25,6 +18,7 @@ ABOVE_ORIGIN = Location(x=0, y=1)
 FIVE_RIGHT_OF_ORIGIN_AND_ONE_ABOVE = Location(x=5, y=1)
 
 
+@unittest.expectedFailure
 class TestTurnManager(unittest.TestCase):
     def construct_default_avatar_appearance(self):
         return AvatarAppearance("#000", "#ddd", "#777", "#fff")

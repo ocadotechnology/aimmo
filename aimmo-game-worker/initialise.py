@@ -5,15 +5,19 @@ import sys
 import json
 import requests
 
-data_dir = sys.argv[1]
 
-url = os.environ['DATA_URL']
-data = requests.get(url).json()
+def main(args, url):
+    data_dir = args[1]
 
-options = data['options']
-with open('{}/options.json'.format(data_dir), 'w') as options_file:
-    json.dump(options, options_file)
+    data = requests.get(url).json()
 
-code = data['code']
-with open('{}/avatar.py'.format(data_dir), 'w') as avatar_file:
-    avatar_file.write(code)
+    options = data['options']
+    with open('{}/options.json'.format(data_dir), 'w') as options_file:
+        json.dump(options, options_file)
+
+    code = data['code']
+    with open('{}/avatar.py'.format(data_dir), 'w') as avatar_file:
+        avatar_file.write(code)
+
+if __name__ == '__main__':
+    main(sys.argv, url=os.environ['DATA_URL'])

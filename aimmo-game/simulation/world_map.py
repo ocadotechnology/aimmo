@@ -2,6 +2,9 @@ import math
 import random
 
 from location import Location
+from logging import getLogger
+
+LOGGER = getLogger(__name__)
 
 # TODO: extract to settings
 TARGET_NUM_CELLS_PER_AVATAR = 16
@@ -39,7 +42,9 @@ class Cell(object):
         self.pickup = None
 
     def __repr__(self):
-        return 'Cell({} h={} s={} a={} p={})'.format(self.location, self.habitable, self.generates_score, self.avatar, self.pickup)
+        return 'Cell({} h={} s={} a={} p={})'.format(
+                self.location, self.habitable, self.generates_score, self.avatar,
+                self.pickup)
 
     def __eq__(self, other):
         return self.location == other.location
@@ -72,7 +77,9 @@ class WorldMap(object):
         return (c for c in self.all_cells() if c.generates_score)
 
     def potential_spawn_locations(self):
-        return (c for c in self.all_cells() if c.habitable and not c.generates_score and not c.avatar and not c.pickup)
+        return (c for c in self.all_cells()
+                if c.habitable and not c.generates_score and not c.avatar and
+                not c.pickup)
 
     def pickup_cells(self):
         return (c for c in self.all_cells() if c.pickup)
@@ -100,50 +107,71 @@ class WorldMap(object):
         return self.num_rows * self.num_cols
 
     def reconstruct_interactive_state(self, num_avatars):
-        self.expand(num_avatars)
-        self.reset_score_locations(num_avatars)
-        self.add_pickups(num_avatars)
+        self._expand(num_avatars)
+        self._reset_score_locations(num_avatars)
+        self._add_pickups(num_avatars)
 
-    def expand(self, num_avatars):
+    def _expand(self, num_avatars):
         target_num_cells = int(math.ceil(num_avatars * TARGET_NUM_CELLS_PER_AVATAR))
         num_cells_to_add = target_num_cells - self.num_cells
         if num_cells_to_add > 0:
-            self.add_outer_layer()
+            self._add_outer_layer()
 
-    def add_outer_layer(self):
-        self.add_layer_to_vertical_edge()
-        self.add_layer_to_horizontal_edge()
+    def _add_outer_layer(self):
+        self._add_layer_to_vertical_edge()
+        self._add_layer_to_horizontal_edge()
 
-    def add_layer_to_vertical_edge(self):
+    def _add_layer_to_vertical_edge(self):
         self.grid.append([Cell(Location(self.num_cols, y)) for y in range(self.num_rows)])
 
-    def add_layer_to_horizontal_edge(self):
-        rows = self.num_rows  # Read rows once here, as we'll mutate it as part of the first iteration
+    def _add_layer_to_horizontal_edge(self):
+        # Read rows once here, as we'll mutate it as part of the first iteration
+        rows = self.num_rows
         for x in range(self.num_cols):
             self.grid[x].append(Cell(Location(x, rows)))
 
-    def reset_score_locations(self, num_avatars):
+    def _reset_score_locations(self, num_avatars):
         for cell in self.score_cells():
             if random.random() < SCORE_DESPAWN_CHANCE:
                 cell.generates_score = False
 
         new_num_score_locations = len(list(self.score_cells()))
-        target_num_score_locations = int(math.ceil(num_avatars * TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR))
+        target_num_score_locations = int(math.ceil(
+            num_avatars * TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR
+        ))
         num_score_locations_to_add = target_num_score_locations - new_num_score_locations
-        if num_score_locations_to_add > 0:
-            for cell in random.sample(list(self.potential_spawn_locations()), num_score_locations_to_add):
-                cell.generates_score = True
+        locations = self._get_random_spawn_locations(num_score_locations_to_add)
+        for cell in locations:
+            cell.generates_score = True
 
-    def add_pickups(self, num_avatars):
+    def _add_pickups(self, num_avatars):
         target_num_pickups = int(math.ceil(num_avatars * TARGET_NUM_PICKUPS_PER_AVATAR))
+        LOGGER.debug('Aiming for %s new pickups', target_num_pickups)
         max_num_pickups_to_add = target_num_pickups - len(list(self.pickup_cells()))
-        if max_num_pickups_to_add > 0:
-            for cell in random.sample(list(self.potential_spawn_locations()), max_num_pickups_to_add):
-                if random.random() < PICKUP_SPAWN_CHANCE:
-                    cell.pickup = HealthPickup()
+        locations = self._get_random_spawn_locations(max_num_pickups_to_add)
+        for cell in locations:
+            if random.random() < PICKUP_SPAWN_CHANCE:
+                LOGGER.info('Adding new pickup at %s', cell)
+                cell.pickup = HealthPickup()
+
+    def _get_random_spawn_locations(self, max_locations):
+        if max_locations <= 0:
+            return []
+        potential_locations = list(self.potential_spawn_locations())
+        try:
+            return random.sample(potential_locations, max_locations)
+        except ValueError:
+            LOGGER.debug('Not enough potential locations')
+            return potential_locations
 
     def get_random_spawn_location(self):
-        return random.choice(list(self.potential_spawn_locations())).location
+        """Return a single random spawn location.
+
+        Throws:
+            IndexError: if there are no possible locations.
+
+        """
+        return self._get_random_spawn_locations(1)[0].location
 
     # TODO: cope with negative coords (here and possibly in other places)
     def can_move_to(self, target_location):

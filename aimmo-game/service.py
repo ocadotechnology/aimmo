@@ -3,17 +3,20 @@ import logging
 import os
 import sys
 
-import eventlet
-eventlet.monkey_patch()
+# If we monkey patch during testing then Django fails to create a DB enironment
+if __name__ == '__main__':
+    import eventlet
+    eventlet.monkey_patch()
 
 import flask
-from flask.ext.socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit
 
 from six.moves import range
 
 from simulation.turn_manager import world_state_provider
 from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
+from simulation.location import Location
 from simulation.game_state import GameState
 from simulation.turn_manager import TurnManager
 from simulation.worker_manager import WORKER_MANAGERS
@@ -54,17 +57,20 @@ def player_dict(avatar):
 def get_world_state():
     try:
         world = world_state_provider.lock_and_get_world()
-        num_cols = len(world.world_map.grid)
-        num_rows = len(world.world_map.grid[0])
-        grid = [[None for y in range(num_rows)] for x in range(num_cols)]
-        for cell in world.world_map.all_cells():
-            grid[cell.location.x][cell.location.y] = to_cell_type(cell)
+        num_cols = world.world_map.num_cols
+        num_rows = world.world_map.num_rows
+        grid = [[to_cell_type(world.world_map.get_cell(Location(x, y)))
+                 for y in xrange(num_rows)]
+                for x in xrange(num_cols)]
         player_data = {p.player_id: player_dict(p) for p in world.avatar_manager.avatars}
         return {
                 'players': player_data,
-                'score_locations': [(cell.location.x, cell.location.y) for cell in world.world_map.score_cells()],
-                'pickup_locations': [(cell.location.x, cell.location.y) for cell in world.world_map.pickup_cells()],
-                'map_changed': True,  # TODO: experiment with only sending deltas (not if not required)
+                'score_locations': [(cell.location.x, cell.location.y)
+                                    for cell in world.world_map.score_cells()],
+                'pickup_locations': [(cell.location.x, cell.location.y)
+                                     for cell in world.world_map.pickup_cells()],
+                # TODO: experiment with only sending deltas (not if not required)
+                'map_changed': True,
                 'width': num_cols,
                 'height': num_rows,
                 'layout': grid,
@@ -99,7 +105,7 @@ def player_data(player_id):
     player_id = int(player_id)
     return flask.jsonify({
         'code': worker_manager.get_code(player_id),
-        'options': {}, # Game options
+        'options': {},       # Game options
         'state': None,
     })
 
@@ -113,7 +119,10 @@ def run_game():
     game_state = GameState(my_map, player_manager)
     turn_manager = TurnManager(game_state=game_state, end_turn_callback=send_world_update)
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
-    worker_manager = WorkerManagerClass(game_state=game_state, users_url=os.environ.get('GAME_API_URL', 'http://localhost:8000/players/api/games/'))
+    worker_manager = WorkerManagerClass(
+        game_state=game_state,
+        users_url=os.environ.get('GAME_API_URL', 'http://localhost:8000/players/api/games/')
+    )
     worker_manager.start()
     turn_manager.start()
 

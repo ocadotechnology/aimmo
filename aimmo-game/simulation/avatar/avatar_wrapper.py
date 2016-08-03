@@ -1,6 +1,7 @@
 class AvatarWrapper(object):
     """
-    The application's view of a character, not to be confused with "Avatar", the player-supplied code.
+    The application's view of a character, not to be confused with "Avatar",
+    the player-supplied code.
     """
 
     def __init__(self, initial_location, player_id, worker_url, avatar_appearance):
@@ -24,10 +25,10 @@ class AvatarWrapper(object):
     def serialise(self):
         return {
             'events': [
-            #    {
-            #        'event_name': event.__class__.__name__.lower(),
-            #        'event_options': event.__dict__,
-            #    } for event in self.events
+                #    {
+                #        'event_name': event.__class__.__name__.lower(),
+                #        'event_options': event.__dict__,
+                #    } for event in self.events
             ],
             'health': self.health,
             'location': self.location.serialise(),
@@ -35,5 +36,4 @@ class AvatarWrapper(object):
         }
 
     def __repr__(self):
-        return 'Avatar(id={}, location={}, health={}, score={})'.format(self.player_id, self.location,
-                                                                        self.health, self.score)
+        return 'Avatar(id={}, location={}, health={}, score={})'.format(self.player_id, self.location, self.health, self.score)

@@ -11,11 +11,14 @@ from models import Player
 from . import app_settings
 
 
+LOGGER = logging.getLogger(__name__)
+
+
 def _post_code_success_response(message):
-    return create_response("SUCCESS", message)
+    return _create_response("SUCCESS", message)
 
 
-def create_response(status, message):
+def _create_response(status, message):
     response = {
         "status": status,
         "message": message
