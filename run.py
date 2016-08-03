@@ -60,14 +60,14 @@ def create_superuser_if_missing(username, password):
 
 
 def main():
-    create_superuser_if_missing(username='admin', password='admin')
-
-    server_args = []
 
     run_command(['pip', 'install', '-e', _SCRIPT_LOCATION])
     run_command(['python', _MANAGE_PY, 'migrate', '--noinput'])
     run_command(['python', _MANAGE_PY, 'collectstatic', '--noinput'])
 
+    create_superuser_if_missing(username='admin', password='admin')
+
+    server_args = []
     server = run_command_async(['python', _MANAGE_PY, 'runserver'] + server_args)
     time.sleep(2)
     game = run_command_async(['python', _SERVICE_PY, '127.0.0.1', '5000'])
