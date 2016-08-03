@@ -33,8 +33,8 @@ class TestService(TestCase):
                 {},
             ],
         ]
-        grid = [[MockCell(Location(x, y-1), **CELLS[x][y])
-                 for y in xrange(3)] for x in xrange(2)]
+        grid = {Location(x, y-1): MockCell(Location(x, y-1), **CELLS[x][y])
+                for y in xrange(3) for x in xrange(2)}
         state_provider.set_world(GameState(WorldMap(grid), SimpleAvatarManager()))
         return service.get_world_state()
 

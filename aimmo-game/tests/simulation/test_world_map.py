@@ -75,16 +75,6 @@ class TestWorldMap(TestCase):
                 for x in xrange(columns) for y in xrange(rows)}
         return grid
 
-    def _generate_list_grid(self, columns=2, rows=2):
-        alphabet = iter(ascii_uppercase)
-        grid = []
-        for x in xrange(columns):
-            column = []
-            for y in xrange(rows):
-                column.append(MockCell(Location(x, y), name=next(alphabet)))
-            grid.append(column)
-        return grid
-
     def _grid_from_list(self, in_list):
         out = {}
         for x, column in enumerate(in_list):
@@ -100,29 +90,16 @@ class TestWorldMap(TestCase):
         self.assertEqual(map.num_cells, expected_rows*expected_columns)
         self.assertEqual(len(list(map.all_cells())), expected_rows*expected_columns)
 
-    def test_grid_size_from_dict(self):
+    def test_grid_size(self):
         map = WorldMap(self._generate_grid(1, 3))
-        self.assertGridSize(map, 1, 3)
-
-    def test_grid_from_list_size(self):
-        map = WorldMap(self._generate_list_grid(1, 3))
         self.assertGridSize(map, 1, 3)
 
     def test_generated_map(self):
         map = WorldMap.generate_empty_map(2, 5)
         self.assertGridSize(map, 5, 2)
 
-    def test_all_cells_from_dict(self):
+    def test_all_cells(self):
         map = WorldMap(self._generate_grid())
-        cell_names = [c.name for c in map.all_cells()]
-        self.assertIn('A', cell_names)
-        self.assertIn('B', cell_names)
-        self.assertIn('C', cell_names)
-        self.assertIn('D', cell_names)
-        self.assertEqual(len(cell_names), 4)
-
-    def test_all_cells_from_list(self):
-        map = WorldMap(self._generate_list_grid())
         cell_names = [c.name for c in map.all_cells()]
         self.assertIn('A', cell_names)
         self.assertIn('B', cell_names)
@@ -344,11 +321,7 @@ class TestWorldMap(TestCase):
         target = Location(0, 0)
         self.assertFalse(map.can_move_to(target))
 
-    def test_empty_list_grid(self):
-        map = WorldMap([])
-        self.assertFalse(map.is_on_map(Location(0, 0)))
-
-    def test_empty_dict_grid(self):
+    def test_empty_grid(self):
         map = WorldMap({})
         self.assertFalse(map.is_on_map(Location(0, 0)))
 
@@ -374,16 +347,6 @@ class TestWorldMapWithOriginCentre(TestWorldMap):
                 for x in xrange(-columns/2+1, columns/2+1) for y in xrange(-rows/2+1, rows/2+1)}
         return grid
 
-    def _generate_list_grid(self, columns=2, rows=2):
-        alphabet = iter(ascii_uppercase)
-        grid = []
-        for x in xrange(-columns/2+1, columns/2+1):
-            column = []
-            for y in xrange(-rows/2+1, rows/2+1):
-                column.append(MockCell(Location(x, y), name=next(alphabet)))
-            grid.append(column)
-        return grid
-
     def _grid_from_list(self, in_list):
         out = {}
         min_x = -len(in_list)/2 + 1
@@ -398,7 +361,3 @@ class TestWorldMapWithOriginCentre(TestWorldMap):
     def test_retrieve_negative(self):
         map = WorldMap(self._generate_grid(3, 3))
         self.assertTrue(map.is_on_map(Location(-1, -1)))
-
-    def test_retrieve_negative_from_list(self):
-        map = WorldMap(self._generate_list_grid(2, 3))
-        self.assertTrue(map.is_on_map(Location(0, -1)))

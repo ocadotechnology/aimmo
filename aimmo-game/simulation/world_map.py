@@ -89,18 +89,7 @@ class WorldMap(object):
     """
 
     def __init__(self, grid):
-        try:
-            grid[Location(0, 0)]
-        except TypeError:
-            self._convert_grid_from_list(grid)
-        except KeyError:
-            # Allow an empty grid
-            self._grid = grid
-        else:
-            self._grid = grid
-
-    def _convert_grid_from_list(self, grid):
-        self._grid = {cell.location: cell for row in grid for cell in row}
+        self._grid = grid
 
     @classmethod
     def generate_empty_map(cls, height, width):
