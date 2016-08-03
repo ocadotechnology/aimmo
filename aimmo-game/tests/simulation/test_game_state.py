@@ -11,7 +11,7 @@ from .dummy_avatar import DummyAvatarManager
 
 
 class FogToEmpty(object):
-    def apply_fog_of_war(self, map, wrapper):
+    def apply_fog_of_war(self, world_map, wrapper):
         return EmptyMap()
 
 
@@ -42,6 +42,24 @@ class TestGameState(TestCase):
         self.assertTrue(manager.avatars_by_id[2].marked)
         self.assertTrue(world_map.get_cell(Location(1, 1)).avatar.marked)
 
+    def game_state_with_two_avatars(self, world_map=None, avatar_manager=None):
+        if world_map is None:
+            world_map = EmptyMap()
+        if avatar_manager is None:
+            avatar_manager = DummyAvatarManager()
+
+        avatar = DummyAvatar(1, (0, 0))
+        other_avatar = DummyAvatar(2, (0, 0))
+        other_avatar.marked = True
+        avatar_manager.avatars_by_id[1] = avatar
+        avatar_manager.avatars_by_id[2] = other_avatar
+        game_state = GameState(world_map, avatar_manager)
+        return (game_state, avatar, world_map, avatar_manager)
+
+        self.assertTrue(avatar_manager.avatars_by_id[2].marked)
+        self.assertNotIn(1, avatar_manager.avatars_by_id)
+        self.assertEqual(world_map.get_cell((0, 0)).avatar, None)
+
     def test_add_avatar(self):
         state = GameState(AvatarMap(None), DummyAvatarManager())
         state.add_avatar(7, "")
@@ -55,3 +73,28 @@ class TestGameState(TestCase):
         view = state.get_state_for(DummyAvatar(None, None), FogToEmpty())
         self.assertEqual(len(view['world_map']['cells']), 0)
         self.assertEqual(view['avatar_state'], 'Dummy')
+
+    def test_no_main_avatar_by_default(self):
+        state = GameState(EmptyMap(), DummyAvatarManager())
+        with self.assertRaises(KeyError):
+            state.get_main_avatar()
+
+    def test_get_main_avatar(self):
+        (game_state, avatar, _, _) = self.game_state_with_two_avatars()
+        game_state.main_avatar_id = avatar.player_id
+        self.assertEqual(game_state.get_main_avatar(), avatar)
+
+    def test_is_complete_calls_lambda(self):
+        class LambdaTest(object):
+            def __init__(self, return_value):
+                self.return_value = return_value
+
+            def __call__(self, game_state):
+                self.game_state = game_state
+                return self.return_value
+
+        test = LambdaTest(True)
+        game_state = GameState(EmptyMap(), DummyAvatarManager(), test)
+        self.assertTrue(game_state.is_complete())
+        test.return_value = False
+        self.assertFalse(game_state.is_complete())

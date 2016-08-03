@@ -1,9 +1,7 @@
 from __future__ import absolute_import
 
-import itertools
-
-from simulation.avatar.avatar_wrapper import AvatarWrapper
 from simulation.avatar.avatar_manager import AvatarManager
+from simulation.avatar.avatar_wrapper import AvatarWrapper
 from simulation.action import MoveAction, WaitAction
 from simulation.direction import NORTH, EAST, SOUTH, WEST
 

@@ -1,6 +1,6 @@
-{% extends 'players/base_game_chooser.html' %}
+{% extends 'players/base.html' %}
 
-{% block nav-watch %}<li class="active"><a href="{% url 'aimmo/games_list' %}">Watch</a></li>{% endblock %}
+{% block nav-watch-class %}active{% endblock %}
 
 {% block styles %}
 <link rel="stylesheet" type="text/css" href="/static/css/watch.css"/>

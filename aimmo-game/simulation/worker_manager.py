@@ -61,6 +61,10 @@ class _WorkerManagerData(object):
                 self._remove_avatar(u)
             return unknown_user_ids
 
+    def set_main_avatar(self, avatar_id):
+        with self._lock:
+            self._game_state.main_avatar_id = avatar_id
+
 
 class WorkerManager(threading.Thread):
     """
@@ -142,6 +146,9 @@ class WorkerManager(threading.Thread):
             removed_user_ids = self._data.remove_unknown_avatars(known_avatars)
             LOGGER.debug("Removing users: %s" % removed_user_ids)
             self._parallel_map(self.remove_worker, removed_user_ids)
+
+            # Update main avatar
+            self._data.set_main_avatar(game_data['main']['main_avatar'])
 
     def run(self):
         while True:

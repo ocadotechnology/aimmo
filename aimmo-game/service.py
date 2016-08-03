@@ -116,11 +116,7 @@ def run_game(port):
     game_state = generator.get_game_state(player_manager)
     turn_manager = ConcurrentTurnManager(game_state=game_state, end_turn_callback=send_world_update, completion_url=api_url+'complete/')
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
-    worker_manager = WorkerManagerClass(
-        game_state=game_state,
-        users_url=os.environ.get('GAME_API_URL', 'http://localhost:8000/players/api/games/1'),
-        port=port
-    )
+    worker_manager = WorkerManagerClass(game_state=game_state, users_url=api_url, port=port)
     worker_manager.start()
     turn_manager.start()
 

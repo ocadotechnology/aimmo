@@ -63,6 +63,7 @@ WSGI_APPLICATION = 'example_project.wsgi.application'
 INSTALLED_APPS = (
     'django.contrib.admin',
     'players',
+    'django_forms_bootstrap',
 )
 
 LOGGING = {

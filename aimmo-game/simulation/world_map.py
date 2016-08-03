@@ -231,3 +231,8 @@ class WorldMap(object):
 
     def __repr__(self):
         return repr(self.grid)
+
+
+def WorldMapStaticSpawnDecorator(world_map, spawn_location):
+    world_map.get_random_spawn_location = lambda: spawn_location
+    return world_map

@@ -1,6 +1,6 @@
-{% extends 'players/base_game_chooser.html' %}
+{% extends 'players/base.html' %}
 
-{% block nav-program %}<li class="active"><a href="{% url 'aimmo/program' %}">Program<span class="sr-only"> (current)</span></a></li>{% endblock %}
+{% block nav-program-class %}active{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -12,7 +12,7 @@
     </div>
 </div>
 <div class="row">
-    <div id="editor" class="col-md-9"># First select a game from the menu above.</div>
+    <div id="editor" class="col-md-9"></div>
     <form id="saveForm" action="" method="POST">
         {% csrf_token %}
         <div id="buttons" class="col-md-3">
@@ -23,6 +23,9 @@
 {% endblock %}
 
 {% block scripts %}
+<script>
+    var GAME_ID = {{ game_id|escapejs }}
+</script>
 <link rel="stylesheet" href="/static/css/program.css">
 <script src="//cdn.jsdelivr.net/ace/1.2.0/min/ace.js"></script>
 <script src="/static/js/program.js"></script>

@@ -32,7 +32,8 @@ class TestTurnManager(unittest.TestCase):
         self.avatar_manager = DummyAvatarManager(avatars)
         self.game_state = GameState(InfiniteMap(), self.avatar_manager)
         self.turn_manager = ConcurrentTurnManager(game_state=self.game_state,
-                                                  end_turn_callback=lambda: None)
+                                                  end_turn_callback=lambda: None,
+                                                  completion_url='')
         for index, location in enumerate(locations):
             self.game_state.add_avatar(index, "", location)
         return self.turn_manager

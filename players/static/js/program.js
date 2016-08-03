@@ -27,29 +27,6 @@ $( document ).ready(function() {
         }
     }
 
-    function loadCode() {
-        $.ajax({
-            url: Urls['aimmo/code'](id=getActiveGame()),
-            type: 'GET',
-            dataType: 'text',
-            success: function(data) {
-                editor.setValue(data);
-                editor.selection.moveCursorFileStart();
-                editor.setReadOnly(false);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                showAlert('Could not retrieve saved data', DANGER_CLASS);
-                editor.setValue(defaultProgram);
-                editor.selection.moveCursorFileStart();
-                editor.setReadOnly(true);
-            }
-        });
-    }
-
-    function getActiveGame() {
-        return $('#active-code').data('pk');
-    }
-
     //SETUP EDITOR
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
@@ -68,7 +45,7 @@ $( document ).ready(function() {
     $('#saveBtn').click(function(event) {
         event.preventDefault();
         $.ajax({
-            url: Urls['aimmo/code'](id=getActiveGame()),
+            url: Urls['aimmo/code'](id=GAME_ID),
             type: 'POST',
             dataType: 'json',
             data: {code: editor.getValue(), csrfmiddlewaretoken: $('#saveForm input[name=csrfmiddlewaretoken]').val()},
@@ -82,13 +59,22 @@ $( document ).ready(function() {
         });
     });
 
-    $('#games li').click(function(event) {
-        event.preventDefault();
-        $('#games .active').removeClass('active');
-        $('#active-code').removeAttr('id');
-        $(this).addClass('active');
-        $(this).attr('id', 'active-code');
-        loadCode();
+    //DISPLAY CODE
+    $.ajax({
+        url: Urls['aimmo/code'](id=GAME_ID),
+        type: 'GET',
+        dataType: 'text',
+        success: function(data) {
+            editor.setValue(data);
+            editor.selection.moveCursorFileStart();
+            editor.setReadOnly(false);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            showAlert('Could not retrieve saved data', DANGER_CLASS);
+            editor.setValue(defaultProgram);
+            editor.selection.moveCursorFileStart();
+            editor.setReadOnly(true);
+        }
     });
 
 });

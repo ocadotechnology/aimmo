@@ -42,6 +42,7 @@ class RequestMock(object):
         return {
             'main': {
                 'parameters': [],
+                'main_avatar': None,
                 'users': [{
                     'id': i,
                     'code': 'code for %s' % i,

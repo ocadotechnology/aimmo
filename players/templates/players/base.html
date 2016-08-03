@@ -1,3 +1,4 @@
+{% load players_utils %}
 <!doctype html>
 <html>
     <head>
@@ -37,10 +38,14 @@
 
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        {% block nav-program %}<li><a href="{% url 'aimmo/program' %}">Program<span class="sr-only"> (current)</span></a></li>{% endblock %}
-                        {% block nav-watch %}<li><a href="{% url 'aimmo/games_list' %}">Watch</a></li>{% endblock %}
-                        {% block nav-statistics %}<li><a href="{% url 'aimmo/statistics' %}">Statistics</a></li>{% endblock %}
-                        <li><a href="{% url 'aimmo/new_game' %}">Add a new game</a></li>
+                        <li class="dropdown {% block nav-program-class %}{% endblock %}"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Program<span class="sr-only"> (current)</span><span class="caret"</span></a>
+                            {% game_dropdown_list 'aimmo/program' %}
+                        </li>
+                        </li>
+                        <li class="dropdown {% block nav-watch-class %}{% endblock %}"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Watch<span class="caret"></span></a>
+                            {% game_dropdown_list 'aimmo/watch' %}
+                        </li>
+                        <li class="{% block nav-statistics-class %}{% endblock %}"><a href="{% url 'aimmo/statistics' %}">Statistics</a></li>
                     </ul>
                 </div>
             </div>
