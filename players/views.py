@@ -1,5 +1,6 @@
 import logging
 
+import cPickle as pickle
 from django.db.models import Q
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
@@ -58,6 +59,7 @@ def list_games(request):
         game.pk:
             {
                 'name': game.name,
+                'settings': pickle.dumps(game.settings_as_dict()),
             } for game in Game.objects.all()
     }
     return JsonResponse(response)

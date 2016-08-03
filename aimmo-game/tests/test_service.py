@@ -35,7 +35,7 @@ class TestService(TestCase):
         ]
         grid = [[MockCell(Location(x, y), **CELLS[x][y])
                  for y in xrange(3)] for x in xrange(2)]
-        state_provider.set_world(GameState(WorldMap(grid), SimpleAvatarManager()))
+        state_provider.set_world(GameState(WorldMap(grid, {}), SimpleAvatarManager()))
         return service.get_world_state()
 
     def test_player_dict(self):
