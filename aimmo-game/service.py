@@ -13,7 +13,7 @@ from flask_socketio import SocketIO, emit
 
 from six.moves import range
 
-from simulation.turn_manager import game_state_provider
+from simulation.turn_manager import state_provider
 from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.location import Location
@@ -55,7 +55,7 @@ def player_dict(avatar):
 
 
 def get_world_state():
-    with game_state_provider as game_state:
+    with state_provider as game_state:
         world = game_state.world_map
         num_cols = world.num_cols
         num_rows = world.num_rows

@@ -55,6 +55,10 @@ class Cell(object):
     def __hash__(self):
         return hash(self.location)
 
+    @property
+    def moves(self):
+        return [move for move in self.actions if isinstance(move, MoveAction)]
+
     def serialise(self):
         return {
             'avatar': self.avatar.serialise() if self.avatar else None,
@@ -196,7 +200,14 @@ class WorldMap(object):
             return False
         cell = self.get_cell(target_location)
 
-        return cell.habitable and not cell.avatar and len(cell.actions) == 1
+        if not cell.habitable:
+            return False
+        elif len(cell.moves) > 1:
+            return False
+        elif cell.avatar:
+            return cell.avatar.is_moving()
+        else:
+            return True
 
     def attackable_avatar(self, target_location):
         '''
@@ -209,9 +220,8 @@ class WorldMap(object):
         if cell.avatar:
             return cell.avatar
 
-        moves = [action for action in cell.actions if isinstance(action, MoveAction)]
-        if len(moves) == 1:
-            return moves[0].avatar
+        if len(cell.moves) == 1:
+            return cell.moves[0].avatar
 
         return None
 

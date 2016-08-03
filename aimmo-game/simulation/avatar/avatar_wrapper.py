@@ -1,7 +1,7 @@
 import logging
 import requests
 
-from simulation.action import ACTIONS
+from simulation.action import ACTIONS, MoveAction
 
 LOGGER = logging.getLogger(__name__)
 
@@ -45,6 +45,9 @@ class AvatarWrapper(object):
             else:
                 self._action = action
                 return True
+
+    def is_moving(self):
+        return isinstance(self.action, MoveAction)
 
     def clear_action(self):
         self._action = None

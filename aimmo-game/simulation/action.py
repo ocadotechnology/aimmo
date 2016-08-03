@@ -6,9 +6,8 @@ LOGGER = getLogger(__name__)
 
 
 class Action(object):
-    def __init__(self, avatar, priority):
+    def __init__(self, avatar):
         self._avatar = avatar
-        self._priority = priority
         try:
             self._target_location = self._avatar.location + self.direction
         except AttributeError:
@@ -22,12 +21,7 @@ class Action(object):
     def target_location(self):
         return self._target_location
 
-    # Wait actions are applied first, then attack actions, then move actions.
-    @property
-    def priority(self):
-        return self._priority
-
-    def target(self, world_map):
+    def register(self, world_map):
         if world_map.is_on_map(self._target_location):
             world_map.get_cell(self._target_location).actions.append(self)
 
@@ -43,7 +37,7 @@ class Action(object):
 
 class WaitAction(Action):
     def __init__(self, avatar):
-        super(WaitAction, self).__init__(avatar, priority=0)
+        super(WaitAction, self).__init__(avatar)
 
     def is_legal(self, world_map):
         return True
@@ -56,7 +50,7 @@ class MoveAction(Action):
     def __init__(self, avatar, direction):
         # Untrusted data!
         self.direction = Direction(**direction)
-        super(MoveAction, self).__init__(avatar, priority=2)
+        super(MoveAction, self).__init__(avatar)
 
     def is_legal(self, world_map):
         return world_map.can_move_to(self._target_location)
@@ -75,6 +69,19 @@ class MoveAction(Action):
             self._avatar.health = min(10, self._avatar.health + new_cell.pickup.health_restored)
             new_cell.pickup = None
 
+    def chain(self, world_map, first):
+        if self.is_legal(world_map):
+            avatar = world_map.get_cell(self.target_location).avatar
+            move = avatar.action
+            if avatar is None or (move is not first and move.chain(world_map, first)):
+                self.apply(world_map)
+                self.avatar.clear_action()
+                return True
+
+        self.reject()
+        self.avatar.clear_action()
+        return False
+
     def reject(self):
         event = FailedMoveEvent(self._avatar.location, self._target_location)
         self._avatar.add_event(event)
@@ -84,7 +91,7 @@ class AttackAction(Action):
     def __init__(self, avatar, direction):
         # Untrusted data!
         self.direction = Direction(**direction)
-        super(AttackAction, self).__init__(avatar, priority=1)
+        super(AttackAction, self).__init__(avatar)
 
     def is_legal(self, world_map):
         return True if world_map.attackable_avatar(self._target_location) else False
@@ -117,4 +124,10 @@ ACTIONS = {
     'attack': AttackAction,
     'move': MoveAction,
     'wait': WaitAction,
+}
+
+PRIORITIES = {
+    WaitAction: 0,
+    AttackAction: 1,
+    MoveAction: 2,
 }

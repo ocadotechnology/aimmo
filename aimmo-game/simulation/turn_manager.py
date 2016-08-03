@@ -5,7 +5,7 @@ from Queue import PriorityQueue
 from threading import Lock
 from threading import Thread
 
-from simulation.action import ACTIONS
+from simulation.action import PRIORITIES
 
 LOGGER = logging.getLogger(__name__)
 
@@ -34,7 +34,7 @@ class GameStateProvider:
         self._lock.release()
 
 
-game_state_provider = GameStateProvider()
+state_provider = GameStateProvider()
 
 
 class TurnManager(Thread):
@@ -44,7 +44,7 @@ class TurnManager(Thread):
     daemon = True
 
     def __init__(self, game_state, end_turn_callback, concurrent_turns=True):
-        game_state_provider.set_world(game_state)
+        state_provider.set_world(game_state)
         self.end_turn_callback = end_turn_callback
         self.concurrent_turns = concurrent_turns
         super(TurnManager, self).__init__()
@@ -53,62 +53,61 @@ class TurnManager(Thread):
         '''
         Get and apply each avatar's action in turn.
         '''
-        with game_state_provider as game_state:
+        with state_provider as game_state:
             avatars = game_state.avatar_manager.active_avatars
 
-        action_queue = PriorityQueue()
-
         for avatar in avatars:
-            self._register_action(avatar, action_queue)
-            action = action_queue.get()[1]
-            with game_state_provider as game_state:
-                if action.is_legal(game_state.world_map):
-                    action.apply(game_state.world_map)
+            self._register_action(avatar)
+            with state_provider as game_state:
+                if avatar.action.is_legal(game_state.world_map):
+                    avatar.action.apply(game_state.world_map)
                 else:
-                    action.reject()
-                game_state.world_map.clear_cell_actions(action.target_location)
+                    avatar.action.reject()
+                game_state.world_map.clear_cell_actions(avatar.action.target_location)
+                avatar.clear_action()
 
     def run_concurrent_turn(self):
         '''
         Concurrently get the intended actions from all avatars and register
         them on the world map. Then apply actions in order of priority.
         '''
-        with game_state_provider as game_state:
+        with state_provider as game_state:
             avatars = game_state.avatar_manager.active_avatars
 
-        action_queue = PriorityQueue()
         threads = [Thread(target=self._register_action,
-                          args=(avatar, action_queue)) for avatar in avatars]
+                          args=(avatar,)) for avatar in avatars]
 
         [thread.start() for thread in threads]
         [thread.join() for thread in threads]
 
-        cells_to_clear = set()
+        # Waits applied first, then attacks, then moves.
+        avatars.sort(key=lambda a: PRIORITIES[type(a.action)])
 
-        while not action_queue.empty():
-            action = action_queue.get()[1]
-            with game_state_provider as game_state:
+        for action in (a.action for a in avatars if a.action is not None):
+            with state_provider as game_state:
                 if action.is_legal(game_state.world_map):
-                    action.apply(game_state.world_map)
+                    try:
+                        action.chain(game_state.world_map, action)
+                    except AttributeError:
+                        action.apply(game_state.world_map)
                 else:
                     action.reject()
-            cells_to_clear.add(action.target_location)
 
-        for cell in cells_to_clear:
-            with game_state_provider as game_state:
-                game_state.world_map.clear_cell_actions(cell)
+        for avatar in avatars:
+            with state_provider as game_state:
+                game_state.world_map.clear_cell_actions(avatar.action.target_location)
+                avatar.clear_action()
 
-    def _register_action(self, avatar, action_queue):
+    def _register_action(self, avatar):
         '''
         Send an avatar its view of the game state and register its chosen action.
         '''
-        with game_state_provider as game_state:
+        with state_provider as game_state:
             state_view = game_state.get_state_for(avatar)
 
         if avatar.decide_action(state_view):
-            with game_state_provider as game_state:
-                avatar.action.target(game_state.world_map)
-            action_queue.put((avatar.action.priority, avatar.action))
+            with state_provider as game_state:
+                avatar.action.register(game_state.world_map)
 
     def run(self):
         while True:
@@ -117,7 +116,7 @@ class TurnManager(Thread):
             else:
                 self.run_sequential_turn()
 
-            with game_state_provider as game_state:
+            with state_provider as game_state:
                 game_state.update_environment()
                 game_state.world_map.apply_score()
 
