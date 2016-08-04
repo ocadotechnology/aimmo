@@ -1,10 +1,14 @@
 from __future__ import absolute_import
+
 from string import ascii_uppercase
+from unittest import TestCase
+
 from simulation import world_map
 from simulation.location import Location
-from .maps import MockCell
 from simulation.world_map import Cell, WorldMap
-from unittest import TestCase
+
+from .maps import MockCell
+from .dummy_avatar import DummyAvatarRunner
 
 
 class Serialiser(object):
@@ -296,7 +300,7 @@ class TestWorldMap(TestCase):
 
     def test_cannot_move_to_habited_cell(self):
         target = Location(0, 0)
-        cell = MockCell(target, avatar=True)
+        cell = MockCell(target, avatar=DummyAvatarRunner(target, 0))
         map = WorldMap([[cell]])
         target = Location(0, 0)
         self.assertFalse(map.can_move_to(target))

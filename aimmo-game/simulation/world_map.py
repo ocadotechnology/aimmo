@@ -190,7 +190,6 @@ class WorldMap(object):
 
         Throws:
             IndexError: if there are no possible locations.
-
         """
         return self._get_random_spawn_locations(1)[0].location
 
@@ -213,9 +212,10 @@ class WorldMap(object):
         '''
         Return the avatar attackable at the given location, or None.
         '''
-        if not self.is_on_map(target_location):
+        try:
+            cell = self.get_cell(target_location)
+        except ValueError:
             return None
-        cell = self.get_cell(target_location)
 
         if cell.avatar:
             return cell.avatar

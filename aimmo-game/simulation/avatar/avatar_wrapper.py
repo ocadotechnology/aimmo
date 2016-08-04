@@ -13,11 +13,11 @@ class AvatarWrapper(object):
     """
 
     def __init__(self, initial_location, player_id, worker_url, avatar_appearance):
+        self.player_id = player_id
         self.location = initial_location
         self.health = 5
         self.score = 0
         self.events = []
-        self.player_id = player_id
         self.avatar_appearance = avatar_appearance
         self.worker_url = worker_url
         self._action = None

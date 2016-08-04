@@ -4,7 +4,7 @@ from simulation.game_state import GameState
 from simulation.location import Location
 from .simulation.dummy_avatar import DummyAvatarRunner
 from .simulation.test_world_map import MockCell
-from simulation.turn_manager import world_state_provider
+from simulation.turn_manager import state_provider
 from simulation.world_map import WorldMap
 from unittest import TestCase
 
@@ -35,7 +35,7 @@ class TestService(TestCase):
         ]
         grid = [[MockCell(Location(x, y), **CELLS[x][y])
                  for y in xrange(3)] for x in xrange(2)]
-        world_state_provider.set_world(GameState(WorldMap(grid), SimpleAvatarManager()))
+        state_provider.set_world(GameState(WorldMap(grid), SimpleAvatarManager()))
         return service.get_world_state()
 
     def test_player_dict(self):

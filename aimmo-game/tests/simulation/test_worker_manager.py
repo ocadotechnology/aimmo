@@ -1,11 +1,14 @@
 from __future__ import absolute_import
+
 from httmock import HTTMock
 from json import dumps
+import unittest
+
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.game_state import GameState
-from .maps import InfiniteMap
 from simulation.worker_manager import WorkerManager
-import unittest
+
+from .maps import InfiniteMap
 
 
 class ConcreteWorkerManager(WorkerManager):

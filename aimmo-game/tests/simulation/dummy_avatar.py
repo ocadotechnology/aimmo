@@ -1,18 +1,21 @@
 from __future__ import absolute_import
+
+from simulation.avatar.avatar_wrapper import AvatarWrapper
 from simulation.action import MoveAction
 from simulation import direction
 
 
-class DummyAvatarRunner(object):
+class DummyAvatarRunner(AvatarWrapper):
     def __init__(self, initial_location, player_id):
         # TODO: extract avatar state and state-altering methods into a new class.
         #       The new class is to be shared between DummyAvatarRunner and AvatarRunner
+        self.player_id = player_id
+        self.location = initial_location
         self.health = 5
         self.score = 0
-        self.location = initial_location
-        self.player_id = player_id
         self.events = []
         self.times_died = 0
+        self._action = None
 
     def handle_turn(self, state):
         next_action = MoveAction(direction.EAST)

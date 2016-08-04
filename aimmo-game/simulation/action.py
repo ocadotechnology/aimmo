@@ -25,6 +25,12 @@ class Action(object):
         if world_map.is_on_map(self._target_location):
             world_map.get_cell(self._target_location).actions.append(self)
 
+    def apply_if_legal(self, world_map):
+        if self.is_legal(world_map):
+            self.apply(world_map)
+        else:
+            self.reject()
+
     def is_legal(self, world_map):
         raise NotImplementedError('Abstract method')
 
