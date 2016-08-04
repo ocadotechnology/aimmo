@@ -10,7 +10,13 @@ from django.contrib.auth.models import User
 from players.views import code as code_view
 
 
-_AVATAR_CODES_DIRECTORY = 'players/avatar_examples'
+def _nth_dirname(path, n):
+    for _ in xrange(n):
+        path = os.path.dirname(path)
+    return path
+
+_PLAYERS_DIRECTORY = _nth_dirname(__file__, 3)
+_AVATAR_CODES_DIRECTORY = os.path.join(_PLAYERS_DIRECTORY, 'avatar_examples')
 
 # Code file listing
 
@@ -62,16 +68,16 @@ class Command(BaseCommand):
         self.request_factory = RequestFactory()
 
     def add_arguments(self, parser):
-        parser.add_argument('--num-users', type=int, required=True,
+        parser.add_argument('num-users', type=int,
                             help='Number of users to create')
-        parser.add_argument('--avatar-code', choices=_AVATAR_CODES,
-                            action=LoadCodeAction, required=True,
+        parser.add_argument('avatar-code', choices=_AVATAR_CODES,
+                            action=LoadCodeAction,
                             help='The code to use for the avatar.')
 
     # A command must define handle()
     def handle(self, *args, **options):
-        num_users = options['num_users']
-        code = options['avatar_code']
+        num_users = options['num-users']
+        code = options['avatar-code']
 
         for _ in xrange(num_users):
             random_string = str(uuid.uuid4())[:8]
@@ -81,7 +87,7 @@ class Command(BaseCommand):
             self.post_code(user, code)
 
     def create_user(self, username, password):
-        user = User.objects.create_user(username, 'user@generated.com', password)
+        user = User.objects.create_user(username, 'user@example.com', password)
         self.stdout.write('Created user %s with password: %s' % (username, password))
         return user
 
