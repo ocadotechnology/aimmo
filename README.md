@@ -56,6 +56,9 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
     * collect the static files
     * run the server
 
+## Testing Locally
+`./all_tests.py`
+
 ## Useful commands
 * To create an admin account:
 `python example_project/manage.py createsuperuser`
