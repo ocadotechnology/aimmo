@@ -3,11 +3,12 @@ from setuptools import find_packages, setup
 
 import versioneer
 
-setup(name='aimmo',
+setup(
+    name='aimmo',
     cmdclass=versioneer.get_cmdclass(),
     packages=find_packages(),
     include_package_data=True,
-    install_requires = [
+    install_requires=[
         'django >= 1.8.3, < 1.9.0',
         'django-autoconfig >= 0.3.6, < 1.0.0',
         'django-js-reverse',

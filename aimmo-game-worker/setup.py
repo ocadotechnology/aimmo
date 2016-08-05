@@ -2,10 +2,11 @@
 from setuptools import find_packages, setup
 
 
-setup(name='aimmo-game-worker',
+setup(
+    name='aimmo-game-worker',
     packages=find_packages(),
     include_package_data=True,
-    install_requires = [
+    install_requires=[
         'flask',
         'requests',
     ],
