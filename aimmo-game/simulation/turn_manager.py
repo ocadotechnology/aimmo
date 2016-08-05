@@ -49,6 +49,12 @@ class TurnManager(Thread):
         self.concurrent_turns = concurrent_turns
         super(TurnManager, self).__init__()
 
+    def run_turn(self):
+        if self.concurrent_turns:
+            self.run_concurrent_turn()
+        else:
+            self.run_sequential_turn()
+
     def run_sequential_turn(self):
         '''
         Get and apply each avatar's action in turn.
@@ -111,10 +117,7 @@ class TurnManager(Thread):
 
     def run(self):
         while True:
-            if self.concurrent_turns:
-                self.run_concurrent_turn()
-            else:
-                self.run_sequential_turn()
+            self.run_turn()
 
             with state_provider as game_state:
                 game_state.update_environment()

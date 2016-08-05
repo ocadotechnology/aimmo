@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 from simulation.avatar.avatar_wrapper import AvatarWrapper
+from simulation.avatar.avatar_manager import AvatarManager
 from simulation.action import MoveAction
 from simulation import direction
 
@@ -17,12 +18,12 @@ class DummyAvatarRunner(AvatarWrapper):
         self.times_died = 0
         self._action = None
 
-    def handle_turn(self, state):
-        next_action = MoveAction(direction.EAST)
+    def decide_action(self, state_view):
+        self._action = self.handle_turn(state_view)
+        return True
 
-        # Reset event log
-        self.events = []
-
+    def handle_turn(self, state_view):
+        next_action = MoveAction(self, direction.EAST.dict)
         return next_action
 
     def add_event(self, event):
@@ -34,3 +35,11 @@ class DummyAvatarRunner(AvatarWrapper):
 
     def serialise(self):
         return 'Dummy'
+
+
+class DummyAvatarManager(AvatarManager):
+    def __init__(self, avatars):
+        self.avatars_by_id = {a.player_id: a for a in avatars}
+
+    def add_avatar_directly(self, avatar):
+        self.avatars_by_id[avatar.player_id] = avatar

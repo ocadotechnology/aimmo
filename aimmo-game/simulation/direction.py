@@ -9,6 +9,10 @@ class Direction:
         self.x = x
         self.y = y
 
+    @property
+    def dict(self):
+        return {'x': self.x, 'y': self.y}
+
     def __repr__(self):
         return 'Direction(x={}, y={})'.format(self.x, self.y)
 

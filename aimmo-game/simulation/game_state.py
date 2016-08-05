@@ -26,7 +26,7 @@ class GameState(object):
 
     def remove_avatar(self, user_id):
         try:
-            avatar = self.avatar_manager.avatarsById[user_id]
+            avatar = self.avatar_manager.get_avatar(user_id)
         except KeyError:
             return
         self.world_map.get_cell(avatar.location).avatar = None
