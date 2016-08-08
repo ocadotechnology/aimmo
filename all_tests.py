@@ -37,7 +37,7 @@ def run_tests(compute_coverage):
     for app in APPS:
         dir = os.path.join(BASE_DIR, app)
         if compute_coverage and app != '':
-            result = subprocess.call(['coverage', 'run', '--source=.', 'setup.py', 'test'], cwd=dir)
+            result = subprocess.call(['coverage', 'run', '--concurrency=eventlet', '--source=.', 'setup.py', 'test'], cwd=dir)
         else:
             result = subprocess.call([sys.executable, 'setup.py', 'test'], cwd=dir)
         if result != 0:
