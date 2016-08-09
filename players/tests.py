@@ -198,9 +198,9 @@ class TestViews(TestCase):
         self.game.save()
         user2 = User.objects.create_user(username='2', password='password')
         user3 = User.objects.create_user(username='3', password='password')
-        models.Avatar(owner=self.user, code=self.CODE, pk=1, game=self.game).save()
-        models.Avatar(owner=user2, code='test2', pk=2, game=self.game).save()
-        models.Avatar(owner=user3, code='test3', pk=3, game=self.game).save()
+        models.Avatar(owner=self.user, code=self.CODE, pk=1, game=self.game, auth_token='user1').save()
+        models.Avatar(owner=user2, code='test2', pk=2, game=self.game, auth_token='user2').save()
+        models.Avatar(owner=user3, code='test3', pk=3, game=self.game, auth_token='user3').save()
         expected = {
             'main': {
                 'parameters': [],
@@ -209,14 +209,17 @@ class TestViews(TestCase):
                     {
                         'id': 1,
                         'code': self.CODE,
+                        'auth_token': 'user1',
                     },
                     {
                         'id': 2,
                         'code': 'test2',
+                        'auth_token': 'user2',
                     },
                     {
                         'id': 3,
                         'code': 'test3',
+                        'auth_token': 'user3',
                     },
                 ]
             }

@@ -63,6 +63,7 @@ def list_games(request):
             {
                 'name': game.name,
                 'settings': pickle.dumps(game.settings_as_dict()),
+                'auth_token': game.auth_token,
             } for game in Game.objects.exclude_inactive()
     }
     return JsonResponse(response)
@@ -83,6 +84,7 @@ def get_game(request, id):
         response['main']['users'].append({
             'id': avatar.owner_id,
             'code': avatar.code,
+            'auth_token': avatar.auth_token,
         })
     return JsonResponse(response)
 
