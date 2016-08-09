@@ -18,9 +18,6 @@ if __name__ == '__main__':
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
 
 
-from django.contrib.auth.models import User
-
-
 def log(message):
     print >> sys.stderr, message
 
@@ -53,6 +50,7 @@ def cleanup_processes():
 
 
 def create_superuser_if_missing(username, password):
+    from django.contrib.auth.models import User
     try:
         User.objects.get_by_natural_key(username)
     except User.DoesNotExist:
