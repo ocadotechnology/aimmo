@@ -27,8 +27,8 @@ class TestInitialise(TestCase):
     @with_httmock(return_data)
     def test_fetching_and_writing(self):
         args = ('', self.TMP_DIR)
-        initialise.main(args, 'http://test')
-        self.assertRegexpMatches(url_requested.geturl(), 'http://test/?')
+        initialise.main(args, 'http://test', 'auth_hi')
+        self.assertEqual(url_requested.geturl(), 'http://test/?auth_token=auth_hi')
         options_path = join(self.TMP_DIR, 'options.json')
         avatar_path = join(self.TMP_DIR, 'avatar.py')
         with open(options_path) as options_file:

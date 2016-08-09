@@ -98,8 +98,17 @@ def healthcheck():
 @app.route('/player/<player_id>')
 def player_data(player_id):
     player_id = int(player_id)
+    try:
+        code = worker_manager.get_code(player_id)
+        correct_auth = worker_manager.check_auth(player_id, flask.request.args.get('auth_token'))
+    except KeyError:
+        app.logger.warning('Invalid auth_token for user %s', player_id)
+        flask.abort(404)
+    if not correct_auth:
+        app.logger.warning('Unknown user %s', player_id)
+        flask.abort(404)
     return flask.jsonify({
-        'code': worker_manager.get_code(player_id),
+        'code': code,
         'options': {},       # Game options
         'state': None,
     })

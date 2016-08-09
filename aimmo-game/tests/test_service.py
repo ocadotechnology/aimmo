@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+import json
 import service
 from simulation.game_state import GameState
 from simulation.location import Location
@@ -13,10 +14,30 @@ class SimpleAvatarManager(object):
     avatars = [MoveEastDummy(1, Location(0, 1))]
 
 
+class MockWorkerManager(object):
+    def __init__(self, number_users=1):
+        self.number_users = 1
+
+    def get_code(self, id):
+        if 0 < id <= self.number_users:
+            return 'code_%s' % id
+        raise KeyError
+
+    def check_auth(self, id, auth_token):
+        if 0 < id <= self.number_users:
+            return auth_token == 'auth_%s' % id
+        raise KeyError
+
+
 class TestService(TestCase):
-    def test_healthy(self):
+    @classmethod
+    def setUpClass(cls):
         service.app.config['TESTING'] = True
-        self.app = service.app.test_client()
+        cls.app = service.app.test_client()
+        cls.worker_manager = MockWorkerManager()
+        service.worker_manager = cls.worker_manager
+
+    def test_healthy(self):
         response = self.app.get('/')
         self.assertEqual(response.data, 'HEALTHY')
 
@@ -55,3 +76,16 @@ class TestService(TestCase):
         self.assertEqual(result['width'], 2)
         self.assertEqual(result['height'], 3)
         self.assertEqual(result['layout'], [[0, 0, 2], [0, 1, 0]])
+
+    def test_get_player_data_success(self):
+        response = self.app.get('/player/1?auth_token=auth_1')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.data)['code'], 'code_1')
+
+    def test_get_player_data_for_non_existant_player(self):
+        response = self.app.get('/player/5?auth_token=auth_5')
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_player_data_invlaid_auth_token(self):
+        response = self.app.get('/player/1?auth_token=auth_5')
+        self.assertEqual(response.status_code, 404)

@@ -6,10 +6,10 @@ import json
 import requests
 
 
-def main(args, url):
+def main(args, url, auth_token):
     data_dir = args[1]
 
-    data = requests.get(url).json()
+    data = requests.get(url, params={'auth_token': auth_token}).json()
 
     options = data['options']
     with open('{}/options.json'.format(data_dir), 'w') as options_file:
@@ -20,4 +20,4 @@ def main(args, url):
         avatar_file.write(code)
 
 if __name__ == '__main__':
-    main(sys.argv, url=os.environ['DATA_URL'])
+    main(sys.argv, url=os.environ['DATA_URL'], auth_token=os.environ['AUTH_TOKEN'])

@@ -19,15 +19,17 @@ class _WorkerManagerData(object):
     This class is thread safe
     """
 
-    def __init__(self, game_state, user_codes):
+    def __init__(self, game_state, user_codes, auth_tokens):
         self._game_state = game_state
         self._user_codes = user_codes
+        self._auth_tokens = auth_tokens
         self._lock = Semaphore()
 
     def _remove_avatar(self, user_id):
         assert self._lock.locked
         self._game_state.remove_avatar(user_id)
         del self._user_codes[user_id]
+        del self._auth_tokens[user_id]
 
     def remove_user_if_code_is_different(self, user):
         with self._lock:
@@ -46,13 +48,18 @@ class _WorkerManagerData(object):
             self._game_state.add_avatar(
                 user_id=user['id'], worker_url="%s/turn/" % worker_url)
 
-    def set_code(self, user):
+    def set_user_data(self, user):
         with self._lock:
             self._user_codes[user['id']] = user['code']
+            self._auth_tokens[user['id']] = user['auth_token']
 
     def get_code(self, player_id):
         with self._lock:
             return self._user_codes[player_id]
+
+    def check_auth(self, player_id, auth_token):
+        with self._lock:
+            return self._auth_tokens[player_id] == auth_token
 
     def remove_unknown_avatars(self, known_user_ids):
         with self._lock:
@@ -77,7 +84,7 @@ class WorkerManager(threading.Thread):
 
         :param thread_pool:
         """
-        self._data = _WorkerManagerData(game_state, {})
+        self._data = _WorkerManagerData(game_state, {}, {})
         self.users_url = users_url
         self._pool = GreenPool(size=3)
         self.port = port
@@ -86,12 +93,15 @@ class WorkerManager(threading.Thread):
     def get_code(self, player_id):
         return self._data.get_code(player_id)
 
+    def check_auth(self, player_id, auth_token):
+        return self._data.check_auth(player_id, auth_token)
+
     def get_persistent_state(self, player_id):
         """Get the persistent state for a worker."""
 
         return None
 
-    def create_worker(self, player_id):
+    def create_worker(self, player_id, auth_token):
         """Create a worker."""
 
         raise NotImplemented
@@ -110,11 +120,12 @@ class WorkerManager(threading.Thread):
         LOGGER.info("Removing worker for user %s" % user['id'])
         self.remove_worker(user['id'])
 
-        self._data.set_code(user)
+        # Must be set before create_worker called to avoid race condition
+        self._data.set_user_data(user)
 
         # Spawn worker
         LOGGER.info("Spawning worker for user %s" % user['id'])
-        worker_url = self.create_worker(user['id'])
+        worker_url = self.create_worker(user['id'], user['auth_token'])
 
         # Add avatar back into game
         self._data.add_avatar(user, worker_url)
@@ -172,7 +183,7 @@ class LocalWorkerManager(WorkerManager):
         super(LocalWorkerManager, self).__init__(*args, **kwargs)
         self.next_port = self.port
 
-    def create_worker(self, player_id):
+    def create_worker(self, player_id, auth_token):
         assert(player_id not in self.workers)
         self.next_port += 1
         process_args = [
@@ -183,6 +194,7 @@ class LocalWorkerManager(WorkerManager):
         ]
         env = os.environ.copy()
         env['DATA_URL'] = "http://127.0.0.1:%d/player/%d" % (self.port, player_id)
+        env['AUTH_TOKEN'] = auth_token
         self.workers[player_id] = subprocess.Popen(process_args, cwd=self.worker_directory, env=env)
         worker_url = 'http://%s:%d' % (
             self.host,
@@ -207,7 +219,7 @@ class KubernetesWorkerManager(WorkerManager):
         self.game_url = os.environ['GAME_URL']
         super(KubernetesWorkerManager, self).__init__(*args, **kwargs)
 
-    def create_worker(self, player_id):
+    def create_worker(self, player_id, auth_token):
         pod = Pod(
             self.api,
             {
@@ -229,6 +241,10 @@ class KubernetesWorkerManager(WorkerManager):
                                 'name': 'DATA_URL',
                                 'value': "%s/player/%d" % (self.game_url, player_id),
                             },
+                            {
+                                'name': 'AUTH_TOKEN',
+                                'value': auth_token,
+                            }
                         ],
                         'name': 'aimmo-game-worker',
                         'image': 'ocadotechnology/aimmo-game-worker:%s' % os.environ.get('IMAGE_SUFFIX', 'latest'),
