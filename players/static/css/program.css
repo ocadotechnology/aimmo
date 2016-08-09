@@ -1,3 +1,18 @@
-#editor { 
+#editor {
     min-height: 500px;
+}
+
+.top10 {
+    margin-top: 10px;
+}
+
+#buttons {
+    float: right;
+}
+
+#console {
+    height: 500px;
+    background-color: black;
+    color: #FFFFC3;
+    overflow-y: scroll;
 }
