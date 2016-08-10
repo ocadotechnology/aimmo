@@ -55,6 +55,14 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
     * sync the database
     * collect the static files
     * run the server
+* You can quickly create players as desired using the following command:
+
+  `python example_project/manage.py generate_players 5 dumb_avatar.py`
+
+  This creates 5 users with password `123`, and creates for each user an avatar that runs the code in `dumb_avatar.py`
+* To delete the generated players use the following command:
+
+`python example_project/manage.py delete_generated_players`
 
 ## Testing Locally
 `./all_tests.py`
