@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import logging
+import os
 import sys
 import json
 
@@ -15,6 +16,10 @@ app = flask.Flask(__name__)
 
 @app.route('/turn/', methods=['POST'])
 def process_turn():
+    app.logger.info('Processing turn')
+    if flask.request.args.get('auth_token') != os.environ['AUTH_TOKEN']:
+        app.logger.warning('Invalid auth token %s, expected %s', flask.request.args.get('auth_token'), os.environ['AUTH_TOKEN'])
+        flask.abort(403)
     data = flask.request.get_json()
 
     world_map = WorldMap(**data['world_map'])

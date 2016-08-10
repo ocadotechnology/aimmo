@@ -46,7 +46,7 @@ class _WorkerManagerData(object):
         with self._lock:
             # Add avatar back into game
             self._game_state.add_avatar(
-                user_id=user['id'], worker_url="%s/turn/" % worker_url)
+                user_id=user['id'], worker_url="%s/turn/?auth_token=%s" % (worker_url, self._auth_tokens[user['id']]))
 
     def set_user_data(self, user):
         with self._lock:
@@ -193,6 +193,7 @@ class LocalWorkerManager(WorkerManager):
             str(self.next_port),
         ]
         env = os.environ.copy()
+        del env['auth_token']
         env['DATA_URL'] = "http://127.0.0.1:%d/player/%d" % (self.port, player_id)
         env['AUTH_TOKEN'] = auth_token
         self.workers[player_id] = subprocess.Popen(process_args, cwd=self.worker_directory, env=env)

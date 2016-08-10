@@ -28,6 +28,7 @@ class ConcreteWorkerManager(WorkerManager):
         self.final_workers.add(player_id)
         self.auth_tokens[player_id] = auth_token
         self.create_worker_callback()
+        return 'example.com'
 
     def remove_worker(self, player_id):
         self.removed_workers.append(player_id)
@@ -71,12 +72,16 @@ class TestWorkerManager(unittest.TestCase):
         self.game_state = GameState(InfiniteMap(), AvatarManager())
         self.worker_manager = ConcreteWorkerManager(self.game_state, 'http://test')
 
-    def test_correct_url(self):
+    def test_correct_url_requested(self):
         mocker = RequestMock(0)
         with HTTMock(mocker):
             self.worker_manager.update()
         self.assertEqual(len(mocker.urls_requested), 1)
         self.assertEqual(mocker.urls_requested[0], 'http://test/')
+
+    def test_worker_url(self):
+        self._add_workers(1)
+        self.assertEqual(self.game_state.avatar_manager.get_avatar(0).worker_url, 'example.com/turn/?auth_token=auth_0')
 
     def _add_workers(self, num=3):
         mocker = RequestMock(3)
