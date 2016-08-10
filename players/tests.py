@@ -15,7 +15,7 @@ class TestViews(TestCase):
         cls.user = User.objects.create_user('test', 'test@example.com', 'password')
         cls.user.is_staff = True
         cls.user.save()
-        cls.game = models.Game(id=1, name='test')
+        cls.game = models.Game(id=1, name='test', auth_token='auth')
         cls.game.save()
 
     def setUp(self):
@@ -225,43 +225,54 @@ class TestViews(TestCase):
             }
         }
         c = Client()
-        response = c.get(reverse('aimmo/game_details', kwargs={'id': 1}))
+        response = c.get(reverse('aimmo/game_details', kwargs={'id': 1})+'?auth_token=auth')
         self.assertJSONEqual(response.content, expected)
 
     def test_games_api_for_non_existant_game(self):
         c = Client()
-        response = c.get(reverse('aimmo/game_details', kwargs={'id': 5}))
+        response = c.get(reverse('aimmo/game_details', kwargs={'id': 5})+'?auth_token=auth')
+        self.assertEqual(response.status_code, 404)
+
+    def test_games_api_rejects_invalid_auth_token(self):
+        c = Client()
+        response = c.get(reverse('aimmo/game_details', kwargs={'id': 1})+'?auth_token=fake')
         self.assertEqual(response.status_code, 404)
 
     def test_mark_complete(self):
         c = Client()
-        response = c.post(reverse('aimmo/complete_game', kwargs={'id': 1}))
+        response = c.post(reverse('aimmo/complete_game', kwargs={'id': 1})+'?auth_token=auth')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(models.Game.objects.get(id=1).completed)
 
     def test_mark_complete_for_non_existant_game(self):
         c = Client()
-        response = c.post(reverse('aimmo/complete_game', kwargs={'id': 3}))
+        response = c.post(reverse('aimmo/complete_game', kwargs={'id': 3})+'?auth_token=auth')
+        self.assertEqual(response.status_code, 404)
+        self.assertFalse(models.Game.objects.get(id=1).completed)
+
+    def test_mark_complete_checks_auth_token(self):
+        c = Client()
+        response = c.post(reverse('aimmo/complete_game', kwargs={'id': 1})+'?auth_token=fake')
         self.assertEqual(response.status_code, 404)
         self.assertFalse(models.Game.objects.get(id=1).completed)
 
     def test_mark_complete_requires_POST(self):
         c = Client()
-        response = c.get(reverse('aimmo/complete_game', kwargs={'id': 1}))
+        response = c.get(reverse('aimmo/complete_game', kwargs={'id': 1})+'?auth_token=auth')
         self.assertNotEqual(response.status_code, 200)
         self.assertFalse(models.Game.objects.get(id=1).completed)
 
     def test_mark_complete_has_no_csrf_check(self):
         c = Client(enforce_csrf_checks=True)
-        response = c.post(reverse('aimmo/complete_game', kwargs={'id': 1}))
+        response = c.post(reverse('aimmo/complete_game', kwargs={'id': 1})+'?auth_token=auth')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(models.Game.objects.get(id=1).completed)
 
     def test_mark_complete_with_data(self):
         c = Client()
-        c.post(reverse('aimmo/complete_game', kwargs={'id': 1}), 'static', content_type='application/json')
+        response = c.post(reverse('aimmo/complete_game', kwargs={'id': 1}) + '?auth_token=auth', 'static', content_type='application/json')
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(models.Game.objects.get(id=1).static_data, 'static')
-
 
 
 class TestModels(TestCase):

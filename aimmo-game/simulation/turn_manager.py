@@ -69,7 +69,10 @@ class TurnManager(Thread):
 
     def _mark_complete(self):
         from service import get_world_state
-        requests.post(self._completion_url, json=get_world_state())
+        LOGGER.info('Marking game complete')
+        response = requests.post(self._completion_url, json=get_world_state())
+        if response.content != 'Done!':
+            raise ValueError('Unknown response %s when marking game complete' % response.data)
 
     def run(self):
         while True:

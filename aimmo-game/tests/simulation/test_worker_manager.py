@@ -76,7 +76,7 @@ class TestWorkerManager(unittest.TestCase):
         with HTTMock(mocker):
             self.worker_manager.update()
         self.assertEqual(len(mocker.urls_requested), 1)
-        self.assertRegexpMatches(mocker.urls_requested[0], 'http://test/*')
+        self.assertEqual(mocker.urls_requested[0], 'http://test/')
 
     def _add_workers(self, num=3):
         mocker = RequestMock(3)

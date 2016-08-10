@@ -71,6 +71,8 @@ def list_games(request):
 
 def get_game(request, id):
     game = get_object_or_404(Game, id=id)
+    if game.auth_token != request.GET.get('auth_token', None):
+        raise Http404
     response = {
         'main': {
             'parameters': [],
@@ -93,6 +95,8 @@ def get_game(request, id):
 @require_http_methods(['POST'])
 def mark_game_complete(request, id):
     game = get_object_or_404(Game, id=id)
+    if game.auth_token != request.GET.get('auth_token', None):
+        raise Http404
     game.completed = True
     game.static_data = request.body
     game.save()
