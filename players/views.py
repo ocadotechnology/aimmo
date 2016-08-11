@@ -4,7 +4,7 @@ import cPickle as pickle
 from django.http import JsonResponse
 from django.http import HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ValidationError
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
@@ -58,6 +58,8 @@ def code(request, id):
 
 
 def list_games(request):
+    if app_settings.CREATOR_AUTH_TOKEN != request.GET.get('auth_token', None):
+        raise PermissionDenied
     response = {
         game.pk:
             {

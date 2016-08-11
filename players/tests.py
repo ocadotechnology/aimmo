@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AnonymousUser, User
 from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
+import cPickle as pickle
+import json
 from players import models, views
 import logging
 
@@ -20,6 +22,9 @@ class TestViews(TestCase):
 
     def setUp(self):
         self.game.refresh_from_db()
+
+    def tearDown(self):
+        models.Game.objects.exclude(id=1).delete()
 
     def login(self):
         c = Client()
@@ -192,6 +197,26 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context['active'])
         self.assertEqual(response.context['static_data'], '{"test": 1}')
+
+    def test_list_games_api(self):
+        game2 = models.Game(name='test2', id=2, obstacle_ratio=0.5, auth_token='auth_2')
+        game2.save()
+        c = Client()
+        response_json = c.get(reverse('aimmo/games') + '?auth_token=insecure-creator-auth-token').content
+        response_dict = json.loads(response_json)
+        self.assertEqual(response_dict['1']['name'], 'test')
+        self.assertEqual(response_dict['2']['name'], 'test2')
+        self.assertEqual(response_dict['1']['auth_token'], 'auth')
+        self.assertEqual(response_dict['2']['auth_token'], 'auth_2')
+        settings1 = pickle.loads(str(response_dict['1']['settings']))
+        self.assertEqual(settings1, self.game.settings_as_dict())
+        settings2 = pickle.loads(str(response_dict['2']['settings']))
+        self.assertEqual(settings2, game2.settings_as_dict())
+
+    def test_list_games_auth_token_check(self):
+        c = Client()
+        response = c.get(reverse('aimmo/games') + '?auth_token=creator-auth-token')
+        self.assertEqual(response.status_code, 403)
 
     def test_games_api(self):
         self.game.main_user = self.user
