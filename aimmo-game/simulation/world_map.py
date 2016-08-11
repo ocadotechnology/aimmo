@@ -92,14 +92,19 @@ class WorldMap(object):
         self._grid = grid
 
     @classmethod
+    def _min_max_from_dimensions(cls, height, width):
+        max_x = int(math.floor(width / 2))
+        min_x = -(width - max_x - 1)
+        max_y = int(math.floor(height / 2))
+        min_y = -(height - max_y - 1)
+        return (min_x, max_x, min_y, max_y)
+
+    @classmethod
     def generate_empty_map(cls, height, width):
-        start_x = -width / 2 + 1
-        end_x = width / 2 + 1
-        start_y = -height / 2 + 1
-        end_y = height / 2 + 1
+        (min_x, max_x, min_y, max_y) = WorldMap._min_max_from_dimensions(height, width)
         grid = {}
-        for x in xrange(start_x, end_x):
-            for y in xrange(start_y, end_y):
+        for x in xrange(min_x, max_x+1):
+            for y in xrange(min_y, max_y+1):
                 location = Location(x, y)
                 grid[location] = Cell(location)
         return cls(grid)
