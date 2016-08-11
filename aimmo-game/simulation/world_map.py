@@ -148,56 +148,20 @@ class WorldMap(object):
             return
 
     def max_y(self):
-        max_y = 0
-        while True:
-            try:
-                self._grid[Location(0, max_y)]
-            except KeyError:
-                max_y -= 1
-                break
-            else:
-                max_y += 1
-        return max_y
+        return max(self._grid.keys(), key=lambda c: c.y).y
 
     def min_y(self):
-        min_y = 0
-        while True:
-            try:
-                self._grid[Location(0, min_y)]
-            except KeyError:
-                min_y += 1
-                break
-            else:
-                min_y -= 1
-        return min_y
+        return min(self._grid.keys(), key=lambda c: c.y).y
+
+    def max_x(self):
+        return max(self._grid.keys(), key=lambda c: c.x).x
+
+    def min_x(self):
+        return min(self._grid.keys(), key=lambda c: c.x).x
 
     @property
     def num_rows(self):
         return self.max_y() - self.min_y() + 1
-
-    def max_x(self):
-        max_x = 0
-        while True:
-            try:
-                self._grid[Location(max_x, 0)]
-            except KeyError:
-                max_x -= 1
-                break
-            else:
-                max_x += 1
-        return max_x
-
-    def min_x(self):
-        min_x = 0
-        while True:
-            try:
-                self._grid[Location(min_x, 0)]
-            except KeyError:
-                min_x += 1
-                break
-            else:
-                min_x -= 1
-        return min_x
 
     @property
     def num_cols(self):
