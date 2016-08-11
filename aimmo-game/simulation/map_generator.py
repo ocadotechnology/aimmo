@@ -89,7 +89,7 @@ def get_random_edge_index(map, rng=random):
     num_col_cells = map.num_cols - 2
     num_edge_cells = 2*num_row_cells + 2*num_col_cells
     random_cell = rng.randint(0, num_edge_cells-1)
-    # import pdb; pdb.set_trace()
+
     if 0 <= random_cell < num_col_cells:
         # random non-corner cell on the first row
         return random_cell + 1 + map.min_x(), map.min_y()
