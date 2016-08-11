@@ -65,7 +65,8 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
 `python example_project/manage.py delete_generated_players`
 
 ## Testing Locally
-`./all_tests.py`
+*`./all_tests.py` will run all tests (note that this is several pages of output).
+* `--coverage` option generates coverage data using coverage.py
 
 ## Useful commands
 * To create an admin account:
