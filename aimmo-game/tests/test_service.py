@@ -49,11 +49,46 @@ class TestService(TestCase):
         self.assertEqual(details['health'], 5)
         self.assertEqual(details['score'], 0)
 
-    def test_grid(self):
+    def test_score_locations(self):
         result = self.setup_world()
-        self.assertEqual(result['score_locations'], [(0, 2)])
+        self.assertEqual(result['score_locations'], [(0, 1)])
+
+    def test_width(self):
+        result = self.setup_world()
         self.assertEqual(result['width'], 2)
+
+    def test_height(self):
+        result = self.setup_world()
         self.assertEqual(result['height'], 3)
-        self.assertEqual(result['layout'], [[0, 0, 2], [0, 1, 0]])
-        self.assertEqual(result['min_x'], 0)
-        self.assertEqual(result['min_y'], -1)
+
+    def test_layout(self):
+        result = self.setup_world()
+        expected = {
+            0: {
+                -1: 0,
+                 0: 0,
+                 1: 2,
+            },
+            1: {
+                -1: 0,
+                 0: 1,
+                 1: 0,
+            }
+        }
+        self.assertEqual(result['layout'], expected)
+
+    def test_min_x(self):
+        result = self.setup_world()
+        self.assertEqual(result['minX'], 0)
+
+    def test_min_y(self):
+        result = self.setup_world()
+        self.assertEqual(result['minY'], -1)
+
+    def test_max_x(self):
+        result = self.setup_world()
+        self.assertEqual(result['maxX'], 1)
+
+    def test_max_y(self):
+        result = self.setup_world()
+        self.assertEqual(result['maxY'], 1)

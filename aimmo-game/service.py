@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from collections import defaultdict
 import logging
 import os
 import sys
@@ -33,13 +34,13 @@ def to_cell_type(cell):
     return 0
 
 
-def player_dict(avatar, min_x, min_y):
+def player_dict(avatar):
     # TODO: implement better colour functionality: will eventually fall off end of numbers
     colour = "#%06x" % (avatar.player_id * 4999)
     return {
         'id': avatar.player_id,
-        'x': avatar.location.x-min_x,
-        'y': avatar.location.y-min_y,
+        'x': avatar.location.x,
+        'y': avatar.location.y,
         'health': avatar.health,
         'score': avatar.score,
         'rotation': 0,
@@ -55,23 +56,25 @@ def player_dict(avatar, min_x, min_y):
 def get_world_state():
     with state_provider as game_state:
         world = game_state.world_map
-        grid = [[to_cell_type(cell) for cell in column] for column in world]
-        min_x = world.min_x()
-        min_y = world.min_y()
-        player_data = {p.player_id: player_dict(p, min_x, min_y) for p in game_state.avatar_manager.avatars}
+        player_data = {p.player_id: player_dict(p) for p in game_state.avatar_manager.avatars}
+        grid_dict = defaultdict(dict)
+        for cell in world.all_cells():
+            grid_dict[cell.location.x][cell.location.y] = to_cell_type(cell)
         return {
                 'players': player_data,
-                'score_locations': [(cell.location.x-min_x, cell.location.y-min_y)
+                'score_locations': [(cell.location.x, cell.location.y)
                                     for cell in world.score_cells()],
-                'pickup_locations': [(cell.location.x-min_x, cell.location.y-min_y)
+                'pickup_locations': [(cell.location.x, cell.location.y)
                                      for cell in world.pickup_cells()],
                 # TODO: experiment with only sending deltas (not if not required)
                 'map_changed': True,
                 'width': world.num_cols,
                 'height': world.num_rows,
-                'min_x': min_x,
-                'min_y': min_y,
-                'layout': grid,
+                'minX': world.min_x(),
+                'minY': world.min_y(),
+                'maxX': world.max_x(),
+                'maxY': world.max_y(),
+                'layout': grid_dict,
             }
 
 
