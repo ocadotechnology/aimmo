@@ -17,9 +17,17 @@ spec:
         # The api server enforces this constraint.
         app: aimmo-game-creator
     spec:
+      volumes:
+      - name: secrets
+        secret:
+          secretName: creator
       containers:
       - name: aimmo-game-creator
         image: ocadotechnology/aimmo-game-creator:latest
+        volumeMounts:
+        - name: secrets
+          mountPath: "/etc/secrets"
+          readOnly: true
         ports:
         - containerPort: 80
         env:
