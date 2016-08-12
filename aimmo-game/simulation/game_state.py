@@ -5,7 +5,6 @@ class GameState(object):
     """
     Encapsulates the entire game state, including avatars, their code, and the world.
     """
-
     def __init__(self, world_map, avatar_manager):
         self.world_map = world_map
         self.avatar_manager = avatar_manager
@@ -19,10 +18,10 @@ class GameState(object):
             }
         }
 
-    def add_avatar(self, user_id, worker_url):
-        spawn_location = self.world_map.get_random_spawn_location()
-        avatar = self.avatar_manager.add_avatar(user_id, worker_url, spawn_location)
-        self.world_map.get_cell(spawn_location).avatar = avatar
+    def add_avatar(self, user_id, worker_url, location=None):
+        location = self.world_map.get_random_spawn_location() if location is None else location
+        avatar = self.avatar_manager.add_avatar(user_id, worker_url, location)
+        self.world_map.get_cell(location).avatar = avatar
 
     def remove_avatar(self, user_id):
         try:

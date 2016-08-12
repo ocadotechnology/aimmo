@@ -2,7 +2,7 @@ from __future__ import absolute_import
 import service
 from simulation.game_state import GameState
 from simulation.location import Location
-from .simulation.dummy_avatar import DummyAvatarRunner
+from .simulation.dummy_avatar import MoveEastDummy
 from .simulation.test_world_map import MockCell
 from simulation.turn_manager import state_provider
 from simulation.world_map import WorldMap
@@ -10,7 +10,7 @@ from unittest import TestCase
 
 
 class SimpleAvatarManager(object):
-    avatars = [DummyAvatarRunner(Location(0, 1), 1)]
+    avatars = [MoveEastDummy(1, Location(0, 1))]
 
 
 class TestService(TestCase):

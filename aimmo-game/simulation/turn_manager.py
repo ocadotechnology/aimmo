@@ -89,20 +89,16 @@ class TurnManager(Thread):
         # Waits applied first, then attacks, then moves.
         avatars.sort(key=lambda a: PRIORITIES[type(a.action)])
 
+        locations_to_clear = {a.action.target_location for a in avatars
+                              if a.action is not None}
+
         for action in (a.action for a in avatars if a.action is not None):
             with state_provider as game_state:
-                if action.is_legal(game_state.world_map):
-                    try:
-                        action.chain(game_state.world_map, action)
-                    except AttributeError:
-                        action.apply(game_state.world_map)
-                else:
-                    action.reject()
+                action.process(game_state.world_map)
 
-        for avatar in avatars:
+        for location in locations_to_clear:
             with state_provider as game_state:
-                game_state.world_map.clear_cell_actions(avatar.action.target_location)
-                avatar.clear_action()
+                game_state.world_map.clear_cell_actions(location)
 
     def _register_action(self, avatar):
         '''

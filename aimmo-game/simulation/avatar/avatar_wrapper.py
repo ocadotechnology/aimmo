@@ -12,7 +12,7 @@ class AvatarWrapper(object):
     the player-supplied code.
     """
 
-    def __init__(self, initial_location, player_id, worker_url, avatar_appearance):
+    def __init__(self, player_id, initial_location, worker_url, avatar_appearance):
         self.player_id = player_id
         self.location = initial_location
         self.health = 5

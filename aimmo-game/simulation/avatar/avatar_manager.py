@@ -11,7 +11,7 @@ class AvatarManager(object):
         self.avatars_by_id = {}
 
     def add_avatar(self, player_id, worker_url, location):
-        avatar = AvatarWrapper(location, player_id, worker_url, AvatarAppearance("#000", "#ddd", "#777", "#fff"))
+        avatar = AvatarWrapper(player_id, location, worker_url, AvatarAppearance("#000", "#ddd", "#777", "#fff"))
         self.avatars_by_id[player_id] = avatar
         return avatar
 

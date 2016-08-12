@@ -25,7 +25,7 @@ class Action(object):
         if world_map.is_on_map(self._target_location):
             world_map.get_cell(self._target_location).actions.append(self)
 
-    def apply_if_legal(self, world_map):
+    def process(self, world_map):
         if self.is_legal(world_map):
             self.apply(world_map)
         else:
@@ -49,7 +49,7 @@ class WaitAction(Action):
         return True
 
     def apply(self, world_map):
-        pass
+        self.avatar.clear_action()
 
 
 class MoveAction(Action):
@@ -61,36 +61,41 @@ class MoveAction(Action):
     def is_legal(self, world_map):
         return world_map.can_move_to(self._target_location)
 
-    def apply(self, world_map):
-        event = MovedEvent(self._avatar.location, self._target_location)
-        self._avatar.add_event(event)
+    def process(self, world_map):
+        if self.is_legal(world_map):
+            self.chain(world_map, self)
+        else:
+            self.reject()
 
-        world_map.get_cell(self._avatar.location).avatar = None
-        self._avatar.location = self._target_location
-        world_map.get_cell(self._target_location).avatar = self._avatar
+    def apply(self, world_map):
+        event = MovedEvent(self.avatar.location, self._target_location)
+        self.avatar.add_event(event)
+
+        world_map.get_cell(self.avatar.location).avatar = None
+        self.avatar.location = self._target_location
+        world_map.get_cell(self._target_location).avatar = self.avatar
+        self.avatar.clear_action()
 
         new_cell = world_map.get_cell(self._target_location)
         if new_cell.pickup:
             # TODO:  extract pickup logic into pickup when adding multiple types
-            self._avatar.health = min(10, self._avatar.health + new_cell.pickup.health_restored)
+            self.avatar.health = min(10, self.avatar.health + new_cell.pickup.health_restored)
             new_cell.pickup = None
 
     def chain(self, world_map, first):
         if self.is_legal(world_map):
             avatar = world_map.get_cell(self.target_location).avatar
-            move = avatar.action
-            if avatar is None or (move is not first and move.chain(world_map, first)):
+            if avatar is None or (avatar.action is not first and
+                                  avatar.action.chain(world_map, first)):
                 self.apply(world_map)
-                self.avatar.clear_action()
                 return True
-
         self.reject()
-        self.avatar.clear_action()
         return False
 
     def reject(self):
-        event = FailedMoveEvent(self._avatar.location, self._target_location)
-        self._avatar.add_event(event)
+        event = FailedMoveEvent(self.avatar.location, self._target_location)
+        self.avatar.add_event(event)
+        self.avatar.clear_action()
 
 
 class AttackAction(Action):
@@ -105,16 +110,17 @@ class AttackAction(Action):
     def apply(self, world_map):
         attacked_avatar = world_map.attackable_avatar(self._target_location)
         damage_dealt = 1
-        self._avatar.add_event(PerformedAttackEvent(attacked_avatar,
-                                                    self._target_location,
-                                                    damage_dealt))
-        attacked_avatar.add_event(ReceivedAttackEvent(self._avatar,
+        self.avatar.add_event(PerformedAttackEvent(attacked_avatar,
+                                                   self._target_location,
+                                                   damage_dealt))
+        attacked_avatar.add_event(ReceivedAttackEvent(self.avatar,
                                                       damage_dealt))
         attacked_avatar.health -= damage_dealt
 
-        LOGGER.debug('{} dealt {} damage to {}'.format(self._avatar,
+        LOGGER.debug('{} dealt {} damage to {}'.format(self.avatar,
                                                        damage_dealt,
                                                        attacked_avatar))
+        self.avatar.clear_action()
 
         if attacked_avatar.health <= 0:
             # Move responsibility for this to avatar.die() ?
@@ -124,7 +130,8 @@ class AttackAction(Action):
             world_map.get_cell(respawn_location).avatar = attacked_avatar
 
     def reject(self):
-        self._avatar.add_event(FailedAttackEvent(self._target_location))
+        self.avatar.add_event(FailedAttackEvent(self._target_location))
+        self.avatar.clear_action()
 
 ACTIONS = {
     'attack': AttackAction,

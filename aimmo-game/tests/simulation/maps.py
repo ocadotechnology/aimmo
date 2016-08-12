@@ -24,7 +24,8 @@ class InfiniteMap(world_map.WorldMap):
         self._cell_cache = {}
         [self.get_cell(Location(x, y)) for x in range(5) for y in range(5)]
 
-    def can_move_to(self, target_location):
+    def is_on_map(self, target_location):
+        self.get_cell(target_location)
         return True
 
     def all_cells(self):
