@@ -22,3 +22,8 @@ spec:
         image: ocadotechnology/aimmo-game-creator:latest
         ports:
         - containerPort: 80
+        env:
+        - name: IMAGE_SUFFIX
+          value: latest
+        - name: GAME_API_URL
+          value: https://staging-dot-decent-digit-629.appspot.com/aimmo/api/games/
