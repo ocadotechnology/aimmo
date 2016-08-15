@@ -17,17 +17,9 @@ spec:
         # The api server enforces this constraint.
         app: aimmo-game-creator
     spec:
-      volumes:
-      - name: secrets
-        secret:
-          secretName: creator
       containers:
       - name: aimmo-game-creator
         image: ocadotechnology/aimmo-game-creator:latest
-        volumeMounts:
-        - name: secrets
-          mountPath: "/etc/secrets"
-          readOnly: true
         ports:
         - containerPort: 80
         env:
@@ -37,3 +29,8 @@ spec:
           value: https://staging-dot-decent-digit-629.appspot.com/aimmo/api/games/
         - name: WORKER_MANAGER
           value: kubernetes
+        - name: AUTH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: creator
+              key: auth
