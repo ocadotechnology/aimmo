@@ -8,7 +8,7 @@ from simulation.location import Location
 from simulation.world_map import Cell, WorldMap
 
 from .maps import MockCell
-from .dummy_avatar import DummyAvatarRunner
+from .dummy_avatar import DummyAvatar
 
 
 class Serialiser(object):
@@ -300,7 +300,7 @@ class TestWorldMap(TestCase):
 
     def test_cannot_move_to_habited_cell(self):
         target = Location(0, 0)
-        cell = MockCell(target, avatar=DummyAvatarRunner(target, 0))
+        cell = MockCell(target, avatar=DummyAvatar(target, 0))
         map = WorldMap([[cell]])
         target = Location(0, 0)
         self.assertFalse(map.can_move_to(target))

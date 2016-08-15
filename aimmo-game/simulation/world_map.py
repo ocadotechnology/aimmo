@@ -46,8 +46,8 @@ class Cell(object):
 
     def __repr__(self):
         return 'Cell({} h={} s={} a={} p={})'.format(
-                self.location, self.habitable, self.generates_score, self.avatar,
-                self.pickup)
+            self.location, self.habitable, self.generates_score, self.avatar,
+            self.pickup)
 
     def __eq__(self, other):
         return self.location == other.location
@@ -58,6 +58,10 @@ class Cell(object):
     @property
     def moves(self):
         return [move for move in self.actions if isinstance(move, MoveAction)]
+
+    @property
+    def is_occupied(self):
+        return self.avatar is not None
 
     def serialise(self):
         return {
@@ -199,14 +203,9 @@ class WorldMap(object):
             return False
         cell = self.get_cell(target_location)
 
-        if not cell.habitable:
-            return False
-        elif len(cell.moves) > 1:
-            return False
-        elif cell.avatar:
-            return cell.avatar.is_moving()
-        else:
-            return True
+        return (cell.habitable
+                and (not cell.is_occupied or cell.avatar.is_moving)
+                and len(cell.moves) <= 1)
 
     def attackable_avatar(self, target_location):
         '''

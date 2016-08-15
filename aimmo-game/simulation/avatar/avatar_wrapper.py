@@ -26,6 +26,10 @@ class AvatarWrapper(object):
     def action(self):
         return self._action
 
+    @property
+    def is_moving(self):
+        return isinstance(self.action, MoveAction)
+
     def decide_action(self, state_view):
         try:
             data = requests.post(self.worker_url, json=state_view).json()
@@ -45,9 +49,6 @@ class AvatarWrapper(object):
             else:
                 self._action = action
                 return True
-
-    def is_moving(self):
-        return isinstance(self.action, MoveAction)
 
     def clear_action(self):
         self._action = None

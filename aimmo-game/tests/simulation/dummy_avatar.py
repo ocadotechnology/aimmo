@@ -8,11 +8,11 @@ from simulation.action import MoveAction, WaitAction
 from simulation.direction import NORTH, EAST, SOUTH, WEST
 
 
-class DummyAvatarRunner(AvatarWrapper):
+class DummyAvatar(AvatarWrapper):
     def __init__(self, player_id, initial_location):
         # TODO: extract avatar state and state-altering methods into a new class.
         #       The new class is to be shared between DummyAvatarRunner and AvatarRunner
-        super(DummyAvatarRunner, self).__init__(player_id, initial_location, None, None)
+        super(DummyAvatar, self).__init__(player_id, initial_location, None, None)
         self.times_died = 0
 
     def decide_action(self, state_view):
@@ -33,7 +33,7 @@ class DummyAvatarRunner(AvatarWrapper):
         return 'Dummy'
 
 
-class WaitDummy(DummyAvatarRunner):
+class WaitDummy(DummyAvatar):
     '''
     Avatar that always waits.
     '''
@@ -41,7 +41,7 @@ class WaitDummy(DummyAvatarRunner):
         return WaitAction(self)
 
 
-class MoveDummy(DummyAvatarRunner):
+class MoveDummy(DummyAvatar):
     '''
     Avatar that always moves in one direction.
     '''

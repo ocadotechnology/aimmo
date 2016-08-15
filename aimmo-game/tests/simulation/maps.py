@@ -1,7 +1,7 @@
 from __future__ import absolute_import
-from simulation import world_map
+
 from simulation.location import Location
-from simulation.world_map import Cell
+from simulation.world_map import Cell, WorldMap
 
 
 class MockCell(Cell):
@@ -19,7 +19,7 @@ class MockCell(Cell):
         return self is other
 
 
-class InfiniteMap(world_map.WorldMap):
+class InfiniteMap(WorldMap):
     def __init__(self):
         self._cell_cache = {}
         [self.get_cell(Location(x, y)) for x in range(5) for y in range(5)]
@@ -35,7 +35,7 @@ class InfiniteMap(world_map.WorldMap):
         return self._cell_cache.setdefault(location, Cell(location))
 
 
-class EmptyMap(world_map.WorldMap):
+class EmptyMap(WorldMap):
     def __init__(self):
         pass
 
@@ -46,7 +46,7 @@ class EmptyMap(world_map.WorldMap):
         return iter(())
 
     def get_cell(self, location):
-        return world_map.Cell(location)
+        return Cell(location)
 
 
 class ScoreOnOddColumnsMap(InfiniteMap):
@@ -55,14 +55,14 @@ class ScoreOnOddColumnsMap(InfiniteMap):
         return self._cell_cache.setdefault(location, default_cell)
 
 
-class AvatarMap(world_map.WorldMap):
+class AvatarMap(WorldMap):
     def __init__(self, avatar):
         self._avatar = avatar
         self._cell_cache = {}
 
     def get_cell(self, location):
         if location not in self._cell_cache:
-            cell = world_map.Cell(location)
+            cell = Cell(location)
             cell.avatar = self._avatar
             self._cell_cache[location] = cell
         return self._cell_cache[location]

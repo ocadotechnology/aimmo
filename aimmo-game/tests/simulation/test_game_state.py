@@ -6,7 +6,7 @@ from simulation.game_state import GameState
 from simulation.location import Location
 
 from .maps import InfiniteMap, AvatarMap, EmptyMap
-from .dummy_avatar import DummyAvatarRunner
+from .dummy_avatar import DummyAvatar
 from .dummy_avatar import DummyAvatarManager
 
 
@@ -25,8 +25,8 @@ class TestGameState(TestCase):
         manager = DummyAvatarManager()
         game_state = GameState(world_map, manager)
 
-        avatar1 = DummyAvatarRunner(1, Location(0, 0))
-        avatar2 = DummyAvatarRunner(2, Location(1, 1))
+        avatar1 = DummyAvatar(1, Location(0, 0))
+        avatar2 = DummyAvatar(2, Location(1, 1))
         avatar2.marked = True
 
         manager.add_avatar_directly(avatar1)
@@ -52,6 +52,6 @@ class TestGameState(TestCase):
 
     def test_fog_of_war(self):
         state = GameState(InfiniteMap(), DummyAvatarManager())
-        view = state.get_state_for(DummyAvatarRunner(None, None), FogToEmpty())
+        view = state.get_state_for(DummyAvatar(None, None), FogToEmpty())
         self.assertEqual(len(view['world_map']['cells']), 0)
         self.assertEqual(view['avatar_state'], 'Dummy')
