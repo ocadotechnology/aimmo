@@ -11,6 +11,7 @@ from flask_socketio import SocketIO
 
 from simulation.world_map import WorldMap
 from simulation.avatar_state import AvatarState
+from simulation.action import WaitAction
 
 from logger import SocketLogger
 from avatar import Avatar
@@ -21,7 +22,7 @@ logger = SocketLogger(socketio)
 
 
 @contextmanager
-def capture_output(new_stdout):
+def capture_output_and_exceptions(new_stdout):
     old_stdout = sys.stdout
     sys.stdout = new_stdout
     try:
@@ -39,10 +40,13 @@ def process_turn():
     world_map = WorldMap(**data['world_map'])
     avatar_state = AvatarState(**data['avatar_state'])
 
-    with capture_output(logger):
+    with capture_output_and_exceptions(logger):
         action = avatar.handle_turn(avatar_state, world_map)
 
-    return flask.jsonify(action=action.serialise())
+    try:
+        return flask.jsonify(action=action.serialise())
+    except AttributeError:
+        return flask.jsonify(action=WaitAction().serialise())
 
 
 if __name__ == '__main__':
