@@ -106,7 +106,7 @@ class TestTurnManager(unittest.TestCase):
 
         [self.assert_at(avatars[x], Location(x, 0)) for x in range(5)]
         self.run_turn()
-        [self.assert_at(avatars[4-x], Location(4-x + 1, 0)) for x in range(5)]
+        [self.assert_at(avatars[x], Location(x + 1, 0)) for x in range(5)]
 
     def test_move_chain_fails_occupied(self):
         '''
@@ -121,6 +121,62 @@ class TestTurnManager(unittest.TestCase):
         [self.assert_at(avatars[x], Location(x, 0)) for x in range(3)]
         self.run_turn()
         [self.assert_at(avatars[x], Location(x, 0)) for x in range(3)]
+
+    def test_move_chain_fails_collision(self):
+        '''
+        Given:  > > > _ <
+        (1)
+        Expect: x x x _ x
+        '''
+        locations = [Location(0, 0), Location(1, 0), Location(2, 0), Location(4, 0)]
+        self.construct_turn_manager(
+            [MoveEastDummy, MoveEastDummy, MoveEastDummy, MoveWestDummy],
+            locations)
+        avatars = [self.get_avatar(i) for i in range(4)]
+
+        [self.assert_at(avatars[i], locations[i]) for i in range(4)]
+        self.run_turn()
+        [self.assert_at(avatars[i], locations[i]) for i in range(4)]
+
+    def test_move_chain_fails_cycle(self):
+        '''
+        Given:  > v
+                ^ <
+        (1)
+        Expect: x x
+                x x
+        '''
+        locations = [Location(0, 1), Location(1, 1), Location(1, 0), Location(0, 0)]
+        self.construct_turn_manager(
+            [MoveEastDummy, MoveSouthDummy, MoveWestDummy, MoveNorthDummy],
+            locations)
+        avatars = [self.get_avatar(i) for i in range(4)]
+
+        [self.assert_at(avatars[i], locations[i]) for i in range(4)]
+        self.run_turn()
+        [self.assert_at(avatars[i], locations[i]) for i in range(4)]
+
+    def test_move_chain_fails_spiral(self):
+        '''
+        Given:  > > v
+                  ^ <
+        (1)
+        Expect: x x x
+                  x x
+        '''
+        locations = [Location(0, 1),
+                     Location(1, 1),
+                     Location(2, 1),
+                     Location(2, 0),
+                     Location(1, 0)]
+        self.construct_turn_manager(
+            [MoveEastDummy, MoveEastDummy, MoveSouthDummy, MoveWestDummy, MoveNorthDummy],
+            locations)
+        avatars = [self.get_avatar(i) for i in range(5)]
+
+        [self.assert_at(avatars[i], locations[i]) for i in range(5)]
+        self.run_turn()
+        [self.assert_at(avatars[i], locations[i]) for i in range(5)]
 
 if __name__ == '__main__':
     unittest.main()
