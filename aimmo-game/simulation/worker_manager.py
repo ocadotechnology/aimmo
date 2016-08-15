@@ -113,6 +113,7 @@ class WorkerManager(threading.Thread):
 
         # Add avatar back into game
         self._data.add_avatar(user, worker_url)
+        LOGGER.info('Added user %s', user['id'])
 
     def _parallel_map(self, func, iterable_args):
         list(self._pool.imap(func, iterable_args))
@@ -242,8 +243,14 @@ class KubernetesWorkerManager(WorkerManager):
             }
         )
         pod.create()
-        time.sleep(20)
-        pod.reload()
+        iterations = 0
+        while pod.obj['status']['phase'] == 'Pending':
+            if iterations > 30:
+                raise EnvironmentError('Could not start worker %s, details %s' % (player_id, pod.obj))
+            LOGGER.debug('Waiting for worker %s', player_id)
+            time.sleep(5)
+            pod.reload()
+            iterations += 1
         worker_url = "http://%s:5000" % pod.obj['status']['podIP']
         LOGGER.info("Worker started for %s, listening at %s", player_id, worker_url)
         return worker_url
@@ -254,6 +261,7 @@ class KubernetesWorkerManager(WorkerManager):
             'game': self.game_name,
             'player': str(player_id),
         }):
+            LOGGER.debug('Removing pod %s', pod.obj['spec'])
             pod.delete()
 
 WORKER_MANAGERS = {
