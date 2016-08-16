@@ -3,6 +3,7 @@ import service
 from simulation.game_state import GameState
 from simulation.location import Location
 from .simulation.dummy_avatar import DummyAvatarRunner
+from .simulation.maps import MockPickup
 from .simulation.test_world_map import MockCell
 from simulation.turn_manager import world_state_provider
 from simulation.world_map import WorldMap
@@ -23,14 +24,14 @@ class TestService(TestCase):
     def setup_world(self):
         CELLS = [
             [
-                {},
+                {'pickup': MockPickup('b')},
                 {'avatar': 'a'},
                 {'generates_score': True},
             ],
             [
                 {},
                 {'habitable': False},
-                {},
+                {'pickup': MockPickup('a')},
             ],
         ]
         grid = [[MockCell(Location(x, y), **CELLS[x][y])
@@ -55,3 +56,8 @@ class TestService(TestCase):
         self.assertEqual(result['width'], 2)
         self.assertEqual(result['height'], 3)
         self.assertEqual(result['layout'], [[0, 0, 2], [0, 1, 0]])
+
+    def test_pickup_list(self):
+        result = self.setup_world()
+        self.assertIn({'name': 'a', 'location': (1, 2)}, result['pickups'])
+        self.assertIn({'name': 'b', 'location': (0, 0)}, result['pickups'])
