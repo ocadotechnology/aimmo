@@ -43,19 +43,39 @@ class TurnManager(Thread):
     """
     daemon = True
 
-    def __init__(self, game_state, end_turn_callback, concurrent_turns=True):
+    def __init__(self, game_state, end_turn_callback):
         state_provider.set_world(game_state)
         self.end_turn_callback = end_turn_callback
-        self.concurrent_turns = concurrent_turns
         super(TurnManager, self).__init__()
 
     def run_turn(self):
-        if self.concurrent_turns:
-            self.run_concurrent_turn()
-        else:
-            self.run_sequential_turn()
+        raise NotImplementedError("Abstract method.")
 
-    def run_sequential_turn(self):
+    def _register_action(self, avatar):
+        '''
+        Send an avatar its view of the game state and register its chosen action.
+        '''
+        with state_provider as game_state:
+            state_view = game_state.get_state_for(avatar)
+
+        if avatar.decide_action(state_view):
+            with state_provider as game_state:
+                avatar.action.register(game_state.world_map)
+
+    def run(self):
+        while True:
+            self.run_turn()
+
+            with state_provider as game_state:
+                game_state.update_environment()
+                game_state.world_map.apply_score()
+
+            self.end_turn_callback()
+            time.sleep(0.5)
+
+
+class SequentialTurnManager(TurnManager):
+    def run_turn(self):
         '''
         Get and apply each avatar's action in turn.
         '''
@@ -65,14 +85,13 @@ class TurnManager(Thread):
         for avatar in avatars:
             self._register_action(avatar)
             with state_provider as game_state:
-                if avatar.action.is_legal(game_state.world_map):
-                    avatar.action.apply(game_state.world_map)
-                else:
-                    avatar.action.reject()
-                game_state.world_map.clear_cell_actions(avatar.action.target_location)
-                avatar.clear_action()
+                location_to_clear = avatar.action.target_location
+                avatar.action.process(game_state.world_map)
+                game_state.world_map.clear_cell_actions(location_to_clear)
 
-    def run_concurrent_turn(self):
+
+class ConcurrentTurnManager(TurnManager):
+    def run_turn(self):
         '''
         Concurrently get the intended actions from all avatars and register
         them on the world map. Then apply actions in order of priority.
@@ -99,25 +118,3 @@ class TurnManager(Thread):
         for location in locations_to_clear:
             with state_provider as game_state:
                 game_state.world_map.clear_cell_actions(location)
-
-    def _register_action(self, avatar):
-        '''
-        Send an avatar its view of the game state and register its chosen action.
-        '''
-        with state_provider as game_state:
-            state_view = game_state.get_state_for(avatar)
-
-        if avatar.decide_action(state_view):
-            with state_provider as game_state:
-                avatar.action.register(game_state.world_map)
-
-    def run(self):
-        while True:
-            self.run_turn()
-
-            with state_provider as game_state:
-                game_state.update_environment()
-                game_state.world_map.apply_score()
-
-            self.end_turn_callback()
-            time.sleep(0.5)

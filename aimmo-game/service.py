@@ -18,7 +18,8 @@ from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.location import Location
 from simulation.game_state import GameState
-from simulation.turn_manager import TurnManager
+from simulation.turn_manager import ConcurrentTurnManager
+from simulation.turn_manager import SequentialTurnManager
 from simulation.worker_manager import WORKER_MANAGERS
 
 app = flask.Flask(__name__)
@@ -112,7 +113,7 @@ def run_game():
     my_map = map_generator.generate_map(10, 10, 0.1)
     player_manager = AvatarManager()
     game_state = GameState(my_map, player_manager)
-    turn_manager = TurnManager(game_state=game_state, end_turn_callback=send_world_update)
+    turn_manager = ConcurrentTurnManager(game_state=game_state, end_turn_callback=send_world_update)
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
     worker_manager = WorkerManagerClass(
         game_state=game_state,

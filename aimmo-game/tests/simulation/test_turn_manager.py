@@ -4,7 +4,7 @@ import unittest
 from simulation.avatar.avatar_appearance import AvatarAppearance
 from simulation.game_state import GameState
 from simulation.location import Location
-from simulation.turn_manager import TurnManager
+from simulation.turn_manager import ConcurrentTurnManager
 
 from .maps import InfiniteMap
 from .dummy_avatar import WaitDummy
@@ -31,9 +31,8 @@ class TestTurnManager(unittest.TestCase):
     def construct_turn_manager(self, avatars, locations):
         self.avatar_manager = DummyAvatarManager(avatars)
         self.game_state = GameState(InfiniteMap(), self.avatar_manager)
-        self.turn_manager = TurnManager(game_state=self.game_state,
-                                        end_turn_callback=lambda: None,
-                                        concurrent_turns=True)
+        self.turn_manager = ConcurrentTurnManager(game_state=self.game_state,
+                                                  end_turn_callback=lambda: None)
         for index, location in enumerate(locations):
             self.game_state.add_avatar(index, "", location)
         return self.turn_manager
