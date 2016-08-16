@@ -13,6 +13,8 @@ class DummyAvatarRunner(object):
         self.events = []
         self.times_died = 0
         self.attack_strength = 1
+        self.effects = set()
+        self.resistance = 0
 
     def take_turn(self, game_state, turn_state):
         self.location += Location(1, 0)
