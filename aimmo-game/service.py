@@ -4,9 +4,8 @@ import os
 import sys
 
 # If we monkey patch during testing then Django fails to create a DB enironment
-if __name__ == '__main__':
-    import eventlet
-    eventlet.monkey_patch()
+import eventlet
+eventlet.monkey_patch()
 
 import flask
 from flask_socketio import SocketIO, emit

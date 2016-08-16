@@ -4,6 +4,18 @@ from simulation.location import Location
 from simulation.world_map import Cell
 
 
+class MockPickup(object):
+    def __init__(self, name=''):
+        self.applied_to = None
+        self.name = name
+
+    def apply(self, avatar):
+        self.applied_to = avatar
+
+    def serialise(self):
+        return {'name': self.name}
+
+
 class MockCell(Cell):
     def __init__(self, location=1, habitable=True, generates_score=False,
                  avatar=None, pickup=None, name=None):
@@ -20,7 +32,7 @@ class MockCell(Cell):
 
 class InfiniteMap(world_map.WorldMap):
     def __init__(self):
-        pass
+        self.times_reconstructed = 0
 
     def can_move_to(self, target_location):
         return True
@@ -30,6 +42,9 @@ class InfiniteMap(world_map.WorldMap):
 
     def get_cell(self, location):
         return world_map.Cell(location)
+
+    def reconstruct_interactive_state(self, num_avatars):
+        self.times_reconstructed += 1
 
 
 class EmptyMap(world_map.WorldMap):
@@ -68,3 +83,13 @@ class AvatarMap(world_map.WorldMap):
 
     def get_random_spawn_location(self):
         return Location(10, 10)
+
+
+class PickupMap(world_map.WorldMap):
+    def __init__(self, pickup):
+        self._pickup = pickup
+
+    def get_cell(self, location):
+        cell = world_map.Cell(location)
+        cell.pickup = self._pickup
+        return cell

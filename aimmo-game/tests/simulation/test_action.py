@@ -4,7 +4,7 @@ import unittest
 from simulation import event
 from simulation.location import Location
 from .dummy_avatar import DummyAvatarRunner
-from .maps import InfiniteMap, EmptyMap, ScoreOnOddColumnsMap, AvatarMap
+from .maps import InfiniteMap, EmptyMap, ScoreOnOddColumnsMap, AvatarMap, PickupMap, MockPickup
 from simulation.game_state import GameState
 from simulation import action
 from simulation.avatar.avatar_manager import AvatarManager
@@ -55,10 +55,11 @@ class TestAction(unittest.TestCase):
         action.MoveAction({'x': 1, 'y': 0}).apply(game_state, self.avatar)
         self.assertEqual(self.avatar.score, 2)
 
-    @unittest.skip("Implement after changes")
-    def test_move_action_pickups(self):
-        # TODO
-        pass
+    def test_pickup_applied(self):
+        pickup = MockPickup()
+        game_state = GameState(PickupMap(pickup), self.avatar_manager)
+        action.WaitAction().apply(game_state, self.avatar)
+        self.assertEqual(pickup.applied_to, self.avatar)
 
     def test_successful_attack_action(self):
         game_state = GameState(AvatarMap(self.other_avatar), self.avatar_manager)

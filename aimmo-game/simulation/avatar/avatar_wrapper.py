@@ -27,7 +27,7 @@ class AvatarWrapper(object):
         action = self._get_action(game_view)
         if action is not None:
             action.apply(game_state, self)
-            LOGGER.debug("%s took %s" % (self.player_id, action))
+            LOGGER.debug("%s took %s", self.player_id, action)
         effects_to_remove = set()
         for effect in self.effects:
             effect.on_turn()

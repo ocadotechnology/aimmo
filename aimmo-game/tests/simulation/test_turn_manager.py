@@ -1,13 +1,12 @@
 from __future__ import absolute_import
 import unittest
 
-from simulation.avatar.avatar_manager import AvatarManager
 from simulation.location import Location
-from simulation.turn_manager import TurnManager
+from simulation import turn_manager
 from .maps import InfiniteMap
-from .dummy_avatar import DummyAvatarRunner
+from .dummy_avatar import DummyAvatarRunner, EmptyAvatarManager
 from simulation.avatar.avatar_appearance import AvatarAppearance
-from simulation.game_state import GameState
+from simulation import game_state
 
 ORIGIN = Location(x=0, y=0)
 
@@ -18,15 +17,16 @@ ABOVE_ORIGIN = Location(x=0, y=1)
 FIVE_RIGHT_OF_ORIGIN_AND_ONE_ABOVE = Location(x=5, y=1)
 
 
-@unittest.expectedFailure
 class TestTurnManager(unittest.TestCase):
     def construct_default_avatar_appearance(self):
         return AvatarAppearance("#000", "#ddd", "#777", "#fff")
 
     def construct_turn_manager(self, *avatars):
-        self.avatar_manager = AvatarManager(avatars)
-        self.game_state = GameState(InfiniteMap(), self.avatar_manager)
-        self.turn_manager = TurnManager(self.game_state)
+        self.avatar_manager = EmptyAvatarManager()
+        [self.avatar_manager.add_avatar_object(avatar) for avatar in avatars]
+        self.game_state = game_state.GameState(InfiniteMap(), self.avatar_manager)
+        turn_manager.world_state_provider.set_world(self.game_state)
+        self.turn_manager = turn_manager.TurnManager(self.game_state, lambda _: None)
 
     def test_run_turn(self):
         avatar = DummyAvatarRunner(ORIGIN, player_id=1)

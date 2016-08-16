@@ -1,18 +1,8 @@
 from __future__ import absolute_import
 from .maps import InfiniteMap, AvatarMap, EmptyMap
-from .dummy_avatar import DummyAvatarRunner
+from .dummy_avatar import DummyAvatarRunner, EmptyAvatarManager
 from simulation.game_state import GameState
 from unittest import TestCase
-
-
-class EmptyAvatarManager(object):
-    avatarsById = {}
-
-    def remove_avatar(self, id):
-        del self.avatarsById[id]
-
-    def add_avatar(self, id, url, location):
-        self.avatarsById[id] = DummyAvatarRunner(location, id)
 
 
 class FogToEmpty(object):

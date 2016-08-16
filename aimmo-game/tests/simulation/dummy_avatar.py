@@ -1,6 +1,5 @@
 from __future__ import absolute_import
-from simulation.action import MoveAction
-from simulation import direction
+from simulation.location import Location
 
 
 class DummyAvatarRunner(object):
@@ -15,13 +14,8 @@ class DummyAvatarRunner(object):
         self.times_died = 0
         self.attack_strength = 1
 
-    def handle_turn(self, state):
-        next_action = MoveAction(direction.EAST)
-
-        # Reset event log
-        self.events = []
-
-        return next_action
+    def take_turn(self, game_state, turn_state):
+        self.location += Location(1, 0)
 
     def add_event(self, event):
         self.events.append(event)
@@ -36,3 +30,21 @@ class DummyAvatarRunner(object):
     def damage(self, amount):
         self.health -= amount
         return amount
+
+
+class EmptyAvatarManager(object):
+    def __init__(self):
+        self.avatarsById = {}
+
+    def remove_avatar(self, id):
+        del self.avatarsById[id]
+
+    def add_avatar(self, id, url, location):
+        self.avatarsById[id] = DummyAvatarRunner(location, id)
+
+    def add_avatar_object(self, avatar):
+        self.avatarsById[avatar.player_id] = avatar
+
+    @property
+    def active_avatars(self):
+        return self.avatarsById.values()
