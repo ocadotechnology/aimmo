@@ -115,3 +115,21 @@ class TestAvatarWrapper(TestCase):
         effect = self.add_effects(1)[0]
         self.take_turn()
         self.assertEqual(effect.turns, 1)
+
+    def test_avatar_dies_health(self):
+        self.avatar.die(None)
+        self.assertEqual(self.avatar.health, 5)
+
+    def test_avatar_dies_score_when_large(self):
+        self.avatar.score = 10
+        self.avatar.die(None)
+        self.assertEqual(self.avatar.score, 8)
+
+    def test_avatar_dies_score_when_small(self):
+        self.avatar.score = 1
+        self.avatar.die(None)
+        self.assertEqual(self.avatar.score, 0)
+
+    def test_avatar_dies_location(self):
+        self.avatar.die('test')
+        self.assertEqual(self.avatar.location, 'test')
