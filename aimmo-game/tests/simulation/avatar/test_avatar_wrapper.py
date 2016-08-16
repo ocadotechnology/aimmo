@@ -133,3 +133,20 @@ class TestAvatarWrapper(TestCase):
     def test_avatar_dies_location(self):
         self.avatar.die('test')
         self.assertEqual(self.avatar.location, 'test')
+
+    def test_damage_applied(self):
+        self.avatar.health = 10
+        self.assertEqual(self.avatar.damage(1), 1)
+        self.assertEqual(self.avatar.health, 9)
+
+    def test_resistance_reduces_damage(self):
+        self.avatar.health = 10
+        self.avatar.resistance = 3
+        self.assertEqual(self.avatar.damage(5), 2)
+        self.assertEqual(self.avatar.health, 8)
+
+    def test_no_negative_damage(self):
+        self.avatar.health = 10
+        self.avatar.resistance = 3
+        self.assertEqual(self.avatar.damage(1), 0)
+        self.assertEqual(self.avatar.health, 10)
