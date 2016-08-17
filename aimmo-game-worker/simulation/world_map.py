@@ -49,7 +49,7 @@ class WorldMap(object):
         return (c for c in self.all_cells() if c.generates_score)
 
     def pickup_cells(self):
-        return (c for c in self.all_cells() if getattr(self, 'pickup', False))
+        return (c for c in self.all_cells() if getattr(c, 'pickup', False))
 
     def partially_fogged_cells(self):
         return (c for c in self.all_cells() if c.partially_fogged)
