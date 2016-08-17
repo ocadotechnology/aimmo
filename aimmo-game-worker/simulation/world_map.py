@@ -18,17 +18,13 @@ class Cell(object):
     Any position on the world grid.
     """
 
-    def __init__(self, location, generates_score, habitable=None, avatar=None, pickup=None, partially_fogged=True):
+    def __init__(self, location, **kwargs):
         self.location = Location(**location)
-        self.generates_score = generates_score
-        self.partially_fogged = partially_fogged
-        if not partially_fogged:
-            self.habitable = habitable
-            self.avatar = AvatarState(**avatar) if avatar else None
-            self.pickup = HealthPickup(**pickup) if pickup else None
+        for (key, value) in kwargs.items():
+            setattr(self, key, value)
 
     def __repr__(self):
-        return 'Cell({} h={} s={} a={} p={} f={})'.format(self.location, getattr(self, 'habitable', 0), self.generates_score, getattr(self, 'avatar', 0), getattr(self, 'pickup', 0), self.partially_fogged)
+        return 'Cell({} h={} s={} a={} p={})'.format(self.location, getattr(self, 'habitable', 0), self.generates_score, getattr(self, 'avatar', 0), getattr(self, 'pickup', 0))
 
     def __eq__(self, other):
         return self.location == other.location
