@@ -1,31 +1,16 @@
 #!/usr/bin/env python
 import logging
 import sys
+import json
 
 import flask
 
 from simulation.world_map import WorldMap
 from simulation.avatar_state import AvatarState
 
+from avatar import Avatar
+
 app = flask.Flask(__name__)
-
-avatar = None
-
-
-@app.route('/initialise/', methods=['POST'])
-def initialise():
-    global avatar
-
-    if avatar:
-        flask.abort(400, 'Unable to initialise Avatar service more than once.')
-
-    data = flask.request.get_json()
-
-    exec(data['code'])
-
-    avatar = Avatar(**data['options'])
-
-    return flask.jsonify(result='success')
 
 
 @app.route('/turn/', methods=['POST'])
@@ -43,7 +28,12 @@ def process_turn():
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
-    app.config['DEBUG'] = True
+    global avatar
+    with open('{}/options.json'.format(sys.argv[3])) as option_file:
+        options = json.load(option_file)
+    avatar = Avatar(**options)
+
+    app.config['DEBUG'] = False
     app.run(
         host=sys.argv[1],
         port=int(sys.argv[2]),

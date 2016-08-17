@@ -46,33 +46,46 @@ const VIEWER = Object.create({
         }
     },
 
-    constructNewPlayerElement: function(playerData) {
+    constructNewPlayerElement: function(playerData, is_current_user) {
         const playerX = (0.5 + playerData.x) * this.appearance.cellSize;
         const playerY = (0.5 + this.invertY(playerData.y)) * this.appearance.cellSize;
         const playerRadius = this.appearance.cellSize * 0.5 * 0.75;
         const playerHeadRadius = playerRadius * 0.6;
         const playerEyeRadius = playerRadius * 0.2;
+        const currentUserIconSize = playerRadius * 0.4;
 
         var playerBody = this.paper.circle(playerX, playerY, playerRadius);
 
         playerBody.attr("fill", playerData.colours.bodyFill);
         playerBody.attr("stroke", playerData.colours.bodyStroke);
+
         var playerEyeLeft = this.paper.circle(
             playerX + playerHeadRadius * Math.cos(playerData.rotation - 1),
             playerY + playerHeadRadius * Math.sin(playerData.rotation - 1),
             playerEyeRadius
         );
-
         playerEyeLeft.attr("fill", playerData.colours.eyeFill);
         playerEyeLeft.attr("stroke", playerData.colours.eyeStroke);
+
         var playerEyeRight = this.paper.circle(
             playerX + playerHeadRadius * Math.cos(playerData.rotation + 1),
             playerY + playerHeadRadius * Math.sin(playerData.rotation + 1),
             playerEyeRadius
         );
-
         playerEyeRight.attr("fill", playerData.colours.eyeFill);
         playerEyeRight.attr("stroke", playerData.colours.eyeStroke);
+
+        var currentUserIcon;
+        if (is_current_user) {
+            currentUserIcon = this.paper.rect(
+                playerX - currentUserIconSize / 2 - playerHeadRadius * 0.5 * Math.cos(playerData.rotation),
+                playerY - currentUserIconSize / 2 - playerHeadRadius * 0.5 * Math.sin(playerData.rotation),
+                currentUserIconSize,
+                currentUserIconSize
+            );
+            currentUserIcon.attr("fill", "#FF0000");
+            currentUserIcon.attr("stroke", "#FF0000");
+        }
 
         var playerTextAbove = this.paper.text(playerX, playerY - 20, 'Score: ' + playerData.score);
         var playerTextBelow = this.paper.text(playerX, playerY + 20, playerData.health + 'hp, (' + playerData.x + ', ' + playerData.y + ')');
@@ -83,7 +96,8 @@ const VIEWER = Object.create({
             playerEyeLeft,
             playerEyeRight,
             playerTextAbove,
-            playerTextBelow
+            playerTextBelow,
+            currentUserIcon
         );
         return player;
     },
@@ -101,7 +115,8 @@ const VIEWER = Object.create({
         for (var playerKey in this.world.players) {
             if (this.world.players.hasOwnProperty(playerKey)) {
                 var playerData = this.world.players[playerKey];
-                var playerElement = this.constructNewPlayerElement(playerData);
+                var is_current_user = playerKey == CURRENT_USER_PLAYER_KEY
+                var playerElement = this.constructNewPlayerElement(playerData, is_current_user);
                 this.drawnElements.players.push(playerElement);
             }
         }

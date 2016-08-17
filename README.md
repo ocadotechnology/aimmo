@@ -1,6 +1,14 @@
 # AI:MMO
 A **M**assively **M**ulti-player **O**nline game, where players create **A**rtificially **I**ntelligent programs to play on their behalf.
 
+## A [Code for Life](https://www.codeforlife.education/) project
+* Ocado Technology's [Code for Life initiative](https://www.codeforlife.education/) has been developed to inspire the next generation of computer scientists and to help teachers deliver the computing curriculum.
+* This repository hosts the source code of the **AI:MMO game**. AI:MMO is aimed as a follow-on from [Rapid Router](https://www.codeforlife.education/rapidrouter) to teach computing to secondary-school age children.
+* The other repos for Code For Life:
+    * the main portal (as well as registration, dashboards, materials...), [Code For Life Portal](https://github.com/ocadotechnology/codeforlife-portal)
+    * the first coding game of Code for Life for primary schools, [Rapid Router](https://github.com/ocadotechnology/rapid-router)
+    * the [deployment code for Google App Engine](https://github.com/ocadotechnology/codeforlife-deploy-appengine)
+
 ## Objective
 People program Avatars. Avatars play the game. A player's aim is to create a better Avatar than other people's Avatars. A "better" Avatar is one that scores points faster than other people's Avatars.
 
@@ -49,13 +57,28 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
 * Make and activate a virtualenv (We recommend [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/index.html)) - if you have a Mac see the following section.
     * e.g. the first time, `mkvirtualenv -a path/to/aimmo aimmo`
     * and thereafter `workon aimmo`
-* You might need to create an admin account the first time around:
-`python example_project/manage.py createsuperuser`
-* `./run` in your aimmo dir - This will:
+* `./run.py` in your aimmo dir - This will:
+    * if necessary, create a superuser 'admin' with password 'admin'
     * install all of the dependencies using pip
     * sync the database
     * collect the static files
     * run the server
+* You can quickly create players as desired using the following command:
+
+  `python example_project/manage.py generate_players 5 dumb_avatar.py`
+
+  This creates 5 users with password `123`, and creates for each user an avatar that runs the code in `dumb_avatar.py`
+* To delete the generated players use the following command:
+
+`python example_project/manage.py delete_generated_players`
+
+## Testing Locally
+*`./all_tests.py` will run all tests (note that this is several pages of output).
+* `--coverage` option generates coverage data using coverage.py
+
+## Useful commands
+* To create an admin account:
+`python example_project/manage.py createsuperuser`
 
 ### Installing virtualenvwrapper on Mac
 * Run `pip install virtualenvwrapper`

@@ -12,6 +12,7 @@ def create_game_rc(api, name, environment_variables):
     environment_variables['SOCKETIO_RESOURCE'] = "game/%s/socket.io" % name
     environment_variables['GAME_API_URL'] = 'https://staging-dot-decent-digit-629.appspot.com/aimmo/api/games/'
     environment_variables['GAME_NAME'] = name
+    environment_variables['GAME_URL'] = "http://game-%s" % name
     environment_variables['PYKUBE_KUBERNETES_SERVICE_HOST'] = 'kubernetes'
     rc = ReplicationController(
         api,
@@ -55,6 +56,16 @@ def create_game_rc(api, name, environment_variables):
                                     },
                                 ],
                                 'name': 'aimmo-game',
+                                'resources': {
+                                    'limits': {
+                                        'cpu': '1000m',
+                                        'memory': '128Mi',
+                                    },
+                                    'requests': {
+                                        'cpu': '100m',
+                                        'memory': '64Mi',
+                                    },
+                                },
                             },
                         ],
                     },
