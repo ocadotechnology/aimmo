@@ -54,7 +54,7 @@ class WorldMap(object):
     def partially_fogged_cells(self):
         return (c for c in self.all_cells() if c.partially_fogged)
 
-    def is_on_map(self, location):
+    def is_visible(self, location):
         return location in self.cells
 
     def get_cell(self, location):
