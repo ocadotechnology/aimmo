@@ -1,14 +1,16 @@
 import logging
 import requests
-import threading
 import time
+from Queue import PriorityQueue
 from threading import Lock
-from simulation.action import ACTIONS
+from threading import Thread
+
+from simulation.action import PRIORITIES
 
 LOGGER = logging.getLogger(__name__)
 
 
-class WorldStateProvider:
+class GameStateProvider:
     """
     Thread-safe container for the world state.
 
@@ -16,66 +18,103 @@ class WorldStateProvider:
     """
 
     def __init__(self):
-        self._world_state = None
+        self._game_state = None
         self._lock = Lock()
 
-    def lock_and_get_world(self):
+    def __enter__(self):
         self._lock.acquire()
-        return self._world_state
+        return self._game_state
 
-    def release_lock(self):
+    def __exit__(self, type, value, traceback):
         self._lock.release()
 
-    def set_world(self, new_world_state):
+    def set_world(self, new_game_state):
         self._lock.acquire()
-        self._world_state = new_world_state
+        self._game_state = new_game_state
         self._lock.release()
 
-world_state_provider = WorldStateProvider()
+
+state_provider = GameStateProvider()
 
 
-class TurnManager(threading.Thread):
+class TurnManager(Thread):
     """
     Game loop
     """
     daemon = True
 
     def __init__(self, game_state, end_turn_callback):
-        world_state_provider.set_world(game_state)
+        state_provider.set_world(game_state)
         self.end_turn_callback = end_turn_callback
         super(TurnManager, self).__init__()
 
-    def _update_environment(self, game_state):
-        num_avatars = len(game_state.avatar_manager.active_avatars)
-        game_state.world_map.reconstruct_interactive_state(num_avatars)
-
     def run_turn(self):
-        try:
-            game_state = world_state_provider.lock_and_get_world()
+        raise NotImplementedError("Abstract method.")
 
-            for avatar in game_state.avatar_manager.active_avatars:
-                turn_state = game_state.get_state_for(avatar)
-                try:
-                    data = requests.post(avatar.worker_url, json=turn_state).json()
-                except ValueError as err:
-                    LOGGER.info("Failed to get turn result: %s", err)
-                else:
-                    try:
-                        action_data = data['action']
-                        action_class = ACTIONS[action_data['action_type']]
-                        action = action_class(**action_data.get('options', {}))
-                    except (KeyError, ValueError) as err:
-                        LOGGER.info("Bad action data supplied: %s", err)
-                    else:
-                        action.apply(game_state, avatar)
+    def _register_action(self, avatar):
+        '''
+        Send an avatar its view of the game state and register its chosen action.
+        '''
+        with state_provider as game_state:
+            state_view = game_state.get_state_for(avatar)
 
-            self._update_environment(game_state)
-
-        finally:
-            world_state_provider.release_lock()
+        if avatar.decide_action(state_view):
+            with state_provider as game_state:
+                avatar.action.register(game_state.world_map)
 
     def run(self):
         while True:
             self.run_turn()
+
+            with state_provider as game_state:
+                game_state.update_environment()
+                game_state.world_map.apply_score()
+
             self.end_turn_callback()
             time.sleep(0.5)
+
+
+class SequentialTurnManager(TurnManager):
+    def run_turn(self):
+        '''
+        Get and apply each avatar's action in turn.
+        '''
+        with state_provider as game_state:
+            avatars = game_state.avatar_manager.active_avatars
+
+        for avatar in avatars:
+            self._register_action(avatar)
+            with state_provider as game_state:
+                location_to_clear = avatar.action.target_location
+                avatar.action.process(game_state.world_map)
+                game_state.world_map.clear_cell_actions(location_to_clear)
+
+
+class ConcurrentTurnManager(TurnManager):
+    def run_turn(self):
+        '''
+        Concurrently get the intended actions from all avatars and register
+        them on the world map. Then apply actions in order of priority.
+        '''
+        with state_provider as game_state:
+            avatars = game_state.avatar_manager.active_avatars
+
+        threads = [Thread(target=self._register_action,
+                          args=(avatar,)) for avatar in avatars]
+
+        [thread.start() for thread in threads]
+        [thread.join() for thread in threads]
+
+        # Waits applied first, then attacks, then moves.
+        avatars.sort(key=lambda a: PRIORITIES[type(a.action)])
+
+        locations_to_clear = {a.action.target_location for a in avatars
+                              if a.action is not None}
+
+        for action in (a.action for a in avatars if a.action is not None):
+            with state_provider as game_state:
+                action.process(game_state.world_map)
+
+        for location in locations_to_clear:
+            with state_provider as game_state:
+                game_state.world_map.clear_cell_actions(location)

@@ -2,13 +2,14 @@ from __future__ import absolute_import
 import unittest
 
 from simulation import event
-from simulation.location import Location
-from .dummy_avatar import DummyAvatarRunner
-from .maps import InfiniteMap, EmptyMap, ScoreOnOddColumnsMap, AvatarMap
-from simulation.game_state import GameState
 from simulation import action
+from simulation.location import Location
+from simulation.direction import NORTH, EAST, SOUTH, WEST
+from simulation.game_state import GameState
 from simulation.avatar.avatar_manager import AvatarManager
 
+from .dummy_avatar import MoveDummy
+from .maps import InfiniteMap, EmptyMap, ScoreOnOddColumnsMap, AvatarMap
 
 ORIGIN = Location(x=0, y=0)
 EAST_OF_ORIGIN = Location(x=1, y=0)
@@ -17,27 +18,30 @@ NORTH_OF_ORIGIN = Location(x=0, y=1)
 
 class TestAction(unittest.TestCase):
     def setUp(self):
-        self.avatar = DummyAvatarRunner(ORIGIN, player_id=1)
-        self.other_avatar = DummyAvatarRunner(EAST_OF_ORIGIN, player_id=2)
+        self.avatar = MoveDummy(1, ORIGIN, EAST)
+        self.other_avatar = MoveDummy(2, EAST_OF_ORIGIN, EAST)
         self.avatar_manager = AvatarManager()
 
     def test_successful_move_north_action(self):
         game_state = GameState(InfiniteMap(), self.avatar_manager)
-        action.MoveAction({'x': 0, 'y': 1}).apply(game_state, self.avatar)
+        action.MoveAction(self.avatar, {'x': 0, 'y': 1}).process(game_state.world_map)
 
+        target_cell = game_state.world_map.get_cell(NORTH_OF_ORIGIN)
         self.assertEqual(self.avatar.location, NORTH_OF_ORIGIN)
+        self.assertEqual(self.avatar, target_cell.avatar)
+
         self.assertEqual(self.avatar.events, [event.MovedEvent(ORIGIN, NORTH_OF_ORIGIN)])
 
     def test_successful_move_east_action(self):
         game_state = GameState(InfiniteMap(), self.avatar_manager)
-        action.MoveAction({'x': 1, 'y': 0}).apply(game_state, self.avatar)
+        action.MoveAction(self.avatar, {'x': 1, 'y': 0}).process(game_state.world_map)
 
         self.assertEqual(self.avatar.location, EAST_OF_ORIGIN)
         self.assertEqual(self.avatar.events, [event.MovedEvent(ORIGIN, EAST_OF_ORIGIN)])
 
     def test_failed_move_action(self):
         game_state = GameState(EmptyMap(), self.avatar_manager)
-        action.MoveAction({'x': 0, 'y': 1}).apply(game_state, self.avatar)
+        action.MoveAction(self.avatar, {'x': 0, 'y': 1}).process(game_state.world_map)
 
         self.assertEqual(self.avatar.location, ORIGIN)
         self.assertEqual(self.avatar.events, [event.FailedMoveEvent(ORIGIN, NORTH_OF_ORIGIN)])
@@ -46,13 +50,16 @@ class TestAction(unittest.TestCase):
         game_state = GameState(ScoreOnOddColumnsMap(), self.avatar_manager)
         self.assertEqual(self.avatar.score, 0)
 
-        action.MoveAction({'x': 1, 'y': 0}).apply(game_state, self.avatar)
+        action.MoveAction(self.avatar, {'x': 1, 'y': 0}).process(game_state.world_map)
+        game_state.world_map.apply_score()
         self.assertEqual(self.avatar.score, 1)
 
-        action.MoveAction({'x': 1, 'y': 0}).apply(game_state, self.avatar)
+        action.MoveAction(self.avatar, {'x': 1, 'y': 0}).process(game_state.world_map)
+        game_state.world_map.apply_score()
         self.assertEqual(self.avatar.score, 1)
 
-        action.MoveAction({'x': 1, 'y': 0}).apply(game_state, self.avatar)
+        action.MoveAction(self.avatar, {'x': 1, 'y': 0}).process(game_state.world_map)
+        game_state.world_map.apply_score()
         self.assertEqual(self.avatar.score, 2)
 
     @unittest.skip("Implement after changes")
@@ -62,7 +69,7 @@ class TestAction(unittest.TestCase):
 
     def test_successful_attack_action(self):
         game_state = GameState(AvatarMap(self.other_avatar), self.avatar_manager)
-        action.AttackAction({'x': 0, 'y': 1}).apply(game_state, self.avatar)
+        action.AttackAction(self.avatar, {'x': 0, 'y': 1}).process(game_state.world_map)
 
         target_location = NORTH_OF_ORIGIN
         damage_dealt = 1
@@ -82,7 +89,7 @@ class TestAction(unittest.TestCase):
 
     def test_failed_attack_action(self):
         game_state = GameState(InfiniteMap(), self.avatar_manager)
-        action.AttackAction({'x': 0, 'y': 1}).apply(game_state, self.avatar)
+        action.AttackAction(self.avatar, {'x': 0, 'y': 1}).process(game_state.world_map)
 
         target_location = NORTH_OF_ORIGIN
 
@@ -94,7 +101,7 @@ class TestAction(unittest.TestCase):
     def test_avatar_dies(self):
         self.other_avatar.health = 1
         game_state = GameState(AvatarMap(self.other_avatar), self.avatar_manager)
-        action.AttackAction({'x': 0, 'y': 1}).apply(game_state, self.avatar)
+        action.AttackAction(self.avatar, {'x': 0, 'y': 1}).process(game_state.world_map)
 
         target_location = NORTH_OF_ORIGIN
         damage_dealt = 1
@@ -113,5 +120,5 @@ class TestAction(unittest.TestCase):
 
     def test_no_move_in_wait(self):
         game_state = GameState(InfiniteMap(), self.avatar_manager)
-        action.WaitAction().apply(game_state, self.avatar)
+        action.WaitAction(self.avatar).process(game_state.world_map)
         self.assertEqual(self.avatar.location, ORIGIN)

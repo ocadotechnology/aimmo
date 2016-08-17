@@ -1,11 +1,14 @@
 from __future__ import absolute_import
+
 from httmock import HTTMock
 from json import dumps
+import unittest
+
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.game_state import GameState
-from .maps import InfiniteMap
 from simulation.worker_manager import WorkerManager
-import unittest
+
+from .maps import InfiniteMap
 
 
 class ConcreteWorkerManager(WorkerManager):
@@ -75,7 +78,7 @@ class TestWorkerManager(unittest.TestCase):
             self.worker_manager.update()
         self.assertEqual(len(self.worker_manager.final_workers), 3)
         for i in xrange(3):
-            self.assertIn(i, self.game_state.avatar_manager.avatarsById)
+            self.assertIn(i, self.game_state.avatar_manager.avatars_by_id)
             self.assertIn(i, self.worker_manager.final_workers)
             self.assertEqual(self.worker_manager.get_code(i), 'code for %s' % i)
 
@@ -89,7 +92,7 @@ class TestWorkerManager(unittest.TestCase):
 
         for i in xrange(4):
             self.assertIn(i, self.worker_manager.final_workers)
-            self.assertIn(i, self.game_state.avatar_manager.avatarsById)
+            self.assertIn(i, self.game_state.avatar_manager.avatars_by_id)
 
         for i in (1, 3):
             self.assertEqual(self.worker_manager.get_code(i), 'code for %s' % i)
@@ -105,4 +108,4 @@ class TestWorkerManager(unittest.TestCase):
             del mocker.value['main']['users'][1]
             self.worker_manager.update()
         self.assertNotIn(1, self.worker_manager.final_workers)
-        self.assertNotIn(1, self.game_state.avatar_manager.avatarsById)
+        self.assertNotIn(1, self.game_state.avatar_manager.avatars_by_id)

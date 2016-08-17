@@ -1,8 +1,10 @@
 import math
 import random
 
-from location import Location
 from logging import getLogger
+
+from simulation.location import Location
+from simulation.action import MoveAction
 
 LOGGER = getLogger(__name__)
 
@@ -40,17 +42,26 @@ class Cell(object):
         self.generates_score = generates_score
         self.avatar = None
         self.pickup = None
+        self.actions = []
 
     def __repr__(self):
         return 'Cell({} h={} s={} a={} p={})'.format(
-                self.location, self.habitable, self.generates_score, self.avatar,
-                self.pickup)
+            self.location, self.habitable, self.generates_score, self.avatar,
+            self.pickup)
 
     def __eq__(self, other):
         return self.location == other.location
 
     def __hash__(self):
         return hash(self.location)
+
+    @property
+    def moves(self):
+        return [move for move in self.actions if isinstance(move, MoveAction)]
+
+    @property
+    def is_occupied(self):
+        return self.avatar is not None
 
     def serialise(self):
         return {
@@ -94,6 +105,13 @@ class WorldMap(object):
         assert cell.location == location, 'location lookup mismatch: arg={}, found={}'.format(location, cell.location)
         return cell
 
+    def clear_cell_actions(self, location):
+        try:
+            cell = self.get_cell(location)
+            cell.actions = []
+        except ValueError:
+            return
+
     @property
     def num_rows(self):
         return len(self.grid[0])
@@ -105,6 +123,13 @@ class WorldMap(object):
     @property
     def num_cells(self):
         return self.num_rows * self.num_cols
+
+    def apply_score(self):
+        for cell in self.score_cells():
+            try:
+                cell.avatar.score += 1
+            except AttributeError:
+                pass
 
     def reconstruct_interactive_state(self, num_avatars):
         self._expand(num_avatars)
@@ -169,7 +194,6 @@ class WorldMap(object):
 
         Throws:
             IndexError: if there are no possible locations.
-
         """
         return self._get_random_spawn_locations(1)[0].location
 
@@ -177,9 +201,28 @@ class WorldMap(object):
     def can_move_to(self, target_location):
         if not self.is_on_map(target_location):
             return False
-
         cell = self.get_cell(target_location)
-        return cell.habitable and not cell.avatar
+
+        return (cell.habitable
+                and (not cell.is_occupied or cell.avatar.is_moving)
+                and len(cell.moves) <= 1)
+
+    def attackable_avatar(self, target_location):
+        '''
+        Return the avatar attackable at the given location, or None.
+        '''
+        try:
+            cell = self.get_cell(target_location)
+        except ValueError:
+            return None
+
+        if cell.avatar:
+            return cell.avatar
+
+        if len(cell.moves) == 1:
+            return cell.moves[0].avatar
+
+        return None
 
     def __repr__(self):
         return repr(self.grid)
