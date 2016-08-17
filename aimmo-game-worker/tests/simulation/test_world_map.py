@@ -52,23 +52,23 @@ class TestWorldMap(TestCase):
         map = WorldMap(cells)
         self.assertLocationsEqual(map.pickup_cells(), (Location(0, 0), Location(1, 1)))
 
-    def test_location_on_map(self):
+    def test_location_is_visible(self):
         map = WorldMap(self._generate_cells())
         for x in (0, 1):
             for y in (0, 1):
-                self.assertTrue(map.is_on_map(Location(x, y)))
+                self.assertTrue(map.is_visible(Location(x, y)))
 
-    def test_x_off_map(self):
+    def test_x_off_map_is_not_visible(self):
         map = WorldMap(self._generate_cells())
         for y in (0, 1):
-            self.assertFalse(map.is_on_map(Location(-1, y)))
-            self.assertFalse(map.is_on_map(Location(2, y)))
+            self.assertFalse(map.is_visible(Location(-1, y)))
+            self.assertFalse(map.is_visible(Location(2, y)))
 
-    def test_y_off_map(self):
+    def test_y_off_map_is_not_visible(self):
         map = WorldMap(self._generate_cells())
         for x in (0, 1):
-            self.assertFalse(map.is_on_map(Location(x, -1)))
-            self.assertFalse(map.is_on_map(Location(x, 2)))
+            self.assertFalse(map.is_visible(Location(x, -1)))
+            self.assertFalse(map.is_visible(Location(x, 2)))
 
     def test_get_valid_cell(self):
         map = WorldMap(self._generate_cells())

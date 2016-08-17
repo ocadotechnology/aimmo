@@ -6,7 +6,7 @@ class Avatar(object):
 
         self.location = self.avatar_state.location
         directions = (direction.EAST, direction.SOUTH, direction.WEST, direction.NORTH)
-        direction_of_other_avatar = next((d for d in directions if world_state.is_on_map(self.location + d) and world_state.get_cell(self.location + d).avatar), None)
+        direction_of_other_avatar = next((d for d in directions if world_state.is_visible(self.location + d) and world_state.get_cell(self.location + d).avatar), None)
         if direction_of_other_avatar:
             from simulation.action import AttackAction
             return AttackAction(direction_of_other_avatar)

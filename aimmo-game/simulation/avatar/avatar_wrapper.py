@@ -20,6 +20,7 @@ class AvatarWrapper(object):
         self.events = []
         self.avatar_appearance = avatar_appearance
         self.worker_url = worker_url
+        self.fog_of_war_modifier = 0
         self._action = None
 
     @property

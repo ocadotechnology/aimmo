@@ -17,6 +17,9 @@ SCORE_DESPAWN_CHANCE = 0.02
 TARGET_NUM_PICKUPS_PER_AVATAR = 0.5
 PICKUP_SPAWN_CHANCE = 0.02
 
+NO_FOG_OF_WAR_DISTANCE = 2
+PARTIAL_FOG_OF_WAR_DISTANCE = 3
+
 
 class HealthPickup(object):
     def __init__(self, health_restored=3):
@@ -36,18 +39,17 @@ class Cell(object):
     Any position on the world grid.
     """
 
-    def __init__(self, location, habitable=True, generates_score=False):
+    def __init__(self, location, habitable=True, generates_score=False, partially_fogged=False):
         self.location = location
         self.habitable = habitable
         self.generates_score = generates_score
         self.avatar = None
         self.pickup = None
+        self.partially_fogged = partially_fogged
         self.actions = []
 
     def __repr__(self):
-        return 'Cell({} h={} s={} a={} p={})'.format(
-            self.location, self.habitable, self.generates_score, self.avatar,
-            self.pickup)
+        return 'Cell({} h={} s={} a={} p={} f{})'.format(self.location, self.habitable, self.generates_score, self.avatar, self.pickup, self.partially_fogged)
 
     def __eq__(self, other):
         return self.location == other.location
@@ -64,13 +66,21 @@ class Cell(object):
         return self.avatar is not None
 
     def serialise(self):
-        return {
-            'avatar': self.avatar.serialise() if self.avatar else None,
-            'generates_score': self.generates_score,
-            'habitable': self.habitable,
-            'location': self.location.serialise(),
-            'pickup': self.pickup.serialise() if self.pickup else None,
-        }
+        if self.partially_fogged:
+            return {
+                'generates_score': self.generates_score,
+                'location': self.location.serialise(),
+                'partially_fogged': self.partially_fogged
+            }
+        else:
+            return {
+                'avatar': self.avatar.serialise() if self.avatar else None,
+                'generates_score': self.generates_score,
+                'habitable': self.habitable,
+                'location': self.location.serialise(),
+                'pickup': self.pickup.serialise() if self.pickup else None,
+                'partially_fogged': self.partially_fogged
+            }
 
 
 class WorldMap(object):
@@ -223,6 +233,12 @@ class WorldMap(object):
             return cell.moves[0].avatar
 
         return None
+        
+    def get_no_fog_distance(self):
+        return NO_FOG_OF_WAR_DISTANCE
+
+    def get_partial_fog_distance(self):
+        return PARTIAL_FOG_OF_WAR_DISTANCE
 
     def __repr__(self):
         return repr(self.grid)
