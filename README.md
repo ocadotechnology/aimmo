@@ -1,6 +1,14 @@
 # AI:MMO
 A **M**assively **M**ulti-player **O**nline game, where players create **A**rtificially **I**ntelligent programs to play on their behalf.
 
+## A [Code for Life](https://www.codeforlife.education/) project
+* Ocado Technology's [Code for Life initiative](https://www.codeforlife.education/) has been developed to inspire the next generation of computer scientists and to help teachers deliver the computing curriculum.
+* This repository hosts the source code of the **AI:MMO game**. AI:MMO is aimed as a follow-on from [Rapid Router](https://www.codeforlife.education/rapidrouter) to teach computing to secondary-school age children.
+* The other repos for Code For Life:
+    * the main portal (as well as registration, dashboards, materials...), [Code For Life Portal](https://github.com/ocadotechnology/codeforlife-portal)
+    * the first coding game of Code for Life for primary schools, [Rapid Router](https://github.com/ocadotechnology/rapid-router)
+    * the [deployment code for Google App Engine](https://github.com/ocadotechnology/codeforlife-deploy-appengine)
+
 ## Objective
 People program Avatars. Avatars play the game. A player's aim is to create a better Avatar than other people's Avatars. A "better" Avatar is one that scores points faster than other people's Avatars.
 
