@@ -18,8 +18,8 @@ def apply_fog_of_war(world_map, avatar_wrapper):
 
     lower_x = max(location.x - partial_fog_distance, 0)
     lower_y = max(location.y - partial_fog_distance, 0)
-    upper_x = min(location.x + partial_fog_distance, len(world_map.num_cols()) - 1)
-    upper_y = min(location.y + partial_fog_distance, len(world_map.num_rows()) - 1)
+    upper_x = min(location.x + partial_fog_distance, world_map.num_cols - 1)
+    upper_y = min(location.y + partial_fog_distance, world_map.num_rows - 1)
 
     x_range = upper_x - lower_x
     y_range = upper_y - lower_y

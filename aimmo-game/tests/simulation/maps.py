@@ -34,6 +34,13 @@ class InfiniteMap(WorldMap):
     def get_cell(self, location):
         return self._cell_cache.setdefault(location, Cell(location))
 
+    @property
+    def num_rows(self):
+        return float('inf')
+
+    @property
+    def num_cols(self):
+        return float('inf')
 
 class EmptyMap(WorldMap):
     def __init__(self):
