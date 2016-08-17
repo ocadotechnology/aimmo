@@ -56,6 +56,7 @@ class Cell(object):
             return {
                 'generates_score': self.generates_score,
                 'location': self.location.serialise(),
+                'partially_fogged': self.partially_fogged
             }
         else:
             return {
@@ -64,6 +65,7 @@ class Cell(object):
                 'habitable': self.habitable,
                 'location': self.location.serialise(),
                 'pickup': self.pickup.serialise() if self.pickup else None,
+                'partially_fogged': self.partially_fogged
             }
 
 
