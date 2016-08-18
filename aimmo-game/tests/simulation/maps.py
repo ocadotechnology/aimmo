@@ -36,9 +36,10 @@ class MockCell(Cell):
 
 class InfiniteMap(WorldMap):
     def __init__(self):
-        self.times_reconstructed = 0
         self._cell_cache = {}
         [self.get_cell(Location(x, y)) for x in range(5) for y in range(5)]
+        self.updates = 0
+        self.num_avatars = None
 
     def is_on_map(self, target_location):
         self.get_cell(target_location)
@@ -50,12 +51,13 @@ class InfiniteMap(WorldMap):
     def get_cell(self, location):
         return self._cell_cache.setdefault(location, Cell(location))
 
+    def update(self, num_avatars):
+        self.updates += 1
+        self.num_avatars = num_avatars
+
     @property
     def num_rows(self):
         return float('inf')
-
-    def reconstruct_interactive_state(self, num_avatars):
-        self.times_reconstructed += 1
 
     @property
     def num_cols(self):

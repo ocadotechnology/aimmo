@@ -32,7 +32,7 @@ class GameState(object):
         self.avatar_manager.remove_avatar(user_id)
 
     def _update_effects(self):
-        for avatar in self.avatar_manager.active_avatars():
+        for avatar in self.avatar_manager.active_avatars:
             avatar.update_effects()
 
     def update_environment(self):
