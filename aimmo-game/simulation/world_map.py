@@ -2,8 +2,10 @@ import math
 import random
 from pickups import ALL_PICKUPS
 
-from location import Location
 from logging import getLogger
+
+from simulation.location import Location
+from simulation.action import MoveAction
 
 LOGGER = getLogger(__name__)
 
@@ -16,23 +18,26 @@ SCORE_DESPAWN_CHANCE = 0.02
 TARGET_NUM_PICKUPS_PER_AVATAR = 0.5
 PICKUP_SPAWN_CHANCE = 0.02
 
+NO_FOG_OF_WAR_DISTANCE = 2
+PARTIAL_FOG_OF_WAR_DISTANCE = 3
+
 
 class Cell(object):
     """
     Any position on the world grid.
     """
 
-    def __init__(self, location, habitable=True, generates_score=False):
+    def __init__(self, location, habitable=True, generates_score=False, partially_fogged=False):
         self.location = location
         self.habitable = habitable
         self.generates_score = generates_score
         self.avatar = None
         self.pickup = None
+        self.partially_fogged = partially_fogged
+        self.actions = []
 
     def __repr__(self):
-        return 'Cell({} h={} s={} a={} p={})'.format(
-                self.location, self.habitable, self.generates_score, self.avatar,
-                self.pickup)
+        return 'Cell({} h={} s={} a={} p={} f{})'.format(self.location, self.habitable, self.generates_score, self.avatar, self.pickup, self.partially_fogged)
 
     def __eq__(self, other):
         return self.location == other.location
@@ -40,14 +45,30 @@ class Cell(object):
     def __hash__(self):
         return hash(self.location)
 
+    @property
+    def moves(self):
+        return [move for move in self.actions if isinstance(move, MoveAction)]
+
+    @property
+    def is_occupied(self):
+        return self.avatar is not None
+
     def serialise(self):
-        return {
-            'avatar': self.avatar.serialise() if self.avatar else None,
-            'generates_score': self.generates_score,
-            'habitable': self.habitable,
-            'location': self.location.serialise(),
-            'pickup': self.pickup.serialise() if self.pickup else None,
-        }
+        if self.partially_fogged:
+            return {
+                'generates_score': self.generates_score,
+                'location': self.location.serialise(),
+                'partially_fogged': self.partially_fogged
+            }
+        else:
+            return {
+                'avatar': self.avatar.serialise() if self.avatar else None,
+                'generates_score': self.generates_score,
+                'habitable': self.habitable,
+                'location': self.location.serialise(),
+                'pickup': self.pickup.serialise() if self.pickup else None,
+                'partially_fogged': self.partially_fogged
+            }
 
 
 class WorldMap(object):
@@ -83,6 +104,13 @@ class WorldMap(object):
             'location lookup mismatch: arg={}, found={}'.format(location, cell.location)
         return cell
 
+    def clear_cell_actions(self, location):
+        try:
+            cell = self.get_cell(location)
+            cell.actions = []
+        except ValueError:
+            return
+
     @property
     def num_rows(self):
         return len(self.grid[0])
@@ -95,7 +123,28 @@ class WorldMap(object):
     def num_cells(self):
         return self.num_rows * self.num_cols
 
-    def reconstruct_interactive_state(self, num_avatars):
+    def update(self, num_avatars):
+        # TODO: refactor into GameState (this class does too much)
+        self._update_avatars()
+        self._update_map(num_avatars)
+
+    def _update_avatars(self):
+        self._apply_score()
+        self._apply_pickups()
+
+    def _apply_pickups(self):
+        for cell in self.pickup_cells():
+            if cell.avatar is not None:
+                cell.pickup.apply(cell.avatar)
+
+    def _apply_score(self):
+        for cell in self.score_cells():
+            try:
+                cell.avatar.score += 1
+            except AttributeError:
+                pass
+
+    def _update_map(self, num_avatars):
         self._expand(num_avatars)
         self._reset_score_locations(num_avatars)
         self._add_pickups(num_avatars)
@@ -158,7 +207,6 @@ class WorldMap(object):
 
         Throws:
             IndexError: if there are no possible locations.
-
         """
         return self._get_random_spawn_locations(1)[0].location
 
@@ -166,9 +214,34 @@ class WorldMap(object):
     def can_move_to(self, target_location):
         if not self.is_on_map(target_location):
             return False
-
         cell = self.get_cell(target_location)
-        return cell.habitable and not cell.avatar
+
+        return (cell.habitable
+                and (not cell.is_occupied or cell.avatar.is_moving)
+                and len(cell.moves) <= 1)
+
+    def attackable_avatar(self, target_location):
+        '''
+        Return the avatar attackable at the given location, or None.
+        '''
+        try:
+            cell = self.get_cell(target_location)
+        except ValueError:
+            return None
+
+        if cell.avatar:
+            return cell.avatar
+
+        if len(cell.moves) == 1:
+            return cell.moves[0].avatar
+
+        return None
+
+    def get_no_fog_distance(self):
+        return NO_FOG_OF_WAR_DISTANCE
+
+    def get_partial_fog_distance(self):
+        return PARTIAL_FOG_OF_WAR_DISTANCE
 
     def __repr__(self):
         return repr(self.grid)

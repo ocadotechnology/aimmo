@@ -12,12 +12,13 @@ from flask_socketio import SocketIO, emit
 
 from six.moves import range
 
-from simulation.turn_manager import world_state_provider
+from simulation.turn_manager import state_provider
 from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.location import Location
 from simulation.game_state import GameState
-from simulation.turn_manager import TurnManager
+from simulation.turn_manager import ConcurrentTurnManager
+from simulation.turn_manager import SequentialTurnManager
 from simulation.worker_manager import WORKER_MANAGERS
 
 app = flask.Flask(__name__)
@@ -54,32 +55,28 @@ def player_dict(avatar):
 
 
 def get_world_state():
-    try:
-        world = world_state_provider.lock_and_get_world()
-        num_cols = world.world_map.num_cols
-        num_rows = world.world_map.num_rows
-        grid = [[to_cell_type(world.world_map.get_cell(Location(x, y)))
-                 for y in xrange(num_rows)]
-                for x in xrange(num_cols)]
-        player_data = {p.player_id: player_dict(p) for p in world.avatar_manager.avatars}
+    with state_provider as game_state:
+        world = game_state.world_map
+        num_cols = world.num_cols
+        num_rows = world.num_rows
+        grid = [[to_cell_type(world.get_cell(Location(x, y)))
+                 for y in range(num_rows)]
+                for x in range(num_cols)]
+        player_data = {p.player_id: player_dict(p) for p in game_state.avatar_manager.avatars}
         pickups = []
-        for cell in world.world_map.pickup_cells():
+        for cell in world.pickup_cells():
             pickup = cell.pickup.serialise()
             pickup['location'] = (cell.location.x, cell.location.y)
             pickups.append(pickup)
         return {
-                'players': player_data,
-                'score_locations': [(cell.location.x, cell.location.y)
-                                    for cell in world.world_map.score_cells()],
-                'pickups': pickups,
-                # TODO: experiment with only sending deltas (not if not required)
-                'map_changed': True,
-                'width': num_cols,
-                'height': num_rows,
-                'layout': grid,
-            }
-    finally:
-        world_state_provider.release_lock()
+            'players': player_data,
+            'score_locations': [(cell.location.x, cell.location.y) for cell in world.score_cells()],
+            'pickups': pickups,
+            'map_changed': True,  # TODO: experiment with only sending deltas (not if not required)
+            'width': num_cols,
+            'height': num_rows,
+            'layout': grid,
+        }
 
 
 @socketio.on('connect')
@@ -120,7 +117,7 @@ def run_game():
     my_map = map_generator.generate_map(10, 10, 0.1)
     player_manager = AvatarManager()
     game_state = GameState(my_map, player_manager)
-    turn_manager = TurnManager(game_state=game_state, end_turn_callback=send_world_update)
+    turn_manager = ConcurrentTurnManager(game_state=game_state, end_turn_callback=send_world_update)
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
     worker_manager = WorkerManagerClass(
         game_state=game_state,

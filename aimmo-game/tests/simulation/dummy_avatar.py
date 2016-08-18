@@ -1,23 +1,27 @@
 from __future__ import absolute_import
-from simulation.location import Location
+
+from simulation.avatar.avatar_wrapper import AvatarWrapper
+from simulation.avatar.avatar_manager import AvatarManager
+from simulation.action import MoveAction, WaitAction
+from simulation.direction import NORTH, EAST, SOUTH, WEST
 
 
-class DummyAvatarRunner(object):
-    def __init__(self, initial_location, player_id):
+class DummyAvatar(AvatarWrapper):
+    def __init__(self, player_id, initial_location):
         # TODO: extract avatar state and state-altering methods into a new class.
         #       The new class is to be shared between DummyAvatarRunner and AvatarRunner
-        self.health = 5
-        self.score = 0
-        self.location = initial_location
-        self.player_id = player_id
-        self.events = []
+        super(DummyAvatar, self).__init__(player_id, initial_location, None, None)
         self.times_died = 0
         self.attack_strength = 1
         self.effects = set()
         self.resistance = 0
 
-    def take_turn(self, game_state, turn_state):
-        self.location += Location(1, 0)
+    def decide_action(self, state_view):
+        self._action = self.handle_turn(state_view)
+        return True
+
+    def handle_turn(self, state_view):
+        raise NotImplementedError()
 
     def add_event(self, event):
         self.events.append(event)
@@ -34,19 +38,58 @@ class DummyAvatarRunner(object):
         return amount
 
 
-class EmptyAvatarManager(object):
-    def __init__(self):
-        self.avatarsById = {}
+class WaitDummy(DummyAvatar):
+    '''
+    Avatar that always waits.
+    '''
+    def handle_turn(self, state_view):
+        return WaitAction(self)
 
-    def remove_avatar(self, id):
-        del self.avatarsById[id]
 
-    def add_avatar(self, id, url, location):
-        self.avatarsById[id] = DummyAvatarRunner(location, id)
+class MoveDummy(DummyAvatar):
+    '''
+    Avatar that always moves in one direction.
+    '''
+    def __init__(self, player_id, initial_location, direction):
+        super(MoveDummy, self).__init__(player_id, initial_location)
+        self._direction = direction
 
-    def add_avatar_object(self, avatar):
-        self.avatarsById[avatar.player_id] = avatar
+    def handle_turn(self, state_view):
+        return MoveAction(self, self._direction.dict)
 
-    @property
-    def active_avatars(self):
-        return self.avatarsById.values()
+
+class MoveNorthDummy(MoveDummy):
+    def __init__(self, player_id, initial_location):
+        super(MoveNorthDummy, self).__init__(player_id, initial_location, NORTH)
+
+
+class MoveEastDummy(MoveDummy):
+    def __init__(self, player_id, initial_location):
+        super(MoveEastDummy, self).__init__(player_id, initial_location, EAST)
+
+
+class MoveSouthDummy(MoveDummy):
+    def __init__(self, player_id, initial_location):
+        super(MoveSouthDummy, self).__init__(player_id, initial_location, SOUTH)
+
+
+class MoveWestDummy(MoveDummy):
+    def __init__(self, player_id, initial_location):
+        super(MoveWestDummy, self).__init__(player_id, initial_location, WEST)
+
+
+class DummyAvatarManager(AvatarManager):
+    def __init__(self, dummy_list=[]):
+        super(DummyAvatarManager, self).__init__()
+        self.dummy_list = dummy_list
+
+    def add_avatar(self, player_id, worker_url, location):
+        try:
+            dummy = self.dummy_list.pop(0)
+        except IndexError:
+            dummy = WaitDummy
+        self.avatars_by_id[player_id] = dummy(player_id, location)
+        return self.avatars_by_id[player_id]
+
+    def add_avatar_directly(self, avatar):
+        self.avatars_by_id[avatar.player_id] = avatar

@@ -23,14 +23,11 @@ class MockEffect(object):
 
 
 class MockAction(object):
-    def __init__(self, **options):
+    def __init__(self, avatar, **options):
         global actions_created
         self.options = options
-        self.applied_to = None
+        self.avatar = avatar
         actions_created.append(self)
-
-    def apply(self, game_state, avatar):
-        self.applied_to = avatar
 
 
 class ActionRequest(object):
@@ -66,13 +63,13 @@ class TestAvatarWrapper(TestCase):
         if request_mock is None:
             request_mock = ActionRequest()
         with HTTMock(request_mock):
-            self.avatar.take_turn(None, None)
+            self.avatar.decide_action(None)
 
-    def test_action_applied(self):
+    def test_action_has_created_correctly(self):
         self.take_turn()
         self.assertGreater(len(actions_created), 0, 'No action applied')
         self.assertEqual(len(actions_created), 1, 'Too many actions applied')
-        self.assertEqual(actions_created[0].applied_to, self.avatar, 'Action applied on wrong avatar')
+        self.assertEqual(actions_created[0].avatar, self.avatar, 'Action applied on wrong avatar')
 
     def test_bad_action_data_given(self):
         request_mock = InvalidJSONRequest
@@ -94,26 +91,26 @@ class TestAvatarWrapper(TestCase):
 
     def test_effects_on_turn_are_called(self):
         effect1, effect2 = self.add_effects()
-        self.take_turn()
+        self.avatar.update_effects()
         self.assertEqual(effect1.turns, 1)
         self.assertEqual(effect2.turns, 1)
 
     def test_effects_not_removed(self):
         effect1, effect2 = self.add_effects()
-        self.take_turn()
+        self.avatar.update_effects()
         self.assertEqual(set((effect1, effect2)), self.avatar.effects)
 
     def test_expired_effects_removed(self):
         effect1, effect2 = self.add_effects()
         effect1.expire = True
-        self.take_turn()
+        self.avatar.update_effects()
         self.assertEqual(effect2.turns, 1)
         self.assertEqual(self.avatar.effects, set((effect2,)))
 
     def test_effects_applied_on_invalid_action(self):
         self.take_turn(InvalidJSONRequest)
         effect = self.add_effects(1)[0]
-        self.take_turn()
+        self.avatar.update_effects()
         self.assertEqual(effect.turns, 1)
 
     def test_avatar_dies_health(self):

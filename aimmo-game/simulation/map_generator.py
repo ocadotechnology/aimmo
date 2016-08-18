@@ -7,7 +7,7 @@ from simulation.world_map import Cell, WorldMap
 from six.moves import zip, range
 
 
-def generate_map(height, width, obstacle_ratio):
+def generate_map(height, width, obstacle_ratio=0.1):
     grid = [[Cell(Location(x, y)) for y in range(height)] for x in range(width)]
     world_map = WorldMap(grid)
 

@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 import abc
-from .dummy_avatar import DummyAvatarRunner
+from .dummy_avatar import DummyAvatar
 from .maps import MockCell
 from simulation import effects, pickups
 from unittest import TestCase
@@ -11,7 +11,7 @@ class _BaseCases(object):
         __metaclass__ = abc.ABCMeta
 
         def setUp(self):
-            self.avatar = DummyAvatarRunner(None, 1)
+            self.avatar = DummyAvatar(1, None)
             self.cell = MockCell()
             self.pickup = self.pickup_class(self.cell)
 

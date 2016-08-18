@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 import abc
-from .dummy_avatar import DummyAvatarRunner
+from .dummy_avatar import DummyAvatar
 from simulation import effects
 from unittest import TestCase
 
@@ -14,7 +14,7 @@ class _BaseCases(object):
             pass
 
         def setUp(self):
-            self.avatar = DummyAvatarRunner(None, 1)
+            self.avatar = DummyAvatar(1, None)
             self.effect = self.make_effect(self.avatar)
             self.avatar.effects.add(self.effect)
 

@@ -9,15 +9,15 @@ class Cell(object):
     Any position on the world grid.
     """
 
-    def __init__(self, location, habitable, generates_score, avatar, pickup):
+    def __init__(self, location, avatar=None, **kwargs):
         self.location = Location(**location)
-        self.habitable = habitable
-        self.generates_score = generates_score
-        self.avatar = AvatarState(**avatar) if avatar else None
-        self.pickup = pickup if pickup else None
+        if avatar:
+            self.avatar = AvatarState(**avatar)
+        for (key, value) in kwargs.items():
+            setattr(self, key, value)
 
     def __repr__(self):
-        return 'Cell({} h={} s={} a={} p={})'.format(self.location, self.habitable, self.generates_score, self.avatar, self.pickup)
+        return 'Cell({} h={} s={} a={} p={})'.format(self.location, getattr(self, 'habitable', 0), self.generates_score, getattr(self, 'avatar', 0), getattr(self, 'pickup', 0))
 
     def __eq__(self, other):
         return self.location == other.location
@@ -42,9 +42,12 @@ class WorldMap(object):
         return (c for c in self.all_cells() if c.generates_score)
 
     def pickup_cells(self):
-        return (c for c in self.all_cells() if c.pickup)
+        return (c for c in self.all_cells() if getattr(c, 'pickup', False))
 
-    def is_on_map(self, location):
+    def partially_fogged_cells(self):
+        return (c for c in self.all_cells() if c.partially_fogged)
+
+    def is_visible(self, location):
         return location in self.cells
 
     def get_cell(self, location):
@@ -58,7 +61,7 @@ class WorldMap(object):
             cell = self.get_cell(target_location)
         except KeyError:
             return False
-        return cell.habitable and not cell.avatar
+        return getattr(cell, 'habitable', False) and not getattr(cell, 'avatar', False)
 
     def __repr__(self):
         return repr(self.cells)
