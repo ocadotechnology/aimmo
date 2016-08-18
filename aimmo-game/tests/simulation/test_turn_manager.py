@@ -34,7 +34,8 @@ class TestTurnManager(unittest.TestCase):
         self.turn_manager = ConcurrentTurnManager(game_state=self.game_state,
                                                   end_turn_callback=lambda: None)
         for index, location in enumerate(locations):
-            self.game_state.add_avatar(index, "", location)
+            with self.game_state as state:
+                state.add_avatar(index, "", location)
         return self.turn_manager
 
     def assert_at(self, avatar, location):

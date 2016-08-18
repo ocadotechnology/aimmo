@@ -25,9 +25,9 @@ class _WorkerManagerData(object):
         self._lock = Semaphore()
 
     def _remove_avatar(self, user_id):
-        assert self._lock.locked
-        self._game_state.remove_avatar(user_id)
-        del self._user_codes[user_id]
+        with self._game_state as game_state:
+            game_state.remove_avatar(user_id)
+            del self._user_codes[user_id]
 
     def remove_user_if_code_is_different(self, user):
         with self._lock:
@@ -41,9 +41,9 @@ class _WorkerManagerData(object):
                 return False
 
     def add_avatar(self, user, worker_url):
-        with self._lock:
+        with self._game_state as game_state:
             # Add avatar back into game
-            self._game_state.add_avatar(
+            game_state.add_avatar(
                 user_id=user['id'], worker_url="%s/turn/" % worker_url)
 
     def set_code(self, user):

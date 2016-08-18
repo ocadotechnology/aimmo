@@ -13,13 +13,11 @@ from flask_socketio import SocketIO, emit
 
 from six.moves import range
 
-from simulation.turn_manager import state_provider
 from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.location import Location
 from simulation.game_state import GameState
-from simulation.turn_manager import ConcurrentTurnManager
-from simulation.turn_manager import SequentialTurnManager
+from simulation.turn_manager import TURN_MANAGERS
 from simulation.worker_manager import WORKER_MANAGERS
 
 app = flask.Flask(__name__)
@@ -56,7 +54,7 @@ def player_dict(avatar):
 
 
 def get_world_state():
-    with state_provider as game_state:
+    with turn_manager.game_state as game_state:
         world = game_state.world_map
         num_cols = world.num_cols
         num_rows = world.num_rows
@@ -107,13 +105,19 @@ def player_data(player_id):
 
 
 def run_game():
+    global turn_manager
     global worker_manager
 
     print("Running game...")
     my_map = map_generator.generate_map(10, 10, 0.1)
     player_manager = AvatarManager()
     game_state = GameState(my_map, player_manager)
-    turn_manager = ConcurrentTurnManager(game_state=game_state, end_turn_callback=send_world_update)
+
+    TurnManagerClass = TURN_MANAGERS[os.environ.get('TURN_MANAGER', 'concurrent')]
+    turn_manager = TurnManagerClass(
+        game_state=game_state,
+        end_turn_callback=send_world_update
+    )
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
     worker_manager = WorkerManagerClass(
         game_state=game_state,

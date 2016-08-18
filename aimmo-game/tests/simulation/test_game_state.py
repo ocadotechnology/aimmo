@@ -17,8 +17,9 @@ class FogToEmpty(object):
 
 class TestGameState(TestCase):
     def test_remove_non_existant_avatar(self):
-        state = GameState(None, DummyAvatarManager())
-        state.remove_avatar(10)
+        game_state = GameState(None, DummyAvatarManager())
+        with game_state:
+            game_state.remove_avatar(10)
 
     def test_remove_avatar(self):
         world_map = InfiniteMap()
@@ -34,7 +35,8 @@ class TestGameState(TestCase):
         manager.add_avatar_directly(avatar2)
         world_map.get_cell(Location(1, 1)).avatar = avatar2
 
-        game_state.remove_avatar(1)
+        with game_state:
+            game_state.remove_avatar(1)
 
         self.assertNotIn(1, manager.avatars_by_id)
         self.assertEqual(world_map.get_cell((0, 0)).avatar, None)
@@ -43,15 +45,18 @@ class TestGameState(TestCase):
         self.assertTrue(world_map.get_cell(Location(1, 1)).avatar.marked)
 
     def test_add_avatar(self):
-        state = GameState(AvatarMap(None), DummyAvatarManager())
-        state.add_avatar(7, "")
-        self.assertIn(7, state.avatar_manager.avatars_by_id)
-        avatar = state.avatar_manager.avatars_by_id[7]
+        game_state = GameState(AvatarMap(None), DummyAvatarManager())
+
+        with game_state:
+            game_state.add_avatar(7, "")
+
+        self.assertIn(7, game_state.avatar_manager.avatars_by_id)
+        avatar = game_state.avatar_manager.avatars_by_id[7]
         self.assertEqual(avatar.location.x, 10)
         self.assertEqual(avatar.location.y, 10)
 
     def test_fog_of_war(self):
-        state = GameState(InfiniteMap(), DummyAvatarManager())
-        view = state.get_state_for(DummyAvatar(None, None), FogToEmpty())
+        game_state = GameState(InfiniteMap(), DummyAvatarManager())
+        view = game_state.get_state_for(DummyAvatar(None, None), FogToEmpty())
         self.assertEqual(len(view['world_map']['cells']), 0)
         self.assertEqual(view['avatar_state'], 'Dummy')

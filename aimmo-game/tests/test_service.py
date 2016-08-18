@@ -1,10 +1,13 @@
 from __future__ import absolute_import
+
+import __builtin__
+
 import service
 from simulation.game_state import GameState
 from simulation.location import Location
 from .simulation.dummy_avatar import MoveEastDummy
 from .simulation.test_world_map import MockCell
-from simulation.turn_manager import state_provider
+from simulation.turn_manager import TurnManager
 from simulation.world_map import WorldMap
 from unittest import TestCase
 
@@ -35,7 +38,11 @@ class TestService(TestCase):
         ]
         grid = [[MockCell(Location(x, y), **CELLS[x][y])
                  for y in xrange(3)] for x in xrange(2)]
-        state_provider.set_world(GameState(WorldMap(grid), SimpleAvatarManager()))
+
+        __builtin__.turn_manager = TurnManager(
+            game_state=GameState(WorldMap(grid), SimpleAvatarManager()),
+            end_turn_callback=None
+        )
         return service.get_world_state()
 
     def test_player_dict(self):
