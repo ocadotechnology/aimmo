@@ -7,7 +7,7 @@ from simulation.direction import NORTH, EAST, SOUTH, WEST
 
 
 class DummyAvatar(AvatarWrapper):
-    def __init__(self, player_id, initial_location):
+    def __init__(self, player_id=1, initial_location=(0, 0)):
         # TODO: extract avatar state and state-altering methods into a new class.
         #       The new class is to be shared between DummyAvatarRunner and AvatarRunner
         super(DummyAvatar, self).__init__(player_id, initial_location, None, None)

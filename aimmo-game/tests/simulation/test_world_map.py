@@ -219,6 +219,15 @@ class TestWorldMap(TestCase):
         map.update(2)
         self.assertEqual(len(list(map.score_cells())), 2)
 
+    def test_scores_applied(self):
+        grid = self._generate_grid()
+        avatar = DummyAvatar()
+        grid[1][1].generates_score = True
+        grid[1][1].avatar = avatar
+        WorldMap(grid).update(1)
+        self.assertEqual(avatar.score, 1)
+
+
     def test_scores_not_added_when_at_target(self):
         world_map.TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR = 1
         grid = self._generate_grid()
@@ -245,6 +254,15 @@ class TestWorldMap(TestCase):
 
         map.update(2)
         self.assertEqual(len(list(map.pickup_cells())), 2)
+
+    def test_pickups_applied(self):
+        grid = self._generate_grid()
+        pickup = MockPickup()
+        avatar = DummyAvatar()
+        grid[1][1].pickup = pickup
+        grid[1][1].avatar = avatar
+        WorldMap(grid).update(1)
+        self.assertEqual(pickup.applied_to, avatar)
 
     def test_pickup_spawn_chance(self):
         world_map.TARGET_NUM_PICKUPS_PER_AVATAR = 5
