@@ -181,16 +181,16 @@ class TestWorldMap(TestCase):
     def test_grid_expand(self):
         world_map.TARGET_NUM_CELLS_PER_AVATAR = 5
         map = WorldMap(self._generate_grid())
-        map.reconstruct_interactive_state(1)
+        map.expand(1)
         self.assertGridSize(map, 3)
 
-        map.reconstruct_interactive_state(2)
+        map.expand(2)
         self.assertGridSize(map, 4)
 
     def test_grid_doesnt_expand(self):
         world_map.TARGET_NUM_CELLS_PER_AVATAR = 4
         map = WorldMap(self._generate_grid())
-        map.reconstruct_interactive_state(1)
+        map.expand(1)
         self.assertGridSize(map, 2)
 
     def test_scores_removed(self):
@@ -198,7 +198,7 @@ class TestWorldMap(TestCase):
         grid = self._generate_grid()
         grid[0][1].generates_score = True
         map = WorldMap(grid)
-        map.reconstruct_interactive_state(1)
+        map.reset_score_locations(1)
         self.assertEqual(len(list(map.score_cells())), 0)
 
     def test_score_despawn_chance(self):
@@ -206,17 +206,17 @@ class TestWorldMap(TestCase):
         grid = self._generate_grid()
         grid[0][1].generates_score = True
         map = WorldMap(grid)
-        map.reconstruct_interactive_state(1)
+        map.reset_score_locations(1)
         self.assertIn(grid[0][1], map.score_cells())
         self.assertEqual(len(list(map.score_cells())), 1)
 
     def test_scores_added(self):
         world_map.TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR = 1
         map = WorldMap(self._generate_grid())
-        map.reconstruct_interactive_state(1)
+        map.reset_score_locations(1)
         self.assertEqual(len(list(map.score_cells())), 1)
 
-        map.reconstruct_interactive_state(2)
+        map.reset_score_locations(2)
         self.assertEqual(len(list(map.score_cells())), 2)
 
     def test_scores_not_added_when_at_target(self):
@@ -224,7 +224,7 @@ class TestWorldMap(TestCase):
         grid = self._generate_grid()
         grid[0][1].generates_score = True
         map = WorldMap(grid)
-        map.reconstruct_interactive_state(1)
+        map.reset_score_locations(1)
         self.assertEqual(len(list(map.score_cells())), 1)
         self.assertIn(grid[0][1], map.score_cells())
 
@@ -233,17 +233,17 @@ class TestWorldMap(TestCase):
         grid = self._generate_grid(1)
         grid = [[MockCell(avatar='avatar')]]
         map = WorldMap(grid)
-        map.reconstruct_interactive_state(1)
+        map.reset_score_locations(1)
         self.assertEqual(len(list(map.score_cells())), 0)
 
     def test_pickups_added(self):
         world_map.TARGET_NUM_PICKUPS_PER_AVATAR = 1
         world_map.PICKUP_SPAWN_CHANCE = 1
         map = WorldMap(self._generate_grid())
-        map.reconstruct_interactive_state(1)
+        map.add_pickups(1)
         self.assertEqual(len(list(map.pickup_cells())), 1)
 
-        map.reconstruct_interactive_state(2)
+        map.add_pickups(2)
         self.assertEqual(len(list(map.pickup_cells())), 2)
 
     def test_pickup_spawn_chance(self):
@@ -251,7 +251,7 @@ class TestWorldMap(TestCase):
         world_map.PICKUP_SPAWN_CHANCE = 0
         grid = self._generate_grid()
         map = WorldMap(grid)
-        map.reconstruct_interactive_state(1)
+        map.add_pickups(1)
         self.assertEqual(len(list(map.pickup_cells())), 0)
 
     def test_pickups_not_added_when_at_target(self):
@@ -259,7 +259,7 @@ class TestWorldMap(TestCase):
         grid = self._generate_grid()
         grid[0][1].pickup = True
         map = WorldMap(grid)
-        map.reconstruct_interactive_state(1)
+        map.add_pickups(1)
         self.assertEqual(len(list(map.pickup_cells())), 1)
         self.assertIn(grid[0][1], map.pickup_cells())
 
@@ -268,7 +268,7 @@ class TestWorldMap(TestCase):
         grid = self._generate_grid(1)
         grid = [[MockCell(avatar='avatar')]]
         map = WorldMap(grid)
-        map.reconstruct_interactive_state(1)
+        map.add_pickups(1)
         self.assertEqual(len(list(map.pickup_cells())), 0)
 
     def test_random_spawn_location(self):

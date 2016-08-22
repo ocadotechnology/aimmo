@@ -44,7 +44,7 @@ class _WorkerManagerData(object):
         with self._game_state as game_state:
             # Add avatar back into game
             game_state.add_avatar(
-                user_id=user['id'], worker_url="%s/turn/" % worker_url)
+                avatar_id=user['id'], worker_url="%s/turn/" % worker_url)
 
     def set_code(self, user):
         with self._lock:

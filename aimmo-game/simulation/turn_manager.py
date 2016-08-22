@@ -40,8 +40,7 @@ class TurnManager(Thread):
             self.run_turn()
 
             with self.game_state as game_state:
-                game_state.update_environment()
-                game_state.world_map.apply_score()
+                game_state.end_of_turn()
 
             self.end_turn_callback()
             time.sleep(0.5)

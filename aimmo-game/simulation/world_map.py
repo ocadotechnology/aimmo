@@ -141,12 +141,7 @@ class WorldMap(object):
             except AttributeError:
                 pass
 
-    def reconstruct_interactive_state(self, num_avatars):
-        self._expand(num_avatars)
-        self._reset_score_locations(num_avatars)
-        self._add_pickups(num_avatars)
-
-    def _expand(self, num_avatars):
+    def expand(self, num_avatars):
         target_num_cells = int(math.ceil(num_avatars * TARGET_NUM_CELLS_PER_AVATAR))
         num_cells_to_add = target_num_cells - self.num_cells
         if num_cells_to_add > 0:
@@ -165,7 +160,7 @@ class WorldMap(object):
         for x in range(self.num_cols):
             self.grid[x].append(Cell(Location(x, rows)))
 
-    def _reset_score_locations(self, num_avatars):
+    def reset_score_locations(self, num_avatars):
         for cell in self.score_cells():
             if random.random() < SCORE_DESPAWN_CHANCE:
                 cell.generates_score = False
@@ -179,7 +174,7 @@ class WorldMap(object):
         for cell in locations:
             cell.generates_score = True
 
-    def _add_pickups(self, num_avatars):
+    def add_pickups(self, num_avatars):
         target_num_pickups = int(math.ceil(num_avatars * TARGET_NUM_PICKUPS_PER_AVATAR))
         LOGGER.debug('Aiming for %s new pickups', target_num_pickups)
         max_num_pickups_to_add = target_num_pickups - len(list(self.pickup_cells()))
@@ -233,7 +228,7 @@ class WorldMap(object):
             return cell.moves[0].avatar
 
         return None
-        
+
     def get_no_fog_distance(self):
         return NO_FOG_OF_WAR_DISTANCE
 

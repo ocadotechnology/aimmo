@@ -71,6 +71,7 @@ class MoveAction(Action):
         world_map.get_cell(self.avatar.location).avatar = None
         self.avatar.location = self.target_location
         world_map.get_cell(self.target_location).avatar = self.avatar
+
         self.avatar.clear_action()
 
         new_cell = world_map.get_cell(self.target_location)
