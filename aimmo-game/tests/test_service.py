@@ -10,7 +10,7 @@ from unittest import TestCase
 
 
 class SimpleAvatarManager(object):
-    avatars = [MoveEastDummy(1, Location(0, 1))]
+    avatars = [MoveEastDummy(1, Location(0, -1))]
 
 
 class TestService(TestCase):
@@ -21,10 +21,11 @@ class TestService(TestCase):
         self.assertEqual(response.data, 'HEALTHY')
 
     def setup_world(self):
+        avatar_manager = SimpleAvatarManager()
         CELLS = [
             [
+                {'avatar': avatar_manager.avatars[0]},
                 {},
-                {'avatar': 'a'},
                 {'generates_score': True},
             ],
             [
@@ -35,7 +36,7 @@ class TestService(TestCase):
         ]
         grid = {Location(x, y-1): MockCell(Location(x, y-1), **CELLS[x][y])
                 for y in xrange(3) for x in xrange(2)}
-        state_provider.set_world(GameState(WorldMap(grid), SimpleAvatarManager()))
+        state_provider.set_world(GameState(WorldMap(grid), avatar_manager))
         return service.get_world_state()
 
     def test_player_dict(self):
@@ -45,7 +46,7 @@ class TestService(TestCase):
         details = player_dict[1]
         self.assertEqual(details['id'], 1)
         self.assertEqual(details['x'], 0)
-        self.assertEqual(details['y'], 0)
+        self.assertEqual(details['y'], -1)
         self.assertEqual(details['health'], 5)
         self.assertEqual(details['score'], 0)
 
