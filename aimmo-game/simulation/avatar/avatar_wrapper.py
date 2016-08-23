@@ -51,7 +51,7 @@ class AvatarWrapper(object):
         except requests.exceptions.ConnectionError:
             LOGGER.info('Could not connect to worker, probably not ready yet')
         except Exception:
-            LOGGER.exception("Unknown error while fetching turn data")
+            LOGGER.exception('Unknown error while fetching turn data')
 
         else:
             self._action = action

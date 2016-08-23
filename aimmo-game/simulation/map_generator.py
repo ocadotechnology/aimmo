@@ -17,11 +17,11 @@ def generate_map(height, width, obstacle_ratio=0.1):
     for x, y in shuffled(_get_edge_coordinates(height, width)):
         if (x, y) != (always_empty_edge_x, always_empty_edge_y) and random.random() < obstacle_ratio:
             cell = grid[x][y]
-            cell.habitable = False
+            cell._habitable = False
             # So long as all habitable neighbours can still reach each other,
             # then the map cannot get bisected
             if not _all_habitable_neighbours_can_reach_each_other(cell, world_map):
-                cell.habitable = True
+                cell._habitable = True
 
     return world_map
 

@@ -40,13 +40,13 @@ class Cell(object):
     """
 
     def __init__(self, location, habitable=True, generates_score=False, partially_fogged=False):
-        self.location = location
-        self.habitable = habitable
+        self._location = location
+        self._habitable = habitable
         self.generates_score = generates_score
         self.avatar = None
         self.pickup = None
         self.partially_fogged = partially_fogged
-        self.actions = []
+        self._actions = []
 
     def __repr__(self):
         return 'Cell({} h={} s={} a={} p={} f{})'.format(self.location, self.habitable, self.generates_score, self.avatar, self.pickup, self.partially_fogged)
@@ -58,12 +58,30 @@ class Cell(object):
         return hash(self.location)
 
     @property
+    def location(self):
+        return self._location
+
+    @property
+    def habitable(self):
+        return self._habitable
+
+    @property
+    def actions(self):
+        return [action for action in self._actions]
+
+    @property
     def moves(self):
         return [move for move in self.actions if isinstance(move, MoveAction)]
 
     @property
     def is_occupied(self):
         return self.avatar is not None
+
+    def register_action(self, action):
+        self._actions.append(action)
+
+    def clear_actions(self):
+        self._actions = []
 
     def serialise(self):
         if self.partially_fogged:
@@ -89,10 +107,10 @@ class WorldMap(object):
     """
 
     def __init__(self, grid):
-        self.grid = grid
+        self._grid = grid
 
     def all_cells(self):
-        return (cell for sublist in self.grid for cell in sublist)
+        return (cell for row in self._grid for cell in row)
 
     def score_cells(self):
         return (c for c in self.all_cells() if c.generates_score)
@@ -111,24 +129,24 @@ class WorldMap(object):
     def get_cell(self, location):
         if not self.is_on_map(location):
             raise ValueError('Location %s is not on the map' % location)
-        cell = self.grid[location.x][location.y]
+        cell = self._grid[location.x][location.y]
         assert cell.location == location, 'location lookup mismatch: arg={}, found={}'.format(location, cell.location)
         return cell
 
     def clear_cell_actions(self, location):
         try:
             cell = self.get_cell(location)
-            cell.actions = []
+            cell.clear_actions()
         except ValueError:
             return
 
     @property
     def num_rows(self):
-        return len(self.grid[0])
+        return len(self._grid[0])
 
     @property
     def num_cols(self):
-        return len(self.grid)
+        return len(self._grid)
 
     @property
     def num_cells(self):
@@ -152,13 +170,13 @@ class WorldMap(object):
         self._add_layer_to_horizontal_edge()
 
     def _add_layer_to_vertical_edge(self):
-        self.grid.append([Cell(Location(self.num_cols, y)) for y in range(self.num_rows)])
+        self._grid.append([Cell(Location(self.num_cols, y)) for y in range(self.num_rows)])
 
     def _add_layer_to_horizontal_edge(self):
         # Read rows once here, as we'll mutate it as part of the first iteration
         rows = self.num_rows
         for x in range(self.num_cols):
-            self.grid[x].append(Cell(Location(x, rows)))
+            self._grid[x].append(Cell(Location(x, rows)))
 
     def reset_score_locations(self, num_avatars):
         for cell in self.score_cells():
@@ -236,4 +254,4 @@ class WorldMap(object):
         return PARTIAL_FOG_OF_WAR_DISTANCE
 
     def __repr__(self):
-        return repr(self.grid)
+        return repr(self._grid)

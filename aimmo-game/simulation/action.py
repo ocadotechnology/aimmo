@@ -23,7 +23,7 @@ class Action(object):
 
     def register(self, world_map):
         if world_map.is_on_map(self.target_location):
-            world_map.get_cell(self.target_location).actions.append(self)
+            world_map.get_cell(self.target_location).register_action(self)
 
     def process(self, world_map):
         if self.is_legal(world_map):

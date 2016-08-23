@@ -22,7 +22,6 @@ class GameState(object):
     def __init__(self, world_map, avatar_manager):
         self.world_map = world_map
         self.avatar_manager = avatar_manager
-
         self._edit_lock = RLock()
 
     def __enter__(self):

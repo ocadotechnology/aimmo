@@ -7,13 +7,11 @@ from simulation.world_map import Cell, WorldMap
 class MockCell(Cell):
     def __init__(self, location=1, habitable=True, generates_score=False,
                  avatar=None, pickup=None, name=None, actions=[]):
-        self.location = location
-        self.habitable = habitable
-        self.generates_score = generates_score
+        super(MockCell, self).__init__(location, habitable, generates_score)
         self.avatar = avatar
         self.pickup = pickup
         self.name = name
-        self.actions = actions
+        self._actions = actions
 
     def __eq__(self, other):
         return self is other

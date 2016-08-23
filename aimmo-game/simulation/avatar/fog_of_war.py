@@ -43,7 +43,7 @@ def should_partially_fog(no_fog_distance, partial_fog_distance, x_dist, y_dist):
 
 def partially_fog_cell(cell):
     partially_fogged_cell = copy.deepcopy(cell)
-    partially_fogged_cell.habitable = True
+    partially_fogged_cell._habitable = True
     partially_fogged_cell.avatar = None
     partially_fogged_cell.pickup = None
     partially_fogged_cell.partially_fogged = True
