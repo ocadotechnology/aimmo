@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: aimmo-reverse-proxy
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: aimmo-reverse-proxy
+    spec:
+      containers:
+      - name: aimmo-reverse-proxy
+        image: ocadotechnology/aimmo-reverse-proxy:latest
+        ports:
+        - containerPort: 80

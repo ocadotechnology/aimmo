@@ -3,7 +3,7 @@
 import logging
 from pykube import HTTPClient
 from pykube import KubeConfig
-from pykube import Ingress, ReplicationController, Service
+from pykube import ReplicationController, Service
 import time
 
 LOGGER = logging.getLogger(__name__)
@@ -132,39 +132,6 @@ def maintain_games(api, games):
             if game_id not in current_game_names:
                 LOGGER.info("Creating game %s", game_id)
                 creation_callback(api, game_id, game_config)
-
-    ingress = Ingress(
-        api,
-        {
-            'apiVersion': 'extensions/v1beta1',
-            'kind': 'Ingress',
-            'metadata': {
-                'name': 'game',
-            },
-            'spec': {
-                'rules': [
-                    {
-                        'host': 'staging.aimmo.codeforlife.education',
-                        'http': {
-                            'paths': [
-                                {
-                                    'path': "/game/%s/*" % name,
-                                    'backend': {
-                                        'serviceName': "game-%s" % name,
-                                        'servicePort': 80,
-                                    },
-                                } for name in games.keys()
-                            ],
-                        },
-                    },
-                ],
-            },
-        },
-    )
-    if ingress.exists():
-        ingress.update()
-    else:
-        ingress.create()
 
 
 def main():

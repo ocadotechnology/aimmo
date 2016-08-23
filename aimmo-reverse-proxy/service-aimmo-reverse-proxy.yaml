@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: aimmo-reverse-proxy
+spec:
+  selector:
+    app: aimmo-reverse-proxy
+  ports:
+  - protocol: TCP
+    port: 80
+  type: NodePort
