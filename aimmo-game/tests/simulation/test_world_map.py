@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+import math
 from string import ascii_uppercase
 from unittest import TestCase
 
@@ -9,6 +10,14 @@ from simulation.world_map import Cell, WorldMap
 
 from .maps import MockCell
 from .dummy_avatar import DummyAvatar
+
+
+def int_ceil(num):
+    return int(math.ceil(num))
+
+
+def int_floor(num):
+    return int(math.floor(num))
 
 
 class Serialiser(object):
@@ -344,13 +353,14 @@ class TestWorldMapWithOriginCentre(TestWorldMap):
     def _generate_grid(self, columns=2, rows=2):
         alphabet = iter(ascii_uppercase)
         grid = {Location(x, y): MockCell(Location(x, y), name=next(alphabet))
-                for x in xrange(-columns/2+1, columns/2+1) for y in xrange(-rows/2+1, rows/2+1)}
+                for x in xrange(-int_ceil(columns/2.0)+1, int_floor(columns/2.0)+1) for y in xrange(-int_ceil(rows/2.0)+1, int_floor(rows/2.0)+1)}
+
         return grid
 
     def _grid_from_list(self, in_list):
         out = {}
-        min_x = -len(in_list)/2 + 1
-        min_y = -len(in_list[0])/2 + 1
+        min_x = -int_ceil(len(in_list)/2.0) + 1
+        min_y = -int_ceil(len(in_list[0])/2.0) + 1
         for i, column in enumerate(in_list):
             x = i + min_x
             for j, cell in enumerate(column):
