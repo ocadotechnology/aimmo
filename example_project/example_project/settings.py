@@ -36,6 +36,7 @@
 # identified as the original program.
 '''Django settings for example_project project.'''
 import os
+import subprocess
 
 DEBUG = True
 
@@ -85,6 +86,15 @@ LOGGING = {
         },
     }
 }
+
+def get_url(game):
+    if os.environ.get('AIMMO_MODE', '') == 'minikube':
+        output = subprocess.check_output(['./test-bin/minikube', 'service', 'game-%s' % game, '--url'])
+        return (output.strip(), '/game/%s/socket.io' % game)
+    else:
+        return ('http://localhost:5000', '/socket.io')
+
+AIMMO_GAME_SERVER_LOCATION_FUNCTION = get_url
 
 try:
     from example_project.local_settings import * # pylint: disable=E0611
