@@ -10,7 +10,7 @@ import requests
 from pykube import Deployment
 from pykube import HTTPClient
 from pykube import KubeConfig
-from pykube import Pod
+from pykube import Service
 
 LOGGER = logging.getLogger(__name__)
 
@@ -253,15 +253,33 @@ class KubernetesWorkerManager(WorkerManager):
              },
             }
         )
+        service = Service(
+            self.api,
+            {
+                'apiVersion': 'v1',
+                'kind': 'Service',
+                'metadata': {
+                    'name': name,
+                },
+                'spec': {
+                    'selector': {
+                        'app': 'aimmo-game-worker',
+                        'game': self.game_name,
+                        'player': str(player_id),
+                    },
+                    'ports': [
+                        {
+                            'protocal': 'TCP',
+                            'port': '5000',
+                        },
+                    ],
+                },
+            },
+        )
+
         deployment.create()
-        time.sleep(20)
-        deployment.reload()
-        pod = Pod.objects(self.api).get(selector={
-            'app': 'aimmo-game-worker',
-            'game': self.game_name,
-            'player': str(player_id),
-        })
-        worker_url = "http://%s:5000" % pod.obj['status']['podIP']
+        service.create()
+        worker_url = "http://%s:5000" % name
         LOGGER.info("Worker started for %s, listening at %s", player_id, worker_url)
         return worker_url
 
