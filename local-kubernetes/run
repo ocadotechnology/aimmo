@@ -1,0 +1,46 @@
+#!/bin/bash
+set -e
+set -x
+
+# Make sure we're in the right directory
+cd $(cd -P -- "$(dirname -- "$0")" && pwd -P)
+
+export KUBERNETES_PROVIDER=vagrant
+export KUBERNETES_MEMORY=512
+
+if [ ! -d kubernetes ]; then
+    curl -sS https://get.k8s.io | bash
+fi
+
+./kubernetes/cluster/kube-up.sh
+./kubernetes/cluster/kubectl.sh create -f registry-rc.yaml || true
+./kubernetes/cluster/kubectl.sh create -f registry-service.yaml || true
+./kubernetes/cluster/kubectl.sh create -f registry-proxy-daemonset.yaml || true
+
+cd kubernetes
+vagrant ssh node-1 -c "sudo yum install -y socat"
+cd -
+
+./kubernetes/cluster/kubectl.sh port-forward --namespace=kube-system `./kubernetes/cluster/kubectl.sh get pod --namespace=kube-system -l k8s-app=kube-registry -o name | sed 's@pod/@@'` 5000:5000 &
+sleep 5 # Let it get up to speed
+
+cd ../aimmo-game-creator
+docker build -t localhost:5000/ocadotechnology/aimmo-game-creator .
+docker push localhost:5000/ocadotechnology/aimmo-game-creator
+cd -
+
+mkdir -p tmp-yaml
+cp ../aimmo-game-creator/rc-aimmo-game-creator.yaml tmp-yaml/
+sed -i 's@image: @image: localhost:5000/@g' tmp-yaml/rc-aimmo-game-creator.yaml
+
+./kubernetes/cluster/kubectl.sh delete rc aimmo-game-creator || true
+./kubernetes/cluster/kubectl.sh delete rc -l app=aimmo-game
+./kubernetes/cluster/kubectl.sh delete rc -l app=aimmo-game-worker
+./kubernetes/cluster/kubectl.sh create -f tmp-yaml/rc-aimmo-game-creator.yaml
+sleep 5
+./kubernetes/cluster/kubectl.sh get rc
+./kubernetes/cluster/kubectl.sh get pod
+
+
+# Kill port forward
+kill %1

@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  namespace: kube-system
+  name: kube-registry-proxy
+spec:
+  template:
+    metadata:
+      namespace: kube-system
+      labels:
+        app: kube-registry-proxy
+      name: kube-registry-proxy
+    spec:
+      containers:
+      - name: kube-registry-proxy
+        image: gcr.io/google_containers/kube-registry-proxy:0.3
+        resources:
+          limits:
+            cpu: 100m
+            memory: 50Mi
+        env:
+        - name: REGISTRY_HOST
+          value: kube-registry.kube-system.svc.cluster.local
+        - name: REGISTRY_PORT
+          value: "5000"
+        - name: FORWARD_PORT
+          value: "5000"
+        ports:
+        - name: registry
+          containerPort: 5000
+          hostPort: 5000

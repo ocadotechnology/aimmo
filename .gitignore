@@ -66,3 +66,5 @@ db.sqlite3
 
 # static folder
 example_project/example_project/static/
+
+local-kubernetes/kubernetes
