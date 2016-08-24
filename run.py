@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import logging
+import minikube
 import os
 import subprocess
 import sys
@@ -22,9 +23,12 @@ def log(message):
     print >> sys.stderr, message
 
 
-def run_command(args):
+def run_command(args, capture_output=False):
     try:
-        subprocess.check_call(args)
+        if capture_output:
+            return subprocess.check_output(args)
+        else:
+            subprocess.check_call(args)
     except CalledProcessError as e:
         log('Command failed with exit status %d: %s' % (e.returncode, ' '.join(args)))
         raise
@@ -58,7 +62,7 @@ def create_superuser_if_missing(username, password):
         User.objects.create_superuser(username=username, email='admin@admin.com', password=password)
 
 
-def main():
+def main(use_minikube):
 
     run_command(['pip', 'install', '-e', _SCRIPT_LOCATION])
     run_command(['python', _MANAGE_PY, 'migrate', '--noinput'])
@@ -67,16 +71,25 @@ def main():
     create_superuser_if_missing(username='admin', password='admin')
 
     server_args = []
+    if use_minikube:
+        minikube.start()
+        server_args.append('0.0.0.0:8000')
+        os.environ['AIMMO_MODE'] = 'minikube'
+    else:
+        time.sleep(2)
+        game = run_command_async(['python', _SERVICE_PY, '127.0.0.1', '5000'])
+        os.environ['AIMMO_MODE'] = 'threads'
     server = run_command_async(['python', _MANAGE_PY, 'runserver'] + server_args)
-    time.sleep(2)
-    game = run_command_async(['python', _SERVICE_PY, '127.0.0.1', '5000'])
 
+    try:
+        game.wait()
+    except NameError:
+        pass
     server.wait()
-    game.wait()
 
 
 if __name__ == '__main__':
     try:
-        main()
+        main('--kube' in sys.argv or '-k' in sys.argv)
     finally:
         cleanup_processes()
