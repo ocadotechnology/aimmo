@@ -55,3 +55,21 @@ class TestGameState(TestCase):
         view = state.get_state_for(DummyAvatar(None, None), FogToEmpty())
         self.assertEqual(len(view['world_map']['cells']), 0)
         self.assertEqual(view['avatar_state'], 'Dummy')
+
+    def test_updates_map(self):
+        map = InfiniteMap()
+        state = GameState(map, DummyAvatarManager())
+        state.update_environment()
+        self.assertEqual(map.updates, 1)
+
+    def test_updates_map_with_correct_num_avatars(self):
+        map = InfiniteMap()
+        manager = DummyAvatarManager()
+        manager.add_avatar(1, '', None)
+        state = GameState(map, manager)
+        state.update_environment()
+        self.assertEqual(map.num_avatars, 1)
+        manager.add_avatar(2, '', None)
+        manager.add_avatar(3, '', None)
+        state.update_environment()
+        self.assertEqual(map.num_avatars, 3)

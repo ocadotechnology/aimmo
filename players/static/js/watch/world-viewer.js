@@ -125,19 +125,58 @@ const VIEWER = Object.create({
     reDrawPickups: function() {
         this.clearDrawnElements(this.drawnElements.pickups);
 
-        for (var i = 0; i < this.world.pickupLocations.length; i++) {
-            var pickupLocation = this.world.pickupLocations[i];
+        for (var i = 0; i < this.world.pickups.length; i++) {
+            var pickupLocation = this.world.pickups[i].location;
             var x = (0.5 + pickupLocation[0]) * this.appearance.cellSize;
             var y = (0.5 + this.invertY(pickupLocation[1])) * this.appearance.cellSize;
-            var radius = this.appearance.cellSize * 0.5 * 0.75;
-            var circle = this.paper.circle(x, y, radius);
-            circle.attr("fill", '#FFFFFF');
-            var crossX = this.paper.rect(x - 10, y - 3, 20, 6).attr({fill: '#FF0000', stroke: '#FF0000'});
-            var crossY = this.paper.rect(x - 3, y - 10, 6, 20).attr({fill: '#FF0000', stroke: '#FF0000'});
-            var pickup = this.paper.set();
-            pickup.push(circle, crossX, crossY);
-            this.drawnElements.pickups.push(pickup);
+            switch (this.world.pickups[i].type) {
+                case 'health':
+                    pickup = this.drawHealth(x, y);
+                    break;
+                case 'invulnerability':
+                    pickup = this.drawInvulnerability(x, y);
+                    break;
+                case 'damage':
+                    pickup = this.drawDamage(x, y);
+                    break;
+                default:
+                    console.log('Unknown pickup: ' + this.world.pickups[i].type);
+                    pickup = undefined;
+            }
+
+            if (pickup !== undefined) {
+                this.drawnElements.pickups.push(pickup);
+            }
         }
+    },
+
+    drawHealth: function(x, y) {
+        var radius = this.appearance.cellSize * 0.5 * 0.75;
+        var circle = this.paper.circle(x, y, radius);
+        circle.attr("fill", '#FFFFFF');
+        var crossX = this.paper.rect(x - 10, y - 3, 20, 6).attr({fill: '#FF0000', stroke: '#FF0000'});
+        var crossY = this.paper.rect(x - 3, y - 10, 6, 20).attr({fill: '#FF0000', stroke: '#FF0000'});
+        var pickup = this.paper.set();
+        pickup.push(circle, crossX, crossY);
+        return pickup;
+    },
+
+    drawInvulnerability: function(x, y) {
+        var radius = this.appearance.cellSize * 0.5 * 0.75;
+        var circle = this.paper.circle(x, y, radius);
+        circle.attr('fill', '#0066ff');
+        var pickup = this.paper.set();
+        pickup.push(circle);
+        return pickup;
+    },
+
+    drawDamage: function(x, y) {
+        var radius = this.appearance.cellSize * 0.5 * 0.75;
+        var circle = this.paper.circle(x, y, radius);
+        circle.attr('fill', '#ff0000');
+        var pickup = this.paper.set();
+        pickup.push(circle);
+        return pickup;
     },
 
     reDrawState: function() {

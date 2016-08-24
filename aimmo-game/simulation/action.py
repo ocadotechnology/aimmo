@@ -72,13 +72,6 @@ class MoveAction(Action):
         self.avatar.location = self.target_location
         world_map.get_cell(self.target_location).avatar = self.avatar
         self.avatar.clear_action()
-
-        new_cell = world_map.get_cell(self.target_location)
-        if new_cell.pickup:
-            # TODO:  extract pickup logic into pickup when adding multiple types
-            self.avatar.health = min(10, self.avatar.health + new_cell.pickup.health_restored)
-            new_cell.pickup = None
-
         return True
 
     def chain(self, world_map, visited):
@@ -123,7 +116,7 @@ class AttackAction(Action):
                                                    damage_dealt))
         attacked_avatar.add_event(ReceivedAttackEvent(self.avatar,
                                                       damage_dealt))
-        attacked_avatar.health -= damage_dealt
+        attacked_avatar.damage(damage_dealt)
 
         LOGGER.debug('{} dealt {} damage to {}'.format(self.avatar,
                                                        damage_dealt,

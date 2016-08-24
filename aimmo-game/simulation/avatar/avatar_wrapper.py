@@ -3,6 +3,7 @@ import requests
 
 from simulation.action import ACTIONS, MoveAction, WaitAction
 
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -20,8 +21,20 @@ class AvatarWrapper(object):
         self.events = []
         self.avatar_appearance = avatar_appearance
         self.worker_url = worker_url
+        self.effects = set()
+        self.resistance = 0
+        self.attack_strength = 1
         self.fog_of_war_modifier = 0
         self._action = None
+
+    def update_effects(self):
+        effects_to_remove = set()
+        for effect in self.effects:
+            effect.on_turn()
+            if effect.is_expired:
+                effects_to_remove.add(effect)
+        for effect in effects_to_remove:
+            effect.remove()
 
     @property
     def action(self):
@@ -71,6 +84,11 @@ class AvatarWrapper(object):
 
     def add_event(self, event):
         self.events.append(event)
+
+    def damage(self, amount):
+        applied_dmg = max(0, amount - self.resistance)
+        self.health -= applied_dmg
+        return applied_dmg
 
     def serialise(self):
         return {

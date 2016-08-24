@@ -1,5 +1,6 @@
 import math
 import random
+from pickups import ALL_PICKUPS
 
 from logging import getLogger
 
@@ -19,19 +20,6 @@ PICKUP_SPAWN_CHANCE = 0.02
 
 NO_FOG_OF_WAR_DISTANCE = 2
 PARTIAL_FOG_OF_WAR_DISTANCE = 3
-
-
-class HealthPickup(object):
-    def __init__(self, health_restored=3):
-        self.health_restored = health_restored
-
-    def __repr__(self):
-        return 'HealthPickup(health_restored={})'.format(self.health_restored)
-
-    def serialise(self):
-        return {
-            'health_restored': self.health_restored,
-        }
 
 
 class Cell(object):
@@ -112,7 +100,8 @@ class WorldMap(object):
         if not self.is_on_map(location):
             raise ValueError('Location %s is not on the map' % location)
         cell = self.grid[location.x][location.y]
-        assert cell.location == location, 'location lookup mismatch: arg={}, found={}'.format(location, cell.location)
+        assert cell.location == location,\
+            'location lookup mismatch: arg={}, found={}'.format(location, cell.location)
         return cell
 
     def clear_cell_actions(self, location):
@@ -134,14 +123,28 @@ class WorldMap(object):
     def num_cells(self):
         return self.num_rows * self.num_cols
 
-    def apply_score(self):
+    def update(self, num_avatars):
+        # TODO: refactor into GameState (this class does too much)
+        self._update_avatars()
+        self._update_map(num_avatars)
+
+    def _update_avatars(self):
+        self._apply_score()
+        self._apply_pickups()
+
+    def _apply_pickups(self):
+        for cell in self.pickup_cells():
+            if cell.avatar is not None:
+                cell.pickup.apply(cell.avatar)
+
+    def _apply_score(self):
         for cell in self.score_cells():
             try:
                 cell.avatar.score += 1
             except AttributeError:
                 pass
 
-    def reconstruct_interactive_state(self, num_avatars):
+    def _update_map(self, num_avatars):
         self._expand(num_avatars)
         self._reset_score_locations(num_avatars)
         self._add_pickups(num_avatars)
@@ -187,7 +190,7 @@ class WorldMap(object):
         for cell in locations:
             if random.random() < PICKUP_SPAWN_CHANCE:
                 LOGGER.info('Adding new pickup at %s', cell)
-                cell.pickup = HealthPickup()
+                cell.pickup = random.choice(ALL_PICKUPS)(cell)
 
     def _get_random_spawn_locations(self, max_locations):
         if max_locations <= 0:
@@ -233,7 +236,7 @@ class WorldMap(object):
             return cell.moves[0].avatar
 
         return None
-        
+
     def get_no_fog_distance(self):
         return NO_FOG_OF_WAR_DISTANCE
 
