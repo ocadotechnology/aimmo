@@ -3,7 +3,7 @@ import logging
 import os
 import sys
 
-# If we monkey patch during testing then Django fails to create a DB enironment
+# If we monkey patch during testing then Django fails to create a DB environment
 if __name__ == '__main__':
     import eventlet
     eventlet.monkey_patch()
@@ -27,7 +27,7 @@ worker_manager = None
 
 
 def to_cell_type(cell):
-    if not cell.habitable:
+    if not cell.is_habitable:
         return 1
     if cell.generates_score:
         return 2
@@ -36,9 +36,9 @@ def to_cell_type(cell):
 
 def player_dict(avatar):
     # TODO: implement better colour functionality: will eventually fall off end of numbers
-    colour = "#%06x" % (avatar.player_id * 4999)
+    colour = "#%06x" % (avatar.user_id * 4999)
     return {
-        'id': avatar.player_id,
+        'id': avatar.user_id,
         'x': avatar.location.x,
         'y': avatar.location.y,
         'health': avatar.health,
@@ -61,11 +61,14 @@ def get_world_state():
         grid = [[to_cell_type(world.get_cell(Location(x, y)))
                  for y in range(num_rows)]
                 for x in range(num_cols)]
-        player_data = {p.player_id: player_dict(p) for p in game_state.avatar_manager.avatars}
+        player_data = {p.user_id: player_dict(p)
+                       for p in game_state.avatar_manager.avatars}
         return {
             'players': player_data,
-            'score_locations': [(cell.location.x, cell.location.y) for cell in world.score_cells()],
-            'pickup_locations': [(cell.location.x, cell.location.y) for cell in world.pickup_cells()],
+            'score_locations': [(cell.location.x, cell.location.y)
+                                for cell in world.score_cells],
+            'pickup_locations': [(cell.location.x, cell.location.y)
+                                 for cell in world.pickup_cells],
             'map_changed': True,  # TODO: experiment with only sending deltas (not if not required)
             'width': num_cols,
             'height': num_rows,
@@ -90,7 +93,7 @@ def send_world_update():
 
 
 @app.route('/')
-def healthcheck():
+def health_check():
     return 'HEALTHY'
 
 

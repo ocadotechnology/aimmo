@@ -26,6 +26,7 @@ class InfiniteMap(WorldMap):
         self.get_cell(target_location)
         return True
 
+    @property
     def all_cells(self):
         return (cell for cell in self._cell_cache.values())
 
@@ -40,6 +41,7 @@ class InfiniteMap(WorldMap):
     def num_cols(self):
         return float('inf')
 
+
 class EmptyMap(WorldMap):
     def __init__(self):
         pass
@@ -47,6 +49,7 @@ class EmptyMap(WorldMap):
     def can_move_to(self, target_location):
         return False
 
+    @property
     def all_cells(self):
         return iter(())
 

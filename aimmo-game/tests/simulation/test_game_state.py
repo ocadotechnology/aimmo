@@ -38,10 +38,10 @@ class TestGameState(TestCase):
         with game_state:
             game_state.remove_avatar(1)
 
-        self.assertNotIn(1, manager.avatars_by_id)
+        self.assertNotIn(1, manager._avatars_by_id)
         self.assertEqual(world_map.get_cell((0, 0)).avatar, None)
 
-        self.assertTrue(manager.avatars_by_id[2].marked)
+        self.assertTrue(manager._avatars_by_id[2].marked)
         self.assertTrue(world_map.get_cell(Location(1, 1)).avatar.marked)
 
     def test_add_avatar(self):
@@ -50,13 +50,13 @@ class TestGameState(TestCase):
         with game_state:
             game_state.add_avatar(7, "")
 
-        self.assertIn(7, game_state.avatar_manager.avatars_by_id)
-        avatar = game_state.avatar_manager.avatars_by_id[7]
+        self.assertIn(7, game_state.avatar_manager._avatars_by_id)
+        avatar = game_state.avatar_manager._avatars_by_id[7]
         self.assertEqual(avatar.location.x, 10)
         self.assertEqual(avatar.location.y, 10)
 
     def test_fog_of_war(self):
         game_state = GameState(InfiniteMap(), DummyAvatarManager())
-        view = game_state.get_state_for(DummyAvatar(None, None), FogToEmpty())
+        view = game_state.view(DummyAvatar(None, None), FogToEmpty())
         self.assertEqual(len(view['world_map']['cells']), 0)
         self.assertEqual(view['avatar_state'], 'Dummy')

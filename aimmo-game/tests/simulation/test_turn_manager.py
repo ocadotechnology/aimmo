@@ -4,9 +4,18 @@ import unittest
 from simulation.avatar.avatar_appearance import AvatarAppearance
 from simulation.game_state import GameState
 from simulation.location import Location
+from simulation.action import WaitAction
+from simulation.action import MoveAction
+from simulation.action import AttackAction
+from simulation.direction import NORTH
+from simulation.direction import EAST
+from simulation.direction import SOUTH
+from simulation.direction import WEST
 from simulation.turn_manager import ConcurrentTurnManager
+from simulation.turn_manager import ActionRegistry
 
 from .maps import InfiniteMap
+from .dummy_avatar import DummyAvatar
 from .dummy_avatar import WaitDummy
 from .dummy_avatar import MoveNorthDummy
 from .dummy_avatar import MoveEastDummy
@@ -177,6 +186,37 @@ class TestTurnManager(unittest.TestCase):
         [self.assert_at(avatars[i], locations[i]) for i in range(5)]
         self.run_turn()
         [self.assert_at(avatars[i], locations[i]) for i in range(5)]
+
+
+class TestActionRegistry(unittest.TestCase):
+
+    def setUp(self):
+        self.reg = ActionRegistry()
+
+        self.av_1 = DummyAvatar(1, Location(0, 0))
+        self.av_2 = DummyAvatar(2, Location(1, 0))
+        self.av_3 = DummyAvatar(3, Location(0, 1))
+
+    def test_add_action(self):
+        action = WaitAction(self.av_1, self.av_1.location)
+        self.reg.add(action)
+
+        self.assertEqual(self.reg._actions_by_avatar[self.av_1.user_id], action)
+        self.assertEqual(self.reg._actions_by_target[self.av_1.location], [action])
+
+    def test_sort_actions_by_type(self):
+        action_1 = MoveAction(self.av_2, self.av_2.location, NORTH)
+        action_2 = WaitAction(self.av_3, self.av_3.location)
+        action_3 = AttackAction(self.av_1, self.av_1.location, EAST)
+
+        self.reg.add(action_1)
+        self.reg.add(action_2)
+        self.reg.add(action_3)
+
+        action_list = list(self.reg.sorted_by_type)
+
+        self.assertEqual(action_list, [action_2, action_3, action_1])
+
 
 if __name__ == '__main__':
     unittest.main()

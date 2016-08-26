@@ -1,80 +1,115 @@
 from logging import getLogger
+
 from simulation.direction import Direction
 from simulation.event import FailedAttackEvent, FailedMoveEvent, MovedEvent, PerformedAttackEvent, ReceivedAttackEvent
+from simulation.game_settings import DEFAULT_ATTACK_DAMAGE
 
 LOGGER = getLogger(__name__)
 
 
 class Action(object):
-    def __init__(self, avatar):
+    def __init__(self, avatar, origin, direction=None):
         self._avatar = avatar
-        try:
-            self._target_location = self._avatar.location + self.direction
-        except AttributeError:
-            self._target_location = self._avatar.location
+        self._origin = origin
+        self._direction = direction
 
     @property
     def avatar(self):
         return self._avatar
 
     @property
-    def target_location(self):
-        return self._target_location
+    def avatar_id(self):
+        return self._avatar.user_id
 
-    def register(self, world_map):
-        if world_map.is_on_map(self.target_location):
-            world_map.get_cell(self.target_location).register_action(self)
+    @property
+    def origin(self):
+        return self._origin
 
-    def process(self, world_map):
-        if self.is_legal(world_map):
-            self.apply(world_map)
+    @property
+    def direction(self):
+        return self._direction
+
+    @property
+    def target(self):
+        return self._origin + self._direction
+
+    def process(self, game_state, other_actions=None):
+        if self.is_legal(game_state, other_actions):
+            self.apply(game_state, other_actions)
         else:
-            self.reject()
+            self.reject(game_state)
 
-    def is_legal(self, world_map):
+    def is_legal(self, game_state, other_actions=None):
         raise NotImplementedError('Abstract method')
 
-    def apply(self, world_map):
+    def apply(self, game_state, other_actions):
         raise NotImplementedError('Abstract method')
 
-    def reject(self):
+    def reject(self, game_state):
         raise NotImplementedError('Abstract method')
 
 
 class WaitAction(Action):
-    def __init__(self, avatar):
-        super(WaitAction, self).__init__(avatar)
+    def __init__(self, avatar, origin):
+        Action.__init__(self, avatar, origin)
 
-    def is_legal(self, world_map):
+    def is_legal(self, game_state, other_actions=None):
         return True
 
-    def apply(self, world_map):
-        self.avatar.clear_action()
+    def apply(self, game_state, other_actions):
+        pass
 
 
 class MoveAction(Action):
-    def __init__(self, avatar, direction):
+    def __init__(self, avatar, origin, direction):
         # Untrusted data!
-        self.direction = Direction(**direction)
-        super(MoveAction, self).__init__(avatar)
+        Action.__init__(self, avatar, origin, direction=Direction.copy(direction))
 
-    def is_legal(self, world_map):
-        return world_map.can_move_to(self.target_location)
+    def process(self, game_state, other_actions=None):
+        start = game_state.avatar_manager.location(self.avatar_id)
+        self.chain(game_state, other_actions, {start})
 
-    def process(self, world_map):
-        self.chain(world_map, {self.avatar.location})
+    def chain(self, game_state, other_actions, visited):
+        if not self.is_legal(game_state, other_actions):
+            return self.reject(game_state)
 
-    def apply(self, world_map):
-        event = MovedEvent(self.avatar.location, self.target_location)
-        self.avatar.add_event(event)
+        # Detect cycles
+        if self.target in visited:
+            return self.reject(game_state)
 
-        world_map.get_cell(self.avatar.location).avatar = None
-        self.avatar.location = self.target_location
-        world_map.get_cell(self.target_location).avatar = self.avatar
+        if not game_state.world_map.cell_occupied(self.target):
+            return self.apply(game_state, other_actions)
 
-        self.avatar.clear_action()
+        next_avatar = game_state.avatar_at(self.target)
+        next_action = other_actions.by_avatar(next_avatar)
+        if next_action.chain(game_state, other_actions, visited | {self.target}):
+            return self.apply(game_state, other_actions)
 
-        new_cell = world_map.get_cell(self.target_location)
+        return self.reject(game_state)
+
+    def is_legal(self, game_state, other_actions=None):
+        world = game_state.world_map
+
+        if not world.cell_habitable(self.target):
+            return False
+
+        if (other_actions is not None
+                and other_actions.num_moves_to(self.target) > 1):
+            return False
+
+        if not world.cell_occupied(self.target):
+            return True
+
+        avatar_id = game_state.avatar_at(self.target)
+
+        return (other_actions is not None
+                and other_actions.avatar_moving(avatar_id))
+
+    def apply(self, game_state, other_actions):
+        game_state.move_avatar(self.avatar_id, self.direction)
+        game_state.add_event(self.avatar_id, MovedEvent(self.origin, self.target))
+
+        new_cell = game_state.world_map.get_cell(self.target)
         if new_cell.pickup:
             # TODO:  extract pickup logic into pickup when adding multiple types
             self.avatar.health = min(10, self.avatar.health + new_cell.pickup.health_restored)
@@ -82,65 +117,42 @@ class MoveAction(Action):
 
         return True
 
-    def chain(self, world_map, visited):
-        if not self.is_legal(world_map):
-            return self.reject()
-
-        # Detect cycles
-        if self.target_location in visited:
-            return self.reject()
-
-        next_cell = world_map.get_cell(self.target_location)
-        if not next_cell.is_occupied:
-            return self.apply(world_map)
-
-        next_action = next_cell.avatar.action
-        if next_action.chain(world_map, visited | {self.target_location}):
-            return self.apply(world_map)
-
-        return self.reject()
-
-    def reject(self):
-        event = FailedMoveEvent(self.avatar.location, self.target_location)
-        self.avatar.add_event(event)
-        self.avatar.clear_action()
+    def reject(self, game_state):
+        game_state.add_event(self.avatar_id, FailedMoveEvent(self.origin, self.target))
         return False
 
 
 class AttackAction(Action):
-    def __init__(self, avatar, direction):
-        # Untrusted data!
-        self.direction = Direction(**direction)
-        super(AttackAction, self).__init__(avatar)
+    def __init__(self, avatar, origin, direction):
+        #                                               Untrusted data!
+        Action.__init__(self, avatar, origin, direction=Direction.copy(direction))
 
-    def is_legal(self, world_map):
-        return True if world_map.attackable_avatar(self.target_location) else False
+    def _attacked_avatar(self, game_state, other_actions):
+        if game_state.cell_occupied(self.target):
+            return game_state.avatar_at(self.target)
+        elif (other_actions is not None
+              and other_actions.num_moves_to(self.target) == 1):
+            return other_actions.moves_to(self.target)[0].avatar_id
+        else:
+            return None
 
-    def apply(self, world_map):
-        attacked_avatar = world_map.attackable_avatar(self.target_location)
-        damage_dealt = 1
-        self.avatar.add_event(PerformedAttackEvent(attacked_avatar,
-                                                   self.target_location,
-                                                   damage_dealt))
-        attacked_avatar.add_event(ReceivedAttackEvent(self.avatar,
-                                                      damage_dealt))
-        attacked_avatar.health -= damage_dealt
+    def is_legal(self, game_state, other_actions=None):
+        return self._attacked_avatar(game_state, other_actions) is not None
 
-        LOGGER.debug('{} dealt {} damage to {}'.format(self.avatar,
-                                                       damage_dealt,
-                                                       attacked_avatar))
-        self.avatar.clear_action()
+    def apply(self, game_state, other_actions):
+        attacked_avatar = self._attacked_avatar(game_state, other_actions)
 
-        if attacked_avatar.health <= 0:
-            # Move responsibility for this to avatar.die() ?
-            respawn_location = world_map.get_random_spawn_location()
-            attacked_avatar.die(respawn_location)
-            world_map.get_cell(self.target_location).avatar = None
-            world_map.get_cell(respawn_location).avatar = attacked_avatar
+        damage = DEFAULT_ATTACK_DAMAGE
+        game_state.hurt_avatar(attacked_avatar, damage)
+        game_state.add_event(self.avatar_id, PerformedAttackEvent(attacked_avatar, self.target, damage))
+        game_state.add_event(attacked_avatar, ReceivedAttackEvent(self.avatar_id, damage))
 
-    def reject(self):
-        self.avatar.add_event(FailedAttackEvent(self.target_location))
-        self.avatar.clear_action()
+        LOGGER.debug(
+            '{} dealt {} damage to {}'.format(self.avatar, damage, attacked_avatar)
+        )
+
+    def reject(self, game_state):
+        game_state.add_event(self.avatar_id, FailedAttackEvent(self.target))
 
 ACTIONS = {
     'attack': AttackAction,

@@ -1,11 +1,9 @@
 import logging
-import requests
 import time
-from Queue import PriorityQueue
-from threading import Lock
 from threading import Thread
+from Queue import Queue
 
-from simulation.action import PRIORITIES
+from simulation.action import PRIORITIES, MoveAction
 
 LOGGER = logging.getLogger(__name__)
 
@@ -24,25 +22,15 @@ class TurnManager(Thread):
     def run_turn(self):
         raise NotImplementedError("Abstract method.")
 
-    def _register_action(self, avatar):
-        '''
-        Send an avatar its view of the game state and register its chosen action.
-        '''
-        with self.game_state as game_state:
-            state_view = game_state.get_state_for(avatar)
-
-        if avatar.decide_action(state_view):
-            with self.game_state as game_state:
-                avatar.action.register(game_state.world_map)
-
     def run(self):
         while True:
+
             self.run_turn()
 
-            with self.game_state as game_state:
-                game_state.end_of_turn()
+            self.game_state.end_of_turn()
 
             self.end_turn_callback()
+
             time.sleep(0.5)
 
 
@@ -51,45 +39,91 @@ class SequentialTurnManager(TurnManager):
         '''
         Get and apply each avatar's action in turn.
         '''
-        with self.game_state as game_state:
-            avatars = game_state.avatar_manager.active_avatars
+        for avatar in self.game_state.avatar_manager.active_avatars:
+            state_view = self.game_state.view(avatar)
+            action = avatar.decide_action(state_view)
 
-        for avatar in avatars:
-            self._register_action(avatar)
-            with self.game_state as game_state:
-                location_to_clear = avatar.action.target_location
-                avatar.action.process(game_state.world_map)
-                game_state.world_map.clear_cell_actions(location_to_clear)
+            with self.game_state:
+                action.process(self.game_state)
 
 
 class ConcurrentTurnManager(TurnManager):
     def run_turn(self):
         '''
-        Concurrently get the intended actions from all avatars and register
-        them on the world map. Then apply actions in order of priority.
+        Concurrently get the intended actions from all avatars and apply them
+        in order of priority.
         '''
-        with self.game_state as game_state:
-            avatars = game_state.avatar_manager.active_avatars
-
-        threads = [Thread(target=self._register_action,
-                          args=(avatar,)) for avatar in avatars]
+        threads = [DecisionThread(avatar, self.game_state.view(avatar))
+                   for avatar in self.game_state.avatar_manager.active_avatars]
 
         [thread.start() for thread in threads]
-        [thread.join() for thread in threads]
 
-        # Waits applied first, then attacks, then moves.
-        avatars.sort(key=lambda a: PRIORITIES[type(a.action)])
+        actions = ActionRegistry()
+        for thread in threads:
+            actions.add(thread.result())
 
-        locations_to_clear = {a.action.target_location for a in avatars
-                              if a.action is not None}
+        for action in actions.sorted_by_type:
+            with self.game_state:
+                action.process(self.game_state, actions)
 
-        for action in (a.action for a in avatars if a.action is not None):
-            with self.game_state as game_state:
-                action.process(game_state.world_map)
 
-        for location in locations_to_clear:
-            with self.game_state as game_state:
-                game_state.world_map.clear_cell_actions(location)
+class DecisionThread(Thread):
+    '''
+    Thread wrapper to get an avatar's decided action.
+    '''
+    def __init__(self, avatar, state_view):
+        self._queue = Queue()
+        super(DecisionThread, self).__init__(
+            target=self.wrapper,
+            args=(avatar, state_view)
+        )
+
+    def wrapper(self, avatar, state_view):
+        self._queue.put(avatar.decide_action(state_view))
+
+    def result(self):
+        return self._queue.get()
+
+
+class ActionRegistry(object):
+    '''
+    Class to keep track of the actions that avatars intend to perform
+    in a concurrent turn.
+    '''
+    def __init__(self):
+        self.clear()
+
+    def add(self, action):
+        self._actions_by_avatar[action.avatar_id] = action
+        self._by_target(action.target).append(action)
+
+    def clear(self):
+        self._actions_by_avatar = {}
+        self._actions_by_target = {}
+
+    def by_avatar(self, avatar_id):
+        return self._actions_by_avatar.setdefault(avatar_id, None)
+
+    def avatar_moving(self, avatar_id):
+        return isinstance(self.by_avatar(avatar_id), MoveAction)
+
+    def _by_target(self, target):
+        return self._actions_by_target.setdefault(target, [])
+
+    def by_target(self, target):
+        return (action for action in self._by_target(target))
+
+    def moves_to(self, target):
+        return (a for a in self.by_target(target) if isinstance(a, MoveAction))
+
+    def num_moves_to(self, target):
+        return sum(1 for move in self.moves_to(target))
+
+    @property
+    def sorted_by_type(self):
+        action_list = self._actions_by_avatar.values()
+        action_list.sort(key=lambda a: PRIORITIES[type(a)])
+        return (action for action in action_list)
 
 
 TURN_MANAGERS = {

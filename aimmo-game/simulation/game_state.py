@@ -31,12 +31,15 @@ class GameState(object):
     def __exit__(self, type, value, traceback):
         self._edit_lock.release()
 
-    def get_state_for(self, avatar_wrapper, fog_of_war=fog_of_war):
+    def view(self, avatar_wrapper, fog_of_war=fog_of_war):
+        '''
+        Return the subset of the game state visible to an avatar.
+        '''
         processed_world_map = fog_of_war.apply_fog_of_war(self.world_map, avatar_wrapper)
         return {
             'avatar_state': avatar_wrapper.serialise(),
             'world_map': {
-                'cells': [cell.serialise() for cell in processed_world_map.all_cells()]
+                'cells': [cell.serialise() for cell in processed_world_map.all_cells]
             }
         }
 
@@ -45,6 +48,12 @@ class GameState(object):
         location = self.world_map.get_random_spawn_location() if location is None else location
         avatar = self.avatar_manager.add_avatar(avatar_id, worker_url, location)
         self.world_map.get_cell(location).avatar = avatar
+
+    def avatar_at(self, location):
+        try:
+            return self.world_map.avatar_at(location).user_id
+        except AttributeError:
+            return None
 
     @alters_state
     def remove_avatar(self, avatar_id):
@@ -57,15 +66,35 @@ class GameState(object):
 
     @alters_state
     def move_avatar(self, avatar_id, direction):
-        raise NotImplementedError()
+        avatar = self.avatar_manager.get_avatar(avatar_id)
+
+        self.world_map.get_cell(avatar.location).avatar = None
+        avatar.location += direction
+        self.world_map.get_cell(avatar.location).avatar = avatar
 
     @alters_state
     def hurt_avatar(self, avatar_id, damage):
-        raise NotImplementedError()
+        avatar = self.avatar_manager.get_avatar(avatar_id)
+        avatar.health = max(0, avatar.health - damage)
 
     @alters_state
-    def heal_avatar(self, avatar_id, heatlh):
-        raise NotImplementedError()
+    def heal_avatar(self, avatar_id, health):
+        self.avatar_manager.get_avatar(avatar_id).health += health
+
+    @alters_state
+    def add_event(self, avatar_id, event):
+        self.avatar_manager.get_avatar(avatar_id).add_event(event)
+
+    def cell_occupied(self, location):
+        return self.world_map.cell_occupied(location)
+
+    @alters_state
+    def _apply_score(self):
+        for cell in self.world_map.score_cells:
+            try:
+                cell.avatar.score += 1
+            except AttributeError:
+                pass
 
     @alters_state
     def end_of_turn(self):
@@ -73,4 +102,4 @@ class GameState(object):
         self.world_map.expand(num_avatars)
         self.world_map.reset_score_locations(num_avatars)
         self.world_map.add_pickups(num_avatars)
-        self.world_map.apply_score()
+        self._apply_score()

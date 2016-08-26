@@ -4,7 +4,13 @@ class Location(object):
         self.y = y
 
     def __add__(self, direction):
-        return Location(self.x + direction.x, self.y + direction.y)
+        try:
+            d_x = direction.x
+            d_y = direction.y
+        except AttributeError:
+            return self
+        else:
+            return Location(self.x + d_x, self.y + d_y)
 
     def __sub__(self, direction):
         return Location(self.x - direction.x, self.y - direction.y)

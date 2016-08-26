@@ -1,7 +1,8 @@
 import logging
 import requests
 
-from simulation.action import ACTIONS, MoveAction, WaitAction
+from simulation import game_settings
+from simulation.action import ACTIONS, WaitAction
 
 LOGGER = logging.getLogger(__name__)
 
@@ -12,24 +13,15 @@ class AvatarWrapper(object):
     the player-supplied code.
     """
 
-    def __init__(self, player_id, initial_location, worker_url, avatar_appearance):
-        self.player_id = player_id
+    def __init__(self, user_id, initial_location, worker_url, appearance):
+        self.user_id = user_id
         self.location = initial_location
-        self.health = 5
+        self.health = game_settings.AVATAR_STARTING_HEALTH
         self.score = 0
         self.events = []
-        self.avatar_appearance = avatar_appearance
+        self.appearance = appearance
         self.worker_url = worker_url
         self.fog_of_war_modifier = 0
-        self._action = None
-
-    @property
-    def action(self):
-        return self._action
-
-    @property
-    def is_moving(self):
-        return isinstance(self.action, MoveAction)
 
     def _fetch_action(self, state_view):
         return requests.post(self.worker_url, json=state_view).json()
@@ -39,6 +31,7 @@ class AvatarWrapper(object):
         action_type = action_data['action_type']
         action_args = action_data.get('options', {})
         action_args['avatar'] = self
+        action_args['origin'] = self.location
         return ACTIONS[action_type](**action_args)
 
     def decide_action(self, state_view):
@@ -54,20 +47,9 @@ class AvatarWrapper(object):
             LOGGER.exception('Unknown error while fetching turn data')
 
         else:
-            self._action = action
-            return True
+            return action
 
-        self._action = WaitAction(self)
-        return False
-
-    def clear_action(self):
-        self._action = None
-
-    def die(self, respawn_location):
-        # TODO: extract settings for health and score loss on death
-        self.health = 5
-        self.score = max(0, self.score - 2)
-        self.location = respawn_location
+        return WaitAction(self)
 
     def add_event(self, event):
         self.events.append(event)
@@ -86,4 +68,6 @@ class AvatarWrapper(object):
         }
 
     def __repr__(self):
-        return 'Avatar(id={}, location={}, health={}, score={})'.format(self.player_id, self.location, self.health, self.score)
+        return 'Avatar(id={}, location={}, health={}, score={})'.format(
+            self.user_id, self.location, self.health, self.score
+        )
