@@ -253,6 +253,9 @@ class TestModels(TestCase):
         cls.game = models.Game(id=1, name='test', public=False)
         cls.game.save()
 
+    def setUp(self):
+        self.game.refresh_from_db()
+
     def test_public_games_can_be_accessed(self):
         self.game.public = True
         self.assertTrue(self.game.can_user_play(self.user1))
@@ -271,3 +274,11 @@ class TestModels(TestCase):
         self.game.public = False
         self.game.can_play = [self.user1]
         self.assertFalse(self.game.can_user_play(self.user2))
+
+    def test_game_active_by_default(self):
+        self.assertTrue(self.game.is_active)
+
+    def test_completed_game_inactive(self):
+        self.game.completed = True
+        self.game.save()
+        self.assertFalse(self.game.is_active)

@@ -42,6 +42,10 @@ class Game(models.Model):
     start_height = models.IntegerField(default=11)
     start_width = models.IntegerField(default=11)
 
+    @property
+    def is_active(self):
+        return not self.completed
+
     def can_user_play(self, user):
         return self.public or user in self.can_play.all()
 
