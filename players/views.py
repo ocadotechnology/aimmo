@@ -92,6 +92,7 @@ def get_game(request, id):
 def mark_game_complete(request, id):
     game = get_object_or_404(Game, id=id)
     game.completed = True
+    game.static_data = request.body
     game.save()
     return HttpResponse('Done!')
 

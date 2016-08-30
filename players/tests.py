@@ -254,6 +254,12 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(models.Game.objects.get(id=1).completed)
 
+    def test_mark_complete_with_data(self):
+        c = Client()
+        c.post(reverse('aimmo/complete_game', kwargs={'id': 1}), 'static', content_type='application/json')
+        self.assertEqual(models.Game.objects.get(id=1).static_data, 'static')
+
+
 
 class TestModels(TestCase):
     @classmethod
