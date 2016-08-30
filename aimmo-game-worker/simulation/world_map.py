@@ -1,7 +1,5 @@
 from .location import Location
 
-from .avatar_state import AvatarState
-
 
 class HealthPickup(object):
 

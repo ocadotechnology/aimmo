@@ -1,7 +1,5 @@
 import logging
-import requests
 import time
-from Queue import PriorityQueue
 from threading import Lock
 from threading import Thread
 

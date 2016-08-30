@@ -213,9 +213,9 @@ class WorldMap(object):
             return False
         cell = self.get_cell(target_location)
 
-        return (cell.habitable
-                and (not cell.is_occupied or cell.avatar.is_moving)
-                and len(cell.moves) <= 1)
+        return (cell.habitable and
+                (not cell.is_occupied or cell.avatar.is_moving) and
+                len(cell.moves) <= 1)
 
     def attackable_avatar(self, target_location):
         '''
@@ -233,7 +233,7 @@ class WorldMap(object):
             return cell.moves[0].avatar
 
         return None
-        
+
     def get_no_fog_distance(self):
         return NO_FOG_OF_WAR_DISTANCE
 

@@ -42,6 +42,7 @@ class InfiniteMap(WorldMap):
     def num_cols(self):
         return float('inf')
 
+
 class EmptyMap(WorldMap):
     def __init__(self):
         pass

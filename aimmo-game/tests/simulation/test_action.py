@@ -4,7 +4,7 @@ import unittest
 from simulation import event
 from simulation import action
 from simulation.location import Location
-from simulation.direction import NORTH, EAST, SOUTH, WEST
+from simulation.direction import EAST
 from simulation.game_state import GameState
 from simulation.avatar.avatar_manager import AvatarManager
 

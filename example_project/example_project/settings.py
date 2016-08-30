@@ -42,8 +42,10 @@ DEBUG = True
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': os.path.join(os.path.abspath(os.path.dirname(__file__)),'db.sqlite3'),# Or path to database file if using sqlite3.
+        # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.sqlite3',
+        # Or path to database file if using sqlite3.
+        'NAME': os.path.join(os.path.abspath(os.path.dirname(__file__)), 'db.sqlite3'),
     }
 }
 
@@ -87,6 +89,7 @@ LOGGING = {
     }
 }
 
+
 def get_url(game):
     if os.environ.get('AIMMO_MODE', '') == 'minikube':
         output = subprocess.check_output(['./test-bin/minikube', 'service', 'game-%s' % game, '--url'])
@@ -97,9 +100,9 @@ def get_url(game):
 AIMMO_GAME_SERVER_LOCATION_FUNCTION = get_url
 
 try:
-    from example_project.local_settings import * # pylint: disable=E0611
+    from example_project.local_settings import *  # noqa: E0611
 except ImportError:
     pass
 
-from django_autoconfig import autoconfig
+from django_autoconfig import autoconfig  # noqa: E402
 autoconfig.configure_settings(globals())

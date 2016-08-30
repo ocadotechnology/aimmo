@@ -1,4 +1,4 @@
-from simulation.world_map import WorldMap, Cell
+from simulation.world_map import WorldMap
 from simulation.location import Location
 
 import copy
