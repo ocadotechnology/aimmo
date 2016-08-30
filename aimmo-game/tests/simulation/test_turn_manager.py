@@ -49,7 +49,7 @@ class TestTurnManager(unittest.TestCase):
 
     def assert_at(self, avatar, location):
         self.assertEqual(avatar.location, location)
-        cell = self.game_state.world_map.get_cell(location)
+        cell = self.game_state._world_map.get_cell(location)
         self.assertEqual(cell.avatar, avatar)
 
     def get_avatar(self, player_id):
@@ -198,16 +198,16 @@ class TestActionRegistry(unittest.TestCase):
         self.av_3 = DummyAvatar(3, Location(0, 1))
 
     def test_add_action(self):
-        action = WaitAction(self.av_1, self.av_1.location)
+        action = WaitAction(self.av_1.user_id, self.av_1.location)
         self.reg.add(action)
 
         self.assertEqual(self.reg._actions_by_avatar[self.av_1.user_id], action)
         self.assertEqual(self.reg._actions_by_target[self.av_1.location], [action])
 
     def test_sort_actions_by_type(self):
-        action_1 = MoveAction(self.av_2, self.av_2.location, NORTH)
-        action_2 = WaitAction(self.av_3, self.av_3.location)
-        action_3 = AttackAction(self.av_1, self.av_1.location, EAST)
+        action_1 = MoveAction(self.av_2.user_id, self.av_2.location, NORTH)
+        action_2 = WaitAction(self.av_3.user_id, self.av_3.location)
+        action_3 = AttackAction(self.av_1.user_id, self.av_1.location, EAST)
 
         self.reg.add(action_1)
         self.reg.add(action_2)

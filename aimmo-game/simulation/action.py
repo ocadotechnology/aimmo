@@ -1,25 +1,25 @@
 from logging import getLogger
 
 from simulation.direction import Direction
-from simulation.event import FailedAttackEvent, FailedMoveEvent, MovedEvent, PerformedAttackEvent, ReceivedAttackEvent
+from simulation.event import FailedAttackEvent
+from simulation.event import FailedMoveEvent
+from simulation.event import MovedEvent
+from simulation.event import PerformedAttackEvent
+from simulation.event import ReceivedAttackEvent
 from simulation.game_settings import DEFAULT_ATTACK_DAMAGE
 
 LOGGER = getLogger(__name__)
 
 
 class Action(object):
-    def __init__(self, avatar, origin, direction=None):
-        self._avatar = avatar
+    def __init__(self, avatar_id, origin, direction=None):
+        self._avatar_id = avatar_id
         self._origin = origin
         self._direction = direction
 
     @property
-    def avatar(self):
-        return self._avatar
-
-    @property
     def avatar_id(self):
-        return self._avatar.user_id
+        return self._avatar_id
 
     @property
     def origin(self):
@@ -66,8 +66,7 @@ class MoveAction(Action):
         Action.__init__(self, avatar, origin, direction=Direction.copy(direction))
 
     def process(self, game_state, other_actions=None):
-        start = game_state.avatar_manager.location(self.avatar_id)
-        self.chain(game_state, other_actions, {start})
+        self.chain(game_state, other_actions, {self.origin})
 
     def chain(self, game_state, other_actions, visited):
         if not self.is_legal(game_state, other_actions):
@@ -77,7 +76,7 @@ class MoveAction(Action):
         if self.target in visited:
             return self.reject(game_state)
 
-        if not game_state.world_map.cell_occupied(self.target):
+        if not game_state.cell_occupied(self.target):
             return self.apply(game_state, other_actions)
 
         next_avatar = game_state.avatar_at(self.target)
@@ -88,16 +87,14 @@ class MoveAction(Action):
         return self.reject(game_state)
 
     def is_legal(self, game_state, other_actions=None):
-        world = game_state.world_map
-
-        if not world.cell_habitable(self.target):
+        if not game_state.cell_habitable(self.target):
             return False
 
         if (other_actions is not None
                 and other_actions.num_moves_to(self.target) > 1):
             return False
 
-        if not world.cell_occupied(self.target):
+        if not game_state.cell_occupied(self.target):
             return True
 
         avatar_id = game_state.avatar_at(self.target)
@@ -108,13 +105,6 @@ class MoveAction(Action):
     def apply(self, game_state, other_actions):
         game_state.move_avatar(self.avatar_id, self.direction)
         game_state.add_event(self.avatar_id, MovedEvent(self.origin, self.target))
-
-        new_cell = game_state.world_map.get_cell(self.target)
-        if new_cell.pickup:
-            # TODO:  extract pickup logic into pickup when adding multiple types
-            self.avatar.health = min(10, self.avatar.health + new_cell.pickup.health_restored)
-            new_cell.pickup = None
-
         return True
 
     def reject(self, game_state):
@@ -148,7 +138,11 @@ class AttackAction(Action):
         game_state.add_event(attacked_avatar, ReceivedAttackEvent(self.avatar_id, damage))
 
         LOGGER.debug(
-            '{} dealt {} damage to {}'.format(self.avatar, damage, attacked_avatar)
+            'Avatar {} dealt {} damage to avatar {}'.format(
+                self.avatar_id,
+                damage,
+                attacked_avatar
+            )
         )
 
     def reject(self, game_state):

@@ -1,6 +1,7 @@
 from threading import RLock
 
 from simulation.avatar import fog_of_war
+from simulation.location import Location
 
 
 def alters_state(method):
@@ -20,8 +21,8 @@ class GameState(object):
     Encapsulates the entire game state, including avatars, their code, and the world.
     """
     def __init__(self, world_map, avatar_manager):
-        self.world_map = world_map
-        self.avatar_manager = avatar_manager
+        self._avatar_manager = avatar_manager
+        self._world_map = world_map
         self._edit_lock = RLock()
 
     def __enter__(self):
@@ -35,7 +36,7 @@ class GameState(object):
         '''
         Return the subset of the game state visible to an avatar.
         '''
-        processed_world_map = fog_of_war.apply_fog_of_war(self.world_map, avatar_wrapper)
+        processed_world_map = fog_of_war.apply_fog_of_war(self._world_map, avatar_wrapper)
         return {
             'avatar_state': avatar_wrapper.serialise(),
             'world_map': {
@@ -43,54 +44,104 @@ class GameState(object):
             }
         }
 
+    @staticmethod
+    def _cell_type(cell):
+        return 1 if not cell.is_habitable else 2 if cell.generates_score else 0
+
+    def snapshot(self):
+        world = [[self._cell_type(self._world_map.get_cell(Location(x, y)))
+                  for y in range(self._world_map.num_rows)]
+                 for x in range(self._world_map.num_cols)]
+
+        avatars = {avatar.user_id: avatar.snapshot()
+                   for avatar in self._avatar_manager.active_avatars}
+
+        return {
+            'players': avatars,
+            'layout': world,
+            'width': self._world_map.num_cols,
+            'height': self._world_map.num_rows,
+            'score_locations': [(cell.location.x, cell.location.y)
+                                for cell in self._world_map.score_cells],
+            'pickup_locations': [(cell.location.x, cell.location.y)
+                                 for cell in self._world_map.pickup_cells],
+            'map_changed': True,
+        }
+
+    # Avatar methods ----------------------------------------------------------
+
+    @property
+    def active_avatars(self):
+        return (avatar.user_id for avatar in self._avatar_manager.active_avatars)
+
     @alters_state
     def add_avatar(self, avatar_id, worker_url, location=None):
-        location = self.world_map.get_random_spawn_location() if location is None else location
-        avatar = self.avatar_manager.add_avatar(avatar_id, worker_url, location)
-        self.world_map.get_cell(location).avatar = avatar
-
-    def avatar_at(self, location):
-        try:
-            return self.world_map.avatar_at(location).user_id
-        except AttributeError:
-            return None
+        location = self._world_map.get_random_spawn_location() if location is None else location
+        avatar = self._avatar_manager.add_avatar(avatar_id, worker_url, location)
+        self._world_map.get_cell(location).avatar = avatar
 
     @alters_state
     def remove_avatar(self, avatar_id):
         try:
-            avatar = self.avatar_manager.get_avatar(avatar_id)
+            avatar = self._avatar_manager.get_avatar(avatar_id)
         except KeyError:
             return
-        self.world_map.get_cell(avatar.location).avatar = None
-        self.avatar_manager.remove_avatar(avatar_id)
+        self._world_map.get_cell(avatar.location).avatar = None
+        self._avatar_manager.remove_avatar(avatar_id)
+
+    def avatar_at(self, location):
+        try:
+            return self._world_map.get_cell(location).avatar.user_id
+        except AttributeError:
+            return None
 
     @alters_state
     def move_avatar(self, avatar_id, direction):
-        avatar = self.avatar_manager.get_avatar(avatar_id)
+        avatar = self._avatar_manager.get_avatar(avatar_id)
 
-        self.world_map.get_cell(avatar.location).avatar = None
+        self._world_map.get_cell(avatar.location).avatar = None
         avatar.location += direction
-        self.world_map.get_cell(avatar.location).avatar = avatar
+        self._world_map.get_cell(avatar.location).avatar = avatar
 
     @alters_state
     def hurt_avatar(self, avatar_id, damage):
-        avatar = self.avatar_manager.get_avatar(avatar_id)
+        avatar = self._avatar_manager.get_avatar(avatar_id)
         avatar.health = max(0, avatar.health - damage)
 
     @alters_state
     def heal_avatar(self, avatar_id, health):
-        self.avatar_manager.get_avatar(avatar_id).health += health
+        self._avatar_manager.get_avatar(avatar_id).health += health
 
     @alters_state
     def add_event(self, avatar_id, event):
-        self.avatar_manager.get_avatar(avatar_id).add_event(event)
+        self._avatar_manager.get_avatar(avatar_id).add_event(event)
+
+    # World methods -----------------------------------------------------------
+
+    @property
+    def world_size(self):
+        return (self._world_map.num_cols, self._world_map.num_rows)
+
+    def cell_on_map(self, location):
+        return self._world_map.cell_on_map(location)
+
+    def cell_habitable(self, location):
+        try:
+            return self._world_map.get_cell(location).is_habitable
+        except ValueError:
+            return False
 
     def cell_occupied(self, location):
-        return self.world_map.cell_occupied(location)
+        try:
+            return self._world_map.get_cell(location).is_occupied
+        except ValueError:
+            return False
+
+    # Other methods -----------------------------------------------------------
 
     @alters_state
     def _apply_score(self):
-        for cell in self.world_map.score_cells:
+        for cell in self._world_map.score_cells:
             try:
                 cell.avatar.score += 1
             except AttributeError:
@@ -98,8 +149,8 @@ class GameState(object):
 
     @alters_state
     def end_of_turn(self):
-        num_avatars = len(self.avatar_manager.active_avatars)
-        self.world_map.expand(num_avatars)
-        self.world_map.reset_score_locations(num_avatars)
-        self.world_map.add_pickups(num_avatars)
+        num_avatars = len(self._avatar_manager.active_avatars)
+        self._world_map.expand(num_avatars)
+        self._world_map.reset_score_locations(num_avatars)
+        self._world_map.add_pickups(num_avatars)
         self._apply_score()

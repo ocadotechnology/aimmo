@@ -16,44 +16,37 @@ class FogToEmpty(object):
 
 
 class TestGameState(TestCase):
+    def setUp(self, map_type=InfiniteMap):
+        self.world_map = map_type()
+        self.av_manager = DummyAvatarManager()
+        self.game_state = GameState(self.world_map, self.av_manager)
+
     def test_remove_non_existant_avatar(self):
-        game_state = GameState(None, DummyAvatarManager())
-        with game_state:
-            game_state.remove_avatar(10)
+        GameState(None, DummyAvatarManager()).remove_avatar(10)
 
     def test_remove_avatar(self):
-        world_map = InfiniteMap()
-        manager = DummyAvatarManager()
-        game_state = GameState(world_map, manager)
+        av_1 = DummyAvatar(1, Location(0, 0))
+        av_2 = DummyAvatar(2, Location(1, 1))
+        av_2.marked = True
 
-        avatar1 = DummyAvatar(1, Location(0, 0))
-        avatar2 = DummyAvatar(2, Location(1, 1))
-        avatar2.marked = True
+        self.av_manager.add_avatar_directly(av_1)
+        self.world_map.get_cell(Location(0, 0)).avatar = av_1
+        self.av_manager.add_avatar_directly(av_2)
+        self.world_map.get_cell(Location(1, 1)).avatar = av_2
 
-        manager.add_avatar_directly(avatar1)
-        world_map.get_cell(Location(0, 0)).avatar = avatar1
-        manager.add_avatar_directly(avatar2)
-        world_map.get_cell(Location(1, 1)).avatar = avatar2
+        self.game_state.remove_avatar(1)
 
-        with game_state:
-            game_state.remove_avatar(1)
+        self.assertNotIn(1, self.av_manager._avatars_by_id)
+        self.assertEqual(self.world_map.get_cell((0, 0)).avatar, None)
 
-        self.assertNotIn(1, manager._avatars_by_id)
-        self.assertEqual(world_map.get_cell((0, 0)).avatar, None)
-
-        self.assertTrue(manager._avatars_by_id[2].marked)
-        self.assertTrue(world_map.get_cell(Location(1, 1)).avatar.marked)
+        self.assertTrue(self.av_manager._avatars_by_id[2].marked)
+        self.assertTrue(self.world_map.get_cell(Location(1, 1)).avatar.marked)
 
     def test_add_avatar(self):
-        game_state = GameState(AvatarMap(None), DummyAvatarManager())
+        self.game_state.add_avatar(7, None, Location(10,10))
 
-        with game_state:
-            game_state.add_avatar(7, "")
-
-        self.assertIn(7, game_state.avatar_manager._avatars_by_id)
-        avatar = game_state.avatar_manager._avatars_by_id[7]
-        self.assertEqual(avatar.location.x, 10)
-        self.assertEqual(avatar.location.y, 10)
+        self.assertIn(7, self.av_manager._avatars_by_id)
+        self.assertEqual(self.av_manager._avatars_by_id[7].location, Location(10, 10))
 
     def test_fog_of_war(self):
         game_state = GameState(InfiniteMap(), DummyAvatarManager())

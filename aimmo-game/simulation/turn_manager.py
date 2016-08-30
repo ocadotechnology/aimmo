@@ -54,7 +54,7 @@ class ConcurrentTurnManager(TurnManager):
         in order of priority.
         '''
         threads = [DecisionThread(avatar, self.game_state.view(avatar))
-                   for avatar in self.game_state.avatar_manager.active_avatars]
+                   for avatar in self.game_state._avatar_manager.active_avatars]
 
         [thread.start() for thread in threads]
 

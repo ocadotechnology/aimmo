@@ -31,7 +31,7 @@ class WaitDummy(DummyAvatar):
     Avatar that always waits.
     '''
     def handle_turn(self, state_view):
-        return WaitAction(self, self.location)
+        return WaitAction(self.user_id, self.location)
 
 
 class MoveDummy(DummyAvatar):
@@ -43,7 +43,7 @@ class MoveDummy(DummyAvatar):
         self._direction = direction
 
     def handle_turn(self, state_view):
-        return MoveAction(self, self.location, self._direction.dict)
+        return MoveAction(self.user_id, self.location, self._direction.dict)
 
 
 class MoveNorthDummy(MoveDummy):

@@ -224,23 +224,6 @@ class WorldMap(object):
         """
         return self._get_random_spawn_cells(1)[0].location
 
-    def attackable_avatar(self, target_location):
-        '''
-        Return the avatar attackable at the given location, or None.
-        '''
-        try:
-            cell = self.get_cell(target_location)
-        except ValueError:
-            return None
-
-        if cell.avatar:
-            return cell.avatar
-
-        if len(cell.moves) == 1:
-            return cell.moves[0].avatar
-
-        return None
-
     def get_no_fog_distance(self):
         return NO_FOG_OF_WAR_DISTANCE
 

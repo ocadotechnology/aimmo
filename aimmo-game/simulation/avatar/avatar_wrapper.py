@@ -30,7 +30,7 @@ class AvatarWrapper(object):
         action_data = data['action']
         action_type = action_data['action_type']
         action_args = action_data.get('options', {})
-        action_args['avatar'] = self
+        action_args['avatar'] = self.user_id
         action_args['origin'] = self.location
         return ACTIONS[action_type](**action_args)
 
@@ -53,6 +53,22 @@ class AvatarWrapper(object):
 
     def add_event(self, event):
         self.events.append(event)
+
+    def snapshot(self):
+        return {
+            'id': self.user_id,
+            'x': self.location.x,
+            'y': self.location.y,
+            'health': self.health,
+            'score': self.score,
+            'rotation': 0,
+            'colours': {
+                "bodyStroke": "#0ff",
+                "bodyFill": "#%06x" % (self.user_id * 4999),  # TODO: implement better colour functionality.
+                "eyeStroke": "#aff",
+                "eyeFill": "#eff",
+            }
+        }
 
     def serialise(self):
         return {

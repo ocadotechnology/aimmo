@@ -32,21 +32,21 @@ class TestAction(unittest.TestCase):
         self.game_state.add_avatar(1, '', ORIGIN)
         self.game_state.add_avatar(2, '', ORIGIN + EAST)
 
-        self.avatar_1 = self.game_state.avatar_manager.get_avatar(1)
-        self.avatar_2 = self.game_state.avatar_manager.get_avatar(2)
+        self.av_1 = self.avatar_manager.get_avatar(1)
+        self.av_2 = self.avatar_manager.get_avatar(2)
 
-        self.assert_at(self.avatar_1, ORIGIN)
-        self.assert_at(self.avatar_2, ORIGIN + EAST)
+        self.assert_at(self.av_1, ORIGIN)
+        self.assert_at(self.av_2, ORIGIN + EAST)
 
     def move(self, avatar, direction, other_actions=None):
-        MoveAction(avatar, avatar.location, direction).process(self.game_state, other_actions)
+        MoveAction(avatar.user_id, avatar.location, direction).process(self.game_state, other_actions)
 
     def attack(self, avatar, direction, other_actions=None):
-        AttackAction(avatar, avatar.location, direction).process(self.game_state, other_actions)
+        AttackAction(avatar.user_id, avatar.location, direction).process(self.game_state, other_actions)
 
     def assert_at(self, avatar, location):
         self.assertEqual(avatar.location, location)
-        cell = self.game_state.world_map.get_cell(location)
+        cell = self.game_state._world_map.get_cell(location)
         self.assertEqual(cell.avatar, avatar)
 
     def assert_event(self, avatar, event):
@@ -57,51 +57,51 @@ class TestAction(unittest.TestCase):
         self.assertEqual(last_event, event)
 
     def test_move_succeeds(self):
-        self.assert_at(self.avatar_1, ORIGIN)
+        self.assert_at(self.av_1, ORIGIN)
 
-        self.move(self.avatar_1, NORTH)
+        self.move(self.av_1, NORTH)
 
-        self.assert_at(self.avatar_1, ORIGIN + NORTH)
-        self.assert_event(self.avatar_1, MovedEvent(ORIGIN, ORIGIN + NORTH))
+        self.assert_at(self.av_1, ORIGIN + NORTH)
+        self.assert_event(self.av_1, MovedEvent(ORIGIN, ORIGIN + NORTH))
 
     def test_move_fails_unhabitable(self):
-        self.game_state.world_map.get_cell(ORIGIN + NORTH)._habitable = False
+        self.game_state._world_map.get_cell(ORIGIN + NORTH)._habitable = False
 
-        self.assert_at(self.avatar_1, ORIGIN)
+        self.assert_at(self.av_1, ORIGIN)
 
-        self.move(self.avatar_1, NORTH)
+        self.move(self.av_1, NORTH)
 
-        self.assert_at(self.avatar_1, ORIGIN)
-        self.assert_event(self.avatar_1, FailedMoveEvent(ORIGIN, ORIGIN + NORTH))
+        self.assert_at(self.av_1, ORIGIN)
+        self.assert_event(self.av_1, FailedMoveEvent(ORIGIN, ORIGIN + NORTH))
 
     def test_move_fails_occupied(self):
-        self.assert_at(self.avatar_1, ORIGIN)
+        self.assert_at(self.av_1, ORIGIN)
 
-        self.move(self.avatar_1, EAST)
+        self.move(self.av_1, EAST)
 
-        self.assert_at(self.avatar_1, ORIGIN)
-        self.assert_event(self.avatar_1, FailedMoveEvent(ORIGIN, ORIGIN + EAST))
+        self.assert_at(self.av_1, ORIGIN)
+        self.assert_event(self.av_1, FailedMoveEvent(ORIGIN, ORIGIN + EAST))
 
     def test_move_to_score_squares(self):
         self.setUp(map_type=ScoreOnOddColumnsMap)
         self.game_state.remove_avatar(2)
 
-        self.assertEqual(self.avatar_1.score, 0)
+        self.assertEqual(self.av_1.score, 0)
 
-        self.move(self.avatar_1, EAST)
+        self.move(self.av_1, EAST)
         self.game_state._apply_score()
 
-        self.assertEqual(self.avatar_1.score, 1)
+        self.assertEqual(self.av_1.score, 1)
 
-        self.move(self.avatar_1, EAST)
+        self.move(self.av_1, EAST)
         self.game_state._apply_score()
 
-        self.assertEqual(self.avatar_1.score, 1)
+        self.assertEqual(self.av_1.score, 1)
 
-        self.move(self.avatar_1, EAST)
+        self.move(self.av_1, EAST)
         self.game_state._apply_score()
 
-        self.assertEqual(self.avatar_1.score, 2)
+        self.assertEqual(self.av_1.score, 2)
 
     @unittest.skip("Implement after changes")
     def test_move_action_pickups(self):
@@ -109,37 +109,38 @@ class TestAction(unittest.TestCase):
         pass
 
     def test_attack_succeeds(self):
-        self.assertEqual(self.avatar_2.health, AVATAR_STARTING_HEALTH)
+        self.assertEqual(self.av_2.health, AVATAR_STARTING_HEALTH)
 
         damage = DEFAULT_ATTACK_DAMAGE
-        self.attack(self.avatar_1, EAST)
+        print self.game_state.avatar_at(ORIGIN + EAST)
+        self.attack(self.av_1, EAST)
 
-        self.assertEqual(self.avatar_2.health, AVATAR_STARTING_HEALTH - damage)
+        self.assertEqual(self.av_2.health, AVATAR_STARTING_HEALTH - damage)
 
-        self.assert_event(self.avatar_1, PerformedAttackEvent(self.avatar_2.user_id, ORIGIN + EAST, damage))
-        self.assert_event(self.avatar_2, ReceivedAttackEvent(self.avatar_1.user_id, damage))
+        self.assert_event(self.av_1, PerformedAttackEvent(self.av_2.user_id, ORIGIN + EAST, damage))
+        self.assert_event(self.av_2, ReceivedAttackEvent(self.av_1.user_id, damage))
 
     def test_attack_fails_vacant(self):
-        self.assertEqual(self.avatar_2.health, AVATAR_STARTING_HEALTH)
+        self.assertEqual(self.av_2.health, AVATAR_STARTING_HEALTH)
 
-        self.attack(self.avatar_1, NORTH)
+        self.attack(self.av_1, NORTH)
 
-        self.assertEqual(self.avatar_2.health, AVATAR_STARTING_HEALTH)
+        self.assertEqual(self.av_2.health, AVATAR_STARTING_HEALTH)
 
-        self.assert_event(self.avatar_1, FailedAttackEvent(ORIGIN + NORTH))
+        self.assert_event(self.av_1, FailedAttackEvent(ORIGIN + NORTH))
 
     def test_avatar_dies(self):
-        self.avatar_2.health = DEFAULT_ATTACK_DAMAGE
+        self.av_2.health = DEFAULT_ATTACK_DAMAGE
 
-        self.attack(self.avatar_1, EAST)
+        self.attack(self.av_1, EAST)
 
-        self.assertEqual(self.avatar_2.health, 0)
+        self.assertEqual(self.av_2.health, 0)
 
-        self.avatar_manager.process_deaths(self.game_state.world_map)
+        self.avatar_manager.process_deaths(self.game_state._world_map)
 
-        self.assertEqual(self.avatar_2.health, AVATAR_STARTING_HEALTH)
-        self.assert_event(self.avatar_2, DeathEvent(ORIGIN + EAST, self.avatar_2.location))
+        self.assertEqual(self.av_2.health, AVATAR_STARTING_HEALTH)
+        self.assert_event(self.av_2, DeathEvent(ORIGIN + EAST, self.av_2.location))
 
     def test_no_move_in_wait(self):
-        WaitAction(self.avatar_1, self.avatar_1.location).process(self.game_state)
-        self.assertEqual(self.avatar_1.location, ORIGIN)
+        WaitAction(self.av_1.user_id, self.av_1.location).process(self.game_state)
+        self.assertEqual(self.av_1.location, ORIGIN)
