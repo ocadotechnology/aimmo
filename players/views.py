@@ -119,7 +119,11 @@ def program_level(request, num):
 
 
 def _render_game(request, game):
-    context = {'current_user_player_key': request.user.pk}
+    context = {
+        'current_user_player_key': request.user.pk,
+        'active': game.is_active,
+        'static_data': game.static_data,
+    }
     context['game_url_base'], context['game_url_path'] = app_settings.GAME_SERVER_LOCATION_FUNCTION(game.id)
     return render(request, 'players/watch.html', context)
 

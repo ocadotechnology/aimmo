@@ -30,6 +30,7 @@ class Game(models.Model):
     completed = models.BooleanField(default=False)
     main_user = models.ForeignKey(User, blank=True, null=True, related_name='games_for_user')
     objects = GameQuerySet.as_manager()
+    static_data = models.TextField(blank=True, null=True)
 
     # Game config
     generator = models.CharField(max_length=20, choices=GAME_GENERATORS, default=GAME_GENERATORS[0][0])

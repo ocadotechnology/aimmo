@@ -181,6 +181,18 @@ class TestViews(TestCase):
         logging.disable(logging.INFO)
         self.assertEqual(response.status_code, 404)
 
+    def test_watch_inactive_level(self):
+        c = self.login()
+        self.game.completed = True
+        if self.game.is_active:
+            self.skipTest('Completed game is active')
+        self.game.static_data = '{"test": 1}'
+        self.game.save()
+        response = c.get(reverse('aimmo/watch', kwargs={'id': 1}))
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.context['active'])
+        self.assertEqual(response.context['static_data'], '{"test": 1}')
+
     def test_games_api(self):
         self.game.main_user = self.user
         self.game.save()
