@@ -79,9 +79,8 @@ class GameState(object):
 
     @alters_state
     def add_avatar(self, avatar_id, worker_url, location=None):
-        location = self._world_map.get_random_spawn_location() if location is None else location
-        avatar = self._avatar_manager.add_avatar(avatar_id, worker_url, location)
-        self._world_map.get_cell(location).avatar = avatar
+        avatar = self._avatar_manager.add_avatar(avatar_id, worker_url)
+        self._avatar_manager.spawn(self._world_map, avatar, location)
 
     @alters_state
     def remove_avatar(self, avatar_id):

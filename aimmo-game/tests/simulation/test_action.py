@@ -39,10 +39,10 @@ class TestAction(unittest.TestCase):
         self.assert_at(self.av_2, ORIGIN + EAST)
 
     def move(self, avatar, direction, other_actions=None):
-        MoveAction(avatar.user_id, avatar.location, direction).process(self.game_state, other_actions)
+        MoveAction(avatar.user_id, avatar.location, direction.dict).process(self.game_state, other_actions)
 
     def attack(self, avatar, direction, other_actions=None):
-        AttackAction(avatar.user_id, avatar.location, direction).process(self.game_state, other_actions)
+        AttackAction(avatar.user_id, avatar.location, direction.dict).process(self.game_state, other_actions)
 
     def assert_at(self, avatar, location):
         self.assertEqual(avatar.location, location)

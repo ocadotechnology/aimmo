@@ -193,9 +193,12 @@ class TestActionRegistry(unittest.TestCase):
     def setUp(self):
         self.reg = ActionRegistry()
 
-        self.av_1 = DummyAvatar(1, Location(0, 0))
-        self.av_2 = DummyAvatar(2, Location(1, 0))
-        self.av_3 = DummyAvatar(3, Location(0, 1))
+        self.av_1 = DummyAvatar(1)
+        self.av_1.location = Location(0, 0)
+        self.av_2 = DummyAvatar(2)
+        self.av_2.location = Location(1, 0)
+        self.av_3 = DummyAvatar(3)
+        self.av_3.location = Location(0, 1)
 
     def test_add_action(self):
         action = WaitAction(self.av_1.user_id, self.av_1.location)
@@ -205,9 +208,9 @@ class TestActionRegistry(unittest.TestCase):
         self.assertEqual(self.reg._actions_by_target[self.av_1.location], [action])
 
     def test_sort_actions_by_type(self):
-        action_1 = MoveAction(self.av_2.user_id, self.av_2.location, NORTH)
+        action_1 = MoveAction(self.av_2.user_id, self.av_2.location, NORTH.dict)
         action_2 = WaitAction(self.av_3.user_id, self.av_3.location)
-        action_3 = AttackAction(self.av_1.user_id, self.av_1.location, EAST)
+        action_3 = AttackAction(self.av_1.user_id, self.av_1.location, EAST.dict)
 
         self.reg.add(action_1)
         self.reg.add(action_2)

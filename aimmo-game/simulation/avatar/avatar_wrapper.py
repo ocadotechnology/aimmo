@@ -12,10 +12,9 @@ class AvatarWrapper(object):
     The application's view of a character, not to be confused with "Avatar",
     the player-supplied code.
     """
-
-    def __init__(self, user_id, initial_location, worker_url, appearance):
+    def __init__(self, user_id, worker_url, appearance):
         self.user_id = user_id
-        self.location = initial_location
+        self.location = None
         self.health = game_settings.AVATAR_STARTING_HEALTH
         self.score = 0
         self.events = []
@@ -31,7 +30,7 @@ class AvatarWrapper(object):
         action_type = action_data['action_type']
         action_args = action_data.get('options', {})
         action_args['avatar'] = self.user_id
-        action_args['origin'] = self.location
+        action_args['source'] = self.location
         return ACTIONS[action_type](**action_args)
 
     def decide_action(self, state_view):

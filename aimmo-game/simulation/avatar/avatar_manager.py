@@ -13,11 +13,17 @@ class AvatarManager(object):
     def __init__(self):
         self._avatars_by_id = {}
 
-    def add_avatar(self, avatar_id, worker_url, location):
-        avatar = AvatarWrapper(avatar_id, location, worker_url,
+    def add_avatar(self, avatar_id, worker_url, location=None):
+        avatar = AvatarWrapper(avatar_id, worker_url,
                                AvatarAppearance("#000", "#ddd", "#777", "#fff"))
         self._avatars_by_id[avatar_id] = avatar
         return avatar
+
+    @staticmethod
+    def spawn(world_map, avatar, location=None):
+        avatar.location = (location if location is not None
+                           else world_map.get_random_spawn_location())
+        world_map.get_cell(avatar.location).avatar = avatar
 
     def get_avatar(self, avatar_id):
         return self._avatars_by_id[avatar_id]

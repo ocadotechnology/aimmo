@@ -25,11 +25,8 @@ class Direction:
         return 'Direction(x={}, y={})'.format(self.x, self.y)
 
     @staticmethod
-    def from_dict(other):
-        try:
-            return Direction(**other.dict)
-        except AttributeError:
-            return Direction(**other)
+    def from_dict(direction_dict):
+        return Direction(**direction_dict)
 
 NORTH = Direction(0, 1)
 EAST = Direction(1, 0)

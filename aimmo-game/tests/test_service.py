@@ -15,9 +15,9 @@ from .simulation.dummy_avatar import MoveEastDummy
 from .simulation.test_world_map import MockCell
 
 
-
 class SimpleAvatarManager(object):
-    avatars = [MoveEastDummy(1, Location(0, 1))]
+    avatars = [MoveEastDummy(1)]
+    avatars[0].location = Location(0, 1)
 
 
 class TestService(TestCase):
