@@ -72,6 +72,27 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
 
 `python example_project/manage.py delete_generated_players`
 
+### Under Kubernetes
+* By default, the local environment runs each worker in a Python thread. However, for some testing, it is useful to run as a Kubernetes cluster. Note that this is not for most testing, the default is more convenient as the Kubernetes cluster is slow and runs into resource limits with ~10 avatars.
+* Linux, Windows (minikube is experimental though), and OSX (untested) are supported.
+* Prerequisites:
+    * All platforms: VT-x/AMD-v virtualization.
+    * Linux: [Virtualbox](https://www.virtualbox.org/wiki/Downloads).
+    * OSX: either [Virtualbox](https://www.virtualbox.org/wiki/Downloads) or [VMWare Fusion](http://www.vmware.com/products/fusion.html).
+* Usage: `python run.py -k`. This will:
+    * Download Docker, Minikube, and Kubectl into a `test-bin` folder in the project's root directory.
+    * Run `minikube start` (if the cluster is not already running).
+    * Build each image.
+    * Start aimmo-game-creator.
+    * Perform the same setup that run.py normally performs.
+    * Start the Django project (which is not kubernetes controlled) on localhost:8000.
+* Run the same command to update all the images.
+
+#### Interacting with the cluster
+* `kubectl` and `minikube` (both in the `test-bin` folder, note that this is not on your PATH) can be used to interact with the cluster.
+* Running either command without any options will give the most useful commands.
+* `./test-bin/minikube dashboard` to open the kubernetes dashboard in your def
+
 ## Testing Locally
 *`./all_tests.py` will run all tests (note that this is several pages of output).
 * `--coverage` option generates coverage data using coverage.py

@@ -5,15 +5,18 @@ from pykube import HTTPClient
 from pykube import KubeConfig
 from pykube import ReplicationController, Service
 import time
+import os
 
 LOGGER = logging.getLogger(__name__)
 
+
 def create_game_rc(api, name, environment_variables):
     environment_variables['SOCKETIO_RESOURCE'] = "game/%s/socket.io" % name
-    environment_variables['GAME_API_URL'] = 'https://staging-dot-decent-digit-629.appspot.com/aimmo/api/games/'
+    environment_variables['GAME_API_URL'] = os.environ.get('GAME_API_URL', 'https://staging-dot-decent-digit-629.appspot.com/aimmo/api/games/')
     environment_variables['GAME_NAME'] = name
     environment_variables['GAME_URL'] = "http://game-%s" % name
     environment_variables['PYKUBE_KUBERNETES_SERVICE_HOST'] = 'kubernetes'
+    environment_variables['IMAGE_SUFFIX'] = os.environ.get('IMAGE_SUFFIX', 'latest')
     rc = ReplicationController(
         api,
         {
@@ -49,7 +52,7 @@ def create_game_rc(api, name, environment_variables):
                                         'value': env_value,
                                     } for env_name, env_value in environment_variables.items()
                                 ],
-                                'image': 'ocadotechnology/aimmo-game:latest',
+                                'image': 'ocadotechnology/aimmo-game:%s' % os.environ.get('IMAGE_SUFFIX', 'latest'),
                                 'ports': [
                                     {
                                         'containerPort': 5000,
