@@ -4,21 +4,37 @@
 
 {% block content %}
 <div class="row">
-    <h2>Program</h2>
-    <p>Use the box below to program your Avatar. Save using the button on the right.</p>
-</div>
-<div class="row">
-    <div id="alerts" class="alert collapse" role="alert">
-    </div>
-</div>
-<div class="row">
-    <div id="editor" class="col-md-9"></div>
-    <form id="saveForm" action="{% url 'aimmo/code' %}" method="POST">
-        {% csrf_token %}
-        <div id="buttons" class="col-md-3">
-            <input type="submit" id="saveBtn" type="button" class="btn btn-lg btn-primary text-center" value="Save" />
+
+        <div class="row">
+            <h2>Program</h2>
+            <p>Use the box below to program your Avatar. Save using the button below.</p>
         </div>
-    </form>
+        <div class="row">
+            <div id="alerts" class="alert collapse" role="alert">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-7">
+                <div class="row">
+                    <div id="editor"></div>
+                </div>
+                <div class="row top10">
+                    <form id="saveForm" action="{% url 'aimmo/code' %}" method="POST">
+                        {% csrf_token %}
+                        <div id="buttons">
+                            <input type="submit" id="saveBtn" type="button" class="btn btn-lg btn-primary text-center" value="Save" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div id="console" class="col-md-12">
+                    Event: ReceivedAttackEvent<br>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 {% endblock %}
 
