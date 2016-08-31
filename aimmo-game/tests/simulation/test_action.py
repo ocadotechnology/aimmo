@@ -19,7 +19,7 @@ from simulation.game_settings import AVATAR_STARTING_HEALTH
 
 from .dummy_avatar import DummyAvatarManager
 from .dummy_avatar import DummyAvatar
-from .maps import InfiniteMap, EmptyMap, ScoreOnOddColumnsMap, AvatarMap
+from .maps import InfiniteMap, ScoreOnOddColumnsMap
 
 ORIGIN = Location(x=0, y=0)
 
@@ -112,7 +112,6 @@ class TestAction(unittest.TestCase):
         self.assertEqual(self.av_2.health, AVATAR_STARTING_HEALTH)
 
         damage = DEFAULT_ATTACK_DAMAGE
-        print self.game_state.avatar_at(ORIGIN + EAST)
         self.attack(self.av_1, EAST)
 
         self.assertEqual(self.av_2.health, AVATAR_STARTING_HEALTH - damage)

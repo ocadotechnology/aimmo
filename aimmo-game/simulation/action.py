@@ -12,9 +12,9 @@ LOGGER = getLogger(__name__)
 
 
 class Action(object):
-    def __init__(self, avatar_id, origin, direction=None):
+    def __init__(self, avatar_id, source, direction=None):
         self._avatar_id = avatar_id
-        self._origin = origin
+        self._source = source
         self._direction = direction
 
     @property
@@ -22,8 +22,8 @@ class Action(object):
         return self._avatar_id
 
     @property
-    def origin(self):
-        return self._origin
+    def source(self):
+        return self._source
 
     @property
     def direction(self):
@@ -31,7 +31,7 @@ class Action(object):
 
     @property
     def target(self):
-        return self._origin + self._direction
+        return self._source + self._direction
 
     def process(self, game_state, other_actions=None):
         if self.is_legal(game_state, other_actions):
@@ -50,8 +50,8 @@ class Action(object):
 
 
 class WaitAction(Action):
-    def __init__(self, avatar, origin):
-        Action.__init__(self, avatar, origin)
+    def __init__(self, avatar, source):
+        Action.__init__(self, avatar, source)
 
     def is_legal(self, game_state, other_actions=None):
         return True
@@ -61,12 +61,13 @@ class WaitAction(Action):
 
 
 class MoveAction(Action):
-    def __init__(self, avatar, origin, direction):
+    def __init__(self, avatar, source, direction_dict):
         # Untrusted data!
-        Action.__init__(self, avatar, origin, direction=Direction.copy(direction))
+        direction = Direction.from_dict(direction_dict)
+        Action.__init__(self, avatar, source, direction)
 
     def process(self, game_state, other_actions=None):
-        self.chain(game_state, other_actions, {self.origin})
+        self.chain(game_state, other_actions, {self.source})
 
     def chain(self, game_state, other_actions, visited):
         if not self.is_legal(game_state, other_actions):
@@ -104,18 +105,19 @@ class MoveAction(Action):
 
     def apply(self, game_state, other_actions):
         game_state.move_avatar(self.avatar_id, self.direction)
-        game_state.add_event(self.avatar_id, MovedEvent(self.origin, self.target))
+        game_state.add_event(self.avatar_id, MovedEvent(self.source, self.target))
         return True
 
     def reject(self, game_state):
-        game_state.add_event(self.avatar_id, FailedMoveEvent(self.origin, self.target))
+        game_state.add_event(self.avatar_id, FailedMoveEvent(self.source, self.target))
         return False
 
 
 class AttackAction(Action):
-    def __init__(self, avatar, origin, direction):
-        #                                               Untrusted data!
-        Action.__init__(self, avatar, origin, direction=Direction.copy(direction))
+    def __init__(self, avatar, source, direction_dict):
+        # Untrusted data!
+        direction = Direction.from_dict(direction_dict)
+        Action.__init__(self, avatar, source, direction)
 
     def _attacked_avatar(self, game_state, other_actions):
         if game_state.cell_occupied(self.target):

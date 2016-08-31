@@ -18,16 +18,14 @@ class _WorkerManagerData(object):
     """
     This class is thread safe
     """
-
     def __init__(self, game_state, user_codes):
         self._game_state = game_state
         self._user_codes = user_codes
         self._lock = Semaphore()
 
     def _remove_avatar(self, user_id):
-        with self._game_state as game_state:
-            game_state.remove_avatar(user_id)
-            del self._user_codes[user_id]
+        self._game_state.remove_avatar(user_id)
+        del self._user_codes[user_id]
 
     def remove_user_if_code_is_different(self, user):
         with self._lock:
@@ -41,10 +39,9 @@ class _WorkerManagerData(object):
                 return False
 
     def add_avatar(self, user, worker_url):
-        with self._game_state as game_state:
-            # Add avatar back into game
-            game_state.add_avatar(
-                avatar_id=user['id'], worker_url="%s/turn/" % worker_url)
+        # Add avatar back into game
+        self._game_state.add_avatar(
+            avatar_id=user['id'], worker_url="%s/turn/" % worker_url)
 
     def set_code(self, user):
         with self._lock:
@@ -83,17 +80,14 @@ class WorkerManager(threading.Thread):
 
     def get_persistent_state(self, player_id):
         """Get the persistent state for a worker."""
-
         return None
 
     def create_worker(self, player_id):
         """Create a worker."""
-
         raise NotImplemented
 
     def remove_worker(self, player_id):
         """Remove a worker for the given player."""
-
         raise NotImplemented
 
     # TODO handle failure

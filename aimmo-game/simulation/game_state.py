@@ -74,6 +74,9 @@ class GameState(object):
     def active_avatars(self):
         return (avatar.user_id for avatar in self._avatar_manager.active_avatars)
 
+    def avatar_location(self, avatar_id):
+        return self._avatar_manager.get_avatar(avatar_id).location
+
     @alters_state
     def add_avatar(self, avatar_id, worker_url, location=None):
         location = self._world_map.get_random_spawn_location() if location is None else location
@@ -140,6 +143,11 @@ class GameState(object):
     # Other methods -----------------------------------------------------------
 
     @alters_state
+    def _apply_pickups(self):
+        for cell in self._world_map.pickup_cells:
+            pass  # TODO: apply pickup to avatar in cell.
+
+    @alters_state
     def _apply_score(self):
         for cell in self._world_map.score_cells:
             try:
@@ -149,8 +157,11 @@ class GameState(object):
 
     @alters_state
     def end_of_turn(self):
-        num_avatars = len(self._avatar_manager.active_avatars)
-        self._world_map.expand(num_avatars)
-        self._world_map.reset_score_locations(num_avatars)
-        self._world_map.add_pickups(num_avatars)
+        self._world_map.expand(self._avatar_manager.num_avatars)
+        self._world_map.reset_score_locations(self._avatar_manager.num_avatars)
+        self._world_map.add_pickups(self._avatar_manager.num_avatars)
+
+        self._avatar_manager.process_deaths(self._world_map)
+
+        self._apply_pickups()
         self._apply_score()

@@ -26,14 +26,14 @@ def apply_fog_of_war(world_map, avatar_wrapper):
     grid = [[None for y in range(y_range + 1)] for x in range(x_range + 1)]
     for x in range(x_range + 1):
         for y in range(y_range + 1):
-            cell_location = Location(x + lower_x, y + lower_y)
-            if world_map.is_on_map(cell_location):
-                x_dist = abs(cell_location.x - location.x)
-                y_dist = abs(cell_location.y - location.y)
+            location = Location(x + lower_x, y + lower_y)
+            if world_map.cell_on_map(location):
+                x_dist = abs(location.x - location.x)
+                y_dist = abs(location.y - location.y)
                 if should_partially_fog(no_fog_distance, partial_fog_distance, x_dist, y_dist):
-                    grid[x][y] = partially_fog_cell(world_map.get_cell(cell_location))
+                    grid[x][y] = partially_fog_cell(world_map.get_cell(location))
                 else:
-                    grid[x][y] = world_map.get_cell(cell_location)
+                    grid[x][y] = world_map.get_cell(location)
     return WorldMap(grid)
 
 

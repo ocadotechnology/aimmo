@@ -33,8 +33,9 @@ class AvatarManager(object):
     def active_avatars(self):
         return [player for player in self.avatars]
 
-    def location(self, avatar_id):
-        return self.get_avatar(avatar_id).location
+    @property
+    def num_avatars(self):
+        return len(self.active_avatars)
 
     def process_deaths(self, world_map):
         for avatar in self.active_avatars:

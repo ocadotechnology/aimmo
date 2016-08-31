@@ -6,8 +6,16 @@ class Direction:
             raise ValueError
         if abs(x) + abs(y) != 1:
             raise ValueError
-        self.x = x
-        self.y = y
+        self._x = x
+        self._y = y
+
+    @property
+    def x(self):
+        return self._x
+
+    @property
+    def y(self):
+        return self._y
 
     @property
     def dict(self):
@@ -17,7 +25,7 @@ class Direction:
         return 'Direction(x={}, y={})'.format(self.x, self.y)
 
     @staticmethod
-    def copy(other):
+    def from_dict(other):
         try:
             return Direction(**other.dict)
         except AttributeError:
