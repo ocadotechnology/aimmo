@@ -44,7 +44,7 @@ class SequentialTurnManager(TurnManager):
             action = avatar.decide_action(state_view)
 
             with self.game_state:
-                action.process(self.game_state)
+                action.process(self.game_state, NO_OTHER_ACTIONS)
 
 
 class ConcurrentTurnManager(TurnManager):
@@ -114,7 +114,7 @@ class ActionRegistry(object):
         return (action for action in self._by_target(target))
 
     def moves_to(self, target):
-        return (a for a in self.by_target(target) if isinstance(a, MoveAction))
+        return [a for a in self.by_target(target) if isinstance(a, MoveAction)]
 
     def num_moves_to(self, target):
         return sum(1 for move in self.moves_to(target))
@@ -124,6 +124,9 @@ class ActionRegistry(object):
         action_list = self._actions_by_avatar.values()
         action_list.sort(key=lambda a: PRIORITIES[type(a)])
         return (action for action in action_list)
+
+
+NO_OTHER_ACTIONS = ActionRegistry()
 
 
 TURN_MANAGERS = {

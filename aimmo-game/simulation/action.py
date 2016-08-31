@@ -33,13 +33,13 @@ class Action(object):
     def target(self):
         return self._source + self._direction
 
-    def process(self, game_state, other_actions=None):
+    def process(self, game_state, other_actions):
         if self.is_legal(game_state, other_actions):
             self.apply(game_state, other_actions)
         else:
             self.reject(game_state)
 
-    def is_legal(self, game_state, other_actions=None):
+    def is_legal(self, game_state, other_actions):
         raise NotImplementedError('Abstract method')
 
     def apply(self, game_state, other_actions):
@@ -53,7 +53,7 @@ class WaitAction(Action):
     def __init__(self, avatar, source):
         Action.__init__(self, avatar, source)
 
-    def is_legal(self, game_state, other_actions=None):
+    def is_legal(self, game_state, other_actions):
         return True
 
     def apply(self, game_state, other_actions):
@@ -66,7 +66,7 @@ class MoveAction(Action):
         direction = Direction.from_dict(direction_dict)
         Action.__init__(self, avatar, source, direction)
 
-    def process(self, game_state, other_actions=None):
+    def process(self, game_state, other_actions):
         self.chain(game_state, other_actions, {self.source})
 
     def chain(self, game_state, other_actions, visited):
@@ -87,12 +87,11 @@ class MoveAction(Action):
 
         return self.reject(game_state)
 
-    def is_legal(self, game_state, other_actions=None):
+    def is_legal(self, game_state, other_actions):
         if not game_state.cell_habitable(self.target):
             return False
 
-        if (other_actions is not None
-                and other_actions.num_moves_to(self.target) > 1):
+        if other_actions.num_moves_to(self.target) > 1:
             return False
 
         if not game_state.cell_occupied(self.target):
@@ -100,8 +99,7 @@ class MoveAction(Action):
 
         avatar_id = game_state.avatar_at(self.target)
 
-        return (other_actions is not None
-                and other_actions.avatar_moving(avatar_id))
+        return other_actions.avatar_moving(avatar_id)
 
     def apply(self, game_state, other_actions):
         game_state.move_avatar(self.avatar_id, self.direction)
@@ -122,13 +120,13 @@ class AttackAction(Action):
     def _attacked_avatar(self, game_state, other_actions):
         if game_state.cell_occupied(self.target):
             return game_state.avatar_at(self.target)
-        elif (other_actions is not None
-              and other_actions.num_moves_to(self.target) == 1):
-            return other_actions.moves_to(self.target)[0].avatar_id
-        else:
-            return None
 
-    def is_legal(self, game_state, other_actions=None):
+        if other_actions.num_moves_to(self.target) == 1:
+            return other_actions.moves_to(self.target)[0].avatar_id
+
+        return None
+
+    def is_legal(self, game_state, other_actions):
         return self._attacked_avatar(game_state, other_actions) is not None
 
     def apply(self, game_state, other_actions):

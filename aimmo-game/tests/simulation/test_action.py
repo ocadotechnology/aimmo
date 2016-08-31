@@ -1,21 +1,14 @@
 from __future__ import absolute_import
 import unittest
 
-from simulation.action import MoveAction
-from simulation.action import AttackAction
-from simulation.action import WaitAction
-from simulation.game_settings import DEFAULT_ATTACK_DAMAGE
-from simulation.event import MovedEvent
-from simulation.event import FailedMoveEvent
-from simulation.event import PerformedAttackEvent
-from simulation.event import ReceivedAttackEvent
-from simulation.event import FailedAttackEvent
-from simulation.event import DeathEvent
+from simulation.action import MoveAction, AttackAction, WaitAction
+from simulation.event import MovedEvent, FailedMoveEvent, PerformedAttackEvent, ReceivedAttackEvent, FailedAttackEvent, DeathEvent
 from simulation.location import Location
 from simulation.direction import NORTH, EAST, SOUTH, WEST
 from simulation.game_state import GameState
 from simulation.avatar.avatar_manager import AvatarManager
-from simulation.game_settings import AVATAR_STARTING_HEALTH
+from simulation.game_settings import AVATAR_STARTING_HEALTH, DEFAULT_ATTACK_DAMAGE
+from simulation.turn_manager import NO_OTHER_ACTIONS
 
 from .dummy_avatar import DummyAvatarManager
 from .dummy_avatar import DummyAvatar
@@ -38,10 +31,10 @@ class TestAction(unittest.TestCase):
         self.assert_at(self.av_1, ORIGIN)
         self.assert_at(self.av_2, ORIGIN + EAST)
 
-    def move(self, avatar, direction, other_actions=None):
+    def move(self, avatar, direction, other_actions=NO_OTHER_ACTIONS):
         MoveAction(avatar.user_id, avatar.location, direction.dict).process(self.game_state, other_actions)
 
-    def attack(self, avatar, direction, other_actions=None):
+    def attack(self, avatar, direction, other_actions=NO_OTHER_ACTIONS):
         AttackAction(avatar.user_id, avatar.location, direction.dict).process(self.game_state, other_actions)
 
     def assert_at(self, avatar, location):
@@ -141,5 +134,5 @@ class TestAction(unittest.TestCase):
         self.assert_event(self.av_2, DeathEvent(ORIGIN + EAST, self.av_2.location))
 
     def test_no_move_in_wait(self):
-        WaitAction(self.av_1.user_id, self.av_1.location).process(self.game_state)
+        WaitAction(self.av_1.user_id, self.av_1.location).process(self.game_state, NO_OTHER_ACTIONS)
         self.assertEqual(self.av_1.location, ORIGIN)
