@@ -147,19 +147,19 @@ class TestWorldMap(TestCase):
         map = WorldMap(self._generate_grid())
         for x in (0, 1):
             for y in (0, 1):
-                self.assertTrue(map.cell_on_map(Location(x, y)))
+                self.assertTrue(map.location_on_map(Location(x, y)))
 
     def test_x_off_map(self):
         map = WorldMap(self._generate_grid())
         for y in (0, 1):
-            self.assertFalse(map.cell_on_map(Location(-1, y)))
-            self.assertFalse(map.cell_on_map(Location(2, y)))
+            self.assertFalse(map.location_on_map(Location(-1, y)))
+            self.assertFalse(map.location_on_map(Location(2, y)))
 
     def test_y_off_map(self):
         map = WorldMap(self._generate_grid())
         for x in (0, 1):
-            self.assertFalse(map.cell_on_map(Location(x, -1)))
-            self.assertFalse(map.cell_on_map(Location(x, 2)))
+            self.assertFalse(map.location_on_map(Location(x, -1)))
+            self.assertFalse(map.location_on_map(Location(x, 2)))
 
     def test_get_valid_cell(self):
         map = WorldMap(self._generate_grid())

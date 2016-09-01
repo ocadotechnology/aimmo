@@ -27,7 +27,7 @@ def apply_fog_of_war(world_map, avatar_wrapper):
     for x in range(x_range + 1):
         for y in range(y_range + 1):
             location = Location(x + lower_x, y + lower_y)
-            if world_map.cell_on_map(location):
+            if world_map.location_on_map(location):
                 x_dist = abs(location.x - location.x)
                 y_dist = abs(location.y - location.y)
                 if should_partially_fog(no_fog_distance, partial_fog_distance, x_dist, y_dist):

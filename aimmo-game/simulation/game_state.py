@@ -129,9 +129,6 @@ class GameState(object):
     def world_size(self):
         return (self._world_map.num_cols, self._world_map.num_rows)
 
-    def cell_on_map(self, location):
-        return self._world_map.cell_on_map(location)
-
     def cell_habitable(self, location):
         try:
             return self._world_map.get_cell(location).is_habitable

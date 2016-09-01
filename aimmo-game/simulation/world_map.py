@@ -129,13 +129,13 @@ class WorldMap(object):
         return (cell for cell in self.all_cells if cell.pickup is not None)
 
     def get_cell(self, location):
-        if not self.cell_on_map(location):
+        if not self.location_on_map(location):
             raise ValueError('Location %s is not on the map' % location)
         cell = self._grid[location.x][location.y]
         assert cell.location == location, 'location lookup mismatch: arg={}, found={}'.format(location, cell.location)
         return cell
 
-    def cell_on_map(self, location):
+    def location_on_map(self, location):
         return (0 <= location.y < self.num_rows) and (0 <= location.x < self.num_cols)
 
     def cell_habitable(self, location):

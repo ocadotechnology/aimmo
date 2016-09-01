@@ -115,7 +115,7 @@ def get_random_edge_index(height, width, rng=random):
 def get_adjacent_habitable_cells(cell, world_map):
     adjacent_locations = [cell.location + d for d in ALL_DIRECTIONS]
     adjacent_locations = [location for location in adjacent_locations
-                          if world_map.cell_on_map(location)]
+                          if world_map.location_on_map(location)]
 
     adjacent_cells = [world_map.get_cell(location) for location in adjacent_locations]
     return [c for c in adjacent_cells if c.is_habitable]
