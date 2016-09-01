@@ -39,9 +39,8 @@ class SequentialTurnManager(TurnManager):
         '''
         Get and apply each avatar's action in turn.
         '''
-        for avatar in self.game_state.avatar_manager.active_avatars:
-            state_view = self.game_state.view(avatar)
-            action = avatar.decide_action(state_view)
+        for avatar_id in self.game_state.active_avatars:
+            action = self.game_state.decide_action(avatar_id)
 
             with self.game_state:
                 action.process(self.game_state, NO_OTHER_ACTIONS)
@@ -53,8 +52,8 @@ class ConcurrentTurnManager(TurnManager):
         Concurrently get the intended actions from all avatars and apply them
         in order of priority.
         '''
-        threads = [DecisionThread(avatar, self.game_state.view(avatar))
-                   for avatar in self.game_state._avatar_manager.active_avatars]
+        threads = [DecisionThread(avatar_id, self.game_state)
+                   for avatar_id in self.game_state.active_avatars]
 
         [thread.start() for thread in threads]
 
@@ -71,15 +70,15 @@ class DecisionThread(Thread):
     '''
     Thread wrapper to get an avatar's decided action.
     '''
-    def __init__(self, avatar, state_view):
+    def __init__(self, avatar_id, game_state):
         self._queue = Queue()
         super(DecisionThread, self).__init__(
             target=self.wrapper,
-            args=(avatar, state_view)
+            args=(avatar_id, game_state)
         )
 
-    def wrapper(self, avatar, state_view):
-        self._queue.put(avatar.decide_action(state_view))
+    def wrapper(self, avatar_id, game_state):
+        self._queue.put(game_state.decide_action(avatar_id))
 
     def result(self):
         return self._queue.get()

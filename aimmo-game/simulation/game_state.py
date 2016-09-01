@@ -32,15 +32,16 @@ class GameState(object):
     def __exit__(self, type, value, traceback):
         self._edit_lock.release()
 
-    def view(self, avatar_wrapper, fog_of_war=fog_of_war):
+    def view(self, avatar_id, fog_of_war=fog_of_war):
         '''
         Return the subset of the game state visible to an avatar.
         '''
-        processed_world_map = fog_of_war.apply_fog_of_war(self._world_map, avatar_wrapper)
+        avatar = self._avatar_manager.get_avatar(avatar_id)
+        fogged_map = fog_of_war.apply_fog_of_war(self._world_map, avatar)
         return {
-            'avatar_state': avatar_wrapper.serialise(),
+            'avatar_state': avatar.serialise(),
             'world_map': {
-                'cells': [cell.serialise() for cell in processed_world_map.all_cells]
+                'cells': [cell.serialise() for cell in fogged_map.all_cells]
             }
         }
 
@@ -77,6 +78,16 @@ class GameState(object):
     def avatar_location(self, avatar_id):
         return self._avatar_manager.get_avatar(avatar_id).location
 
+    def avatar_at(self, location):
+        try:
+            return self._world_map.get_cell(location).avatar.user_id
+        except AttributeError:
+            return None
+
+    def decide_action(self, avatar_id):
+        avatar = self._avatar_manager.get_avatar(avatar_id)
+        return avatar.decide_action(self.view(avatar_id))
+
     @alters_state
     def add_avatar(self, avatar_id, worker_url, location=None):
         avatar = self._avatar_manager.add_avatar(avatar_id, worker_url)
@@ -90,12 +101,6 @@ class GameState(object):
             return
         self._world_map.get_cell(avatar.location).avatar = None
         self._avatar_manager.remove_avatar(avatar_id)
-
-    def avatar_at(self, location):
-        try:
-            return self._world_map.get_cell(location).avatar.user_id
-        except AttributeError:
-            return None
 
     @alters_state
     def move_avatar(self, avatar_id, direction):

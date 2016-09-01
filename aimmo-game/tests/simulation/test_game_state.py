@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+import unittest
 from unittest import TestCase
 
 from simulation.game_state import GameState
@@ -50,6 +51,7 @@ class TestGameState(TestCase):
         self.assertIn(7, self.av_manager._avatars_by_id)
         self.assertEqual(self.av_manager._avatars_by_id[7].location, Location(10, 10))
 
+    @unittest.skip('Doesn\'t test fog of war.')
     def test_fog_of_war(self):
         game_state = GameState(InfiniteMap(), DummyAvatarManager())
         view = game_state.view(DummyAvatar(None), FogToEmpty())
