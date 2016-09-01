@@ -4,7 +4,7 @@ import random
 from logging import getLogger
 
 from simulation.game_settings import TARGET_NUM_CELLS_PER_AVATAR
-from simulation.game_settings import TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR
+from simulation.game_settings import TARGET_NUM_SCORE_CELLS_PER_AVATAR
 from simulation.game_settings import SCORE_DESPAWN_CHANCE
 from simulation.game_settings import TARGET_NUM_PICKUPS_PER_AVATAR
 from simulation.game_settings import PICKUP_SPAWN_CHANCE
@@ -138,24 +138,6 @@ class WorldMap(object):
     def location_on_map(self, location):
         return (0 <= location.y < self.num_rows) and (0 <= location.x < self.num_cols)
 
-    def cell_habitable(self, location):
-        try:
-            return self.get_cell(location).is_habitable
-        except ValueError:
-            return False
-
-    def cell_occupied(self, location):
-        try:
-            return self.get_cell(location).is_occupied
-        except ValueError:
-            return False
-
-    def avatar_at(self, location):
-        try:
-            return self.get_cell(location).avatar
-        except ValueError:
-            return None
-
     def expand(self, num_avatars):
         target_num_cells = int(math.ceil(num_avatars * TARGET_NUM_CELLS_PER_AVATAR))
         num_cells_to_add = target_num_cells - self.num_cells
@@ -180,21 +162,19 @@ class WorldMap(object):
             if random.random() < SCORE_DESPAWN_CHANCE:
                 cell.generates_score = False
 
-        new_num_score_locations = len(list(self.score_cells))
-        target_num_score_locations = int(math.ceil(
-            num_avatars * TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR
+        num_score_cells = len(list(self.score_cells))
+        target_num_score_cells = int(math.ceil(
+            num_avatars * TARGET_NUM_SCORE_CELLS_PER_AVATAR
         ))
-        num_score_locations_to_add = target_num_score_locations - new_num_score_locations
-        locations = self._get_random_spawn_cells(num_score_locations_to_add)
-        for cell in locations:
+        num_score_cells_to_add = target_num_score_cells - num_score_cells
+        for cell in self._get_random_spawn_cells(num_score_cells_to_add):
             cell.generates_score = True
 
     def add_pickups(self, num_avatars):
         target_num_pickups = int(math.ceil(num_avatars * TARGET_NUM_PICKUPS_PER_AVATAR))
         LOGGER.debug('Aiming for %s new pickups', target_num_pickups)
         max_num_pickups_to_add = target_num_pickups - len(list(self.pickup_cells))
-        locations = self._get_random_spawn_cells(max_num_pickups_to_add)
-        for cell in locations:
+        for cell in self._get_random_spawn_cells(max_num_pickups_to_add):
             if random.random() < PICKUP_SPAWN_CHANCE:
                 LOGGER.info('Adding new pickup at %s', cell)
                 cell.pickup = HealthPickup()
