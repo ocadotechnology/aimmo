@@ -1,3 +1,4 @@
+from collections import defaultdict
 import logging
 import time
 from threading import Thread
@@ -94,11 +95,11 @@ class ActionRegistry(object):
 
     def add(self, action):
         self._actions_by_avatar[action.avatar_id] = action
-        self._by_target(action.target).append(action)
+        self._actions_by_target[action.target].append(action)
 
     def clear(self):
         self._actions_by_avatar = {}
-        self._actions_by_target = {}
+        self._actions_by_target = defaultdict(list)
 
     def by_avatar(self, avatar_id):
         return self._actions_by_avatar.setdefault(avatar_id, None)
@@ -106,11 +107,8 @@ class ActionRegistry(object):
     def avatar_moving(self, avatar_id):
         return isinstance(self.by_avatar(avatar_id), MoveAction)
 
-    def _by_target(self, target):
-        return self._actions_by_target.setdefault(target, [])
-
     def by_target(self, target):
-        return (action for action in self._by_target(target))
+        return (action for action in self._actions_by_target[target])
 
     def moves_to(self, target):
         return [a for a in self.by_target(target) if isinstance(a, MoveAction)]
