@@ -144,7 +144,7 @@ class WorkerManager(threading.Thread):
 
 
 class LocalWorkerManager(WorkerManager):
-    """Relies on them already being created already."""
+    """Relies on them already being created."""
 
     host = '127.0.0.1'
     worker_directory = os.path.join(
@@ -197,42 +197,42 @@ class KubernetesWorkerManager(WorkerManager):
         pod = Pod(
             self.api,
             {
-             'kind': 'Pod',
-             'apiVersion': 'v1',
-             'metadata': {
-                'generateName': "aimmo-%s-worker-%s-" % (self.game_name, player_id),
-                'labels': {
-                    'app': 'aimmo-game-worker',
-                    'game': self.game_name,
-                    'player': str(player_id),
+                'kind': 'Pod',
+                'apiVersion': 'v1',
+                'metadata': {
+                    'generateName': "aimmo-%s-worker-%s-" % (self.game_name, player_id),
+                    'labels': {
+                        'app': 'aimmo-game-worker',
+                        'game': self.game_name,
+                        'player': str(player_id),
                     },
                 },
-             'spec': {
-                'containers': [
-                    {
-                        'env': [
-                            {
-                                'name': 'DATA_URL',
-                                'value': "%s/player/%d" % (self.game_url, player_id),
-                            },
-                        ],
-                        'name': 'aimmo-game-worker',
-                        'image': 'ocadotechnology/aimmo-game-worker:%s' % os.environ.get('IMAGE_SUFFIX', 'latest'),
-                        'ports': [
-                            {
-                                'containerPort': 5000,
-                                'protocol': 'TCP'
-                            }
-                        ],
-                        'resources': {
-                            'limits': {
-                                'cpu': '10m',
-                                'memory': '64Mi',
+                'spec': {
+                    'containers': [
+                        {
+                            'env': [
+                                {
+                                    'name': 'DATA_URL',
+                                    'value': "%s/player/%d" % (self.game_url, player_id),
+                                },
+                            ],
+                            'name': 'aimmo-game-worker',
+                            'image': 'ocadotechnology/aimmo-game-worker:%s' % os.environ.get('IMAGE_SUFFIX', 'latest'),
+                            'ports': [
+                                {
+                                    'containerPort': 5000,
+                                    'protocol': 'TCP'
+                                }
+                            ],
+                            'resources': {
+                                'limits': {
+                                    'cpu': '10m',
+                                    'memory': '64Mi',
+                                },
                             },
                         },
-                    },
-                ],
-             },
+                    ],
+                },
             }
         )
         pod.create()
