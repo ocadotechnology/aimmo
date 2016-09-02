@@ -179,7 +179,7 @@ class WorldMap(object):
                 LOGGER.info('Adding new pickup at %s', cell)
                 cell.pickup = HealthPickup()
 
-    def potential_spawn_cells(self):
+    def _potential_spawn_cells(self):
         return (cell for cell in self.all_cells
                 if (cell.is_habitable
                     and not cell.is_occupied
@@ -189,7 +189,7 @@ class WorldMap(object):
     def _get_random_spawn_cells(self, max_locations):
         if max_locations <= 0:
             return []
-        potential_locations = list(self.potential_spawn_cells())
+        potential_locations = list(self._potential_spawn_cells())
         try:
             return random.sample(potential_locations, max_locations)
         except ValueError:

@@ -124,7 +124,7 @@ class TestWorldMap(TestCase):
         filled = MockCell(avatar='avatar')
         grid = [[spawnable1, score_cell, unhabitable], [unhabitable, spawnable2, filled]]
         map = WorldMap(grid)
-        cells = list(map.potential_spawn_cells())
+        cells = list(map._potential_spawn_cells())
         self.assertIn(spawnable1, cells)
         self.assertIn(spawnable2, cells)
         self.assertNotIn(score_cell, cells, "Score cells should not be spawns")

@@ -1,7 +1,5 @@
 from __future__ import absolute_import
 
-import __builtin__
-
 import unittest
 from unittest import TestCase
 
@@ -43,7 +41,7 @@ class TestService(TestCase):
         grid = [[MockCell(Location(x, y), **CELLS[x][y])
                  for y in xrange(3)] for x in xrange(2)]
 
-        __builtin__.turn_manager = TurnManager(
+        service.turn_manager = TurnManager(
             game_state=GameState(WorldMap(grid), SimpleAvatarManager()),
             end_turn_callback=None
         )
