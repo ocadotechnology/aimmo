@@ -1,17 +1,55 @@
 from collections import namedtuple
 
-ReceivedAttackEvent = namedtuple(
-    'ReceivedAttackEvent', ['attacking_avatar', 'damage_dealt'])
+# Move-related:
+
+MovedEvent = namedtuple(
+    'MovedEvent',
+    [
+        'source_location',
+        'target_location'
+    ]
+)
+
+FailedMoveEvent = namedtuple(
+    'FailedMoveEvent',
+    [
+        'source_location',
+        'target_location'
+    ]
+)
+
+# Attack-related:
 
 PerformedAttackEvent = namedtuple(
     'PerformedAttackEvent',
-    ['attacked_avatar', 'target_location', 'damage_dealt'])
+    [
+        'attacked_avatar_id',
+        'target_location',
+        'damage_dealt'
+    ]
+)
+
+ReceivedAttackEvent = namedtuple(
+    'ReceivedAttackEvent',
+    [
+        'attacking_avatar_id',
+        'damage_dealt'
+    ]
+)
 
 FailedAttackEvent = namedtuple(
-    'FailedAttackEvent', ['target_location'])
+    'FailedAttackEvent',
+    [
+        'target_location'
+    ]
+)
 
-MovedEvent = namedtuple(
-    'MovedEvent', ['source_location', 'target_location'])
+# Death-related:
 
-FailedMoveEvent = namedtuple(
-    'FailedMoveEvent', ['source_location', 'target_location'])
+DeathEvent = namedtuple(
+    'DeathEvent',
+    [
+        'death_location',
+        'respawn_location'
+    ]
+)

@@ -17,11 +17,11 @@ def generate_map(height, width, obstacle_ratio=0.1):
     for x, y in shuffled(_get_edge_coordinates(height, width)):
         if (x, y) != (always_empty_edge_x, always_empty_edge_y) and random.random() < obstacle_ratio:
             cell = grid[x][y]
-            cell.habitable = False
+            cell._habitable = False
             # So long as all habitable neighbours can still reach each other,
             # then the map cannot get bisected
             if not _all_habitable_neighbours_can_reach_each_other(cell, world_map):
-                cell.habitable = True
+                cell._habitable = True
 
     return world_map
 
@@ -90,23 +90,23 @@ def get_random_edge_index(height, width, rng=random):
 
     num_row_cells = width - 2
     num_col_cells = height - 2
-    num_edge_cells = 2*num_row_cells + 2*num_col_cells
-    random_cell = rng.randint(0, num_edge_cells-1)
+    num_edge_cells = 2 * num_row_cells + 2 * num_col_cells
+    random_cell = rng.randint(0, num_edge_cells - 1)
 
     if 0 <= random_cell < num_row_cells:
         # random non-corner cell on the first row
-        return random_cell+1, 0
-    elif num_row_cells <= random_cell < 2*num_row_cells:
+        return random_cell + 1, 0
+    elif num_row_cells <= random_cell < 2 * num_row_cells:
         # random non-corner cell on the last row
         random_cell -= num_row_cells
         return random_cell + 1, height - 1
 
-    random_cell -= 2*num_row_cells
+    random_cell -= 2 * num_row_cells
 
     if 0 <= random_cell < num_col_cells:
         # random non-corner cell on the first column
         return 0, random_cell + 1
-    assert num_col_cells <= random_cell < 2*num_col_cells
+    assert num_col_cells <= random_cell < 2 * num_col_cells
     # random non-corner cell on the last column
     random_cell -= num_col_cells
     return width - 1, random_cell + 1
@@ -115,10 +115,10 @@ def get_random_edge_index(height, width, rng=random):
 def get_adjacent_habitable_cells(cell, world_map):
     adjacent_locations = [cell.location + d for d in ALL_DIRECTIONS]
     adjacent_locations = [location for location in adjacent_locations
-                          if world_map.is_on_map(location)]
+                          if world_map.location_on_map(location)]
 
     adjacent_cells = [world_map.get_cell(location) for location in adjacent_locations]
-    return [c for c in adjacent_cells if c.habitable]
+    return [c for c in adjacent_cells if c.is_habitable]
 
 
 class PriorityQueue(object):

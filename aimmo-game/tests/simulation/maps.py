@@ -7,13 +7,11 @@ from simulation.world_map import Cell, WorldMap
 class MockCell(Cell):
     def __init__(self, location=1, habitable=True, generates_score=False,
                  avatar=None, pickup=None, name=None, actions=[]):
-        self.location = location
-        self.habitable = habitable
-        self.generates_score = generates_score
+        super(MockCell, self).__init__(location, habitable, generates_score)
         self.avatar = avatar
         self.pickup = pickup
         self.name = name
-        self.actions = actions
+        self._actions = actions
 
     def __eq__(self, other):
         return self is other
@@ -28,6 +26,7 @@ class InfiniteMap(WorldMap):
         self.get_cell(target_location)
         return True
 
+    @property
     def all_cells(self):
         return (cell for cell in self._cell_cache.values())
 
@@ -42,6 +41,7 @@ class InfiniteMap(WorldMap):
     def num_cols(self):
         return float('inf')
 
+
 class EmptyMap(WorldMap):
     def __init__(self):
         pass
@@ -49,6 +49,7 @@ class EmptyMap(WorldMap):
     def can_move_to(self, target_location):
         return False
 
+    @property
     def all_cells(self):
         return iter(())
 

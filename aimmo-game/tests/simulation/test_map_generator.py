@@ -47,7 +47,7 @@ class TestMapGenerator(unittest.TestCase):
 
     def test_map_dimensions(self):
         m = generate_map(4, 3, 1.0)
-        grid = list(m.all_cells())
+        grid = list(m.all_cells)
         self.assertEqual(len(set(grid)), len(grid), "Repeats in list")
         for c in grid:
             self.assertLess(c.location.x, 3)
@@ -55,14 +55,14 @@ class TestMapGenerator(unittest.TestCase):
             self.assertGreaterEqual(c.location.x, 0)
             self.assertGreaterEqual(c.location.y, 0)
 
-    def test_obstable_ratio(self):
+    def test_obstacle_ratio(self):
         m = generate_map(10, 10, 0.0)
-        obstacle_cells = [cell for row in m.grid for cell in row if not cell.habitable]
+        obstacle_cells = [cell for cell in m.all_cells if not cell.is_habitable]
         self.assertEqual(len(obstacle_cells), 0)
 
     def test_map_contains_some_non_habitable_cell(self):
         m = generate_map(4, 4, 1.0)
-        obstacle_cells = [cell for row in m.grid for cell in row if not cell.habitable]
+        obstacle_cells = [cell for cell in m.all_cells if not cell.is_habitable]
         self.assertGreaterEqual(len(obstacle_cells), 1)
 
     def test_map_contains_some_habitable_cell_on_border(self):
@@ -74,7 +74,7 @@ class TestMapGenerator(unittest.TestCase):
             (0, 2), (3, 2),
             (0, 3), (1, 3), (2, 3), (3, 3)
         ]
-        edge_cells = (m.grid[x][y] for (x, y) in edge_coordinates)
-        habitable_edge_cells = [cell for cell in edge_cells if cell.habitable]
+        edge_cells = (m._grid[x][y] for (x, y) in edge_coordinates)
+        habitable_edge_cells = [cell for cell in edge_cells if cell.is_habitable]
 
         self.assertGreaterEqual(len(habitable_edge_cells), 1)

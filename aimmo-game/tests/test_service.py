@@ -1,16 +1,21 @@
 from __future__ import absolute_import
+
+import unittest
+from unittest import TestCase
+
 import service
 from simulation.game_state import GameState
 from simulation.location import Location
+from simulation.turn_manager import TurnManager
+from simulation.world_map import WorldMap
+
 from .simulation.dummy_avatar import MoveEastDummy
 from .simulation.test_world_map import MockCell
-from simulation.turn_manager import state_provider
-from simulation.world_map import WorldMap
-from unittest import TestCase
 
 
 class SimpleAvatarManager(object):
-    avatars = [MoveEastDummy(1, Location(0, 1))]
+    avatars = [MoveEastDummy(1)]
+    avatars[0].location = Location(0, 1)
 
 
 class TestService(TestCase):
@@ -35,9 +40,14 @@ class TestService(TestCase):
         ]
         grid = [[MockCell(Location(x, y), **CELLS[x][y])
                  for y in xrange(3)] for x in xrange(2)]
-        state_provider.set_world(GameState(WorldMap(grid), SimpleAvatarManager()))
+
+        service.turn_manager = TurnManager(
+            game_state=GameState(WorldMap(grid), SimpleAvatarManager()),
+            end_turn_callback=None
+        )
         return service.get_world_state()
 
+    @unittest.skip('Responsibility for generating snapshot of avatar moved to avatar_wrapper.')
     def test_player_dict(self):
         player_dict = self.setup_world()['players']
         self.assertIn(1, player_dict)
@@ -49,6 +59,7 @@ class TestService(TestCase):
         self.assertEqual(details['health'], 5)
         self.assertEqual(details['score'], 0)
 
+    @unittest.skip('Responsibility for generating snapshot of game state moved to game_state')
     def test_grid(self):
         result = self.setup_world()
         self.assertEqual(result['score_locations'], [(0, 2)])

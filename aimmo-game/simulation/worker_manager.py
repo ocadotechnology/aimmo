@@ -18,14 +18,12 @@ class _WorkerManagerData(object):
     """
     This class is thread safe
     """
-
     def __init__(self, game_state, user_codes):
         self._game_state = game_state
         self._user_codes = user_codes
         self._lock = Semaphore()
 
     def _remove_avatar(self, user_id):
-        assert self._lock.locked
         self._game_state.remove_avatar(user_id)
         del self._user_codes[user_id]
 
@@ -41,10 +39,9 @@ class _WorkerManagerData(object):
                 return False
 
     def add_avatar(self, user, worker_url):
-        with self._lock:
-            # Add avatar back into game
-            self._game_state.add_avatar(
-                user_id=user['id'], worker_url="%s/turn/" % worker_url)
+        # Add avatar back into game
+        self._game_state.add_avatar(
+            avatar_id=user['id'], worker_url="%s/turn/" % worker_url)
 
     def set_code(self, user):
         with self._lock:
@@ -83,17 +80,14 @@ class WorkerManager(threading.Thread):
 
     def get_persistent_state(self, player_id):
         """Get the persistent state for a worker."""
-
         return None
 
     def create_worker(self, player_id):
         """Create a worker."""
-
         raise NotImplemented
 
     def remove_worker(self, player_id):
         """Remove a worker for the given player."""
-
         raise NotImplemented
 
     # TODO handle failure
@@ -150,7 +144,7 @@ class WorkerManager(threading.Thread):
 
 
 class LocalWorkerManager(WorkerManager):
-    """Relies on them already being created already."""
+    """Relies on them already being created."""
 
     host = '127.0.0.1'
     worker_directory = os.path.join(
@@ -203,42 +197,42 @@ class KubernetesWorkerManager(WorkerManager):
         pod = Pod(
             self.api,
             {
-             'kind': 'Pod',
-             'apiVersion': 'v1',
-             'metadata': {
-                'generateName': "aimmo-%s-worker-%s-" % (self.game_name, player_id),
-                'labels': {
-                    'app': 'aimmo-game-worker',
-                    'game': self.game_name,
-                    'player': str(player_id),
+                'kind': 'Pod',
+                'apiVersion': 'v1',
+                'metadata': {
+                    'generateName': "aimmo-%s-worker-%s-" % (self.game_name, player_id),
+                    'labels': {
+                        'app': 'aimmo-game-worker',
+                        'game': self.game_name,
+                        'player': str(player_id),
                     },
                 },
-             'spec': {
-                'containers': [
-                    {
-                        'env': [
-                            {
-                                'name': 'DATA_URL',
-                                'value': "%s/player/%d" % (self.game_url, player_id),
-                            },
-                        ],
-                        'name': 'aimmo-game-worker',
-                        'image': 'ocadotechnology/aimmo-game-worker:%s' % os.environ.get('IMAGE_SUFFIX', 'latest'),
-                        'ports': [
-                            {
-                                'containerPort': 5000,
-                                'protocol': 'TCP'
-                            }
-                        ],
-                        'resources': {
-                            'limits': {
-                                'cpu': '10m',
-                                'memory': '64Mi',
+                'spec': {
+                    'containers': [
+                        {
+                            'env': [
+                                {
+                                    'name': 'DATA_URL',
+                                    'value': "%s/player/%d" % (self.game_url, player_id),
+                                },
+                            ],
+                            'name': 'aimmo-game-worker',
+                            'image': 'ocadotechnology/aimmo-game-worker:%s' % os.environ.get('IMAGE_SUFFIX', 'latest'),
+                            'ports': [
+                                {
+                                    'containerPort': 5000,
+                                    'protocol': 'TCP'
+                                }
+                            ],
+                            'resources': {
+                                'limits': {
+                                    'cpu': '10m',
+                                    'memory': '64Mi',
+                                },
                             },
                         },
-                    },
-                ],
-             },
+                    ],
+                },
             }
         )
         pod.create()
