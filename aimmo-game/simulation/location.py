@@ -18,7 +18,7 @@ class Location(object):
         except AttributeError:
             if direction is None:
                 return self
-            raise TypeError('Not a direction.')
+            return NotImplemented
         else:
             return Location(self.x + d_x, self.y + d_y)
 
