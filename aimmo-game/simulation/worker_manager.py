@@ -7,9 +7,10 @@ from eventlet.greenpool import GreenPool
 from eventlet.semaphore import Semaphore
 
 import requests
+from pykube import Deployment
 from pykube import HTTPClient
 from pykube import KubeConfig
-from pykube import Pod
+from pykube import Service
 
 LOGGER = logging.getLogger(__name__)
 
@@ -200,13 +201,14 @@ class KubernetesWorkerManager(WorkerManager):
         super(KubernetesWorkerManager, self).__init__(*args, **kwargs)
 
     def create_worker(self, player_id):
-        pod = Pod(
+        name = 'aimmo-%s-worker-%s' % (self.game_name, player_id)
+        deployment = Deployment(
             self.api,
             {
-             'kind': 'Pod',
-             'apiVersion': 'v1',
+             'apiVersion': 'extensions/v1beta1',
+             'kind': 'Deployment',
              'metadata': {
-                'generateName': "aimmo-%s-worker-%s-" % (self.game_name, player_id),
+                'name': name,
                 'labels': {
                     'app': 'aimmo-game-worker',
                     'game': self.game_name,
@@ -214,47 +216,80 @@ class KubernetesWorkerManager(WorkerManager):
                     },
                 },
              'spec': {
-                'containers': [
-                    {
-                        'env': [
-                            {
-                                'name': 'DATA_URL',
-                                'value': "%s/player/%d" % (self.game_url, player_id),
-                            },
-                        ],
-                        'name': 'aimmo-game-worker',
-                        'image': 'ocadotechnology/aimmo-game-worker:%s' % os.environ.get('IMAGE_SUFFIX', 'latest'),
-                        'ports': [
-                            {
-                                'containerPort': 5000,
-                                'protocol': 'TCP'
-                            }
-                        ],
-                        'resources': {
-                            'limits': {
-                                'cpu': '10m',
-                                'memory': '64Mi',
-                            },
+                'replicas': 1,
+                'template': {
+                    'metadata': {
+                        'labels': {
+                            'app': 'aimmo-game-worker',
+                            'game': self.game_name,
+                            'player': str(player_id),
                         },
                     },
-                ],
+                    'spec': {
+                        'containers': [{
+                            'env': [
+                                {
+                                    'name': 'DATA_URL',
+                                    'value': "%s/player/%d" % (self.game_url, player_id),
+                                },
+                            ],
+                            'name': 'aimmo-game-worker',
+                            'image': 'ocadotechnology/aimmo-game-worker:%s' % os.environ.get('IMAGE_SUFFIX', 'latest'),
+                            'ports': [
+                                {
+                                    'containerPort': 5000,
+                                    'protocol': 'TCP'
+                                }
+                            ],
+                            'resources': {
+                                'limits': {
+                                    'cpu': '10m',
+                                    'memory': '64Mi',
+                                },
+                            },
+                        }, ],
+                    },
+                },
              },
             }
         )
-        pod.create()
-        time.sleep(20)
-        pod.reload()
-        worker_url = "http://%s:5000" % pod.obj['status']['podIP']
+        service = Service(
+            self.api,
+            {
+                'apiVersion': 'v1',
+                'kind': 'Service',
+                'metadata': {
+                    'name': name,
+                },
+                'spec': {
+                    'selector': {
+                        'app': 'aimmo-game-worker',
+                        'game': self.game_name,
+                        'player': str(player_id),
+                    },
+                    'ports': [
+                        {
+                            'protocal': 'TCP',
+                            'port': '5000',
+                        },
+                    ],
+                },
+            },
+        )
+
+        deployment.create()
+        service.create()
+        worker_url = "http://%s:5000" % name
         LOGGER.info("Worker started for %s, listening at %s", player_id, worker_url)
         return worker_url
 
     def remove_worker(self, player_id):
-        for pod in Pod.objects(self.api).filter(selector={
+        for deployment in Deployment.objects(self.api).filter(selector={
             'app': 'aimmo-game-worker',
             'game': self.game_name,
             'player': str(player_id),
         }):
-            pod.delete()
+            deployment.delete()
 
 WORKER_MANAGERS = {
     'local': LocalWorkerManager,
