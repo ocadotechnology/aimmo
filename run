@@ -9,6 +9,6 @@ pip install -e .
 ./example_project/manage.py collectstatic --noinput
 ./example_project/manage.py runserver "$@" &
 sleep 2
-./aimmo-game/service.py 127.0.0.1 5000 &
+./aimmo-game-creator/service.py &
 
 wait

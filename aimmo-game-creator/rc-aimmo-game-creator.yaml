@@ -27,3 +27,10 @@ spec:
           value: latest
         - name: GAME_API_URL
           value: https://staging-dot-decent-digit-629.appspot.com/aimmo/api/games/
+        - name: WORKER_MANAGER
+          value: kubernetes
+        - name: AUTH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: creator
+              key: auth

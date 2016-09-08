@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+from collections import defaultdict
 from simulation.location import Location
 from simulation.world_map import Cell, WorldMap
 
@@ -23,6 +24,7 @@ class InfiniteMap(WorldMap):
     def __init__(self):
         self._cell_cache = {}
         [self.get_cell(Location(x, y)) for x in range(5) for y in range(5)]
+        self.settings = defaultdict(lambda: 0)
 
     def is_on_map(self, target_location):
         self.get_cell(target_location)
@@ -41,6 +43,7 @@ class InfiniteMap(WorldMap):
     @property
     def num_cols(self):
         return float('inf')
+
 
 class EmptyMap(WorldMap):
     def __init__(self):

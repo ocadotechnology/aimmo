@@ -63,6 +63,7 @@ WSGI_APPLICATION = 'example_project.wsgi.application'
 INSTALLED_APPS = (
     'django.contrib.admin',
     'players',
+    'django_forms_bootstrap',
 )
 
 LOGGING = {
@@ -92,7 +93,7 @@ def get_url(game):
         output = subprocess.check_output(['./test-bin/minikube', 'service', 'game-%s' % game, '--url'])
         return (output.strip(), '/game/%s/socket.io' % game)
     else:
-        return ('http://localhost:5000', '/socket.io')
+        return ('http://localhost:%d' % (6001 + int(game) * 1000), '/socket.io')
 
 AIMMO_GAME_SERVER_LOCATION_FUNCTION = get_url
 

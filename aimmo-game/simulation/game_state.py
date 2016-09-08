@@ -5,9 +5,11 @@ class GameState(object):
     """
     Encapsulates the entire game state, including avatars, their code, and the world.
     """
-    def __init__(self, world_map, avatar_manager):
+    def __init__(self, world_map, avatar_manager, completion_check_callback=lambda: None):
         self.world_map = world_map
         self.avatar_manager = avatar_manager
+        self._completion_callback = completion_check_callback
+        self.main_avatar_id = None
 
     def get_state_for(self, avatar_wrapper, fog_of_war=fog_of_war):
         processed_world_map = fog_of_war.apply_fog_of_war(self.world_map, avatar_wrapper)
@@ -34,3 +36,9 @@ class GameState(object):
     def update_environment(self):
         num_avatars = len(self.avatar_manager.active_avatars)
         self.world_map.reconstruct_interactive_state(num_avatars)
+
+    def is_complete(self):
+        return self._completion_callback(self)
+
+    def get_main_avatar(self):
+        return self.avatar_manager.avatars_by_id[self.main_avatar_id]

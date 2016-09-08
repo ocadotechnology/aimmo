@@ -11,6 +11,7 @@ setup(
     install_requires=[
         'django >= 1.8.3, < 1.9.0',
         'django-autoconfig >= 0.3.6, < 1.0.0',
+        'django-forms-bootstrap',
         'django-js-reverse',
         'eventlet',
         'flask',
