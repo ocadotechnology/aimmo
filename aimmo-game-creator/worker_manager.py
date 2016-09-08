@@ -56,13 +56,14 @@ class WorkerManager(object):
     __metaclass__ = ABCMeta
     daemon = True
 
-    def __init__(self, games_url):
+    def __init__(self, base_url, auth_token):
         """
 
         :param thread_pool:
         """
         self._data = _WorkerManagerData()
-        self.games_url = games_url
+        self._base_url = base_url
+        self._auth_token = auth_token
         self._pool = GreenPool(size=3)
         super(WorkerManager, self).__init__()
 
@@ -91,7 +92,7 @@ class WorkerManager(object):
 
         # Spawn worker
         LOGGER.info("Spawning worker for game %s" % game_data['name'])
-        game_data['GAME_API_URL'] = '{}{}/'.format(self.games_url, game_id)
+        game_data['GAME_API_URL'] = '{}{}/'.format(self._base_url, game_id)
         self.create_worker(game_id, game_data)
 
     def _parallel_map(self, func, *iterable_args):
@@ -106,7 +107,8 @@ class WorkerManager(object):
     def update(self):
         try:
             LOGGER.info("Waking up")
-            games = requests.get(self.games_url).json()
+            url = '{}?auth_token={}'.format(self._base_url, self._auth_token)
+            games = requests.get(url).json()
         except (requests.RequestException, ValueError) as err:
             LOGGER.error("Failed to obtain game data : %s", err)
         else:

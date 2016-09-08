@@ -52,14 +52,14 @@ class RequestMock(object):
 
 class TestWorkerManager(unittest.TestCase):
     def setUp(self):
-        self.worker_manager = ConcreteWorkerManager('http://test/')
+        self.worker_manager = ConcreteWorkerManager('http://test/', 'auth')
 
     def test_correct_url_requested(self):
         mocker = RequestMock(0)
         with HTTMock(mocker):
             self.worker_manager.update()
         self.assertEqual(len(mocker.urls_requested), 1)
-        self.assertRegexpMatches(mocker.urls_requested[0], 'http://test/*')
+        self.assertEqual(mocker.urls_requested[0], 'http://test/?auth_token=auth')
 
     def test_workers_added(self):
         mocker = RequestMock(3)
