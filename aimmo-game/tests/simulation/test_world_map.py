@@ -7,7 +7,7 @@ from simulation import world_map
 from simulation.location import Location
 from simulation.world_map import Cell, WorldMap
 
-from .maps import MockCell
+from .maps import MockCell, MockPickup
 from .dummy_avatar import DummyAvatar
 
 
@@ -127,8 +127,8 @@ class TestWorldMap(TestCase):
         self.assertEqual(len(cells), 2)
 
     def test_pickup_cells(self):
-        pickup_cell1 = MockCell(pickup='pickup1')
-        pickup_cell2 = MockCell(pickup='pickup')
+        pickup_cell1 = MockCell(pickup=MockPickup())
+        pickup_cell2 = MockCell(pickup=MockPickup())
         no_pickup_cell = MockCell()
         grid = [[pickup_cell1, no_pickup_cell], [no_pickup_cell, pickup_cell2]]
         map = WorldMap(grid)
@@ -181,16 +181,16 @@ class TestWorldMap(TestCase):
     def test_grid_expand(self):
         world_map.TARGET_NUM_CELLS_PER_AVATAR = 5
         map = WorldMap(self._generate_grid())
-        map.reconstruct_interactive_state(1)
+        map.update(1)
         self.assertGridSize(map, 3)
 
-        map.reconstruct_interactive_state(2)
+        map.update(2)
         self.assertGridSize(map, 4)
 
     def test_grid_doesnt_expand(self):
         world_map.TARGET_NUM_CELLS_PER_AVATAR = 4
         map = WorldMap(self._generate_grid())
-        map.reconstruct_interactive_state(1)
+        map.update(1)
         self.assertGridSize(map, 2)
 
     def test_scores_removed(self):
@@ -198,7 +198,7 @@ class TestWorldMap(TestCase):
         grid = self._generate_grid()
         grid[0][1].generates_score = True
         map = WorldMap(grid)
-        map.reconstruct_interactive_state(1)
+        map.update(1)
         self.assertEqual(len(list(map.score_cells())), 0)
 
     def test_score_despawn_chance(self):
@@ -206,25 +206,34 @@ class TestWorldMap(TestCase):
         grid = self._generate_grid()
         grid[0][1].generates_score = True
         map = WorldMap(grid)
-        map.reconstruct_interactive_state(1)
+        map.update(1)
         self.assertIn(grid[0][1], map.score_cells())
         self.assertEqual(len(list(map.score_cells())), 1)
 
     def test_scores_added(self):
         world_map.TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR = 1
         map = WorldMap(self._generate_grid())
-        map.reconstruct_interactive_state(1)
+        map.update(1)
         self.assertEqual(len(list(map.score_cells())), 1)
 
-        map.reconstruct_interactive_state(2)
+        map.update(2)
         self.assertEqual(len(list(map.score_cells())), 2)
+
+    def test_scores_applied(self):
+        grid = self._generate_grid()
+        avatar = DummyAvatar()
+        grid[1][1].generates_score = True
+        grid[1][1].avatar = avatar
+        WorldMap(grid).update(1)
+        self.assertEqual(avatar.score, 1)
+
 
     def test_scores_not_added_when_at_target(self):
         world_map.TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR = 1
         grid = self._generate_grid()
         grid[0][1].generates_score = True
         map = WorldMap(grid)
-        map.reconstruct_interactive_state(1)
+        map.update(1)
         self.assertEqual(len(list(map.score_cells())), 1)
         self.assertIn(grid[0][1], map.score_cells())
 
@@ -233,33 +242,42 @@ class TestWorldMap(TestCase):
         grid = self._generate_grid(1)
         grid = [[MockCell(avatar='avatar')]]
         map = WorldMap(grid)
-        map.reconstruct_interactive_state(1)
+        map.update(1)
         self.assertEqual(len(list(map.score_cells())), 0)
 
     def test_pickups_added(self):
         world_map.TARGET_NUM_PICKUPS_PER_AVATAR = 1
         world_map.PICKUP_SPAWN_CHANCE = 1
         map = WorldMap(self._generate_grid())
-        map.reconstruct_interactive_state(1)
+        map.update(1)
         self.assertEqual(len(list(map.pickup_cells())), 1)
 
-        map.reconstruct_interactive_state(2)
+        map.update(2)
         self.assertEqual(len(list(map.pickup_cells())), 2)
+
+    def test_pickups_applied(self):
+        grid = self._generate_grid()
+        pickup = MockPickup()
+        avatar = DummyAvatar()
+        grid[1][1].pickup = pickup
+        grid[1][1].avatar = avatar
+        WorldMap(grid).update(1)
+        self.assertEqual(pickup.applied_to, avatar)
 
     def test_pickup_spawn_chance(self):
         world_map.TARGET_NUM_PICKUPS_PER_AVATAR = 5
         world_map.PICKUP_SPAWN_CHANCE = 0
         grid = self._generate_grid()
         map = WorldMap(grid)
-        map.reconstruct_interactive_state(1)
+        map.update(1)
         self.assertEqual(len(list(map.pickup_cells())), 0)
 
     def test_pickups_not_added_when_at_target(self):
         world_map.TARGET_NUM_PICKUPS_PER_AVATAR = 1
         grid = self._generate_grid()
-        grid[0][1].pickup = True
+        grid[0][1].pickup = MockPickup()
         map = WorldMap(grid)
-        map.reconstruct_interactive_state(1)
+        map.update(1)
         self.assertEqual(len(list(map.pickup_cells())), 1)
         self.assertIn(grid[0][1], map.pickup_cells())
 
@@ -268,7 +286,7 @@ class TestWorldMap(TestCase):
         grid = self._generate_grid(1)
         grid = [[MockCell(avatar='avatar')]]
         map = WorldMap(grid)
-        map.reconstruct_interactive_state(1)
+        map.update(1)
         self.assertEqual(len(list(map.pickup_cells())), 0)
 
     def test_random_spawn_location(self):

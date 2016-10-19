@@ -1,7 +1,5 @@
 import logging
-import requests
 import time
-from Queue import PriorityQueue
 from threading import Lock
 from threading import Thread
 
@@ -67,8 +65,8 @@ class TurnManager(Thread):
             self.run_turn()
 
             with state_provider as game_state:
+                self._update_effects(game_state)
                 game_state.update_environment()
-                game_state.world_map.apply_score()
 
             self.end_turn_callback()
             time.sleep(0.5)

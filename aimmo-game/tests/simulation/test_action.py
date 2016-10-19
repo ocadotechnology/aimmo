@@ -4,12 +4,12 @@ import unittest
 from simulation import event
 from simulation import action
 from simulation.location import Location
-from simulation.direction import NORTH, EAST, SOUTH, WEST
+from simulation.direction import EAST
 from simulation.game_state import GameState
 from simulation.avatar.avatar_manager import AvatarManager
 
 from .dummy_avatar import MoveDummy
-from .maps import InfiniteMap, EmptyMap, ScoreOnOddColumnsMap, AvatarMap
+from .maps import InfiniteMap, EmptyMap, ScoreOnOddColumnsMap, AvatarMap, MockPickup, PickupMap
 
 ORIGIN = Location(x=0, y=0)
 EAST_OF_ORIGIN = Location(x=1, y=0)
@@ -45,27 +45,6 @@ class TestAction(unittest.TestCase):
 
         self.assertEqual(self.avatar.location, ORIGIN)
         self.assertEqual(self.avatar.events, [event.FailedMoveEvent(ORIGIN, NORTH_OF_ORIGIN)])
-
-    def test_move_action_to_score_square(self):
-        game_state = GameState(ScoreOnOddColumnsMap(), self.avatar_manager)
-        self.assertEqual(self.avatar.score, 0)
-
-        action.MoveAction(self.avatar, {'x': 1, 'y': 0}).process(game_state.world_map)
-        game_state.world_map.apply_score()
-        self.assertEqual(self.avatar.score, 1)
-
-        action.MoveAction(self.avatar, {'x': 1, 'y': 0}).process(game_state.world_map)
-        game_state.world_map.apply_score()
-        self.assertEqual(self.avatar.score, 1)
-
-        action.MoveAction(self.avatar, {'x': 1, 'y': 0}).process(game_state.world_map)
-        game_state.world_map.apply_score()
-        self.assertEqual(self.avatar.score, 2)
-
-    @unittest.skip("Implement after changes")
-    def test_move_action_pickups(self):
-        # TODO
-        pass
 
     def test_successful_attack_action(self):
         game_state = GameState(AvatarMap(self.other_avatar), self.avatar_manager)
