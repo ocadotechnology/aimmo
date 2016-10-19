@@ -62,13 +62,16 @@ class TurnManager(Thread):
 
     def run(self):
         while True:
-            self.run_turn()
+            try:
+                self.run_turn()
 
-            with state_provider as game_state:
-                self._update_effects(game_state)
-                game_state.update_environment()
+                with state_provider as game_state:
+                    self._update_effects(game_state)
+                    game_state.update_environment()
 
-            self.end_turn_callback()
+                self.end_turn_callback()
+            except Exception:
+                LOGGER.exception('Error while running turn')
             time.sleep(0.5)
 
 
