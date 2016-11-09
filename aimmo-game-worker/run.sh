@@ -1,4 +1,7 @@
 #!/bin/bash
+
+#TODO: no longer needed?
+
 set -e
 
 dir=$(mktemp -d)

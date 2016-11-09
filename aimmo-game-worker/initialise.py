@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 
+import json
+import logging
 import os
 import sys
-import json
-import requests
-import logging
 
+import requests
 
 LOGGER = logging.getLogger(__name__)
 
 
+# TODO: Delete? Not used by LocalWorkerManager anymore. Is it used by anything else?
 def main(args, url):
     data_dir = args[1]
     LOGGER.debug('Data dir is %s', data_dir)

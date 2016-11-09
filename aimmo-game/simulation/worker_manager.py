@@ -1,12 +1,16 @@
+import atexit
+import itertools
+import json
 import logging
 import os
 import subprocess
+import tempfile
 import threading
 import time
-from eventlet.greenpool import GreenPool
-from eventlet.semaphore import Semaphore
 
 import requests
+from eventlet.greenpool import GreenPool
+from eventlet.semaphore import Semaphore
 from pykube import HTTPClient
 from pykube import KubeConfig
 from pykube import Pod
@@ -158,31 +162,40 @@ class LocalWorkerManager(WorkerManager):
         os.path.dirname(__file__),
         '../../aimmo-game-worker/',
     )
-    worker_path = os.path.join(worker_directory, 'run.sh')
 
     def __init__(self, *args, **kwargs):
         self.workers = {}
-        self.next_port = 1989
+        self.port_counter = itertools.count(1989)
         super(LocalWorkerManager, self).__init__(*args, **kwargs)
 
     def create_worker(self, player_id):
         assert(player_id not in self.workers)
-        self.next_port += 1
-        process_args = [
-            'bash',
-            self.worker_path,
-            self.host,
-            str(self.next_port),
-        ]
+        port = self.port_counter.next()
         env = os.environ.copy()
-        env['DATA_URL'] = "http://127.0.0.1:5000/player/%d" % player_id
-        self.workers[player_id] = subprocess.Popen(process_args, cwd=self.worker_directory, env=env)
+        data_dir = tempfile.mkdtemp()
+
+        LOGGER.debug('Data dir is %s', data_dir)
+
+        data = requests.get("http://127.0.0.1:5000/player/{}".format(player_id)).json()
+
+        options = data['options']
+        with open('{}/options.json'.format(data_dir), 'w') as options_file:
+            json.dump(options, options_file)
+
+        code = data['code']
+        with open('{}/avatar.py'.format(data_dir), 'w') as avatar_file:
+            avatar_file.write(code)
+
+        env['PYTHONPATH'] = data_dir
+
+        process = subprocess.Popen(['python', 'service.py', self.host, str(port), str(data_dir)], cwd=self.worker_directory, env=env)
+        atexit.register(process.kill)
+        self.workers[player_id] = process
         worker_url = 'http://%s:%d' % (
             self.host,
-            self.next_port,
+            port,
         )
         LOGGER.info("Worker started for %s, listening at %s", player_id, worker_url)
-        time.sleep(5)
         return worker_url
 
     def remove_worker(self, player_id):
@@ -192,7 +205,7 @@ class LocalWorkerManager(WorkerManager):
 
 
 class KubernetesWorkerManager(WorkerManager):
-    '''Kubernetes worker manager.'''
+    """Kubernetes worker manager."""
 
     def __init__(self, *args, **kwargs):
         self.api = HTTPClient(KubeConfig.from_service_account())
