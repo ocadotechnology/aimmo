@@ -4,9 +4,17 @@ $( document ).ready(function() {
 
     var defaultProgram = "print 'Sorry, could not retrieve saved data'\n";
 
+    // trigger extension
+    ace.require("ace/ext/language_tools");
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
     editor.getSession().setMode("ace/mode/python");
+    // enable autocompletion and snippets
+    editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
 
     var showAlert = function(alertString, alertType) {
         if (alertType === DANGER_CLASS || alertType === SUCCESS_CLASS) {
