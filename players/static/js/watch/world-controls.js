@@ -11,7 +11,7 @@ const CONTROLS = Object.create({
 
         this.viewer.reDrawWorldLayout();
     },
-    setState: function (players, scoreLocations, pickupLocations) {
+    setState: function (players, scoreLocations, pickups) {
         var newPlayers = {};
         for (var key in players) {
             if (players.hasOwnProperty(key)) {
@@ -40,7 +40,7 @@ const CONTROLS = Object.create({
         }
         this.world.players = newPlayers;
         this.world.scoreLocations = scoreLocations; //TODO: use instead of relying on world.layout (and remove score from there)
-        this.world.pickupLocations = pickupLocations;
+        this.world.pickups = pickups;
 
         this.viewer.reDrawState();
     }
@@ -50,7 +50,7 @@ function refreshState(data) {
     if(data.map_changed){
         CONTROLS.initialiseWorld(data.width, data.height, data.layout);
     }
-    CONTROLS.setState(data.players, data.score_locations, data.pickup_locations);
+    CONTROLS.setState(data.players, data.score_locations, data.pickups);
 }
 
 $(document).ready(function(){

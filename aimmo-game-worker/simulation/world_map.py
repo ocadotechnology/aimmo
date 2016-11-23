@@ -3,23 +3,16 @@ from .location import Location
 from .avatar_state import AvatarState
 
 
-class HealthPickup(object):
-
-    def __init__(self, health_restored=3):
-        self.health_restored = health_restored
-
-    def __repr__(self):
-        return 'HealthPickup(health_restored={})'.format(self.health_restored)
-
-
 class Cell(object):
 
     """
     Any position on the world grid.
     """
 
-    def __init__(self, location, **kwargs):
+    def __init__(self, location, avatar=None, **kwargs):
         self.location = Location(**location)
+        if avatar:
+            self.avatar = AvatarState(**avatar)
         for (key, value) in kwargs.items():
             setattr(self, key, value)
 

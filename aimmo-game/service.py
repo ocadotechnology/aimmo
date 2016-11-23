@@ -62,10 +62,15 @@ def get_world_state():
                  for y in range(num_rows)]
                 for x in range(num_cols)]
         player_data = {p.player_id: player_dict(p) for p in game_state.avatar_manager.avatars}
+        pickups = []
+        for cell in world.pickup_cells():
+            pickup = cell.pickup.serialise()
+            pickup['location'] = (cell.location.x, cell.location.y)
+            pickups.append(pickup)
         return {
             'players': player_data,
             'score_locations': [(cell.location.x, cell.location.y) for cell in world.score_cells()],
-            'pickup_locations': [(cell.location.x, cell.location.y) for cell in world.pickup_cells()],
+            'pickups': pickups,
             'map_changed': True,  # TODO: experiment with only sending deltas (not if not required)
             'width': num_cols,
             'height': num_rows,
