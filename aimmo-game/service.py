@@ -1,23 +1,21 @@
 #!/usr/bin/env python
-from collections import defaultdict
 import logging
 import os
 import sys
+from collections import defaultdict
 
 import eventlet
+
 eventlet.monkey_patch()
 
 import flask
 from flask_socketio import SocketIO, emit
-
-from six.moves import range
 
 from simulation.turn_manager import state_provider
 from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.game_state import GameState
 from simulation.turn_manager import ConcurrentTurnManager
-from simulation.turn_manager import SequentialTurnManager
 from simulation.worker_manager import WORKER_MANAGERS
 
 app = flask.Flask(__name__)

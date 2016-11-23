@@ -1,7 +1,9 @@
 from __future__ import absolute_import
-from simulation.world_map import WorldMap
-from simulation.location import Location
+
 from unittest import TestCase
+
+from simulation.location import Location
+from simulation.world_map import WorldMap
 
 
 class TestWorldMap(TestCase):
@@ -14,7 +16,7 @@ class TestWorldMap(TestCase):
             'generates_score': False,
             'avatar': None,
             'pickup': None,
-        } for x in xrange(-columns/2+1, 1+columns/2) for y in xrange(-rows/2+1, 1+rows/2)]
+        } for x in xrange(-columns / 2 + 1, 1 + columns / 2) for y in xrange(-rows / 2 + 1, 1 + rows / 2)]
         return cells
 
     def assertGridSize(self, map, expected_rows, expected_columns=None):

@@ -7,9 +7,8 @@ from unittest import TestCase
 from simulation import world_map
 from simulation.location import Location
 from simulation.world_map import Cell, WorldMap
-
-from .maps import MockCell, MockPickup
 from .dummy_avatar import DummyAvatar
+from .maps import MockCell, MockPickup
 
 
 def int_ceil(num):
@@ -246,11 +245,10 @@ class TestWorldMap(TestCase):
     def test_scores_applied(self):
         grid = self._generate_grid()
         avatar = DummyAvatar()
-        grid[1][1].generates_score = True
-        grid[1][1].avatar = avatar
+        grid[Location(1, 1)].generates_score = True
+        grid[Location(1, 1)].avatar = avatar
         WorldMap(grid).update(1)
         self.assertEqual(avatar.score, 1)
-
 
     def test_scores_not_added_when_at_target(self):
         world_map.TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR = 1
@@ -283,8 +281,8 @@ class TestWorldMap(TestCase):
         grid = self._generate_grid()
         pickup = MockPickup()
         avatar = DummyAvatar()
-        grid[1][1].pickup = pickup
-        grid[1][1].avatar = avatar
+        grid[Location(1, 1)].pickup = pickup
+        grid[Location(1, 1)].avatar = avatar
         WorldMap(grid).update(1)
         self.assertEqual(pickup.applied_to, avatar)
 
@@ -353,9 +351,11 @@ class TestWorldMap(TestCase):
         self.assertFalse(map.is_on_map(Location(0, 0)))
 
     def test_iter(self):
-        grid = [[MockCell(Location(-1, -1), name='A'), MockCell(Location(-1, 0), name='B'), MockCell(Location(-1, 1), name='C')],
-                [MockCell(Location(0, -1), name='D'), MockCell(Location(0, 0), name='E'), MockCell(Location(0, 1), name='F')],
-                [MockCell(Location(1, -1), name='E'), MockCell(Location(1, 0), name='G'), MockCell(Location(1, 1), name='H')],]
+        grid = [
+            [MockCell(Location(-1, -1), name='A'), MockCell(Location(-1, 0), name='B'), MockCell(Location(-1, 1), name='C')],
+            [MockCell(Location(0, -1), name='D'), MockCell(Location(0, 0), name='E'), MockCell(Location(0, 1), name='F')],
+            [MockCell(Location(1, -1), name='E'), MockCell(Location(1, 0), name='G'), MockCell(Location(1, 1), name='H')],
+        ]
         map = WorldMap(self._grid_from_list(grid))
         self.assertEqual([list(column) for column in map], grid)
 

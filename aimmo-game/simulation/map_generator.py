@@ -1,10 +1,12 @@
 import heapq
 import random
 from itertools import tee
+
+from six.moves import zip, range
+
 from simulation.direction import ALL_DIRECTIONS
 from simulation.location import Location
 from simulation.world_map import WorldMap
-from six.moves import zip, range
 
 
 def generate_map(height, width, obstacle_ratio=0.1):

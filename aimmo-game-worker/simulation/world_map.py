@@ -1,6 +1,5 @@
-from .location import Location
-
 from .avatar_state import AvatarState
+from .location import Location
 
 
 class Cell(object):
@@ -17,7 +16,12 @@ class Cell(object):
             setattr(self, key, value)
 
     def __repr__(self):
-        return 'Cell({} h={} s={} a={} p={})'.format(self.location, getattr(self, 'habitable', 0), self.generates_score, getattr(self, 'avatar', 0), getattr(self, 'pickup', 0))
+        return 'Cell({} h={} s={} a={} p={})'.format(
+            self.location,
+            getattr(self, 'habitable', 0),
+            self.generates_score,
+            getattr(self, 'avatar', 0),
+            getattr(self, 'pickup', 0))
 
     def __eq__(self, other):
         return self.location == other.location

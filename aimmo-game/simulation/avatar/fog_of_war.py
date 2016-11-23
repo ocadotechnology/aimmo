@@ -1,7 +1,7 @@
-from simulation.world_map import WorldMap, Cell
-from simulation.location import Location
-
 import copy
+
+from simulation.location import Location
+from simulation.world_map import WorldMap
 
 
 def apply_fog_of_war(world_map, avatar_wrapper):

@@ -1,13 +1,16 @@
 from __future__ import absolute_import
+
+from unittest import TestCase
+
 import service
+
 from simulation.game_state import GameState
 from simulation.location import Location
-from .simulation.maps import MockPickup
-from .simulation.dummy_avatar import MoveEastDummy
-from .simulation.test_world_map import MockCell
 from simulation.turn_manager import state_provider
 from simulation.world_map import WorldMap
-from unittest import TestCase
+from .simulation.dummy_avatar import MoveEastDummy
+from .simulation.maps import MockPickup
+from .simulation.test_world_map import MockCell
 
 
 class SimpleAvatarManager(object):
@@ -68,13 +71,13 @@ class TestService(TestCase):
         expected = {
             0: {
                 -1: 0,
-                 0: 0,
-                 1: 2,
+                0: 0,
+                1: 2,
             },
             1: {
                 -1: 0,
-                 0: 1,
-                 1: 0,
+                0: 1,
+                1: 0,
             }
         }
         self.assertEqual(result['layout'], expected)
@@ -97,5 +100,5 @@ class TestService(TestCase):
 
     def test_pickup_list(self):
         result = self.setup_world()
-        self.assertIn({'name': 'a', 'location': (1, 2)}, result['pickups'])
-        self.assertIn({'name': 'b', 'location': (0, 0)}, result['pickups'])
+        self.assertIn({'name': 'a', 'location': (1, 1)}, result['pickups'])
+        self.assertIn({'name': 'b', 'location': (0, -1)}, result['pickups'])

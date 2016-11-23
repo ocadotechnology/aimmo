@@ -1,11 +1,10 @@
 import math
 import random
-from pickups import ALL_PICKUPS
-
 from logging import getLogger
 
-from simulation.location import Location
+from pickups import ALL_PICKUPS
 from simulation.action import MoveAction
+from simulation.location import Location
 
 LOGGER = getLogger(__name__)
 
@@ -37,7 +36,8 @@ class Cell(object):
         self.actions = []
 
     def __repr__(self):
-        return 'Cell({} h={} s={} a={} p={} f{})'.format(self.location, self.habitable, self.generates_score, self.avatar, self.pickup, self.partially_fogged)
+        return 'Cell({} h={} s={} a={} p={} f{})'.format(
+            self.location, self.habitable, self.generates_score, self.avatar, self.pickup, self.partially_fogged)
 
     def __eq__(self, other):
         return self.location == other.location
@@ -91,8 +91,8 @@ class WorldMap(object):
     def generate_empty_map(cls, height, width):
         (min_x, max_x, min_y, max_y) = WorldMap._min_max_from_dimensions(height, width)
         grid = {}
-        for x in xrange(min_x, max_x+1):
-            for y in xrange(min_y, max_y+1):
+        for x in xrange(min_x, max_x + 1):
+            for y in xrange(min_y, max_y + 1):
                 location = Location(x, y)
                 grid[location] = Cell(location)
         return cls(grid)
@@ -195,17 +195,17 @@ class WorldMap(object):
             assert self.num_cells > start_size
 
     def _add_outer_layer(self):
-        self._add_vertical_layer(self.min_x()-1)
-        self._add_vertical_layer(self.max_x()+1)
-        self._add_horizontal_layer(self.min_y()-1)
-        self._add_horizontal_layer(self.max_y()+1)
+        self._add_vertical_layer(self.min_x() - 1)
+        self._add_vertical_layer(self.max_x() + 1)
+        self._add_horizontal_layer(self.min_y() - 1)
+        self._add_horizontal_layer(self.max_y() + 1)
 
     def _add_vertical_layer(self, x):
-        for y in xrange(self.min_y(), self.max_y()+1):
+        for y in xrange(self.min_y(), self.max_y() + 1):
             self._grid[Location(x, y)] = Cell(Location(x, y))
 
     def _add_horizontal_layer(self, y):
-        for x in xrange(self.min_x(), self.max_x()+1):
+        for x in xrange(self.min_x(), self.max_x() + 1):
             self._grid[Location(x, y)] = Cell(Location(x, y))
 
     def _reset_score_locations(self, num_avatars):
@@ -260,9 +260,9 @@ class WorldMap(object):
                 and len(cell.moves) <= 1)
 
     def attackable_avatar(self, target_location):
-        '''
+        """
         Return the avatar attackable at the given location, or None.
-        '''
+        """
         try:
             cell = self.get_cell(target_location)
         except ValueError:
@@ -287,5 +287,5 @@ class WorldMap(object):
 
     def __iter__(self):
         return ((self.get_cell(Location(x, y))
-                for y in xrange(self.min_y(), self.max_y()+1))
-                for x in xrange(self.min_x(), self.max_x()+1))
+                for y in xrange(self.min_y(), self.max_y() + 1))
+                for x in xrange(self.min_x(), self.max_x() + 1))
