@@ -1,17 +1,20 @@
 from __future__ import absolute_import
+
+from unittest import TestCase
+
 import service
+
 from simulation.game_state import GameState
 from simulation.location import Location
-from .simulation.maps import MockPickup
-from .simulation.dummy_avatar import MoveEastDummy
-from .simulation.test_world_map import MockCell
 from simulation.turn_manager import state_provider
 from simulation.world_map import WorldMap
-from unittest import TestCase
+from .simulation.dummy_avatar import MoveEastDummy
+from .simulation.maps import MockPickup
+from .simulation.test_world_map import MockCell
 
 
 class SimpleAvatarManager(object):
-    avatars = [MoveEastDummy(1, Location(0, 1))]
+    avatars = [MoveEastDummy(1, Location(0, -1))]
 
 
 class TestService(TestCase):
@@ -22,10 +25,11 @@ class TestService(TestCase):
         self.assertEqual(response.data, 'HEALTHY')
 
     def setup_world(self):
+        avatar_manager = SimpleAvatarManager()
         CELLS = [
             [
-                {'pickup': MockPickup('b')},
-                {'avatar': 'a'},
+                {'pickup': MockPickup('b'), 'avatar': avatar_manager.avatars[0]},
+                {},
                 {'generates_score': True},
             ],
             [
@@ -34,9 +38,9 @@ class TestService(TestCase):
                 {'pickup': MockPickup('a')},
             ],
         ]
-        grid = [[MockCell(Location(x, y), **CELLS[x][y])
-                 for y in xrange(3)] for x in xrange(2)]
-        state_provider.set_world(GameState(WorldMap(grid), SimpleAvatarManager()))
+        grid = {Location(x, y-1): MockCell(Location(x, y-1), **CELLS[x][y])
+                for y in xrange(3) for x in xrange(2)}
+        state_provider.set_world(GameState(WorldMap(grid), avatar_manager))
         return service.get_world_state()
 
     def test_player_dict(self):
@@ -46,18 +50,55 @@ class TestService(TestCase):
         details = player_dict[1]
         self.assertEqual(details['id'], 1)
         self.assertEqual(details['x'], 0)
-        self.assertEqual(details['y'], 1)
+        self.assertEqual(details['y'], -1)
         self.assertEqual(details['health'], 5)
         self.assertEqual(details['score'], 0)
 
-    def test_grid(self):
+    def test_score_locations(self):
         result = self.setup_world()
-        self.assertEqual(result['score_locations'], [(0, 2)])
+        self.assertEqual(result['score_locations'], [(0, 1)])
+
+    def test_width(self):
+        result = self.setup_world()
         self.assertEqual(result['width'], 2)
+
+    def test_height(self):
+        result = self.setup_world()
         self.assertEqual(result['height'], 3)
-        self.assertEqual(result['layout'], [[0, 0, 2], [0, 1, 0]])
+
+    def test_layout(self):
+        result = self.setup_world()
+        expected = {
+            0: {
+                -1: 0,
+                0: 0,
+                1: 2,
+            },
+            1: {
+                -1: 0,
+                0: 1,
+                1: 0,
+            }
+        }
+        self.assertEqual(result['layout'], expected)
+
+    def test_min_x(self):
+        result = self.setup_world()
+        self.assertEqual(result['minX'], 0)
+
+    def test_min_y(self):
+        result = self.setup_world()
+        self.assertEqual(result['minY'], -1)
+
+    def test_max_x(self):
+        result = self.setup_world()
+        self.assertEqual(result['maxX'], 1)
+
+    def test_max_y(self):
+        result = self.setup_world()
+        self.assertEqual(result['maxY'], 1)
 
     def test_pickup_list(self):
         result = self.setup_world()
-        self.assertIn({'name': 'a', 'location': (1, 2)}, result['pickups'])
-        self.assertIn({'name': 'b', 'location': (0, 0)}, result['pickups'])
+        self.assertIn({'name': 'a', 'location': (1, 1)}, result['pickups'])
+        self.assertIn({'name': 'b', 'location': (0, -1)}, result['pickups'])

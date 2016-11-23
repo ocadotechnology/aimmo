@@ -1,19 +1,18 @@
 from __future__ import absolute_import
+
 import unittest
 
 from simulation.avatar.avatar_appearance import AvatarAppearance
 from simulation.game_state import GameState
 from simulation.location import Location
 from simulation.turn_manager import ConcurrentTurnManager
-
-from .maps import InfiniteMap
-from .dummy_avatar import WaitDummy
-from .dummy_avatar import MoveNorthDummy
+from .dummy_avatar import DummyAvatarManager
 from .dummy_avatar import MoveEastDummy
+from .dummy_avatar import MoveNorthDummy
 from .dummy_avatar import MoveSouthDummy
 from .dummy_avatar import MoveWestDummy
-from .dummy_avatar import DummyAvatarManager
-
+from .dummy_avatar import WaitDummy
+from .maps import InfiniteMap
 
 ORIGIN = Location(0, 0)
 
@@ -24,13 +23,18 @@ ABOVE_ORIGIN = Location(0, 1)
 FIVE_RIGHT_OF_ORIGIN_AND_ONE_ABOVE = Location(5, 1)
 
 
+class MockGameState(GameState):
+    def get_state_for(self, avatar):
+        return self
+
+
 class TestTurnManager(unittest.TestCase):
     def construct_default_avatar_appearance(self):
         return AvatarAppearance("#000", "#ddd", "#777", "#fff")
 
     def construct_turn_manager(self, avatars, locations):
         self.avatar_manager = DummyAvatarManager(avatars)
-        self.game_state = GameState(InfiniteMap(), self.avatar_manager)
+        self.game_state = MockGameState(InfiniteMap(), self.avatar_manager)
         self.turn_manager = ConcurrentTurnManager(game_state=self.game_state,
                                                   end_turn_callback=lambda: None)
         for index, location in enumerate(locations):

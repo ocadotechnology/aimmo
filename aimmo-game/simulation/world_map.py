@@ -1,11 +1,10 @@
 import math
 import random
-from pickups import ALL_PICKUPS
-
 from logging import getLogger
 
-from simulation.location import Location
+from pickups import ALL_PICKUPS
 from simulation.action import MoveAction
+from simulation.location import Location
 
 LOGGER = getLogger(__name__)
 
@@ -37,7 +36,8 @@ class Cell(object):
         self.actions = []
 
     def __repr__(self):
-        return 'Cell({} h={} s={} a={} p={} f{})'.format(self.location, self.habitable, self.generates_score, self.avatar, self.pickup, self.partially_fogged)
+        return 'Cell({} h={} s={} a={} p={} f{})'.format(
+            self.location, self.habitable, self.generates_score, self.avatar, self.pickup, self.partially_fogged)
 
     def __eq__(self, other):
         return self.location == other.location
@@ -77,10 +77,28 @@ class WorldMap(object):
     """
 
     def __init__(self, grid):
-        self.grid = grid
+        self._grid = grid
+
+    @classmethod
+    def _min_max_from_dimensions(cls, height, width):
+        max_x = int(math.floor(width / 2))
+        min_x = -(width - max_x - 1)
+        max_y = int(math.floor(height / 2))
+        min_y = -(height - max_y - 1)
+        return (min_x, max_x, min_y, max_y)
+
+    @classmethod
+    def generate_empty_map(cls, height, width):
+        (min_x, max_x, min_y, max_y) = WorldMap._min_max_from_dimensions(height, width)
+        grid = {}
+        for x in xrange(min_x, max_x + 1):
+            for y in xrange(min_y, max_y + 1):
+                location = Location(x, y)
+                grid[location] = Cell(location)
+        return cls(grid)
 
     def all_cells(self):
-        return (cell for sublist in self.grid for cell in sublist)
+        return self._grid.itervalues()
 
     def score_cells(self):
         return (c for c in self.all_cells() if c.generates_score)
@@ -94,15 +112,21 @@ class WorldMap(object):
         return (c for c in self.all_cells() if c.pickup)
 
     def is_on_map(self, location):
-        return (0 <= location.y < self.num_rows) and (0 <= location.x < self.num_cols)
+        try:
+            self._grid[location]
+        except KeyError:
+            return False
+        return True
 
     def get_cell(self, location):
-        if not self.is_on_map(location):
+        try:
+            return self._grid[location]
+        except KeyError:
+            # For backwards-compatibility, this throws ValueError
             raise ValueError('Location %s is not on the map' % location)
-        cell = self.grid[location.x][location.y]
-        assert cell.location == location,\
-            'location lookup mismatch: arg={}, found={}'.format(location, cell.location)
-        return cell
+
+    def get_cell_by_coords(self, x, y):
+        return self.get_cell(Location(x, y))
 
     def clear_cell_actions(self, location):
         try:
@@ -111,13 +135,25 @@ class WorldMap(object):
         except ValueError:
             return
 
+    def max_y(self):
+        return max(self._grid.keys(), key=lambda c: c.y).y
+
+    def min_y(self):
+        return min(self._grid.keys(), key=lambda c: c.y).y
+
+    def max_x(self):
+        return max(self._grid.keys(), key=lambda c: c.x).x
+
+    def min_x(self):
+        return min(self._grid.keys(), key=lambda c: c.x).x
+
     @property
     def num_rows(self):
-        return len(self.grid[0])
+        return self.max_y() - self.min_y() + 1
 
     @property
     def num_cols(self):
-        return len(self.grid)
+        return self.max_x() - self.min_x() + 1
 
     @property
     def num_cells(self):
@@ -150,23 +186,27 @@ class WorldMap(object):
         self._add_pickups(num_avatars)
 
     def _expand(self, num_avatars):
+        LOGGER.info('Expanding map')
+        start_size = self.num_cells
         target_num_cells = int(math.ceil(num_avatars * TARGET_NUM_CELLS_PER_AVATAR))
         num_cells_to_add = target_num_cells - self.num_cells
         if num_cells_to_add > 0:
             self._add_outer_layer()
+            assert self.num_cells > start_size
 
     def _add_outer_layer(self):
-        self._add_layer_to_vertical_edge()
-        self._add_layer_to_horizontal_edge()
+        self._add_vertical_layer(self.min_x() - 1)
+        self._add_vertical_layer(self.max_x() + 1)
+        self._add_horizontal_layer(self.min_y() - 1)
+        self._add_horizontal_layer(self.max_y() + 1)
 
-    def _add_layer_to_vertical_edge(self):
-        self.grid.append([Cell(Location(self.num_cols, y)) for y in range(self.num_rows)])
+    def _add_vertical_layer(self, x):
+        for y in xrange(self.min_y(), self.max_y() + 1):
+            self._grid[Location(x, y)] = Cell(Location(x, y))
 
-    def _add_layer_to_horizontal_edge(self):
-        # Read rows once here, as we'll mutate it as part of the first iteration
-        rows = self.num_rows
-        for x in range(self.num_cols):
-            self.grid[x].append(Cell(Location(x, rows)))
+    def _add_horizontal_layer(self, y):
+        for x in xrange(self.min_x(), self.max_x() + 1):
+            self._grid[Location(x, y)] = Cell(Location(x, y))
 
     def _reset_score_locations(self, num_avatars):
         for cell in self.score_cells():
@@ -210,7 +250,6 @@ class WorldMap(object):
         """
         return self._get_random_spawn_locations(1)[0].location
 
-    # TODO: cope with negative coords (here and possibly in other places)
     def can_move_to(self, target_location):
         if not self.is_on_map(target_location):
             return False
@@ -221,9 +260,9 @@ class WorldMap(object):
                 and len(cell.moves) <= 1)
 
     def attackable_avatar(self, target_location):
-        '''
+        """
         Return the avatar attackable at the given location, or None.
-        '''
+        """
         try:
             cell = self.get_cell(target_location)
         except ValueError:
@@ -244,4 +283,9 @@ class WorldMap(object):
         return PARTIAL_FOG_OF_WAR_DISTANCE
 
     def __repr__(self):
-        return repr(self.grid)
+        return repr(self._grid)
+
+    def __iter__(self):
+        return ((self.get_cell(Location(x, y))
+                for y in xrange(self.min_y(), self.max_y() + 1))
+                for x in xrange(self.min_x(), self.max_x() + 1))
