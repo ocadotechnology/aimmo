@@ -4,6 +4,21 @@ from simulation.location import Location
 from simulation.world_map import Cell, WorldMap
 
 
+class MockPickup(object):
+    def __init__(self, name='', cell=None):
+        self.applied_to = None
+        self.name = name
+        self.cell = None
+
+    def apply(self, avatar):
+        self.applied_to = avatar
+        if self.cell:
+            self.cell.pickup = None
+
+    def serialise(self):
+        return {'name': self.name}
+
+
 class MockCell(Cell):
     def __init__(self, location=1, habitable=True, generates_score=False,
                  avatar=None, pickup=None, name=None, actions=[]):
@@ -23,6 +38,8 @@ class InfiniteMap(WorldMap):
     def __init__(self):
         self._cell_cache = {}
         [self.get_cell(Location(x, y)) for x in range(5) for y in range(5)]
+        self.updates = 0
+        self.num_avatars = None
 
     def is_on_map(self, target_location):
         self.get_cell(target_location)
@@ -34,6 +51,10 @@ class InfiniteMap(WorldMap):
     def get_cell(self, location):
         return self._cell_cache.setdefault(location, Cell(location))
 
+    def update(self, num_avatars):
+        self.updates += 1
+        self.num_avatars = num_avatars
+
     @property
     def num_rows(self):
         return float('inf')
@@ -41,6 +62,7 @@ class InfiniteMap(WorldMap):
     @property
     def num_cols(self):
         return float('inf')
+
 
 class EmptyMap(WorldMap):
     def __init__(self):
@@ -76,3 +98,13 @@ class AvatarMap(WorldMap):
 
     def get_random_spawn_location(self):
         return Location(10, 10)
+
+
+class PickupMap(WorldMap):
+    def __init__(self, pickup):
+        self._pickup = pickup
+
+    def get_cell(self, location):
+        cell = Cell(location)
+        cell.pickup = self._pickup
+        return cell
