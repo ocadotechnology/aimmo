@@ -50,9 +50,9 @@ class TurnManager(Thread):
         raise NotImplementedError("Abstract method.")
 
     def _register_action(self, avatar):
-        '''
+        """
         Send an avatar its view of the game state and register its chosen action.
-        '''
+        """
         with state_provider as game_state:
             state_view = game_state.get_state_for(avatar)
 
@@ -66,7 +66,6 @@ class TurnManager(Thread):
                 self.run_turn()
 
                 with state_provider as game_state:
-                    self._update_effects(game_state)
                     game_state.update_environment()
 
                 self.end_turn_callback()
@@ -77,9 +76,9 @@ class TurnManager(Thread):
 
 class SequentialTurnManager(TurnManager):
     def run_turn(self):
-        '''
+        """
         Get and apply each avatar's action in turn.
-        '''
+        """
         with state_provider as game_state:
             avatars = game_state.avatar_manager.active_avatars
 
@@ -93,10 +92,10 @@ class SequentialTurnManager(TurnManager):
 
 class ConcurrentTurnManager(TurnManager):
     def run_turn(self):
-        '''
+        """
         Concurrently get the intended actions from all avatars and register
         them on the world map. Then apply actions in order of priority.
-        '''
+        """
         with state_provider as game_state:
             avatars = game_state.avatar_manager.active_avatars
 

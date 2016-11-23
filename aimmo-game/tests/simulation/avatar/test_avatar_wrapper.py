@@ -1,8 +1,11 @@
 from __future__ import absolute_import
+
 import json
-from httmock import HTTMock
-from simulation.avatar import avatar_wrapper
 from unittest import TestCase
+
+from httmock import HTTMock
+
+from simulation.avatar import avatar_wrapper
 
 
 class MockEffect(object):
@@ -44,7 +47,7 @@ def InvalidJSONRequest(url, request):
     return 'EXCEPTION'
 
 
-def NonExistantActionRequest(url, request):
+def NonExistentActionRequest(url, request):
     return json.dumps({'action': {'action_type': 'fake', 'option': {}}})
 
 
@@ -77,7 +80,7 @@ class TestAvatarWrapper(TestCase):
         self.assertEqual(actions_created, [], 'No action should have been applied')
 
     def test_non_existant_action(self):
-        request_mock = NonExistantActionRequest
+        request_mock = NonExistentActionRequest
         self.take_turn(request_mock)
         self.assertEqual(actions_created, [], 'No action should have been applied')
 
