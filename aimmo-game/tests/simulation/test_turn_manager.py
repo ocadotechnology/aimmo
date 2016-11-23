@@ -24,13 +24,18 @@ ABOVE_ORIGIN = Location(0, 1)
 FIVE_RIGHT_OF_ORIGIN_AND_ONE_ABOVE = Location(5, 1)
 
 
+class MockGameState(GameState):
+    def get_state_for(self, avatar):
+        return self
+
+
 class TestTurnManager(unittest.TestCase):
     def construct_default_avatar_appearance(self):
         return AvatarAppearance("#000", "#ddd", "#777", "#fff")
 
     def construct_turn_manager(self, avatars, locations):
         self.avatar_manager = DummyAvatarManager(avatars)
-        self.game_state = GameState(InfiniteMap(), self.avatar_manager)
+        self.game_state = MockGameState(InfiniteMap(), self.avatar_manager)
         self.turn_manager = ConcurrentTurnManager(game_state=self.game_state,
                                                   end_turn_callback=lambda: None)
         for index, location in enumerate(locations):

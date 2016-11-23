@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from collections import defaultdict
 import logging
 import os
 import sys
@@ -14,7 +15,6 @@ from six.moves import range
 from simulation.turn_manager import state_provider
 from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
-from simulation.location import Location
 from simulation.game_state import GameState
 from simulation.turn_manager import ConcurrentTurnManager
 from simulation.turn_manager import SequentialTurnManager
@@ -56,26 +56,29 @@ def player_dict(avatar):
 def get_world_state():
     with state_provider as game_state:
         world = game_state.world_map
-        num_cols = world.num_cols
-        num_rows = world.num_rows
-        grid = [[to_cell_type(world.get_cell(Location(x, y)))
-                 for y in range(num_rows)]
-                for x in range(num_cols)]
         player_data = {p.player_id: player_dict(p) for p in game_state.avatar_manager.avatars}
+        grid_dict = defaultdict(dict)
+        for cell in world.all_cells():
+            grid_dict[cell.location.x][cell.location.y] = to_cell_type(cell)
         pickups = []
         for cell in world.pickup_cells():
             pickup = cell.pickup.serialise()
             pickup['location'] = (cell.location.x, cell.location.y)
             pickups.append(pickup)
         return {
-            'players': player_data,
-            'score_locations': [(cell.location.x, cell.location.y) for cell in world.score_cells()],
-            'pickups': pickups,
-            'map_changed': True,  # TODO: experiment with only sending deltas (not if not required)
-            'width': num_cols,
-            'height': num_rows,
-            'layout': grid,
-        }
+                'players': player_data,
+                'score_locations': [(cell.location.x, cell.location.y) for cell in world.score_cells()],
+                'pickups': pickups,
+                # TODO: experiment with only sending deltas (not if not required)
+                'map_changed': True,
+                'width': world.num_cols,
+                'height': world.num_rows,
+                'minX': world.min_x(),
+                'minY': world.min_y(),
+                'maxX': world.max_x(),
+                'maxY': world.max_y(),
+                'layout': grid_dict,
+            }
 
 
 @socketio.on('connect')

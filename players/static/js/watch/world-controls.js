@@ -4,10 +4,14 @@ const CONTROLS = Object.create({
         this.world = world;
         this.viewer = viewer;
     },
-    initialiseWorld: function (width, height, worldLayout) {
+    initialiseWorld: function (width, height, worldLayout, minX, minY, maxX, maxY) {
         this.world.width = width;
         this.world.height = height;
         this.world.layout = worldLayout;
+        this.world.minX = minX;
+        this.world.minY = minY;
+        this.world.maxX = maxX;
+        this.world.maxY = maxY;
 
         this.viewer.reDrawWorldLayout();
     },
@@ -48,7 +52,7 @@ const CONTROLS = Object.create({
 
 function refreshState(data) {
     if(data.map_changed){
-        CONTROLS.initialiseWorld(data.width, data.height, data.layout);
+        CONTROLS.initialiseWorld(data.width, data.height, data.layout, data.minX, data.minY, data.maxX, data.maxY);
     }
     CONTROLS.setState(data.players, data.score_locations, data.pickups);
 }

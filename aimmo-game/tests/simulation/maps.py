@@ -29,6 +29,7 @@ class MockCell(Cell):
         self.pickup = pickup
         self.name = name
         self.actions = actions
+        self.partially_fogged = False
 
     def __eq__(self, other):
         return self is other
@@ -67,6 +68,9 @@ class InfiniteMap(WorldMap):
 class EmptyMap(WorldMap):
     def __init__(self):
         pass
+
+    def get_random_spawn_location(self):
+        return Location(10, 10)
 
     def can_move_to(self, target_location):
         return False

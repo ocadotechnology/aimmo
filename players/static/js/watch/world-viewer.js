@@ -22,15 +22,17 @@ const VIEWER = Object.create({
     },
 
     invertY: function(y) {
-        return this.world.height - y - 1;
+        return -y;
     },
 
     reDrawWorldLayout: function() {
         this.paper.clear();
-        this.paper.setViewBox(0, 0, this.world.width * this.appearance.cellSize, this.world.height * this.appearance.cellSize, true);
+        this.paper.setViewBox(this.world.minX * this.appearance.cellSize, this.world.minY * this.appearance.cellSize,           //min possible coordinates
+                              this.world.width * this.appearance.cellSize, this.world.height * this.appearance.cellSize,        //size of grid
+                              true);
 
-        for (var x = 0; x < this.world.width; x++) {
-            for (var y = 0; y < this.world.height; y++) {
+        for (var x = this.world.minX; x <= this.world.maxX; x++) {
+            for (var y = this.world.minY; y <= this.world.maxY; y++) {
                 var currentCellValue = this.world.layout[x][y];
 
                 var square = this.paper.rect(x * this.appearance.cellSize,
