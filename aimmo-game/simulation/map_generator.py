@@ -86,30 +86,30 @@ def get_shortest_path_between(source_cell, destination_cell, world_map):
     return None
 
 
-def get_random_edge_index(map, rng=random):
-    num_row_cells = map.num_rows - 2
-    num_col_cells = map.num_cols - 2
+def get_random_edge_index(world_map, rng=random):
+    num_row_cells = world_map.num_rows - 2
+    num_col_cells = world_map.num_cols - 2
     num_edge_cells = 2*num_row_cells + 2*num_col_cells
     random_cell = rng.randint(0, num_edge_cells-1)
 
     if 0 <= random_cell < num_col_cells:
         # random non-corner cell on the first row
-        return random_cell + 1 + map.min_x(), map.min_y()
+        return random_cell + 1 + world_map.min_x(), world_map.min_y()
     random_cell -= num_col_cells
 
     if 0 <= random_cell < num_col_cells:
         # random non-corner cell on the last row
-        return random_cell + 1 + map.min_x(), map.max_y()
+        return random_cell + 1 + world_map.min_x(), world_map.max_y()
     random_cell -= num_col_cells
 
     if 0 <= random_cell < num_row_cells:
         # random non-corner cell on the first column
-        return map.min_x(), map.min_y() + random_cell + 1
+        return world_map.min_x(), world_map.min_y() + random_cell + 1
     random_cell -= num_row_cells
 
     assert 0 <= random_cell < num_row_cells
     # random non-corner cell on the last column
-    return map.max_x(), map.min_y() + random_cell + 1
+    return world_map.max_x(), world_map.min_y() + random_cell + 1
 
 
 def get_adjacent_habitable_cells(cell, world_map):
