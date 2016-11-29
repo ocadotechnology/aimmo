@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.core.management import BaseCommand
 
 
+
 class Command(BaseCommand):
     # Show this when the user types help
     help = "Delete generated users"

@@ -103,7 +103,7 @@ class WorkerManager(threading.Thread):
     # TODO handle failure
     def spawn(self, user):
         # Get persistent state from worker
-        persistent_state = self.get_persistent_state(user['id'])
+        persistent_state = self.get_persistent_state(user['id'])  # noqa: F841
 
         # Kill worker
         LOGGER.info("Removing worker for user %s" % user['id'])
