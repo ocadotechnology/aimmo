@@ -105,8 +105,10 @@ class WorldMap(object):
 
     def potential_spawn_locations(self):
         return (c for c in self.all_cells()
-                if c.habitable and not c.generates_score and not c.avatar and
-                not c.pickup)
+                if c.habitable
+                and not c.generates_score
+                and not c.avatar
+                and not c.pickup)
 
     def pickup_cells(self):
         return (c for c in self.all_cells() if c.pickup)
@@ -255,9 +257,9 @@ class WorldMap(object):
             return False
         cell = self.get_cell(target_location)
 
-        return (cell.habitable and
-                (not cell.is_occupied or cell.avatar.is_moving) and
-                len(cell.moves) <= 1)
+        return (cell.habitable
+                and (not cell.is_occupied or cell.avatar.is_moving)
+                and len(cell.moves) <= 1)
 
     def attackable_avatar(self, target_location):
         """
