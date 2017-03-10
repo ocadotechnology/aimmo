@@ -110,3 +110,8 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
 ```
 * [This blog post](http://mkelsey.com/2013/04/30/how-i-setup-virtualenv-and-virtualenvwrapper-on-my-mac/) may also be
  useful.
+
+## How to contribute!
+__Want to help?__ You can contact us using this [contact form][c4l-contact-form] and we'll get in touch as soon as possible! Thanks a lot.
+
+[c4l-contact-form]: https://www.codeforlife.education/contact/
