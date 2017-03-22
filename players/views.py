@@ -1,22 +1,20 @@
-import logging
-
 import cPickle as pickle
-from django.http import JsonResponse
-from django.http import HttpResponse, Http404
+import logging
+import os
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse, Http404
+from django.http import JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
 
-import os
-
-from . import app_settings
 from models import Avatar, Game, LevelAttempt
 from players import forms
-
+from . import app_settings
 
 LOGGER = logging.getLogger(__name__)
 

@@ -1,7 +1,8 @@
 #!/usr/bin/env python
-from worker_manager import WORKER_MANAGERS
 import logging
 import os
+
+from worker_manager import WORKER_MANAGERS
 
 
 def main():

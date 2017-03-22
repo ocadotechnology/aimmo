@@ -1,9 +1,12 @@
 from __future__ import absolute_import
+
 import cPickle as pickle
-from httmock import HTTMock
-from json import dumps
-from worker_manager import WorkerManager
 import unittest
+from json import dumps
+
+from httmock import HTTMock
+
+from worker_manager import WorkerManager
 
 
 class ConcreteWorkerManager(WorkerManager):

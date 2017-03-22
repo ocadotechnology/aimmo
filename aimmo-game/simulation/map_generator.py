@@ -9,8 +9,7 @@ from six.moves import zip, range
 from simulation.direction import ALL_DIRECTIONS
 from simulation.game_state import GameState
 from simulation.location import Location
-from simulation.world_map import Cell, WorldMap, WorldMapStaticSpawnDecorator
-from six.moves import zip, range
+from simulation.world_map import Cell, WorldMapStaticSpawnDecorator
 from simulation.world_map import WorldMap
 
 LOGGER = logging.getLogger(__name__)
@@ -56,7 +55,7 @@ class Main(_BaseGenerator):
         always_empty_location = Location(always_empty_edge_x, always_empty_edge_y)
 
         for cell in shuffled(world_map.all_cells()):
-            if cell.location != always_empty_location and random.random() < obstacle_ratio:
+            if cell.location != always_empty_location and random.random() < self.settings['OBSTACLE_RATIO']:
                 cell.habitable = False
                 # So long as all habitable neighbours can still reach each other,
                 # then the map cannot get bisected

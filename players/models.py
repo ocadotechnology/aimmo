@@ -1,8 +1,10 @@
 from base64 import urlsafe_b64encode
+from os import urandom
+
 from django.contrib.auth.models import User
 from django.db import models
+
 from players import app_settings
-from os import urandom
 
 GAME_GENERATORS = [
     ('Main', 'Open World'),  # Default

@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 import logging
-import minikube
 import os
 import signal
 import subprocess
 import sys
 import time
-
 from subprocess import CalledProcessError
+
+import minikube
 
 _SCRIPT_LOCATION = os.path.abspath(os.path.dirname(__file__))
 _MANAGE_PY = os.path.join(_SCRIPT_LOCATION, 'example_project', 'manage.py')
@@ -80,7 +80,6 @@ def main(use_minikube):
 
 
 if __name__ == '__main__':
-    os.setpgrp()
     try:
         main('--kube' in sys.argv or '-k' in sys.argv)
     finally:

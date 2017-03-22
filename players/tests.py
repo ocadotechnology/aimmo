@@ -1,8 +1,10 @@
+import logging
+
 from django.contrib.auth.models import AnonymousUser, User
 from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
+
 from players import models, views
-import logging
 
 views.app_settings.GAME_SERVER_LOCATION_FUNCTION = lambda num: ('base %s' % num, 'path %s' % num)
 

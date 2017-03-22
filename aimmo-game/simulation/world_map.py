@@ -2,6 +2,7 @@ import math
 import random
 from logging import getLogger
 
+import map_generator
 from pickups import ALL_PICKUPS
 from simulation.action import MoveAction
 from simulation.location import Location
@@ -74,7 +75,7 @@ class WorldMap(object):
         min_x = -(width - max_x - 1)
         max_y = int(math.floor(height / 2))
         min_y = -(height - max_y - 1)
-        return (min_x, max_x, min_y, max_y)
+        return min_x, max_x, min_y, max_y
 
     @classmethod
     def generate_empty_map(cls, height, width):
@@ -84,10 +85,10 @@ class WorldMap(object):
             for y in xrange(min_y, max_y + 1):
                 location = Location(x, y)
                 grid[location] = Cell(location)
-        return cls(grid)
+        return cls(grid, map_generator.DEFAULT_LEVEL_SETTINGS)
 
     def all_cells(self):
-        return self._grid.itervalues()
+        return self.grid.itervalues()
 
     def score_cells(self):
         return (c for c in self.all_cells() if c.generates_score)
@@ -104,14 +105,14 @@ class WorldMap(object):
 
     def is_on_map(self, location):
         try:
-            self._grid[location]
+            self.grid[location]
         except KeyError:
             return False
         return True
 
     def get_cell(self, location):
         try:
-            return self._grid[location]
+            return self.grid[location]
         except KeyError:
             # For backwards-compatibility, this throws ValueError
             raise ValueError('Location %s is not on the map' % location)
@@ -127,16 +128,16 @@ class WorldMap(object):
             return
 
     def max_y(self):
-        return max(self._grid.keys(), key=lambda c: c.y).y
+        return max(self.grid.keys(), key=lambda c: c.y).y
 
     def min_y(self):
-        return min(self._grid.keys(), key=lambda c: c.y).y
+        return min(self.grid.keys(), key=lambda c: c.y).y
 
     def max_x(self):
-        return max(self._grid.keys(), key=lambda c: c.x).x
+        return max(self.grid.keys(), key=lambda c: c.x).x
 
     def min_x(self):
-        return min(self._grid.keys(), key=lambda c: c.x).x
+        return min(self.grid.keys(), key=lambda c: c.x).x
 
     @property
     def num_rows(self):
@@ -193,11 +194,11 @@ class WorldMap(object):
 
     def _add_vertical_layer(self, x):
         for y in xrange(self.min_y(), self.max_y() + 1):
-            self._grid[Location(x, y)] = Cell(Location(x, y))
+            self.grid[Location(x, y)] = Cell(Location(x, y))
 
     def _add_horizontal_layer(self, y):
         for x in xrange(self.min_x(), self.max_x() + 1):
-            self._grid[Location(x, y)] = Cell(Location(x, y))
+            self.grid[Location(x, y)] = Cell(Location(x, y))
 
     def _reset_score_locations(self, num_avatars):
         for cell in self.score_cells():
@@ -274,7 +275,7 @@ class WorldMap(object):
         return self.settings['PARTIAL_FOG_OF_WAR_DISTANCE']
 
     def __repr__(self):
-        return repr(self._grid)
+        return repr(self.grid)
 
     def __iter__(self):
         return ((self.get_cell(Location(x, y))

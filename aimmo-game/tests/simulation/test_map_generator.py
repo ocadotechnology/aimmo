@@ -2,11 +2,10 @@ from __future__ import absolute_import
 
 import unittest
 
-from simulation.map_generator import get_random_edge_index, generate_map
-from simulation.world_map import WorldMap
 from simulation import map_generator
-from simulation.map_generator import get_random_edge_index
 from simulation.location import Location
+from simulation.map_generator import get_random_edge_index
+from simulation.world_map import WorldMap
 from .dummy_avatar import DummyAvatarManager
 
 

@@ -15,7 +15,6 @@ from flask_socketio import SocketIO, emit
 from simulation.turn_manager import state_provider
 from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
-from simulation.game_state import GameState
 from simulation.turn_manager import ConcurrentTurnManager
 from simulation.worker_manager import WORKER_MANAGERS
 

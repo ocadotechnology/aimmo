@@ -1,4 +1,5 @@
 from django import template
+
 from players import app_settings
 from players.models import Game
 

@@ -1,13 +1,13 @@
-from abc import ABCMeta, abstractmethod
-from eventlet.greenpool import GreenPool
-from eventlet.semaphore import Semaphore
 import logging
-import pykube
 import os
-import requests
 import subprocess
 import time
+from abc import ABCMeta, abstractmethod
 
+import pykube
+import requests
+from eventlet.greenpool import GreenPool
+from eventlet.semaphore import Semaphore
 
 LOGGER = logging.getLogger(__name__)
 
@@ -148,6 +148,7 @@ class LocalWorkerManager(WorkerManager):
             port,
         ]
         env = os.environ.copy()
+        game_data = {str(k):str(v) for k,v in game_data.items()}
         env.update(game_data)
         self.workers[game_id] = subprocess.Popen(process_args, cwd=self.worker_directory, env=env)
         worker_url = 'http://%s:%s' % (

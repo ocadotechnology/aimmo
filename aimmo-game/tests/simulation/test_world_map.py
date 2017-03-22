@@ -5,11 +5,9 @@ from string import ascii_uppercase
 from unittest import TestCase
 
 from simulation.location import Location
-from simulation.world_map import Cell, WorldMap
-
+from simulation.world_map import Cell, WorldMap, WorldMapStaticSpawnDecorator
 from .dummy_avatar import DummyAvatar
 from .maps import MockCell, MockPickup
-from simulation.world_map import Cell, WorldMap, WorldMapStaticSpawnDecorator
 
 
 def int_ceil(num):
