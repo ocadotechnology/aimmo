@@ -1,30 +1,69 @@
+import abc
 import heapq
+import logging
 import random
 from itertools import tee
 
 from six.moves import zip, range
 
 from simulation.direction import ALL_DIRECTIONS
+from simulation.game_state import GameState
 from simulation.location import Location
+from simulation.world_map import Cell, WorldMap, WorldMapStaticSpawnDecorator
+from six.moves import zip, range
 from simulation.world_map import WorldMap
 
+LOGGER = logging.getLogger(__name__)
 
-def generate_map(height, width, obstacle_ratio=0.1):
-    world_map = WorldMap.generate_empty_map(height, width)
+DEFAULT_LEVEL_SETTINGS = {
+    'TARGET_NUM_CELLS_PER_AVATAR': 0,
+    'TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR': 0,
+    'SCORE_DESPAWN_CHANCE': 0,
+    'TARGET_NUM_PICKUPS_PER_AVATAR': 0,
+    'PICKUP_SPAWN_CHANCE': 0,
+    'NO_FOG_OF_WAR_DISTANCE': 1000,
+    'PARTIAL_FOG_OF_WAR_DISTANCE': 1000,
+}
 
-    # We designate one non-corner edge cell as empty, to ensure that the map can be expanded
-    always_empty_edge_x, always_empty_edge_y = get_random_edge_index(world_map)
-    always_empty_location = Location(always_empty_edge_x, always_empty_edge_y)
 
-    for cell in shuffled(world_map.all_cells()):
-        if cell.location != always_empty_location and random.random() < obstacle_ratio:
-            cell.habitable = False
-            # So long as all habitable neighbours can still reach each other,
-            # then the map cannot get bisected
-            if not _all_habitable_neighbours_can_reach_each_other(cell, world_map):
-                cell.habitable = True
+class _BaseGenerator(object):
+    __metaclass__ = abc.ABCMeta
 
-    return world_map
+    def __init__(self, settings):
+        self.settings = settings
+
+    def get_game_state(self, avatar_manager):
+        return GameState(self.get_map(), avatar_manager, self.check_complete)
+
+    def check_complete(self, game_state):
+        return False
+
+    @abc.abstractmethod
+    def get_map(self):
+        pass
+
+
+class Main(_BaseGenerator):
+    def get_map(self):
+        height = self.settings['START_HEIGHT']
+        width = self.settings['START_WIDTH']
+        grid = [[Cell(Location(x, y)) for y in range(height)] for x in range(width)]
+        # TODO: I think the following call will need self.settings
+        world_map = WorldMap.generate_empty_map(height, width)
+
+        # We designate one non-corner edge cell as empty, to ensure that the map can be expanded
+        always_empty_edge_x, always_empty_edge_y = get_random_edge_index(world_map)
+        always_empty_location = Location(always_empty_edge_x, always_empty_edge_y)
+
+        for cell in shuffled(world_map.all_cells()):
+            if cell.location != always_empty_location and random.random() < obstacle_ratio:
+                cell.habitable = False
+                # So long as all habitable neighbours can still reach each other,
+                # then the map cannot get bisected
+                if not _all_habitable_neighbours_can_reach_each_other(cell, world_map):
+                    cell.habitable = True
+
+        return world_map
 
 
 def _get_edge_coordinates(height, width):
@@ -140,3 +179,26 @@ class PriorityQueue(object):
 
     def __len__(self):
         return len(self.heap)
+
+
+class _BaseLevelGenerator(_BaseGenerator):
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self, *args, **kwargs):
+        super(_BaseLevelGenerator, self).__init__(*args, **kwargs)
+        self.settings.update(DEFAULT_LEVEL_SETTINGS)
+
+
+class Level1(_BaseLevelGenerator):
+    def get_map(self):
+        grid = [[Cell(Location(x, 0))] for x in range(5)]
+        world_map = WorldMapStaticSpawnDecorator(WorldMap(grid, self.settings), Location(0, 0))
+        world_map.get_cell(Location(4, 0)).generates_score = True
+        return world_map
+
+    def check_complete(self, game_state):
+        try:
+            main_avatar = game_state.get_main_avatar()
+        except KeyError:
+            return False
+        return main_avatar.score > 0

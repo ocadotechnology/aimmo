@@ -40,7 +40,7 @@ class TestService(TestCase):
         ]
         grid = {Location(x, y-1): MockCell(Location(x, y-1), **CELLS[x][y])
                 for y in xrange(3) for x in xrange(2)}
-        state_provider.set_world(GameState(WorldMap(grid), avatar_manager))
+        state_provider.set_world(GameState(WorldMap(grid, {}), avatar_manager))
         return service.get_world_state()
 
     def test_player_dict(self):
