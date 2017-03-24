@@ -62,6 +62,8 @@ WSGI_APPLICATION = 'example_project.wsgi.application'
 
 INSTALLED_APPS = (
     'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
     'players',
 )
 
@@ -87,6 +89,16 @@ LOGGING = {
     }
 }
 
+LOGIN_URL = '/players/accounts/login/'
+
+MIDDLEWARE_CLASSES = [
+   'django.contrib.sessions.middleware.SessionMiddleware',
+   'django.middleware.locale.LocaleMiddleware',
+   'django.middleware.common.CommonMiddleware',
+   'django.middleware.csrf.CsrfViewMiddleware',
+   'django.contrib.auth.middleware.AuthenticationMiddleware',
+   'django.contrib.messages.middleware.MessageMiddleware',
+]
 
 def get_url(game):
     if os.environ.get('AIMMO_MODE', '') == 'minikube':
