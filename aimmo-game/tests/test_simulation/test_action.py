@@ -1,15 +1,15 @@
 from __future__ import absolute_import
+
 import unittest
 
-from simulation import event
 from simulation import action
-from simulation.location import Location
+from simulation import event
+from simulation.avatar.avatar_manager import AvatarManager
 from simulation.direction import EAST
 from simulation.game_state import GameState
-from simulation.avatar.avatar_manager import AvatarManager
-
+from simulation.location import Location
 from .dummy_avatar import MoveDummy
-from .maps import InfiniteMap, EmptyMap, ScoreOnOddColumnsMap, AvatarMap, MockPickup, PickupMap
+from .maps import InfiniteMap, EmptyMap, AvatarMap
 
 ORIGIN = Location(x=0, y=0)
 EAST_OF_ORIGIN = Location(x=1, y=0)

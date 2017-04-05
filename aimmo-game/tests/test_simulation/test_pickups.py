@@ -1,9 +1,11 @@
 from __future__ import absolute_import
+
 import abc
+from unittest import TestCase
+
+from simulation import effects, pickups
 from .dummy_avatar import DummyAvatar
 from .maps import MockCell
-from simulation import effects, pickups
-from unittest import TestCase
 
 
 class _BaseCases(object):

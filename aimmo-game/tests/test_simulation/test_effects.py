@@ -1,8 +1,10 @@
 from __future__ import absolute_import
+
 import abc
-from .dummy_avatar import DummyAvatar
-from simulation import effects
 from unittest import TestCase
+
+from simulation import effects
+from .dummy_avatar import DummyAvatar
 
 
 class _BaseCases(object):

@@ -10,7 +10,6 @@ from .dummy_avatar import DummyAvatarManager
 
 
 class ConstantRng(object):
-
     def __init__(self, value):
         self.value = value
 
@@ -22,26 +21,19 @@ class ConstantRng(object):
 
 class TestHelperFunctions(unittest.TestCase):
     def test_get_random_edge_index(self):
-        height, width = 3, 4
-        # First row
+        map = WorldMap.generate_empty_map(3, 4)
         self.assertEqual(
-            (1, 0), get_random_edge_index(height, width, rng=ConstantRng(0)))
+            (0, -1), get_random_edge_index(map, rng=ConstantRng(0)))
         self.assertEqual(
-            (2, 0), get_random_edge_index(height, width, rng=ConstantRng(1)))
-
-        # Last row
+            (1, -1), get_random_edge_index(map, rng=ConstantRng(1)))
         self.assertEqual(
-            (1, 2), get_random_edge_index(height, width, rng=ConstantRng(2)))
+            (0, 1), get_random_edge_index(map, rng=ConstantRng(2)))
         self.assertEqual(
-            (2, 2), get_random_edge_index(height, width, rng=ConstantRng(3)))
-
-        # First column
+            (1, 1), get_random_edge_index(map, rng=ConstantRng(3)))
         self.assertEqual(
-            (0, 1), get_random_edge_index(height, width, rng=ConstantRng(4)))
-
-        # Last column
+            (-1, 0), get_random_edge_index(map, rng=ConstantRng(4)))
         self.assertEqual(
-            (3, 1), get_random_edge_index(height, width, rng=ConstantRng(5)))
+            (2, 0), get_random_edge_index(map, rng=ConstantRng(5)))
 
         # Verify no out of bounds
         with self.assertRaisesRegexp(ValueError, 'Beyond range'):
@@ -156,4 +148,4 @@ class TestLevel1Generator(_BaseGeneratorTestCase):
         game_state = self.get_game_state()
         for i in xrange(5):
             game_state.add_avatar(i, '')
-            self.assertEqual(game_state.avatar_manager.avatars_by_id[i].location, Location(0, 0))
+            self.assertEqual(game_state.avatar_manager.avatars_by_id[i].location, Location(-2, 0))

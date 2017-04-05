@@ -190,9 +190,10 @@ class _BaseLevelGenerator(_BaseGenerator):
 
 class Level1(_BaseLevelGenerator):
     def get_map(self):
-        grid = [[Cell(Location(x, 0))] for x in range(5)]
-        world_map = WorldMapStaticSpawnDecorator(WorldMap(grid, self.settings), Location(0, 0))
-        world_map.get_cell(Location(4, 0)).generates_score = True
+        # TODO: pass in self.settings
+        world_map = WorldMap.generate_empty_map(1, 5)
+        world_map = WorldMapStaticSpawnDecorator(world_map, Location(-2, 0))
+        world_map.get_cell(Location(2, 0)).generates_score = True
         return world_map
 
     def check_complete(self, game_state):
