@@ -7,8 +7,8 @@ from django.views.generic import TemplateView
 
 import os
 
-from models import Player
 from . import app_settings
+from models import Avatar
 
 
 LOGGER = logging.getLogger(__name__)
@@ -29,22 +29,23 @@ def _create_response(status, message):
 @login_required
 def code(request):
     try:
-        player = request.user.player
-    except Player.DoesNotExist:
+        avatar = request.user.avatar_set.get(game_id=1)
+    except Avatar.DoesNotExist:
         initial_code_file_name = os.path.join(
             os.path.abspath(os.path.dirname(__file__)),
             'avatar_examples/dumb_avatar.py',
         )
         with open(initial_code_file_name) as initial_code_file:
             initial_code = initial_code_file.read()
-        player = Player.objects.create(user=request.user, code=initial_code)
+        avatar = Avatar.objects.create(owner=request.user, code=initial_code,
+                                       game_id=1)
     if request.method == 'POST':
-        player.code = request.POST['code']
-        player.save()
+        avatar.code = request.POST['code']
+        avatar.save()
 
         return _post_code_success_response("Your code was saved!")
     else:
-        return HttpResponse(player.code)
+        return HttpResponse(avatar.code)
 
 
 def games(request):
@@ -53,9 +54,9 @@ def games(request):
             'parameters': [],
             'users': [
                 {
-                    'id': player.user.pk,
-                    'code': player.code,
-                } for player in Player.objects.all()
+                    'id': avatar.owner_id,
+                    'code': avatar.code,
+                } for avatar in Avatar.objects.filter(game_id=1)
             ]
         }
     }
