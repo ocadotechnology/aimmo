@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 import math
 from string import ascii_uppercase
+
 from unittest import TestCase
 
 from simulation.location import Location
@@ -104,7 +105,7 @@ class TestWorldMap(TestCase):
         self.assertGridSize(map, 1, 3)
 
     def test_generated_map(self):
-        map = WorldMap.generate_empty_map(2, 5)
+        map = WorldMap.generate_empty_map(2, 5, {})
         self.assertGridSize(map, 5, 2)
 
     def test_all_cells(self):

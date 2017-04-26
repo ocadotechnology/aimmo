@@ -1,5 +1,6 @@
 import math
 import random
+
 from logging import getLogger
 
 import map_generator
@@ -78,14 +79,17 @@ class WorldMap(object):
         return min_x, max_x, min_y, max_y
 
     @classmethod
-    def generate_empty_map(cls, height, width):
+    def generate_empty_map(cls, height, width, settings):
+        new_settings = map_generator.DEFAULT_LEVEL_SETTINGS.copy()
+        new_settings.update(settings)
+
         (min_x, max_x, min_y, max_y) = WorldMap._min_max_from_dimensions(height, width)
         grid = {}
         for x in xrange(min_x, max_x + 1):
             for y in xrange(min_y, max_y + 1):
                 location = Location(x, y)
                 grid[location] = Cell(location)
-        return cls(grid, map_generator.DEFAULT_LEVEL_SETTINGS)
+        return cls(grid, new_settings)
 
     def all_cells(self):
         return self.grid.itervalues()

@@ -21,7 +21,7 @@ class ConstantRng(object):
 
 class TestHelperFunctions(unittest.TestCase):
     def test_get_random_edge_index(self):
-        map = WorldMap.generate_empty_map(3, 4)
+        map = WorldMap.generate_empty_map(3, 4, {})
         self.assertEqual(
             (0, -1), get_random_edge_index(map, rng=ConstantRng(0)))
         self.assertEqual(
@@ -43,7 +43,7 @@ class TestHelperFunctions(unittest.TestCase):
             get_random_edge_index(map, rng=ConstantRng(6))
 
     def test_get_random_edge_index_can_give_all_possible(self):
-        map = WorldMap.generate_empty_map(3, 4)
+        map = WorldMap.generate_empty_map(3, 4, {})
         get_random_edge_index(map, rng=ConstantRng(1))
         expected = frozenset((
             (0,  1), (1, 1),
@@ -55,7 +55,7 @@ class TestHelperFunctions(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_out_of_bounds_random_edge(self):
-        map = WorldMap.generate_empty_map(3, 4)
+        map = WorldMap.generate_empty_map(3, 4, {})
         with self.assertRaisesRegexp(ValueError, 'Beyond range'):
             get_random_edge_index(map, rng=ConstantRng(-1))
 

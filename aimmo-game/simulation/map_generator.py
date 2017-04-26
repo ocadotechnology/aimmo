@@ -9,8 +9,8 @@ from six.moves import zip, range
 from simulation.direction import ALL_DIRECTIONS
 from simulation.game_state import GameState
 from simulation.location import Location
-from simulation.world_map import Cell, WorldMapStaticSpawnDecorator
 from simulation.world_map import WorldMap
+from simulation.world_map import WorldMapStaticSpawnDecorator
 
 LOGGER = logging.getLogger(__name__)
 
@@ -46,9 +46,7 @@ class Main(_BaseGenerator):
     def get_map(self):
         height = self.settings['START_HEIGHT']
         width = self.settings['START_WIDTH']
-        grid = [[Cell(Location(x, y)) for y in range(height)] for x in range(width)]
-        # TODO: I think the following call will need self.settings
-        world_map = WorldMap.generate_empty_map(height, width)
+        world_map = WorldMap.generate_empty_map(height, width, self.settings)
 
         # We designate one non-corner edge cell as empty, to ensure that the map can be expanded
         always_empty_edge_x, always_empty_edge_y = get_random_edge_index(world_map)
@@ -190,8 +188,7 @@ class _BaseLevelGenerator(_BaseGenerator):
 
 class Level1(_BaseLevelGenerator):
     def get_map(self):
-        # TODO: pass in self.settings
-        world_map = WorldMap.generate_empty_map(1, 5)
+        world_map = WorldMap.generate_empty_map(1, 5, self.settings)
         world_map = WorldMapStaticSpawnDecorator(world_map, Location(-2, 0))
         world_map.get_cell(Location(2, 0)).generates_score = True
         return world_map
