@@ -35,8 +35,9 @@
 # program; modified versions of the program must be marked as such and not
 # identified as the original program.
 """Django settings for example_project project."""
-import os
 import subprocess
+
+import os
 
 DEBUG = True
 
@@ -91,7 +92,6 @@ LOGGING = {
 }
 
 LOGIN_URL = '/players/accounts/login/'
-
 MIDDLEWARE_CLASSES = [
    'django.contrib.sessions.middleware.SessionMiddleware',
    'django.middleware.locale.LocaleMiddleware',
