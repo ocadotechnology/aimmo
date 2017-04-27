@@ -11,9 +11,9 @@ urlpatterns = [
     url(r'^accounts/login/$', auth_views.login),
 
     url(r'^program/(?P<id>[0-9]+)/$', login_required(views.ProgramView.as_view()), name='aimmo/program'),
-    url(r'^program_level/(?P<num>[0-9]+)/$', views.program_level, name='aimmo/program_level'),
-    url(r'^watch/(?P<id>[0-9]+)/$', views.watch_game, name='aimmo/watch'),
-    url(r'^watch_level/(?P<num>[0-9]+)/$', views.watch_level, name='aimmo/watch_level'),
+    url(r'^program_level/(?P<num>[0-9]+)/$', login_required(views.program_level), name='aimmo/program_level'),
+    url(r'^watch/(?P<id>[0-9]+)/$', login_required(views.watch_game), name='aimmo/watch'),
+    url(r'^watch_level/(?P<num>[0-9]+)/$', login_required(views.watch_level), name='aimmo/watch_level'),
     url(r'^statistics/$', TemplateView.as_view(template_name='players/statistics.html'), name='aimmo/statistics'),
 
     url(r'^api/code/(?P<id>[0-9]+)/$', views.code, name='aimmo/code'),
