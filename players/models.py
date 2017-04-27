@@ -17,7 +17,10 @@ def generate_auth_token():
 
 class GameQuerySet(models.QuerySet):
     def for_user(self, user):
-        return self.filter(models.Q(public=True) | models.Q(can_play=user))
+        if user.is_authenticated():
+            return self.filter(models.Q(public=True) | models.Q(can_play=user))
+        else:
+            return self.filter(public=True)
 
     def exclude_inactive(self):
         return self.filter(completed=False)
