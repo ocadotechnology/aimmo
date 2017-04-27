@@ -92,6 +92,9 @@ LOGGING = {
 }
 
 LOGIN_URL = '/players/accounts/login/'
+
+LOGIN_REDIRECT_URL = '/players/'
+
 MIDDLEWARE_CLASSES = [
    'django.contrib.sessions.middleware.SessionMiddleware',
    'django.middleware.locale.LocaleMiddleware',
