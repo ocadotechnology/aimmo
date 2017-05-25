@@ -1,0 +1,13 @@
+{% extends 'players/base.html' %}
+{% load bootstrap_tags %}
+
+{% block content %}
+<h1>Add a new game</h1>
+<form action="" method="post">
+    {% csrf_token %}
+    <div class="form-actions">
+        {{ form|as_bootstrap }}
+        <input type="submit" value="Submit" class="btn btn-primary">
+    </div>
+</form>
+{% endblock %}

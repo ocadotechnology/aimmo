@@ -1,24 +1,14 @@
 import math
 import random
+
 from logging import getLogger
 
+import map_generator
 from pickups import ALL_PICKUPS
 from simulation.action import MoveAction
 from simulation.location import Location
 
 LOGGER = getLogger(__name__)
-
-# TODO: extract to settings
-TARGET_NUM_CELLS_PER_AVATAR = 16
-
-TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR = 0.5
-SCORE_DESPAWN_CHANCE = 0.02
-
-TARGET_NUM_PICKUPS_PER_AVATAR = 0.5
-PICKUP_SPAWN_CHANCE = 0.02
-
-NO_FOG_OF_WAR_DISTANCE = 2
-PARTIAL_FOG_OF_WAR_DISTANCE = 3
 
 
 class Cell(object):
@@ -76,8 +66,9 @@ class WorldMap(object):
     The non-player world state.
     """
 
-    def __init__(self, grid):
-        self._grid = grid
+    def __init__(self, grid, settings):
+        self.grid = grid
+        self.settings = settings
 
     @classmethod
     def _min_max_from_dimensions(cls, height, width):
@@ -85,20 +76,23 @@ class WorldMap(object):
         min_x = -(width - max_x - 1)
         max_y = int(math.floor(height / 2))
         min_y = -(height - max_y - 1)
-        return (min_x, max_x, min_y, max_y)
+        return min_x, max_x, min_y, max_y
 
     @classmethod
-    def generate_empty_map(cls, height, width):
+    def generate_empty_map(cls, height, width, settings):
+        new_settings = map_generator.DEFAULT_LEVEL_SETTINGS.copy()
+        new_settings.update(settings)
+
         (min_x, max_x, min_y, max_y) = WorldMap._min_max_from_dimensions(height, width)
         grid = {}
         for x in xrange(min_x, max_x + 1):
             for y in xrange(min_y, max_y + 1):
                 location = Location(x, y)
                 grid[location] = Cell(location)
-        return cls(grid)
+        return cls(grid, new_settings)
 
     def all_cells(self):
-        return self._grid.itervalues()
+        return self.grid.itervalues()
 
     def score_cells(self):
         return (c for c in self.all_cells() if c.generates_score)
@@ -115,14 +109,14 @@ class WorldMap(object):
 
     def is_on_map(self, location):
         try:
-            self._grid[location]
+            self.grid[location]
         except KeyError:
             return False
         return True
 
     def get_cell(self, location):
         try:
-            return self._grid[location]
+            return self.grid[location]
         except KeyError:
             # For backwards-compatibility, this throws ValueError
             raise ValueError('Location %s is not on the map' % location)
@@ -138,16 +132,16 @@ class WorldMap(object):
             return
 
     def max_y(self):
-        return max(self._grid.keys(), key=lambda c: c.y).y
+        return max(self.grid.keys(), key=lambda c: c.y).y
 
     def min_y(self):
-        return min(self._grid.keys(), key=lambda c: c.y).y
+        return min(self.grid.keys(), key=lambda c: c.y).y
 
     def max_x(self):
-        return max(self._grid.keys(), key=lambda c: c.x).x
+        return max(self.grid.keys(), key=lambda c: c.x).x
 
     def min_x(self):
-        return min(self._grid.keys(), key=lambda c: c.x).x
+        return min(self.grid.keys(), key=lambda c: c.x).x
 
     @property
     def num_rows(self):
@@ -190,7 +184,7 @@ class WorldMap(object):
     def _expand(self, num_avatars):
         LOGGER.info('Expanding map')
         start_size = self.num_cells
-        target_num_cells = int(math.ceil(num_avatars * TARGET_NUM_CELLS_PER_AVATAR))
+        target_num_cells = int(math.ceil(num_avatars * self.settings['TARGET_NUM_CELLS_PER_AVATAR']))
         num_cells_to_add = target_num_cells - self.num_cells
         if num_cells_to_add > 0:
             self._add_outer_layer()
@@ -204,20 +198,20 @@ class WorldMap(object):
 
     def _add_vertical_layer(self, x):
         for y in xrange(self.min_y(), self.max_y() + 1):
-            self._grid[Location(x, y)] = Cell(Location(x, y))
+            self.grid[Location(x, y)] = Cell(Location(x, y))
 
     def _add_horizontal_layer(self, y):
         for x in xrange(self.min_x(), self.max_x() + 1):
-            self._grid[Location(x, y)] = Cell(Location(x, y))
+            self.grid[Location(x, y)] = Cell(Location(x, y))
 
     def _reset_score_locations(self, num_avatars):
         for cell in self.score_cells():
-            if random.random() < SCORE_DESPAWN_CHANCE:
+            if random.random() < self.settings['SCORE_DESPAWN_CHANCE']:
                 cell.generates_score = False
 
         new_num_score_locations = len(list(self.score_cells()))
         target_num_score_locations = int(math.ceil(
-            num_avatars * TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR
+            num_avatars * self.settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR']
         ))
         num_score_locations_to_add = target_num_score_locations - new_num_score_locations
         locations = self._get_random_spawn_locations(num_score_locations_to_add)
@@ -225,12 +219,12 @@ class WorldMap(object):
             cell.generates_score = True
 
     def _add_pickups(self, num_avatars):
-        target_num_pickups = int(math.ceil(num_avatars * TARGET_NUM_PICKUPS_PER_AVATAR))
+        target_num_pickups = int(math.ceil(num_avatars * self.settings['TARGET_NUM_PICKUPS_PER_AVATAR']))
         LOGGER.debug('Aiming for %s new pickups', target_num_pickups)
         max_num_pickups_to_add = target_num_pickups - len(list(self.pickup_cells()))
         locations = self._get_random_spawn_locations(max_num_pickups_to_add)
         for cell in locations:
-            if random.random() < PICKUP_SPAWN_CHANCE:
+            if random.random() < self.settings['PICKUP_SPAWN_CHANCE']:
                 LOGGER.info('Adding new pickup at %s', cell)
                 cell.pickup = random.choice(ALL_PICKUPS)(cell)
 
@@ -279,15 +273,20 @@ class WorldMap(object):
         return None
 
     def get_no_fog_distance(self):
-        return NO_FOG_OF_WAR_DISTANCE
+        return self.settings['NO_FOG_OF_WAR_DISTANCE']
 
     def get_partial_fog_distance(self):
-        return PARTIAL_FOG_OF_WAR_DISTANCE
+        return self.settings['PARTIAL_FOG_OF_WAR_DISTANCE']
 
     def __repr__(self):
-        return repr(self._grid)
+        return repr(self.grid)
 
     def __iter__(self):
         return ((self.get_cell(Location(x, y))
                 for y in xrange(self.min_y(), self.max_y() + 1))
                 for x in xrange(self.min_x(), self.max_x() + 1))
+
+
+def WorldMapStaticSpawnDecorator(world_map, spawn_location):
+    world_map.get_random_spawn_location = lambda: spawn_location
+    return world_map

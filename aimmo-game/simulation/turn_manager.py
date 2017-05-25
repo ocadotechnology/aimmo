@@ -1,6 +1,6 @@
 import logging
 import time
-from threading import Lock
+from threading import RLock
 from threading import Thread
 
 from simulation.action import PRIORITIES
@@ -17,7 +17,7 @@ class GameStateProvider:
 
     def __init__(self):
         self._game_state = None
-        self._lock = Lock()
+        self._lock = RLock()
 
     def __enter__(self):
         self._lock.acquire()
@@ -41,9 +41,10 @@ class TurnManager(Thread):
     """
     daemon = True
 
-    def __init__(self, game_state, end_turn_callback):
+    def __init__(self, game_state, end_turn_callback, completion_url):
         state_provider.set_world(game_state)
         self.end_turn_callback = end_turn_callback
+        self._completion_url = completion_url
         super(TurnManager, self).__init__()
 
     def run_turn(self):
@@ -60,6 +61,14 @@ class TurnManager(Thread):
             with state_provider as game_state:
                 avatar.action.register(game_state.world_map)
 
+    def _update_environment(self, game_state):
+        num_avatars = len(game_state.avatar_manager.active_avatars)
+        game_state.world_map.reconstruct_interactive_state(num_avatars)
+
+    def _mark_complete(self):
+        from service import get_world_state
+        requests.post(self._completion_url, json=get_world_state())
+
     def run(self):
         while True:
             try:
@@ -71,6 +80,10 @@ class TurnManager(Thread):
                 self.end_turn_callback()
             except Exception:
                 LOGGER.exception('Error while running turn')
+
+            if game_state.is_complete():
+                LOGGER.info('Game complete')
+                self._mark_complete()
             time.sleep(0.5)
 
 

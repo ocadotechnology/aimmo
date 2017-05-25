@@ -65,6 +65,10 @@ class _WorkerManagerData(object):
                 self._remove_avatar(u)
             return unknown_user_ids
 
+    def set_main_avatar(self, avatar_id):
+        with self._lock:
+            self._game_state.main_avatar_id = avatar_id
+
 
 class WorkerManager(threading.Thread):
     """
@@ -72,7 +76,7 @@ class WorkerManager(threading.Thread):
     """
     daemon = True
 
-    def __init__(self, game_state, users_url):
+    def __init__(self, game_state, users_url, port=5000):
         """
 
         :param thread_pool:
@@ -80,6 +84,7 @@ class WorkerManager(threading.Thread):
         self._data = _WorkerManagerData(game_state, {})
         self.users_url = users_url
         self._pool = GreenPool(size=3)
+        self.port = port
         super(WorkerManager, self).__init__()
 
     def get_code(self, player_id):
@@ -147,6 +152,9 @@ class WorkerManager(threading.Thread):
             LOGGER.debug("Removing users: %s" % removed_user_ids)
             self._parallel_map(self.remove_worker, removed_user_ids)
 
+            # Update main avatar
+            self._data.set_main_avatar(game_data['main']['main_avatar'])
+
     def run(self):
         while True:
             self.update()
@@ -175,8 +183,7 @@ class LocalWorkerManager(WorkerManager):
         data_dir = tempfile.mkdtemp()
 
         LOGGER.debug('Data dir is %s', data_dir)
-
-        data = requests.get("http://127.0.0.1:5000/player/{}".format(player_id)).json()
+        data = requests.get("http://127.0.0.1:{}/player/{}".format(self.port, player_id)).json()
 
         options = data['options']
         with open('{}/options.json'.format(data_dir), 'w') as options_file:
@@ -209,7 +216,7 @@ class KubernetesWorkerManager(WorkerManager):
 
     def __init__(self, *args, **kwargs):
         self.api = HTTPClient(KubeConfig.from_service_account())
-        self.game_name = os.environ['GAME_NAME']
+        self.game_id = os.environ['GAME_ID']
         self.game_url = os.environ['GAME_URL']
         super(KubernetesWorkerManager, self).__init__(*args, **kwargs)
 
@@ -220,10 +227,10 @@ class KubernetesWorkerManager(WorkerManager):
              'kind': 'Pod',
              'apiVersion': 'v1',
              'metadata': {
-                'generateName': "aimmo-%s-worker-%s-" % (self.game_name, player_id),
+                'generateName': "aimmo-%s-worker-%s-" % (self.game_id, player_id),
                 'labels': {
                     'app': 'aimmo-game-worker',
-                    'game': self.game_name,
+                    'game': self.game_id,
                     'player': str(player_id),
                     },
                 },
@@ -271,7 +278,7 @@ class KubernetesWorkerManager(WorkerManager):
     def remove_worker(self, player_id):
         for pod in Pod.objects(self.api).filter(selector={
             'app': 'aimmo-game-worker',
-            'game': self.game_name,
+            'game': self.game_id,
             'player': str(player_id),
         }):
             LOGGER.debug('Removing pod %s', pod.obj['spec'])

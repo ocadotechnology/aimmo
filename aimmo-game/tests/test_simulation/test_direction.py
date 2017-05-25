@@ -1,6 +1,8 @@
 from __future__ import absolute_import
-from simulation.direction import Direction
+
 from unittest import TestCase
+
+from simulation.direction import Direction
 
 
 class TestDirection(TestCase):

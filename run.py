@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 import logging
-import minikube
 import os
+import signal
 import subprocess
 import sys
 import time
-
 from subprocess import CalledProcessError
+
+import minikube
 
 _SCRIPT_LOCATION = os.path.abspath(os.path.dirname(__file__))
 _MANAGE_PY = os.path.join(_SCRIPT_LOCATION, 'example_project', 'manage.py')
-_SERVICE_PY = os.path.join(_SCRIPT_LOCATION, 'aimmo-game', 'service.py')
+_SERVICE_PY = os.path.join(_SCRIPT_LOCATION, 'aimmo-game-creator', 'service.py')
 
 
 if __name__ == '__main__':
@@ -41,16 +42,6 @@ def run_command_async(args):
     p = subprocess.Popen(args)
     PROCESSES.append(p)
     return p
-
-
-def cleanup_processes():
-    for p in PROCESSES:
-        try:
-            p.terminate()
-            time.sleep(0.9)
-            p.kill()
-        except:
-            pass
 
 
 def create_superuser_if_missing(username, password):
@@ -92,4 +83,6 @@ if __name__ == '__main__':
     try:
         main('--kube' in sys.argv or '-k' in sys.argv)
     finally:
-        cleanup_processes()
+        os.killpg(0, signal.SIGTERM)
+        time.sleep(0.9)
+        os.killpg(0, signal.SIGKILL)

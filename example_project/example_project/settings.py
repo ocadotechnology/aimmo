@@ -35,8 +35,9 @@
 # program; modified versions of the program must be marked as such and not
 # identified as the original program.
 """Django settings for example_project project."""
-import os
 import subprocess
+
+import os
 
 DEBUG = True
 
@@ -62,7 +63,10 @@ WSGI_APPLICATION = 'example_project.wsgi.application'
 
 INSTALLED_APPS = (
     'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
     'players',
+    'django_forms_bootstrap',
 )
 
 LOGGING = {
@@ -87,13 +91,25 @@ LOGGING = {
     }
 }
 
+LOGIN_URL = '/players/accounts/login/'
+
+LOGIN_REDIRECT_URL = '/players/'
+
+MIDDLEWARE_CLASSES = [
+   'django.contrib.sessions.middleware.SessionMiddleware',
+   'django.middleware.locale.LocaleMiddleware',
+   'django.middleware.common.CommonMiddleware',
+   'django.middleware.csrf.CsrfViewMiddleware',
+   'django.contrib.auth.middleware.AuthenticationMiddleware',
+   'django.contrib.messages.middleware.MessageMiddleware',
+]
 
 def get_url(game):
     if os.environ.get('AIMMO_MODE', '') == 'minikube':
         output = subprocess.check_output(['./test-bin/minikube', 'service', 'game-%s' % game, '--url'])
         return (output.strip(), '/game/%s/socket.io' % game)
     else:
-        return ('http://localhost:5000', '/socket.io')
+        return ('http://localhost:%d' % (6001 + int(game) * 1000), '/socket.io')
 
 AIMMO_GAME_SERVER_LOCATION_FUNCTION = get_url
 

@@ -1,4 +1,6 @@
 from django.contrib import admin
-from models import Player
 
-admin.site.register(Player)
+from models import Avatar, Game
+
+admin.site.register(Avatar)
+admin.site.register(Game)

@@ -1,13 +1,13 @@
 from __future__ import absolute_import
 
-from httmock import HTTMock
-from json import dumps
 import unittest
+from json import dumps
+
+from httmock import HTTMock
 
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.game_state import GameState
 from simulation.worker_manager import WorkerManager
-
 from .maps import InfiniteMap
 
 
@@ -42,6 +42,7 @@ class RequestMock(object):
         return {
             'main': {
                 'parameters': [],
+                'main_avatar': None,
                 'users': [{
                     'id': i,
                     'code': 'code for %s' % i,

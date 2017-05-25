@@ -32,7 +32,7 @@ def apply_fog_of_war(world_map, avatar_wrapper):
                     grid[location] = partially_fog_cell(world_map.get_cell(cell_location))
                 else:
                     grid[location] = world_map.get_cell(cell_location)
-    return WorldMap(grid)
+    return WorldMap(grid, world_map.settings)
 
 
 def should_partially_fog(no_fog_distance, partial_fog_distance, x_dist, y_dist):

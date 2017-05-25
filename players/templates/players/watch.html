@@ -1,6 +1,6 @@
 {% extends 'players/base.html' %}
 
-{% block nav-watch %}<li class="active"><a href="{% url 'aimmo/watch' %}">Watch</a></li>{% endblock %}
+{% block nav-watch-class %}active{% endblock %}
 
 {% block styles %}
 <link rel="stylesheet" type="text/css" href="/static/css/watch.css"/>
@@ -11,6 +11,8 @@
     var GAME_URL_BASE = "{{ game_url_base }}";
     var GAME_URL_PATH = "{{ game_url_path }}";
     var CURRENT_USER_PLAYER_KEY = "{{ current_user_player_key }}";
+    var ACTIVE = {{ active|lower }};
+    var STATIC_DATA = {{ static_data|safe }};
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
 <script type="text/javascript" src="/static/js/lib/raphael-min.js"></script>

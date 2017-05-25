@@ -35,12 +35,15 @@ def run_tests(compute_coverage):
 
     failed_apps = []
     for app in APPS:
+        print('Testing {}'.format(app))
+
         dir = os.path.join(BASE_DIR, app)
         if compute_coverage and app != '':
             result = subprocess.call(['coverage', 'run', '--concurrency=eventlet', '--source=.', 'setup.py', 'test'], cwd=dir)
         else:
             result = subprocess.call([sys.executable, 'setup.py', 'test'], cwd=dir)
         if result != 0:
+            print('Tests failed: '.format(result))
             failed_apps.append(app_name(app))
     if compute_coverage:
         coverage_files = [app + '.coverage' for app in APPS]
