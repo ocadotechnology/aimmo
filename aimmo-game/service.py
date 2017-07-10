@@ -23,10 +23,11 @@ socketio = SocketIO()
 
 worker_manager = None
 
-from connection.world_state import WorldState, BrowserWorldState
+from connection.world_state import WorldState, BrowserWorldState, UnityWorldState
 
 #setup the adaptors for the connection with the front-end
-world_state = BrowserWorldState(state_provider)
+# world_state = BrowserWorldStat(state_provider)
+world_state = UnityWorldState(state_provider)
 
 @socketio.on('connect')
 def world_update_on_connect():
