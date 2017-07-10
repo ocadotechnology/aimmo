@@ -116,6 +116,9 @@ def run_game(port):
 
     print("Running game...")
     settings = pickle.loads(os.environ['settings'])
+
+    # this does not work with Kubernates; locally it works
+    # as http://localhost:8000/players/api/games/ is used as default
     api_url = os.environ.get('GAME_API_URL', 'http://localhost:8000/players/api/games/')
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
     player_manager = AvatarManager()
