@@ -43,7 +43,7 @@ class UnityWorldState(WorldState):
 
         with self.game_state as game_state:
             world = game_state.world_map
-            player_data = {p.player_id: player_dict(p) for p in game_state.avatar_manager.avatars}
+            player_data = [player_dict(p) for p in game_state.avatar_manager.avatars]
 
             # TODO: need to make a more clear layout of resources: new_players, deleted_players, etc.
             pickups = get_pickups_list(world)

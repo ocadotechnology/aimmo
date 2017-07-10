@@ -6,17 +6,17 @@ using UnitySocketIO;
 using UnitySocketIO.Events;
 using SimpleJSON;
 
-public class WorldControls : MonoBehaviour 
+public class WorldControls : MonoBehaviour
 {
 	public SocketIOController io;
 
 	// Use this for initialization
-	void Start() 
+	void Start()
 	{
 		io.On("connect", (SocketIOEvent e) => {
 			Debug.Log("SocketIO Connected.");
 		});
-			
+
 		io.Connect();
 
 		io.On("world-init", (SocketIOEvent e) => {
@@ -70,7 +70,7 @@ public class WorldControls : MonoBehaviour
 		// Create spheres (avatars)
 		var playersList = map["players"];
 
-		for (int i = 0; i < playersList.Count; i++) 
+		for (int i = 0; i < playersList.Count; i++)
 		{
 			var player = playersList[i];
 
@@ -84,7 +84,7 @@ public class WorldControls : MonoBehaviour
 		}
 	}
 
-	void WorldUpdate(string rawPlayersList) 
+	void WorldUpdate(string rawPlayersList)
 	{
 		Debug.Log("Raw players list: " + rawPlayersList);
 
@@ -92,7 +92,7 @@ public class WorldControls : MonoBehaviour
 
 		for (int i = 0; i < playersList.Count; i++)
 		{
-			var player = playersList[Convert.ToString(i + 1)];
+			var player = playersList[i];
 
 			string id = "player" + Convert.ToString(player["id"].AsInt);
 			GameObject avatar = GameObject.Find(id);
@@ -101,16 +101,16 @@ public class WorldControls : MonoBehaviour
 			float y = (float) player["y"].AsInt;
 
 			// TEMPORARY!
-			if (avatar == null) 
+			if (avatar == null)
 			{
 				CreatePlayer(id, x, y);
 			}
 			avatar = GameObject.Find(id);
-				
+
 			AvatarController controller = avatar.GetComponent<AvatarController>();
 			Vector3 nextPosition = new Vector3(x, 0.5f, y);
 			controller.SetNextPosition(nextPosition);
-		
+
 			Debug.Log("Moved " + id + " to position (" + x + ", " + y + ")");
 		}
 	}
