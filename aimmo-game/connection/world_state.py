@@ -1,4 +1,4 @@
-from simulation.turn_manager import state_provider
+from collections import defaultdict
 
 class WorldState():
     """ A 'world state' is what the front-end sees. The front-end needs to
@@ -22,7 +22,6 @@ class WorldState():
 
 class BrowserWorldState(WorldState):
     def __init__(self, game_state):
-        super().__init__()
         self.game_state = game_state
 
     # Note the browser does both the update and the init the same.
