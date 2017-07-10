@@ -19,6 +19,41 @@ class WorldState():
     def get_init(self):
         pass
 
+# common method for UnityWorldState and BrowserWorldState
+def get_pickups_list(world):
+    pickups = []
+    for cell in world.pickup_cells():
+        pickup = cell.pickup.serialise()
+        pickup['location'] = (cell.location.x, cell.location.y)
+        pickups.append(pickup)
+    return pickups
+
+class UnityWorldState(WorldState):
+    def __init__(self, game_state):
+        self.game_state = game_state
+
+    def __player_dict(avatar):
+        # maybe need to add the other charachteristics?
+        return {
+            'id': avatar.player_id,
+            'x': avatar.location.x,
+            'y': avatar.location.y,
+        }
+
+    def get_update(self):
+        with self.game_state as game_state:
+            world = game_state.world_map
+            player_data = {p.player_id: player_dict(p) for p in game_state.avatar_manager.avatars}
+
+            pickups = get_pickups_list(world)
+            return  {
+                'players': player_data
+                # 'pickups': pickups # pickups not supported yet
+            }
+
+    def get_init(self):
+        return {}
+
 
 class BrowserWorldState(WorldState):
     def __init__(self, game_state):
@@ -65,11 +100,7 @@ class BrowserWorldState(WorldState):
             grid_dict = defaultdict(dict)
             for cell in world.all_cells():
                 grid_dict[cell.location.x][cell.location.y] = to_cell_type(cell)
-            pickups = []
-            for cell in world.pickup_cells():
-                pickup = cell.pickup.serialise()
-                pickup['location'] = (cell.location.x, cell.location.y)
-                pickups.append(pickup)
+            pickups = get_pickups_list(world)
             return {
                     'players': player_data,
                     'score_locations': [(cell.location.x, cell.location.y) for cell in world.score_cells()],
