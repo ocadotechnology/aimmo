@@ -48,6 +48,7 @@
   <ItemGroup>
      <Compile Include="Assets\AvatarController.cs" />
      <Compile Include="Assets\WorkerManager.cs" />
+     <Compile Include="Assets\WorldControls.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>/opt/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
