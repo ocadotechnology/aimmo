@@ -69,3 +69,11 @@ example_project/example_project/static/
 
 # Created during minikube testing
 test-bin/
+
+# Unity builds
+*.bin
+aimmo-unity/Library/*
+aimmo-unity/Temp/*
+git_key
+*.pyc
+*.swp
