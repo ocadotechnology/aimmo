@@ -31,10 +31,16 @@ world_state = UnityWorldState(state_provider)
 
 @socketio.on('connect')
 def world_update_on_connect():
-    emit(
-        'world-update',
-        world_state.get_init(),
-    )
+    if isinstance(world_state, BrowserWorldState):
+        emit(
+            'world-update',
+            world_state.get_init(),
+        )
+    elif isinstance(world_state, UnityWorldState):
+        emit(
+            'world-init',
+            world_state.get_init(),
+        )
 
 def send_world_update():
     socketio.emit(
