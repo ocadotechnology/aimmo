@@ -7,6 +7,7 @@ from django.test import RequestFactory
 from importlib import import_module
 from django.conf import settings
 from django.contrib.auth.models import User
+from players.models import Game
 from players.views import code as code_view
 
 
@@ -97,7 +98,10 @@ class Command(BaseCommand):
         request.session = self.engine.SessionStore(session_key)
         request.user = user
 
-        response = code_view(request)
+        test_user = User.objects.get_by_natural_key("admin")
+        game = Game.objects.get(levelattempt__user=test_user)
+        response = code_view(request, 2)
+
         if response.status_code == 200:
             self.stdout.write('Posted code for player %s' % user)
         else:

@@ -1,6 +1,7 @@
 import cPickle as pickle
 import logging
 import os
+import sys
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
@@ -32,10 +33,10 @@ def _create_response(status, message):
 
 
 @login_required
-def code(request, id):
+def code(request, id=2):
     game = get_object_or_404(Game, id=id)
-    if not game.can_user_play(request.user):
-        raise Http404
+    #if not game.can_user_play(request.user):
+      #  raise Http404
     try:
         avatar = game.avatar_set.get(owner=request.user)
     except Avatar.DoesNotExist:
@@ -112,6 +113,7 @@ def program_level(request, num):
         game = Game.objects.get(levelattempt__user=request.user, levelattempt__level_number=num)
     except Game.DoesNotExist:
         LOGGER.debug('Adding level')
+        sys.stdout.write('-------------- Added level : %s', str(num))
         game = _add_and_return_level(num, request.user)
     LOGGER.debug('Programming game with id %s', game.id)
     return render(request, 'players/program.html', {'game_id': game.id})

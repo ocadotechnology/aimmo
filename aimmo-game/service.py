@@ -1,13 +1,14 @@
 #!/usr/bin/env python
+import eventlet
+
+eventlet.sleep()
+eventlet.monkey_patch()
+
 import cPickle as pickle
 import logging
 import os
 import sys
 from collections import defaultdict
-
-import eventlet
-
-eventlet.monkey_patch()
 
 import flask
 from flask_socketio import SocketIO, emit
