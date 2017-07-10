@@ -20,11 +20,13 @@ public class WorldControls : MonoBehaviour
 		io.Connect();
 
 		io.On("world-init", (SocketIOEvent e) => {
-			WorldInit(JSON.Parse(e.data));
+			Debug.Log("Initalising world...");
+			WorldInit(e.data);
 		});
 
 		io.On("world-update", (SocketIOEvent e) => {
-			WorldUpdate(JSON.Parse(e.data));
+			Debug.Log("Update!");
+			WorldUpdate(e.data);
 		});
 
 	}
@@ -84,11 +86,13 @@ public class WorldControls : MonoBehaviour
 
 	void WorldUpdate(string rawPlayersList) 
 	{
-		var playersList = JSON.Parse(rawPlayersList);
+		Debug.Log("Raw players list: " + rawPlayersList);
+
+		var playersList = JSON.Parse(rawPlayersList)["players"];
 
 		for (int i = 0; i < playersList.Count; i++)
 		{
-			var player = playersList[i];
+			var player = playersList[Convert.ToString(i + 1)];
 
 			string id = "player" + Convert.ToString(player["id"].AsInt);
 			GameObject avatar = GameObject.Find(id);
@@ -96,10 +100,17 @@ public class WorldControls : MonoBehaviour
 			float x = (float) player["x"].AsInt;
 			float y = (float) player["y"].AsInt;
 
+			// TEMPORARY!
+			if (avatar == null) 
+			{
+				CreatePlayer(id, x, y);
+			}
+			avatar = GameObject.Find(id);
+				
 			AvatarController controller = avatar.GetComponent<AvatarController>();
 			Vector3 nextPosition = new Vector3(x, 0.5f, y);
 			controller.SetNextPosition(nextPosition);
-
+		
 			Debug.Log("Moved " + id + " to position (" + x + ", " + y + ")");
 		}
 	}
