@@ -28,9 +28,9 @@ public class WorldControls : MonoBehaviour
 			Debug.Log("Update!");
 			WorldUpdate(e.data);
 		});
-
 	}
 
+	// Handle initial request and build the map.
 	void WorldInit(string rawMap)
 	{
 		var map = JSON.Parse(rawMap);
@@ -84,6 +84,7 @@ public class WorldControls : MonoBehaviour
 		}
 	}
 
+	// 
 	void WorldUpdate(string rawPlayersList)
 	{
 		Debug.Log("Raw players list: " + rawPlayersList);
@@ -99,13 +100,6 @@ public class WorldControls : MonoBehaviour
 
 			float x = (float) player["x"].AsInt;
 			float y = (float) player["y"].AsInt;
-
-			// TEMPORARY!
-			if (avatar == null)
-			{
-				CreatePlayer(id, x, y);
-			}
-			avatar = GameObject.Find(id);
 
 			AvatarController controller = avatar.GetComponent<AvatarController>();
 			Vector3 nextPosition = new Vector3(x, 0.5f, y);
