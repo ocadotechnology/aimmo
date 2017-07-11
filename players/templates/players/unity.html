@@ -39,23 +39,34 @@ var Module = {
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
-  $(document).ready(function() {
+  setTimeout(function() {
     var GAME_URL_BASE = "{{ game_url_base }}";
     // The resource path is assumed from Unity.
     // TODO: check if better to do the connection from JS or from Unity through JS
 
     // TODO: Make it work globally...
     var proc = GAME_URL_BASE.split(":");
-    var host =  proc[0] + ":" + proc[1];
+    var host =  proc[1];
     var port = proc[2];
 
     console.log("Host: " + host);
     console.log("Port: " + port);
 
-    var unity = GetUnity();
-    unity.SendMessage("WorldControl", "SetGameURL", host);
-    unity.SendMessage("WorldControl", "SetGamePort", port);
-    unity.SendMessage("WorldControl", "EstablishConnection");
-  });
+    SendMessage("World Manager", "SetGameURL", host);
+    SendMessage("World Manager", "SetGamePort", parseInt(port));
+    SendMessage("World Manager", "EstablishConnection");
+  }, 30000);
+
+//   $rootScope.fbEnsureInit = function(callback) {
+//       if (!window.fbApiInit) {
+//           setTimeout(function() {
+//               $rootScope.fbEnsureInit(callback);
+//           }, 50);
+//       } else {
+//           if (callback) {
+//               callback();
+//           }
+//       }
+// };
 </script>
 {% endblock %}

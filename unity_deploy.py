@@ -20,15 +20,18 @@ def check_path(expected_path, expected_file):
 if __name__ == '__main__':
     print "Moving the built project to the static folder."
 
+    target_folder = "players/static/unity"
+    print "Cleaning old build"
+    run_linux("rm -rf " + target_folder)
+
     expected_path = "aimmo-unity/Build"
     check_path(expected_path, "index.html")
 
-    unity_folder = "players/static/unity"
     print "Copying the build to the static resources folder:"
-    run_linux("cp -r " + expected_path + " " + unity_folder)
-    check_path(unity_folder, "index.html")
+    run_linux("cp -r " + expected_path + " " + target_folder)
+    check_path(target_folder, "index.html")
 
     dependencies_folder = "aimmo-unity/Dependencies"
     print "Copying the Dependencies folder: " + dependencies_folder
-    run_linux("cp -r " + dependencies_folder + " " + unity_folder)
-    check_path(unity_folder + "/Dependencies", "socket.io.js")
+    run_linux("cp -r " + dependencies_folder + " " + target_folder)
+    check_path(target_folder + "/Dependencies", "socket.io.js")

@@ -75,7 +75,7 @@ test-bin/
 aimmo-unity/Library/*
 aimmo-unity/Temp/*
 aimmo-unity/Build/*
-players/static/unity/*
+# players/static/unity/*
 git_key
 *.pyc
 *.swp

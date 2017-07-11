@@ -11,13 +11,24 @@ public class WorldControls : MonoBehaviour
 	public SocketIOController io;
 
 	// Socket setup.
-	void SetGameURL(string url) { io.settings.url = url; }
-	void SetGamePort(int port) { io.settings.port = port; }
-
-	// The backend calls this function to open a socket connection. 
-	// Once this happens, the game starts.
-	void EstablishConnection()
+	public void SetGameURL(string url)
 	{
+		Debug.Log("Game URL set:" + url);
+		io.settings.url = url;
+	}
+
+	public void SetGamePort(int port)
+	{
+		Debug.Log("Game port set:" + port);
+		io.settings.port = port;
+	}
+
+	// The backend calls this function to open a socket connection.
+	// Once this happens, the game starts.
+	public void EstablishConnection()
+	{
+		Debug.Log("Starting establish connection.");
+
 		io.On("connect", (SocketIOEvent e) => {
 			Debug.Log("SocketIO Connected.");
 		});
@@ -89,7 +100,7 @@ public class WorldControls : MonoBehaviour
 		}
 	}
 
-	// 
+	//
 	void WorldUpdate(string rawPlayersList)
 	{
 		Debug.Log("Raw players list: " + rawPlayersList);
@@ -129,7 +140,7 @@ public class WorldControls : MonoBehaviour
 		avatar.GetComponent<Renderer>().material.color = UnityEngine.Random.ColorHSV();
 
 		// Add score text.
-		//GameObject text = 
+		//GameObject text =
 
 		Debug.Log("Created " + id + " at position (" + x + ", " + y + ")");
 	}
