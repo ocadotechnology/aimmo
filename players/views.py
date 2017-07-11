@@ -135,6 +135,10 @@ def watch_game(request, id):
         raise Http404
     return _render_game(request, game)
 
+def watch_unity(request, id):
+    game = get_object_or_404(Game, id=id)
+    # TODO: Change the ports as necessary
+    return render(request, 'players/unity.html')
 
 def watch_level(request, num):
     try:
