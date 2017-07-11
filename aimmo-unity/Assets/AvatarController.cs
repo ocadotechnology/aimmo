@@ -49,7 +49,7 @@ public class AvatarController : MonoBehaviour
 				Vector3 direction = nextPosition - currPosition;
 
 				// Calculate the rotation. Useful when we have a 3D model of a character.
-				if (direction.x > 0.0f) 
+				/*if (direction.x > 0.0f) 
 				{
 					transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 				} 
@@ -64,7 +64,7 @@ public class AvatarController : MonoBehaviour
 				else if (direction.z < 0.0f) 
 				{
 					transform.rotation = Quaternion.Euler(0.0f, 270.0f, 0.0f);
-				}
+				}*/
 
 				startTime = Time.time;
 			}
