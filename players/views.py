@@ -137,8 +137,12 @@ def watch_game(request, id):
 
 def watch_unity(request, id):
     game = get_object_or_404(Game, id=id)
-    # TODO: Change the ports as necessary
-    return render(request, 'players/unity.html')
+
+    # TODO: see how the context should look like
+    context = {
+    }
+    context['game_url_base'], context['game_url_path'] = app_settings.GAME_SERVER_LOCATION_FUNCTION(game.id)
+    return render(request, 'players/unity.html', context)
 
 def watch_level(request, num):
     try:
