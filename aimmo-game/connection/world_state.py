@@ -1,5 +1,7 @@
 from collections import defaultdict
 
+score_locations = {}
+
 class WorldState():
     """ A 'world state' is what the front-end sees. The front-end needs to
         know the players and a general world that is exposed at each moment in
@@ -34,11 +36,11 @@ class UnityWorldState(WorldState):
 
     def get_update(self):
         def player_dict(avatar):
-            # maybe need to add the other charachteristics?
             return {
                 'id': avatar.player_id,
                 'x': avatar.location.x,
                 'y': avatar.location.y,
+                'score': avatar.score
             }
 
         with self.game_state as game_state:
@@ -83,6 +85,8 @@ class UnityWorldState(WorldState):
                         'y' : cell.location.y
                     })
             curr_dict['objects'] = obstacles
+
+            curr_dict['score_locations'] = [{'x' : cell.location.x, 'y' : cell.location.y} for cell in world.score_cells()]
 
             return curr_dict
 
