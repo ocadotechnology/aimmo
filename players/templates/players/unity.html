@@ -1,0 +1,41 @@
+{% extends 'players/base.html' %}
+
+{% block nav-watch-class %}active{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="/static/unity/TemplateData/style.css">
+<link rel="shortcut icon" href="/static/unity/TemplateData/favicon.ico" />
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/unity/Dependencies/socket.io.js"></script>
+<script src="/static/unity/TemplateData/UnityProgress.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="template-wrap clear">
+  <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" height="600px" width="960px"></canvas>
+  <br>
+  <div class="logo"></div>
+  <div class="fullscreen"><img src="TemplateData/fullscreen.png" width="38" height="38" alt="Fullscreen" title="Fullscreen" onclick="SetFullscreen(1);" /></div>
+  <div class="title">aimmo-unity</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type='text/javascript'>
+var Module = {
+  TOTAL_MEMORY: 268435456,
+  errorhandler: null,			// arguments: err, url, line. This function must return 'true' if the error is handled, otherwise 'false'
+  compatibilitycheck: null,
+  backgroundColor: "#222C36",
+  splashStyle: "Light",
+  dataUrl: "/static/unity/Development/Build.data",
+  codeUrl: "/static/unity/Development/UnityEngine.js",
+  asmUrl: "/static/unity/Development/UnityEngine.asm.js",
+  memUrl: "/static/unity/Development/UnityEngine.mem",
+  dynamicLibraries: ["/static/unity/Development/Build.js"],
+};
+</script>
+<script src="/static/unity/Development/UnityLoader.js"></script>
+{% endblock %}
