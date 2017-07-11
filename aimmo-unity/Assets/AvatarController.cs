@@ -7,6 +7,8 @@ public class AvatarController : MonoBehaviour
 	private const float speed = 1.5f;
 
 	private float startTime;
+	private float currRotation;
+	private float nextRotation;
 	private Vector3 currPosition;
 	private Vector3 nextPosition;
 
@@ -24,6 +26,8 @@ public class AvatarController : MonoBehaviour
 	// Move the player to next position.
 	void Update() 
 	{
+		// TODO: Rotation transition. Maybe an animation?
+
 		float step = (Time.time - startTime) * speed;
 
 		if (step < 1.0f) 
@@ -35,9 +39,30 @@ public class AvatarController : MonoBehaviour
 			transform.position = nextPosition;
 			currPosition = nextPosition;
 
+			// Only ask for a next position if there is one. Stay still otherwise.
 			if (positionsQueue.Count > 0) 
 			{
 				nextPosition = positionsQueue.Dequeue();
+				Vector3 direction = nextPosition - currPosition;
+
+				// Calculate the rotation. Useful when we have a 3D model of a character.
+				if (direction.x > 0.0f) 
+				{
+					transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+				} 
+				else if (direction.x < 0.0f) 
+				{
+					transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+				} 
+				else if (direction.z > 0.0f) 
+				{
+					transform.rotation = Quaternion.Euler(0.0f, 90.0f, 0.0f);
+				} 
+				else if (direction.z < 0.0f) 
+				{
+					transform.rotation = Quaternion.Euler(0.0f, 270.0f, 0.0f);
+				}
+
 				startTime = Time.time;
 			}
 		}
