@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AvatarController : MonoBehaviour 
 {
-	private const float speed = 1.0f;
+	private const float speed = 1.5f;
 
 	private float startTime;
 	private Vector3 currPosition;
@@ -32,11 +32,14 @@ public class AvatarController : MonoBehaviour
 		} 
 		else 
 		{
-			// TODO: This won't work if the response time is longer than roughly 1 second.
 			transform.position = nextPosition;
 			currPosition = nextPosition;
-			nextPosition = positionsQueue.Dequeue();
-			startTime = Time.time;
+
+			if (positionsQueue.Count > 0) 
+			{
+				nextPosition = positionsQueue.Dequeue();
+				startTime = Time.time;
+			}
 		}
 	}
 

@@ -43,7 +43,7 @@ public class WorldControls : MonoBehaviour
 
 		GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
 		floor.transform.position = new Vector3(minX + maxX, 0.0f, minY + maxY);
-		floor.transform.localScale = new Vector3((maxX - minX) / 10.0f, 1.0f, (maxY - minY) / 10.0f);
+		floor.transform.localScale = new Vector3(1.5f, 1.0f, 1.5f);
 		floor.GetComponent<Renderer>().material.color = Color.gray;
 
 		// Create cubes (walls).
