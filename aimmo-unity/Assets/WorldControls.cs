@@ -28,6 +28,8 @@ public class WorldControls : MonoBehaviour
 	public void EstablishConnection()
 	{
 		Debug.Log("Starting establish connection.");
+		io.ResetSettings();
+		Debug.Log("Settings reseted.")
 
 		io.On("connect", (SocketIOEvent e) => {
 			Debug.Log("SocketIO Connected.");
