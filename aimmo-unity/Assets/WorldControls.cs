@@ -10,8 +10,13 @@ public class WorldControls : MonoBehaviour
 {
 	public SocketIOController io;
 
-	// Use this for initialization
-	void Start()
+	// Socket setup.
+	void SetGameURL(string url) { io.settings.url = url; }
+	void SetGamePort(int port) { io.settings.port = port; }
+
+	// The backend calls this function to open a socket connection. 
+	// Once this happens, the game starts.
+	void EstablishConnection()
 	{
 		io.On("connect", (SocketIOEvent e) => {
 			Debug.Log("SocketIO Connected.");
@@ -118,9 +123,13 @@ public class WorldControls : MonoBehaviour
 		avatar.transform.position = new Vector3(x, 0.5f, y);
 		avatar.name = id;
 		avatar.AddComponent<AvatarController>();
+		avatar.AddComponent<TextMesh>();
 
 		// Assign random colour.
 		avatar.GetComponent<Renderer>().material.color = UnityEngine.Random.ColorHSV();
+
+		// Add score text.
+		//GameObject text = 
 
 		Debug.Log("Created " + id + " at position (" + x + ", " + y + ")");
 	}

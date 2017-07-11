@@ -4,17 +4,20 @@ using UnityEngine;
 
 public class AvatarController : MonoBehaviour 
 {
+	// General movement variables.
 	private const float speed = 1.5f;
-
 	private float startTime;
-	private float currRotation;
-	private float nextRotation;
 	private Vector3 currPosition;
 	private Vector3 nextPosition;
 
 	// Used to avoid laggy movement.
 	private Queue<Vector3> positionsQueue;
 
+	// Player state.
+	private int health;
+	private int score;
+
+	// Initialisation.
 	void Start()
 	{
 		startTime = Time.time;
@@ -72,5 +75,11 @@ public class AvatarController : MonoBehaviour
 	public void SetNextPosition(Vector3 position)
 	{
 		positionsQueue.Enqueue(position);
+	}
+
+	// Increment score.
+	public void incrementScore()
+	{
+		score += 1;
 	}
 }
