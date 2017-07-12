@@ -33,7 +33,7 @@ def _create_response(status, message):
 
 
 @login_required
-def code(request, id=2):
+def code(request, id):
     game = get_object_or_404(Game, id=id)
     #if not game.can_user_play(request.user):
       #  raise Http404
