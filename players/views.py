@@ -118,7 +118,6 @@ def program_level(request, num):
     LOGGER.debug('Programming game with id %s', game.id)
     return render(request, 'players/program.html', {'game_id': game.id})
 
-
 def _render_game(request, game):
     context = {
         'current_user_player_key': request.user.pk,
@@ -126,23 +125,15 @@ def _render_game(request, game):
         'static_data': game.static_data,
     }
     context['game_url_base'], context['game_url_path'] = app_settings.GAME_SERVER_LOCATION_FUNCTION(game.id)
-    return render(request, 'players/watch.html', context)
-
+    # To swap between Unity and web just change this
+    # return render(request, 'players/watch.html', context)
+    return render(request, 'players/unity.html', context)
 
 def watch_game(request, id):
     game = get_object_or_404(Game, id=id)
     if not game.can_user_play(request.user):
         raise Http404
     return _render_game(request, game)
-
-def watch_unity(request, id):
-    game = get_object_or_404(Game, id=id)
-
-    # TODO: see how the context should look like
-    context = {
-    }
-    context['game_url_base'], context['game_url_path'] = app_settings.GAME_SERVER_LOCATION_FUNCTION(game.id)
-    return render(request, 'players/unity.html', context)
 
 def watch_level(request, num):
     try:

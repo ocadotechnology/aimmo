@@ -3,23 +3,14 @@
 {% block nav-watch-class %}active{% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="/static/unity/TemplateData/style.css">
+<link rel="stylesheet" href="/static/unity/TemplateData/style.css" />
 <link rel="shortcut icon" href="/static/unity/TemplateData/favicon.ico" />
 {% endblock %}
 
 {% block scripts %}
+
 <script src="/static/unity/Dependencies/socket.io.js"></script>
 <script src="/static/unity/TemplateData/UnityProgress.js"></script>
-{% endblock %}
-
-{% block content %}
-<div class="template-wrap clear">
-  <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" height="600px" width="960px"></canvas>
-  <br>
-  <div class="logo"></div>
-  <div class="fullscreen"><img src="TemplateData/fullscreen.png" width="38" height="38" alt="Fullscreen" title="Fullscreen" onclick="SetFullscreen(1);" /></div>
-  <div class="title">aimmo-unity</div>
-</div>
 
 <script type="text/javascript">
 var GAME_URL_BASE = "{{ game_url_base }}";
@@ -58,4 +49,14 @@ var Module = {
 </script>
 <script src="/static/unity/Development/UnityLoader.js"></script>
 
+{% endblock %}
+
+{% block content %}
+<div class="template-wrap clear">
+  <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" height="600px" width="960px"></canvas>
+  <br>
+  <div class="logo"></div>
+  <div class="fullscreen"><img src="/static/unity/TemplateData/fullscreen.png" width="38" height="38" alt="Fullscreen" title="Fullscreen" onclick="SetFullscreen(1);" /></div>
+  <div class="title">aimmo-unity</div>
+</div>
 {% endblock %}
