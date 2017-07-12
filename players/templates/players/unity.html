@@ -21,6 +21,26 @@
   <div class="title">aimmo-unity</div>
 </div>
 
+<script type="text/javascript">
+var GAME_URL_BASE = "{{ game_url_base }}";
+// The resource path is assumed from Unity.
+// TODO: check if better to do the connection from JS or from Unity through JS
+
+// TODO: Make it work globally!!
+var proc = GAME_URL_BASE.split(":");
+var host =  "127.0.0.1";
+var port = proc[2];
+
+console.log("Host: " + host);
+console.log("Port: " + port);
+
+function sendAll() {
+  SendMessage("World Manager", "SetGameURL", host);
+  SendMessage("World Manager", "SetGamePort", parseInt(port));
+  SendMessage("World Manager", "EstablishConnection");
+}
+</script>
+
 <script type='text/javascript'>
 var Module = {
   TOTAL_MEMORY: 268435456,
@@ -37,36 +57,4 @@ var Module = {
 </script>
 <script src="/static/unity/Development/UnityLoader.js"></script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script>
-  setTimeout(function() {
-    var GAME_URL_BASE = "{{ game_url_base }}";
-    // The resource path is assumed from Unity.
-    // TODO: check if better to do the connection from JS or from Unity through JS
-
-    // TODO: Make it work globally!!
-    var proc = GAME_URL_BASE.split(":");
-    var host =  "127.0.0.1";
-    var port = proc[2];
-
-    console.log("Host: " + host);
-    console.log("Port: " + port);
-
-    SendMessage("World Manager", "SetGameURL", host);
-    SendMessage("World Manager", "SetGamePort", parseInt(port));
-    SendMessage("World Manager", "EstablishConnection");
-  }, 30000);
-
-//   $rootScope.fbEnsureInit = function(callback) {
-//       if (!window.fbApiInit) {
-//           setTimeout(function() {
-//               $rootScope.fbEnsureInit(callback);
-//           }, 50);
-//       } else {
-//           if (callback) {
-//               callback();
-//           }
-//       }
-// };
-</script>
 {% endblock %}
