@@ -10,6 +10,12 @@ public class WorldControls : MonoBehaviour
 {
 	public SocketIOController io;
 
+	// JUST FOR RUNNING ON UNITY!
+	/*void Start()
+	{
+		EstablishConnection ();
+	}*/
+
 	// Socket setup.
 	public void SetGameURL(string url)
 	{
@@ -29,7 +35,7 @@ public class WorldControls : MonoBehaviour
 	{
 		Debug.Log("Starting establish connection.");
 		io.ResetSettings();
-		Debug.Log("Settings reseted.")
+		Debug.Log ("Settings reseted.");
 
 		io.On("connect", (SocketIOEvent e) => {
 			Debug.Log("SocketIO Connected.");
@@ -85,6 +91,26 @@ public class WorldControls : MonoBehaviour
 			Debug.Log(id + " is at position (" + x + ", " + y + ")");
 		}
 
+		// Create fancy cubes (score locations)
+		var scoreLocations = map["score_locations"];
+
+		for (int i = 0; i < scoreLocations.Count; i++)
+		{
+			var scoreLoc = scoreLocations[i];
+
+			float x = (float) scoreLoc["x"].AsInt;
+			float y = (float) scoreLoc["y"].AsInt;
+
+			// Create new game object.
+			GameObject scoreCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			scoreCube.transform.position = new Vector3(x, 0.5f, y);
+
+			// Transparecy doesn't work.
+			Color scoreColor = Color.magenta;
+			scoreColor.a = 0.2f;
+			scoreCube.GetComponent<Renderer>().material.color = scoreColor;
+		}
+
 		// Create spheres (avatars)
 		var playersList = map["players"];
 
@@ -119,6 +145,9 @@ public class WorldControls : MonoBehaviour
 			float x = (float) player["x"].AsInt;
 			float y = (float) player["y"].AsInt;
 
+			//int score = player["score"].AsInt;
+			//avatar.GetComponentInChildren<TextMesh>().text = Convert.ToString(score);
+
 			AvatarController controller = avatar.GetComponent<AvatarController>();
 			Vector3 nextPosition = new Vector3(x, 0.5f, y);
 			controller.SetNextPosition(nextPosition);
@@ -136,13 +165,25 @@ public class WorldControls : MonoBehaviour
 		avatar.transform.position = new Vector3(x, 0.5f, y);
 		avatar.name = id;
 		avatar.AddComponent<AvatarController>();
-		avatar.AddComponent<TextMesh>();
 
 		// Assign random colour.
 		avatar.GetComponent<Renderer>().material.color = UnityEngine.Random.ColorHSV();
 
 		// Add score text.
-		//GameObject text =
+		GameObject text = new GameObject();
+		Vector3 textPosition = avatar.transform.position;
+		textPosition.y += 1.5f;
+		textPosition.z += 0.25f;
+		text.transform.position = textPosition;
+		text.transform.rotation = Quaternion.Euler(0.0f, 45.0f, 0.0f);
+		text.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+
+		text.AddComponent<TextMesh>();
+		text.AddComponent<MeshRenderer>();
+		text.GetComponent<TextMesh>().text = "0";
+		text.GetComponent<TextMesh>().fontSize = 80;
+
+		text.transform.parent = avatar.transform;
 
 		Debug.Log("Created " + id + " at position (" + x + ", " + y + ")");
 	}
