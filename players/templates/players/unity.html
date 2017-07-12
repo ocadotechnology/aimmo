@@ -34,7 +34,8 @@ var port = proc[2];
 console.log("Host: " + host);
 console.log("Port: " + port);
 
-function sendAll() {
+function SendAllConnect() {
+  console.log("Sending Messages.");
   SendMessage("World Manager", "SetGameURL", host);
   SendMessage("World Manager", "SetGamePort", parseInt(port));
   SendMessage("World Manager", "EstablishConnection");

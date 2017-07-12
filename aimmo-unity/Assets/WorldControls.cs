@@ -16,6 +16,14 @@ public class WorldControls : MonoBehaviour
 		EstablishConnection ();
 	}*/
 
+
+	public void Start()
+	{
+		// see unity.html for clarifications
+		Debug.Log("Sending message to WebGLPlayer.");
+		Application.ExternalCall("SendAllConnect");
+	}
+
 	// Socket setup.
 	public void SetGameURL(string url)
 	{
