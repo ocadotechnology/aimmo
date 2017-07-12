@@ -31,12 +31,27 @@ function SendAllConnect() {
   SendMessage("World Manager", "SetGamePort", parseInt(port));
   SendMessage("World Manager", "EstablishConnection");
 }
+
+function handler(err, url, line) {
+  // We use the socket.io.js from Dependencies/socket.io.js, so this
+  // error should not affect our code
+  if (url.endsWith("socket.io/socket.io.js")) {
+      console.log("Error handler!");
+      console.log(err);
+      console.log(url);
+      console.log(line);
+      return true;
+  }
+
+  return false;
+}
+
 </script>
 
 <script type='text/javascript'>
 var Module = {
-  TOTAL_MEMORY: 268435456,
-  errorhandler: null,			// arguments: err, url, line. This function must return 'true' if the error is handled, otherwise 'false'
+  TOTAL_MEMORY: 1000000000,
+  errorhandler: handler,			// arguments: err, url, line. This function must return 'true' if the error is handled, otherwise 'false'
   compatibilitycheck: null,
   backgroundColor: "#222C36",
   splashStyle: "Light",
