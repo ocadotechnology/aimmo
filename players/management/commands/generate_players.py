@@ -69,14 +69,17 @@ class Command(BaseCommand):
         self.request_factory = RequestFactory()
 
     def add_arguments(self, parser):
+        parser.add_argument('level', type=int,
+                            help='Level where the users are generated.')
         parser.add_argument('num-users', type=int,
-                            help='Number of users to create')
+                            help='Number of users to create.')
         parser.add_argument('avatar-code', choices=_AVATAR_CODES,
                             action=LoadCodeAction,
                             help='The code to use for the avatar.')
 
     # A command must define handle()
     def handle(self, *args, **options):
+        level = options['level']
         num_users = options['num-users']
         code = options['avatar-code']
 
@@ -85,22 +88,20 @@ class Command(BaseCommand):
             username = 'zombie-%s' % random_string
             password = '123'
             user = self.create_user(username, password)
-            self.post_code(user, code)
+            self.post_code(user, code, level)
 
     def create_user(self, username, password):
         user = User.objects.create_user(username, 'user@example.com', password)
         self.stdout.write('Created user %s with password: %s' % (username, password))
         return user
 
-    def post_code(self, user, player_code):
+    def post_code(self, user, player_code, level):
         request = self.request_factory.post('/any_path', data={'code': player_code})
         session_key = None
         request.session = self.engine.SessionStore(session_key)
         request.user = user
 
-        test_user = User.objects.get_by_natural_key("admin")
-        game = Game.objects.get(levelattempt__user=test_user)
-        response = code_view(request, 2)
+        response = code_view(request, level)
 
         if response.status_code == 200:
             self.stdout.write('Posted code for player %s' % user)
