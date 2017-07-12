@@ -39,6 +39,8 @@ import subprocess
 
 import os
 
+ALLOWED_HOSTS = ['*']
+
 DEBUG = True
 
 DATABASES = {
