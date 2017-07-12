@@ -10,6 +10,12 @@ public class WorldControls : MonoBehaviour
 {
 	public SocketIOController io;
 
+	// JUST FOR RUNNING ON UNITY!
+	/*void Start()
+	{
+		EstablishConnection ();
+	}*/
+
 	// Socket setup.
 	public void SetGameURL(string url)
 	{
@@ -29,7 +35,7 @@ public class WorldControls : MonoBehaviour
 	{
 		Debug.Log("Starting establish connection.");
 		io.ResetSettings();
-		Debug.Log("Settings reseted.")
+		Debug.Log ("Settings reseted.");
 
 		io.On("connect", (SocketIOEvent e) => {
 			Debug.Log("SocketIO Connected.");
@@ -138,6 +144,9 @@ public class WorldControls : MonoBehaviour
 
 			float x = (float) player["x"].AsInt;
 			float y = (float) player["y"].AsInt;
+
+			//int score = player["score"].AsInt;
+			//avatar.GetComponentInChildren<TextMesh>().text = Convert.ToString(score);
 
 			AvatarController controller = avatar.GetComponent<AvatarController>();
 			Vector3 nextPosition = new Vector3(x, 0.5f, y);

@@ -76,10 +76,4 @@ public class AvatarController : MonoBehaviour
 	{
 		positionsQueue.Enqueue(position);
 	}
-
-	// Increment score.
-	public void incrementScore()
-	{
-		score += 1;
-	}
 }
