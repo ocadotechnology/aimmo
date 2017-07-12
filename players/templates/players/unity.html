@@ -3,23 +3,35 @@
 {% block nav-watch-class %}active{% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="/static/unity/TemplateData/style.css">
+<link rel="stylesheet" href="/static/unity/TemplateData/style.css" />
 <link rel="shortcut icon" href="/static/unity/TemplateData/favicon.ico" />
 {% endblock %}
 
 {% block scripts %}
+
 <script src="/static/unity/Dependencies/socket.io.js"></script>
 <script src="/static/unity/TemplateData/UnityProgress.js"></script>
-{% endblock %}
 
-{% block content %}
-<div class="template-wrap clear">
-  <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" height="600px" width="960px"></canvas>
-  <br>
-  <div class="logo"></div>
-  <div class="fullscreen"><img src="TemplateData/fullscreen.png" width="38" height="38" alt="Fullscreen" title="Fullscreen" onclick="SetFullscreen(1);" /></div>
-  <div class="title">aimmo-unity</div>
-</div>
+<script type="text/javascript">
+var GAME_URL_BASE = "{{ game_url_base }}";
+// The resource path is assumed from Unity.
+// TODO: check if better to do the connection from JS or from Unity through JS
+
+// TODO: Make it work globally!!
+var proc = GAME_URL_BASE.split(":");
+var host =  "127.0.0.1";
+var port = proc[2];
+
+console.log("Host: " + host);
+console.log("Port: " + port);
+
+function SendAllConnect() {
+  console.log("Sending Messages.");
+  SendMessage("World Manager", "SetGameURL", host);
+  SendMessage("World Manager", "SetGamePort", parseInt(port));
+  SendMessage("World Manager", "EstablishConnection");
+}
+</script>
 
 <script type='text/javascript'>
 var Module = {
@@ -37,36 +49,14 @@ var Module = {
 </script>
 <script src="/static/unity/Development/UnityLoader.js"></script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script>
-  setTimeout(function() {
-    var GAME_URL_BASE = "{{ game_url_base }}";
-    // The resource path is assumed from Unity.
-    // TODO: check if better to do the connection from JS or from Unity through JS
+{% endblock %}
 
-    // TODO: Make it work globally!!
-    var proc = GAME_URL_BASE.split(":");
-    var host =  "127.0.0.1";
-    var port = proc[2];
-
-    console.log("Host: " + host);
-    console.log("Port: " + port);
-
-    SendMessage("World Manager", "SetGameURL", host);
-    SendMessage("World Manager", "SetGamePort", parseInt(port));
-    SendMessage("World Manager", "EstablishConnection");
-  }, 30000);
-
-//   $rootScope.fbEnsureInit = function(callback) {
-//       if (!window.fbApiInit) {
-//           setTimeout(function() {
-//               $rootScope.fbEnsureInit(callback);
-//           }, 50);
-//       } else {
-//           if (callback) {
-//               callback();
-//           }
-//       }
-// };
-</script>
+{% block content %}
+<div class="template-wrap clear">
+  <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" height="600px" width="960px"></canvas>
+  <br>
+  <div class="logo"></div>
+  <div class="fullscreen"><img src="/static/unity/TemplateData/fullscreen.png" width="38" height="38" alt="Fullscreen" title="Fullscreen" onclick="SetFullscreen(1);" /></div>
+  <div class="title">aimmo-unity</div>
+</div>
 {% endblock %}
