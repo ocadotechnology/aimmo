@@ -1,11 +1,16 @@
 #!/user/bin/env python
+from __future__ import print_function
+
+import docker
 import errno
+import kubernetes
 import platform
 import os
 import re
 import socket
 import stat
 import tarfile
+import yaml
 from run import run_command
 from urllib import urlretrieve
 from urllib2 import urlopen
@@ -17,9 +22,6 @@ OS = platform.system().lower()
 FILE_SUFFIX = '.exe' if OS == 'windows' else ''
 KUBECTL = os.path.join(TEST_BIN, 'kubectl%s' % FILE_SUFFIX)
 MINIKUBE = os.path.join(TEST_BIN, 'minikube%s' % FILE_SUFFIX)
-DOCKER_FOLDER = os.path.join(TEST_BIN, 'docker')
-DOCKER = os.path.join(DOCKER_FOLDER, 'docker%s' % FILE_SUFFIX)
-CREATOR_YAML = os.path.join(TEST_BIN, 'rc-aimmo-game-creator.yaml')
 
 
 def create_test_bin():
@@ -45,7 +47,18 @@ def make_exec(file):
     os.chmod(file, current_stat.st_mode | stat.S_IEXEC)
 
 
+def binary_exists(filename):
+    # Check if binary is callable on our path
+    try:
+        run_command([filename], True)
+        return True
+    except OSError:
+        return False
+
+
 def download_kubectl():
+    if binary_exists('kubectl'):
+        return
     if os.path.isfile(KUBECTL):
         return
     print('Downloading kubectl')
@@ -55,32 +68,17 @@ def download_kubectl():
 
 
 def download_minikube():
+    # First check for the user's installation. Don't break it if they have one
+    if binary_exists('minikube'):
+        return 'minikube'
+
     if os.path.isfile(MINIKUBE):
-        return
+        return MINIKUBE
     print('Downloading minikube')
     version = get_latest_github_version('kubernetes/minikube')
     url = 'https://storage.googleapis.com/minikube/releases/%s/minikube-%s-amd64%s' % (version, OS, FILE_SUFFIX)
     download_exec(url, MINIKUBE)
-
-
-def download_docker():
-    if os.path.isfile(DOCKER):
-        return
-    print('Downloading docker')
-    try:
-        if OS == 'windows':
-            url = 'https://get.docker.com/builds/Windows/x86_64/docker-latest.zip'
-            download = ZipFile(urlretrieve(url)[0])
-        else:
-            url = 'https://get.docker.com/builds/%s/x86_64/docker-latest.tgz' % platform.system()
-            download = tarfile.open(urlretrieve(url)[0])
-        download.extractall(TEST_BIN)
-    finally:
-        try:
-            download.close()
-        except Exception:
-            pass
-    make_exec(DOCKER)
+    return MINIKUBE
 
 
 def get_ip():
@@ -100,41 +98,58 @@ def get_ip():
 def create_creator_yaml():
     orig_path = os.path.join(BASE_DIR, 'aimmo-game-creator', 'rc-aimmo-game-creator.yaml')
     with open(orig_path) as orig_file:
-        orig_content = orig_file.read()
-    new_content = orig_content.replace('latest', 'test').replace('https://staging-dot-decent-digit-629.appspot.com/aimmo', 'http://%s:8000/players' % get_ip())
-    with open(CREATOR_YAML, 'w') as new_file:
-        new_file.write(new_content)
+        content = yaml.safe_load(orig_file.read().replace('latest', 'test').replace('https://staging-dot-decent-digit-629.appspot.com/aimmo', 'http://%s:8000/players' % get_ip()))
+    return content
 
 
-def start_cluster():
-    status = run_command([MINIKUBE, 'status'], True)
-    if status.startswith('Running'):
+def start_cluster(minikube):
+    status = run_command([minikube, 'status'], True)
+    if 'minikube: Running' in status:
         print('Cluster already running')
     else:
-        run_command([MINIKUBE, 'start', '--memory=2048', '--cpus=2'])
+        run_command([minikube, 'start', '--memory=2048', '--cpus=2'])
 
 
-def build_docker_images():
-    start_cluster()
+def build_docker_images(minikube):
     print('Building docker images')
-    raw_env_settings = run_command([MINIKUBE, 'docker-env', '--shell="bash"'], True)
+    raw_env_settings = run_command([minikube, 'docker-env', '--shell="bash"'], True)
     matches = re.finditer(r'^export (.+)="(.+)"$', raw_env_settings, re.MULTILINE)
-    for match in matches:
-        name = match.group(1)
-        value = match.group(2)
-        os.environ[name] = value
+    env = dict([(m.group(1), m.group(2)) for m in matches])
+
+    client = docker.from_env(
+        environment=env,
+        version='auto',
+    )
+
     dirs = ('aimmo-game', 'aimmo-game-creator', 'aimmo-game-worker')
     for dir in dirs:
         path = os.path.join(BASE_DIR, dir)
-        run_command([DOCKER, 'build', '-t', 'ocadotechnology/%s:test' % dir, path])
+        tag = 'ocadotechnology/%s:test' % dir
+        print("Building %s..." % tag)
+        status = client.build(
+            decode=True,
+            path=dir,
+            tag=tag,
+        )
+        for line in status:
+            if 'stream' in line:
+                print(line['stream'], end='')
 
 
-def restart_pods():
+def restart_pods(game_creator):
     print('Restarting pods')
-    run_command([KUBECTL, 'delete', 'rc', '--all'])
-    run_command([KUBECTL, 'delete', 'pods', '--all'])
-    run_command([KUBECTL, 'delete', 'service', '--all'])
-    run_command([KUBECTL, 'create', '-f', CREATOR_YAML])
+    kubernetes.config.load_kube_config(context='minikube')
+    v1_api = kubernetes.client.CoreV1Api()
+    for rc in v1_api.list_namespaced_replication_controller('default').items:
+        v1_api.delete_namespaced_replication_controller(body=kubernetes.client.V1DeleteOptions(), name=rc.metadata.name, namespace='default')
+    for pod in v1_api.list_namespaced_pod('default').items:
+        v1_api.delete_namespaced_pod(body=kubernetes.client.V1DeleteOptions(), name=pod.metadata.name, namespace='default')
+    for service in v1_api.list_namespaced_service('default').items:
+        v1_api.delete_namespaced_service(name=service.metadata.name, namespace='default')
+    v1_api.create_namespaced_replication_controller(
+        body=game_creator,
+        namespace='default',
+    )
 
 
 def start():
@@ -142,10 +157,10 @@ def start():
         raise ValueError('Requires 64-bit')
     create_test_bin()
     download_kubectl()
-    download_minikube()
-    download_docker()
-    create_creator_yaml()
-    start_cluster()
-    build_docker_images()
-    restart_pods()
+    minikube = download_minikube()
+    os.environ['MINIKUBE_PATH'] = minikube
+    start_cluster(minikube)
+    build_docker_images(minikube)
+    game_creator = create_creator_yaml()
+    restart_pods(game_creator)
     print('Cluster ready')
