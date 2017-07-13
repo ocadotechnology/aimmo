@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+import random
 import unittest
 
 from simulation import map_generator
@@ -65,6 +66,7 @@ class TestHelperFunctions(unittest.TestCase):
 
 class _BaseGeneratorTestCase(unittest.TestCase):
     def get_game_state(self, **kwargs):
+        random.seed(0)
         settings = {
             'START_WIDTH': 3,
             'START_HEIGHT': 4,
@@ -81,14 +83,14 @@ class TestMainGenerator(_BaseGeneratorTestCase):
     GENERATOR_CLASS = map_generator.Main
 
     def test_map_dimensions(self):
-        m = self.get_map()
-        grid = list(m.all_cells())
-        self.assertEqual(len(set(grid)), len(grid), "Repeats in list")
-        for c in grid:
-            self.assertLessEqual(c.location.x, 1)
-            self.assertLessEqual(c.location.y, 2)
-            self.assertGreaterEqual(c.location.x, -1)
-            self.assertGreaterEqual(c.location.y, -1)
+            m = self.get_map()
+            grid = list(m.all_cells())
+            self.assertEqual(len(set(grid)), len(grid), "Repeats in list")
+            for c in grid:
+                self.assertLessEqual(c.location.x, 1)
+                self.assertLessEqual(c.location.y, 2)
+                self.assertGreaterEqual(c.location.x, -1)
+                self.assertGreaterEqual(c.location.y, -1)
 
     def test_obstable_ratio(self):
         m = self.get_map(OBSTACLE_RATIO=0)
