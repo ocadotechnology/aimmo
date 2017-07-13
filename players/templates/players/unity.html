@@ -17,11 +17,14 @@ var GAME_URL_BASE = "{{ game_url_base }}";
 // The resource path is assumed from Unity.
 // TODO: check if better to do the connection from JS or from Unity through JS
 
-// TODO: Make it work globally!!
-var proc = GAME_URL_BASE.split(":");
-var host =  "127.0.0.1";
-var port = proc[2];
 
+// Send host and port to Unity.
+
+var proc = (GAME_URL_BASE.substr("http://".length)).split(":");
+var host = proc[0];
+var port = proc[1];
+
+console.log(GAME_URL_BASE);
 console.log("Host: " + host);
 console.log("Port: " + port);
 
