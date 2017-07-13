@@ -39,6 +39,8 @@ import subprocess
 
 import os
 
+ALLOWED_HOSTS = ['*']
+
 DEBUG = True
 
 DATABASES = {
@@ -106,7 +108,7 @@ MIDDLEWARE_CLASSES = [
 
 def get_url(game):
     if os.environ.get('AIMMO_MODE', '') == 'minikube':
-        output = subprocess.check_output(['./test-bin/minikube', 'service', 'game-%s' % game, '--url'])
+        output = subprocess.check_output([os.environ['MINIKUBE_PATH'], 'service', 'game-%s' % game, '--url'])
         return (output.strip(), '/game/%s/socket.io' % game)
     else:
         return ('http://localhost:%d' % (6001 + int(game) * 1000), '/socket.io')

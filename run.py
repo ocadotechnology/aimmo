@@ -5,9 +5,8 @@ import signal
 import subprocess
 import sys
 import time
+import traceback
 from subprocess import CalledProcessError
-
-import minikube
 
 _SCRIPT_LOCATION = os.path.abspath(os.path.dirname(__file__))
 _MANAGE_PY = os.path.join(_SCRIPT_LOCATION, 'example_project', 'manage.py')
@@ -63,6 +62,10 @@ def main(use_minikube):
 
     server_args = []
     if use_minikube:
+        # Import minikube here, so we can install the deps first
+        run_command(['pip', 'install', '-r', os.path.join(_SCRIPT_LOCATION, 'minikube_requirements.txt')])
+        import minikube
+
         minikube.start()
         server_args.append('0.0.0.0:8000')
         os.environ['AIMMO_MODE'] = 'minikube'
@@ -82,6 +85,9 @@ def main(use_minikube):
 if __name__ == '__main__':
     try:
         main('--kube' in sys.argv or '-k' in sys.argv)
+    except Exception as err:
+        traceback.print_exc()
+        raise
     finally:
         os.killpg(0, signal.SIGTERM)
         time.sleep(0.9)
