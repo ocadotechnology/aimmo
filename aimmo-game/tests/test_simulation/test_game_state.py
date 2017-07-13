@@ -36,7 +36,7 @@ class TestGameState(TestCase):
         game_state.remove_avatar(1)
 
         self.assertNotIn(1, manager.avatars_by_id)
-        self.assertEqual(world_map.get_cell((0, 0)).avatar, None)
+        self.assertEqual(world_map.get_cell(Location(0, 0)).avatar, None)
 
         self.assertTrue(manager.avatars_by_id[2].marked)
         self.assertTrue(world_map.get_cell(Location(1, 1)).avatar.marked)
