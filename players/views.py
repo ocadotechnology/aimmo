@@ -113,7 +113,7 @@ def program_level(request, num):
         game = Game.objects.get(levelattempt__user=request.user, levelattempt__level_number=num)
     except Game.DoesNotExist:
         LOGGER.debug('Adding level')
-        sys.stdout.write('-------------- Added level : %s', str(num))
+        sys.stdout.write('-------------- Added level : %s' % str(num))
         game = _add_and_return_level(num, request.user)
     LOGGER.debug('Programming game with id %s', game.id)
     return render(request, 'players/program.html', {'game_id': game.id})
