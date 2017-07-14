@@ -194,8 +194,10 @@ class Level1(_BaseLevelGenerator):
         return world_map
 
     def check_complete(self, game_state):
-        try:
+        # TODO: Completion still doesn't work. (Go to _mark_complete in turn_manager.py)
+        """try:
             main_avatar = game_state.get_main_avatar()
         except KeyError:
             return False
-        return main_avatar.score > 0
+        return main_avatar.score > 0"""
+        return False
