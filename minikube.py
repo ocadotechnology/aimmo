@@ -101,13 +101,17 @@ def create_creator_yaml():
         content = yaml.safe_load(orig_file.read().replace('latest', 'test').replace('https://staging-dot-decent-digit-629.appspot.com/aimmo', 'http://%s:8000/players' % get_ip()))
     return content
 
-
-def start_cluster(minikube):
+def start_cluster(minikube, driver="virtualbox", stop=False):
+    if stop:
+        try:
+            run_command([minikube, 'stop'])
+        except:
+            print('Cluster already stopped')
     status = run_command([minikube, 'status'], True)
     if 'minikube: Running' in status:
         print('Cluster already running')
     else:
-        run_command([minikube, 'start', '--memory=2048', '--cpus=2'])
+        run_command([minikube, 'start', '--vm-driver=' + driver, '--memory=2048', '--cpus=2'])
 
 
 def build_docker_images(minikube):
