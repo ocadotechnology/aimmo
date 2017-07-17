@@ -70,22 +70,23 @@ class MockServer():
     def register_runner(self, runner):
         self.runners.append(runner)
 
+    # for the moment supports only gets
     def receive(self):
         def receive_lines(csock):
-            req = csock.recv(1024)
-            lines = req.split('\n')
-            return lines
+            raw_request = csock.recv(1024)
+            lines = raw_request.split('\n')
+            return raw_request, lines[0]
 
-        get_request = receive_lines(self.csock)[0]
+        raw_request, get_request = receive_lines(self.csock)
         resource_identifier = get_request.split(' ')[1]
 
-        return resource_identifier
+        return raw_request, resource_identifier
 
     def serve(self):
-        received = self.receive()
-        print "Received request " + received
+        received, received_formatted = self.receive()
+        print "Received request " + received_formatted
 
-        ans = received
+        ans = received_formatted
         for runner in self.runners:
             ans = runner.apply(ans)
         return ans
