@@ -8,8 +8,9 @@ import os
 import subprocess
 import time
 import signal
+import requests
 
-# TODO: install test globally
+from httmock import HTTMock
 
 import sys
 # Add the ptdraft folder path to the sys.path list
@@ -57,7 +58,11 @@ class TestService(TestCase):
 
             class AssertRunner(Runner):
                 def apply(self, received):
-                    self.binder.assertRegexpMatches(received, '/players/api/games/')
+                    mocker = mockery.RequestMock(0)
+                    with HTTMock(mocker):
+                        requests.get(self.binder._SERVER_URL + received)
+                        self.binder.assertEqual(len(mocker.urls_requested), 1)
+                        self.binder.assertRegexpMatches(mocker.urls_requested[0], 'http://localhost/*')
                     return received
 
             runner = AssertRunner(self)
