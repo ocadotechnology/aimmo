@@ -35,6 +35,8 @@ import json
 ################################################################################
 
 class Runner():
+    def __init__(self, binder):
+        self.binder = binder
     def apply(self, received):
         return received
 
@@ -88,14 +90,15 @@ class MockServer():
             ans = runner.apply(ans)
         return ans
 
-    def run(self):
+    def run(self, times=1000):
         #listen for connection
-        while True:
+        while times > 0:
             self.csock, self.caddr = self.sock.accept()
             print "Connection from:" + `self.caddr`
 
             # serve the connection
             self.serve()
+            times -= 1
 
 if __name__ == "__main__":
     server = MockServer()
