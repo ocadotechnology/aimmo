@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 from server import MockServer
+from server import Runner
 from unittest import TestCase
 
 import os
@@ -29,16 +30,16 @@ def run_command_async(args):
 
 class TestService(TestCase):
     def __setup_resources(self):
-        self._SCRIPT_LOCATION = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
+        self._SCRIPT_LOCATION = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '../../'))
         self._SERVICE_PY = os.path.join(self._SCRIPT_LOCATION, 'aimmo-game-creator', 'service.py')
 
     def __setup_environment(self):
         os.environ['AIMMO_MODE'] = 'threads'
         os.environ['WORKER_MANAGER'] = 'local'
-        os.environ['GAME_API_URL'] = 'http://test/games'
+        os.environ['GAME_API_URL'] = 'http://localhost:8000/players/api/games/'
 
-        self._SERVER_URL = 'http://test/'
-        self._SERVER_PORT = '5000'
+        self._SERVER_URL = 'http://localhost:8000/'
+        self._SERVER_PORT = '8000'
 
     def setUp(self):
         self.__setup_resources()
@@ -54,20 +55,16 @@ class TestService(TestCase):
         try:
             game = run_command_async(['python', self._SERVICE_PY, self._SERVER_URL, self._SERVER_PORT])
 
-            class AssertRunner():
-                def __init__(self, binder):
-                    self.binder = binder
-
+            class AssertRunner(Runner):
                 def apply(self, received):
                     self.binder.assertRegexpMatches(received, '/players/api/games/')
                     return received
 
             runner = AssertRunner(self)
 
-            print "START"
             server = MockServer()
             server.register_runner(runner)
-            server.run()
+            server.run(1)
 
         finally:
             os.kill(game.pid, signal.SIGKILL)
