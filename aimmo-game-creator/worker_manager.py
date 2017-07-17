@@ -171,7 +171,7 @@ class KubernetesWorkerManager(WorkerManager):
         super(KubernetesWorkerManager, self).__init__(*args, **kwargs)
 
     def _create_game_rc(self, id, environment_variables):
-        environment_variables['SOCKETIO_RESOURCE'] = "game/%s/socket.io" % id
+        environment_variables['SOCKETIO_RESOURCE'] = "socket.io"
         environment_variables['GAME_ID'] = id
         environment_variables['GAME_URL'] = "http://game-%s" % id
         environment_variables['PYKUBE_KUBERNETES_SERVICE_HOST'] = 'kubernetes'

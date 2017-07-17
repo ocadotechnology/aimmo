@@ -85,9 +85,7 @@ def run_game(port):
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-
-    # We should set the resource right from the beginning or just not have it at all
-    os.environ['SOCKETIO_RESOURCE'] = 'socket.io'
+    
     socketio.init_app(app, resource=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
 
     run_game(int(sys.argv[2]))
