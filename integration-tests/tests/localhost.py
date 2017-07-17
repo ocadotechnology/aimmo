@@ -12,22 +12,49 @@ import requests
 
 from httmock import HTTMock
 
-import sys
-# Add the ptdraft folder path to the sys.path list
-sys.path.append('../../')
-
-import importlib
-mockery = importlib.import_module("aimmo-game-creator.tests.test_worker_manager")
-
-# def kill_service():
-#     os.killpg(0, signal.SIGTERM)
-#     time.sleep(1)
-#     time.sleep(1)
-#     os.killpg(0, signal.SIGKILL)
+# import sys
+# # Add the ptdraft folder path to the sys.path list
+# sys.path.append('../../')
+#
+# import importlib
+# mockery = importlib.import_module("aimmo-game-creator.tests.test_worker_manager")
 
 def run_command_async(args):
     p = subprocess.Popen(args)
     return p
+
+import cPickle as pickle
+from json import dumps
+
+DEFAULT_LEVEL_SETTINGS = {
+    'TARGET_NUM_CELLS_PER_AVATAR': 2,
+    'TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR': 0,
+    'SCORE_DESPAWN_CHANCE': 0,
+    'TARGET_NUM_PICKUPS_PER_AVATAR': 0,
+    'PICKUP_SPAWN_CHANCE': 0,
+    'NO_FOG_OF_WAR_DISTANCE': 1000,
+    'PARTIAL_FOG_OF_WAR_DISTANCE': 1000,
+    'GENERATOR': 'Level1',
+    'START_HEIGHT': 5,
+    'START_WIDTH': 1
+}
+
+class RequestMock(object):
+    def __init__(self, num_games):
+        self.value = self._generate_response(num_games)
+        self.urls_requested = []
+
+    def _generate_response(self, num_games):
+        return {
+            str(i): {
+                'name': 'Level %s' % i,
+                'settings': pickle.dumps(DEFAULT_LEVEL_SETTINGS)
+            } for i in xrange(num_games)
+        }
+
+    def __call__(self, url, request):
+        self.urls_requested.append(url.geturl())
+        return dumps(self.value)
 
 class TestService(TestCase):
     def __setup_resources(self):
@@ -42,6 +69,20 @@ class TestService(TestCase):
         self._SERVER_URL = 'http://localhost:8000/'
         self._SERVER_PORT = '8000'
 
+    def __build_test(self, runners):
+        try:
+            game = run_command_async(['python', self._SERVICE_PY, self._SERVER_URL, self._SERVER_PORT])
+            server = MockServer()
+            for runner, times in runners:
+                print "Running " + str(runner) + " " + str(times) + " times"
+                server.register_runner(runner)
+                server.run(times)
+                server.clear_runners()
+
+        finally:
+            os.system("pkill -TERM -P " + str(game.pid))
+            os.kill(game.pid, signal.SIGKILL)
+
     def setUp(self):
         self.__setup_resources()
         self.__setup_environment()
@@ -50,29 +91,33 @@ class TestService(TestCase):
         try:
             game = run_command_async(['python', self._SERVICE_PY, self._SERVER_URL, self._SERVER_PORT])
         finally:
+            os.system("pkill -TERM -P " + str(game.pid))
             os.kill(game.pid, signal.SIGKILL)
 
     def test_games_get_generated(self):
-        try:
-            game = run_command_async(['python', self._SERVICE_PY, self._SERVER_URL, self._SERVER_PORT])
+        class GameCreatorRunner(Runner):
+            def apply(self, received):
+                mocker = RequestMock(1)
+                with HTTMock(mocker):
+                    ans = requests.get(self.binder._SERVER_URL + received)
+                    self.binder.assertEqual(len(mocker.urls_requested), 1)
+                    self.binder.assertEqual("/players/api/games/" in mocker.urls_requested[0], True)
+                    return ans.text
 
-            class AssertRunner(Runner):
-                def apply(self, received):
-                    mocker = mockery.RequestMock(0)
-                    with HTTMock(mocker):
-                        requests.get(self.binder._SERVER_URL + received)
-                        self.binder.assertEqual(len(mocker.urls_requested), 1)
-                        self.binder.assertRegexpMatches(mocker.urls_requested[0], 'http://localhost/*')
-                    return received
+        class GameRunner(Runner):
+            def apply(self, received):
+                mocker = RequestMock(1)
+                with HTTMock(mocker):
+                    ans = requests.get(self.binder._SERVER_URL + received)
+                    self.binder.assertEqual(len(mocker.urls_requested), 1)
+                    self.binder.assertEqual("/players/api/games/0/" in mocker.urls_requested[0], True)
 
-            runner = AssertRunner(self)
+                    return ans.text
 
-            server = MockServer()
-            server.register_runner(runner)
-            server.run(1)
-
-        finally:
-            os.kill(game.pid, signal.SIGKILL)
+        self.__build_test([
+            (GameCreatorRunner(self), 1),
+            (GameRunner(self), 1)
+        ])
 
 from unittest import TestSuite
 from unittest import TextTestRunner
