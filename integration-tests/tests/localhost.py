@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+from server import MockServer
 from unittest import TestCase
 
 import os
@@ -52,7 +53,22 @@ class TestService(TestCase):
     def test_games_get_generated(self):
         try:
             game = run_command_async(['python', self._SERVICE_PY, self._SERVER_URL, self._SERVER_PORT])
-            mocker = mockery.RequestMock(0)
+
+            class AssertRunner():
+                def __init__(self, binder):
+                    self.binder = binder
+
+                def apply(self, received):
+                    self.binder.assertRegexpMatches(received, '/players/api/games/')
+                    return received
+
+            runner = AssertRunner(self)
+
+            print "START"
+            server = MockServer()
+            server.register_runner(runner)
+            server.run()
+
         finally:
             os.kill(game.pid, signal.SIGKILL)
 
