@@ -35,7 +35,7 @@ import json
 ################################################################################
 
 class Runner():
-    def apply(received):
+    def apply(self, received):
         return received
 
 ################################################################################
@@ -83,7 +83,7 @@ class MockServer():
         received = self.receive()
         print "Received request " + received
 
-        ans = None
+        ans = received
         for runner in self.runners:
             ans = runner.apply(ans)
         return ans
@@ -97,5 +97,6 @@ class MockServer():
             # serve the connection
             self.serve()
 
-server = MockServer()
-server.run()
+if __name__ == "__main__":
+    server = MockServer()
+    server.run()
