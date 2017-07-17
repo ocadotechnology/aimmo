@@ -66,9 +66,11 @@ class MockServer():
         self.__register_connection(host, port)
         self.runners = []
 
-    # to implement runners...
     def register_runner(self, runner):
         self.runners.append(runner)
+
+    def clear_runners(self):
+        self.runners = []
 
     # for the moment supports only gets
     def receive(self):
@@ -98,8 +100,11 @@ class MockServer():
             print "Connection from:" + `self.caddr`
 
             # serve the connection
-            self.serve()
+            str_ans = self.serve()
+            self.csock.send("HTTP/1.0 200 OK\nContent-Type: text/plain\n\n" + str_ans)
+
             times -= 1
+            self.csock.close()
 
 if __name__ == "__main__":
     server = MockServer()
