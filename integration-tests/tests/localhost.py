@@ -7,14 +7,18 @@ import subprocess
 import time
 import signal
 
-# import sys
-# sys.path.insert(0, '../aimmo-game-creator/tests')
-#
-# from test_worker_manager import RequestMock as GamesMock
+# TODO: install test globally
+
+import sys
+# Add the ptdraft folder path to the sys.path list
+sys.path.append('../../')
+
+import importlib
+mockery = importlib.import_module("aimmo-game-creator.tests.test_worker_manager")
 
 # def kill_service():
-#     time.sleep(1)
 #     os.killpg(0, signal.SIGTERM)
+#     time.sleep(1)
 #     time.sleep(1)
 #     os.killpg(0, signal.SIGKILL)
 
@@ -45,12 +49,12 @@ class TestService(TestCase):
         finally:
             os.kill(game.pid, signal.SIGKILL)
 
-    # def test_games_get_generated(self):
-    #     try:
-    #         game = run_command_async(['python', self._SERVICE_PY, self._SERVER_URL, self._SERVER_PORT])
-    #         mocker = RequestMock(0)
-    #     finally:
-    #         os.kill(game.pid, signal.SIGKILL)
+    def test_games_get_generated(self):
+        try:
+            game = run_command_async(['python', self._SERVICE_PY, self._SERVER_URL, self._SERVER_PORT])
+            mocker = mockery.RequestMock(0)
+        finally:
+            os.kill(game.pid, signal.SIGKILL)
 
 from unittest import TestSuite
 from unittest import TextTestRunner
@@ -59,7 +63,7 @@ if __name__ == "__main__":
     suite = TestSuite()
 
     suite.addTest(TestService("test_killing_creator_kills_game"))
-    # suite.addTest(TestService("test_games_get_generated"))
+    suite.addTest(TestService("test_games_get_generated"))
 
     runner = TextTestRunner()
     runner.run(suite)
