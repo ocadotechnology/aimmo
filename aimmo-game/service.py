@@ -23,24 +23,18 @@ socketio = SocketIO()
 
 worker_manager = None
 
-from connection.world_state import WorldState, BrowserWorldState, UnityWorldState
+from simulation.world.world_state import UnityWorldState
 
 #setup the adaptors for the connection with the front-end
-# world_state = BrowserWorldStat(state_provider)
 world_state = UnityWorldState(state_provider)
 
 @socketio.on('connect')
 def world_update_on_connect():
-    if isinstance(world_state, BrowserWorldState):
-        emit(
-            'world-update',
-            world_state.get_init(),
-        )
-    elif isinstance(world_state, UnityWorldState):
-        emit(
-            'world-init',
-            world_state.get_init(),
-        )
+    # TODO: This will disappear, only updates.
+    emit(
+        'world-init',
+        world_state.get_init(),
+    )
 
 def send_world_update():
     socketio.emit(

@@ -7,7 +7,7 @@ class MapFeature(Enum):
     PICKUP = 'pickup'
     OBSTACLE = 'obstacle'
 
-class WorldUpdate():
+class WorldUpdater():
     """
     The world updates class serves as a buffer between the updates generated
     in different parts of the back-end and the data emitted by the socket.
@@ -26,10 +26,13 @@ class WorldUpdate():
         self.players = defaultdict(dict)
         self.map_features = defaultdict(dict)
 
-    def world_update_dict(self):
-        return {'players' : self.players, 'map_features' : self.map_features}
+    def get_updates(self):
+        updates = {'players' : self.players, 'map_features' : self.map_features}
+        self.players.clear()
+        self.map_features.clear()
+        return updates
 
-    # Player updates
+    # Player updates.
 
     def create_player(self, player_data):
         # Player data: {id, x, y, rotation, health, score, appearance}
@@ -43,7 +46,7 @@ class WorldUpdate():
         # Player_update: {id, x, y, rotation, health, score}
         self.players["update"].append(player_update)
 
-    # Map features updates
+    # Map features updates.
 
     def create_map_feature(self, map_feature, map_feature_data):
         self.map_features[map_feature.value]["create"].append(map_feature_data)
