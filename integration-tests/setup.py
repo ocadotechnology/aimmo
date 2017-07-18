@@ -9,6 +9,11 @@ setup(
     tests_require=[
         'httmock',
     ],
-    test_suite='tests',
     zip_safe=False,
 )
+
+import os
+import subprocess
+
+p = subprocess.Popen(['python', "integration_test.py"], cwd="./tests")
+p.communicate()
