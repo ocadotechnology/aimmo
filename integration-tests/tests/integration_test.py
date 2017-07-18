@@ -12,13 +12,7 @@ import requests
 
 from httmock import HTTMock
 
-# import sys
-# # Add the ptdraft folder path to the sys.path list
-# sys.path.append('../../')
-#
-# import importlib
-# mockery = importlib.import_module("aimmo-game-creator.tests.test_worker_manager")
-
+# Note: The kubernates setup works only from the root of the directory.
 def run_command_async(args, cwd="."):
     p = subprocess.Popen(args, cwd=cwd)
     return p
@@ -39,6 +33,10 @@ DEFAULT_LEVEL_SETTINGS = {
     'START_WIDTH': 1
 }
 
+################################################################################
+
+# Request mockeries
+
 class RequestMock(object):
     def __init__(self, num_games):
         self.value = self._generate_response(num_games)
@@ -55,6 +53,31 @@ class RequestMock(object):
     def __call__(self, url, request):
         self.urls_requested.append(url.geturl())
         return dumps(self.value)
+
+################################################################################
+
+# See definition of a runner in mock_server.py
+
+class GameCreatorRunner(Runner):
+    def apply(self, received):
+        mocker = RequestMock(1)
+        with HTTMock(mocker):
+            ans = requests.get(self.binder._SERVER_URL + received)
+            self.binder.assertEqual(len(mocker.urls_requested), 1)
+            self.binder.assertEqual("/players/api/games/" in mocker.urls_requested[0], True)
+            return ans.text
+
+class GameRunner(Runner):
+    def apply(self, received):
+        mocker = RequestMock(1)
+        with HTTMock(mocker):
+            ans = requests.get(self.binder._SERVER_URL + received)
+            self.binder.assertEqual(len(mocker.urls_requested), 1)
+            self.binder.assertEqual("/players/api/games/0/" in mocker.urls_requested[0], True)
+
+            return ans.text
+
+################################################################################
 
 class TestService(TestCase):
     def __setup_resources(self):
@@ -73,7 +96,6 @@ class TestService(TestCase):
         try:
             if kubernetes:
                 # TODO: proper start-up
-                os.system("minikube stop")
                 os.system("minikube delete")
                 os.system("minikube start --vm-driver=kvm")
 
@@ -92,7 +114,6 @@ class TestService(TestCase):
             if kubernetes:
                 os.system("pkill -TERM -P " + str(game.pid))
                 os.kill(game.pid, signal.SIGKILL)
-                os.system("minikube stop")
                 os.system("minikube delete")
             else:
                 os.system("pkill -TERM -P " + str(game.pid))
@@ -111,31 +132,23 @@ class TestService(TestCase):
             os.kill(game.pid, signal.SIGKILL)
 
     def test_games_get_generated(self):
-        class GameCreatorRunner(Runner):
-            def apply(self, received):
-                mocker = RequestMock(1)
-                with HTTMock(mocker):
-                    ans = requests.get(self.binder._SERVER_URL + received)
-                    self.binder.assertEqual(len(mocker.urls_requested), 1)
-                    self.binder.assertEqual("/players/api/games/" in mocker.urls_requested[0], True)
-                    return ans.text
+        self.__build_test([
+            (GameCreatorRunner(self), 1),
+            (GameRunner(self), 1)
+        ], False)
 
-        class GameRunner(Runner):
-            def apply(self, received):
-                mocker = RequestMock(1)
-                with HTTMock(mocker):
-                    ans = requests.get(self.binder._SERVER_URL + received)
-                    self.binder.assertEqual(len(mocker.urls_requested), 1)
-                    self.binder.assertEqual("/players/api/games/0/" in mocker.urls_requested[0], True)
+    def test_games_get_generated_repeatedly(self):
+        # to ensure there are no concurrency issues, we shall run a test multiple
+        # times; TODO: see effect of local networking
+        times = 10
+        for i in xrange(times):
+            self.test_games_get_generated()
 
-                    return ans.text
-
+    def test_games_get_generated_kubernates(self):
         self.__build_test([
             (GameCreatorRunner(self), 1),
             (GameRunner(self), 1)
         ], True)
-
-
 
 from unittest import TestSuite
 from unittest import TextTestRunner
@@ -143,8 +156,13 @@ from unittest import TextTestRunner
 if __name__ == "__main__":
     suite = TestSuite()
 
-    # suite.addTest(TestService("test_killing_creator_kills_game"))
+    suite.addTest(TestService("test_killing_creator_kills_game"))
     suite.addTest(TestService("test_games_get_generated"))
+    suite.addTest(TestService("test_games_get_generated_repeatedly"))
+
+    # TODO: not yet fully supported locally; probably an environment problem
+    # as server does not communicate with the cluster
+    # suite.addTest(TestService("test_games_get_generated_kubernates"))
 
     runner = TextTestRunner()
     runner.run(suite)
