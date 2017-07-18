@@ -158,3 +158,6 @@ def start():
     apply_manifests(kubectl)
     os.environ['MINIKUBE_PROXY_URL'] = run_command([minikube, 'service', 'aimmo-reverse-proxy', '--url'], True).strip()
     print('Cluster ready')
+
+if __name__ == "__main__":
+    start()
