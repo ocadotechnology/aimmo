@@ -10,6 +10,9 @@ import time
 import signal
 import requests
 
+import sys
+sys.path.append('../../')
+
 from httmock import HTTMock
 
 # Note: The kubernates setup works only from the root of the directory.
@@ -186,7 +189,7 @@ class TestService(TestCase):
 from unittest import TestSuite
 from unittest import TextTestRunner
 
-if __name__ == "__main__":
+def get_test_suite():
     suite = TestSuite()
 
     suite.addTest(TestService("test_killing_creator_kills_game"))
@@ -198,5 +201,13 @@ if __name__ == "__main__":
     # as server does not communicate with the cluster
     # suite.addTest(TestService("test_games_get_generated_kubernates"))
 
+    return suite
+
+def main():
+    suite = get_test_suite()
+
     runner = TextTestRunner()
     runner.run(suite)
+
+if __name__ == "__main__":
+    main()
