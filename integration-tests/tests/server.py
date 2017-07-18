@@ -101,6 +101,7 @@ class MockServer():
 
             # serve the connection
             str_ans = self.serve()
+            print("Responding: " + str_ans)
             self.csock.send("HTTP/1.0 200 OK\nContent-Type: text/plain\n\n" + str_ans)
 
             times -= 1

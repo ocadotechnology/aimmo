@@ -21,17 +21,31 @@ import cPickle as pickle
 from json import dumps
 
 DEFAULT_LEVEL_SETTINGS = {
-    'TARGET_NUM_CELLS_PER_AVATAR': 2,
-    'TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR': 0,
-    'SCORE_DESPAWN_CHANCE': 0,
-    'TARGET_NUM_PICKUPS_PER_AVATAR': 0,
-    'PICKUP_SPAWN_CHANCE': 0,
-    'NO_FOG_OF_WAR_DISTANCE': 1000,
-    'PARTIAL_FOG_OF_WAR_DISTANCE': 1000,
+    'TARGET_NUM_CELLS_PER_AVATAR': 16.0,
     'GENERATOR': 'Level1',
-    'START_HEIGHT': 5,
-    'START_WIDTH': 1
+    'START_HEIGHT': 11,
+    'TARGET_NUM_PICKUPS_PER_AVATAR': 0.5,
+    'START_WIDTH': 11,
+    'SCORE_DESPAWN_CHANCE': 0.02,
+    'TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR': 0.5,
+    'OBSTACLE_RATIO': 0.1,
+    'PICKUP_SPAWN_CHANCE': 0.02
 }
+
+DEFAULT_AI = {
+    'main': {
+        'parameters': [],
+        'main_avatar': None,
+        'users': [
+            { 'code':
+"""class Avatar(object):
+        def handle_turn(self, world_view, events):
+            from simulation.action import MoveAction
+            from simulation.direction import ALL_DIRECTIONS
+
+            import random
+            return MoveAction(random.choice(ALL_DIRECTIONS))""",
+             'id': 1}]}}
 
 ################################################################################
 
@@ -43,16 +57,24 @@ class RequestMock(object):
         self.urls_requested = []
 
     def _generate_response(self, num_games):
-        return {
-            str(i): {
-                'name': 'Level %s' % i,
-                'settings': pickle.dumps(DEFAULT_LEVEL_SETTINGS)
-            } for i in xrange(num_games)
-        }
+        pass
 
     def __call__(self, url, request):
         self.urls_requested.append(url.geturl())
         return dumps(self.value)
+
+class GameCreatorRequestMock(RequestMock):
+    def _generate_response(self, num_games):
+        return {
+            str(i): {
+                'name': 'Level1',
+                'settings': pickle.dumps(DEFAULT_LEVEL_SETTINGS)
+            } for i in xrange(num_games)
+        }
+
+class GameRequestMock(RequestMock):
+    def _generate_response(self, num_games):
+        return DEFAULT_AI
 
 ################################################################################
 
@@ -60,7 +82,7 @@ class RequestMock(object):
 
 class GameCreatorRunner(Runner):
     def apply(self, received):
-        mocker = RequestMock(1)
+        mocker = GameCreatorRequestMock(1)
         with HTTMock(mocker):
             ans = requests.get(self.binder._SERVER_URL + received)
             self.binder.assertEqual(len(mocker.urls_requested), 1)
@@ -69,13 +91,16 @@ class GameCreatorRunner(Runner):
 
 class GameRunner(Runner):
     def apply(self, received):
-        mocker = RequestMock(1)
+        mocker = GameRequestMock(1)
         with HTTMock(mocker):
             ans = requests.get(self.binder._SERVER_URL + received)
             self.binder.assertEqual(len(mocker.urls_requested), 1)
             self.binder.assertEqual("/players/api/games/0/" in mocker.urls_requested[0], True)
-
             return ans.text
+
+class TurnRunner(Runner):
+    def apply(self, received):
+        return "NotImplemented"
 
 ################################################################################
 
@@ -137,6 +162,13 @@ class TestService(TestCase):
             (GameRunner(self), 1)
         ], False)
 
+    # TODO: We need to add a seam in the server so we can use this communication tool and further tests
+    def test_turns_run(self):
+        self.__build_test([
+            (GameCreatorRunner(self), 1),
+            (GameRunner(self), 1)
+        ], False)
+
     def test_games_get_generated_repeatedly(self):
         # to ensure there are no concurrency issues, we shall run a test multiple
         # times; TODO: see effect of local networking
@@ -147,7 +179,8 @@ class TestService(TestCase):
     def test_games_get_generated_kubernates(self):
         self.__build_test([
             (GameCreatorRunner(self), 1),
-            (GameRunner(self), 1)
+            (GameRunner(self), 1),
+            (TurnRunner(self), 1)
         ], True)
 
 from unittest import TestSuite
@@ -159,6 +192,7 @@ if __name__ == "__main__":
     suite.addTest(TestService("test_killing_creator_kills_game"))
     suite.addTest(TestService("test_games_get_generated"))
     suite.addTest(TestService("test_games_get_generated_repeatedly"))
+    suite.addTest(TestService("test_turns_run"))
 
     # TODO: not yet fully supported locally; probably an environment problem
     # as server does not communicate with the cluster
