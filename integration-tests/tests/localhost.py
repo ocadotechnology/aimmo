@@ -19,8 +19,8 @@ from httmock import HTTMock
 # import importlib
 # mockery = importlib.import_module("aimmo-game-creator.tests.test_worker_manager")
 
-def run_command_async(args):
-    p = subprocess.Popen(args)
+def run_command_async(args, cwd="."):
+    p = subprocess.Popen(args, cwd=cwd)
     return p
 
 import cPickle as pickle
@@ -69,9 +69,18 @@ class TestService(TestCase):
         self._SERVER_URL = 'http://localhost:8000/'
         self._SERVER_PORT = '8000'
 
-    def __build_test(self, runners):
+    def __build_test(self, runners, kubernetes=False):
         try:
-            game = run_command_async(['python', self._SERVICE_PY, self._SERVER_URL, self._SERVER_PORT])
+            if kubernetes:
+                # TODO: proper start-up
+                os.system("minikube stop")
+                os.system("minikube delete")
+                os.system("minikube start --vm-driver=kvm")
+
+                game = run_command_async(['python', "minikube.py"], self._SCRIPT_LOCATION)
+            else:
+                game = run_command_async(['python', self._SERVICE_PY, self._SERVER_URL, self._SERVER_PORT])
+
             server = MockServer()
             for runner, times in runners:
                 print "Running " + str(runner) + " " + str(times) + " times"
@@ -80,8 +89,15 @@ class TestService(TestCase):
                 server.clear_runners()
 
         finally:
-            os.system("pkill -TERM -P " + str(game.pid))
-            os.kill(game.pid, signal.SIGKILL)
+            if kubernetes:
+                os.system("pkill -TERM -P " + str(game.pid))
+                os.kill(game.pid, signal.SIGKILL)
+                os.system("minikube stop")
+                os.system("minikube delete")
+            else:
+                os.system("pkill -TERM -P " + str(game.pid))
+                os.kill(game.pid, signal.SIGKILL)
+
 
     def setUp(self):
         self.__setup_resources()
@@ -117,7 +133,9 @@ class TestService(TestCase):
         self.__build_test([
             (GameCreatorRunner(self), 1),
             (GameRunner(self), 1)
-        ])
+        ], True)
+
+
 
 from unittest import TestSuite
 from unittest import TextTestRunner
@@ -125,7 +143,7 @@ from unittest import TextTestRunner
 if __name__ == "__main__":
     suite = TestSuite()
 
-    suite.addTest(TestService("test_killing_creator_kills_game"))
+    # suite.addTest(TestService("test_killing_creator_kills_game"))
     suite.addTest(TestService("test_games_get_generated"))
 
     runner = TextTestRunner()
