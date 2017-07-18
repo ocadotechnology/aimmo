@@ -179,7 +179,7 @@ class TestService(TestCase):
         for i in xrange(times):
             self.test_games_get_generated()
 
-    def test_games_get_generated_kubernates(self):
+    def ktest_games_get_generated_kubernates(self):
         self.__build_test([
             (GameCreatorRunner(self), 1),
             (GameRunner(self), 1),
@@ -189,6 +189,7 @@ class TestService(TestCase):
 from unittest import TestSuite
 from unittest import TextTestRunner
 
+# We use this locally as it is simple to work on test development
 def get_test_suite():
     suite = TestSuite()
 
