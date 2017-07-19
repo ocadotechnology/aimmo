@@ -54,10 +54,10 @@ class WorldState():
     # Map features updates.
 
     def create_map_feature(self, map_feature, map_feature_data):
-        self.map_features[map_feature.value]["create"].append(map_feature_data)
+        self.map_features[map_feature]["create"].append(map_feature_data)
 
     def delete_map_feature(self, map_feature, map_feature_id):
-        self.map_features[map_feature.value]["delete"].append(map_feature_id)
+        self.map_features[map_feature]["delete"].append(map_feature_id)
 
     # Refresh the world state. Basically gather information from the avatar manager
     # and the world map and organise it.
@@ -65,11 +65,18 @@ class WorldState():
     def refresh(self):
         def player_dict(avatar):
             return {
-                'id': avatar.player_id,
-                'x': avatar.location.x,
-                'y': avatar.location.y,
-                'score': avatar.score,
+                'id'    : avatar.player_id,
+                'x'     : avatar.location.x,
+                'y'     : avatar.location.y,
+                'score' : avatar.score,
                 'health': avatar.health
+            }
+
+        def map_feature_dict(map_feature):
+            return {
+                'id' : hash(map_feature),
+                'x'  : map_feature.location.x,
+                'y'  : map_feature.location.y
             }
 
         world = self.game_state.world_map
@@ -85,19 +92,21 @@ class WorldState():
         for player in self.game_state.avatar_manager.avatars_to_delete:
             self.delete_player(player_dict(player))
 
-        # Refresh map features dictionary
+        # Refresh map features dictionary.
 
-        obstacles = []
-        for cell in world.all_cells():
+        for cell in world.cells_to_create():
+
+            # Cell is an obstacle.
             if not cell.habitable:
-                obstacles.append({
-                    'id': hash(cell),
-                    'x': cell.location.x,
-                    'y': cell.location.y
-                })
-        #curr_dict['objects'] = obstacles
+                self.create_map_feature(MapFeature.OBSTACLE, map_feature_dict(cell))
+                cell.created = True
 
-        #curr_dict['score_locations'] = [{'x': cell.location.x, 'y': cell.location.y} for cell in world.score_cells()]
+            # Cell is a score point.
+            if cell.generates_score:
+                self.create_map_feature(MapFeature.SCORE_POINT, map_feature_dict(cell))
+                cell.created = True
+
+
 
 # TODO: Implement pickups
 """
