@@ -151,29 +151,3 @@ class PriorityQueue(object):
 
     def __len__(self):
         return len(self.heap)
-<<<<<<< HEAD
-
-
-class _BaseLevelGenerator(_BaseGenerator):
-    __metaclass__ = abc.ABCMeta
-
-    def __init__(self, *args, **kwargs):
-        super(_BaseLevelGenerator, self).__init__(*args, **kwargs)
-        self.settings.update(DEFAULT_LEVEL_SETTINGS)
-
-
-class Level1(_BaseLevelGenerator):
-    def get_map(self):
-        world_map = WorldMap.generate_empty_map(1, 5, self.settings)
-        world_map = WorldMapStaticSpawnDecorator(world_map, Location(-2, 0))
-        world_map.get_cell(Location(2, 0)).generates_score = True
-        return world_map
-
-    def check_complete(self, game_state):
-        try:
-            main_avatar = game_state.get_main_avatar()
-        except KeyError:
-            return False
-        return main_avatar.score > 0
-=======
->>>>>>> a599d72... Separate the map generator in multiple classes, now we have classes for level generators. Those take a json format level and build it from there.
