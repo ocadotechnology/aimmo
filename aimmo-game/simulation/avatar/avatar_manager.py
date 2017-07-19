@@ -1,5 +1,5 @@
-from avatar_wrapper import AvatarWrapper
-from avatar_appearance import AvatarAppearance
+from simulation.avatar.avatar_wrapper import AvatarWrapper
+from simulation.avatar.avatar_appearance import AvatarAppearance
 
 class AvatarManager(object):
     """
