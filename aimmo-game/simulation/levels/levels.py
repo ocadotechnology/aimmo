@@ -17,12 +17,15 @@ class RawLevelGenerator():
         self.parser.register_models(models)
         return self
 
-    def generate(self):
+    def generate_json(self):
         return self.parser.map_apply_transforms()
 
+LEVELS = {
+    "level1" : RawLevelGenerator().by_parser(CellParser()).by_map("level1.txt").by_models(["objects.json"]).generate_json()
+}
+
 def main():
-    level = RawLevelGenerator().by_parser(CellParser()).by_map("level1.txt").by_models(["objects.json"]).generate()
-    pprint(level)
+    pprint(LEVELS["level1"])
 
 if __name__ == '__main__':
     main()

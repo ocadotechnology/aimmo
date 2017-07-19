@@ -12,37 +12,12 @@ from simulation.location import Location
 from simulation.world_map import WorldMap
 from simulation.world_map import WorldMapStaticSpawnDecorator
 
+from simulation.custom_map import BaseGenerator, BaseLevelGenerator, DEFAULT_LEVEL_SETTINGS
+from simulation.custom_map import Level1
+
 LOGGER = logging.getLogger(__name__)
 
-DEFAULT_LEVEL_SETTINGS = {
-    'TARGET_NUM_CELLS_PER_AVATAR': 0,
-    'TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR': 0,
-    'SCORE_DESPAWN_CHANCE': 0,
-    'TARGET_NUM_PICKUPS_PER_AVATAR': 0,
-    'PICKUP_SPAWN_CHANCE': 0,
-    'NO_FOG_OF_WAR_DISTANCE': 1000,
-    'PARTIAL_FOG_OF_WAR_DISTANCE': 1000,
-}
-
-
-class _BaseGenerator(object):
-    __metaclass__ = abc.ABCMeta
-
-    def __init__(self, settings):
-        self.settings = settings
-
-    def get_game_state(self, avatar_manager):
-        return GameState(self.get_map(), avatar_manager, self.check_complete)
-
-    def check_complete(self, game_state):
-        return False
-
-    @abc.abstractmethod
-    def get_map(self):
-        pass
-
-
-class Main(_BaseGenerator):
+class Main(BaseGenerator):
     def get_map(self):
         height = self.settings['START_HEIGHT']
         width = self.settings['START_WIDTH']
@@ -176,28 +151,3 @@ class PriorityQueue(object):
 
     def __len__(self):
         return len(self.heap)
-
-
-class _BaseLevelGenerator(_BaseGenerator):
-    __metaclass__ = abc.ABCMeta
-
-    def __init__(self, *args, **kwargs):
-        super(_BaseLevelGenerator, self).__init__(*args, **kwargs)
-        self.settings.update(DEFAULT_LEVEL_SETTINGS)
-
-
-class Level1(_BaseLevelGenerator):
-    def get_map(self):
-        world_map = WorldMap.generate_empty_map(1, 5, self.settings)
-        world_map = WorldMapStaticSpawnDecorator(world_map, Location(-2, 0))
-        world_map.get_cell(Location(2, 0)).generates_score = True
-        return world_map
-
-    def check_complete(self, game_state):
-        # TODO: Completion still doesn't work. (Go to _mark_complete in turn_manager.py)
-        """try:
-            main_avatar = game_state.get_main_avatar()
-        except KeyError:
-            return False
-        return main_avatar.score > 0"""
-        return False
