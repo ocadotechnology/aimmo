@@ -10,36 +10,27 @@ eventlet.sleep()
 eventlet.monkey_patch()
 
 import flask
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO
 
 from simulation.turn_manager import state_provider
 from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.turn_manager import ConcurrentTurnManager
 from simulation.worker_manager import WORKER_MANAGERS
+from simulation.world_state import WorldState
 
 app = flask.Flask(__name__)
 socketio = SocketIO()
 
 worker_manager = None
 
-from simulation.world.world_state import UnityWorldState
-
-#setup the adaptors for the connection with the front-end
-world_state = UnityWorldState(state_provider)
-
-@socketio.on('connect')
-def world_update_on_connect():
-    # TODO: This will disappear, only updates.
-    emit(
-        'world-init',
-        world_state.get_init(),
-    )
+#
+world_state = WorldState(state_provider)
 
 def send_world_update():
     socketio.emit(
         'world-update',
-        world_state.get_update(),
+        world_state.get_updates(),
         broadcast=True,
     )
 

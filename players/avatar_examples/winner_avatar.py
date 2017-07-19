@@ -1,14 +1,14 @@
 class Avatar(object):
-    def handle_turn(self, avatar_state, world_state):
+    def handle_turn(self, avatar_state, world_map):
         from simulation.action import MoveAction
         from simulation import direction
         import random
         from simulation.action import WaitAction
 
-        self.world_state = world_state
+        self.world_map = world_map
         self.avatar_state = avatar_state
 
-        if world_state.get_cell(avatar_state.location).generates_score:
+        if world_map.get_cell(avatar_state.location).generates_score:
             return WaitAction()
 
         possible_directions = self.get_possible_directions()
@@ -26,7 +26,7 @@ class Avatar(object):
         return abs(a.x - b.x) + abs(a.y - b.y)
 
     def get_closest_score_location(self):
-        score_cells = list(self.world_state.score_cells())
+        score_cells = list(self.world_map.score_cells())
         if score_cells:
             return min(score_cells, key=lambda cell: self.distance_between(cell.location, self.avatar_state.location)).location
         else:
@@ -35,4 +35,4 @@ class Avatar(object):
     def get_possible_directions(self):
         from simulation import direction
         directions = (direction.EAST, direction.SOUTH, direction.WEST, direction.NORTH)
-        return [d for d in directions if self.world_state.can_move_to(self.avatar_state.location + d)]
+        return [d for d in directions if self.world_map.can_move_to(self.avatar_state.location + d)]

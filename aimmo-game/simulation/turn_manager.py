@@ -3,7 +3,7 @@ import time
 from threading import RLock
 from threading import Thread
 
-from simulation.action import PRIORITIES
+from action import PRIORITIES
 
 LOGGER = logging.getLogger(__name__)
 
@@ -66,9 +66,10 @@ class TurnManager(Thread):
         game_state.world_map.reconstruct_interactive_state(num_avatars)
 
     def _mark_complete(self):
+        pass
         # TODO: Make completion request work. For now, we assume games don't finish.
-        from world import world_state
-        requests.post(self._completion_url, json=world_state.get_update())
+        #from world_state import WorldState
+        #requests.post(self._completion_url, json=world_state.get_update())
 
     def run(self):
         while True:
