@@ -65,16 +65,22 @@ class ScoreCellDecoder(Decoder):
         world_map = WorldMapStaticSpawnDecorator(world_map, Location(x, y))
         world_map.get_cell(Location(x, y)).generates_score = True
 
+class ObstacleDecoder(Decoder):
+    def decode(self, json, world_map):
+        x, y = int(json["x"]), int(json["y"])
+        world_map.get_cell(Location(x, y)).habitable = False
+
 ################################################################################
 
 class JsonLevelGenerator(TemplateLevelGenerator):
     def _register_json(self, json_map):
         self.json_map = json_map
-        self.world_map = WorldMap.generate_empty_map(10, 10, self.settings)
+        self.world_map = WorldMap.generate_empty_map(100, 100, self.settings)
 
     def _register_decoders(self):
         self.decoders = [
-            ScoreCellDecoder("2")
+            ScoreCellDecoder("2"),
+            ObstacleDecoder("1")
         ]
 
     def _json_decode_map(self):
