@@ -1,5 +1,7 @@
 import json
 import abc
+import os
+
 from pprint import pprint
 
 from transforms import CellTransform
@@ -12,19 +14,20 @@ class Parser():
     __metaclass__ = abc.ABCMeta
 
     def __init__(self):
-        self.__MAPS_FOLDER = "maps"
-        self.__MODELS_FOLDER = "models"
+        self._SCRIPT_LOCATION = os.path.abspath(os.path.dirname(__file__))
+        self._MAPS_FOLDER = os.path.join(self._SCRIPT_LOCATION, "maps")
+        self._MODELS_FOLDER = os.path.join(self._SCRIPT_LOCATION, "models")
         self.models = []
         self.transforms = {}
         self.map = []
 
     def parse_model(self, model_name):
-        with open(self.__MODELS_FOLDER + "/" + model_name) as data_file:
+        with open(os.path.join(self._MODELS_FOLDER, model_name)) as data_file:
             model = json.load(data_file)
         return model
 
     def parse_map(self, map_name):
-        with open(self.__MAPS_FOLDER + "/" + map_name) as content_file:
+        with open(os.path.join(self._MAPS_FOLDER, map_name)) as content_file:
             content = content_file.read()
         lines = content.split('\n')
         cells = [list(filter(lambda x: x != '', line.split(" ")))
@@ -77,7 +80,7 @@ class Parser():
             for model in model_list:
                 if model["code"] == code:
                     return populate({}, model)
-            return None
+        return None
 
     def map_apply_transforms(self):
         objects = []
@@ -95,12 +98,3 @@ class Parser():
 class CellParser(Parser):
     def register_transforms(self, x, y):
         self.register_transform(CellTransform(x, y))
-
-def main():
-    parser = CellParser()
-    parser.parse_map("level1.txt")
-    parser.register_models(["objects.json"])
-    pprint(parser.map_apply_transforms())
-
-if __name__ == '__main__':
-    main()

@@ -1,19 +1,28 @@
-from simulation.map_generator import *
+from parsers import CellParser
+from pprint import pprint
 
-# We override the older methods
-# We need to integrate the new format as we make it -- we might need refactoring in other
-# places
-class TemplateLevelGenerator(_BaseLevelGenerator):
-    __metaclass__ = abc.ABCMeta
-
-    def __init__(self, *args, **kwargs):
-        super(_BaseLevelGenerator, self).__init__(*args, **kwargs)
-        self.settings.update(DEFAULT_LEVEL_SETTINGS)
-
-    @abc.abstractmethod
-    def get_map(self):
+class RawLevelGenerator():
+    def __init__(self):
         pass
 
-    @abc.abstractmethod
-    def check_complete(self):
-        pass
+    def by_parser(self, parser):
+        self.parser = parser
+        return self
+
+    def by_map(self, map):
+        self.parser.parse_map(map)
+        return self
+
+    def by_models(self, models):
+        self.parser.register_models(models)
+        return self
+
+    def generate(self):
+        return self.parser.map_apply_transforms()
+
+def main():
+    level = RawLevelGenerator().by_parser(CellParser()).by_map("level1.txt").by_models(["objects.json"]).generate()
+    pprint(level)
+
+if __name__ == '__main__':
+    main()
