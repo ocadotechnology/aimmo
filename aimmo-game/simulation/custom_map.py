@@ -45,14 +45,9 @@ class TemplateLevelGenerator(BaseLevelGenerator):
 
     def __init__(self, *args, **kwargs):
         super(TemplateLevelGenerator, self).__init__(*args, **kwargs)
+        self.settings.update(DEFAULT_LEVEL_SETTINGS)
 
-    @abc.abstractmethod
-    def get_map(self):
-        pass
-
-    @abc.abstractmethod
-    def check_complete(self):
-        pass
+################################################################################
 
 class Decoder():
     __metaclass__ = abc.ABCMeta
@@ -66,15 +61,17 @@ class Decoder():
 
 class ScoreCellDecoder(Decoder):
     def decode(self, json, world_map):
-        x = int(json["x"]) + 1
-        y = int(json["y"]) + 1
+        x = int(json["x"])
+        y = int(json["y"])
         world_map = WorldMapStaticSpawnDecorator(world_map, Location(x, y))
         world_map.get_cell(Location(x, y)).generates_score = True
+
+################################################################################
 
 class JsonLevelGenerator(TemplateLevelGenerator):
     def _register_json(self, json_map):
         self.json_map = json_map
-        self.world_map = WorldMap.generate_empty_map(10, 10, self.settings)
+        self.world_map = WorldMap.generate_empty_map(5, 5, self.settings)
 
     def _register_decoders(self):
         self.decoders = [
@@ -98,5 +95,4 @@ class Level1(JsonLevelGenerator):
         self._register_decoders()
         self._json_decode_map()
 
-    def check_complete(self):
-        return False
+        return self.world_map
