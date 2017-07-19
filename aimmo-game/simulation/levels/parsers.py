@@ -5,7 +5,8 @@ from pprint import pprint
 from transforms import CellTransform
 
 def call_method(o, name):
-    getattr(o, name)()
+    x = getattr(o, name)()
+    return x
 
 class Parser():
     __metaclass__ = abc.ABCMeta
@@ -55,33 +56,27 @@ class Parser():
             model_class = input_str.split(":")[1].split(".")[0]
             model_method = input_str.split(":")[1].split(".")[1]
 
-            return call_method(self.transforms[model_class], model_method)
+            out = call_method(self.transforms[model_class], model_method)
+            return str(out)
         else:
-            return str
+            return input_str
 
     def feed_json(self, code):
         def populate(json, model):
-            print("populating json")
             if isinstance(model, list):
                 for item in model:
                     json.append(populate({}, item))
-                    return json
             elif isinstance(model, basestring):
                 json = self.feed_string(model)
             else:
                 for item in model:
                     json[item] = populate({}, model[item])
+            return json
 
         for model_list in self.models:
-            print(model_list)
             for model in model_list:
-                # the model was found
-                print(model)
                 if model["code"] == code:
-                    # populate it and return it
-                    json = {}
-                    populate(json, model)
-                    return json
+                    return populate({}, model)
             return None
 
     def map_apply_transforms(self):
@@ -89,7 +84,6 @@ class Parser():
         for x in xrange(len(self.map)):
             for y in xrange(len(self.map[x])):
                 code = self.map[x][y]
-                print x, y, code
 
                 self.register_transforms(x, y)
                 object_json = self.feed_json(code)
