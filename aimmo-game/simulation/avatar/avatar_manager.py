@@ -2,6 +2,8 @@ from simulation.avatar.avatar_wrapper import AvatarWrapper
 from simulation.avatar.avatar_appearance import AvatarAppearance
 import copy
 
+import copy
+
 class AvatarManager(object):
     """
     Stores all game avatars. An avatar can belong to on of the following three lists:

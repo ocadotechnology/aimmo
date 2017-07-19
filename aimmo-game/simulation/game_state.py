@@ -1,6 +1,5 @@
 from simulation.avatar import fog_of_war
 
-
 class GameState(object):
     """
     Encapsulates the entire game state, including avatars, their code, and the world.

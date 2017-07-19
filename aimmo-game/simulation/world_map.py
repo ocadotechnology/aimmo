@@ -91,7 +91,11 @@ class WorldMap(object):
 
     @classmethod
     def generate_empty_map(cls, height, width, settings):
+<<<<<<< HEAD
         new_settings =DEFAULT_LEVEL_SETTINGS.copy()
+=======
+        new_settings = DEFAULT_LEVEL_SETTINGS.copy()
+>>>>>>> 774cfb5... Fixed circular imports and used deepcopy instead of slicing as slicing needs implementation in classes.
         new_settings.update(settings)
 
         (min_x, max_x, min_y, max_y) = WorldMap._min_max_from_dimensions(height, width)
