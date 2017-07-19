@@ -11,29 +11,13 @@ from simulation.game_state import GameState
 from simulation.location import Location
 from simulation.world_map import WorldMap
 from simulation.world_map import WorldMapStaticSpawnDecorator
-from simulation.world_map import DEFAULT_LEVEL_SETTINGS
+
+from simulation.custom_map import BaseGenerator, BaseLevelGenerator, DEFAULT_LEVEL_SETTINGS
+from simulation.custom_map import Level1
 
 LOGGER = logging.getLogger(__name__)
 
-
-class _BaseGenerator(object):
-    __metaclass__ = abc.ABCMeta
-
-    def __init__(self, settings):
-        self.settings = settings
-
-    def get_game_state(self, avatar_manager):
-        return GameState(self.get_map(), avatar_manager, self.check_complete)
-
-    def check_complete(self, game_state):
-        return False
-
-    @abc.abstractmethod
-    def get_map(self):
-        pass
-
-
-class Main(_BaseGenerator):
+class Main(BaseGenerator):
     def get_map(self):
         height = self.settings['START_HEIGHT']
         width = self.settings['START_WIDTH']
@@ -167,6 +151,7 @@ class PriorityQueue(object):
 
     def __len__(self):
         return len(self.heap)
+<<<<<<< HEAD
 
 
 class _BaseLevelGenerator(_BaseGenerator):
@@ -190,3 +175,5 @@ class Level1(_BaseLevelGenerator):
         except KeyError:
             return False
         return main_avatar.score > 0
+=======
+>>>>>>> a599d72... Separate the map generator in multiple classes, now we have classes for level generators. Those take a json format level and build it from there.
