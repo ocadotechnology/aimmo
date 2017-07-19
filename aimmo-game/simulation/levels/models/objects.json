@@ -1,8 +1,11 @@
 [
   {
-    "code": "0",
+    "code": "2",
     "id" : "class:CellTransform.compute_id",
     "x" : "class:CellTransform.get_x",
-    "y" : "class:CellTransform.get_y"
+    "y" : "class:CellTransform.get_y",
+    "value" : {
+      "dsadsa" : "2"
+    }
   }
 ]
