@@ -5,17 +5,7 @@ from pprint import pprint
 
 from simulation.location import Location
 from simulation.game_state import GameState
-from simulation.world_map import WorldMap, WorldMapStaticSpawnDecorator
-
-DEFAULT_LEVEL_SETTINGS = {
-    'TARGET_NUM_CELLS_PER_AVATAR': 0,
-    'TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR': 0,
-    'SCORE_DESPAWN_CHANCE': 0,
-    'TARGET_NUM_PICKUPS_PER_AVATAR': 0,
-    'PICKUP_SPAWN_CHANCE': 0,
-    'NO_FOG_OF_WAR_DISTANCE': 1000,
-    'PARTIAL_FOG_OF_WAR_DISTANCE': 1000,
-}
+from simulation.world_map import WorldMap, WorldMapStaticSpawnDecorator, DEFAULT_LEVEL_SETTINGS
 
 class BaseGenerator(object):
     __metaclass__ = abc.ABCMeta

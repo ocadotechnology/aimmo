@@ -11,8 +11,10 @@ from simulation.game_state import GameState
 from simulation.location import Location
 from simulation.world_map import WorldMap
 from simulation.world_map import WorldMapStaticSpawnDecorator
+from simulation.world_map import DEFAULT_LEVEL_SETTINGS
 
-from simulation.custom_map import BaseGenerator, BaseLevelGenerator, DEFAULT_LEVEL_SETTINGS
+from simulation.custom_map import BaseGenerator
+from simulation.custom_map import BaseLevelGenerator
 from simulation.custom_map import Level1
 
 LOGGER = logging.getLogger(__name__)
