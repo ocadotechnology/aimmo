@@ -35,8 +35,8 @@ def _create_response(status, message):
 @login_required
 def code(request, id):
     game = get_object_or_404(Game, id=id)
-    #if not game.can_user_play(request.user):
-      #  raise Http404
+    if not game.can_user_play(request.user):
+        raise Http404
     try:
         avatar = game.avatar_set.get(owner=request.user)
     except Avatar.DoesNotExist:
