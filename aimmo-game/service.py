@@ -24,15 +24,25 @@ socketio = SocketIO()
 
 worker_manager = None
 
-#
+# The world state know about the maps and the avatars and basically
+# handles the updates.
 world_state = WorldState(state_provider)
 
+@socketio.on('connect')
+def world_init():
+    socketio.emit('world-init')
+
+@socketio.on('client-ready')
+def client_ready():
+    world_state.ready_to_update = True
+
 def send_world_update():
-    socketio.emit(
-        'world-update',
-        world_state.get_updates(),
-        broadcast=True,
-    )
+    if world_state.ready_to_update:
+        socketio.emit(
+            'world-update',
+            world_state.get_updates(),
+            broadcast=True,
+        )
 
 @app.route('/')
 def healthcheck():

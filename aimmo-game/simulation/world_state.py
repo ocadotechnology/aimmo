@@ -24,6 +24,8 @@ class WorldState():
 
     def __init__(self, game_state):
         self.game_state = game_state
+        self.ready_to_update = False
+
         self.players = defaultdict(dict)
         self.map_features = defaultdict(dict)
         self.clear_updates()
