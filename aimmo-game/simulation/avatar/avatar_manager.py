@@ -18,6 +18,7 @@ class AvatarManager(object):
         self.avatars_to_delete_by_id = {}
 
     def add_avatar(self, player_id, worker_url, location):
+        print("avatar added!!")
         avatar = AvatarWrapper(player_id, location, worker_url, AvatarAppearance("#000", "#ddd", "#777", "#fff"))
         self.avatars_to_create_by_id[player_id] = avatar
         return avatar
@@ -34,30 +35,22 @@ class AvatarManager(object):
     def avatars(self):
         return self.avatars_by_id.viewvalues()
 
-    @property
-    def avatars_to_create(self):
-        return self.avatars_to_create_by_id.viewvalues()
-
-    @property
-    def avatars_to_delete(self):
-        return self.avatars_to_delete_by_id.viewvalues()
-
     # Returns the newly created avatars and then puts them in the normal avatars list.
     @property
-    def created_avatars(self):
-        created_avatars_array = self.avatars_to_create_by_id.viewvalues()[:]
+    def avatars_to_create(self):
+        avatars_to_create_array = list(self.avatars_to_create_by_id.viewvalues())[:]
         self.avatars_by_id.update(dict(self.avatars_to_create_by_id))
-        self.avatars_to_create_by_id.clear()
+        self.avatars_to_create_by_id = {}
 
-        return created_avatars_array
+        return avatars_to_create_array
 
     # Returns the avatars that need to be removed from the scene.
     @property
-    def deleted_avatars(self):
-        deleted_avatars_array = self.avatars_to_delete_by_id.viewvalues()[:]
-        self.avatars_to_create_by_id.clear()
+    def avatars_to_delete(self):
+        avatars_to_delete_array = list(self.avatars_to_delete_by_id.viewvalues())[:]
+        self.avatars_to_delete_by_id = {}
 
-        return deleted_avatars_array
+        return avatars_to_delete_array
 
     # Note: I assume that this will be useful in the future. I have to figure out when
     # because right now it's just the same as 'avatars'. Otherwise:
