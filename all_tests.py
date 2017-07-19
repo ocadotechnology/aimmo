@@ -15,7 +15,6 @@ import sys
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 APPS = ('', 'aimmo-game/', 'aimmo-game-worker/', 'aimmo-game-creator/')
 
-
 def print_help():
     print(globals()['__docstring__'])
 
