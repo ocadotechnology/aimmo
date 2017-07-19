@@ -23,9 +23,10 @@ class WorldState():
     """
 
     def __init__(self, game_state):
+        self.game_state = game_state
         self.players = defaultdict(dict)
         self.map_features = defaultdict(dict)
-        self.game_state = game_state
+        self.clear_updates()
 
     def get_updates(self):
         self.refresh()
@@ -33,9 +34,23 @@ class WorldState():
             'players'      : dict(self.players),
             'map_features' : dict(self.map_features)
         }
-        self.players.clear()
-        self.map_features.clear()
+        self.clear_updates()
+
+        #print("--------------------------------------------")
+        #print(updates)
         return updates
+
+    def clear_updates(self):
+        self.players = {
+            'update': [],
+            'create': [],
+            'delete': []
+        }
+        for map_feature in MapFeature:
+            self.map_features[map_feature.value] = {
+                'create': [],
+                'delete': []
+            }
 
     # Player updates.
 
@@ -79,32 +94,33 @@ class WorldState():
                 'y'  : map_feature.location.y
             }
 
-        world = self.game_state.world_map
+        with self.game_state as game_state:
+            world = game_state.world_map
 
-        # Refresh players dictionary.
+            # Refresh players dictionary.
 
-        for player in self.game_state.avatar_manager.avatars:
-            self.update_player(player_dict(player))
+            for player in game_state.avatar_manager.avatars:
+                self.update_player(player_dict(player))
 
-        for player in self.game_state.avatar_manager.avatars_to_create:
-            self.create_player(player_dict(player))
+            for player in game_state.avatar_manager.avatars_to_create:
+                self.create_player(player_dict(player))
 
-        for player in self.game_state.avatar_manager.avatars_to_delete:
-            self.delete_player(player_dict(player))
+            for player in game_state.avatar_manager.avatars_to_delete:
+                self.delete_player(player_dict(player))
 
-        # Refresh map features dictionary.
+            # Refresh map features dictionary.
 
-        for cell in world.cells_to_create():
+            for cell in world.cells_to_create():
 
-            # Cell is an obstacle.
-            if not cell.habitable:
-                self.create_map_feature(MapFeature.OBSTACLE, map_feature_dict(cell))
-                cell.created = True
+                # Cell is an obstacle.
+                if not cell.habitable:
+                    self.create_map_feature(MapFeature.OBSTACLE.value, map_feature_dict(cell))
+                    cell.created = True
 
-            # Cell is a score point.
-            if cell.generates_score:
-                self.create_map_feature(MapFeature.SCORE_POINT, map_feature_dict(cell))
-                cell.created = True
+                # Cell is a score point.
+                if cell.generates_score:
+                    self.create_map_feature(MapFeature.SCORE_POINT.value, map_feature_dict(cell))
+                    cell.created = True
 
 
 
