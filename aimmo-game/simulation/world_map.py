@@ -24,6 +24,7 @@ class Cell(object):
         self.pickup = None
         self.partially_fogged = partially_fogged
         self.actions = []
+        self.created = False
 
     def __repr__(self):
         return 'Cell({} h={} s={} a={} p={} f{})'.format(
@@ -93,6 +94,16 @@ class WorldMap(object):
 
     def all_cells(self):
         return self.grid.itervalues()
+
+    # Used to know when to instantiate objects in the scene.
+    def cells_to_create(self):
+        new_cells = []
+        for cell in self.all_cells():
+            if not cell.created:
+                new_cells.append(cell)
+        return new_cells
+
+    # TODO: Cells to delete
 
     def score_cells(self):
         return (c for c in self.all_cells() if c.generates_score)
