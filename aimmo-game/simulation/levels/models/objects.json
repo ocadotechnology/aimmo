@@ -1,7 +1,8 @@
-{
-  "0" : {
-    "id" : "CellParser.compute_id",
-    "x" : "CellParser.get_x",
-    "y" : "CellParser.get_y"
+[
+  {
+    "code": "0",
+    "id" : "class:CellTransform.compute_id",
+    "x" : "class:CellTransform.get_x",
+    "y" : "class:CellTransform.get_y"
   }
-}
+]
