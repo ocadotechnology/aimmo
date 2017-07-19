@@ -168,3 +168,6 @@ def start():
     game_creator = create_creator_yaml()
     restart_pods(game_creator)
     print('Cluster ready')
+
+if __name__ == "__main__":
+    start()
