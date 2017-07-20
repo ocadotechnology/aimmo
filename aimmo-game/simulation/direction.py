@@ -13,6 +13,9 @@ class Direction:
     def dict(self):
         return {'x': self.x, 'y': self.y}
 
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
     def __repr__(self):
         return 'Direction(x={}, y={})'.format(self.x, self.y)
 
