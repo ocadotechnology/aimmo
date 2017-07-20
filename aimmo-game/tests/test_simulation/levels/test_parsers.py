@@ -44,41 +44,67 @@ class TestParser(unittest.TestCase):
         self.parser.models = []
         self.parser.register_models(["model_simple.json", "model_big.json"])
 
-    def test_parse_simple_map(self):
+    def __with_big_map(self):
+        self.parser.parse_map("map_big.txt")
+
+    def __with_simple_map(self):
         self.parser.parse_map("map_simple.txt")
+
+    def test_parse_simple_map(self):
+        self.__with_simple_map()
         self.assertItemsEqual(self.parser.map, [
             ['1','2','3','0','0'],
             ['0','0','1','0','2']])
 
     def test_parse_big_map(self):
-        self.parser.parse_map("map_big.txt")
+        self.__with_big_map()
         self.assertEqual(len(self.parser.map), 7)
         self.assertEqual(len(self.parser.map[0]), 11)
 
     def test_register_models(self):
-        self.parser.register_models(["model_simple.json"])
+        self.__with_simple_model()
         self.assertEqual(len(self.parser.models), 1)
         self.assertItemsEqual(self.parser.models[0], SIMPLE_MODEL)
 
-    def feed_string(self):
-        self.register_transforms(5, 5)
+    def test_feed_string(self):
+        self.__with_simple_model()
+        self.parser.register_transforms(5, 5)
         self.assertEqual(self.parser.feed_string("class:MockTransform.mock"), "mock")
-        self.assertEqual(self.parser.feed_string("class:CellTransform.get_x"), 5)
-        self.assertEqual(self.parser.feed_string("class:CellTransform.get_y"), 6)
+        self.assertEqual(self.parser.feed_string("class:CellTransform.get_x"), '5')
+        self.assertEqual(self.parser.feed_string("class:CellTransform.get_y"), '5')
         self.assertEqual(self.parser.feed_string("abc"), "abc")
         self.assertEqual(self.parser.feed_string("CellTransform.get_y"), "CellTransform.get_y")
 
-    def feed_simple_json(self):
+    def test_feed_simple_json(self):
         self.__with_simple_model()
-        self.register_transforms(0, 0)
-        self.assertEqual(self.parser.feed_json("0"), {
+        self.parser.register_transforms(0, 0)
+        self.assertItemsEqual(self.parser.feed_json("0"), {
           "code": "0",
           "test" : "zero"
         })
-        self.assertEqual(self.parser.feed_json("1"), {
+        self.assertItemsEqual(self.parser.feed_json("1"), {
           "code": "1",
           "test" : "one"
         })
 
-    def feed_complex_json(self):
-        pass
+    def test_feed_big_json(self):
+        self.__with_big_model()
+        self.__with_big_map()
+        self.parser.register_transforms(0, 0)
+        self.assertItemsEqual(self.parser.feed_json("0"), {
+          "code": "0",
+          "test" : "zero"
+        })
+        self.parser.register_transforms(3, 3)
+        self.assertItemsEqual(self.parser.feed_json("2"), {
+            "code": "2",
+            "test" : {
+                "big" : "big",
+                "cool" : "cool"
+                },
+            "x" : 3,
+            "other" : {
+                "y" : 3,
+                "test" : "mock"
+            }
+        })
