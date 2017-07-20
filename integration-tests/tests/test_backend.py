@@ -194,42 +194,37 @@ class TestService(TestCase):
         self.__setup_resources()
         self.__setup_environment()
 
-    @skip("temporary")
-    def test_killing_creator_kills_game(self):
+    def test_local_killing_creator_kills_game(self):
         try:
             game = run_command_async(['python', self._SERVICE_PY, self._SERVER_URL, self._SERVER_PORT])
         finally:
             os.system("pkill -TERM -P " + str(game.pid))
             os.kill(game.pid, signal.SIGKILL)
 
-    @skip("temporary")
-    def test_games_get_generated(self):
+    def test_local_games_get_generated(self):
         self.__build_test([
             (GameCreatorProxy(self), 1),
             (GameProxy(self), 1)
         ], False)
 
-    @skip("temporary")
-    def test_turns_run(self):
+    def test_local_turns_run(self):
         self.__build_test([
             (GameCreatorProxy(self), 1),
             (GameProxy(self), 1)
         ], False)
 
-    @skip("temporary")
-    def test_games_get_generated_repeatedly(self):
+    def test_local_games_get_generated_repeatedly(self):
         times = 5
         for i in xrange(times):
-            self.test_games_get_generated()
+            self.test_local_games_get_generated()
 
     @skip("temporary")
-    def ktest_games_get_generated_kubernates(self):
+    def test_kube_games_get_generated_kubernates(self):
         self.__build_test([
             (GameCreatorProxy(self), 1),
             (GameConnectionProxy(self), 1),
             (TurnProxy(self), 1)
         ], True)
-
 
 from unittest import TestSuite
 from unittest import TextTestRunner
