@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+from socketIO_client import SocketIO, LoggingNamespace
 from unittest import TestCase
 import requests
 
@@ -20,12 +21,17 @@ def run_command_async(args, cwd=".", verbose=False):
     return p
 
 class TestService(TestCase):
+    """
+        Use verbose=True to see the server logs for localhost.
+    """
     def __setup_resources(self):
         self._SCRIPT_LOCATION = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', '..'))
         self._SERVICE_PY = os.path.join(self._SCRIPT_LOCATION, 'run.py')
         self._CODE = 'class Avatar: pass'
 
     def __setup_environment(self):
+        self._VERBOSE = False
+
         os.environ['AIMMO_MODE'] = 'threads'
         os.environ['WORKER_MANAGER'] = 'local'
         os.environ['GAME_API_URL'] = 'http://localhost:8000/players/api/games/'
@@ -33,9 +39,15 @@ class TestService(TestCase):
         self._SERVER_URL = 'http://localhost:8000/'
         self._SERVER_PORT = '8000'
 
+    def __start_scoketio(self, host_port, path):
+        host = host_port.split(":")[0] + ":" + host_port.split(":")[1]
+        port = host_port.split(':')[2]
+        self.socket_io = SocketIO(str(host), int(port),
+            cookies=self.session.cookies)
+
     def __start_django(self):
         print(self._SERVICE_PY)
-        self.django = run_command_async(["python", self._SERVICE_PY], self._SCRIPT_LOCATION)
+        self.django = run_command_async(["python", self._SERVICE_PY], self._SCRIPT_LOCATION, verbose=self._VERBOSE)
         self.session = requests.Session()
 
     def __cleanup(self):
@@ -67,6 +79,11 @@ class TestService(TestCase):
         # asserting the response
         self.assertEqual(result.status_code, code)
         return result
+
+    def __get_socketio_info(self, page):
+        def lookup(string):
+            return list(filter(lambda x: string in x, page.split('\n')))[0].split('"')[1]
+        return lookup("GAME_URL_BASE"), lookup("GAME_URL_PATH")
 
     def setUp(self):
         self.__setup_resources()
@@ -104,9 +121,29 @@ class TestService(TestCase):
                 'password':'admin'})
 
             # check the code is OK
-            code_page = self.__get_resource("players/program_level/" + level1_id, 200)
+            code_page = self.__get_resource("players/program_level/" + level1_id, 200).text
 
             # check we can watch the game
-            code_page = self.__get_resource("players/watch_level/" + level1_id, 200)
+            watch_page = self.__get_resource("players/watch_level/" + level1_id, 200).text
+            host, path = self.__get_socketio_info(watch_page)
+
+            # wait for 30 seconds for pods to start
+            tries = 30
+            while tries > 0:
+                time.sleep(1)
+                try:
+                    if "HEALTHY" in self.session.get(host).text:
+                        print "Workers started..."
+                        break
+                except:
+                    print("Waiting for game...")
+            self.assertTrue(tries > 0)
+
+            # # starting to communicate with the server
+            #self.__start_scoketio(host, path)
+            #
+            # def world_init_callback(data):
+            #     print(data)
+            # self.socket_io.emit('world-init', callback=world_init_callback)
         finally:
             self.__cleanup()
