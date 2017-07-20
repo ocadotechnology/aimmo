@@ -21,6 +21,7 @@ setup(
     ],
     tests_require=[
         'httmock',
+        'django'
     ],
     test_suite="setup.custom_test_suite",
     zip_safe=False,
