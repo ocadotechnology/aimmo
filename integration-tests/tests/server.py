@@ -5,46 +5,33 @@ import sys
 from time import sleep
 from subprocess import call
 
-
-################################################################################
-
-# Register custom mockery...
-
-# import sys
-# # Add the ptdraft folder path to the sys.path list
-# sys.path.append('../../')
-#
-# import importlib
-# mockery = importlib.import_module("aimmo-game-creator.tests.test_worker_manager")
-
-
-################################################################################
-
 import signal
 import sys
 import json
 
-################################################################################
+class ConnectionProxy():
+    """
+        A ConnectionProxy is a class that can be binded to another class
+        and is supposed to be process a received request and return a
+        specific response.
 
-# register a specific signal handler if necessary at the termination of the program
-# def signal_handler(signal, frame):
-    # close the socket here
-    # sys.exit(0)
-# signal.signal(signal.SIGINT, signal_handler)
-
-################################################################################
-
-class Runner():
+        The default apply function does return the same response as the
+        received one.
+    """
     def __init__(self, binder):
         self.binder = binder
     def apply(self, received):
         return received
 
-################################################################################
 
-# Class that receives a mock(as in unit tests) and creates a lightweight server
-# at localhost
 class MockServer():
+    """
+        Lightweight csocket server used for test_backend:
+        * uses simple sockets to mock the Django part of the application.
+        * listens to a custom client that can be configured at initialization
+        * one can register a "ConnectionProxy" and the server runns them in
+          them in the order they have been registered
+    """
     def __register_connection(self, host, port):
         self.host = host
         self.port = port
@@ -60,16 +47,14 @@ class MockServer():
         #listen to one client
         self.sock.listen(1)
 
-        print "Server starting on port " + str(port)
-
     def __init__(self, host="localhost", port=8000):
         self.__register_connection(host, port)
         self.runners = []
 
-    def register_runner(self, runner):
+    def register_proxy(self, runner):
         self.runners.append(runner)
 
-    def clear_runners(self):
+    def clear_proxies(self):
         self.runners = []
 
     # for the moment supports only gets
@@ -86,7 +71,6 @@ class MockServer():
 
     def serve(self):
         received, received_formatted = self.receive()
-        print "Received request " + received_formatted
 
         ans = received_formatted
         for runner in self.runners:
@@ -97,11 +81,10 @@ class MockServer():
         #listen for connection
         while times > 0:
             self.csock, self.caddr = self.sock.accept()
-            print "Connection from:" + `self.caddr`
 
             # serve the connection
             str_ans = self.serve()
-            print("Responding: " + str_ans)
+            # print("Responding: " + str_ans)
             self.csock.send("HTTP/1.0 200 OK\nContent-Type: text/plain\n\n" + str_ans)
 
             times -= 1
