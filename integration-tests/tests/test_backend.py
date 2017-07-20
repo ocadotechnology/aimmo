@@ -16,13 +16,18 @@ FNULL = open(os.devnull, 'w')
 
 from httmock import HTTMock
 
-# Note: The kubernates setup works only from the root of the directory.
 def run_command_async(args, cwd="."):
     p = subprocess.Popen(args, cwd=cwd, stdout=FNULL, stderr=subprocess.STDOUT)
     return p
 
 import cPickle as pickle
 from json import dumps
+
+################################################################################
+
+# Default setting for the AI code and the default API settings used to mock
+# the Django server. This will act as a client and the requests and responses
+# should be verified using proxies as explained below and in server.py
 
 DEFAULT_LEVEL_SETTINGS = {
     'TARGET_NUM_CELLS_PER_AVATAR': 16.0,
@@ -53,9 +58,11 @@ DEFAULT_AI = {
 
 ################################################################################
 
-# Request mockeries
 
 class RequestMock(object):
+    """
+        Request mockery that can be used in a proxy.
+    """
     def __init__(self, num_games):
         self.value = self._generate_response(num_games)
         self.urls_requested = []
@@ -68,6 +75,9 @@ class RequestMock(object):
         return dumps(self.value)
 
 class GameCreatorRequestMock(RequestMock):
+    """
+        Mockery to expose a set of games.
+    """
     def _generate_response(self, num_games):
         return {
             str(i): {
@@ -77,6 +87,9 @@ class GameCreatorRequestMock(RequestMock):
         }
 
 class GameRequestMock(RequestMock):
+    """
+        Mockery to expose an AI behaviour.
+    """
     def _generate_response(self, num_games):
         return DEFAULT_AI
 
@@ -85,6 +98,10 @@ class GameRequestMock(RequestMock):
 # See definition of a proxy in mock_server.py
 
 class GameCreatorProxy(ConnectionProxy):
+    """
+        Proxy for the game creator. Asserts that only the games resouce has
+        been accessed and returns a valid list of games.
+    """
     def apply(self, received):
         mocker = GameCreatorRequestMock(1)
         with HTTMock(mocker):
@@ -94,6 +111,10 @@ class GameCreatorProxy(ConnectionProxy):
             return ans.text
 
 class GameProxy(ConnectionProxy):
+    """
+        Proxy for the game. Asserts that only the specific game resouce has
+        been accessed and returns a valid list of users.
+    """
     def apply(self, received):
         mocker = GameRequestMock(1)
         with HTTMock(mocker):
@@ -102,6 +123,7 @@ class GameProxy(ConnectionProxy):
             self.binder.assertEqual("/players/api/games/0/" in mocker.urls_requested[0], True)
             return ans.text
 
+# TODO: for more complex tests a seam has to be exposed or socket.io needs to be supported
 class TurnProxy(ConnectionProxy):
     def apply(self, received):
         return "NotImplemented"
@@ -109,6 +131,23 @@ class TurnProxy(ConnectionProxy):
 ################################################################################
 
 class TestService(TestCase):
+    """
+        Test service that verifies the creating of the games and workers cluster.
+        Uses the MockServer class insted of the Django client.
+        This is a more lightweight integration test that only tests the backend connections.
+
+        Usage:
+          * add a test like this:
+              self.__build_test([
+                  (GameCreatorProxy(self), 1), # pair of proxy and turns
+                  (GameProxy(self), 1)
+              ], False)                        # set True for kubernates
+
+          * the service runs minikube/localhost for testing
+          * kubernates tests should be named: "ktest_..."
+          * localhost tests should be named: "test_..."
+          * new proxies and can be added to the tests -- see the proxies above for details
+    """
     def __setup_resources(self):
         self._SCRIPT_LOCATION = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '../../'))
         self._SERVICE_PY = os.path.join(self._SCRIPT_LOCATION, 'aimmo-game-creator', 'service.py')
@@ -166,7 +205,6 @@ class TestService(TestCase):
             (GameProxy(self), 1)
         ], False)
 
-    # TODO: We need to add a seam in the server so we can use this communication tool and further tests
     def test_turns_run(self):
         self.__build_test([
             (GameCreatorProxy(self), 1),
@@ -174,9 +212,7 @@ class TestService(TestCase):
         ], False)
 
     def test_games_get_generated_repeatedly(self):
-        # to ensure there are no concurrency issues, we shall run a test multiple
-        # times; TODO: see effect of local networking
-        times = 10
+        times = 5
         for i in xrange(times):
             self.test_games_get_generated()
 
@@ -186,30 +222,3 @@ class TestService(TestCase):
             (GameConnectionProxy(self), 1),
             (TurnProxy(self), 1)
         ], True)
-
-from unittest import TestSuite
-from unittest import TextTestRunner
-
-# We use this locally as it is simple to work on test development
-def get_test_suite():
-    suite = TestSuite()
-
-    suite.addTest(TestService("test_killing_creator_kills_game"))
-    suite.addTest(TestService("test_games_get_generated"))
-    suite.addTest(TestService("test_games_get_generated_repeatedly"))
-    suite.addTest(TestService("test_turns_run"))
-
-    # TODO: not yet fully supported locally; probably an environment problem
-    # as server does not communicate with the cluster
-    # suite.addTest(TestService("test_games_get_generated_kubernates"))
-
-    return suite
-
-def main():
-    suite = get_test_suite()
-
-    proxy = TextTestRunner()
-    proxy.run(suite)
-
-if __name__ == "__main__":
-    main()
