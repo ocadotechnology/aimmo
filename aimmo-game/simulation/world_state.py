@@ -91,13 +91,12 @@ class WorldState():
 
         def map_feature_dict(map_feature):
             return {
-                'id' : hash(map_feature),
+                'id' : str(hash(map_feature)),
                 'x'  : map_feature.location.x,
                 'y'  : map_feature.location.y
             }
 
         with self.game_state as game_state:
-            world = game_state.world_map
 
             # Refresh players dictionary.
 
@@ -112,10 +111,11 @@ class WorldState():
 
             # Refresh map features dictionary.
 
-            avatar_view = game_state.avatar_manager.get_avatar(game_state.main_avatar_id).view
+            main_avatar_id = 1 #game_state.main_avatar_id?
+            avatar_view = game_state.avatar_manager.get_avatar(main_avatar_id).view
 
             if avatar_view.is_empty:
-                avatar_view.reveal_all_cells()
+                avatar_view.reveal_all_cells(game_state.world_map)
                 avatar_view.is_empty = False
 
             # Creation
