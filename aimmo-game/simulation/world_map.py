@@ -32,7 +32,6 @@ class Cell(object):
         self.pickup = None
         self.partially_fogged = partially_fogged
         self.actions = []
-        self.created = False
 
     def __repr__(self):
         return 'Cell({} h={} s={} a={} p={} f{})'.format(

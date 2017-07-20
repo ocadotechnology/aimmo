@@ -20,7 +20,6 @@ class AvatarManager(object):
         self.avatars_to_delete_by_id = {}
 
     def add_avatar(self, player_id, worker_url, location):
-        print("avatar added!!")
         avatar = AvatarWrapper(player_id, location, worker_url, AvatarAppearance("#000", "#ddd", "#777", "#fff"))
         self.avatars_to_create_by_id[player_id] = avatar
         return avatar

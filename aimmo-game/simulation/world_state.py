@@ -112,17 +112,33 @@ class WorldState():
 
             # Refresh map features dictionary.
 
-            for cell in world.cells_to_create():
+            avatar_view = game_state.avatar_manager.get_avatar(game_state.main_avatar_id).view
+
+            if avatar_view.is_empty:
+                avatar_view.reveal_all_cells()
+                avatar_view.is_empty = False
+
+            # Creation
+            for cell in avatar_view.cells_to_reveal:
 
                 # Cell is an obstacle.
                 if not cell.habitable:
                     self.create_map_feature(MapFeature.OBSTACLE.value, map_feature_dict(cell))
-                    cell.created = True
 
                 # Cell is a score point.
                 if cell.generates_score:
                     self.create_map_feature(MapFeature.SCORE_POINT.value, map_feature_dict(cell))
-                    cell.created = True
+
+            # Deletion
+            for cell in avatar_view.cells_to_clear:
+
+                # Cell is an obstacle.
+                if not cell.habitable:
+                    self.delete_map_feature(MapFeature.OBSTACLE.value, map_feature_dict(cell))
+
+                # Cell is a score point.
+                if cell.generates_score:
+                    self.delete_map_feature(MapFeature.SCORE_POINT.value, map_feature_dict(cell))
 
 
 
