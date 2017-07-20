@@ -20,8 +20,9 @@ class AvatarView():
     # Returns all the cells in the rectangle defined by two corners.
     def cells_in_rectangle(self, top_left, bottom_right, world_map):
         cells = []
-        for x in range(top_left.x, bottom_right.x):
-            for y in range(bottom_right.y, top_left.y):
+
+        for x in range(max(top_left.x, world_map.min_x()), min(bottom_right.x, world_map.max_x())):
+            for y in range(max(bottom_right.y, world_map.min_y()), min(top_left.y, world_map.max_y())):
                 cells.append(world_map.get_cell_by_coords(x, y))
         return cells
 
@@ -45,8 +46,6 @@ class AvatarView():
             self.cells_to_reveal = self.cells_in_rectangle(self.SW_horizon, self.SE_horizon + direction.SOUTH, world_map)
         else:
             raise ValueError
-
-        #print("------------ (%d, %d) - (%d, %d) -----------" % (self.NW_horizon.x, self.NW_horizon.y, self.SE_horizon.x, self.SE_horizon.y))
 
         # Shift the four view corners (horizons).
         self.NE_horizon += move_direction
