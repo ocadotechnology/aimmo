@@ -1,23 +1,24 @@
 from __future__ import absolute_import
 
 from server import MockServer
-from server import Runner
+from server import ConnectionProxy
 from unittest import TestCase
 
-import os
-import subprocess
 import time
 import signal
 import requests
 
+import os
+import subprocess
 import sys
 sys.path.append('../../')
+FNULL = open(os.devnull, 'w')
 
 from httmock import HTTMock
 
 # Note: The kubernates setup works only from the root of the directory.
 def run_command_async(args, cwd="."):
-    p = subprocess.Popen(args, cwd=cwd)
+    p = subprocess.Popen(args, cwd=cwd, stdout=FNULL, stderr=subprocess.STDOUT)
     return p
 
 import cPickle as pickle
@@ -81,9 +82,9 @@ class GameRequestMock(RequestMock):
 
 ################################################################################
 
-# See definition of a runner in mock_server.py
+# See definition of a proxy in mock_server.py
 
-class GameCreatorRunner(Runner):
+class GameCreatorProxy(ConnectionProxy):
     def apply(self, received):
         mocker = GameCreatorRequestMock(1)
         with HTTMock(mocker):
@@ -92,7 +93,7 @@ class GameCreatorRunner(Runner):
             self.binder.assertEqual("/players/api/games/" in mocker.urls_requested[0], True)
             return ans.text
 
-class GameRunner(Runner):
+class GameProxy(ConnectionProxy):
     def apply(self, received):
         mocker = GameRequestMock(1)
         with HTTMock(mocker):
@@ -101,7 +102,7 @@ class GameRunner(Runner):
             self.binder.assertEqual("/players/api/games/0/" in mocker.urls_requested[0], True)
             return ans.text
 
-class TurnRunner(Runner):
+class TurnProxy(ConnectionProxy):
     def apply(self, received):
         return "NotImplemented"
 
@@ -120,7 +121,7 @@ class TestService(TestCase):
         self._SERVER_URL = 'http://localhost:8000/'
         self._SERVER_PORT = '8000'
 
-    def __build_test(self, runners, kubernetes=False):
+    def __build_test(self, proxies, kubernetes=False):
         try:
             if kubernetes:
                 # TODO: proper start-up
@@ -132,11 +133,11 @@ class TestService(TestCase):
                 game = run_command_async(['python', self._SERVICE_PY, self._SERVER_URL, self._SERVER_PORT])
 
             server = MockServer()
-            for runner, times in runners:
-                print "Running " + str(runner) + " " + str(times) + " times"
-                server.register_runner(runner)
+            for proxy, times in proxies:
+                print "Running " + str(proxy) + " " + str(times) + " times"
+                server.register_proxy(proxy)
                 server.run(times)
-                server.clear_runners()
+                server.clear_proxies()
 
         finally:
             if kubernetes:
@@ -161,15 +162,15 @@ class TestService(TestCase):
 
     def test_games_get_generated(self):
         self.__build_test([
-            (GameCreatorRunner(self), 1),
-            (GameRunner(self), 1)
+            (GameCreatorProxy(self), 1),
+            (GameProxy(self), 1)
         ], False)
 
     # TODO: We need to add a seam in the server so we can use this communication tool and further tests
     def test_turns_run(self):
         self.__build_test([
-            (GameCreatorRunner(self), 1),
-            (GameRunner(self), 1)
+            (GameCreatorProxy(self), 1),
+            (GameProxy(self), 1)
         ], False)
 
     def test_games_get_generated_repeatedly(self):
@@ -181,9 +182,9 @@ class TestService(TestCase):
 
     def ktest_games_get_generated_kubernates(self):
         self.__build_test([
-            (GameCreatorRunner(self), 1),
-            (GameRunner(self), 1),
-            (TurnRunner(self), 1)
+            (GameCreatorProxy(self), 1),
+            (GameConnectionProxy(self), 1),
+            (TurnProxy(self), 1)
         ], True)
 
 from unittest import TestSuite
@@ -207,8 +208,8 @@ def get_test_suite():
 def main():
     suite = get_test_suite()
 
-    runner = TextTestRunner()
-    runner.run(suite)
+    proxy = TextTestRunner()
+    proxy.run(suite)
 
 if __name__ == "__main__":
     main()
