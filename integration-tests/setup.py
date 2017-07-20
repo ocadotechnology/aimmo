@@ -6,6 +6,7 @@ def custom_test_suite():
 
     test_suite = test_loader.discover('tests', pattern='test_*.py')
     ktest_suite = test_loader.discover('tests', pattern='ktest_*.py')
+    # dtest_suite = test_loader.discover('tests', pattern='dtest_*.py')
 
     # kubernates tests are not yet fully supported
     all_tests = unittest.TestSuite([test_suite])
