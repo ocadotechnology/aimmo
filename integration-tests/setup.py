@@ -1,17 +1,14 @@
 from setuptools import find_packages, setup
 import unittest
+import os
 
 def custom_test_suite():
-    test_loader = unittest.TestLoader()
-
-    test_suite = test_loader.discover('tests', pattern='test_*.py')
-    ktest_suite = test_loader.discover('tests', pattern='ktest_*.py')
-    # dtest_suite = test_loader.discover('tests', pattern='dtest_*.py')
-
-    # kubernates tests are not yet fully supported
-    all_tests = unittest.TestSuite([test_suite])
-
-    return all_tests
+    """ 
+        To run the minikube integration tests set:
+            os.environ['RUN_KUBE_TESTS'] = "SET"     
+    """
+    os.environ['RUN_KUBE_TESTS'] = "SET"
+    return unittest.TestLoader().discover('tests', pattern='test_*.py')
 
 setup(
     name='integration-tests',
@@ -20,8 +17,7 @@ setup(
     install_requires=[
     ],
     tests_require=[
-        'httmock',
-        'django'
+        'httmock'
     ],
     test_suite="setup.custom_test_suite",
     zip_safe=False,
