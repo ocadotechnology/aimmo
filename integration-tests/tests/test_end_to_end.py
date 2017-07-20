@@ -1,8 +1,9 @@
 from __future__ import absolute_import
 
-from socketIO_client import SocketIO, LoggingNamespace
 from unittest import TestCase
 import requests
+
+from socketio_client import SocketClient
 
 import os
 import time
@@ -42,8 +43,9 @@ class TestService(TestCase):
     def __start_scoketio(self, host_port, path):
         host = host_port.split(":")[0] + ":" + host_port.split(":")[1]
         port = host_port.split(':')[2]
-        self.socket_io = SocketIO(str(host), int(port),
-            cookies=self.session.cookies)
+
+        self.socket_io = SocketClient(str(host), int(port), path, self)
+        self.socket_io.start()
 
     def __start_django(self):
         print(self._SERVICE_PY)
@@ -89,11 +91,11 @@ class TestService(TestCase):
         self.__setup_resources()
         self.__setup_environment()
 
-    def test_start_django(self):
-        try:
-            self.__start_django()
-        finally:
-            self.__cleanup()
+    # def test_start_django(self):
+    #     try:
+    #         self.__start_django()
+    #     finally:
+    #         self.__cleanup()
 
     def test_level_1(self):
         try:
@@ -139,11 +141,8 @@ class TestService(TestCase):
                     print("Waiting for game...")
             self.assertTrue(tries > 0)
 
-            # # starting to communicate with the server
-            #self.__start_scoketio(host, path)
-            #
-            # def world_init_callback(data):
-            #     print(data)
-            # self.socket_io.emit('world-init', callback=world_init_callback)
+            time.sleep(5)
+            # Starting the socket io test part
+            self.__start_scoketio(host, path)
         finally:
             self.__cleanup()
