@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 from simulation.levels.parsers import Parser
 from simulation.levels.transforms import CellTransform
+from pprint import pprint
 
 import os
 import unittest
@@ -49,6 +50,9 @@ class TestParser(unittest.TestCase):
 
     def __with_simple_map(self):
         self.parser.parse_map("map_simple.txt")
+
+    def __with_micro_map(self):
+        self.parser.parse_map("map_micro.txt")
 
     def test_parse_simple_map(self):
         self.__with_simple_map()
@@ -102,9 +106,47 @@ class TestParser(unittest.TestCase):
                 "big" : "big",
                 "cool" : "cool"
                 },
-            "x" : 3,
+            "x" : '3',
             "other" : {
-                "y" : 3,
+                "y" : '3',
                 "test" : "mock"
             }
         })
+
+    def test_map_apply_transforms(self):
+        self.__with_micro_map()
+        self.__with_big_model()
+
+        pprint(self.parser.map_apply_transforms())
+
+        self.assertItemsEqual(self.parser.map_apply_transforms(), [{
+            "code": "0",
+            "test" : "zero"
+         }, {
+            "code": "1",
+            "test" : "one"
+         }, {
+             "code": "2",
+             "test" : {
+                 "big" : "big",
+                 "cool" : "cool"
+                 },
+             "x" : '0',
+             "other" : {
+                 "y" : '2',
+                 "test" : "mock"
+             }
+         }])
+
+    def test_map_apply_transforms_big_map(self):
+        self.__with_big_model()
+        self.__with_big_map()
+        self.assertEqual(len(self.parser.map_apply_transforms()), 77)
+
+        self.__with_simple_model()
+        self.__with_big_map()
+        self.assertEqual(len(self.parser.map_apply_transforms()), 71)
+
+        self.__with_big_model()
+        self.__with_simple_map()
+        self.assertEqual(len(self.parser.map_apply_transforms()), 9)
