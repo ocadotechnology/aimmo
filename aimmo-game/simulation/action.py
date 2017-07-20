@@ -68,6 +68,9 @@ class MoveAction(Action):
         event = MovedEvent(self.avatar.location, self.target_location)
         self.avatar.add_event(event)
 
+        # Change avatar's world view.
+        self.avatar.view.move(self.direction, world_map)
+
         world_map.get_cell(self.avatar.location).avatar = None
         self.avatar.location = self.target_location
         world_map.get_cell(self.target_location).avatar = self.avatar

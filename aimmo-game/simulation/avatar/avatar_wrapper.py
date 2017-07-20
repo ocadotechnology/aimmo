@@ -2,7 +2,7 @@ import logging
 import requests
 
 from simulation.action import ACTIONS, MoveAction, WaitAction
-
+from avatar_view import AvatarView
 
 LOGGER = logging.getLogger(__name__)
 
@@ -26,6 +26,7 @@ class AvatarWrapper(object):
         self.attack_strength = 1
         self.fog_of_war_modifier = 0
         self._action = None
+        self.view = AvatarView(initial_location, 3)
 
     def update_effects(self):
         effects_to_remove = set()
