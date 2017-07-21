@@ -12,8 +12,6 @@ git:
 install:
   - pip install .
   - pip install coveralls
-  - chmod +x kube_install.sh 
-  - ./kube_install.sh
 script:
   - python all_tests.py --coverage
 after_success:
