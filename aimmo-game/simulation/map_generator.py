@@ -16,6 +16,7 @@ from simulation.world_map import DEFAULT_LEVEL_SETTINGS
 from simulation.custom_map import BaseGenerator
 from simulation.custom_map import BaseLevelGenerator
 from simulation.custom_map import Level1
+from simulation.custom_map import EmptyMapGenerator
 
 LOGGER = logging.getLogger(__name__)
 
@@ -23,7 +24,7 @@ class Main(BaseGenerator):
     def get_map(self):
         height = self.settings['START_HEIGHT']
         width = self.settings['START_WIDTH']
-        world_map = WorldMap.generate_empty_map(height, width, self.settings)
+        world_map = EmptyMapGenerator(height, width, self.settings).get_map()
 
         # We designate one non-corner edge cell as empty, to ensure that the map can be expanded
         always_empty_edge_x, always_empty_edge_y = get_random_edge_index(world_map)

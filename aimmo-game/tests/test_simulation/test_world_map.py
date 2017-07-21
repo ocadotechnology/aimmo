@@ -9,6 +9,7 @@ from simulation.location import Location
 from simulation.world_map import Cell, WorldMap, WorldMapStaticSpawnDecorator
 from .dummy_avatar import DummyAvatar
 from .maps import MockCell, MockPickup
+from simulation.custom_map import EmptyMapGenerator
 
 
 def int_ceil(num):
@@ -105,7 +106,7 @@ class TestWorldMap(TestCase):
         self.assertGridSize(map, 1, 3)
 
     def test_generated_map(self):
-        map = WorldMap.generate_empty_map(2, 5, {})
+        map = EmptyMapGenerator(2, 5, {}).get_map()
         self.assertGridSize(map, 5, 2)
 
     def test_all_cells(self):
