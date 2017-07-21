@@ -19,6 +19,8 @@ from simulation.custom_map import Level1
 
 LOGGER = logging.getLogger(__name__)
 
+""" Level generation. TODO: document @ custom_map, map_generator """
+
 class Main(BaseGenerator):
     def get_map(self):
         height = self.settings['START_HEIGHT']
