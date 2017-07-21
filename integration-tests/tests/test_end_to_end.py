@@ -13,6 +13,7 @@ sys.path.append('../../')
 FNULL = open(os.devnull, 'w')
 
 import logging
+import traceback
 
 from misc import run_command_async, kill_process_tree
 
