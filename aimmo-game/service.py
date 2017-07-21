@@ -8,6 +8,7 @@ import cPickle as pickle
 import logging
 import os
 import sys
+import time
 
 import flask
 from flask_socketio import SocketIO
@@ -38,6 +39,7 @@ def client_ready():
 
 def send_world_update():
     if world_state.ready_to_update:
+        time.sleep(0.875)
         socketio.emit(
             'world-update',
             world_state.get_updates(),
