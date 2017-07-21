@@ -1,4 +1,5 @@
 import abc
+import math
 
 from simulation.levels.levels import LEVELS
 from simulation.levels.completion_checks import COMPLETION_CHECKS
@@ -9,11 +10,17 @@ from pprint import pprint
 from simulation.location import Location
 from simulation.game_state import GameState
 from simulation.world_map import WorldMap
+<<<<<<< HEAD
 from simulation.world_map import DEFAULT_LEVEL_SETTINGS
 from simulation.world_map import Cell
 
 import sys
 current_module = sys.modules[__name__]
+=======
+from simulation.world_map import WorldMapStaticSpawnDecorator
+from simulation.world_map import DEFAULT_LEVEL_SETTINGS
+from simulation.world_map import Cell
+>>>>>>> 006af66... Changed the WorldMap static functions to a map generator. Now the whole thing work the same but the responsability is seaprated.
 
 class BaseGenerator(object):
     __metaclass__ = abc.ABCMeta
@@ -30,6 +37,36 @@ class BaseGenerator(object):
     @abc.abstractmethod
     def get_map(self):
         pass
+
+class EmptyMapGenerator(BaseGenerator):
+    def __init__(self, settings):
+        self.height =  self.settings['START_HEIGHT']
+        self.width = self.settings['START_WIDTH']
+        self.settings = settings
+
+    def __init__(self, height, width, settings):
+        self.height = height
+        self.width = width
+        self.settings = settings
+
+    def get_map(self):
+        def _min_max_from_dimensions(height, width):
+            max_x = int(math.floor(width / 2))
+            min_x = -(width - max_x - 1)
+            max_y = int(math.floor(height / 2))
+            min_y = -(height - max_y - 1)
+            return min_x, max_x, min_y, max_y
+
+        new_settings = DEFAULT_LEVEL_SETTINGS.copy()
+        new_settings.update(self.settings)
+
+        (min_x, max_x, min_y, max_y) = _min_max_from_dimensions(self.height, self.width)
+        grid = {}
+        for x in xrange(min_x, max_x + 1):
+            for y in xrange(min_y, max_y + 1):
+                location = Location(x, y)
+                grid[location] = Cell(location)
+        return WorldMap(grid, new_settings)
 
 class BaseLevelGenerator(BaseGenerator):
     __metaclass__ = abc.ABCMeta
@@ -83,7 +120,11 @@ class JsonLevelGenerator(BaseLevelGenerator):
 
     def _register_json(self, json_map):
         self.json_map = json_map
+<<<<<<< HEAD
         self.world_map = WorldMap.generate_empty_map(15, 15, self.settings)
+=======
+        self.world_map = EmptyMapGenerator(100, 100, self.settings).get_map()
+>>>>>>> 006af66... Changed the WorldMap static functions to a map generator. Now the whole thing work the same but the responsability is seaprated.
 
     def _register_decoders(self):
         self.decoders = DECODERS

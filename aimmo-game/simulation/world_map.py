@@ -35,30 +35,6 @@ class WorldMap(object):
         self.grid = grid
         self.settings = settings
 
-    @classmethod
-    def _min_max_from_dimensions(cls, height, width):
-        max_x = int(math.floor(width / 2))
-        min_x = -(width - max_x - 1)
-        max_y = int(math.floor(height / 2))
-        min_y = -(height - max_y - 1)
-        return min_x, max_x, min_y, max_y
-
-    @classmethod
-    def generate_empty_map(cls, height, width, settings):
-        new_settings = DEFAULT_LEVEL_SETTINGS.copy()
-        new_settings.update(settings)
-
-        (min_x, max_x, min_y, max_y) = WorldMap._min_max_from_dimensions(height, width)
-        grid = {}
-        for x in xrange(min_x, max_x + 1):
-            for y in xrange(min_y, max_y + 1):
-                location = Location(x, y)
-                grid[location] = Cell(location)
-        return cls(grid, new_settings)
-
-    def all_cells(self):
-        return self.grid.itervalues()
-
     # Used to know when to instantiate objects in the scene.
     def cells_to_create(self):
         new_cells = []
