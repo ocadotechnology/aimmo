@@ -12,17 +12,12 @@ import requests
 import os
 import subprocess
 import sys
-sys.path.append('../../')
-FNULL = open(os.devnull, 'w')
-
 from httmock import HTTMock
-
-def run_command_async(args, cwd="."):
-    p = subprocess.Popen(args, cwd=cwd, stdout=FNULL, stderr=subprocess.STDOUT)
-    return p
 
 import cPickle as pickle
 from json import dumps
+
+from misc import run_command_async, kill_process_tree
 
 ################################################################################
 
@@ -186,9 +181,8 @@ class TestService(TestCase):
                 os.kill(game.pid, signal.SIGKILL)
                 os.system("minikube delete")
             else:
-                os.system("pkill -TERM -P " + str(game.pid))
-                os.kill(game.pid, signal.SIGKILL)
-
+                time.sleep(1)
+                kill_process_tree(game.pid)
 
     def setUp(self):
         self.__setup_resources()
@@ -198,8 +192,8 @@ class TestService(TestCase):
         try:
             game = run_command_async(['python', self._SERVICE_PY, self._SERVER_URL, self._SERVER_PORT])
         finally:
-            os.system("pkill -TERM -P " + str(game.pid))
-            os.kill(game.pid, signal.SIGKILL)
+            time.sleep(1)
+            kill_process_tree(game.pid)
 
     def test_local_games_get_generated(self):
         self.__build_test([

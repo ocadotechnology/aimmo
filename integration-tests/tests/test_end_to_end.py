@@ -12,12 +12,7 @@ import json
 sys.path.append('../../')
 FNULL = open(os.devnull, 'w')
 
-def run_command_async(args, cwd=".", verbose=False):
-    if verbose:
-        p = subprocess.Popen(args, cwd=cwd)
-    else:
-        p = subprocess.Popen(args, cwd=cwd, stdout=FNULL, stderr=subprocess.STDOUT)
-    return p
+from misc import run_command_async, kill_process_tree
 
 class TestService(TestCase):
     """
@@ -29,7 +24,7 @@ class TestService(TestCase):
         self._CODE = 'class Avatar: pass'
 
     def __setup_environment(self):
-        self._VERBOSE = True
+        self._VERBOSE = False
 
         os.environ['AIMMO_MODE'] = 'threads'
         os.environ['WORKER_MANAGER'] = 'local'
@@ -47,19 +42,20 @@ class TestService(TestCase):
 
     def __start_django(self, kubernates=False):
         print(self._SERVICE_PY)
-        if not kubernates:    
+        if not kubernates:
             self.django = run_command_async(["python", self._SERVICE_PY], self._SCRIPT_LOCATION, verbose=self._VERBOSE)
         else:
-            self.django = run_command_async(["python", self._SERVICE_PY, "-k"], self._SCRIPT_LOCATION, verbose=self._VERBOSE) 
+            self.django = run_command_async(["python", self._SERVICE_PY, "-k"], self._SCRIPT_LOCATION, verbose=self._VERBOSE)
         self.session = requests.Session()
 
     def __cleanup(self, kubernates=False):
+        print("Terminating processes....")
+        time.sleep(1)
         try:
-            time.sleep(1)
             if not kubernates:
-                os.system("pkill -TERM -P " + str(self.django.pid))
-                os.kill(self.django.pid, signal.SIGKILL)
+                kill_process_tree(self.django.pid)
             else:
+                print("WTF")
                 os.system("minikube delete")
         finally:
             self.session = None
@@ -106,7 +102,7 @@ class TestService(TestCase):
                 print("Waiting for resource...")
         self.assertTrue(False)
 
-    def __test_start_django(self, kubernates):
+    def start_django(self, kubernates):
         try:
             self.__start_django(kubernates)
         finally:
@@ -115,12 +111,12 @@ class TestService(TestCase):
     def __find_game_id_by_name(self, name):
         # getting the games list
         games = json.loads(self.__get_resource("players/api/games", 200).text)
-        
+
         # getting the level list
         level_list = list(filter(lambda (x, y): name in y["name"], list(games.items())))
         self.assertEqual(len(level_list), 1)
         level_id = list(x for x,y in level_list)[0]
-        
+
         return level_id
 
     def __check_redirect(self, resource):
@@ -128,7 +124,7 @@ class TestService(TestCase):
         login_form_template = """<form method="post" action="/django.contrib.auth/login/">"""
         self.assertTrue(login_form_template in login_redirect_page)
 
-    def __test_level_1(self, kubernates):
+    def level_1(self, kubernates):
         try:
             self.__start_django(kubernates)
 
@@ -155,15 +151,17 @@ class TestService(TestCase):
 
             # wait for 30 seconds for pods to start
             self.__pool_callback(callback=lambda: "HEALTHY" in self.session.get(host).text, tries=30)
+        except Exception as e:
+            logging.error(traceback.format_exc())
         finally:
             self.__cleanup()
 
-    def __test_cant_code_without_login(self, kubernates):
+    def cant_code_without_login(self, kubernates):
         try:
             self.__start_django(kubernates)
 
             self.__pool_callback(callback=lambda: self.__get_resource("", 200).status_code == 200, tries=30)
-            
+
             # getting the first level
             level1_id = self.__find_game_id_by_name("Level 1")
 
@@ -180,15 +178,15 @@ class TestService(TestCase):
         finally:
             self.__cleanup()
 
-    def test_local_start_django(self): self.__test_start_django(kubernates=False)
-    def test_local_level_1(self): self.__test_level_1(kubernates=False)
-    def test_local_cant_code_without_login(self): self.__test_cant_code_without_login(kubernates=False)
+    def test_local_start_django(self): self.start_django(kubernates=False)
+    def test_local_level_1(self): self.level_1(kubernates=False)
+    def test_local_cant_code_without_login(self): self.cant_code_without_login(kubernates=False)
 
     @skipUnless('RUN_KUBE_TESTS' in os.environ, "See setup.py.")
-    def test_kube_start_django(self): self.__test_start_django(kubernates=True)
-    
+    def test_kube_start_django(self): self.start_django(kubernates=True)
+
     @skipUnless('RUN_KUBE_TESTS' in os.environ, "See setup.py.")
-    def test_kube_level_1(self): self.__test_level_1(kubernates=True)
-    
+    def test_kube_level_1(self): self.level_1(kubernates=True)
+
     @skipUnless('RUN_KUBE_TESTS' in os.environ, "See setup.py.")
-    def test_kube_cant_code_without_login(self):  self.__test_cant_code_without_login(kubernates=True)
+    def test_kube_cant_code_without_login(self):  self.cant_code_without_login(kubernates=True)

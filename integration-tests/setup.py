@@ -3,9 +3,9 @@ import unittest
 import os
 
 def custom_test_suite():
-    """ 
+    """
         To run the minikube integration tests set:
-            os.environ['RUN_KUBE_TESTS'] = "SET"     
+            os.environ['RUN_KUBE_TESTS'] = "SET"
     """
     # os.environ['RUN_KUBE_TESTS'] = "SET"
     return unittest.TestLoader().discover('tests', pattern='test_*.py')
@@ -17,7 +17,8 @@ setup(
     install_requires=[
     ],
     tests_require=[
-        'httmock'
+        'httmock',
+        'psutil'
     ],
     test_suite="setup.custom_test_suite",
     zip_safe=False,
