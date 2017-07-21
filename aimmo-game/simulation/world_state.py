@@ -24,12 +24,14 @@ class WorldState():
 
     def __init__(self, game_state):
         self.game_state = game_state
+        self.ready_to_update = False
         self.players = defaultdict(dict)
         self.map_features = defaultdict(dict)
         self.clear_updates()
 
     def get_updates(self):
         self.refresh()
+
         updates = {
             'players'      : dict(self.players),
             'map_features' : dict(self.map_features)
@@ -93,10 +95,6 @@ class WorldState():
             }
 
         with self.game_state as game_state:
-            # Update active avatars.
-            for player in game_state.avatar_manager.avatars:
-                self.update_player(player_dict(player))
-
             main_avatar_id = 1 #game_state.main_avatar_id?
             avatar_view = game_state.avatar_manager.get_avatar(main_avatar_id).view
 

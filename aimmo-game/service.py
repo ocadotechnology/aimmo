@@ -3,6 +3,7 @@ import cPickle as pickle
 import logging
 import os
 import sys
+import time
 
 import eventlet
 
@@ -43,11 +44,12 @@ def client_ready(client_id):
 
 def send_world_update():
     for world_state in world_state_manager.values():
-        socketio.emit(
-            'world-update',
-            world_state.get_updates(),
-            broadcast=True,
-        )
+        if world_state.ready_to_update:
+            socketio.emit(
+                'world-update',
+                world_state.get_updates(),
+                broadcast=True,
+            )
 
 @app.route('/')
 def healthcheck():
