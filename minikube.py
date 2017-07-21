@@ -111,7 +111,7 @@ def start_cluster(minikube, driver="virtualbox", stop=False):
     if 'minikube: Running' in status:
         print('Cluster already running')
     else:
-        run_command([minikube, 'start', '--vm-driver=' + driver, '--memory=2048', '--cpus=2'])
+        run_command([minikube, 'start', '--memory=2048', '--cpus=2'])
 
 
 def build_docker_images(minikube):
