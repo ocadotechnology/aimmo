@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from unittest import TestCase, skipUnless
+from unittest import TestCase, skipUnless, skip
 import requests
 
 import os
@@ -128,6 +128,7 @@ class TestService(TestCase):
         login_form_template = """<form method="post" action="/django.contrib.auth/login/">"""
         self.assertTrue(login_form_template in login_redirect_page)
 
+    @skip("Problem with finding game by name.")
     def level_1(self, kubernates):
         try:
             self.__start_django(kubernates)
@@ -161,6 +162,7 @@ class TestService(TestCase):
         finally:
             self.__cleanup()
 
+    @skip("Problem with finding game by name.")
     def cant_code_without_login(self, kubernates):
         try:
             self.__start_django(kubernates)
