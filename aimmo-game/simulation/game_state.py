@@ -3,6 +3,24 @@ from simulation.avatar import fog_of_war
 class GameState(object):
     """
     Encapsulates the entire game state, including avatars, their code, and the world.
+    
+    Interface:
+        - get_state_for: 
+            - return a personalised view of the world for a specific avatar
+            - it applies a fog_of_war to return that specific view
+            TODO: the view has to be translated using the new API of creation and deletion
+        
+        - add_avatar: add a new avatar associated with a worker to the game
+        - remove avatar: remove a specific avatar 
+        
+        - update_environment: 
+            - update the effects attached to the avatars
+            - update the world map(i.e. score, pickups, score locations, etc.)
+                -- see full details @ WorldMap update internals
+        
+        TODO: 
+            * is_complete:
+            * get_main_avatar
     """
     def __init__(self, world_map, avatar_manager, completion_check_callback=lambda: None):
         self.world_map = world_map
