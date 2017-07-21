@@ -6,6 +6,22 @@ LOGGER = getLogger(__name__)
 
 
 class Action(object):
+    """
+        An action is a pair (avatar, location).
+
+        The action is register onto the WorldMap by being appended to a cell.
+        The action is processed by calling the apply function.
+            - if the action is legal it is applied
+            - if not it is rejected
+
+        The exposed interface is:
+            * apply - has to return true if application succeded
+                    - attaches an event to the avatar
+            * is_legal - returns if an action is legal from the point of view
+                    of the map; the action gets applied or rejected accordingly
+            * reject - attaches a (failed) event to the avatar
+    """
+
     def __init__(self, avatar):
         self._avatar = avatar
         try:
@@ -42,6 +58,11 @@ class Action(object):
 
 
 class WaitAction(Action):
+    """
+        Implementation of action -- see action for the interface.
+            * wait is always legal
+            * no actions get attached to the avatar
+    """
     def __init__(self, avatar):
         super(WaitAction, self).__init__(avatar)
 
@@ -53,6 +74,19 @@ class WaitAction(Action):
 
 
 class MoveAction(Action):
+    """
+        Implementation of action -- see action for the interface.
+        * is_legal - the responsability if passed to world_map
+        * apply
+            - adds a move event to the avatar
+            - change the avatar's world view
+            - updates the map accordingly
+        * reject
+            - the failed event is added to the avatar
+
+        !Overrides process:
+            - TODO
+    """
     def __init__(self, avatar, direction):
         # Untrusted data!
         self.direction = Direction(**direction)
@@ -100,6 +134,14 @@ class MoveAction(Action):
 
 
 class AttackAction(Action):
+    """
+        Implementation of action -- see action for the interface.
+        * is_legal - passing responsability to world_map
+        * apply
+            - attaches the event to the attacker avatar
+            - attaches the event to the attacked avater
+            - if the avatar dies it is respawned
+    """
     def __init__(self, avatar, direction):
         # Untrusted data!
         self.direction = Direction(**direction)
