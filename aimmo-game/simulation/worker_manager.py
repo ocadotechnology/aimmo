@@ -76,6 +76,8 @@ class _WorkerManagerData(object):
 
 class WorkerManager(threading.Thread):
     """
+    Room loop -- this daemon is run in parallel with TurnManager
+
     Methods of this class must be thread safe unless explicitly stated.
     
     A WorkerManager encapsulates both the WorkerManagerData and provides an

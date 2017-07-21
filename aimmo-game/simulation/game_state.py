@@ -4,6 +4,8 @@ class GameState(object):
     """
     Encapsulates the entire game state, including avatars, their code, and the world.
     
+    Used by: TurnManager
+
     Interface:
         - get_state_for: 
             - return a personalised view of the world for a specific avatar
@@ -18,8 +20,12 @@ class GameState(object):
             - update the world map(i.e. score, pickups, score locations, etc.)
                 -- see full details @ WorldMap update internals
         
+        - is_complete:
+            - check a completion via a callback registered at initialization
+            - this is how the TurnManager knows to "end" a game
+                TODO: think of how to implement this for levels
+
         TODO: 
-            * is_complete:
             * get_main_avatar
     """
     def __init__(self, world_map, avatar_manager, completion_check_callback=lambda: None):

@@ -10,9 +10,10 @@ LOGGER = logging.getLogger(__name__)
 
 class GameStateProvider:
     """
-    Thread-safe container for the world state.
+    Thread-safe container for the game state. 
+    See GameState for more details.
 
-    TODO: think about changing to snapshot rather than lock?
+    TODO: think about changing to snapshot rather than lock
     """
 
     def __init__(self):
@@ -31,13 +32,11 @@ class GameStateProvider:
         self._game_state = new_game_state
         self._lock.release()
 
-
 state_provider = GameStateProvider()
-
 
 class TurnManager(Thread):
     """
-    Game loop
+    Game loop -- this daemon is run in parallel with WorkerManager
     """
     daemon = True
 
