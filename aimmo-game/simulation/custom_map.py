@@ -7,6 +7,8 @@ from simulation.location import Location
 from simulation.game_state import GameState
 from simulation.world_map import WorldMap, WorldMapStaticSpawnDecorator, DEFAULT_LEVEL_SETTINGS
 
+""" Custom level generation. TODO: document @ custom_map, map_generator """
+
 class BaseGenerator(object):
     __metaclass__ = abc.ABCMeta
 
