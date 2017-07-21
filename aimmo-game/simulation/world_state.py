@@ -26,8 +26,6 @@ class WorldState():
         self.game_state = game_state
         self.ready_to_update = False
 
-        self.avatars_in_scene = []
-
         self.players = defaultdict(dict)
         self.map_features = defaultdict(dict)
         self.clear_updates()
@@ -101,7 +99,7 @@ class WorldState():
 
         with self.game_state as game_state:
             # Update active avatars.
-            for player in self.avatars_in_scene:
+            for player in self.game_state.avatar_manager.avatars:
                 self.update_player(player_dict(player))
 
             main_avatar_id = 1 #game_state.main_avatar_id?
@@ -115,7 +113,6 @@ class WorldState():
             for cell in avatar_view.cells_to_reveal:
                 # There is an avatar.
                 if not cell.avatar == None:
-                    self.avatars_in_scene.append(cell.avatar)
                     self.create_player(player_dict(cell.avatar))
                 # Cell is an obstacle.
                 if not cell.habitable:
@@ -128,7 +125,6 @@ class WorldState():
             for cell in avatar_view.cells_to_clear:
                 # There is an avatar.
                 if not cell.avatar == None:
-                    self.avatars_in_scene.remove(cell.avatar)
                     self.delete_player(player_dict(cell.avatar))
                 # Cell is an obstacle.
                 if not cell.habitable:

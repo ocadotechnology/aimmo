@@ -15,7 +15,14 @@ class AvatarView():
         self.SW_horizon = location.Location(initial_location.x - radius, initial_location.y - radius)
         self.cells_to_reveal = {}
         self.cells_to_clear = {}
+        self.avatars_in_view = {}
         self.is_empty = True
+
+    def location_in_view(self, location):
+        return location.x >= self.NW_horizon.x and \
+               location.y <= self.NW_horizon.y and \
+               location.x <= self.SE_horizon.x and \
+               location.y >= self.SE_horizon.y
 
     # Returns all the cells in the rectangle defined by two corners.
     def cells_in_rectangle(self, top_left, bottom_right, world_map):
