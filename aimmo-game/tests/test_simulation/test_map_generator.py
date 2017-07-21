@@ -110,7 +110,7 @@ class TestMainGenerator(_BaseGeneratorTestCase):
             (-1,  0),                   (2,  0),
             (-1, -1), (0, -1), (1, -1), (2, -1),
         ]
-        edge_cells = (m.get_cell_by_coords(x, y) for (x, y) in edge_coordinates)
+        edge_cells = (m.get_cell(Location(x, y)) for (x, y) in edge_coordinates)
         habitable_edge_cells = [cell for cell in edge_cells if cell.habitable]
 
         self.assertGreaterEqual(len(habitable_edge_cells), 1)

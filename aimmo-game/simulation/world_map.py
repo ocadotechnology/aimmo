@@ -72,8 +72,37 @@ class Cell(object):
                 'partially_fogged': self.partially_fogged
             }
 
+class BasicWorldMap(object):
+    def __init__(self, grid, settings):
+        self.grid = grid
+        self.settings = settings
 
-class WorldMap(object):
+    # GETTERS
+    def all_cells(self):
+        return self.grid.itervalues()
+
+    def score_cells(self):
+        return (c for c in self.all_cells() if c.generates_score)
+
+    def pickup_cells(self):
+        return (c for c in self.all_cells() if c.pickup)
+
+    def is_on_map(self, location):
+        try:
+            self.grid[location]
+        except KeyError:
+            return False
+        return True
+
+    def get_cell(self, location):
+        try:
+            return self.grid[location]
+        except KeyError:
+            # For backwards-compatibility, this throws ValueError
+            raise ValueError('Location %s is not on the map' % location)
+
+
+class WorldMap(BasicWorldMap):
     """
     The non-player world state.
     """
@@ -103,9 +132,6 @@ class WorldMap(object):
                 grid[location] = Cell(location)
         return cls(grid, new_settings)
 
-    def all_cells(self):
-        return self.grid.itervalues()
-
     # Used to know when to instantiate objects in the scene.
     def cells_to_create(self):
         new_cells = []
@@ -116,35 +142,12 @@ class WorldMap(object):
 
     # TODO: Cells to delete
 
-    def score_cells(self):
-        return (c for c in self.all_cells() if c.generates_score)
-
     def potential_spawn_locations(self):
         return (c for c in self.all_cells()
                 if c.habitable
                 and not c.generates_score
                 and not c.avatar
                 and not c.pickup)
-
-    def pickup_cells(self):
-        return (c for c in self.all_cells() if c.pickup)
-
-    def is_on_map(self, location):
-        try:
-            self.grid[location]
-        except KeyError:
-            return False
-        return True
-
-    def get_cell(self, location):
-        try:
-            return self.grid[location]
-        except KeyError:
-            # For backwards-compatibility, this throws ValueError
-            raise ValueError('Location %s is not on the map' % location)
-
-    def get_cell_by_coords(self, x, y):
-        return self.get_cell(Location(x, y))
 
     def clear_cell_actions(self, location):
         try:
