@@ -39,7 +39,6 @@ def client_ready():
 
 def send_world_update():
     if world_state.ready_to_update:
-        time.sleep(0.875)
         socketio.emit(
             'world-update',
             world_state.get_updates(),
