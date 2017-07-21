@@ -166,6 +166,7 @@ class TestService(TestCase):
             self.__pool_callback(callback=lambda: self.__get_resource("", 200).status_code == 200, tries=30)
 
             # getting the first level
+            self.__pool_callback(callback=lambda: self.__find_game_id_by_name("Level 1") != None, tries=30)
             level1_id = self.__find_game_id_by_name("Level 1")
 
             # trying to program, getting to login page
