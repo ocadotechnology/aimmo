@@ -96,6 +96,7 @@ class TestService(TestCase):
 
     def __pool_callback(self, callback, tries):
         while tries > 0:
+            tries -= 1
             time.sleep(1)
             try:
                 if callback():
@@ -135,6 +136,7 @@ class TestService(TestCase):
             self.__get_resource("players", 200)
 
             # getting the first level
+            self.__pool_callback(callback=lambda: self.__find_game_id_by_name("Level 1") != None, tries=30)
             level1_id = self.__find_game_id_by_name("Level 1")
 
             # trying to program, getting to login page
