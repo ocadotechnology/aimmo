@@ -3,8 +3,6 @@ from __future__ import absolute_import
 from unittest import TestCase, skipUnless
 import requests
 
-from socketio_client import SocketClient
-
 import os
 import time
 import signal
