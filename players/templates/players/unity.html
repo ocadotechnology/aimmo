@@ -22,6 +22,7 @@ var VIEW_OWNER_ID = "{{ view_owener_id }}";
 
 // Send host and port to Unity.
 
+var user_id = VIEW_OWNER_ID;
 var path = GAME_URL_PATH;
 var proc = (GAME_URL_BASE.substr("http://".length)).split(":");
 var host = proc[0]; // + path;
@@ -36,6 +37,7 @@ function SendAllConnect() {
   console.log("Sending Messages.");
   SendMessage("World Manager", "SetGameURL", host);
   SendMessage("World Manager", "SetGamePort", parseInt(port));
+  SendMessage("World Manager", "SetUserId", parseInt(user_id))
   SendMessage("World Manager", "EstablishConnection");
 }
 

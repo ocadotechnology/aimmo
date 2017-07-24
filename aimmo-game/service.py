@@ -34,8 +34,9 @@ def world_init():
     socketio.emit('world-init')
 
 @socketio.on('client-ready')
-def client_ready():
+def client_ready(user_id):
     world_state.ready_to_update = True
+    print("Received user id: " + str(user_id))
 
 def send_world_update():
     if world_state.ready_to_update:
