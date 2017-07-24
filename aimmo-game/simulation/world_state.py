@@ -128,10 +128,8 @@ class WorldState():
             for cell in avatar_view.cells_in_view:
                 if not cell.add_to_scene is None:
                     self.create_map_feature(cell.add_to_scene.value, map_feature_dict(cell))
-                    cell.add_to_scene = None
                 if not cell.remove_from_scene is None:
                     self.delete_map_feature(cell.remove_from_scene.value, map_feature_dict(cell))
-                    cell.remove_from_scene = None
 
             # Deletion
             for cell in avatar_view.cells_to_clear:
