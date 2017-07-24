@@ -84,7 +84,8 @@ class WorldState():
                 'x'     : avatar.location.x,
                 'y'     : avatar.location.y,
                 'score' : avatar.score,
-                'health': avatar.health
+                'health': avatar.health,
+                'colour': avatar.avatar_appearance.body_fill
             }
 
         def map_feature_dict(map_feature):
