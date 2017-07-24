@@ -79,7 +79,7 @@ class TestWorkerManager(unittest.TestCase):
             self.worker_manager.update()
         self.assertEqual(len(self.worker_manager.final_workers), 3)
         for i in xrange(3):
-            self.assertIn(i, self.game_state.avatar_manager.avatars_to_create_by_id)
+            self.assertIn(i, self.game_state.avatar_manager.avatars_by_id)
             self.assertIn(i, self.worker_manager.final_workers)
             self.assertEqual(self.worker_manager.get_code(i), 'code for %s' % i)
 
@@ -93,7 +93,7 @@ class TestWorkerManager(unittest.TestCase):
 
         for i in xrange(4):
             self.assertIn(i, self.worker_manager.final_workers)
-            self.assertIn(i, self.game_state.avatar_manager.avatars_to_create_by_id)
+            self.assertIn(i, self.game_state.avatar_manager.avatars_by_id)
 
         for i in (1, 3):
             self.assertEqual(self.worker_manager.get_code(i), 'code for %s' % i)
