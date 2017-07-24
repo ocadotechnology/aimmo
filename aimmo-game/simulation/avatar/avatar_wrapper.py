@@ -12,6 +12,8 @@ class AvatarWrapper(object):
     The application's view of a character, not to be confused with "Avatar",
     the player-supplied code.
 
+    > talks to Worker via gets.
+
     API:
         * decide action - fetches an action from the worker and updates the
             current action to be executed

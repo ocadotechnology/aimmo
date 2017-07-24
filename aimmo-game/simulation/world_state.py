@@ -22,18 +22,22 @@ class WorldState():
             * Obstacles.
     """
 
-    def __init__(self, game_state):
+    def __init__(self, game_state, player_id):
         self.game_state = game_state
         self.ready_to_update = False
 
         self.players = defaultdict(dict)
         self.map_features = defaultdict(dict)
+
+        # TODO: See if any difference between player and avatar id
+        self.player_id = player_id
         self.clear_updates()
 
     def get_updates(self):
         self.refresh()
 
         updates = {
+            'main_player'  : self.player_id,
             'players'      : dict(self.players),
             'map_features' : dict(self.map_features)
         }
@@ -104,7 +108,8 @@ class WorldState():
             for player in game_state.avatar_manager.avatars:
                 self.update_player(player_dict(player))
 
-            main_avatar_id = 1 #game_state.main_avatar_id?
+            # TODO: See if any difference between player and avatar id
+            main_avatar_id = self.player_id #game_state.main_avatar_id?
             avatar_view = game_state.avatar_manager.get_avatar(main_avatar_id).view
             if avatar_view is None:
                 return
