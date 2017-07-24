@@ -26,7 +26,7 @@ class _WorkerManagerData(object):
 
         This class is thread safe.
     """
-
+    
     def __init__(self, game_state, user_codes):
         self._game_state = game_state
         self._user_codes = user_codes
@@ -76,6 +76,8 @@ class _WorkerManagerData(object):
 
 class WorkerManager(threading.Thread):
     """
+    Room loop -- this daemon is run in parallel with TurnManager
+
     Methods of this class must be thread safe unless explicitly stated.
 
     A WorkerManager encapsulates both the WorkerManagerData and provides an
@@ -187,12 +189,13 @@ class WorkerManager(threading.Thread):
 
 class LocalWorkerManager(WorkerManager):
     """
-        Relies on them already being created already.
-
+        Relies on workers already being created already.
+     
         Responsibility:
             * create_worker
             * remove_worker
-    """
+
+        Note: marginal class -- can be easily changed    """
 
     host = '127.0.0.1'
     worker_directory = os.path.join(
@@ -243,10 +246,12 @@ class LocalWorkerManager(WorkerManager):
 class KubernetesWorkerManager(WorkerManager):
     """
         Kubernetes worker manager.
-
+    
         Responsibility:
             * create_worker
             * remove_worker
+
+        Note: marginal class -- can be easily changed
     """
 
     def __init__(self, *args, **kwargs):

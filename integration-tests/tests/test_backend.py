@@ -1,27 +1,29 @@
 from __future__ import absolute_import
 
 from server import MockServer
-from server import Runner
+from server import ConnectionProxy
 from unittest import TestCase
+from unittest import skip
 
-import os
-import subprocess
 import time
 import signal
 import requests
 
+import os
+import subprocess
 import sys
-sys.path.append('../../')
-
 from httmock import HTTMock
-
-# Note: The kubernates setup works only from the root of the directory.
-def run_command_async(args, cwd="."):
-    p = subprocess.Popen(args, cwd=cwd)
-    return p
 
 import cPickle as pickle
 from json import dumps
+
+from misc import run_command_async, kill_process_tree
+
+################################################################################
+
+# Default setting for the AI code and the default API settings used to mock
+# the Django server. This will act as a client and the requests and responses
+# should be verified using proxies as explained below and in server.py
 
 DEFAULT_LEVEL_SETTINGS = {
     'TARGET_NUM_CELLS_PER_AVATAR': 16.0,
@@ -52,9 +54,11 @@ DEFAULT_AI = {
 
 ################################################################################
 
-# Request mockeries
 
 class RequestMock(object):
+    """
+        Request mockery that can be used in a proxy.
+    """
     def __init__(self, num_games):
         self.value = self._generate_response(num_games)
         self.urls_requested = []
@@ -67,6 +71,9 @@ class RequestMock(object):
         return dumps(self.value)
 
 class GameCreatorRequestMock(RequestMock):
+    """
+        Mockery to expose a set of games.
+    """
     def _generate_response(self, num_games):
         return {
             str(i): {
@@ -76,14 +83,21 @@ class GameCreatorRequestMock(RequestMock):
         }
 
 class GameRequestMock(RequestMock):
+    """
+        Mockery to expose an AI behaviour.
+    """
     def _generate_response(self, num_games):
         return DEFAULT_AI
 
 ################################################################################
 
-# See definition of a runner in mock_server.py
+# See definition of a proxy in mock_server.py
 
-class GameCreatorRunner(Runner):
+class GameCreatorProxy(ConnectionProxy):
+    """
+        Proxy for the game creator. Asserts that only the games resouce has
+        been accessed and returns a valid list of games.
+    """
     def apply(self, received):
         mocker = GameCreatorRequestMock(1)
         with HTTMock(mocker):
@@ -92,22 +106,45 @@ class GameCreatorRunner(Runner):
             self.binder.assertEqual("/players/api/games/" in mocker.urls_requested[0], True)
             return ans.text
 
-class GameRunner(Runner):
+class GameProxy(ConnectionProxy):
+    """
+        Proxy for the game. Asserts that only the specific game resouce has
+        been accessed and returns a valid list of users.
+    """
     def apply(self, received):
         mocker = GameRequestMock(1)
         with HTTMock(mocker):
             ans = requests.get(self.binder._SERVER_URL + received)
             self.binder.assertEqual(len(mocker.urls_requested), 1)
+            print mocker.urls_requested[0]
             self.binder.assertEqual("/players/api/games/0/" in mocker.urls_requested[0], True)
             return ans.text
 
-class TurnRunner(Runner):
+# TODO: for more complex tests a seam has to be exposed or socket.io needs to be supported
+class TurnProxy(ConnectionProxy):
     def apply(self, received):
         return "NotImplemented"
 
 ################################################################################
 
 class TestService(TestCase):
+    """
+        Test service that verifies the creating of the games and workers cluster.
+        Uses the MockServer class insted of the Django client.
+        This is a more lightweight integration test that only tests the backend connections.
+
+        Usage:
+          * add a test like this:
+              self.__build_test([
+                  (GameCreatorProxy(self), 1), # pair of proxy and turns
+                  (GameProxy(self), 1)
+              ], False)                        # set True for kubernates
+
+          * the service runs minikube/localhost for testing
+          * kubernates tests should be named: "ktest_..."
+          * localhost tests should be named: "test_..."
+          * new proxies and can be added to the tests -- see the proxies above for details
+    """
     def __setup_resources(self):
         self._SCRIPT_LOCATION = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '../../'))
         self._SERVICE_PY = os.path.join(self._SCRIPT_LOCATION, 'aimmo-game-creator', 'service.py')
@@ -120,7 +157,7 @@ class TestService(TestCase):
         self._SERVER_URL = 'http://localhost:8000/'
         self._SERVER_PORT = '8000'
 
-    def __build_test(self, runners, kubernetes=False):
+    def __build_test(self, proxies, kubernetes=False):
         try:
             if kubernetes:
                 # TODO: proper start-up
@@ -132,11 +169,11 @@ class TestService(TestCase):
                 game = run_command_async(['python', self._SERVICE_PY, self._SERVER_URL, self._SERVER_PORT])
 
             server = MockServer()
-            for runner, times in runners:
-                print "Running " + str(runner) + " " + str(times) + " times"
-                server.register_runner(runner)
+            for proxy, times in proxies:
+                print "Running " + str(proxy) + " " + str(times) + " times"
+                server.register_proxy(proxy)
                 server.run(times)
-                server.clear_runners()
+                server.clear_proxies()
 
         finally:
             if kubernetes:
@@ -144,46 +181,43 @@ class TestService(TestCase):
                 os.kill(game.pid, signal.SIGKILL)
                 os.system("minikube delete")
             else:
-                os.system("pkill -TERM -P " + str(game.pid))
-                os.kill(game.pid, signal.SIGKILL)
-
+                time.sleep(1)
+                kill_process_tree(game.pid)
 
     def setUp(self):
         self.__setup_resources()
         self.__setup_environment()
 
-    def test_killing_creator_kills_game(self):
+    def test_local_killing_creator_kills_game(self):
         try:
             game = run_command_async(['python', self._SERVICE_PY, self._SERVER_URL, self._SERVER_PORT])
         finally:
-            os.system("pkill -TERM -P " + str(game.pid))
-            os.kill(game.pid, signal.SIGKILL)
+            time.sleep(1)
+            kill_process_tree(game.pid)
 
-    def test_games_get_generated(self):
+    def test_local_games_get_generated(self):
         self.__build_test([
-            (GameCreatorRunner(self), 1),
-            (GameRunner(self), 1)
+            (GameCreatorProxy(self), 1),
+            (GameProxy(self), 1)
         ], False)
 
-    # TODO: We need to add a seam in the server so we can use this communication tool and further tests
-    def test_turns_run(self):
+    def test_local_turns_run(self):
         self.__build_test([
-            (GameCreatorRunner(self), 1),
-            (GameRunner(self), 1)
+            (GameCreatorProxy(self), 1),
+            (GameProxy(self), 1)
         ], False)
 
-    def test_games_get_generated_repeatedly(self):
-        # to ensure there are no concurrency issues, we shall run a test multiple
-        # times; TODO: see effect of local networking
-        times = 10
+    def test_local_games_get_generated_repeatedly(self):
+        times = 5
         for i in xrange(times):
-            self.test_games_get_generated()
+            self.test_local_games_get_generated()
 
-    def ktest_games_get_generated_kubernates(self):
+    @skip("temporary")
+    def test_kube_games_get_generated_kubernates(self):
         self.__build_test([
-            (GameCreatorRunner(self), 1),
-            (GameRunner(self), 1),
-            (TurnRunner(self), 1)
+            (GameCreatorProxy(self), 1),
+            (GameConnectionProxy(self), 1),
+            (TurnProxy(self), 1)
         ], True)
 
 from unittest import TestSuite
@@ -198,17 +232,13 @@ def get_test_suite():
     suite.addTest(TestService("test_games_get_generated_repeatedly"))
     suite.addTest(TestService("test_turns_run"))
 
-    # TODO: not yet fully supported locally; probably an environment problem
-    # as server does not communicate with the cluster
-    # suite.addTest(TestService("test_games_get_generated_kubernates"))
-
     return suite
 
 def main():
     suite = get_test_suite()
 
-    runner = TextTestRunner()
-    runner.run(suite)
+    proxy = TextTestRunner()
+    proxy.run(suite)
 
 if __name__ == "__main__":
     main()

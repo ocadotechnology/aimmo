@@ -71,62 +71,17 @@ class Cell(object):
                 'partially_fogged': self.partially_fogged
             }
 
+########################################################################################################
 
-class WorldMap(object):
+class BasicWorldMap(object):
     """
-    The non-player world state.
-    """
+        A BasicWorldMap from which World Map inherits from.
 
+        Its purpose is to keep only the basic getters.
+    """
     def __init__(self, grid, settings):
         self.grid = grid
         self.settings = settings
-
-    @classmethod
-    def _min_max_from_dimensions(cls, height, width):
-        max_x = int(math.floor(width / 2))
-        min_x = -(width - max_x - 1)
-        max_y = int(math.floor(height / 2))
-        min_y = -(height - max_y - 1)
-        return min_x, max_x, min_y, max_y
-
-    @classmethod
-    def generate_empty_map(cls, height, width, settings):
-        new_settings = DEFAULT_LEVEL_SETTINGS.copy()
-        new_settings.update(settings)
-
-        (min_x, max_x, min_y, max_y) = WorldMap._min_max_from_dimensions(height, width)
-        grid = {}
-        for x in xrange(min_x, max_x + 1):
-            for y in xrange(min_y, max_y + 1):
-                location = Location(x, y)
-                grid[location] = Cell(location)
-        return cls(grid, new_settings)
-
-    def all_cells(self):
-        return self.grid.itervalues()
-
-    # Used to know when to instantiate objects in the scene.
-    def cells_to_create(self):
-        new_cells = []
-        for cell in self.all_cells():
-            if not cell.created:
-                new_cells.append(cell)
-        return new_cells
-
-    # TODO: Cells to delete
-
-    def score_cells(self):
-        return (c for c in self.all_cells() if c.generates_score)
-
-    def potential_spawn_locations(self):
-        return (c for c in self.all_cells()
-                if c.habitable
-                and not c.generates_score
-                and not c.avatar
-                and not c.pickup)
-
-    def pickup_cells(self):
-        return (c for c in self.all_cells() if c.pickup)
 
     def is_on_map(self, location):
         try:
@@ -136,14 +91,79 @@ class WorldMap(object):
         return True
 
     def get_cell(self, location):
-        try:
-            return self.grid[location]
-        except KeyError:
-            # For backwards-compatibility, this throws ValueError
-            raise ValueError('Location %s is not on the map' % location)
+        if self.is_on_map(location):
+            return self.grid[location] 
+        raise ValueError('Location %s is not on the map' % location)
+    def all_cells(self): 
+        return self.grid.itervalues()
+    def score_cells(self): 
+        return (c for c in self.all_cells() if c.generates_score)
+    def pickup_cells(self): 
+        return (c for c in self.all_cells() if c.pickup)
+        
+    def max_y(self): 
+        return max(self.grid.keys(), key=lambda c: c.y).y
+    def min_y(self): 
+        return min(self.grid.keys(), key=lambda c: c.y).y
+    def max_x(self): 
+        return max(self.grid.keys(), key=lambda c: c.x).x
+    def min_x(self): 
+        return min(self.grid.keys(), key=lambda c: c.x).x
 
-    def get_cell_by_coords(self, x, y):
-        return self.get_cell(Location(x, y))
+    @property
+    def num_rows(self):
+        return self.max_y() - self.min_y() + 1
+    @property
+    def num_cols(self):
+        return self.max_x() - self.min_x() + 1
+    @property
+    def num_cells(self):
+        return self.num_rows * self.num_cols
+
+class WorldMap(BasicWorldMap):
+    """
+    The non-player world state.
+
+    WorldMap has the following API:
+        Cells -- from BasicWorldMap
+        - get_cell
+        - all_cells
+        - score_cells
+        - pickup_cells
+
+        Map -- from BasicWorldMap
+        - is_on_map
+        - max_x
+        - max_y
+        - min_x
+        - min_y
+        - num_cols
+        - num_rows
+        - num_cells
+
+        Dependecies
+        - update -- used by TurnManager to update the world at each frame
+        - clear_cell_actions -- used by TurnManager to tell WorldMap to clear actions
+        - cells_to_create -- used by WorldState to retreive the cells to view
+            - used to know when to instantiate objects in the scene.
+        - TODO: cells_to_delete
+
+        Misc Dependecies
+        - get_random_spawn_location - get a free habitable cell or IndexError
+        - can_move_to - assert if avatar can move to location
+        - attackable_avatar - return the avatar attackable at the given location, or None.
+    """
+
+    def __init__(self, grid, settings):
+        self.grid = grid
+        self.settings = settings
+
+    def cells_to_create(self):
+        new_cells = []
+        for cell in self.all_cells():
+            if not cell.created:
+                new_cells.append(cell)
+        return new_cells
 
     def clear_cell_actions(self, location):
         try:
@@ -152,34 +172,62 @@ class WorldMap(object):
         except ValueError:
             return
 
-    def max_y(self):
-        return max(self.grid.keys(), key=lambda c: c.y).y
-
-    def min_y(self):
-        return min(self.grid.keys(), key=lambda c: c.y).y
-
-    def max_x(self):
-        return max(self.grid.keys(), key=lambda c: c.x).x
-
-    def min_x(self):
-        return min(self.grid.keys(), key=lambda c: c.x).x
-
-    @property
-    def num_rows(self):
-        return self.max_y() - self.min_y() + 1
-
-    @property
-    def num_cols(self):
-        return self.max_x() - self.min_x() + 1
-
-    @property
-    def num_cells(self):
-        return self.num_rows * self.num_cols
-
     def update(self, num_avatars):
-        # TODO: refactor into GameState (this class does too much)
         self._update_avatars()
         self._update_map(num_avatars)
+
+    def get_random_spawn_location(self):
+        return self._get_random_spawn_locations(1)[0].location
+
+    def can_move_to(self, target_location):
+        if not self.is_on_map(target_location):
+            return False
+        cell = self.get_cell(target_location)
+
+        return (cell.habitable
+                and (not cell.is_occupied or cell.avatar.is_moving)
+                and len(cell.moves) <= 1)
+
+    def attackable_avatar(self, target_location):
+        try:
+            cell = self.get_cell(target_location)
+        except ValueError:
+            return None
+
+        if cell.avatar:
+            return cell.avatar
+
+        if len(cell.moves) == 1:
+            return cell.moves[0].avatar
+
+        return None
+
+    def get_no_fog_distance(self):
+        return self.settings['NO_FOG_OF_WAR_DISTANCE']
+
+    def get_partial_fog_distance(self):
+        return self.settings['PARTIAL_FOG_OF_WAR_DISTANCE']
+
+    def __repr__(self):
+        return repr(self.grid)
+
+    def __iter__(self):
+        return ((self.get_cell(Location(x, y))
+                for y in xrange(self.min_y(), self.max_y() + 1))
+                for x in xrange(self.min_x(), self.max_x() + 1))
+
+#############################################Interals###################################################
+
+    """
+        Update function called periodically. The update is done as:
+            * _update avatars: 
+                _apply_score: each avatar receives a score
+                _apply_pickups: each avatar grabs a pickup
+            * _update_map:
+                _expand: the map is expanded so that it fits the size of the avatars if more avatars arrive
+                _reset_score_locations: new score locations are generated
+                _add_pickups: new pickups are generated
+    """
 
     def _update_avatars(self):
         self._apply_score()
@@ -259,53 +307,15 @@ class WorldMap(object):
             LOGGER.debug('Not enough potential locations')
             return potential_locations
 
-    def get_random_spawn_location(self):
-        """Return a single random spawn location.
+    # only exposed for testing
+    def potential_spawn_locations(self):
+        return (c for c in self.all_cells()
+                if c.habitable
+                and not c.generates_score
+                and not c.avatar
+                and not c.pickup)
 
-        Throws:
-            IndexError: if there are no possible locations.
-        """
-        return self._get_random_spawn_locations(1)[0].location
-
-    def can_move_to(self, target_location):
-        if not self.is_on_map(target_location):
-            return False
-        cell = self.get_cell(target_location)
-
-        return (cell.habitable
-                and (not cell.is_occupied or cell.avatar.is_moving)
-                and len(cell.moves) <= 1)
-
-    def attackable_avatar(self, target_location):
-        """
-        Return the avatar attackable at the given location, or None.
-        """
-        try:
-            cell = self.get_cell(target_location)
-        except ValueError:
-            return None
-
-        if cell.avatar:
-            return cell.avatar
-
-        if len(cell.moves) == 1:
-            return cell.moves[0].avatar
-
-        return None
-
-    def get_no_fog_distance(self):
-        return self.settings['NO_FOG_OF_WAR_DISTANCE']
-
-    def get_partial_fog_distance(self):
-        return self.settings['PARTIAL_FOG_OF_WAR_DISTANCE']
-
-    def __repr__(self):
-        return repr(self.grid)
-
-    def __iter__(self):
-        return ((self.get_cell(Location(x, y))
-                for y in xrange(self.min_y(), self.max_y() + 1))
-                for x in xrange(self.min_x(), self.max_x() + 1))
+##############################################################################################################
 
 
 def WorldMapStaticSpawnDecorator(world_map, spawn_location):

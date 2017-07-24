@@ -1,7 +1,11 @@
 from abc import ABCMeta, abstractmethod
 
-
 class _Effect(object):
+    """
+        An Effect is a class that gets applicated once per turn.
+
+        The effect is attached to the avatar. See pickups for more details.
+    """
     __metaclass__ = ABCMeta
 
     def __init__(self, avatar):

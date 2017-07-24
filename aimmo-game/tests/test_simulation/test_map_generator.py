@@ -8,7 +8,7 @@ from simulation.location import Location
 from simulation.map_generator import get_random_edge_index
 from simulation.world_map import WorldMap
 from .dummy_avatar import DummyAvatarManager
-
+from simulation.custom_map import EmptyMapGenerator
 
 class ConstantRng(object):
     def __init__(self, value):
@@ -22,7 +22,7 @@ class ConstantRng(object):
 
 class TestHelperFunctions(unittest.TestCase):
     def test_get_random_edge_index(self):
-        map = WorldMap.generate_empty_map(3, 4, {})
+        map = EmptyMapGenerator(3, 4, {}).get_map()
         self.assertEqual(
             (0, -1), get_random_edge_index(map, rng=ConstantRng(0)))
         self.assertEqual(
@@ -44,7 +44,7 @@ class TestHelperFunctions(unittest.TestCase):
             get_random_edge_index(map, rng=ConstantRng(6))
 
     def test_get_random_edge_index_can_give_all_possible(self):
-        map = WorldMap.generate_empty_map(3, 4, {})
+        map = EmptyMapGenerator(3, 4, {}).get_map()
         get_random_edge_index(map, rng=ConstantRng(1))
         expected = frozenset((
             (0,  1), (1, 1),
@@ -56,7 +56,7 @@ class TestHelperFunctions(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_out_of_bounds_random_edge(self):
-        map = WorldMap.generate_empty_map(3, 4, {})
+        map = EmptyMapGenerator(3, 4, {}).get_map()
         with self.assertRaisesRegexp(ValueError, 'Beyond range'):
             get_random_edge_index(map, rng=ConstantRng(-1))
 
@@ -110,7 +110,7 @@ class TestMainGenerator(_BaseGeneratorTestCase):
             (-1,  0),                   (2,  0),
             (-1, -1), (0, -1), (1, -1), (2, -1),
         ]
-        edge_cells = (m.get_cell_by_coords(x, y) for (x, y) in edge_coordinates)
+        edge_cells = (m.get_cell(Location(x, y)) for (x, y) in edge_coordinates)
         habitable_edge_cells = [cell for cell in edge_cells if cell.habitable]
 
         self.assertGreaterEqual(len(habitable_edge_cells), 1)

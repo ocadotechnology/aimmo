@@ -8,7 +8,8 @@ class Action(object):
     """
         An action is a pair (avatar, location).
 
-        The action is register onto the world map by being appended to a cell.
+        The action is register onto the WorldMap by being appended to a cell.
+
         The action is processed by calling the apply function.
             - if the action is legal it is applied
             - if not it is rejected
@@ -20,6 +21,7 @@ class Action(object):
                     of the map; the action gets applied or rejected accordingly
             * reject - attaches a (failed) event to the avatar
     """
+
     def __init__(self, avatar):
         self._avatar = avatar
         try:
