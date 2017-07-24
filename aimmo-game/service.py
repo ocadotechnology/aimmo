@@ -23,11 +23,32 @@ from simulation.world_state import WorldState
 app = flask.Flask(__name__)
 socketio = SocketIO()
 
-worker_manager = None
+class WorldStateManager():
+    def __init__(self):
+        self.world_states = {}
 
-# The world state know about the maps and the avatars and basically
-# handles the updates.
-world_state = WorldState(state_provider)
+    def get_world_state(self, player_id):
+        return self.world_states[player_id]
+
+    def add_world_state(self, world_state):
+        self.world_states[world_state.player_id] = world_state
+
+    def get_all_world_states(self):
+        values = []
+        for key, value in self.world_states.iteritems():
+            values.append(value)
+        return values
+
+worker_manager = None
+world_state_manager = WorldStateManager()
+
+"""
+    The order of events is:
+     > server: world_init
+     > client: client-ready, id
+     > server: broadcast world-update for each state
+     > client: filter my updates
+"""
 
 @socketio.on('connect')
 def world_init():
@@ -35,16 +56,21 @@ def world_init():
 
 @socketio.on('client-ready')
 def client_ready(user_id):
-    world_state.ready_to_update = True
     print("Received user id: " + str(user_id))
+    world_state_manager.add_world_state(WorldState(state_provider, user_id))
+    world_state_manager.get_world_state(user_id).ready_to_update = True
 
 def send_world_update():
-    if world_state.ready_to_update:
-        socketio.emit(
-            'world-update',
-            world_state.get_updates(),
-            broadcast=True,
-        )
+    # TODO: For the moment we broadcast all the updates and we filter them in the
+    # Unity client. We want to get rid of this.
+
+    for world_state in world_state_manager.get_all_world_states():
+        if world_state.ready_to_update:
+            socketio.emit(
+                'world-update',
+                world_state.get_updates(),
+                broadcast=True,
+            )
 
 @app.route('/')
 def healthcheck():
@@ -78,7 +104,6 @@ def run_game(port):
 
     worker_manager.start()
     turn_manager.start()
-
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
