@@ -28,7 +28,7 @@ class AvatarWrapper(object):
         self._action = None
 
         # Only initialise the view if there is an initial location.
-        if initial_location == None:
+        if initial_location is None:
             self.view = None
         else:
             self.view = AvatarView(initial_location, radius=3)

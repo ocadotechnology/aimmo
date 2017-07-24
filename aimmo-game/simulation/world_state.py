@@ -98,10 +98,11 @@ class WorldState():
             # Update active avatars.
             for player in game_state.avatar_manager.avatars:
                 self.update_player(player_dict(player))
+                print player
 
             main_avatar_id = 1 #game_state.main_avatar_id?
             avatar_view = game_state.avatar_manager.get_avatar(main_avatar_id).view
-            if avatar_view == None:
+            if avatar_view is None:
                 return
 
             if avatar_view.is_empty:
@@ -111,7 +112,7 @@ class WorldState():
             # Creation
             for cell in avatar_view.cells_to_reveal:
                 # There is an avatar.
-                if not cell.avatar == None:
+                if not cell.avatar is None:
                     self.create_player(player_dict(cell.avatar))
                 # Cell is an obstacle.
                 if not cell.habitable:
@@ -122,13 +123,17 @@ class WorldState():
 
             # Updates
             for cell in avatar_view.cells_in_view:
-                if not cell.featue_removed_from_scene == None:
-                    self.delete_map_feature(cell.removed_from_scene, map_feature_dict(cell))
+                if not cell.add_to_scene is None:
+                    self.create_map_feature(cell.add_to_scene.value, map_feature_dict(cell))
+                    cell.add_to_scene = None
+                if not cell.remove_from_scene is None:
+                    self.delete_map_feature(cell.remove_from_scene.value, map_feature_dict(cell))
+                    cell.remove_from_scene = None
 
             # Deletion
             for cell in avatar_view.cells_to_clear:
                 # There is an avatar.
-                if not cell.avatar == None:
+                if not cell.avatar is None:
                     self.delete_player(player_dict(cell.avatar))
                 # Cell is an obstacle.
                 if not cell.habitable:

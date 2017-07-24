@@ -4,7 +4,7 @@ from simulation.direction import NORTH, SOUTH, EAST, WEST
 
 class AvatarView():
     """
-    The personalized veiw of the world for each avatar. The main
+    The custom veiw of the world for each of the avatars. The main
     use of this class is that when the view is moved, the game service
     knows which objects need to be created and which need to be deleted
     from the scene.
