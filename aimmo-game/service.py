@@ -3,7 +3,6 @@ import cPickle as pickle
 import logging
 import os
 import sys
-import time
 
 import eventlet
 
