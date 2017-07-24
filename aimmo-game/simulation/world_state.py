@@ -118,6 +118,9 @@ class WorldState():
                 if cell.generates_score:
                     self.create_map_feature(MapFeature.SCORE_POINT.value, map_feature_dict(cell))
 
+            # Updates
+
+
             # Deletion
             for cell in avatar_view.cells_to_clear:
                 # There is an avatar.

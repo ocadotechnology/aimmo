@@ -15,9 +15,9 @@ class AvatarView():
         self.NW_horizon = Location(initial_location.x - radius, initial_location.y + radius)
         self.SE_horizon = Location(initial_location.x + radius, initial_location.y - radius)
         self.SW_horizon = Location(initial_location.x - radius, initial_location.y - radius)
-        self.cells_to_reveal = {}
-        self.cells_to_clear = {}
-        self.avatars_in_view = {}
+        self.cells_to_reveal = set([])
+        self.cells_to_clear = set([])
+        self.cells_in_view = set([])
         self.is_empty = True
 
     def location_in_view(self, location):
@@ -28,16 +28,17 @@ class AvatarView():
 
     # Returns all the cells in the rectangle defined by two corners.
     def cells_in_rectangle(self, top_left, bottom_right, world_map):
-        cells = []
+        cells = set([])
 
         for x in range(max(top_left.x, world_map.min_x()), min(bottom_right.x, world_map.max_x())):
             for y in range(max(bottom_right.y, world_map.min_y()), min(top_left.y, world_map.max_y())):
-                cells.append(world_map.get_cell(Location(x, y)))
+                cells.add(world_map.get_cell(Location(x, y)))
         return cells
 
     # Reveals all the cells in the view.
     def reveal_all_cells(self, world_map):
         self.cells_to_reveal = self.cells_in_rectangle(self.NW_horizon, self.SE_horizon, world_map)
+        self.cells_in_view = self.cells_to_reveal.copy()
 
     def move(self, move_direction, world_map):
         # Update cells to clear and to reveal depending on the move direction.
@@ -71,6 +72,10 @@ class AvatarView():
                                                            world_map)
         else:
             raise ValueError
+
+        # Update cells in view. (Note that these are set operations: union and set difference)
+        self.cells_in_view |= self.cells_to_reveal
+        self.cells_in_view -= self.cells_to_clear
 
         # Shift the four view corners (horizons).
         self.NE_horizon += move_direction

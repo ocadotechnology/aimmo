@@ -27,6 +27,7 @@ class Cell(object):
         self.location = location
         self.habitable = habitable
         self.generates_score = generates_score
+        self.removed_from_scene = False # Used to know when to remove cells in view. Score locations.
         self.avatar = None
         self.pickup = None
         self.partially_fogged = partially_fogged
@@ -227,6 +228,9 @@ class WorldMap(object):
     def _reset_score_locations(self, num_avatars):
         for cell in self.score_cells():
             if random.random() < self.settings['SCORE_DESPAWN_CHANCE']:
+                # Remove the score point from world state.
+                if cell.generates_score:
+                    cell.removed_from_scene = True
                 cell.generates_score = False
 
         new_num_score_locations = len(list(self.score_cells()))
