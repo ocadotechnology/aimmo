@@ -24,6 +24,9 @@ class AvatarView():
     """
 
     def __init__(self, initial_location, radius):
+        if initial_location is None or radius is None:
+            raise ValueError
+
         self.NE_horizon = Location(initial_location.x + radius, initial_location.y + radius)
         self.NW_horizon = Location(initial_location.x - radius, initial_location.y + radius)
         self.SE_horizon = Location(initial_location.x + radius, initial_location.y - radius)
@@ -34,6 +37,9 @@ class AvatarView():
         self.is_empty = True
 
     def location_in_view(self, location):
+        if location is None:
+            raise ValueError
+
         return location.x >= self.NW_horizon.x and \
                location.y <= self.NW_horizon.y and \
                location.x <= self.SE_horizon.x and \

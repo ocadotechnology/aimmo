@@ -1,0 +1,95 @@
+from unittest import TestCase
+
+from simulation.world_map import Cell
+from simulation.location import Location
+from simulation.avatar.avatar_view import AvatarView
+
+class MockWorldMap:
+    def __init__(self, min_x, min_y, max_x, max_y):
+        self.min_x = min_x
+        self.min_y = min_y
+        self.max_x = max_x
+        self.max_y = max_y
+
+    def get_cell(self, location):
+        if not location is None:
+            return Cell(location)
+        else:
+            raise ValueError
+
+class TestAvatarWrapper(TestCase):
+    def setUp(self):
+        pass
+
+    # Test initialisation
+
+    def test_can_initialise(self):
+        avatar_view = AvatarView(Location(1, 2), 3)
+        self.assertFalse(avatar_view is None)
+
+    def test_handles_bad_initialisation(self):
+        self.assertRaises(ValueError, bad_avatar_view_1 = AvatarView(None, 4))
+        self.assertRaises(ValueError, bad_avatar_view_2 = AvatarView(Location(3, 2), None))
+        self.assertRaises(ValueError, bad_avatar_view_3 = AvatarView(None, None))
+
+    # Test 'location_in_view'
+
+    def test_knows_when_a_location_is_inside_the_view(self):
+        avatar_view = AvatarView(Location(0, 0), 2)
+        self.assertTrue(avatar_view.location_in_view(Location(0, 0)))
+        self.assertTrue(avatar_view.location_in_view(Location(2, 2)))
+        self.assertTrue(avatar_view.location_in_view(Location(2, -2)))
+        self.assertTrue(avatar_view.location_in_view(Location(-2, 2)))
+        self.assertTrue(avatar_view.location_in_view(Location(-2, -2)))
+
+    def test_knows_when_a_location_is_outside_the_view(self):
+        avatar_view = AvatarView(Location(1, 1), 1)
+        self.assertFalse(avatar_view.location_in_view(Location(3, 0)))
+        self.assertFalse(avatar_view.location_in_view(Location(0, 5)))
+        self.assertFalse(avatar_view.location_in_view(Location(-4, -4)))
+
+    def test_handles_bad_locations(self):
+        avatar_view = AvatarView(Location(5, 6), 7)
+        self.assertRaises(ValueError, avatar_view.location_in_view(None))
+
+    # Test 'cells_in_rectangle'
+
+    def test_returns_no_cells_when_world_map_is_empty(self):
+        avatar_view = AvatarView(Location(2, 1), 4)
+        mock_world_map_1 = MockWorldMap(0, 0, 0, 0)
+        cells_in_rectangle = avatar_view.cells_in_rectangle(avatar_view.NW_horizon, avatar_view.SE_horizon, mock_world_map_1)
+        self.assertEqual(len(cells_in_rectangle), 0)
+
+    def test_returns_no_cells_when_the_corners_are_wrong(self):
+        pass
+
+    def test_returns_no_cells_when_the_rectangle_is_misplaced(self):
+        pass
+
+    def test_returns_correct_number_of_cells_when_the_rectangle_is_fully_inside_the_map(self):
+        pass
+
+    def test_returns_correct_number_of_cells_when_the_rectangle_is_partially_inisde_the_map(self):
+        pass
+
+    def test_handles_bad_arguments(self):
+        pass
+
+    # Test 'reveal_all_cells'
+
+    def test_cells_in_view_equal_cells_to_reveal(self):
+        pass
+
+    # Test 'move'
+
+    def test_correct_number_of_cells_to_clear_reveal_and_update(self):
+        pass
+
+    def test_horizons_are_updated_accordingly(self):
+        pass
+
+    def test_chain_of_moves(self):
+        pass
+
+    def test_handles_bad_move(self):
+        pass
