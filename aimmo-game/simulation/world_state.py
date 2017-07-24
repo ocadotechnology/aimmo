@@ -88,7 +88,8 @@ class WorldState():
                 'y'     : avatar.location.y,
                 'score' : avatar.score,
                 'health': avatar.health,
-                'colour': avatar.avatar_appearance.body_fill
+                # This is temporary, appearance will be more complex later on.
+                'colour': "#%06x" % (avatar.player_id * 4999)
             }
 
         def map_feature_dict(map_feature):
@@ -115,6 +116,7 @@ class WorldState():
             # Creation
             for cell in avatar_view.cells_to_reveal:
                 # There is an avatar.
+
                 if not cell.avatar is None:
                     self.create_player(player_dict(cell.avatar))
                 # Cell is an obstacle.
