@@ -101,6 +101,8 @@ class WorldState():
 
             main_avatar_id = 1 #game_state.main_avatar_id?
             avatar_view = game_state.avatar_manager.get_avatar(main_avatar_id).view
+            if avatar_view == None:
+                return
 
             if avatar_view.is_empty:
                 avatar_view.reveal_all_cells(game_state.world_map)
@@ -119,7 +121,9 @@ class WorldState():
                     self.create_map_feature(MapFeature.SCORE_POINT.value, map_feature_dict(cell))
 
             # Updates
-
+            for cell in avatar_view.cells_in_view:
+                if not cell.featue_removed_from_scene == None:
+                    self.delete_map_feature(cell.removed_from_scene, map_feature_dict(cell))
 
             # Deletion
             for cell in avatar_view.cells_to_clear:
