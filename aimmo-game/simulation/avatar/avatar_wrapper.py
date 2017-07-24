@@ -35,7 +35,12 @@ class AvatarWrapper(object):
         self.attack_strength = 1
         self.fog_of_war_modifier = 0
         self._action = None
-        self.view = AvatarView(initial_location, 3) # Radius of view
+
+        # Only initialise the view if there is an initial location.
+        if initial_location == None:
+            self.view = None
+        else:
+            self.view = AvatarView(initial_location, radius=3)
 
     def update_effects(self):
         effects_to_remove = set()
