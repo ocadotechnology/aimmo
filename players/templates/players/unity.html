@@ -15,6 +15,7 @@
 <script type="text/javascript">
 var GAME_URL_BASE = "{{ game_url_base }}";
 var GAME_URL_PATH = "{{ game_url_path }}";
+var VIEW_OWNER_ID = "{{ view_owener_id }}";
 // The resource path is assumed from Unity.
 // TODO: check if better to do the connection from JS or from Unity through JS
 
@@ -29,6 +30,7 @@ var port = proc[1];
 console.log(GAME_URL_BASE);
 console.log("Host: " + host);
 console.log("Port: " + port);
+console.log("View owner: " + VIEW_OWNER_ID);
 
 function SendAllConnect() {
   console.log("Sending Messages.");
