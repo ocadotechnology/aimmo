@@ -99,7 +99,7 @@ class WorldState():
 
         with self.game_state as game_state:
             # Update active avatars.
-            for player in self.game_state.avatar_manager.avatars:
+            for player in game_state.avatar_manager.avatars:
                 self.update_player(player_dict(player))
 
             main_avatar_id = 1 #game_state.main_avatar_id?
