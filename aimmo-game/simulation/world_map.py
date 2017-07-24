@@ -3,6 +3,7 @@ import random
 from logging import getLogger
 
 from pickups import ALL_PICKUPS
+from world_state import MapFeature
 
 DEFAULT_LEVEL_SETTINGS = {
     'TARGET_NUM_CELLS_PER_AVATAR': 0,
@@ -28,11 +29,14 @@ class Cell(object):
         self.location = location
         self.habitable = habitable
         self.generates_score = generates_score
-        self.removed_from_scene = False # Used to know when to remove cells in view. Score locations.
         self.avatar = None
         self.pickup = None
         self.partially_fogged = partially_fogged
         self.actions = []
+
+        # Used to update the map features in the current view of the user (score points on pickups).
+        self.remove_from_scene = None
+        self.add_to_scene = None
 
     def __repr__(self):
         return 'Cell({} h={} s={} a={} p={} f{})'.format(
@@ -277,9 +281,9 @@ class WorldMap(BasicWorldMap):
     def _reset_score_locations(self, num_avatars):
         for cell in self.score_cells():
             if random.random() < self.settings['SCORE_DESPAWN_CHANCE']:
-                # Remove the score point from world state.
+                # Remove the score point from the scene if there was one.
                 if cell.generates_score:
-                    cell.removed_from_scene = True
+                    cell.remove_from_scene = MapFeature.SCORE_POINT
                 cell.generates_score = False
 
         new_num_score_locations = len(list(self.score_cells()))
@@ -289,6 +293,9 @@ class WorldMap(BasicWorldMap):
         num_score_locations_to_add = target_num_score_locations - new_num_score_locations
         locations = self._get_random_spawn_locations(num_score_locations_to_add)
         for cell in locations:
+            # Add the score point to the scene if there wasn't one.
+            if not cell.generates_score:
+                cell.add_to_scene = MapFeature.SCORE_POINT
             cell.generates_score = True
 
     def _add_pickups(self, num_avatars):
