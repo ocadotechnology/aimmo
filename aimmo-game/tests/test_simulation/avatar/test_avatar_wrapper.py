@@ -6,7 +6,7 @@ from unittest import TestCase
 from httmock import HTTMock
 
 from simulation.avatar import avatar_wrapper
-
+from simulation.location import Location
 
 class MockEffect(object):
     def __init__(self, avatar):
@@ -60,7 +60,7 @@ class TestAvatarWrapper(TestCase):
     def setUp(self):
         global actions_created
         actions_created = []
-        self.avatar = avatar_wrapper.AvatarWrapper(None, None, 'http://test', None)
+        self.avatar = avatar_wrapper.AvatarWrapper(None, Location(0, 0), 'http://test', None)
 
     def take_turn(self, request_mock=None):
         if request_mock is None:

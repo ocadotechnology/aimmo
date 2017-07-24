@@ -92,22 +92,22 @@ class BasicWorldMap(object):
 
     def get_cell(self, location):
         if self.is_on_map(location):
-            return self.grid[location] 
+            return self.grid[location]
         raise ValueError('Location %s is not on the map' % location)
-    def all_cells(self): 
+    def all_cells(self):
         return self.grid.itervalues()
-    def score_cells(self): 
+    def score_cells(self):
         return (c for c in self.all_cells() if c.generates_score)
-    def pickup_cells(self): 
+    def pickup_cells(self):
         return (c for c in self.all_cells() if c.pickup)
-        
-    def max_y(self): 
+
+    def max_y(self):
         return max(self.grid.keys(), key=lambda c: c.y).y
-    def min_y(self): 
+    def min_y(self):
         return min(self.grid.keys(), key=lambda c: c.y).y
-    def max_x(self): 
+    def max_x(self):
         return max(self.grid.keys(), key=lambda c: c.x).x
-    def min_x(self): 
+    def min_x(self):
         return min(self.grid.keys(), key=lambda c: c.x).x
 
     @property
@@ -220,7 +220,7 @@ class WorldMap(BasicWorldMap):
 
     """
         Update function called periodically. The update is done as:
-            * _update avatars: 
+            * _update avatars:
                 _apply_score: each avatar receives a score
                 _apply_pickups: each avatar grabs a pickup
             * _update_map:
