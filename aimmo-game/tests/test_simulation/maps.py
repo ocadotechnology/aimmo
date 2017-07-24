@@ -44,6 +44,13 @@ class InfiniteMap(WorldMap):
         self.updates = 0
         self.num_avatars = None
         self.settings = defaultdict(lambda: 0)
+        self.infi = 1000
+
+    # Need to override this as self.grid does not exit in the mock object
+    def min_x(self): return -self.infi
+    def min_y(self): return -self.infi
+    def max_x(self): return self.infi
+    def max_y(self): return self.infi
 
     def is_on_map(self, target_location):
         self.get_cell(target_location)
