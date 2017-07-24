@@ -1,4 +1,6 @@
-from .. import direction, location
+from simulation.location import Location
+from simulation.direction import NORTH, SOUTH, EAST, WEST
+
 
 class AvatarView():
     """
@@ -9,10 +11,10 @@ class AvatarView():
     """
 
     def __init__(self, initial_location, radius):
-        self.NE_horizon = location.Location(initial_location.x + radius, initial_location.y + radius)
-        self.NW_horizon = location.Location(initial_location.x - radius, initial_location.y + radius)
-        self.SE_horizon = location.Location(initial_location.x + radius, initial_location.y - radius)
-        self.SW_horizon = location.Location(initial_location.x - radius, initial_location.y - radius)
+        self.NE_horizon = Location(initial_location.x + radius, initial_location.y + radius)
+        self.NW_horizon = Location(initial_location.x - radius, initial_location.y + radius)
+        self.SE_horizon = Location(initial_location.x + radius, initial_location.y - radius)
+        self.SW_horizon = Location(initial_location.x - radius, initial_location.y - radius)
         self.cells_to_reveal = {}
         self.cells_to_clear = {}
         self.avatars_in_view = {}
@@ -30,7 +32,7 @@ class AvatarView():
 
         for x in range(max(top_left.x, world_map.min_x()), min(bottom_right.x, world_map.max_x())):
             for y in range(max(bottom_right.y, world_map.min_y()), min(top_left.y, world_map.max_y())):
-                cells.append(world_map.get_cell_by_coords(x, y))
+                cells.append(world_map.get_cell(Location(x, y)))
         return cells
 
     # Reveals all the cells in the view.
@@ -39,33 +41,33 @@ class AvatarView():
 
     def move(self, move_direction, world_map):
         # Update cells to clear and to reveal depending on the move direction.
-        if move_direction == direction.EAST:
-            self.cells_to_clear = self.cells_in_rectangle(self.NW_horizon + direction.WEST + direction.NORTH,
-                                                          self.SW_horizon + direction.EAST + direction.SOUTH,
+        if move_direction == EAST:
+            self.cells_to_clear = self.cells_in_rectangle(self.NW_horizon + WEST + NORTH,
+                                                          self.SW_horizon + EAST + SOUTH,
                                                           world_map)
             self.cells_to_reveal = self.cells_in_rectangle(self.NE_horizon,
-                                                           self.SE_horizon + direction.EAST,
+                                                           self.SE_horizon + EAST,
                                                            world_map)
-        elif move_direction == direction.WEST:
-            self.cells_to_clear = self.cells_in_rectangle(self.NE_horizon + direction.WEST + direction.NORTH,
-                                                          self.SE_horizon + direction.EAST + direction.SOUTH,
+        elif move_direction == WEST:
+            self.cells_to_clear = self.cells_in_rectangle(self.NE_horizon + WEST + NORTH,
+                                                          self.SE_horizon + EAST + SOUTH,
                                                           world_map)
-            self.cells_to_reveal = self.cells_in_rectangle(self.NW_horizon + direction.WEST,
+            self.cells_to_reveal = self.cells_in_rectangle(self.NW_horizon + WEST,
                                                            self.SW_horizon,
                                                            world_map)
-        elif move_direction == direction.NORTH:
-            self.cells_to_clear = self.cells_in_rectangle(self.SW_horizon + direction.WEST + direction.NORTH,
-                                                          self.SE_horizon + direction.EAST + direction.SOUTH,
+        elif move_direction == NORTH:
+            self.cells_to_clear = self.cells_in_rectangle(self.SW_horizon + WEST + NORTH,
+                                                          self.SE_horizon + EAST + SOUTH,
                                                           world_map)
-            self.cells_to_reveal = self.cells_in_rectangle(self.NW_horizon + direction.NORTH,
+            self.cells_to_reveal = self.cells_in_rectangle(self.NW_horizon + NORTH,
                                                            self.NE_horizon,
                                                            world_map)
-        elif move_direction == direction.SOUTH:
-            self.cells_to_clear = self.cells_in_rectangle(self.NW_horizon + direction.WEST + direction.NORTH,
-                                                          self.NE_horizon + direction.EAST + direction.SOUTH,
+        elif move_direction == SOUTH:
+            self.cells_to_clear = self.cells_in_rectangle(self.NW_horizon + WEST + NORTH,
+                                                          self.NE_horizon + EAST + SOUTH,
                                                           world_map)
             self.cells_to_reveal = self.cells_in_rectangle(self.SW_horizon,
-                                                           self.SE_horizon + direction.SOUTH,
+                                                           self.SE_horizon + SOUTH,
                                                            world_map)
         else:
             raise ValueError
