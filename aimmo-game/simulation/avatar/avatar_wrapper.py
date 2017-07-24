@@ -12,6 +12,8 @@ class AvatarWrapper(object):
     The application's view of a character, not to be confused with "Avatar",
     the player-supplied code.
 
+    > talks to Worker via gets.
+
     API:
         * decide action - fetches an action from the worker and updates the
             current action to be executed
@@ -35,7 +37,14 @@ class AvatarWrapper(object):
         self.attack_strength = 1
         self.fog_of_war_modifier = 0
         self._action = None
-        self.view = AvatarView(initial_location, 2) # Radius of view
+
+        # Only initialise the view if there is an initial location.
+        # Otherwise, some tests fail.
+        # TODO: Find a better solution.
+        if initial_location is None:
+            self.view = None
+        else:
+            self.view = AvatarView(initial_location, radius=3)
 
     def update_effects(self):
         effects_to_remove = set()
