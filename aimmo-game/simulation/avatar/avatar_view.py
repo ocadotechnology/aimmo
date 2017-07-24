@@ -8,6 +8,19 @@ class AvatarView():
     use of this class is that when the view is moved, the game service
     knows which objects need to be created and which need to be deleted
     from the scene.
+
+    Say the view is 4x4 cells and user moves east. The idea is the following:
+                            C C C_C_C_C_C
+                            C C|C U U U U|R
+                            C C|C U U U U|R
+                            C C|C U U U U|R
+                            C C|C_U_U_U_U|R
+                            C C C C C C C
+    Here C stands for 'clear', U for 'update' and R for 'reveal'. The original
+    view is the one inside the | and _. This class calculates for every
+    move direction the cells to clear, the cells to update and the cells to
+    reveal, reducing the computations of how to change the view to only what's
+    strictly necessary.
     """
 
     def __init__(self, initial_location, radius):
