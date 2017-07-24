@@ -101,7 +101,6 @@ class WorldState():
             # Update active avatars.
             for player in game_state.avatar_manager.avatars:
                 self.update_player(player_dict(player))
-                print player
 
             main_avatar_id = 1 #game_state.main_avatar_id?
             avatar_view = game_state.avatar_manager.get_avatar(main_avatar_id).view
