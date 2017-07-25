@@ -44,8 +44,18 @@ class EmptyMapGenerator(BaseGenerator):
         self.width = width
         self.settings = settings
 
+    @classmethod
+    def get_map_by_corners(cls, settings, corners):
+        (min_x, max_x, min_y, max_y) = corners
+        grid = {}
+        for x in xrange(min_x, max_x + 1):
+            for y in xrange(min_y, max_y + 1):
+                location = Location(x, y)
+                grid[location] = Cell(location)
+        return WorldMap(grid, settings)
+
     def get_map(self):
-        def _min_max_from_dimensions(height, width):
+        def get_corners(height, width):
             max_x = int(math.floor(width / 2))
             min_x = -(width - max_x - 1)
             max_y = int(math.floor(height / 2))
@@ -55,13 +65,7 @@ class EmptyMapGenerator(BaseGenerator):
         new_settings = DEFAULT_LEVEL_SETTINGS.copy()
         new_settings.update(self.settings)
 
-        (min_x, max_x, min_y, max_y) = _min_max_from_dimensions(self.height, self.width)
-        grid = {}
-        for x in xrange(min_x, max_x + 1):
-            for y in xrange(min_y, max_y + 1):
-                location = Location(x, y)
-                grid[location] = Cell(location)
-        return WorldMap(grid, new_settings)
+        return EmptyMapGenerator.get_map_by_corners(self.settings, get_corners(self.height, self.width))
 
 class BaseLevelGenerator(BaseGenerator):
     __metaclass__ = abc.ABCMeta
@@ -113,10 +117,16 @@ class PickupDecoder(Decoder):
 ################################################################################
 
 class JsonLevelGenerator(TemplateLevelGenerator):
+    def _setup_meta(self):
+        for element in self.json_map:
+            if element["code"] == "meta":
+                self.meta = element
+        self.world_map = EmptyMapGenerator.get_map_by_corners(
+            self.settings,
+            (0, self.meta["raws"] + 1, 0, self.meta["cols"] + 1))
+
     def _register_json(self, json_map):
         self.json_map = json_map
-        # TODO: Pay attention at this...
-        self.world_map = EmptyMapGenerator(10, 10, self.settings).get_map()
 
     def _register_decoders(self):
         self.decoders = [
@@ -137,10 +147,14 @@ class JsonLevelGenerator(TemplateLevelGenerator):
             for element in find_element_by_code(self.json_map, decoder.code):
                 decoder.decode(element, self.world_map)
 
-
 class Level1(JsonLevelGenerator):
     def get_map(self):
         self._register_json(LEVELS["level1"])
+
+        # TODO: modify so that map does not get expanded...
+        # self.settings = {}
+
+        self._setup_meta()
         self._register_decoders()
         self._json_decode_map()
 

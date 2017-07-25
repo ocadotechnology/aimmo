@@ -18,7 +18,17 @@ class RawLevelGenerator():
         return self
 
     def generate_json(self):
-        return self.parser.map_apply_transforms()
+        raws = len(self.parser.map)
+        cols = len(self.parser.map[0])
+
+        json = self.parser.map_apply_transforms()
+        json.append({
+            "code": "meta",
+            "raws": raws,
+            "cols": cols
+        })
+
+        return json
 
 LEVELS = {
     "level1" : RawLevelGenerator().by_parser(CellParser()).by_map("level1.txt").by_models(["objects.json"]).generate_json()
