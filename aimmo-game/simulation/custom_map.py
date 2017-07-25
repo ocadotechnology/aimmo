@@ -102,8 +102,6 @@ class ScoreCellDecoder(Decoder):
 class ObstacleDecoder(Decoder):
     def decode(self, json, world_map):
         x, y = int(json["x"]), int(json["y"])
-        print x, y
-        print world_map.get_cell(Location(x, y)).location
         world_map.get_cell(Location(x, y)).habitable = False
 
 class PickupDecoder(Decoder):

@@ -25,7 +25,6 @@ class WorldState():
     def __init__(self, game_state, player_id):
         self.game_state = game_state
         self.ready_to_update = False
-
         self.players = defaultdict(dict)
         self.map_features = defaultdict(dict)
 
@@ -122,7 +121,7 @@ class WorldState():
             for cell in avatar_view.cells_to_reveal:
                 # There is an avatar.
 
-                if not cell.avatar is None:
+                if not cell.avatar is None:git
                     self.create_player(player_dict(cell.avatar))
                 # Cell is an obstacle.
                 if not cell.habitable:
