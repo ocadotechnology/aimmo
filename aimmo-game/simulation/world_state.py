@@ -130,6 +130,9 @@ class WorldState():
                 # Cell is a score point.
                 if cell.generates_score:
                     self.create_map_feature(MapFeature.SCORE_POINT.value, map_feature_dict(cell))
+                # Cell is a pickup
+                if not cell.pickup is None:
+                    self.create_map_feature(MapFeature.PICKUP.value, map_feature_dict(cell))
 
             # Updates
             for cell in avatar_view.cells_in_view:
@@ -149,16 +152,14 @@ class WorldState():
                 # Cell is a score point.
                 if cell.generates_score:
                     self.delete_map_feature(MapFeature.SCORE_POINT.value, map_feature_dict(cell))
+                # Cell is a pickup
+                if not cell.pickup is None:
+                    self.delete_map_feature(MapFeature.PICKUP.value, map_feature_dict(cell))
 
-
-
-# TODO: Implement pickups
-"""
-def get_pickups_list(world):
-    pickups = []
-    for cell in world.pickup_cells():
-        pickup = cell.pickup.serialise()
-        pickup['location'] = (cell.location.x, cell.location.y)
-        pickups.append(pickup)
-    return pickups
-"""
+# def get_pickups_list(world):
+#     pickups = []
+#     for cell in world.pickup_cells():
+#         pickup = cell.pickup.serialise()
+#         pickup['location'] = (cell.location.x, cell.location.y)
+#         pickups.append(pickup)
+#     return pickups

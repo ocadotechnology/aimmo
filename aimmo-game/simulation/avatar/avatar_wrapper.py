@@ -44,7 +44,8 @@ class AvatarWrapper(object):
         if initial_location is None:
             self.view = None
         else:
-            self.view = AvatarView(initial_location, radius=3)
+            self.view = AvatarView(initial_location, radius=10)
+
 
     def update_effects(self):
         effects_to_remove = set()

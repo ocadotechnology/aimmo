@@ -13,5 +13,27 @@
     "id" : "class:CellTransform.compute_id",
     "x" : "class:CellTransform.get_x",
     "y" : "class:CellTransform.get_y"
+  },
+  {
+    "code": "3",
+    "id" : "class:CellTransform.compute_id",
+    "x" : "class:CellTransform.get_x",
+    "y" : "class:CellTransform.get_y",
+    "type" : "health",
+    "health_restored": "5"
+  },
+  {
+    "code": "4",
+    "id" : "class:CellTransform.compute_id",
+    "x" : "class:CellTransform.get_x",
+    "y" : "class:CellTransform.get_y",
+    "type" : "invulnerability"
+  },
+  {
+    "code": "5",
+    "id" : "class:CellTransform.compute_id",
+    "x" : "class:CellTransform.get_x",
+    "y" : "class:CellTransform.get_y",
+    "type" : "damage"
   }
 ]
