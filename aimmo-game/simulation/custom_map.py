@@ -115,7 +115,8 @@ class PickupDecoder(Decoder):
 class JsonLevelGenerator(TemplateLevelGenerator):
     def _register_json(self, json_map):
         self.json_map = json_map
-        self.world_map = EmptyMapGenerator(100, 100, self.settings).get_map()
+        # TODO: Pay attention at this...
+        self.world_map = EmptyMapGenerator(10, 10, self.settings).get_map()
 
     def _register_decoders(self):
         self.decoders = [

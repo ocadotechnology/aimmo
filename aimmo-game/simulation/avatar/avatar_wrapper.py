@@ -42,6 +42,7 @@ class AvatarWrapper(object):
         # Otherwise, some tests fail.
         # TODO: Find a better solution.
         if initial_location is None:
+            print("Invalid initial location.")
             self.view = None
         else:
             self.view = AvatarView(initial_location, radius=10)
