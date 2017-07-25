@@ -5,7 +5,14 @@ from pprint import pprint
 
 from simulation.location import Location
 from simulation.game_state import GameState
-from simulation.world_map import WorldMap, WorldMapStaticSpawnDecorator, DEFAULT_LEVEL_SETTINGS
+from simulation.world_map import WorldMap
+from simulation.world_map import WorldMapStaticSpawnDecorator
+from simulation.world_map import DEFAULT_LEVEL_SETTINGS
+from simulation.world_map import Cell
+
+from simulation.pickups import HealthPickup
+from simulation.pickups import InvulnerabilityPickup
+from simulation.pickups import DamagePickup
 
 class BaseGenerator(object):
     __metaclass__ = abc.ABCMeta
@@ -60,17 +67,30 @@ class ObstacleDecoder(Decoder):
         x, y = int(json["x"]), int(json["y"])
         world_map.get_cell(Location(x, y)).habitable = False
 
+class PickupDecoder(Decoder):
+    def decode(self, json, world_map):
+        x, y = int(json["x"]), int(json["y"])
+        if json["type"] == "invulnerability":
+            world_map.get_cell(Location(x, y)).pickup = InvulnerabilityPickup(Location(x, y))
+        if json["type"] == "health":
+            world_map.get_cell(Location(x, y)).pickup = HealthPickup(Location(x, y), int(json["health_restored"]))
+        if json["type"] == "damage":
+            world_map.get_cell(Location(x, y)).pickup = DamagePickup(Location(x, y))
+
 ################################################################################
 
 class JsonLevelGenerator(TemplateLevelGenerator):
     def _register_json(self, json_map):
         self.json_map = json_map
-        self.world_map = WorldMap.generate_empty_map(100, 100, self.settings)
+        self.world_map = WorldMap.generate_empty_map(15, 15, self.settings)
 
     def _register_decoders(self):
         self.decoders = [
             ScoreCellDecoder("2"),
-            ObstacleDecoder("1")
+            ObstacleDecoder("1"),
+            PickupDecoder("3"),
+            PickupDecoder("4"),
+            PickupDecoder("5")
         ]
 
     def _json_decode_map(self):
