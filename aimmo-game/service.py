@@ -60,6 +60,16 @@ def client_ready(user_id):
     world_state_manager.add_world_state(WorldState(state_provider, user_id))
     world_state_manager.get_world_state(user_id).ready_to_update = True
 
+@socketio.on('exit-game')
+def exit_game(user_id):
+    world_state_manager.get_world_state(user_id).ready_to_update = False
+    #player_manager.remove_avatar(user_id)
+
+    # If avatar is in there, mark the view as empty.
+    user_avatar = player_manager.get_avatar(user_id)
+    if not user_avatar is None:
+        user_avatar.view.is_empty = True
+
 def send_world_update():
     # TODO: For the moment we broadcast all the updates and we filter them in the
     # Unity client. We want to get rid of this.
@@ -95,6 +105,8 @@ def run_game(port):
     # as http://localhost:8000/players/api/games/ is used as default
     api_url = os.environ.get('GAME_API_URL', 'http://localhost:8000/players/api/games/')
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
+
+    global player_manager
     player_manager = AvatarManager()
     game_state = generator.get_game_state(player_manager)
 
