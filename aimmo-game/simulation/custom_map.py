@@ -123,7 +123,7 @@ class JsonLevelGenerator(TemplateLevelGenerator):
                 self.meta = element
         self.world_map = EmptyMapGenerator.get_map_by_corners(
             self.settings,
-            (0, self.meta["raws"] + 1, 0, self.meta["cols"] + 1))
+            (0, self.meta["raws"] - 1, 0, self.meta["cols"] - 1))
 
     def _register_json(self, json_map):
         self.json_map = json_map
