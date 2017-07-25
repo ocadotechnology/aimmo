@@ -20,9 +20,18 @@ from simulation.custom_map import EmptyMapGenerator
 
 LOGGER = logging.getLogger(__name__)
 
-""" Level generation. TODO: document @ custom_map, map_generator """
-
 class Main(BaseGenerator):
+
+    """
+        Main Level generator used by the map creation service from the Django server.
+        Custom level generators(see package levels) can be found in @custom_map.
+        To read more about map generators, read documentation in custom_map.
+
+        Obstacles are filled according to the obstacle ratio.
+
+        Once an obstacle is added we ensure that each habitable cell can reach each other, 
+        thus the map will be connex and each generated avatar can reach others.
+    """
     def get_map(self):
         height = self.settings['START_HEIGHT']
         width = self.settings['START_WIDTH']
@@ -63,6 +72,10 @@ def pairwise(iterable):
 
 
 def _all_habitable_neighbours_can_reach_each_other(cell, world_map):
+    """
+        Helper function used by Main map generator. It ensures that each habitable cell can 
+        reach each other.
+    """
     neighbours = get_adjacent_habitable_cells(cell, world_map)
 
     assert len(neighbours) >= 1
@@ -73,7 +86,10 @@ def _all_habitable_neighbours_can_reach_each_other(cell, world_map):
 
 
 def get_shortest_path_between(source_cell, destination_cell, world_map):
-
+    """
+        Helper function. Uses A* to find the a shortest path between two cells.
+        The chosen admisible heuristic function is the manhattan function.
+    """
     def manhattan_distance_to_destination_cell(this_branch):
         branch_tip_location = this_branch[-1].location
         x_distance = abs(branch_tip_location.x - destination_cell.location.x)
@@ -103,6 +119,12 @@ def get_shortest_path_between(source_cell, destination_cell, world_map):
 
 
 def get_random_edge_index(world_map, rng=random):
+    """
+        Utility function used to get a tuple (x, y) on the edge of the map.
+        Note the function returns a tuple rather than a Location.
+
+        This function is also used by the tests.
+    """
     num_row_cells = world_map.num_rows - 2
     num_col_cells = world_map.num_cols - 2
     num_edge_cells = 2*num_row_cells + 2*num_col_cells
@@ -138,6 +160,9 @@ def get_adjacent_habitable_cells(cell, world_map):
 
 
 class PriorityQueue(object):
+    """
+        Class used in the A* implementation.
+    """
     def __init__(self, key, init_items=tuple()):
         self.key = key
         self.heap = [self._build_tuple(i) for i in init_items]

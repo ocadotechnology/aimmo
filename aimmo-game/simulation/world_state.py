@@ -121,7 +121,7 @@ class WorldState():
             for cell in avatar_view.cells_to_reveal:
                 # There is an avatar.
 
-                if not cell.avatar is None:git
+                if not cell.avatar is None:
                     self.create_player(player_dict(cell.avatar))
                 # Cell is an obstacle.
                 if not cell.habitable:

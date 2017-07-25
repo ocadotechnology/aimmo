@@ -2,6 +2,12 @@ from parsers import CellParser
 from pprint import pprint
 
 class RawLevelGenerator():
+    """
+        Builder that is used to expose json formatted levels.
+        See @parsers for details on level generation.
+
+        To see the JSON format of the levels run this file.
+    """
     def __init__(self):
         pass
 

@@ -15,9 +15,28 @@ from simulation.pickups import HealthPickup
 from simulation.pickups import InvulnerabilityPickup
 from simulation.pickups import DamagePickup
 
-""" Custom level generation. TODO: document @ custom_map, map_generator """
-
 class BaseGenerator(object):
+    """
+        A map generator that exposes a game state and a check for level completion.
+
+        API:
+            - contructor(setting) 
+                - a set of basic settings that the map uses at generation 
+                - see DEFAULT_LEVEL_SETTINGS in simulation.world_map
+            - get_game_state(avatar_manager)
+                - exposes a game state used by the turn manager daemon
+                - for details see GameState 
+            - check_complete(game_state)
+                - function to check if a map is "complete"
+                - the turn manager runs the action for each avatar, then runs check_complete afterwards
+            @abstract
+            - get_map
+                - returns the generated map
+        
+        Important: for the moment level configurations are found directly by their name by looking into 
+        the module map_generator - look in service.py for: 
+            generator = getattr(map_generator, settings['GENERATOR'])(settings) 
+    """
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, settings):
@@ -34,6 +53,11 @@ class BaseGenerator(object):
         pass
 
 class EmptyMapGenerator(BaseGenerator):
+    """
+        Generates empty maps
+        - get_map_by_corners
+        - get_map - generates a map with center in (0, 0)
+    """
     def __init__(self, settings):
         self.height =  self.settings['START_HEIGHT']
         self.width = self.settings['START_WIDTH']
@@ -68,22 +92,35 @@ class EmptyMapGenerator(BaseGenerator):
         return EmptyMapGenerator.get_map_by_corners(self.settings, get_corners(self.height, self.width))
 
 class BaseLevelGenerator(BaseGenerator):
+    """
+        BaseGenerator with default settings.
+    """
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, *args, **kwargs):
         super(BaseLevelGenerator, self).__init__(*args, **kwargs)
         self.settings.update(DEFAULT_LEVEL_SETTINGS)
 
-class TemplateLevelGenerator(BaseLevelGenerator):
-    __metaclass__ = abc.ABCMeta
-
-    def __init__(self, *args, **kwargs):
-        super(TemplateLevelGenerator, self).__init__(*args, **kwargs)
-        self.settings.update(DEFAULT_LEVEL_SETTINGS)
-
 ################################################################################
 
 class Decoder():
+    """
+        See @JsonLevelGenerator and @Levels first.
+
+        A Decorer is a class that receives a Json formatted as in levels/models
+        and decodes it, altering the state of the world_map.
+    
+        Decoders are used to translate a Level from the JSON format to the internal 
+        state of a map(i.e. a WorldMap).
+
+        An example of a JSon format is:
+          {
+            "code": "1",
+            "id" : "5",
+            "x" : "3",
+            "y" : "3"
+          }
+    """
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, code):
@@ -116,13 +153,27 @@ class PickupDecoder(Decoder):
 
 ################################################################################
 
-class JsonLevelGenerator(TemplateLevelGenerator):
+class JsonLevelGenerator(BaseLevelGenerator):
+    """
+        Workflow:
+            - setup the metadata: map dimensions, etc.
+            - register the json that represents the map
+            - register the decoders that tranform the jsons into WorldMap objects
+            - decode the map applying the decoder to each of the jsons
+    
+        All the levels can be found in json format in levels.LEVELS. 
+        To register a level extend this class.
+    """
     def _setup_meta(self):
+        # Used so that the map dimension does not increase automatically
         self.settings["TARGET_NUM_CELLS_PER_AVATAR"] = -1000
 
+        # Finds the json with metaiformation
         for element in self.json_map:
             if element["code"] == "meta":
                 self.meta = element
+
+        # Sets the empty map to the dimensions of the given level
         self.world_map = EmptyMapGenerator.get_map_by_corners(
             self.settings,
             (0, self.meta["rows"] - 1, 0, self.meta["cols"] - 1))
