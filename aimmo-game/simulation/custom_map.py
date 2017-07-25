@@ -104,11 +104,11 @@ class PickupDecoder(Decoder):
     def decode(self, json, world_map):
         x, y = int(json["x"]), int(json["y"])
         if json["type"] == "invulnerability":
-            world_map.get_cell(Location(x, y)).pickup = InvulnerabilityPickup(Location(x, y))
+            world_map.get_cell(Location(x, y)).pickup = InvulnerabilityPickup(world_map.get_cell(Location(x, y)))
         if json["type"] == "health":
-            world_map.get_cell(Location(x, y)).pickup = HealthPickup(Location(x, y), int(json["health_restored"]))
+            world_map.get_cell(Location(x, y)).pickup = HealthPickup(world_map.get_cell(Location(x, y)), int(json["health_restored"]))
         if json["type"] == "damage":
-            world_map.get_cell(Location(x, y)).pickup = DamagePickup(Location(x, y))
+            world_map.get_cell(Location(x, y)).pickup = DamagePickup(world_map.get_cell(Location(x, y)))
 
 ################################################################################
 
