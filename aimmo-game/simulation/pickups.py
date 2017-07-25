@@ -1,13 +1,14 @@
+from simulation.world_state import MapFeature
+
 from abc import ABCMeta, abstractmethod, abstractproperty
 import effects
 
-
 class _Pickup(object):
     """
-        A Pickup is attached to a cell. 
+        A Pickup is attached to a cell.
 
         Getting a pickup should attach an effect to an avatar.
-        
+
         Once the pickup is attached to the avatar, it gets deleted.
     """
     __metaclass__ = ABCMeta
@@ -19,6 +20,7 @@ class _Pickup(object):
         return self.__class__.__name__
 
     def delete(self):
+        self.cell.remove_from_scene = MapFeature.PICKUP
         self.cell.pickup = None
 
     def apply(self, avatar):
