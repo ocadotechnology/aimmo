@@ -9,24 +9,33 @@ class AvatarView():
     knows which objects need to be created and which need to be deleted
     from the scene.
 
-    Say the view is 4x4 cells and user moves east. The idea is the following:
-                            C C C_C_C_C_C
-                            C C|C U U U U|R
-                            C C|C U U U U|R
-                            C C|C U U U U|R
-                            C C|C_U_U_U_U|R
-                            C C C C C C C
-    Here C stands for 'clear', U for 'update' and R for 'reveal'. The original
-    view is the one inside the | and _. This class calculates for every
-    move direction the cells to clear, the cells to update and the cells to
-    reveal, reducing the computations of how to change the view to only what's
-    strictly necessary.
+    Say the view is 4x4 cells. Cells 'in view' are marked with a 'V'.
+                                 _ _ _ _
+                               |V V V V V|
+                               |V V V V V|
+                               |V V V V V|
+                               |V_V_V_V_V|
+    Now suppose the user moves east. The idea is the following,
+                            C C C_C_C_C_C C
+                            C C|C V V V V|R
+                            C C|C V V V V|R
+                            C C|C V V V V|R
+                            C C|C_V_V_V_V|R
+                            C C C C C C C C
+    where C stands for 'clear' and R for 'reveal'. This class calculates
+    for every move action the cells to clear and the cells to reveal, and keeps
+    track of the cells in view. This reduces the computations of how to change
+    the view to only what's strictly necessary. Following with the example, after
+    sending the game objects to create/delete in world_state, the new view would be
+                                 _ _ _ _
+                               |  V V V V|V
+                               |  V V V V|V
+                               |  V V V V|V
+                               | _V_V_V_V|V
+    where the original view is delimited by the | and the _.
     """
 
     def __init__(self, initial_location, radius):
-        if initial_location is None or radius is None:
-            raise ValueError
-
         self.NE_horizon = Location(initial_location.x + radius, initial_location.y + radius)
         self.NW_horizon = Location(initial_location.x - radius, initial_location.y + radius)
         self.SE_horizon = Location(initial_location.x + radius, initial_location.y - radius)
@@ -37,18 +46,15 @@ class AvatarView():
         self.is_empty = True
 
     def location_in_view(self, location):
-        if location is None:
-            raise ValueError
-
         return location.x >= self.NW_horizon.x and \
                location.y <= self.NW_horizon.y and \
                location.x <= self.SE_horizon.x and \
                location.y >= self.SE_horizon.y
 
     # Returns all the cells in the rectangle defined by two corners.
+    @classmethod
     def cells_in_rectangle(self, top_left, bottom_right, world_map):
         cells = set([])
-
         for x in range(max(top_left.x, world_map.min_x()), min(bottom_right.x, world_map.max_x())):
             for y in range(max(bottom_right.y, world_map.min_y()), min(top_left.y, world_map.max_y())):
                 cells.add(world_map.get_cell(Location(x, y)))
@@ -57,7 +63,7 @@ class AvatarView():
     # Reveals all the cells in the view.
     def reveal_all_cells(self, world_map):
         self.cells_to_reveal = self.cells_in_rectangle(self.NW_horizon, self.SE_horizon, world_map)
-        self.cells_in_view = self.cells_to_reveal.copy()
+        self.cells_in_view = set(self.cells_to_reveal)
 
     def move(self, move_direction, world_map):
         self.cells_to_clear = set([])
@@ -118,8 +124,6 @@ class AvatarView():
             self.cells_to_reveal = self.cells_in_rectangle(self.SW_horizon,
                                                            self.SE_horizon + SOUTH,
                                                            world_map)
-        else:
-            raise ValueError
 
         # Update cells in view. (Note that these are set operations: union and set difference)
         self.cells_in_view |= self.cells_to_reveal
