@@ -11,6 +11,10 @@ from simulation.world_map import WorldMapStaticSpawnDecorator
 from simulation.world_map import DEFAULT_LEVEL_SETTINGS
 from simulation.world_map import Cell
 
+from simulation.pickups import HealthPickup
+from simulation.pickups import InvulnerabilityPickup
+from simulation.pickups import DamagePickup
+
 """ Custom level generation. TODO: document @ custom_map, map_generator """
 
 class BaseGenerator(object):
@@ -96,6 +100,16 @@ class ObstacleDecoder(Decoder):
         x, y = int(json["x"]), int(json["y"])
         world_map.get_cell(Location(x, y)).habitable = False
 
+class PickupDecoder(Decoder):
+    def decode(self, json, world_map):
+        x, y = int(json["x"]), int(json["y"])
+        if json["type"] == "invulnerability":
+            world_map.get_cell(Location(x, y)).pickup = InvulnerabilityPickup(Location(x, y))
+        if json["type"] == "health":
+            world_map.get_cell(Location(x, y)).pickup = HealthPickup(Location(x, y), int(json["health_restored"]))
+        if json["type"] == "damage":
+            world_map.get_cell(Location(x, y)).pickup = DamagePickup(Location(x, y))
+
 ################################################################################
 
 class JsonLevelGenerator(TemplateLevelGenerator):
@@ -106,7 +120,10 @@ class JsonLevelGenerator(TemplateLevelGenerator):
     def _register_decoders(self):
         self.decoders = [
             ScoreCellDecoder("2"),
-            ObstacleDecoder("1")
+            ObstacleDecoder("1"),
+            PickupDecoder("3"),
+            PickupDecoder("4"),
+            PickupDecoder("5")
         ]
 
     def _json_decode_map(self):
