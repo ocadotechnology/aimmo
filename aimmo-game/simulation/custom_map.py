@@ -102,6 +102,8 @@ class ScoreCellDecoder(Decoder):
 class ObstacleDecoder(Decoder):
     def decode(self, json, world_map):
         x, y = int(json["x"]), int(json["y"])
+        print x, y
+        print world_map.get_cell(Location(x, y)).location
         world_map.get_cell(Location(x, y)).habitable = False
 
 class PickupDecoder(Decoder):
@@ -118,12 +120,14 @@ class PickupDecoder(Decoder):
 
 class JsonLevelGenerator(TemplateLevelGenerator):
     def _setup_meta(self):
+        self.settings["TARGET_NUM_CELLS_PER_AVATAR"] = -1000
+
         for element in self.json_map:
             if element["code"] == "meta":
                 self.meta = element
         self.world_map = EmptyMapGenerator.get_map_by_corners(
             self.settings,
-            (0, self.meta["raws"] - 1, 0, self.meta["cols"] - 1))
+            (0, self.meta["rows"] - 1, 0, self.meta["cols"] - 1))
 
     def _register_json(self, json_map):
         self.json_map = json_map
@@ -150,9 +154,6 @@ class JsonLevelGenerator(TemplateLevelGenerator):
 class Level1(JsonLevelGenerator):
     def get_map(self):
         self._register_json(LEVELS["level1"])
-
-        # TODO: modify so that map does not get expanded...
-        # self.settings = {}
 
         self._setup_meta()
         self._register_decoders()

@@ -19,7 +19,7 @@ from .levels.test_parsers import MockParser
 
 class TestDecoders(unittest.TestCase):
     def setUp(self):
-        self.map = EmptyMapGenerator(2, 2, {}).get_map()
+        self.map = EmptyMapGenerator.get_map_by_corners({}, (0, 1, 0, 1))
 
     def test_obstacle_decoder(self):
         ObstacleDecoder("0").decode({

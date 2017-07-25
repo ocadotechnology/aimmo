@@ -18,13 +18,13 @@ class RawLevelGenerator():
         return self
 
     def generate_json(self):
-        raws = len(self.parser.map)
+        rows = len(self.parser.map)
         cols = len(self.parser.map[0])
 
         json = self.parser.map_apply_transforms()
         json.append({
             "code": "meta",
-            "raws": raws,
+            "rows": rows,
             "cols": cols
         })
 
