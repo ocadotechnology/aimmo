@@ -72,7 +72,10 @@ class AvatarView():
     # Reveals all the cells in the view.
     def reveal_all_cells(self, world_map):
         self.cells_to_reveal = self.cells_in_rectangle(self.NW_horizon, self.SE_horizon, world_map)
-        self.cells_in_view = set(self.cells_to_reveal)
+
+        for cell in self.cells_to_reveal:
+            self.cells_in_view.add(cell)
+        #self.cells_in_view = set(self.cells_to_reveal)
 
     def move(self, move_direction, world_map):
         if world_map is None:
