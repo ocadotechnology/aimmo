@@ -117,7 +117,8 @@ class WorldState():
                 avatar_view.reveal_all_cells(game_state.world_map)
                 avatar_view.is_empty = False
 
-            # Creation
+            # Creation4
+            # for cell in game_state.world_map.all_cells():
             for cell in avatar_view.cells_to_reveal:
                 # There is an avatar.
 

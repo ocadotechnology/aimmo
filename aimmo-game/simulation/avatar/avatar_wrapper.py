@@ -45,7 +45,7 @@ class AvatarWrapper(object):
             print("Invalid initial location.")
             self.view = None
         else:
-            self.view = AvatarView(initial_location, radius=100)
+            self.view = AvatarView(initial_location, radius=10)
 
 
     def update_effects(self):

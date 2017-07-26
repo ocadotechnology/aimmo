@@ -71,10 +71,10 @@ class TestAvatarView(TestCase):
 
     # Test 'cells_in_rectangle'
 
-    def test_returns_no_cells_when_world_map_is_empty(self):
+    def test_returns_one_cell_in_minimal_world_map(self):
         mock_world_map = MockWorldMap(0, 0, 0, 0)
         cells_in_rectangle = AvatarView.cells_in_rectangle(Location(-3, 4), Location(5, -6), mock_world_map)
-        self.assertEqual(len(cells_in_rectangle), 0)
+        self.assertEqual(len(cells_in_rectangle), 1)
 
     def test_returns_no_cells_when_the_corners_are_wrong(self):
         mock_world_map = MockWorldMap(-1, -1, 1, 1)
