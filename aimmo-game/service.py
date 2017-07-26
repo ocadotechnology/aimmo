@@ -81,7 +81,7 @@ def plain_update(user_id):
     world_state = world_state_manager.get_world_state(user_id)
     if not world_state.ready_to_update:
         return "NOT READY"
-    return  flask.jsonify(world_state.get_updates())
+    return flask.jsonify(world_state.get_updates())
 
 # socketio routes
 @socketio.on('connect')
