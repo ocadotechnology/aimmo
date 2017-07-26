@@ -90,10 +90,9 @@ def get_game(request, id):
 
 @csrf_exempt
 @require_http_methods(['POST'])
-def mark_game_complete(request, id):
-    game = get_object_or_404(Game, id=id)
+def mark_game_complete(data):
+    game = get_object_or_404(Game, id=data['id'])
     game.completed = True
-    game.static_data = request.body
     game.save()
     return HttpResponse('Done!')
 
