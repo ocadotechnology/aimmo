@@ -3,3 +3,4 @@ omit =
     */tests/*
     */python?.?/*
     */site-packages/nose/*
+    *.egg/*
