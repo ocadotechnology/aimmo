@@ -117,8 +117,6 @@ class TestParser(unittest.TestCase):
         self.__with_micro_map()
         self.__with_big_model()
 
-        pprint(self.parser.map_apply_transforms())
-
         self.assertItemsEqual(self.parser.map_apply_transforms(), [{
             "code": "0",
             "test" : "zero"

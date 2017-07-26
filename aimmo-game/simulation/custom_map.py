@@ -20,22 +20,22 @@ class BaseGenerator(object):
         A map generator that exposes a game state and a check for level completion.
 
         API:
-            - contructor(setting) 
-                - a set of basic settings that the map uses at generation 
+            - contructor(setting)
+                - a set of basic settings that the map uses at generation
                 - see DEFAULT_LEVEL_SETTINGS in simulation.world_map
             - get_game_state(avatar_manager)
                 - exposes a game state used by the turn manager daemon
-                - for details see GameState 
+                - for details see GameState
             - check_complete(game_state)
                 - function to check if a map is "complete"
                 - the turn manager runs the action for each avatar, then runs check_complete afterwards
             @abstract
             - get_map
                 - returns the generated map
-        
-        Important: for the moment level configurations are found directly by their name by looking into 
-        the module map_generator - look in service.py for: 
-            generator = getattr(map_generator, settings['GENERATOR'])(settings) 
+
+        Important: for the moment level configurations are found directly by their name by looking into
+        the module map_generator - look in service.py for:
+            generator = getattr(map_generator, settings['GENERATOR'])(settings)
     """
     __metaclass__ = abc.ABCMeta
 
@@ -109,8 +109,8 @@ class Decoder():
 
         A Decorer is a class that receives a Json formatted as in levels/models
         and decodes it, altering the state of the world_map.
-    
-        Decoders are used to translate a Level from the JSON format to the internal 
+
+        Decoders are used to translate a Level from the JSON format to the internal
         state of a map(i.e. a WorldMap).
 
         An example of a JSon format is:
@@ -160,10 +160,13 @@ class JsonLevelGenerator(BaseLevelGenerator):
             - register the json that represents the map
             - register the decoders that tranform the jsons into WorldMap objects
             - decode the map applying the decoder to each of the jsons
-    
-        All the levels can be found in json format in levels.LEVELS. 
+
+        All the levels can be found in json format in levels.LEVELS.
         To register a level extend this class.
     """
+    def __init__(self, *args, **kwargs):
+        super(JsonLevelGenerator, self).__init__(*args, **kwargs)
+
     def _setup_meta(self):
         # Used so that the map dimension does not increase automatically
         self.settings["TARGET_NUM_CELLS_PER_AVATAR"] = -1000
