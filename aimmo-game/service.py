@@ -30,7 +30,7 @@ world_state_manager = {}
 def __world_init():
     socketio.emit('world-init')
 
-def __client_ready(user_id):
+def __client_ready(client_id):
     flask.session['id'] = client_id
     world_state = WorldState(state_provider)
     world_state_manager[client_id] = world_state
@@ -67,14 +67,6 @@ def plain_exit_game(user_id):
     user_id = int(user_id)
     __exit_game(user_id)
     return "EXITING GAME FOR USER " + str(user_id)
-@app.route('/plain/server-ready/<user_id>')
-def plain_ready(user_id):
-    user_id = int(user_id)
-    world_state = world_state_manager.get_world_state(user_id)
-    if not world_state.ready_to_update:
-        return "NOT READY"
-    else:
-        return "READY"
 @app.route('/plain/update/<user_id>')
 def plain_update(user_id):
     user_id = int(user_id)

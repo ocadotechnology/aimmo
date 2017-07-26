@@ -16,9 +16,6 @@ class SnapshotProcessor(BaseSnapshotProcessor):
         self.world_states = []
         self.player_id = player_id
 
-    def check_first_world_state(self, world_state):
-        self.world_states.append(world_state)
-
     def check_player_moved_at_most_one_space(self, last_pos, curr_pos):
         if last_pos is None:
             return
@@ -56,8 +53,19 @@ class SnapshotProcessor(BaseSnapshotProcessor):
             self.get_player(world_state)
         )
 
+    def check_only_feature_creations_happen(self, world_state):
+        pprint(world_state)
+        for key, feature in world_state['map_features'].iteritems():
+            if 'update' in feature.keys():
+                self.binder.assertEqual(len(feature['update']), 0)
+            if 'delete' in feature.keys():
+                self.binder.assertEqual(len(feature['delete']), 0)
+
     def check_first_world_state(self):
         world_state = self.world_states[-1]
+
+        print("Checking only feature creations happen...")
+        self.check_only_feature_creations_happen(world_state)
 
     def receive_snapshot(self, world_state_string):
         world_state = json.loads(world_state_string)
