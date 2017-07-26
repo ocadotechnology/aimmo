@@ -1,4 +1,7 @@
+import os
+
 import logging
+import requests
 import time
 from threading import RLock
 from threading import Thread
@@ -44,6 +47,7 @@ class TurnManager(Thread):
         state_provider.set_world(game_state)
         self.end_turn_callback = end_turn_callback
         self._completion_url = completion_url
+
         super(TurnManager, self).__init__()
 
     def run_turn(self):
@@ -65,10 +69,16 @@ class TurnManager(Thread):
         game_state.world_map.reconstruct_interactive_state(num_avatars)
 
     def _mark_complete(self):
-        pass
-        # TODO: Make completion request work. For now, we assume games don't finish.
-        #from world_state import WorldState
-        #requests.post(self._completion_url, json=world_state.get_update())
+        # Just send a request to the completion url. Get the game_id from the url itself...
+        #game_id = int(self._completion_url.split('/')[-3])
+        #requests.post(self._completion_url, data={'id':game_id})
+        # The request doesnt seem to work... Code 500. So for now we'll mark the game as complete directly
+        # TODO: Fix this.
+
+        # TEMPORARY
+        with state_provider as game_state:
+            main_avatar = game_state.get_main_avatar()
+            main_avatar.view.cells_to_clear = main_avatar.view.cells_in_view
 
     def run(self):
         while True:
