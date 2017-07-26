@@ -70,8 +70,15 @@ class TurnManager(Thread):
 
     def _mark_complete(self):
         # Just send a request to the completion url. Get the game_id from the url itself...
-        game_id = int(self._completion_url.split('/')[-3])
-        requests.post(self._completion_url, data={'id':game_id})
+        #game_id = int(self._completion_url.split('/')[-3])
+        #requests.post(self._completion_url, data={'id':game_id})
+        # The request doesnt seem to work... Code 500. So for now we'll mark the game as complete directly
+        # TODO: Fix this.
+
+        # TEMPORARY
+        with state_provider as game_state:
+            main_avatar = game_state.get_main_avatar()
+            main_avatar.view.cells_to_clear = main_avatar.view.cells_in_view
 
     def run(self):
         while True:
