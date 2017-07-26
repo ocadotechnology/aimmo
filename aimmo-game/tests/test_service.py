@@ -22,15 +22,22 @@ class SimpleAvatarManager(AvatarManager):
             1 : avatar
         }
 
-class TestService(TestCase):
+class TestServiceAPI(TestCase):
     def setUp(self):
-        self.user_id = 1
-
-    def test_healthy(self):
         service.app.config['TESTING'] = True
         self.app = service.app.test_client()
+
+    def test_healthy(self):
         response = self.app.get('/')
         self.assertEqual(response.data, 'HEALTHY')
+
+    # def test_player_data(self):
+    #     response = self.app.get('/player/1')
+    #     print response
+
+class TestServiceInternals(TestCase):
+    def setUp(self):
+        self.user_id = 1
 
     def setup_world(self):
         avatar_manager = SimpleAvatarManager()

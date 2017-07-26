@@ -50,18 +50,15 @@ world_state_manager = WorldStateManager()
      > client: filter my updates
 """
 
-@socketio.on('connect')
-def world_init():
+def __world_init():
     socketio.emit('world-init')
 
-@socketio.on('client-ready')
-def client_ready(user_id):
+def __client_ready(user_id):
     print("Received user id: " + str(user_id))
     world_state_manager.add_world_state(WorldState(state_provider, user_id))
     world_state_manager.get_world_state(user_id).ready_to_update = True
 
-@socketio.on('exit-game')
-def exit_game(user_id):
+def __exit_game(user_id):
     world_state_manager.get_world_state(user_id).ready_to_update = False
     #player_manager.remove_avatar(user_id)
 
@@ -70,10 +67,7 @@ def exit_game(user_id):
     if not user_avatar is None:
         user_avatar.view.is_empty = True
 
-def send_world_update():
-    # TODO: For the moment we broadcast all the updates and we filter them in the
-    # Unity client. We want to get rid of this.
-
+def __send_world_update():
     for world_state in world_state_manager.get_all_world_states():
         if world_state.ready_to_update:
             socketio.emit(
@@ -81,6 +75,46 @@ def send_world_update():
                 world_state.get_updates(),
                 broadcast=True,
             )
+
+# plain client routes
+@app.route('/plain/connect')
+def plain_world_init():
+    __world_init()
+    return 'CONNECT'
+@app.route('/plain/client-ready/<user_id>')
+def plain_client_ready(user_id):
+    user_id = int(user_id)
+    __client_ready(user_id)
+    return 'RECEIVED USER READY ' + str(user_id)
+@app.route('/plain/exit-game/<user_id>')
+def plain_exit_game(user_id):
+    user_id = int(user_id)
+    __exit_game(user_id)
+    return "EXITING GAME FOR USER " + str(user_id)
+@app.route('/plain/server-ready/<user_id>')
+def plain_ready(user_id):
+    user_id = int(user_id)
+    world_state = world_state_manager.get_world_state(user_id)
+    if not world_state.ready_to_update:
+        return "NOT READY"
+    else:
+        return "READY"
+@app.route('/plain/update/<user_id>')
+def plain_update(user_id):
+    user_id = int(user_id)
+    world_state = world_state_manager.get_world_state(user_id)
+    if not world_state.ready_to_update:
+        return "NOT READY"
+    return  flask.jsonify(world_state.get_updates())
+
+# socketio routes
+@socketio.on('connect')
+def world_init(): __world_init()
+@socketio.on('client-ready')
+def client_ready(user_id): __client_ready(user_id)
+@socketio.on('exit-game')
+def exit_game(user_id): __exit_game(user_id)
+def send_world_update(): __send_world_update()
 
 @app.route('/')
 def healthcheck():
