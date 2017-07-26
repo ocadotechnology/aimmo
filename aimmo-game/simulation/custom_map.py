@@ -212,3 +212,12 @@ class Level1(JsonLevelGenerator):
         self._json_decode_map()
 
         return self.world_map
+
+    def check_complete(self, game_state):
+        try:
+            main_avatar = game_state.get_main_avatar()
+        except KeyError:
+            return False
+
+        return main_avatar.score > 0
+

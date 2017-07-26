@@ -47,8 +47,6 @@ class TurnManager(Thread):
         state_provider.set_world(game_state)
         self.end_turn_callback = end_turn_callback
         self._completion_url = completion_url
-        print "-----------------------------------------------------"
-        print completion_url
 
         super(TurnManager, self).__init__()
 
@@ -71,8 +69,9 @@ class TurnManager(Thread):
         game_state.world_map.reconstruct_interactive_state(num_avatars)
 
     def _mark_complete(self):
-        # Just send a request to the completion url. I don't think the game_id is even necessary.
-        requests.post(self._completion_url, data={'id':os.environ['GAME_ID']})
+        # Just send a request to the completion url. Get the game_id from the url itself...
+        game_id = int(self._completion_url.split('/')[-3])
+        requests.post(self._completion_url, data={'id':game_id})
 
     def run(self):
         while True:

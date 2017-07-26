@@ -61,8 +61,6 @@ class GameState(object):
             avatar.update_effects()
 
     def update_environment(self):
-        # TODO: Call WorldUpdater instead.
-
         self._update_effects()
         num_avatars = len(self.avatar_manager.active_avatars)
         self.world_map.update(num_avatars)
@@ -71,4 +69,6 @@ class GameState(object):
         return self._completion_callback(self)
 
     def get_main_avatar(self):
-        return self.avatar_manager.avatars_by_id[self.main_avatar_id]
+        # TODO: Change this. You wont always have id=1
+        #return self.avatar_manager.avatars_by_id[self.main_avatar_id]
+        return self.avatar_manager.get_avatar(1)
