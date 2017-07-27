@@ -219,5 +219,4 @@ class Level1(JsonLevelGenerator):
         except KeyError:
             return False
 
-        return main_avatar.score > 24
-
+        return main_avatar.score > 10000007
