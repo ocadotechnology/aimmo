@@ -29,9 +29,17 @@ class Main(BaseGenerator):
 
         Obstacles are filled according to the obstacle ratio.
 
-        Once an obstacle is added we ensure that each habitable cell can reach each other, 
+        Once an obstacle is added we ensure that each habitable cell can reach each other,
         thus the map will be connex and each generated avatar can reach others.
     """
+    def __init__(self, *args, **kwargs):
+        super(Main, self).__init__(*args, **kwargs)
+        self.settings.update(DEFAULT_LEVEL_SETTINGS)
+
+        # Fix for  'NO_FOG_OF_WAR_DISTANCE' bug
+        if not 'NO_FOG_OF_WAR_DISTANCE' in self.settings.keys():
+            self.settings['NO_FOG_OF_WAR_DISTANCE'] = DEFAULT_LEVEL_SETTINGS['NO_FOG_OF_WAR_DISTANCE']
+
     def get_map(self):
         height = self.settings['START_HEIGHT']
         width = self.settings['START_WIDTH']
@@ -73,7 +81,7 @@ def pairwise(iterable):
 
 def _all_habitable_neighbours_can_reach_each_other(cell, world_map):
     """
-        Helper function used by Main map generator. It ensures that each habitable cell can 
+        Helper function used by Main map generator. It ensures that each habitable cell can
         reach each other.
     """
     neighbours = get_adjacent_habitable_cells(cell, world_map)
