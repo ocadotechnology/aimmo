@@ -26,7 +26,7 @@ class _WorkerManagerData(object):
 
         This class is thread safe.
     """
-    
+
     def __init__(self, game_state, user_codes):
         self._game_state = game_state
         self._user_codes = user_codes
@@ -190,7 +190,7 @@ class WorkerManager(threading.Thread):
 class LocalWorkerManager(WorkerManager):
     """
         Relies on workers already being created already.
-     
+
         Responsibility:
             * create_worker
             * remove_worker
@@ -205,8 +205,10 @@ class LocalWorkerManager(WorkerManager):
 
     def __init__(self, *args, **kwargs):
         self.workers = {}
-        self.port_counter = itertools.count(1989)
         super(LocalWorkerManager, self).__init__(*args, **kwargs)
+
+        # On localhost the ports would clash if we do not do this.
+        self.port_counter = itertools.count(self.port + 500)
 
     def create_worker(self, player_id):
         assert(player_id not in self.workers)
@@ -246,7 +248,7 @@ class LocalWorkerManager(WorkerManager):
 class KubernetesWorkerManager(WorkerManager):
     """
         Kubernetes worker manager.
-    
+
         Responsibility:
             * create_worker
             * remove_worker
