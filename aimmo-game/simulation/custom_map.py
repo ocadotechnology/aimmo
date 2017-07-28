@@ -13,6 +13,9 @@ from simulation.pickups import HealthPickup
 from simulation.pickups import InvulnerabilityPickup
 from simulation.pickups import DamagePickup
 
+import sys
+current_module = sys.modules[__name__]
+
 class BaseGenerator(object):
     __metaclass__ = abc.ABCMeta
 
@@ -102,21 +105,38 @@ class JsonLevelGenerator(TemplateLevelGenerator):
             for element in find_element_by_code(self.json_map, decoder.code):
                 decoder.decode(element, self.world_map)
 
+#### Dragons be here
 
-class Level1(JsonLevelGenerator):
-    def get_map(self):
-        self._register_json(LEVELS["level1"])
-        self._register_decoders()
-        self._json_decode_map()
+def check_complete(self, game_state):
+    try:
+        main_avatar = game_state.get_main_avatar()
+    except KeyError:
+        return False
 
-        return self.world_map
+    return main_avatar.score > 24
 
-    def check_complete(self, game_state):
-        try:
-            main_avatar = game_state.get_main_avatar()
-        except KeyError:
-            return False
+def generate_level_class(level_nbr, check_complete):
+    level_name = "Level" + str(level_nbr)
 
-        return main_avatar.score > 24
+    def get_map_by_level(level_nbr):
+        def get_map(self):
+            self._register_json(LEVELS["level" + str(level_nbr)])
 
-class Level2(Level1): pass
+            self._setup_meta()
+            self._register_decoders()
+            self._json_decode_map()
+
+            return self.world_map
+
+        return get_map
+
+    ret_class = type(level_name, (JsonLevelGenerator,), {
+        "get_map": get_map_by_level(level_nbr),
+        "check_complete": check_complete
+    })
+
+    return ret_class
+
+for cur_level in xrange(1, len(LEVELS) + 1):
+    gen_class = generate_level_class(cur_level, check_complete)
+    setattr(current_module, gen_class.__name__, gen_class)
