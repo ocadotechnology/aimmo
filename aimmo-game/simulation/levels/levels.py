@@ -1,6 +1,8 @@
 from parsers import CellParser
 from pprint import pprint
 
+__LEVEL_COUNT = 5
+
 class RawLevelGenerator():
     """
         Builder that is used to expose json formatted levels.
@@ -36,9 +38,9 @@ class RawLevelGenerator():
 
         return json
 
-LEVELS = {
-    "level1" : RawLevelGenerator().by_parser(CellParser()).by_map("level1.txt").by_models(["objects.json"]).generate_json()
-}
+LEVELS = {}
+for lvl in xrange(1, __LEVEL_COUNT + 1):
+    LEVELS["level" + str(lvl)] = RawLevelGenerator().by_parser(CellParser()).by_map("level" + str(lvl) + ".txt").by_models(["objects.json"]).generate_json()
 
 def main():
     pprint(LEVELS["level1"])
