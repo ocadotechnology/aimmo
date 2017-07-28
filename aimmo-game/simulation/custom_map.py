@@ -221,3 +221,4 @@ class Level1(JsonLevelGenerator):
 
         return main_avatar.score > 24
 
+class Level2(Level1): pass

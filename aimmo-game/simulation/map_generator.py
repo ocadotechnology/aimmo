@@ -15,8 +15,10 @@ from simulation.world_map import DEFAULT_LEVEL_SETTINGS
 
 from simulation.custom_map import BaseGenerator
 from simulation.custom_map import BaseLevelGenerator
-from simulation.custom_map import Level1
 from simulation.custom_map import EmptyMapGenerator
+
+from simulation.custom_map import Level1
+from simulation.custom_map import Level2
 
 LOGGER = logging.getLogger(__name__)
 
@@ -29,7 +31,7 @@ class Main(BaseGenerator):
 
         Obstacles are filled according to the obstacle ratio.
 
-        Once an obstacle is added we ensure that each habitable cell can reach each other, 
+        Once an obstacle is added we ensure that each habitable cell can reach each other,
         thus the map will be connex and each generated avatar can reach others.
     """
     def get_map(self):
@@ -73,7 +75,7 @@ def pairwise(iterable):
 
 def _all_habitable_neighbours_can_reach_each_other(cell, world_map):
     """
-        Helper function used by Main map generator. It ensures that each habitable cell can 
+        Helper function used by Main map generator. It ensures that each habitable cell can
         reach each other.
     """
     neighbours = get_adjacent_habitable_cells(cell, world_map)

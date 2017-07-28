@@ -6,11 +6,13 @@ from django.views.generic import TemplateView
 from players import views
 
 from django.views.generic import RedirectView
+from django.contrib import admin
 
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='players/home.html'), name='aimmo/home'),
 
     url(r'^accounts/login/$', auth_views.login),
+    url(r'^admin/', admin.site.urls),
 
     url(r'^program/(?P<id>[0-9]+)/$', login_required(views.ProgramView.as_view()), name='aimmo/program'),
     url(r'^program_level/(?P<num>[0-9]+)/$', login_required(views.program_level), name='aimmo/program_level'),
