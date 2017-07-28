@@ -1,30 +1,20 @@
-from __future__ import absolute_import
-
-import random
 import unittest
 
-from simulation.location import Location
+from simulation.levels.decoders import ScoreCellDecoder
+from simulation.levels.decoders import ObstacleDecoder
+from simulation.levels.decoders import PickupDecoder
+
+from simulation.custom_map import EmptyMapGenerator
 
 from simulation.pickups import HealthPickup
 from simulation.pickups import DamagePickup
 from simulation.pickups import InvulnerabilityPickup
 
-<<<<<<< HEAD
-from simulation.world_map import WorldMap
-from simulation.custom_map import ScoreCellDecoder
-from simulation.custom_map import ObstacleDecoder
-from simulation.custom_map import PickupDecoder
+from simulation.location import Location
 
-=======
->>>>>>> ab229bc... Moved tests so they are addressing a single issue now. We need to test the class generators at some point.
-from simulation.custom_map import JsonLevelGenerator
-from simulation.levels.levels import RawLevelGenerator
-from .levels.test_parsers import MockParser
-
-<<<<<<< HEAD
 class TestDecoders(unittest.TestCase):
     def setUp(self):
-        self.map = WorldMap.generate_empty_map(2, 2, {})
+        self.map = EmptyMapGenerator.get_map_by_corners({}, (0, 1, 0, 1))
 
     def test_obstacle_decoder(self):
         ObstacleDecoder("0").decode({
@@ -90,28 +80,3 @@ class TestDecoders(unittest.TestCase):
         self.assertTrue(isinstance(self.map.get_cell(Location(0, 1)).pickup, HealthPickup))
         self.assertTrue(isinstance(self.map.get_cell(Location(1, 0)).pickup, DamagePickup))
         self.assertTrue(isinstance(self.map.get_cell(Location(1, 1)).pickup, InvulnerabilityPickup))
-
-=======
->>>>>>> ab229bc... Moved tests so they are addressing a single issue now. We need to test the class generators at some point.
-def get_mock_level(map, parsers):
-    class MockLevel(JsonLevelGenerator):
-        def get_map(self):
-            self._register_json(
-                RawLevelGenerator()
-                    .by_parser(MockParser())
-                    .by_map(map)
-                    .by_models(parsers)
-                    .generate_json())
-            self._register_decoders()
-            self._json_decode_map()
-
-            return self.world_map
-    return MockLevel({})
-
-class TestJsonLevelGenerator(unittest.TestCase):
-    def test_json_simple_map(self):
-        mock_level = get_mock_level("map_simple.txt", ["real_model.json"])
-        mock_map = mock_level.get_map()
-
-        # for cell in mock_map.all_cells():
-        #     print("CELL: (" + str(cell.location.x) + " " + str(cell.location.y) + ")")
