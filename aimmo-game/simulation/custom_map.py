@@ -1,6 +1,9 @@
 import abc
 
 from simulation.levels.levels import LEVELS
+from simulation.levels.completion_checks import COMPLETION_CHECKS
+
+from pprint import pprint
 
 from simulation.location import Location
 from simulation.game_state import GameState
@@ -107,20 +110,13 @@ class JsonLevelGenerator(TemplateLevelGenerator):
 
 #### Dragons be here
 
-def check_complete(self, game_state):
-    try:
-        main_avatar = game_state.get_main_avatar()
-    except KeyError:
-        return False
-
-    return main_avatar.score > 24
-
-def generate_level_class(level_nbr, check_complete):
+def generate_level_class(level_nbr):
     level_name = "Level" + str(level_nbr)
+    level_id = "level" + str(level_nbr)
 
-    def get_map_by_level(level_nbr):
+    def get_map_by_level(level_id):
         def get_map(self):
-            self._register_json(LEVELS["level" + str(level_nbr)])
+            self._register_json(LEVELS[level_id])
 
             self._setup_meta()
             self._register_decoders()
@@ -131,12 +127,12 @@ def generate_level_class(level_nbr, check_complete):
         return get_map
 
     ret_class = type(level_name, (JsonLevelGenerator,), {
-        "get_map": get_map_by_level(level_nbr),
-        "check_complete": check_complete
+        "get_map": get_map_by_level(level_id),
+        "check_complete": COMPLETION_CHECKS[level_id]
     })
 
     return ret_class
 
 for cur_level in xrange(1, len(LEVELS) + 1):
-    gen_class = generate_level_class(cur_level, check_complete)
+    gen_class = generate_level_class(cur_level)
     setattr(current_module, gen_class.__name__, gen_class)
