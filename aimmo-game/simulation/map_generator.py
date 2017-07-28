@@ -17,12 +17,6 @@ from simulation.custom_map import BaseGenerator
 from simulation.custom_map import BaseLevelGenerator
 from simulation.custom_map import Level1
 
-from simulation.custom_map import Level1
-from simulation.custom_map import Level2
-from simulation.custom_map import Level3
-from simulation.custom_map import Level4
-from simulation.custom_map import Level5
-
 LOGGER = logging.getLogger(__name__)
 
 class Main(BaseGenerator):
