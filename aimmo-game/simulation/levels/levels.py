@@ -1,9 +1,11 @@
 from parsers import CellParser
 from pprint import pprint
 
-from completion_checks import COMPLETION_CHECKS
+import os
 
-__LEVEL_COUNT = 5
+_SCRIPT_LOCATION = os.path.abspath(os.path.dirname(__file__))
+_MAPS_FOLDER = os.path.join(_SCRIPT_LOCATION, "maps")
+_LEVEL_COUNT = len(os.listdir(_MAPS_FOLDER))
 
 class RawLevelGenerator():
     """
@@ -41,7 +43,7 @@ class RawLevelGenerator():
         return json
 
 LEVELS = {}
-for lvl in xrange(1, __LEVEL_COUNT + 1):
+for lvl in xrange(1, _LEVEL_COUNT + 1):
     lvl_id = "level" + str(lvl)
     LEVELS[lvl_id] = RawLevelGenerator().by_parser(CellParser()).by_map(lvl_id + ".txt").by_models(["objects.json"]).generate_json()
 

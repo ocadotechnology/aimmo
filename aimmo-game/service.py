@@ -13,8 +13,10 @@ import time
 import flask
 from flask_socketio import SocketIO
 
-from simulation.turn_manager import state_provider
 from simulation import map_generator
+from simulation import custom_map
+
+from simulation.turn_manager import state_provider
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.turn_manager import ConcurrentTurnManager
 from simulation.worker_manager import WORKER_MANAGERS
@@ -130,7 +132,10 @@ def run_game(port):
     # TODO: this does not work with Kubernates; locally it works
     # as http://localhost:8000/players/api/games/ is used as default
     api_url = os.environ.get('GAME_API_URL', 'http://localhost:8000/players/api/games/')
-    generator = getattr(map_generator, settings['GENERATOR'])(settings)
+    if hasattr(custom_map, settings['GENERATOR']):
+        generator = getattr(custom_map, settings['GENERATOR'])(settings)
+    else:
+        generator = getattr(map_generator, settings['GENERATOR'])(settings)
 
     global player_manager
     player_manager = AvatarManager()
