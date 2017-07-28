@@ -1,6 +1,8 @@
 from parsers import CellParser
 from pprint import pprint
 
+from completion_checks import COMPLETION_CHECKS
+
 __LEVEL_COUNT = 5
 
 class RawLevelGenerator():
@@ -40,7 +42,8 @@ class RawLevelGenerator():
 
 LEVELS = {}
 for lvl in xrange(1, __LEVEL_COUNT + 1):
-    LEVELS["level" + str(lvl)] = RawLevelGenerator().by_parser(CellParser()).by_map("level" + str(lvl) + ".txt").by_models(["objects.json"]).generate_json()
+    lvl_id = "level" + str(lvl)
+    LEVELS[lvl_id] = RawLevelGenerator().by_parser(CellParser()).by_map(lvl_id + ".txt").by_models(["objects.json"]).generate_json()
 
 def main():
     pprint(LEVELS["level1"])
