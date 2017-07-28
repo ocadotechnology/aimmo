@@ -17,9 +17,23 @@ from simulation.custom_map import BaseGenerator
 from simulation.custom_map import BaseLevelGenerator
 from simulation.custom_map import Level1
 
+from simulation.custom_map import Level1
+from simulation.custom_map import Level2
+
 LOGGER = logging.getLogger(__name__)
 
 class Main(BaseGenerator):
+
+    """
+        Main Level generator used by the map creation service from the Django server.
+        Custom level generators(see package levels) can be found in @custom_map.
+        To read more about map generators, read documentation in custom_map.
+
+        Obstacles are filled according to the obstacle ratio.
+
+        Once an obstacle is added we ensure that each habitable cell can reach each other,
+        thus the map will be connex and each generated avatar can reach others.
+    """
     def get_map(self):
         height = self.settings['START_HEIGHT']
         width = self.settings['START_WIDTH']
@@ -60,6 +74,10 @@ def pairwise(iterable):
 
 
 def _all_habitable_neighbours_can_reach_each_other(cell, world_map):
+    """
+        Helper function used by Main map generator. It ensures that each habitable cell can
+        reach each other.
+    """
     neighbours = get_adjacent_habitable_cells(cell, world_map)
 
     assert len(neighbours) >= 1
