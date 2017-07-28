@@ -2,19 +2,15 @@ import abc
 
 from simulation.levels.levels import LEVELS
 from simulation.levels.completion_checks import COMPLETION_CHECKS
+from simulation.levels.decoders import *
 
 from pprint import pprint
 
 from simulation.location import Location
 from simulation.game_state import GameState
 from simulation.world_map import WorldMap
-from simulation.world_map import WorldMapStaticSpawnDecorator
 from simulation.world_map import DEFAULT_LEVEL_SETTINGS
 from simulation.world_map import Cell
-
-from simulation.pickups import HealthPickup
-from simulation.pickups import InvulnerabilityPickup
-from simulation.pickups import DamagePickup
 
 import sys
 current_module = sys.modules[__name__]
@@ -51,40 +47,34 @@ class TemplateLevelGenerator(BaseLevelGenerator):
 
 ################################################################################
 
-class Decoder():
-    __metaclass__ = abc.ABCMeta
+class JsonLevelGenerator(BaseLevelGenerator):
+    """
+        Workflow:
+            - setup the metadata: map dimensions, etc.
+            - register the json that represents the map
+            - register the decoders that tranform the jsons into WorldMap objects
+            - decode the map applying the decoder to each of the jsons
 
-    def __init__(self, code):
-        self.code = code
+        All the levels can be found in json format in levels.LEVELS.
+        To register a level extend this class.
+    """
+    def __init__(self, *args, **kwargs):
+        super(JsonLevelGenerator, self).__init__(*args, **kwargs)
 
-    @abc.abstractmethod
-    def decode(self, json, world_map):
-        pass
+    def _setup_meta(self):
+        # Used so that the map dimension does not increase automatically
+        self.settings["TARGET_NUM_CELLS_PER_AVATAR"] = -1000
 
-class ScoreCellDecoder(Decoder):
-    def decode(self, json, world_map):
-        x, y = int(json["x"]), int(json["y"])
-        world_map = WorldMapStaticSpawnDecorator(world_map, Location(x, y))
-        world_map.get_cell(Location(x, y)).generates_score = True
+        # Finds the json with metaiformation
+        for element in self.json_map:
+            if element["code"] == "meta":
+                self.meta = element
 
-class ObstacleDecoder(Decoder):
-    def decode(self, json, world_map):
-        x, y = int(json["x"]), int(json["y"])
-        world_map.get_cell(Location(x, y)).habitable = False
+        # Sets the empty map to the dimensions of the given level
+        self.world_map = EmptyMapGenerator.get_map_by_corners(
+            self.settings,
+            (0, self.meta["rows"] - 1, 0, self.meta["cols"] - 1))
 
-class PickupDecoder(Decoder):
-    def decode(self, json, world_map):
-        x, y = int(json["x"]), int(json["y"])
-        if json["type"] == "invulnerability":
-            world_map.get_cell(Location(x, y)).pickup = InvulnerabilityPickup(Location(x, y))
-        if json["type"] == "health":
-            world_map.get_cell(Location(x, y)).pickup = HealthPickup(Location(x, y), int(json["health_restored"]))
-        if json["type"] == "damage":
-            world_map.get_cell(Location(x, y)).pickup = DamagePickup(Location(x, y))
-
-################################################################################
-
-class JsonLevelGenerator(TemplateLevelGenerator):
     def _register_json(self, json_map):
         self.json_map = json_map
         self.world_map = WorldMap.generate_empty_map(15, 15, self.settings)
