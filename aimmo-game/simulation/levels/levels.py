@@ -13,6 +13,13 @@ class RawLevelGenerator():
         See @parsers for details on level generation.
 
         To see the JSON format of the levels run this file.
+
+        For the moment levels need to be labeled: 1, 2, ... etc.
+
+        To add a new level(locally):
+            - add a level*.txt
+            - add a completion check
+            - modify number of levels in players/app_settings
     """
     def __init__(self):
         pass
