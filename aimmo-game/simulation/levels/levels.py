@@ -8,8 +8,6 @@ _MAPS_FOLDER = os.path.join(_SCRIPT_LOCATION, "maps")
 _LEVEL_COUNT = len(os.listdir(_MAPS_FOLDER))
 
 class RawLevelGenerator():
-<<<<<<< HEAD
-=======
     """
         Builder that is used to expose json formatted levels.
         See @parsers for details on level generation.
@@ -23,7 +21,6 @@ class RawLevelGenerator():
             - add a completion check
             - modify number of levels in players/app_settings
     """
->>>>>>> 9c345e3... Documented level addition workflow.
     def __init__(self):
         pass
 
