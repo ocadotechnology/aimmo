@@ -16,6 +16,8 @@ from urllib import urlretrieve
 from urllib2 import urlopen
 from zipfile import ZipFile
 
+from kubernetes.client.rest import ApiException
+
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 TEST_BIN = os.path.join(BASE_DIR, 'test-bin')
 OS = platform.system().lower()
@@ -150,10 +152,18 @@ def restart_pods(game_creator):
         v1_api.delete_namespaced_pod(body=kubernetes.client.V1DeleteOptions(), name=pod.metadata.name, namespace='default')
     for service in v1_api.list_namespaced_service('default').items:
         v1_api.delete_namespaced_service(name=service.metadata.name, namespace='default')
-    v1_api.create_namespaced_replication_controller(
-        body=game_creator,
-        namespace='default',
-    )
+
+    try:
+        v1_api.create_namespaced_replication_controller(
+            body=game_creator,
+            namespace='default',
+        )
+    except ApiException as e:
+        # TODO: If the replication controller already exists, we do nothing for the moment
+        if e.status == 409:
+            print("Replication controller already exists.")
+        else:
+            raise
 
 
 def start():
