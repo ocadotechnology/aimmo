@@ -9,6 +9,9 @@ from simulation.pickups import HealthPickup
 from simulation.pickups import DamagePickup
 from simulation.pickups import InvulnerabilityPickup
 
+from simulation.levels.levels import LEVELS
+from simulation.custom_map import generate_level_class
+
 from simulation.custom_map import JsonLevelGenerator
 from simulation.levels.levels import RawLevelGenerator
 from .levels.test_parsers import MockParser
@@ -68,3 +71,22 @@ class TestJsonLevelGenerator(unittest.TestCase):
             self.assertTrue(mock_map.get_cell(Location(x, y)).generates_score)
         for x, y in obstacle_locations:
             self.assertFalse(mock_map.get_cell(Location(x, y)).habitable)
+
+class TestAutomaticLevelGenerators(unittest.TestCase):
+    def test_generate_level_class(self):
+        def completed_check(self, y):
+            return False
+
+        COMPLETION_CHECKS = {
+            "level50" : completed_check
+        }
+        LEVELS = {
+            "level50" : {}
+        }
+        my_class = generate_level_class(50, LEVELS, COMPLETION_CHECKS)
+
+        self.assertEquals(my_class.__name__, "Level50")
+        instance = my_class({})
+
+        self.assertTrue(hasattr(instance, 'get_map'))
+        self.assertTrue(hasattr(instance, 'check_complete'))
