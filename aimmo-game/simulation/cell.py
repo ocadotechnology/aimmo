@@ -55,11 +55,9 @@ class Cell(object):
     Any position on the world grid.
     """
 
-    def __init__(self, location, _habitable=True, _generates_score=False, partially_fogged=False):
+    def __init__(self, location, cell_content=Floor({}), partially_fogged=False):
         self.location = location
-        self.cell_content =  Floor({})
-        self._habitable = _habitable
-        self._generates_score = _generates_score
+        self.cell_content = cell_content
         self.avatar = None
         self.pickup = None
         self.partially_fogged = partially_fogged
@@ -84,11 +82,11 @@ class Cell(object):
 
     @property
     def habitable(self):
-        return self._habitable
+        return self.cell_content.is_habitable()
 
     @property
     def generates_score(self):
-        return self._generates_score
+        return self.cell_content.generates_score()
 
     @property
     def moves(self):

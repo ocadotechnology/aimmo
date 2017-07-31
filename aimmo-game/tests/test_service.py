@@ -11,6 +11,8 @@ from simulation.avatar.avatar_manager import AvatarManager
 
 import service
 
+from simulation.cell import *
+
 from .test_simulation.dummy_avatar import MoveEastDummy
 from .test_simulation.maps import MockPickup
 from .test_simulation.test_world_map import MockCell
@@ -43,14 +45,14 @@ class TestServiceInternals(TestCase):
         avatar_manager = SimpleAvatarManager()
         CELLS = [
             [
-                {'pickup': MockPickup('b'), 'avatar': avatar_manager.get_avatar(self.user_id)},
+                {'pickup': MockPickup('b'), 'avatar': avatar_manager.get_avatar(self.user_id), 'cell_content': Floor({})},
                 {},
-                {'_generates_score': True},
+                {'cell_content': ScoreLocation({})},
             ],
             [
                 {},
-                {'_habitable': False},
-                {'pickup': MockPickup('a')},
+                {'cell_content': Obstacle({})},
+                {'pickup': MockPickup('a'), 'cell_content': Floor({})},
             ],
         ]
         grid = {Location(x, y-1): MockCell(Location(x, y-1), **CELLS[x][y])
