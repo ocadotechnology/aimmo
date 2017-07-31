@@ -37,23 +37,39 @@ class Decoder():
     def decode(self, json, world_map):
         pass
 
+def get_style(json):
+    if "style" in json:
+        return json["style"]
+    return {}
+
 class ScoreCellDecoder(Decoder):
     def decode(self, json, world_map):
         x, y = int(json["x"]), int(json["y"])
         world_map = WorldMapStaticSpawnDecorator(world_map, Location(x, y))
-        world_map.get_cell(Location(x, y)).cell_content = ScoreLocation({})
+        world_map.get_cell(Location(x, y)).cell_content = ScoreLocation(get_style(json))
 
 class ObstacleDecoder(Decoder):
     def decode(self, json, world_map):
         x, y = int(json["x"]), int(json["y"])
-        world_map.get_cell(Location(x, y)).cell_content = Obstacle({})
+        world_map.get_cell(Location(x, y)).cell_content = Obstacle(get_style(json))
 
 class PickupDecoder(Decoder):
     def decode(self, json, world_map):
         x, y = int(json["x"]), int(json["y"])
+        world_map.get_cell(Location(x, y)).cell_content = Floor(get_style(json))
         if json["type"] == "invulnerability":
             world_map.get_cell(Location(x, y)).pickup = InvulnerabilityPickup(world_map.get_cell(Location(x, y)))
         if json["type"] == "health":
             world_map.get_cell(Location(x, y)).pickup = HealthPickup(world_map.get_cell(Location(x, y)), int(json["health_restored"]))
         if json["type"] == "damage":
             world_map.get_cell(Location(x, y)).pickup = DamagePickup(world_map.get_cell(Location(x, y)))
+
+DECODERS = [
+    ScoreCellDecoder("2"),
+    ObstacleDecoder("1"),
+    PickupDecoder("3"),
+    PickupDecoder("4"),
+    PickupDecoder("5"),
+
+    ObstacleDecoder("ObstacleGenerator")
+]
