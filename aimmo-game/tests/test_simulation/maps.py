@@ -3,8 +3,8 @@ from __future__ import absolute_import
 from collections import defaultdict
 
 from simulation.location import Location
-from simulation.world_map import Cell, WorldMap
-
+from simulation.world_map import WorldMap
+from simulation.cell import *
 
 class MockPickup(object):
     def __init__(self, name='', cell=None):
@@ -22,11 +22,10 @@ class MockPickup(object):
 
 
 class MockCell(Cell):
-    def __init__(self, location=1, _habitable=True, _generates_score=False,
+    def __init__(self, location=1, cell_content=Floor({}),
                  avatar=None, pickup=None, name=None, actions=[]):
         self.location = location
-        self._habitable = _habitable
-        self._generates_score = _generates_score
+        self.cell_content = cell_content
         self.avatar = avatar
         self.pickup = pickup
         self.name = name

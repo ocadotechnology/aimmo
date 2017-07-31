@@ -22,7 +22,7 @@ DEFAULT_LEVEL_SETTINGS = {
 
 from simulation.action import MoveAction
 from simulation.location import Location
-from simulation.cell import Cell
+from simulation.cell import *
 
 LOGGER = getLogger(__name__)
 
@@ -185,7 +185,7 @@ class WorldMap(object):
                 # Remove the score point from the scene if there was one.
                 if cell.generates_score:
                     cell.remove_from_scene = MapFeature.SCORE_POINT
-                cell._generates_score = False
+                cell.cell_content = Floor({})
 
         new_num_score_locations = len(list(self.score_cells()))
         target_num_score_locations = int(math.ceil(
@@ -197,7 +197,7 @@ class WorldMap(object):
             # Add the score point to the scene if there wasn't one.
             if not cell.generates_score:
                 cell.add_to_scene = MapFeature.SCORE_POINT
-            cell._generates_score = True
+            cell.cell_content = ScoreLocation({})
 
     def _add_pickups(self, num_avatars):
         target_num_pickups = int(math.ceil(num_avatars * self.settings['TARGET_NUM_PICKUPS_PER_AVATAR']))

@@ -11,6 +11,8 @@ from simulation.avatar.avatar_manager import AvatarManager
 
 import service
 
+from simulation.cell import *
+
 from .test_simulation.dummy_avatar import MoveEastDummy
 from .test_simulation.maps import MockPickup
 from .test_simulation.test_world_map import MockCell

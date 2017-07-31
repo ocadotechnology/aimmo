@@ -15,7 +15,8 @@ from simulation.world_map import DEFAULT_LEVEL_SETTINGS
 
 from simulation.custom_map import BaseGenerator
 from simulation.custom_map import BaseLevelGenerator
-from simulation.custom_map import Level1
+from simulation.custom_map import EmptyMapGenerator
+from simulation.cell import *
 
 LOGGER = logging.getLogger(__name__)
 
@@ -42,14 +43,13 @@ class Main(BaseGenerator):
 
         for cell in shuffled(world_map.all_cells()):
             if cell.location != always_empty_location and random.random() < self.settings['OBSTACLE_RATIO']:
-                cell._habitable = False
+                cell.cell_content = Obstacle({})
                 # So long as all habitable neighbours can still reach each other,
                 # then the map cannot get bisected
                 if not _all_habitable_neighbours_can_reach_each_other(cell, world_map):
-                    cell._habitable = True
+                    cell.cell_content = Floor({})
 
         return world_map
-
 
 def _get_edge_coordinates(height, width):
     for x in range(width):
