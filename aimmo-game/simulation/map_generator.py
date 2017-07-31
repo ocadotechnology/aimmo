@@ -42,11 +42,11 @@ class Main(BaseGenerator):
 
         for cell in shuffled(world_map.all_cells()):
             if cell.location != always_empty_location and random.random() < self.settings['OBSTACLE_RATIO']:
-                cell.habitable = False
+                cell._habitable = False
                 # So long as all habitable neighbours can still reach each other,
                 # then the map cannot get bisected
                 if not _all_habitable_neighbours_can_reach_each_other(cell, world_map):
-                    cell.habitable = True
+                    cell._habitable = True
 
         return world_map
 

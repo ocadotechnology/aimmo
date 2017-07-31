@@ -22,11 +22,11 @@ class MockPickup(object):
 
 
 class MockCell(Cell):
-    def __init__(self, location=1, habitable=True, generates_score=False,
+    def __init__(self, location=1, _habitable=True, _generates_score=False,
                  avatar=None, pickup=None, name=None, actions=[]):
         self.location = location
-        self.habitable = habitable
-        self.generates_score = generates_score
+        self._habitable = _habitable
+        self._generates_score = _generates_score
         self.avatar = avatar
         self.pickup = pickup
         self.name = name
