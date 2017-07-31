@@ -1,7 +1,6 @@
 [
   {
     "code": "2",
-    "template": "",
     "id" : "class:CellTransform.compute_id",
     "x" : "class:CellTransform.get_x",
     "y" : "class:CellTransform.get_y",
@@ -10,7 +9,6 @@
   },
   {
     "code": "1",
-    "template": "",
     "id" : "class:CellTransform.compute_id",
     "x" : "class:CellTransform.get_x",
     "y" : "class:CellTransform.get_y",
@@ -19,7 +17,6 @@
   },
   {
     "code": "3",
-    "template": "",
     "id" : "class:CellTransform.compute_id",
     "x" : "class:CellTransform.get_x",
     "y" : "class:CellTransform.get_y",
@@ -30,7 +27,6 @@
   },
   {
     "code": "4",
-    "template": "",
     "id" : "class:CellTransform.compute_id",
     "x" : "class:CellTransform.get_x",
     "y" : "class:CellTransform.get_y",
@@ -40,7 +36,6 @@
   },
   {
     "code": "5",
-    "template": "",
     "id" : "class:CellTransform.compute_id",
     "x" : "class:CellTransform.get_x",
     "y" : "class:CellTransform.get_y",
