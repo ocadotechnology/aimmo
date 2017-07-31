@@ -39,12 +39,12 @@ class ScoreCellDecoder(Decoder):
     def decode(self, json, world_map):
         x, y = int(json["x"]), int(json["y"])
         world_map = WorldMapStaticSpawnDecorator(world_map, Location(x, y))
-        world_map.get_cell(Location(x, y)).generates_score = True
+        world_map.get_cell(Location(x, y))._generates_score = True
 
 class ObstacleDecoder(Decoder):
     def decode(self, json, world_map):
         x, y = int(json["x"]), int(json["y"])
-        world_map.get_cell(Location(x, y)).habitable = False
+        world_map.get_cell(Location(x, y))._habitable = False
 
 class PickupDecoder(Decoder):
     def decode(self, json, world_map):

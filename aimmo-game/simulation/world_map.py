@@ -229,7 +229,7 @@ class WorldMap(BasicWorldMap):
                 # Remove the score point from the scene if there was one.
                 if cell.generates_score:
                     cell.remove_from_scene = MapFeature.SCORE_POINT
-                cell.generates_score = False
+                cell._generates_score = False
 
         new_num_score_locations = len(list(self.score_cells()))
         target_num_score_locations = int(math.ceil(
@@ -241,7 +241,7 @@ class WorldMap(BasicWorldMap):
             # Add the score point to the scene if there wasn't one.
             if not cell.generates_score:
                 cell.add_to_scene = MapFeature.SCORE_POINT
-            cell.generates_score = True
+            cell._generates_score = True
 
     def _add_pickups(self, num_avatars):
         target_num_pickups = int(math.ceil(num_avatars * self.settings['TARGET_NUM_PICKUPS_PER_AVATAR']))

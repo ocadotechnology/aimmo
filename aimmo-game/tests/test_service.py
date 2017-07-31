@@ -45,11 +45,11 @@ class TestServiceInternals(TestCase):
             [
                 {'pickup': MockPickup('b'), 'avatar': avatar_manager.get_avatar(self.user_id)},
                 {},
-                {'generates_score': True},
+                {'_generates_score': True},
             ],
             [
                 {},
-                {'habitable': False},
+                {'_habitable': False},
                 {'pickup': MockPickup('a')},
             ],
         ]
