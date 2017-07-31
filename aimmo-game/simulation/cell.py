@@ -32,7 +32,7 @@ class Obstacle(CellContent):
 
 class ScoreLocation(CellContent):
     def __init__(self, *args, **kwargs):
-        super(Obstacle, self).__init__(*args, **kwargs)
+        super(ScoreLocation, self).__init__(*args, **kwargs)
 
     def is_habitable(self):
         return True
@@ -42,7 +42,7 @@ class ScoreLocation(CellContent):
 
 class Floor(CellContent):
     def __init__(self, *args, **kwargs):
-        super(Obstacle, self).__init__(*args, **kwargs)
+        super(Floor, self).__init__(*args, **kwargs)
 
     def is_habitable(self):
         return True
@@ -57,7 +57,7 @@ class Cell(object):
 
     def __init__(self, location, habitable=True, generates_score=False, partially_fogged=False):
         self.location = location
-        self.cell_content = None
+        self.cell_content =  Floor({})
         self.habitable = habitable
         self.generates_score = generates_score
         self.avatar = None
