@@ -136,13 +136,7 @@ class JsonLevelGenerator(BaseLevelGenerator):
         self.json_map = json_map
 
     def _register_decoders(self):
-        self.decoders = [
-            ScoreCellDecoder("2"),
-            ObstacleDecoder("1"),
-            PickupDecoder("3"),
-            PickupDecoder("4"),
-            PickupDecoder("5")
-        ]
+        self.decoders = DECODERS
 
     def _json_decode_map(self):
         def find_element_by_code(json, code):

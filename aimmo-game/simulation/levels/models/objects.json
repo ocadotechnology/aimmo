@@ -1,39 +1,51 @@
 [
   {
     "code": "2",
+    "template": "",
     "id" : "class:CellTransform.compute_id",
     "x" : "class:CellTransform.get_x",
     "y" : "class:CellTransform.get_y",
-    "value" : {
-      "dsadsa" : "2"
+    "style" : {
     }
   },
   {
     "code": "1",
+    "template": "",
     "id" : "class:CellTransform.compute_id",
     "x" : "class:CellTransform.get_x",
-    "y" : "class:CellTransform.get_y"
+    "y" : "class:CellTransform.get_y",
+    "style" : {
+    }
   },
   {
     "code": "3",
+    "template": "",
     "id" : "class:CellTransform.compute_id",
     "x" : "class:CellTransform.get_x",
     "y" : "class:CellTransform.get_y",
     "type" : "health",
-    "health_restored": "5"
+    "health_restored": "5",
+    "style" : {
+    }
   },
   {
     "code": "4",
+    "template": "",
     "id" : "class:CellTransform.compute_id",
     "x" : "class:CellTransform.get_x",
     "y" : "class:CellTransform.get_y",
-    "type" : "invulnerability"
+    "type" : "invulnerability",
+    "style" : {
+    }
   },
   {
     "code": "5",
+    "template": "",
     "id" : "class:CellTransform.compute_id",
     "x" : "class:CellTransform.get_x",
     "y" : "class:CellTransform.get_y",
-    "type" : "damage"
+    "type" : "damage",
+    "style" : {
+    }
   }
 ]

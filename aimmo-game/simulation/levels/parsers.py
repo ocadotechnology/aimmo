@@ -12,10 +12,10 @@ def call_method(o, name):
 
 class Parser():
     """
-    The parser gets a level formatted as a 2D grid from numbers and transforms each number 
+    The parser gets a level formatted as a 2D grid from numbers and transforms each number
     into a json representing that particular object.
 
-    A *map* is a *.txt file composed out of numbers. Each numbers represent a cell in the 
+    A *map* is a *.txt file composed out of numbers. Each numbers represent a cell in the
     grid that will be eventually generated.
 
     A *model* is an array of jsons. Each json has an associated code. By that associated code,
@@ -23,9 +23,9 @@ class Parser():
     of a map looks like, run levels.py.
 
     A *transform* is an instance of a class that can be called inside a model. A function can be
-    called by prepending "class:" before the class name and function name. 
+    called by prepending "class:" before the class name and function name.
     (e.g. class:CellTransform.get_x)
-    
+
     API:
     - parse_model
         - gets the model name as a string and parsers the model from the folder models
@@ -35,7 +35,7 @@ class Parser():
         - adds a new model to the model list
     - register transform
         - register an instance of a transform, so it can be used from *.json file
-    
+
     - map_apply_transfroms
         - transforms a map formated as a list of numbers into a map formatted as list of jsons
 
@@ -84,7 +84,7 @@ class Parser():
     def register_transforms():
         pass
 
-    # helper function for map_apply_transforms        
+    # helper function for map_apply_transforms
     def feed_string(self, input_str):
         if isinstance(input_str, unicode):
             input_str = str(input_str)
