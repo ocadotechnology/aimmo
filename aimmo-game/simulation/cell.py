@@ -1,5 +1,54 @@
+from abc import ABCMeta, abstractmethod
+
 from simulation.action import MoveAction
 from simulation.location import Location
+
+class CellContent(object):
+    __metaclass__ = ABCMeta
+
+    def __init__(self, style):
+        self.style = style
+
+    @abstractmethod
+    def is_habitable(self):
+        pass
+
+    @abstractmethod
+    def generates_score(self):
+        pass
+
+    def get_style(self):
+        return self.style
+
+class Obstacle(CellContent):
+    def __init__(self, *args, **kwargs):
+        super(Obstacle, self).__init__(*args, **kwargs)
+
+    def is_habitable(self):
+        return False
+
+    def generates_score(self):
+        return False
+
+class ScoreLocation(CellContent):
+    def __init__(self, *args, **kwargs):
+        super(Obstacle, self).__init__(*args, **kwargs)
+
+    def is_habitable(self):
+        return True
+
+    def generates_score(self):
+        return True
+
+class Floor(CellContent):
+    def __init__(self, *args, **kwargs):
+        super(Obstacle, self).__init__(*args, **kwargs)
+
+    def is_habitable(self):
+        return True
+
+    def generates_score(self):
+        return False
 
 class Cell(object):
     """
@@ -8,6 +57,7 @@ class Cell(object):
 
     def __init__(self, location, habitable=True, generates_score=False, partially_fogged=False):
         self.location = location
+        self.cell_content = None
         self.habitable = habitable
         self.generates_score = generates_score
         self.avatar = None
