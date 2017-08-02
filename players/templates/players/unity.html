@@ -35,10 +35,10 @@ console.log("View owner: " + VIEW_OWNER_ID);
 
 function SendAllConnect() {
   console.log("Sending Messages.");
-  SendMessage("World Manager", "SetGameURL", host);
-  SendMessage("World Manager", "SetGamePort", parseInt(port));
-  SendMessage("World Manager", "SetUserId", parseInt(user_id))
-  SendMessage("World Manager", "EstablishConnection");
+  SendMessage("World Controller", "SetGameURL", host);
+  SendMessage("World Controller", "SetGamePort", parseInt(port));
+  SendMessage("World Controller", "SetUserId", parseInt(user_id));
+  SendMessage("World Controller", "EstablishConnection");
 }
 
 function handler(err, url, line) {
