@@ -43,11 +43,19 @@ class Main(BaseGenerator):
 
         for cell in shuffled(world_map.all_cells()):
             if cell.location != always_empty_location and random.random() < self.settings['OBSTACLE_RATIO']:
-                cell.cell_content = Obstacle({})
+                cell.cell_content = Obstacle({
+                      "width" : "512",
+                      "height" : "1024",
+                      "path" : "Obstacle-512x1024-isometric-top"
+                    })
                 # So long as all habitable neighbours can still reach each other,
                 # then the map cannot get bisected
                 if not _all_habitable_neighbours_can_reach_each_other(cell, world_map):
-                    cell.cell_content = Floor({})
+                    cell.cell_content = Floor({
+                      "width" : "400",
+                      "height" : "400",
+                      "path" : "Grass-400x400-isometric-top"
+                    })
 
         return world_map
 
