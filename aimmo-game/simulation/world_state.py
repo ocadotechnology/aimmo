@@ -90,7 +90,7 @@ class WorldState():
                 'id' : str(hash(map_feature)),
                 'x'  : map_feature.location.x,
                 'y'  : map_feature.location.y,
-                'style' : map_feature.cell_content.style
+                'sprite' : map_feature.cell_content.sprite
             }
 
         with self.game_state as game_state:

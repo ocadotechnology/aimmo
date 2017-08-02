@@ -6,8 +6,8 @@ from simulation.location import Location
 class CellContent(object):
     __metaclass__ = ABCMeta
 
-    def __init__(self, style):
-        self.style = style
+    def __init__(self, sprite):
+        self.sprite = sprite
 
     @abstractmethod
     def is_habitable(self):
@@ -17,8 +17,8 @@ class CellContent(object):
     def generates_score(self):
         pass
 
-    def get_style(self):
-        return self.style
+    def get_sprite(self):
+        return self.sprite
 
 class Obstacle(CellContent):
     def __init__(self, *args, **kwargs):
