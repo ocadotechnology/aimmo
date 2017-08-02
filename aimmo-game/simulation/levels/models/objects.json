@@ -1,6 +1,5 @@
 [
   {
-    // Score point
     "code": "2",
     "id" : "class:CellTransform.compute_id",
     "x" : "class:CellTransform.get_x",
