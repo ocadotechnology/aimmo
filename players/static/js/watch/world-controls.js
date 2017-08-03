@@ -50,11 +50,14 @@ const CONTROLS = Object.create({
     }
 });
 
-function refreshState(data) {
-    if(data.map_changed){
-        CONTROLS.initialiseWorld(data.width, data.height, data.layout, data.minX, data.minY, data.maxX, data.maxY);
-    }
+// Updates.
+function worldUpdate(data) {
     CONTROLS.setState(data.players, data.score_locations, data.pickups);
+}
+
+// Initialisation.
+function worldInit(data) {
+    CONTROLS.initialiseWorld(data.width, data.height, data.layout, data.minX, data.minY, data.maxX, data.maxY);
 }
 
 $(document).ready(function(){
@@ -65,10 +68,14 @@ $(document).ready(function(){
 
     if (ACTIVE) {
         var socket = io.connect(GAME_URL_BASE, { path: GAME_URL_PATH });
+        socket.on('world-init'), funciton(msg) {
+            worldInit(msg);
+        }
+
         socket.on('world-update', function(msg) {
-            refreshState(msg);
+            worldUpdate(msg);
         });
-    } else {
+    } /*else {
         refreshState(STATIC_DATA);
-    }
+    }*/
 });
