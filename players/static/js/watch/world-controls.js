@@ -15,7 +15,7 @@ const CONTROLS = Object.create({
 
         this.viewer.reDrawWorldLayout();
     },
-    setState: function (players, mapFeatures) {
+    processUpdate: function (players, mapFeatures) {
         // Create players.
         for (var playerToCreate in players["create"]) {
             if (players["create"].hasOwnProperty(playerToCreate)) {
@@ -135,8 +135,8 @@ $(document).ready(function() {
     if (ACTIVE) {
         var socket = io.connect(GAME_URL_BASE, { path: GAME_URL_PATH });
         socket.on('world-init', function() {
-            console.log("World initialised.");
             worldInit();
+            socket.emit('client-ready', 1);
         });
 
         socket.on('world-update', function(msg) {
