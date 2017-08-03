@@ -15,36 +15,39 @@ const CONTROLS = Object.create({
 
         this.viewer.reDrawWorldLayout();
     },
-    setState: function (players, scoreLocations, pickups) {
-        var newPlayers = {};
-        for (var key in players) {
-            if (players.hasOwnProperty(key)) {
-                var player = players[key];
-                if (this.world.players.hasOwnProperty(key)) {
-                    var oldPlayer = this.world.players[key];
-                    player['oldX'] = oldPlayer.x;
-                    player['oldY'] = oldPlayer.y;
-
-                    if (player.x > oldPlayer.x) {
-                        player['rotation'] = 0;
-                    } else if (player.x < oldPlayer.x) {
-                        player['rotation'] = Math.PI;
-                    } else if (player.y > oldPlayer.y) {
-                        player['rotation'] = -Math.PI / 2;
-                    } else if (player.y < oldPlayer.y) {
-                        player['rotation'] = Math.PI / 2;
-                    } else {
-                        player['rotation'] = oldPlayer['rotation'];
-                    }
-                } else {
-                    player['rotation'] = Math.PI / 2;
+    setState: function (players, mapFeatures) {
+        // Create players.
+        for (var playerToCreate in players["create"]) {
+            if (players["create"].hasOwnProperty(playerToCreate)) {
+                if (this.world.players === null) {
+                    this.world.players = {};
                 }
-                newPlayers[key] = player;
+                this.world.players.push(playerToCreate);
             }
         }
-        this.world.players = newPlayers;
-        this.world.scoreLocations = scoreLocations; //TODO: use instead of relying on world.layout (and remove score from there)
-        this.world.pickups = pickups;
+
+        // Delete players.
+        for (var playerToDelete in players["delete"]) {
+            if (players["delete"].hasOwnProperty(playerToDelete)) {
+                var playerToDeleteIndex = this.world.players.indexOf(playerToDelete);
+                if (playerToDeleteIndex !== -1) {
+                    this.world.players.splice(playerToDeleteIndex, 1);
+                }
+            }
+        }
+
+        // Update players.
+        for (var playerToUpdate in players["update"]) {
+            if (players["update"].hasOwnProperty(playerToUpdate)) {
+                var playerToUpdateIndex = this.world.players.indexOf(playerToUpdate);
+                if (playerToUpdateIndex !== -1) {
+                    this.world.players[playerToUpdateIndex] = playerToUpdateIndex;
+                }
+            }
+        }
+
+        //this.world.scoreLocations = scoreLocations; //TODO: use instead of relying on world.layout (and remove score from there)
+        //this.world.pickups = pickups;
 
         this.viewer.reDrawState();
     }
@@ -52,7 +55,7 @@ const CONTROLS = Object.create({
 
 // Updates.
 function worldUpdate(data) {
-    CONTROLS.setState(data.players, data.score_locations, data.pickups);
+    CONTROLS.processUpdate(data["players"], data["map_features"]);
 }
 
 // Initialisation.
@@ -68,8 +71,8 @@ $(document).ready(function(){
 
     if (ACTIVE) {
         var socket = io.connect(GAME_URL_BASE, { path: GAME_URL_PATH });
-        socket.on('world-init'), funciton(msg) {
-            worldInit(msg);
+        socket.on('world-init'), function() {
+            worldInit();
         }
 
         socket.on('world-update', function(msg) {
