@@ -140,7 +140,7 @@ def _render_game(request, game):
 
     # To swap between Unity and web just change this
     # return render(request, 'players/watch.html', context)
-    return render(request, 'players/unity.html', context)
+    return render(request, 'players/watch.html', context)
 
 def watch_game(request, id):
     game = get_object_or_404(Game, id=id)
