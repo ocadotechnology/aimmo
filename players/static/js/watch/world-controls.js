@@ -52,6 +52,10 @@ const CONTROLS = Object.create({
         var healthPoints = mapFeatures["health_point"]
         var pickups = mapFeatures["pickup"]
 
+        if (this.world.layout === null) {
+            this.world.layout = {};
+        }
+
         // Create obstacles.
         for (var obstacleToCreate in obstacles["create"])
         {
@@ -114,7 +118,8 @@ function worldInit() {
     CONTROLS.initialiseWorld(width, height, layout, minX, minY, maxX, maxY);
 }
 
-$(document).ready(function(){
+$(document).ready(function() {
+
     var world = {};
     world.players = {};
     VIEWER.init(document.getElementById("watch-world-canvas"), world, APPEARANCE);
@@ -122,9 +127,10 @@ $(document).ready(function(){
 
     if (ACTIVE) {
         var socket = io.connect(GAME_URL_BASE, { path: GAME_URL_PATH });
-        socket.on('world-init'), function() {
+        socket.on('world-init', function() {
+            console.log("World initialised.");
             worldInit();
-        }
+        });
 
         socket.on('world-update', function(msg) {
             worldUpdate(msg);
