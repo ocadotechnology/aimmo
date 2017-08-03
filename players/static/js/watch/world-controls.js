@@ -46,6 +46,44 @@ const CONTROLS = Object.create({
             }
         }
 
+        // Map features.
+        var obstacles = mapFeatures["obstacle"];
+        var scorePoints = mapFeatures["score_point"]
+        var healthPoints = mapFeatures["health_point"]
+        var pickups = mapFeatures["pickup"]
+
+        // Create obstacles.
+        for (var obstacleToCreate in obstacles["create"])
+        {
+            if (obstacles["create"].hasOwnProperty(obstacleToCreate)) {
+                this.world.layout[obstacleToCreate["x"]][obstacleToCreate["y"]] = 1;
+            }
+        }
+
+        // Delete obstacles.
+        for (var obstacleToDelete in obstacles["delete"])
+        {
+            if (obstacles["delete"].hasOwnProperty(obstacleToDelete)) {
+                this.world.layout[obstacleToCreate["x"]][obstacleToCreate["y"]] = 0;
+            }
+        }
+
+        // Create score points.
+        for (var scorePointToCreate in scorePoints["create"])
+        {
+            if (scorePoints["create"].hasOwnProperty(scorePointToCreate)) {
+                this.world.layout[scorePointToCreate["x"]][scorePointToCreate["y"]] = 2;
+            }
+        }
+
+        // Delete score points.
+        for (var scorePointToDelete in scorePoints["delete"])
+        {
+            if (scorePoints["delete"].hasOwnProperty(scorePointToDelete)) {
+                this.world.layout[scorePointToDelete["x"]][scorePointToDelete["y"]] = 0;
+            }
+        }
+
         //this.world.scoreLocations = scoreLocations; //TODO: use instead of relying on world.layout (and remove score from there)
         //this.world.pickups = pickups;
 
