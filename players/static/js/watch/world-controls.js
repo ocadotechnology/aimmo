@@ -56,8 +56,21 @@ function worldUpdate(data) {
 }
 
 // Initialisation.
-function worldInit(data) {
-    CONTROLS.initialiseWorld(data.width, data.height, data.layout, data.minX, data.minY, data.maxX, data.maxY);
+function worldInit() {
+    var width = 15;
+    var height = 15;
+    var layout = {};
+    for (var x = 0; x < width; x++) {
+        for (var y = 0; y < height; y++) {
+            layout[x][y] = 0;
+        }
+    }
+    var minX = -7;
+    var minY = -7;
+    var maxX = 7;
+    var maxY = 7;
+
+    CONTROLS.initialiseWorld(width, height, layout, minX, minY, maxX, maxY);
 }
 
 $(document).ready(function(){
@@ -68,8 +81,8 @@ $(document).ready(function(){
 
     if (ACTIVE) {
         var socket = io.connect(GAME_URL_BASE, { path: GAME_URL_PATH });
-        socket.on('world-init'), funciton(msg) {
-            worldInit(msg);
+        socket.on('world-init'), funciton() {
+            worldInit();
         }
 
         socket.on('world-update', function(msg) {
