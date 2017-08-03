@@ -52,6 +52,10 @@ const CONTROLS = Object.create({
         var healthPoints = mapFeatures["health_point"]
         var pickups = mapFeatures["pickup"]
 
+        if (this.world.layout === null) {
+            this.world.layout = {};
+        }
+
         // Create obstacles.
         for (var obstacleToCreate in obstacles["create"])
         {
@@ -97,11 +101,32 @@ function worldUpdate(data) {
 }
 
 // Initialisation.
+<<<<<<< HEAD
 function worldInit(data) {
     CONTROLS.initialiseWorld(data.width, data.height, data.layout, data.minX, data.minY, data.maxX, data.maxY);
+=======
+function worldInit() {
+    var width = 15;
+    var height = 15;
+    var minX = -7;
+    var minY = -7;
+    var maxX = 7;
+    var maxY = 7;
+
+    var layout = {};
+    for (var x = minX; x <= maxX; x++) {
+        layout[x] = {};
+        for (var y = minY; y <= maxY; y++) {
+            layout[x][y] = 0;
+        }
+    }
+
+    CONTROLS.initialiseWorld(width, height, layout, minX, minY, maxX, maxY);
+>>>>>>> acf263e... Blank map appearing on the screen. Now we need to handle updates.
 }
 
-$(document).ready(function(){
+$(document).ready(function() {
+
     var world = {};
     world.players = {};
     VIEWER.init(document.getElementById("watch-world-canvas"), world, APPEARANCE);
@@ -109,9 +134,10 @@ $(document).ready(function(){
 
     if (ACTIVE) {
         var socket = io.connect(GAME_URL_BASE, { path: GAME_URL_PATH });
-        socket.on('world-init'), function() {
+        socket.on('world-init', function() {
+            console.log("World initialised.");
             worldInit();
-        }
+        });
 
         socket.on('world-update', function(msg) {
             worldUpdate(msg);
