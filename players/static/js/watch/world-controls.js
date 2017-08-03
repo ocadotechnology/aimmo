@@ -104,16 +104,18 @@ function worldUpdate(data) {
 function worldInit() {
     var width = 15;
     var height = 15;
-    var layout = {};
-    for (var x = 0; x < width; x++) {
-        for (var y = 0; y < height; y++) {
-            layout[x][y] = 0;
-        }
-    }
     var minX = -7;
     var minY = -7;
     var maxX = 7;
     var maxY = 7;
+
+    var layout = {};
+    for (var x = minX; x <= maxX; x++) {
+        layout[x] = {};
+        for (var y = minY; y <= maxY; y++) {
+            layout[x][y] = 0;
+        }
+    }
 
     CONTROLS.initialiseWorld(width, height, layout, minX, minY, maxX, maxY);
 }
