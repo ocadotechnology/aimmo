@@ -16,34 +16,30 @@ const CONTROLS = Object.create({
         this.viewer.reDrawWorldLayout();
     },
     processUpdate: function (players, mapFeatures) {
-        console.log(players);
-        //console.log(mapFeatures);
+        var i;
 
         // Create players.
-        for (var i = 0; i < players["create"].length; i++) {
+        for (i = 0; i < players["create"].length; i++) {
             this.world.players.push(players["create"][i]);
             console.log(players["create"][i]);
         }
 
         // Delete players.
-        for (var playerToDelete in players["delete"]) {
-            if (players["delete"].hasOwnProperty(playerToDelete)) {
-                var playerToDeleteIndex = this.world.players.indexOf(playerToDelete);
+        for (i = 0; i < players["delete"].length; i++) {
+            var playerToDeleteIndex = this.world.players.indexOf(playerToDelete);
                 if (playerToDeleteIndex !== -1) {
                     this.world.players.splice(playerToDeleteIndex, 1);
                 }
-            }
         }
 
         // Update players.
-        /*for (var playerToUpdate in players["update"]) {
-            if (players["update"].hasOwnProperty(playerToUpdate)) {
-                var playerToUpdateIndex = this.world.players.indexOf(playerToUpdate);
-                if (playerToUpdateIndex !== -1) {
-                    this.world.players[playerToUpdateIndex] = playerToUpdate;
+        for (i = 0; i < players["update"].length; i++) {
+            for (var j = 0; j < this.world.players.length; j++) {
+                if (this.world.players[j]["id"] === players["update"][i]["id"]) {
+                    this.world.players[j] = players["update"][i];
                 }
             }
-        }*/
+        }
 
         // Map features.
         /*var obstacles = mapFeatures["obstacle"];
