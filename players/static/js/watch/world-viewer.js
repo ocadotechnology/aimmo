@@ -79,7 +79,8 @@ const VIEWER = Object.create({
         player.push(
             playerBody,
             playerTextAbove,
-            playerTextBelow
+            playerTextBelow,
+            currentUserIcon
         );
         return player;
     },
@@ -95,7 +96,7 @@ const VIEWER = Object.create({
         this.clearDrawnElements(this.drawnElements.players);
 
         for (var i = 0;  i < this.world.players.length; i++) {
-            var is_current_user = this.world.players[i]["id"] === CURRENT_USER_PLAYER_KEY;
+            var is_current_user = this.world.players[i]["id"] === 1;//CURRENT_USER_PLAYER_KEY;
             var playerElement = this.constructNewPlayerElement(this.world.players[i], is_current_user);
             this.drawnElements.players.push(playerElement);
         }
