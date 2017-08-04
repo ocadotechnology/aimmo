@@ -15,60 +15,136 @@ const CONTROLS = Object.create({
 
         this.viewer.reDrawWorldLayout();
     },
-    setState: function (players, scoreLocations, pickups) {
-        var newPlayers = {};
-        for (var key in players) {
-            if (players.hasOwnProperty(key)) {
-                var player = players[key];
-                if (this.world.players.hasOwnProperty(key)) {
-                    var oldPlayer = this.world.players[key];
-                    player['oldX'] = oldPlayer.x;
-                    player['oldY'] = oldPlayer.y;
+    processUpdate: function (players, mapFeatures) {
+        var i, j;
 
-                    if (player.x > oldPlayer.x) {
-                        player['rotation'] = 0;
-                    } else if (player.x < oldPlayer.x) {
-                        player['rotation'] = Math.PI;
-                    } else if (player.y > oldPlayer.y) {
-                        player['rotation'] = -Math.PI / 2;
-                    } else if (player.y < oldPlayer.y) {
-                        player['rotation'] = Math.PI / 2;
-                    } else {
-                        player['rotation'] = oldPlayer['rotation'];
-                    }
-                } else {
-                    player['rotation'] = Math.PI / 2;
+        // Create players.
+        for (i = 0; i < players["create"].length; i++) {
+            this.world.players.push(players["create"][i]);
+        }
+
+        // Delete players.
+        for (i = 0; i < players["delete"].length; i++) {
+            for (j = 0; j < this.world.players.length; j++) {
+                if (this.world.players[j]["id"] === players["delete"][i]["id"]) {
+                    this.world.players.splice(j, 1);
                 }
-                newPlayers[key] = player;
             }
         }
-        this.world.players = newPlayers;
-        this.world.scoreLocations = scoreLocations; //TODO: use instead of relying on world.layout (and remove score from there)
-        this.world.pickups = pickups;
+
+        // Update players.
+        for (i = 0; i < players["update"].length; i++) {
+            for (j = 0; j < this.world.players.length; j++) {
+                if (this.world.players[j]["id"] === players["update"][i]["id"]) {
+                    this.world.players[j] = players["update"][i];
+                }
+            }
+        }
+
+        // Map features.
+        var obstacles = mapFeatures["obstacle"];
+        var scorePoints = mapFeatures["score_point"];
+        var healthPoints = mapFeatures["health_point"];
+        var pickups = mapFeatures["pickup"];
+
+        // Create obstacles.
+        for (i = 0; i < obstacles["create"].length; i++)
+        {
+            this.world.layout[obstacles["create"][i]["x"]][obstacles["create"][i]["y"]] = 1;
+        }
+
+        // Delete obstacles.
+        for (i = 0; i < obstacles["delete"].length; i++)
+        {
+            this.world.layout[obstacles["delete"][i]["x"]][obstacles["delete"][i]["y"]] = 0;
+        }
+
+        // Create score points.
+        for (i = 0; i < scorePoints["create"].length; i++)
+        {
+            this.world.layout[scorePoints["create"][i]["x"]][scorePoints["create"][i]["y"]] = 2;
+        }
+
+        // Delete score points.
+        for (i = 0; i < scorePoints["delete"].length; i++)
+        {
+            this.world.layout[scorePoints["delete"][i]["x"]][scorePoints["delete"][i]["y"]] = 0;
+        }
+
+        // Create health points.
+        for (i = 0; i < healthPoints["create"].length; i++)
+        {
+            this.world.layout[healthPoints["create"][i]["x"]][healthPoints["create"][i]["y"]] = 3;
+        }
+
+        // Delete health points.
+        for (i = 0; i < healthPoints["delete"].length; i++)
+        {
+            this.world.layout[healthPoints["delete"][i]["x"]][healthPoints["delete"][i]["y"]] = 0;
+        }
+
+        // Create pickups.
+        for (i = 0; i < pickups["create"].length; i++) {
+            this.world.pickups.push(pickups["create"][i]);
+        }
+
+        // Delete pickups.
+        for (i = 0; i < pickups["delete"].length; i++) {
+            for (j = 0; j < this.world.pickups.length; j++) {
+                if (this.world.pickups[j]["id"] === players["delete"][i]["id"]) {
+                    this.world.pickups.splice(j, 1);
+                }
+            }
+        }
 
         this.viewer.reDrawState();
     }
 });
 
-function refreshState(data) {
-    if(data.map_changed){
-        CONTROLS.initialiseWorld(data.width, data.height, data.layout, data.minX, data.minY, data.maxX, data.maxY);
-    }
-    CONTROLS.setState(data.players, data.score_locations, data.pickups);
+// Updates.
+function worldUpdate(data) {
+    CONTROLS.processUpdate(data["players"], data["map_features"]);
 }
 
-$(document).ready(function(){
+// Initialisation.
+function worldInit() {
+    var width = 15;
+    var height = 15;
+    var minX = -7;
+    var minY = -7;
+    var maxX = 7;
+    var maxY = 7;
+
+    var layout = {};
+    for (var x = minX; x <= maxX; x++) {
+        layout[x] = {};
+        for (var y = minY; y <= maxY; y++) {
+            layout[x][y] = 0;
+        }
+    }
+
+    CONTROLS.initialiseWorld(width, height, layout, minX, minY, maxX, maxY);
+}
+
+$(document).ready(function() {
+
     var world = {};
-    world.players = {};
+    world.players = [];
+    world.pickups = [];
     VIEWER.init(document.getElementById("watch-world-canvas"), world, APPEARANCE);
     CONTROLS.init(world, VIEWER);
 
     if (ACTIVE) {
         var socket = io.connect(GAME_URL_BASE, { path: GAME_URL_PATH });
-        socket.on('world-update', function(msg) {
-            refreshState(msg);
+        socket.on('world-init', function() {
+            worldInit();
+            socket.emit('client-ready', 1);
         });
-    } else {
+
+        socket.on('world-update', function(msg) {
+            worldUpdate(msg);
+        });
+    } /*else {
         refreshState(STATIC_DATA);
-    }
+    }*/
 });
