@@ -16,8 +16,8 @@ class CellTransform():
 		centerX = int(width / 2)
 		centerY = int(height / 2)
 
-		self.x =  x - centerX
-		self.y = -y + centerY
+		self.x = +y - centerY
+		self.y = -x + centerX
 
 	def compute_id(self):
 		return hash(str(self.x) + ":" + str(self.y))
