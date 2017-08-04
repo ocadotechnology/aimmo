@@ -16,14 +16,13 @@ const CONTROLS = Object.create({
         this.viewer.reDrawWorldLayout();
     },
     processUpdate: function (players, mapFeatures) {
+        console.log(players);
+        //console.log(mapFeatures);
+
         // Create players.
-        for (var playerToCreate in players["create"]) {
-            if (players["create"].hasOwnProperty(playerToCreate)) {
-                if (this.world.players === null) {
-                    this.world.players = {};
-                }
-                this.world.players.push(playerToCreate);
-            }
+        for (var i = 0; i < players["create"].length; i++) {
+            this.world.players.push(players["create"][i]);
+            console.log(players["create"][i]);
         }
 
         // Delete players.
@@ -37,17 +36,17 @@ const CONTROLS = Object.create({
         }
 
         // Update players.
-        for (var playerToUpdate in players["update"]) {
+        /*for (var playerToUpdate in players["update"]) {
             if (players["update"].hasOwnProperty(playerToUpdate)) {
                 var playerToUpdateIndex = this.world.players.indexOf(playerToUpdate);
                 if (playerToUpdateIndex !== -1) {
-                    this.world.players[playerToUpdateIndex] = playerToUpdateIndex;
+                    this.world.players[playerToUpdateIndex] = playerToUpdate;
                 }
             }
-        }
+        }*/
 
         // Map features.
-        var obstacles = mapFeatures["obstacle"];
+        /*var obstacles = mapFeatures["obstacle"];
         var scorePoints = mapFeatures["score_point"]
         var healthPoints = mapFeatures["health_point"]
         var pickups = mapFeatures["pickup"]
@@ -86,10 +85,10 @@ const CONTROLS = Object.create({
             if (scorePoints["delete"].hasOwnProperty(scorePointToDelete)) {
                 this.world.layout[scorePointToDelete["x"]][scorePointToDelete["y"]] = 0;
             }
-        }
+        }*/
 
         //this.world.scoreLocations = scoreLocations; //TODO: use instead of relying on world.layout (and remove score from there)
-        //this.world.pickups = pickups;
+        this.world.pickups = [];
 
         this.viewer.reDrawState();
     }
@@ -128,7 +127,7 @@ function worldInit() {
 $(document).ready(function() {
 
     var world = {};
-    world.players = {};
+    world.players = [];
     VIEWER.init(document.getElementById("watch-world-canvas"), world, APPEARANCE);
     CONTROLS.init(world, VIEWER);
 
