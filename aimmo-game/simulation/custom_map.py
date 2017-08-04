@@ -65,14 +65,21 @@ class JsonLevelGenerator(BaseLevelGenerator):
         # Used so that the map dimension does not increase automatically
         self.settings["TARGET_NUM_CELLS_PER_AVATAR"] = -1000
 
+        self.meta = None
         # Finds the json with metaiformation
         for element in self.json_map:
             if element["code"] == "meta":
                 self.meta = element
 
-        # Sets the empty map to the dimensions of the given level
-        # self.world_map = WorldMap.generate_empty_map(
-        #    self.meta["rows"], self.meta["cols"], self.settings)
+        if not self.meta is None:
+            # Sets the empty map to the dimensions of the given level
+            minX = - int((self.meta["cols"]) / 2)
+            maxX = int((self.meta["cols"] - 1) / 2) + 1
+            minY = -int((self.meta["rows"]) / 2)
+            maxY = int((self.meta["rows"] - 1) / 2) + 1
+            self.world_map = EmptyMapGenerator.get_map_by_corners(
+                self.settings,
+                (minY, maxY, minX, maxX))
 
     def _register_json(self, json_map):
         self.json_map = json_map
