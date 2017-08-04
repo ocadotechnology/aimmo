@@ -49,39 +49,21 @@ const VIEWER = Object.create({
     },
 
     constructNewPlayerElement: function(playerData, is_current_user) {
-        const playerX = (0.5 + playerData.x) * this.appearance.cellSize;
-        const playerY = (0.5 + this.invertY(playerData.y)) * this.appearance.cellSize;
+        const playerX = (0.5 + playerData["x"]) * this.appearance.cellSize;
+        const playerY = (0.5 + this.invertY(playerData["y"])) * this.appearance.cellSize;
         const playerRadius = this.appearance.cellSize * 0.5 * 0.75;
-        const playerHeadRadius = playerRadius * 0.6;
-        const playerEyeRadius = playerRadius * 0.2;
         const currentUserIconSize = playerRadius * 0.4;
 
         var playerBody = this.paper.circle(playerX, playerY, playerRadius);
 
-        playerBody.attr("fill", playerData.colours.bodyFill);
-        playerBody.attr("stroke", playerData.colours.bodyStroke);
-
-        var playerEyeLeft = this.paper.circle(
-            playerX + playerHeadRadius * Math.cos(playerData.rotation - 1),
-            playerY + playerHeadRadius * Math.sin(playerData.rotation - 1),
-            playerEyeRadius
-        );
-        playerEyeLeft.attr("fill", playerData.colours.eyeFill);
-        playerEyeLeft.attr("stroke", playerData.colours.eyeStroke);
-
-        var playerEyeRight = this.paper.circle(
-            playerX + playerHeadRadius * Math.cos(playerData.rotation + 1),
-            playerY + playerHeadRadius * Math.sin(playerData.rotation + 1),
-            playerEyeRadius
-        );
-        playerEyeRight.attr("fill", playerData.colours.eyeFill);
-        playerEyeRight.attr("stroke", playerData.colours.eyeStroke);
+        playerBody.attr("fill", playerData["colour"]);
+        playerBody.attr("stroke", playerData["colour"]);
 
         var currentUserIcon;
         if (is_current_user) {
             currentUserIcon = this.paper.rect(
-                playerX - currentUserIconSize / 2 - playerHeadRadius * 0.5 * Math.cos(playerData.rotation),
-                playerY - currentUserIconSize / 2 - playerHeadRadius * 0.5 * Math.sin(playerData.rotation),
+                playerX - currentUserIconSize / 2,
+                playerY - currentUserIconSize / 2,
                 currentUserIconSize,
                 currentUserIconSize
             );
@@ -89,17 +71,14 @@ const VIEWER = Object.create({
             currentUserIcon.attr("stroke", "#FF0000");
         }
 
-        var playerTextAbove = this.paper.text(playerX, playerY - 20, 'Score: ' + playerData.score);
-        var playerTextBelow = this.paper.text(playerX, playerY + 20, playerData.health + 'hp, (' + playerData.x + ', ' + playerData.y + ')');
+        var playerTextAbove = this.paper.text(playerX, playerY - 20, 'Score: ' + playerData["score"]);
+        var playerTextBelow = this.paper.text(playerX, playerY + 20, playerData["health"] + 'hp, (' + playerData["x"] + ', ' + playerData["y"] + ')');
 
         var player = this.paper.set();
         player.push(
             playerBody,
-            playerEyeLeft,
-            playerEyeRight,
             playerTextAbove,
-            playerTextBelow,
-            currentUserIcon
+            playerTextBelow
         );
         return player;
     },
@@ -114,13 +93,10 @@ const VIEWER = Object.create({
     reDrawPlayers: function() {
         this.clearDrawnElements(this.drawnElements.players);
 
-        for (var playerKey in this.world.players) {
-            if (this.world.players.hasOwnProperty(playerKey)) {
-                var playerData = this.world.players[playerKey];
-                var is_current_user = playerKey == CURRENT_USER_PLAYER_KEY
-                var playerElement = this.constructNewPlayerElement(playerData, is_current_user);
-                this.drawnElements.players.push(playerElement);
-            }
+        for (var i = 0;  i < this.world.players.length; i++) {
+            var is_current_user = this.world.players[i]["id"] === CURRENT_USER_PLAYER_KEY;
+            var playerElement = this.constructNewPlayerElement(this.world.players[i], is_current_user);
+            this.drawnElements.players.push(playerElement);
         }
     },
 
