@@ -158,6 +158,7 @@ const VIEWER = Object.create({
     },
 
     reDrawState: function() {
+        this.reDrawWorldLayout();
         this.reDrawPickups();
         this.reDrawPlayers();
     }
