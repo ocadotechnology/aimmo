@@ -5,7 +5,8 @@ const APPEARANCE = Object.create({
     worldColours: {
         0: "#efe",
         1: "#777",
-        2: "#fbb"
+        2: "#fbb",
+        3: "#ade"
     }
 });
 
@@ -107,6 +108,10 @@ const VIEWER = Object.create({
             var pickupLocation = this.world.pickups[i].location;
             var x = (0.5 + pickupLocation[0]) * this.appearance.cellSize;
             var y = (0.5 + this.invertY(pickupLocation[1])) * this.appearance.cellSize;
+
+            pickup = this.drawHealth(x, y);
+            /* For now, pickups don't have a type.
+
             switch (this.world.pickups[i].type) {
                 case 'health':
                     pickup = this.drawHealth(x, y);
@@ -124,7 +129,7 @@ const VIEWER = Object.create({
 
             if (pickup !== undefined) {
                 this.drawnElements.pickups.push(pickup);
-            }
+            }*/
         }
     },
 

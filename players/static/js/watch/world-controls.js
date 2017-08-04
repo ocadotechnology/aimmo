@@ -16,7 +16,7 @@ const CONTROLS = Object.create({
         this.viewer.reDrawWorldLayout();
     },
     processUpdate: function (players, mapFeatures) {
-        var i;
+        var i, j;
 
         // Create players.
         for (i = 0; i < players["create"].length; i++) {
@@ -25,15 +25,16 @@ const CONTROLS = Object.create({
 
         // Delete players.
         for (i = 0; i < players["delete"].length; i++) {
-            var playerToDeleteIndex = this.world.players.indexOf(playerToDelete);
-                if (playerToDeleteIndex !== -1) {
-                    this.world.players.splice(playerToDeleteIndex, 1);
+            for (j = 0; j < this.world.players.length; j++) {
+                if (this.world.players[j]["id"] === players["delete"][i]["id"]) {
+                    this.world.players.splice(j, 1);
                 }
+            }
         }
 
         // Update players.
         for (i = 0; i < players["update"].length; i++) {
-            for (var j = 0; j < this.world.players.length; j++) {
+            for (j = 0; j < this.world.players.length; j++) {
                 if (this.world.players[j]["id"] === players["update"][i]["id"]) {
                     this.world.players[j] = players["update"][i];
                 }
@@ -42,9 +43,9 @@ const CONTROLS = Object.create({
 
         // Map features.
         var obstacles = mapFeatures["obstacle"];
-        var scorePoints = mapFeatures["score_point"]
-        var healthPoints = mapFeatures["health_point"]
-        var pickups = mapFeatures["pickup"]
+        var scorePoints = mapFeatures["score_point"];
+        var healthPoints = mapFeatures["health_point"];
+        var pickups = mapFeatures["pickup"];
 
         // Create obstacles.
         for (i = 0; i < obstacles["create"].length; i++)
@@ -70,7 +71,31 @@ const CONTROLS = Object.create({
             this.world.layout[scorePoints["delete"][i]["x"]][scorePoints["delete"][i]["y"]] = 0;
         }
 
-        this.world.pickups = [];
+        // Create health points.
+        for (i = 0; i < healthPoints["create"].length; i++)
+        {
+            this.world.layout[healthPoints["create"][i]["x"]][healthPoints["create"][i]["y"]] = 3;
+        }
+
+        // Delete health points.
+        for (i = 0; i < healthPoints["delete"].length; i++)
+        {
+            this.world.layout[healthPoints["delete"][i]["x"]][healthPoints["delete"][i]["y"]] = 0;
+        }
+
+        // Create pickups.
+        for (i = 0; i < pickups["create"].length; i++) {
+            this.world.pickups.push(pickups["create"][i]);
+        }
+
+        // Delete pickups.
+        for (i = 0; i < pickups["delete"].length; i++) {
+            for (j = 0; j < this.world.pickups.length; j++) {
+                if (this.world.pickups[j]["id"] === players["delete"][i]["id"]) {
+                    this.world.pickups.splice(j, 1);
+                }
+            }
+        }
 
         this.viewer.reDrawState();
     }
@@ -110,6 +135,7 @@ $(document).ready(function() {
 
     var world = {};
     world.players = [];
+    world.pickups = [];
     VIEWER.init(document.getElementById("watch-world-canvas"), world, APPEARANCE);
     CONTROLS.init(world, VIEWER);
 
