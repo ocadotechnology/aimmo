@@ -21,7 +21,6 @@ const CONTROLS = Object.create({
         // Create players.
         for (i = 0; i < players["create"].length; i++) {
             this.world.players.push(players["create"][i]);
-            console.log(players["create"][i]);
         }
 
         // Delete players.
@@ -42,48 +41,35 @@ const CONTROLS = Object.create({
         }
 
         // Map features.
-        /*var obstacles = mapFeatures["obstacle"];
+        var obstacles = mapFeatures["obstacle"];
         var scorePoints = mapFeatures["score_point"]
         var healthPoints = mapFeatures["health_point"]
         var pickups = mapFeatures["pickup"]
 
-        if (this.world.layout === null) {
-            this.world.layout = {};
-        }
-
         // Create obstacles.
-        for (var obstacleToCreate in obstacles["create"])
+        for (i = 0; i < obstacles["create"].length; i++)
         {
-            if (obstacles["create"].hasOwnProperty(obstacleToCreate)) {
-                this.world.layout[obstacleToCreate["x"]][obstacleToCreate["y"]] = 1;
-            }
+            this.world.layout[obstacles["create"][i]["x"]][obstacles["create"][i]["y"]] = 1;
         }
 
         // Delete obstacles.
-        for (var obstacleToDelete in obstacles["delete"])
+        for (i = 0; i < obstacles["delete"].length; i++)
         {
-            if (obstacles["delete"].hasOwnProperty(obstacleToDelete)) {
-                this.world.layout[obstacleToCreate["x"]][obstacleToCreate["y"]] = 0;
-            }
+            this.world.layout[obstacles["delete"][i]["x"]][obstacles["delete"][i]["y"]] = 0;
         }
 
         // Create score points.
-        for (var scorePointToCreate in scorePoints["create"])
+        for (i = 0; i < scorePoints["create"].length; i++)
         {
-            if (scorePoints["create"].hasOwnProperty(scorePointToCreate)) {
-                this.world.layout[scorePointToCreate["x"]][scorePointToCreate["y"]] = 2;
-            }
+            this.world.layout[scorePoints["create"][i]["x"]][scorePoints["create"][i]["y"]] = 2;
         }
 
         // Delete score points.
-        for (var scorePointToDelete in scorePoints["delete"])
+        for (i = 0; i < scorePoints["delete"].length; i++)
         {
-            if (scorePoints["delete"].hasOwnProperty(scorePointToDelete)) {
-                this.world.layout[scorePointToDelete["x"]][scorePointToDelete["y"]] = 0;
-            }
-        }*/
+            this.world.layout[scorePoints["delete"][i]["x"]][scorePoints["delete"][i]["y"]] = 0;
+        }
 
-        //this.world.scoreLocations = scoreLocations; //TODO: use instead of relying on world.layout (and remove score from there)
         this.world.pickups = [];
 
         this.viewer.reDrawState();
