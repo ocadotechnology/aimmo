@@ -44,7 +44,8 @@ class RawLevelGenerator():
         json.append({
             "code": "meta",
             "rows": rows,
-            "cols": cols
+            "cols": cols,
+
         })
 
         return json

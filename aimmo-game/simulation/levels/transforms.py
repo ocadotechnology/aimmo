@@ -12,15 +12,18 @@ class CellTransform():
 
 		A transform has to be registered to a parser.
 	"""
-	def __init__(self, x, y):
-	    self.x = x
-	    self.y = y
+	def __init__(self, x, y, width, height):
+		centerX = int(width / 2)
+		centerY = int(height / 2)
+
+		self.x =  x - centerX
+		self.y = -y + centerY
 
 	def compute_id(self):
-	    return hash(str(self.x) + ":" + str(self.y))
+		return hash(str(self.x) + ":" + str(self.y))
 
 	def get_x(self):
-	    return self.x
+		return self.x
 
 	def get_y(self):
-	    return self.y
+		return self.y

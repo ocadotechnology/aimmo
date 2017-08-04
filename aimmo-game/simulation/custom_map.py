@@ -128,9 +128,13 @@ class JsonLevelGenerator(BaseLevelGenerator):
                 self.meta = element
 
         # Sets the empty map to the dimensions of the given level
+        minX = - int((self.meta["cols"] - 1) / 2)
+        maxX = int((self.meta["cols"] - 1) / 2) + 1
+        minY = -int((self.meta["rows"] - 1) / 2)
+        maxY = int((self.meta["rows"] - 1) / 2) + 1
         self.world_map = EmptyMapGenerator.get_map_by_corners(
             self.settings,
-            (0, self.meta["rows"] - 1, 0, self.meta["cols"] - 1))
+            (minY, maxY, minX, maxX))
 
     def _register_json(self, json_map):
         self.json_map = json_map
