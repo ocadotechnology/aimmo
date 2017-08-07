@@ -27,6 +27,7 @@ urlpatterns = [
 
     url(r'^jsreverse/$', 'django_js_reverse.views.urls_js', name='aimmo/js_reverse'),  # TODO: Pull request to make django_js_reverse.urls
     url(r'^games/new/$', views.add_game, name='aimmo/new_game'),
+    url(r'^useless_url/$', views.add_game, name='aimmo/new_game'),
 
     # TODO: this is a quickfix for redirecting for the Unity resources
     url(r'^watch/(?P<id>[0-9]+)/(?P<resource>.[0-9A-Za-z/.]+)$',
