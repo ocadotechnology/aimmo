@@ -73,6 +73,7 @@ def main(use_minikube):
         time.sleep(2)
         game = run_command_async(['python', _SERVICE_PY, '127.0.0.1', '5000'])
         os.environ['AIMMO_MODE'] = 'threads'
+        server_args.append('0.0.0.0:8000')
     server = run_command_async(['python', _MANAGE_PY, 'runserver'] + server_args)
 
     try:
