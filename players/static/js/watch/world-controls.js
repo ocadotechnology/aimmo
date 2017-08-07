@@ -141,7 +141,7 @@ $(document).ready(function() {
         var socket = io.connect(GAME_URL_BASE, { path: GAME_URL_PATH });
         socket.on('world-init', function() {
             worldInit();
-            socket.emit('client-ready', VIEW_OWNER_ID);
+            socket.emit('client-ready', Number(VIEW_OWNER_ID));
         });
 
         socket.on('world-update', function(msg) {
