@@ -122,6 +122,10 @@ class JsonLevelGenerator(BaseLevelGenerator):
         # Used so that the map dimension does not increase automatically
         self.settings["TARGET_NUM_CELLS_PER_AVATAR"] = -1000
 
+        # TODO: remove hardcoded
+        self.meta['cols'] = 20
+        self.meta['rows'] = 20
+
         # Finds the json with metaiformation
         for element in self.json_map:
             if element["code"] == "meta":

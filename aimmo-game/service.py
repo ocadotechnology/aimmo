@@ -131,7 +131,7 @@ def run_game(port):
 
     # TODO: this does not work with Kubernates; locally it works
     # as http://localhost:8000/players/api/games/ is used as default
-    api_url = os.environ.get('GAME_API_URL', 'http://localhost:8000/players/api/games/')
+    api_url = os.environ.get('GAME_API_URL', None)
     if hasattr(custom_map, settings['GENERATOR']):
         generator = getattr(custom_map, settings['GENERATOR'])(settings)
     else:

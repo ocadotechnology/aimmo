@@ -11,7 +11,7 @@ import socket
 import stat
 import tarfile
 import yaml
-from run import run_command
+from run import run_command, get_ip
 from urllib import urlretrieve
 from urllib2 import urlopen
 from zipfile import ZipFile
@@ -81,21 +81,6 @@ def download_minikube():
     url = 'https://storage.googleapis.com/minikube/releases/%s/minikube-%s-amd64%s' % (version, OS, FILE_SUFFIX)
     download_exec(url, MINIKUBE)
     return MINIKUBE
-
-
-def get_ip():
-    # http://stackoverflow.com/a/28950776/671626
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    try:
-        # doesn't even have to be reachable
-        s.connect(('10.255.255.255', 0))
-        IP = s.getsockname()[0]
-    except:
-        IP = '127.0.0.1'
-    finally:
-        s.close()
-    return IP
-
 
 def create_creator_yaml():
     orig_path = os.path.join(BASE_DIR, 'aimmo-game-creator', 'rc-aimmo-game-creator.yaml')

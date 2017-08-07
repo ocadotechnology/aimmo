@@ -127,7 +127,7 @@ class WorkerManager(object):
 class LocalWorkerManager(WorkerManager):
     """Relies on them already being created already."""
 
-    host = '127.0.0.1'
+    host = '0.0.0.0'
     worker_directory = os.path.join(
         os.path.dirname(__file__),
         '../aimmo-game/',
