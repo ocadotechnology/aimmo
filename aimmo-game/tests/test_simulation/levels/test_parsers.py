@@ -17,8 +17,13 @@ class MockParser(Parser):
         self._MAPS_FOLDER = os.path.join(self._SCRIPT_LOCATION, "maps")
         self._MODELS_FOLDER = os.path.join(self._SCRIPT_LOCATION, "models")
 
-    def register_transforms(self, x, y):
-        self.register_transform(CellTransform(x, y))
+    def register_transforms(self, x, y, width=None, height=None):
+        # If we want to keep the same coordinates, we can make the width and
+        # height double to keep the same x and y position of coordinates 
+        if width is None: width = x * 2 + 1
+        if height is None: height = y * 2 + 1
+
+        self.register_transform(CellTransform(x, y, width, height))
         self.register_transform(MockTransform())
 
 SIMPLE_MODEL = [
