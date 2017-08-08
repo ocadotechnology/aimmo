@@ -127,15 +127,12 @@ class JsonLevelGenerator(BaseLevelGenerator):
             if element["code"] == "meta":
                 self.meta = element
 
-        # TODO: remove hardcoded
-        self.meta['cols'] = 20
-        self.meta['rows'] = 20
-
         # Sets the empty map to the dimensions of the given level
-        minX = - int((self.meta["cols"]) / 2)
-        maxX = int((self.meta["cols"] - 1) / 2) + 1
-        minY = -int((self.meta["rows"]) / 2)
-        maxY = int((self.meta["rows"] - 1) / 2) + 1
+        minX = - int((self.meta["rows"]) / 2)
+        maxX = int((self.meta["rows"] - 1) / 2) + 1
+        minY = -int((self.meta["cols"]) / 2)
+        maxY = int((self.meta["cols"] - 1) / 2) + 1
+
         self.world_map = EmptyMapGenerator.get_map_by_corners(
             self.settings,
             (minY, maxY, minX, maxX))

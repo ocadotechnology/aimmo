@@ -45,7 +45,6 @@ class RawLevelGenerator():
             "code": "meta",
             "rows": rows,
             "cols": cols,
-
         })
 
         return json
