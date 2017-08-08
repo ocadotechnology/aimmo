@@ -45,7 +45,7 @@ const CONTROLS = Object.create({
         var obstacles = mapFeatures["obstacle"];
         var scorePoints = mapFeatures["score_point"];
         var healthPoints = mapFeatures["health_point"];
-        // var pickups = mapFeatures["pickup"];
+        var pickups = mapFeatures["pickup"];
 
         // Create obstacles.
         for (i = 0; i < obstacles["create"].length; i++)
@@ -83,19 +83,19 @@ const CONTROLS = Object.create({
             this.world.layout[healthPoints["delete"][i]["x"]][healthPoints["delete"][i]["y"]] = 0;
         }
 
-        // // Create pickups.
-        // for (i = 0; i < pickups["create"].length; i++) {
-        //     this.world.pickups.push(pickups["create"][i]);
-        // }
-        //
-        // // Delete pickups.
-        // for (i = 0; i < pickups["delete"].length; i++) {
-        //     for (j = 0; j < this.world.pickups.length; j++) {
-        //         if (this.world.pickups[j]["id"] === players["delete"][i]["id"]) {
-        //             this.world.pickups.splice(j, 1);
-        //         }
-        //     }
-        // }
+        // Create pickups.
+        for (i = 0; i < pickups["create"].length; i++) {
+            this.world.pickups.push(pickups["create"][i]);
+        }
+
+        // Delete pickups.
+        for (i = 0; i < pickups["delete"].length; i++) {
+            for (j = 0; j < this.world.pickups.length; j++) {
+                if (this.world.pickups[j]["id"] === pickups["delete"][i]["id"]) {
+                    this.world.pickups.splice(j, 1);
+                }
+            }
+        }
 
         this.viewer.reDrawState();
     }

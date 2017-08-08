@@ -106,9 +106,9 @@ const VIEWER = Object.create({
         this.clearDrawnElements(this.drawnElements.pickups);
 
         for (var i = 0; i < this.world.pickups.length; i++) {
-            var pickupLocation = this.world.pickups[i].location;
-            var x = (0.5 + pickupLocation[0]) * this.appearance.cellSize;
-            var y = (0.5 + this.invertY(pickupLocation[1])) * this.appearance.cellSize;
+            var pickupLocation = this.world.pickups[i];
+            var x = (0.5 + pickupLocation["x"]) * this.appearance.cellSize;
+            var y = (0.5 + this.invertY(pickupLocation["y"])) * this.appearance.cellSize;
 
             pickup = this.drawHealth(x, y);
             /* For now, pickups don't have a type.
