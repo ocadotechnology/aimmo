@@ -12,12 +12,23 @@ from simulation.pickups import InvulnerabilityPickup
 from simulation.levels.levels import LEVELS
 from simulation.custom_map import generate_level_class
 
+from simulation.custom_map import EmptyMapGenerator
 from simulation.custom_map import JsonLevelGenerator
 from simulation.levels.levels import RawLevelGenerator
 from .levels.test_parsers import MockParser
 
 def get_mock_level(map, parsers):
     class MockLevel(JsonLevelGenerator):
+        def _setup_meta(self):
+            self.settings["TARGET_NUM_CELLS_PER_AVATAR"] = -1000
+
+            for element in self.json_map:
+                if element["code"] == "meta":
+                    self.meta = element
+
+            self.world_map = EmptyMapGenerator.get_map_by_corners(self.settings,
+                (0, self.meta["rows"] - 1, 0, self.meta["cols"] - 1))
+
         def get_map(self):
             self._register_json(
                 RawLevelGenerator()
@@ -36,6 +47,9 @@ class TestJsonLevelGenerator(unittest.TestCase):
     def test_json_simple_map(self):
         mock_level = get_mock_level("map_simple.txt", ["real_model.json"])
         mock_map = mock_level.get_map()
+
+        print(mock_map.num_cols)
+        print(mock_map.num_rows)
 
         self.assertEquals(mock_map.num_cols, 2)
         self.assertEquals(mock_map.num_rows, 5)

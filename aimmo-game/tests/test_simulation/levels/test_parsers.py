@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 
+import hashlib
+
 from simulation.levels.parsers import Parser
 from simulation.levels.transforms import CellTransform
 from pprint import pprint
@@ -11,6 +13,20 @@ class MockTransform():
     def mock(self):
         return "mock"
 
+class MockCellTransform():
+	def __init__(self, x, y):
+		self.x = x
+		self.y = y
+
+	def compute_id(self):
+		return hash(str(self.x) + ":" + str(self.y))
+
+	def get_x(self):
+		return self.x
+
+	def get_y(self):
+		return self.y
+
 class MockParser(Parser):
     def __init__(self):
         super(MockParser, self).__init__()
@@ -19,12 +35,7 @@ class MockParser(Parser):
         self._MODELS_FOLDER = os.path.join(self._SCRIPT_LOCATION, "models")
 
     def register_transforms(self, x, y, width=None, height=None):
-        # If we want to keep the same coordinates, we can make the width and
-        # height double to keep the same x and y position of coordinates 
-        if width is None: width = x * 2 + 1
-        if height is None: height = y * 2 + 1
-
-        self.register_transform(CellTransform(x, y, width, height))
+        self.register_transform(MockCellTransform(x, y))
         self.register_transform(MockTransform())
 
 SIMPLE_MODEL = [
@@ -79,10 +90,10 @@ class TestParser(unittest.TestCase):
         self.__with_simple_model()
         self.parser.register_transforms(5, 5)
         self.assertEqual(self.parser.feed_string("class:MockTransform.mock"), "mock")
-        self.assertEqual(self.parser.feed_string("class:CellTransform.get_x"), '5')
-        self.assertEqual(self.parser.feed_string("class:CellTransform.get_y"), '5')
+        self.assertEqual(self.parser.feed_string("class:MockCellTransform.get_x"), '5')
+        self.assertEqual(self.parser.feed_string("class:MockCellTransform.get_y"), '5')
         self.assertEqual(self.parser.feed_string("abc"), "abc")
-        self.assertEqual(self.parser.feed_string("CellTransform.get_y"), "CellTransform.get_y")
+        self.assertEqual(self.parser.feed_string("MockCellTransform.get_y"), "MockCellTransform.get_y")
 
     def test_feed_simple_json(self):
         self.__with_simple_model()
