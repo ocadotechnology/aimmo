@@ -57,6 +57,8 @@ def __world_init():
 
 def __client_ready(user_id):
     print("Received user id: " + str(user_id))
+    flask.session['id'] = user_id
+
     world_state_manager.add_world_state(WorldState(state_provider, user_id))
     world_state_manager.get_world_state(user_id).ready_to_update = True
 
@@ -106,8 +108,9 @@ def plain_update(user_id):
 def world_init(): __world_init()
 @socketio.on('client-ready')
 def client_ready(user_id): __client_ready(user_id)
-@socketio.on('exit-game')
-def exit_game(user_id): __exit_game(user_id)
+@socketio.on('disconnect')
+def exit_game(): __exit_game(flask.session['id'])
+
 def send_world_update(): __send_world_update()
 
 @app.route('/')
