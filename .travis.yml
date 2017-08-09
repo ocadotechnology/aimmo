@@ -15,7 +15,7 @@ install:
 script:
   - python all_tests.py --coverage
 after_success:
-  - coveralls --rcfile=.coveragerc
+  - coveralls
 deploy:
   provider: pypi
   user: ocadotechnology
