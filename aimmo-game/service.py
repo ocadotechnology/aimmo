@@ -1,105 +1,121 @@
 #!/usr/bin/env python
-import cPickle as pickle
-import logging
-import os
-import sys
-from collections import defaultdict
-
 import eventlet
 
 eventlet.sleep()
 eventlet.monkey_patch()
 
+import cPickle as pickle
+import logging
+import os
+import sys
+import time
+
 import flask
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO
+
+from simulation import map_generator
+from simulation import custom_map
 
 from simulation.turn_manager import state_provider
-from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.turn_manager import ConcurrentTurnManager
 from simulation.worker_manager import WORKER_MANAGERS
+from simulation.world_state import WorldState
 
 app = flask.Flask(__name__)
 socketio = SocketIO()
 
+class WorldStateManager():
+    def __init__(self):
+        self.world_states = {}
+
+    def get_world_state(self, player_id):
+        return self.world_states[player_id]
+
+    def add_world_state(self, world_state):
+        self.world_states[world_state.player_id] = world_state
+
+    def get_all_world_states(self):
+        values = []
+        for key, value in self.world_states.iteritems():
+            values.append(value)
+        return values
+
 worker_manager = None
+world_state_manager = WorldStateManager()
 
+"""
+    The order of events is:
+     > server: world_init
+     > client: client-ready, id
+     > server: broadcast world-update for each state
+     > client: filter my updates
+"""
 
-def to_cell_type(cell):
-    if not cell.habitable:
-        return 1
-    if cell.generates_score:
-        return 2
-    return 0
+def __world_init():
+    socketio.emit('world-init')
 
+def __client_ready(user_id):
+    print("Received user id: " + str(user_id))
+    flask.session['id'] = user_id
 
-def player_dict(avatar):
-    # TODO: implement better colour functionality: will eventually fall off end of numbers
-    colour = "#%06x" % (avatar.player_id * 4999)
-    return {
-        'id': avatar.player_id,
-        'x': avatar.location.x,
-        'y': avatar.location.y,
-        'health': avatar.health,
-        'score': avatar.score,
-        'rotation': 0,
-        "colours": {
-            "bodyStroke": "#0ff",
-            "bodyFill": colour,
-            "eyeStroke": "#aff",
-            "eyeFill": "#eff",
-        }
-    }
+    world_state_manager.add_world_state(WorldState(state_provider, user_id))
+    world_state_manager.get_world_state(user_id).ready_to_update = True
 
+def __exit_game(user_id):
+    world_state_manager.get_world_state(user_id).ready_to_update = False
+    #player_manager.remove_avatar(user_id)
 
-def get_world_state():
-    with state_provider as game_state:
-        world = game_state.world_map
-        player_data = {p.player_id: player_dict(p) for p in game_state.avatar_manager.avatars}
-        grid_dict = defaultdict(dict)
-        for cell in world.all_cells():
-            grid_dict[cell.location.x][cell.location.y] = to_cell_type(cell)
-        pickups = []
-        for cell in world.pickup_cells():
-            pickup = cell.pickup.serialise()
-            pickup['location'] = (cell.location.x, cell.location.y)
-            pickups.append(pickup)
-        return {
-                'players': player_data,
-                'score_locations': [(cell.location.x, cell.location.y) for cell in world.score_cells()],
-                'pickups': pickups,
-                # TODO: experiment with only sending deltas (not if not required)
-                'map_changed': True,
-                'width': world.num_cols,
-                'height': world.num_rows,
-                'minX': world.min_x(),
-                'minY': world.min_y(),
-                'maxX': world.max_x(),
-                'maxY': world.max_y(),
-                'layout': grid_dict,
-            }
+    # If avatar is in there, mark the view as empty.
+    user_avatar = player_manager.get_avatar(user_id)
+    if not user_avatar is None:
+        user_avatar.view.is_empty = True
 
+def __send_world_update():
+    for world_state in world_state_manager.get_all_world_states():
+        if world_state.ready_to_update:
+            socketio.emit(
+                'world-update',
+                world_state.get_updates(),
+                broadcast=True,
+            )
 
+# plain client routes
+@app.route('/plain/connect')
+def plain_world_init():
+    __world_init()
+    return 'CONNECT'
+@app.route('/plain/client-ready/<user_id>')
+def plain_client_ready(user_id):
+    user_id = int(user_id)
+    __client_ready(user_id)
+    return 'RECEIVED USER READY ' + str(user_id)
+@app.route('/plain/exit-game/<user_id>')
+def plain_exit_game(user_id):
+    user_id = int(user_id)
+    __exit_game(user_id)
+    return "EXITING GAME FOR USER " + str(user_id)
+@app.route('/plain/update/<user_id>')
+def plain_update(user_id):
+    user_id = int(user_id)
+    world_state = world_state_manager.get_world_state(user_id)
+    if not world_state.ready_to_update:
+        return "NOT READY"
+    return flask.jsonify(world_state.get_updates())
+
+# socketio routes
 @socketio.on('connect')
-def world_update_on_connect():
-    emit(
-        'world-update',
-        get_world_state(),
-    )
+def world_init(): __world_init()
+@socketio.on('client-ready')
+def client_ready(user_id): __client_ready(user_id)
+@socketio.on('disconnect')
+def exit_game(): __exit_game(flask.session['id'])
 
-
-def send_world_update():
-    socketio.emit(
-        'world-update',
-        get_world_state(),
-        broadcast=True,
-    )
-
+def send_world_update(): __send_world_update()
 
 @app.route('/')
 def healthcheck():
     return 'HEALTHY'
-
 
 @app.route('/player/<player_id>')
 def player_data(player_id):
@@ -110,28 +126,36 @@ def player_data(player_id):
         'state': None,
     })
 
-
 def run_game(port):
     global worker_manager
 
     print("Running game...")
     settings = pickle.loads(os.environ['settings'])
-    api_url = os.environ.get('GAME_API_URL', 'http://localhost:8000/players/api/games/')
-    generator = getattr(map_generator, settings['GENERATOR'])(settings)
+
+    api_url = os.environ['GAME_API_URL']
+    if hasattr(custom_map, settings['GENERATOR']):
+        generator = getattr(custom_map, settings['GENERATOR'])(settings)
+    else:
+        generator = getattr(map_generator, settings['GENERATOR'])(settings)
+
+    global player_manager
     player_manager = AvatarManager()
     game_state = generator.get_game_state(player_manager)
+
     turn_manager = ConcurrentTurnManager(game_state=game_state, end_turn_callback=send_world_update, completion_url=api_url+'complete/')
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
     worker_manager = WorkerManagerClass(game_state=game_state, users_url=api_url, port=port)
+
     worker_manager.start()
     turn_manager.start()
-
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
 
     socketio.init_app(app, resource=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
+
     run_game(int(sys.argv[2]))
+
     socketio.run(
         app,
         debug=False,

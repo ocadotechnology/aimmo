@@ -11,10 +11,12 @@ import socket
 import stat
 import tarfile
 import yaml
-from run import run_command
+from run import run_command, get_ip
 from urllib import urlretrieve
 from urllib2 import urlopen
 from zipfile import ZipFile
+
+from kubernetes.client.rest import ApiException
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 TEST_BIN = os.path.join(BASE_DIR, 'test-bin')
@@ -80,29 +82,18 @@ def download_minikube():
     download_exec(url, MINIKUBE)
     return MINIKUBE
 
-
-def get_ip():
-    # http://stackoverflow.com/a/28950776/671626
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    try:
-        # doesn't even have to be reachable
-        s.connect(('10.255.255.255', 0))
-        IP = s.getsockname()[0]
-    except:
-        IP = '127.0.0.1'
-    finally:
-        s.close()
-    return IP
-
-
 def create_creator_yaml():
     orig_path = os.path.join(BASE_DIR, 'aimmo-game-creator', 'rc-aimmo-game-creator.yaml')
     with open(orig_path) as orig_file:
         content = yaml.safe_load(orig_file.read().replace('latest', 'test').replace('https://staging-dot-decent-digit-629.appspot.com/aimmo', 'http://%s:8000/players' % get_ip()))
     return content
 
-
-def start_cluster(minikube):
+def start_cluster(minikube, driver="virtualbox", stop=False):
+    if stop:
+        try:
+            run_command([minikube, 'stop'])
+        except:
+            print('Cluster already stopped')
     status = run_command([minikube, 'status'], True)
     if 'minikube: Running' in status:
         print('Cluster already running')
@@ -146,10 +137,18 @@ def restart_pods(game_creator):
         v1_api.delete_namespaced_pod(body=kubernetes.client.V1DeleteOptions(), name=pod.metadata.name, namespace='default')
     for service in v1_api.list_namespaced_service('default').items:
         v1_api.delete_namespaced_service(name=service.metadata.name, namespace='default')
-    v1_api.create_namespaced_replication_controller(
-        body=game_creator,
-        namespace='default',
-    )
+
+    try:
+        v1_api.create_namespaced_replication_controller(
+            body=game_creator,
+            namespace='default',
+        )
+    except ApiException as e:
+        # TODO: If the replication controller already exists, we do nothing for the moment
+        if e.status == 409:
+            print("Replication controller already exists.")
+        else:
+            raise
 
 
 def start():
@@ -164,3 +163,6 @@ def start():
     game_creator = create_creator_yaml()
     restart_pods(game_creator)
     print('Cluster ready')
+
+if __name__ == "__main__":
+    start()

@@ -1,9 +1,32 @@
 from simulation.avatar import fog_of_war
 
-
 class GameState(object):
     """
     Encapsulates the entire game state, including avatars, their code, and the world.
+    
+    Used by: TurnManager
+
+    Interface:
+        - get_state_for: 
+            - return a personalised view of the world for a specific avatar
+            - it applies a fog_of_war to return that specific view
+            TODO: the view has to be translated using the new API of creation and deletion
+        
+        - add_avatar: add a new avatar associated with a worker to the game
+        - remove avatar: remove a specific avatar 
+        
+        - update_environment: 
+            - update the effects attached to the avatars
+            - update the world map(i.e. score, pickups, score locations, etc.)
+                -- see full details @ WorldMap update internals
+        
+        - is_complete:
+            - check a completion via a callback registered at initialization
+            - this is how the TurnManager knows to "end" a game
+                TODO: think of how to implement this for levels
+
+        TODO: 
+            * get_main_avatar
     """
     def __init__(self, world_map, avatar_manager, completion_check_callback=lambda: None):
         self.world_map = world_map
@@ -46,4 +69,6 @@ class GameState(object):
         return self._completion_callback(self)
 
     def get_main_avatar(self):
-        return self.avatar_manager.avatars_by_id[self.main_avatar_id]
+        # TODO: Change this. You wont always have id=1
+        #return self.avatar_manager.avatars_by_id[self.main_avatar_id]
+        return self.avatar_manager.get_avatar(1)

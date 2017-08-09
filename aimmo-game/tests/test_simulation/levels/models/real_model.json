@@ -1,0 +1,39 @@
+[
+  {
+    "code": "2",
+    "id" : "class:MockCellTransform.compute_id",
+    "x" : "class:MockCellTransform.get_x",
+    "y" : "class:MockCellTransform.get_y",
+    "value" : {
+      "dsadsa" : "2"
+    }
+  },
+  {
+    "code": "1",
+    "id" : "class:MockCellTransform.compute_id",
+    "x" : "class:MockCellTransform.get_x",
+    "y" : "class:MockCellTransform.get_y"
+  },
+  {
+    "code": "3",
+    "id" : "class:MockCellTransform.compute_id",
+    "x" : "class:MockCellTransform.get_x",
+    "y" : "class:MockCellTransform.get_y",
+    "type" : "health",
+    "health_restored": "5"
+  },
+  {
+    "code": "4",
+    "id" : "class:MockCellTransform.compute_id",
+    "x" : "class:MockCellTransform.get_x",
+    "y" : "class:MockCellTransform.get_y",
+    "type" : "invulnerability"
+  },
+  {
+    "code": "5",
+    "id" : "class:MockCellTransform.compute_id",
+    "x" : "class:MockCellTransform.get_x",
+    "y" : "class:MockCellTransform.get_y",
+    "type" : "damage"
+  }
+]

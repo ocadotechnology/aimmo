@@ -20,7 +20,11 @@ LOGGER = logging.getLogger(__name__)
 
 class _WorkerManagerData(object):
     """
-    This class is thread safe
+        WorkerManagerData is a shared object protected by locks that
+        encapsulates list of avatars (and the "main" avatar
+        -- see TODOs @ WorkerManager)
+
+        This class is thread safe.
     """
 
     def __init__(self, game_state, user_codes):
@@ -72,7 +76,28 @@ class _WorkerManagerData(object):
 
 class WorkerManager(threading.Thread):
     """
+    Room loop -- this daemon is run in parallel with TurnManager
+
     Methods of this class must be thread safe unless explicitly stated.
+
+    A WorkerManager encapsulates both the WorkerManagerData and provides an
+    interface to handle workers.
+
+    Interface:
+        * run()
+            - run an "update" at each 10 seconds
+
+        Internals
+        * spawn(user) - removes the old worker and ads a new worker(with the new code)
+        * create_worker
+        * remove_worker
+
+        * get_code(player_id) - responsability in WorkerManagerData
+        * update()
+            - remove users with different code
+            - add new users
+            - delete extra users: i.e. users that have no code @ see WorkerManagerData
+            - update main avatar: TODO
     """
     daemon = True
 
@@ -163,7 +188,14 @@ class WorkerManager(threading.Thread):
 
 
 class LocalWorkerManager(WorkerManager):
-    """Relies on them already being created already."""
+    """
+        Relies on workers already being created already.
+
+        Responsibility:
+            * create_worker
+            * remove_worker
+
+        Note: marginal class -- can be easily changed    """
 
     host = '127.0.0.1'
     worker_directory = os.path.join(
@@ -173,8 +205,10 @@ class LocalWorkerManager(WorkerManager):
 
     def __init__(self, *args, **kwargs):
         self.workers = {}
-        self.port_counter = itertools.count(1989)
         super(LocalWorkerManager, self).__init__(*args, **kwargs)
+
+        # On localhost the ports would clash if we do not do this.
+        self.port_counter = itertools.count(self.port + 500)
 
     def create_worker(self, player_id):
         assert(player_id not in self.workers)
@@ -212,7 +246,15 @@ class LocalWorkerManager(WorkerManager):
 
 
 class KubernetesWorkerManager(WorkerManager):
-    """Kubernetes worker manager."""
+    """
+        Kubernetes worker manager.
+
+        Responsibility:
+            * create_worker
+            * remove_worker
+
+        Note: marginal class -- can be easily changed
+    """
 
     def __init__(self, *args, **kwargs):
         self.api = HTTPClient(KubeConfig.from_service_account())

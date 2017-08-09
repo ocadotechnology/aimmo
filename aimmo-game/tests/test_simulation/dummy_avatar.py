@@ -3,13 +3,20 @@ from __future__ import absolute_import
 from simulation.action import MoveAction, WaitAction
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.avatar.avatar_wrapper import AvatarWrapper
+from simulation.avatar.avatar_view import AvatarView
 from simulation.direction import NORTH, EAST, SOUTH, WEST
-
+from simulation.location import Location
 
 class DummyAvatar(AvatarWrapper):
     def __init__(self, player_id=1, initial_location=(0, 0)):
         # TODO: extract avatar state and state-altering methods into a new class.
         #       The new class is to be shared between DummyAvatarRunner and AvatarRunner
+        if initial_location is None:
+            initial_location = Location(0, 0)
+        if isinstance(initial_location, tuple):
+            x, y = initial_location
+            initial_location = Location(x, y)
+
         super(DummyAvatar, self).__init__(player_id, initial_location, None, None)
         self.times_died = 0
         self.attack_strength = 1

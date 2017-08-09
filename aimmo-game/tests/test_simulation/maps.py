@@ -3,8 +3,8 @@ from __future__ import absolute_import
 from collections import defaultdict
 
 from simulation.location import Location
-from simulation.world_map import Cell, WorldMap
-
+from simulation.world_map import WorldMap
+from simulation.cell import *
 
 class MockPickup(object):
     def __init__(self, name='', cell=None):
@@ -22,16 +22,17 @@ class MockPickup(object):
 
 
 class MockCell(Cell):
-    def __init__(self, location=1, habitable=True, generates_score=False,
+    def __init__(self, location=1, cell_content=Floor({}),
                  avatar=None, pickup=None, name=None, actions=[]):
         self.location = location
-        self.habitable = habitable
-        self.generates_score = generates_score
+        self.cell_content = cell_content
         self.avatar = avatar
         self.pickup = pickup
         self.name = name
         self.actions = actions
         self.partially_fogged = False
+        self.remove_from_scene = None
+        self.add_to_scene = None
 
     def __eq__(self, other):
         return self is other
@@ -44,6 +45,13 @@ class InfiniteMap(WorldMap):
         self.updates = 0
         self.num_avatars = None
         self.settings = defaultdict(lambda: 0)
+        self.infi = 1000
+
+    # Need to override this as self.grid does not exit in the mock object
+    def min_x(self): return -self.infi
+    def min_y(self): return -self.infi
+    def max_x(self): return self.infi
+    def max_y(self): return self.infi
 
     def is_on_map(self, target_location):
         self.get_cell(target_location)

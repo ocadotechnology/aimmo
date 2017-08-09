@@ -28,7 +28,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='game',
             name='generator',
-            field=models.CharField(default=b'Main', max_length=20, choices=[(b'Main', b'Open World'), (b'Level1', b'Level 1')]),
+            field=models.CharField(default=b'Main', max_length=20, choices=[
+                (b'Main', b'Open World'),
+                (b'Level1', b'Level 1'),
+                (b'Level2', b'Level 2')
+            ]),
         ),
         migrations.AddField(
             model_name='game',

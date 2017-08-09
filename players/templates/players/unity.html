@@ -1,0 +1,86 @@
+{% extends 'players/base.html' %}
+
+{% block nav-watch-class %}active{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="/static/unity/TemplateData/style.css" />
+<link rel="shortcut icon" href="/static/unity/TemplateData/favicon.ico" />
+{% endblock %}
+
+{% block scripts %}
+
+<script src="/static/unity/Dependencies/socket.io.js"></script>
+<script src="/static/unity/TemplateData/UnityProgress.js"></script>
+
+<script type="text/javascript">
+var GAME_URL_BASE = "{{ game_url_base }}";
+var GAME_URL_PATH = "{{ game_url_path }}";
+var VIEW_OWNER_ID = "{{ view_owener_id }}";
+// The resource path is assumed from Unity.
+// TODO: check if better to do the connection from JS or from Unity through JS
+
+
+// Send host and port to Unity.
+
+var user_id = VIEW_OWNER_ID;
+var path = GAME_URL_PATH;
+var proc = (GAME_URL_BASE.substr("http://".length)).split(":");
+var host = proc[0]; // + path;
+var port = proc[1];
+
+console.log(GAME_URL_BASE);
+console.log("Host: " + host);
+console.log("Port: " + port);
+console.log("View owner: " + VIEW_OWNER_ID);
+
+function SendAllConnect() {
+  console.log("Sending Messages.");
+  SendMessage("World Controller", "SetGameURL", host);
+  SendMessage("World Controller", "SetGamePort", parseInt(port));
+  SendMessage("World Controller", "SetUserId", parseInt(user_id));
+  SendMessage("World Controller", "EstablishConnection");
+}
+
+function handler(err, url, line) {
+  // We use the socket.io.js from Dependencies/socket.io.js, so this
+  // error should not affect our code
+  if (url.endsWith("socket.io/socket.io.js")) {
+      console.log("Error handler!");
+      console.log(err);
+      console.log(url);
+      console.log(line);
+      return true;
+  }
+
+  return false;
+}
+
+</script>
+
+<script type='text/javascript'>
+var Module = {
+  TOTAL_MEMORY: 1000000000,
+  errorhandler: handler,			// arguments: err, url, line. This function must return 'true' if the error is handled, otherwise 'false'
+  compatibilitycheck: null,
+  backgroundColor: "#222C36",
+  splashStyle: "Light",
+  dataUrl: "/static/unity/Development/Build.data",
+  codeUrl: "/static/unity/Development/UnityEngine.js",
+  asmUrl: "/static/unity/Development/UnityEngine.asm.js",
+  memUrl: "/static/unity/Development/UnityEngine.mem",
+  dynamicLibraries: ["/static/unity/Development/Build.js"],
+};
+</script>
+<script src="/static/unity/Development/UnityLoader.js"></script>
+
+{% endblock %}
+
+{% block content %}
+<div class="template-wrap clear">
+  <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" height="600px" width="960px"></canvas>
+  <br>
+  <div class="logo"></div>
+  <div class="fullscreen"><img src="/static/unity/TemplateData/fullscreen.png" width="38" height="38" alt="Fullscreen" title="Fullscreen" onclick="SetFullscreen(1);" /></div>
+  <div class="title">aimmo-unity</div>
+</div>
+{% endblock %}
