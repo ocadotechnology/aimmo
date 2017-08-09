@@ -132,9 +132,7 @@ def run_game(port):
     print("Running game...")
     settings = pickle.loads(os.environ['settings'])
 
-    # TODO: this does not work with Kubernates; locally it works
-    # as http://localhost:8000/players/api/games/ is used as default
-    api_url = os.environ.get('GAME_API_URL', None)
+    api_url = os.environ['GAME_API_URL']
     if hasattr(custom_map, settings['GENERATOR']):
         generator = getattr(custom_map, settings['GENERATOR'])(settings)
     else:
@@ -158,7 +156,6 @@ if __name__ == '__main__':
 
     run_game(int(sys.argv[2]))
 
-    # run the flusk persistent connection
     socketio.run(
         app,
         debug=False,
