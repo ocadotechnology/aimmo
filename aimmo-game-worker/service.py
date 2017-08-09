@@ -32,6 +32,7 @@ def run(host, port, directory):
 
     with open('{}/options.json'.format(directory)) as option_file:
         options = json.load(option_file)
+
     from avatar import Avatar
     global worker_avatar
     worker_avatar = Avatar(**options)

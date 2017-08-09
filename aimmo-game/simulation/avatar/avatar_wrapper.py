@@ -2,7 +2,7 @@ import logging
 import requests
 
 from simulation.action import ACTIONS, MoveAction, WaitAction
-
+from avatar_view import AvatarView
 
 LOGGER = logging.getLogger(__name__)
 
@@ -11,6 +11,17 @@ class AvatarWrapper(object):
     """
     The application's view of a character, not to be confused with "Avatar",
     the player-supplied code.
+
+    > talks to Worker via gets.
+
+    API:
+        * decide action - fetches an action from the worker and updates the
+            current action to be executed
+        * clear action
+        * add event - attaches an event to the event setting
+            - TODO: are events used?
+        (* die    - dies and respwans at new location)
+        (* damage - take damage)
     """
 
     def __init__(self, player_id, initial_location, worker_url, avatar_appearance):
@@ -26,6 +37,16 @@ class AvatarWrapper(object):
         self.attack_strength = 1
         self.fog_of_war_modifier = 0
         self._action = None
+
+        # Only initialise the view if there is an initial location.
+        # Otherwise, some tests fail.
+        # TODO: Find a better solution.
+        if initial_location is None:
+            print("Invalid initial location.")
+            self.view = None
+        else:
+            self.view = AvatarView(initial_location, radius=10)
+
 
     def update_effects(self):
         effects_to_remove = set()

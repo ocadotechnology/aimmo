@@ -1,18 +1,22 @@
+import os
+
 import logging
+import requests
 import time
 from threading import RLock
 from threading import Thread
 
-from simulation.action import PRIORITIES
+from action import PRIORITIES
 
 LOGGER = logging.getLogger(__name__)
 
 
 class GameStateProvider:
     """
-    Thread-safe container for the world state.
+    Thread-safe container for the game state. 
+    See GameState for more details.
 
-    TODO: think about changing to snapshot rather than lock?
+    TODO: think about changing to snapshot rather than lock
     """
 
     def __init__(self):
@@ -31,13 +35,11 @@ class GameStateProvider:
         self._game_state = new_game_state
         self._lock.release()
 
-
 state_provider = GameStateProvider()
-
 
 class TurnManager(Thread):
     """
-    Game loop
+    Game loop -- this daemon is run in parallel with WorkerManager
     """
     daemon = True
 
@@ -45,6 +47,7 @@ class TurnManager(Thread):
         state_provider.set_world(game_state)
         self.end_turn_callback = end_turn_callback
         self._completion_url = completion_url
+
         super(TurnManager, self).__init__()
 
     def run_turn(self):
@@ -66,8 +69,16 @@ class TurnManager(Thread):
         game_state.world_map.reconstruct_interactive_state(num_avatars)
 
     def _mark_complete(self):
-        from service import get_world_state
-        requests.post(self._completion_url, json=get_world_state())
+        # Just send a request to the completion url. Get the game_id from the url itself...
+        #game_id = int(self._completion_url.split('/')[-3])
+        #requests.post(self._completion_url, data={'id':game_id})
+        # The request doesnt seem to work... Code 500. So for now we'll mark the game as complete directly
+        # TODO: Fix this.
+
+        # TEMPORARY
+        with state_provider as game_state:
+            main_avatar = game_state.get_main_avatar()
+            main_avatar.view.cells_to_clear = main_avatar.view.cells_in_view
 
     def run(self):
         while True:

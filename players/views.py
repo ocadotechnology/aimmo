@@ -1,6 +1,7 @@
 import cPickle as pickle
 import logging
 import os
+import sys
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
@@ -30,6 +31,8 @@ def _create_response(status, message):
     }
     return JsonResponse(response)
 
+def _find_avatar_by_game_user(game, user):
+    return game.avatar_set.get(owner=user)
 
 @login_required
 def code(request, id):
@@ -37,7 +40,7 @@ def code(request, id):
     if not game.can_user_play(request.user):
         raise Http404
     try:
-        avatar = game.avatar_set.get(owner=request.user)
+        avatar = _find_avatar_by_game_user(game, request.user)
     except Avatar.DoesNotExist:
         initial_code_file_name = os.path.join(
             os.path.abspath(os.path.dirname(__file__)),
@@ -112,10 +115,10 @@ def program_level(request, num):
         game = Game.objects.get(levelattempt__user=request.user, levelattempt__level_number=num)
     except Game.DoesNotExist:
         LOGGER.debug('Adding level')
+        sys.stdout.write('-------------- Added level : %s' % str(num))
         game = _add_and_return_level(num, request.user)
     LOGGER.debug('Programming game with id %s', game.id)
     return render(request, 'players/program.html', {'game_id': game.id})
-
 
 def _render_game(request, game):
     context = {
@@ -123,16 +126,27 @@ def _render_game(request, game):
         'active': game.is_active,
         'static_data': game.static_data or '{}',
     }
-    context['game_url_base'], context['game_url_path'] = app_settings.GAME_SERVER_LOCATION_FUNCTION(game.id)
-    return render(request, 'players/watch.html', context)
 
+    # We need to register the avatar that the user in playing with so
+    # that the Unity client can get a personalised view
+    try:
+        avatar = _find_avatar_by_game_user(game, request.user)
+
+        context['view_owener_id'] = avatar.owner_id
+    except Avatar.DoesNotExist:
+        pass
+
+    context['game_url_base'], context['game_url_path'] = app_settings.GAME_SERVER_LOCATION_FUNCTION(game.id)
+
+    # To swap between Unity and web just change this
+    # return render(request, 'players/watch.html', context)
+    return render(request, 'players/unity.html', context)
 
 def watch_game(request, id):
     game = get_object_or_404(Game, id=id)
     if not game.can_user_play(request.user):
         raise Http404
     return _render_game(request, game)
-
 
 def watch_level(request, num):
     try:

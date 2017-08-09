@@ -19,7 +19,7 @@ class Location(object):
         return not self == other
 
     def __hash__(self):
-        return hash((self.x, self.y))
+        return hash(str(self.x) + ":" + str(self.y))
 
     def serialise(self):
         return {'x': self.x, 'y': self.y}

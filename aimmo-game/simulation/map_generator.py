@@ -11,42 +11,39 @@ from simulation.game_state import GameState
 from simulation.location import Location
 from simulation.world_map import WorldMap
 from simulation.world_map import WorldMapStaticSpawnDecorator
+from simulation.world_map import DEFAULT_LEVEL_SETTINGS
+
+from simulation.custom_map import BaseGenerator
+from simulation.custom_map import BaseLevelGenerator
+from simulation.custom_map import Level1
+from simulation.custom_map import EmptyMapGenerator
 
 LOGGER = logging.getLogger(__name__)
 
-DEFAULT_LEVEL_SETTINGS = {
-    'TARGET_NUM_CELLS_PER_AVATAR': 0,
-    'TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR': 0,
-    'SCORE_DESPAWN_CHANCE': 0,
-    'TARGET_NUM_PICKUPS_PER_AVATAR': 0,
-    'PICKUP_SPAWN_CHANCE': 0,
-    'NO_FOG_OF_WAR_DISTANCE': 1000,
-    'PARTIAL_FOG_OF_WAR_DISTANCE': 1000,
-}
+class Main(BaseGenerator):
 
+    """
+        Main Level generator used by the map creation service from the Django server.
+        Custom level generators(see package levels) can be found in @custom_map.
+        To read more about map generators, read documentation in custom_map.
 
-class _BaseGenerator(object):
-    __metaclass__ = abc.ABCMeta
+        Obstacles are filled according to the obstacle ratio.
 
-    def __init__(self, settings):
-        self.settings = settings
+        Once an obstacle is added we ensure that each habitable cell can reach each other,
+        thus the map will be connex and each generated avatar can reach others.
+    """
+    def __init__(self, *args, **kwargs):
+        super(Main, self).__init__(*args, **kwargs)
+        self.settings.update(DEFAULT_LEVEL_SETTINGS)
 
-    def get_game_state(self, avatar_manager):
-        return GameState(self.get_map(), avatar_manager, self.check_complete)
+        # Fix for  'NO_FOG_OF_WAR_DISTANCE' bug
+        if not 'NO_FOG_OF_WAR_DISTANCE' in self.settings.keys():
+            self.settings['NO_FOG_OF_WAR_DISTANCE'] = DEFAULT_LEVEL_SETTINGS['NO_FOG_OF_WAR_DISTANCE']
 
-    def check_complete(self, game_state):
-        return False
-
-    @abc.abstractmethod
-    def get_map(self):
-        pass
-
-
-class Main(_BaseGenerator):
     def get_map(self):
         height = self.settings['START_HEIGHT']
         width = self.settings['START_WIDTH']
-        world_map = WorldMap.generate_empty_map(height, width, self.settings)
+        world_map = EmptyMapGenerator(height, width, self.settings).get_map()
 
         # We designate one non-corner edge cell as empty, to ensure that the map can be expanded
         always_empty_edge_x, always_empty_edge_y = get_random_edge_index(world_map)
@@ -83,6 +80,10 @@ def pairwise(iterable):
 
 
 def _all_habitable_neighbours_can_reach_each_other(cell, world_map):
+    """
+        Helper function used by Main map generator. It ensures that each habitable cell can
+        reach each other.
+    """
     neighbours = get_adjacent_habitable_cells(cell, world_map)
 
     assert len(neighbours) >= 1
@@ -93,7 +94,10 @@ def _all_habitable_neighbours_can_reach_each_other(cell, world_map):
 
 
 def get_shortest_path_between(source_cell, destination_cell, world_map):
-
+    """
+        Helper function. Uses A* to find the a shortest path between two cells.
+        The chosen admisible heuristic function is the manhattan function.
+    """
     def manhattan_distance_to_destination_cell(this_branch):
         branch_tip_location = this_branch[-1].location
         x_distance = abs(branch_tip_location.x - destination_cell.location.x)
@@ -123,6 +127,12 @@ def get_shortest_path_between(source_cell, destination_cell, world_map):
 
 
 def get_random_edge_index(world_map, rng=random):
+    """
+        Utility function used to get a tuple (x, y) on the edge of the map.
+        Note the function returns a tuple rather than a Location.
+
+        This function is also used by the tests.
+    """
     num_row_cells = world_map.num_rows - 2
     num_col_cells = world_map.num_cols - 2
     num_edge_cells = 2*num_row_cells + 2*num_col_cells
@@ -158,6 +168,9 @@ def get_adjacent_habitable_cells(cell, world_map):
 
 
 class PriorityQueue(object):
+    """
+        Class used in the A* implementation.
+    """
     def __init__(self, key, init_items=tuple()):
         self.key = key
         self.heap = [self._build_tuple(i) for i in init_items]
@@ -176,26 +189,3 @@ class PriorityQueue(object):
 
     def __len__(self):
         return len(self.heap)
-
-
-class _BaseLevelGenerator(_BaseGenerator):
-    __metaclass__ = abc.ABCMeta
-
-    def __init__(self, *args, **kwargs):
-        super(_BaseLevelGenerator, self).__init__(*args, **kwargs)
-        self.settings.update(DEFAULT_LEVEL_SETTINGS)
-
-
-class Level1(_BaseLevelGenerator):
-    def get_map(self):
-        world_map = WorldMap.generate_empty_map(1, 5, self.settings)
-        world_map = WorldMapStaticSpawnDecorator(world_map, Location(-2, 0))
-        world_map.get_cell(Location(2, 0)).generates_score = True
-        return world_map
-
-    def check_complete(self, game_state):
-        try:
-            main_avatar = game_state.get_main_avatar()
-        except KeyError:
-            return False
-        return main_avatar.score > 0

@@ -5,6 +5,8 @@ from django.views.generic import TemplateView
 
 from players import views
 
+from django.views.generic import RedirectView
+
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='players/home.html'), name='aimmo/home'),
 
@@ -23,4 +25,8 @@ urlpatterns = [
 
     url(r'^jsreverse/$', 'django_js_reverse.views.urls_js', name='aimmo/js_reverse'),  # TODO: Pull request to make django_js_reverse.urls
     url(r'^games/new/$', views.add_game, name='aimmo/new_game'),
+
+    # TODO: this is a quickfix for redirecting for the Unity resources
+    url(r'^watch/(?P<id>[0-9]+)/(?P<resource>.[0-9A-Za-z/.]+)$',
+        RedirectView.as_view(url='/static/unity/%(resource)s', permanent=False)),
 ]
