@@ -173,7 +173,7 @@ class LocalWorkerManager(WorkerManager):
 
     def __init__(self, *args, **kwargs):
         self.workers = {}
-        self.port_counter = itertools.count(1989)
+        self.port_counter = itertools.count(self.port + 10)
         super(LocalWorkerManager, self).__init__(*args, **kwargs)
 
     def create_worker(self, player_id):
