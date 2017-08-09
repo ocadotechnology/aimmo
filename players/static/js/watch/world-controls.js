@@ -134,9 +134,6 @@ $(document).ready(function() {
     VIEWER.init(document.getElementById("watch-world-canvas"), world, APPEARANCE);
     CONTROLS.init(world, VIEWER);
 
-    GAME_URL_PATH = "/socket.io";
-    console.log(VIEW_OWNER_ID);
-
     if (ACTIVE) {
         var socket = io.connect(GAME_URL_BASE, { path: GAME_URL_PATH });
         socket.on('world-init', function() {
