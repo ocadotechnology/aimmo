@@ -2,13 +2,21 @@ import math
 import random
 from logging import getLogger
 
-import map_generator
 from pickups import ALL_PICKUPS
 from simulation.action import MoveAction
 from simulation.location import Location
 
 LOGGER = getLogger(__name__)
 
+DEFAULT_LEVEL_SETTINGS = {
+    'TARGET_NUM_CELLS_PER_AVATAR': 0,
+    'TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR': 0,
+    'SCORE_DESPAWN_CHANCE': 0,
+    'TARGET_NUM_PICKUPS_PER_AVATAR': 0,
+    'PICKUP_SPAWN_CHANCE': 0,
+    'NO_FOG_OF_WAR_DISTANCE': 1000,
+    'PARTIAL_FOG_OF_WAR_DISTANCE': 1000,
+}
 
 class Cell(object):
     """
@@ -83,7 +91,7 @@ class WorldMap(object):
 
     @classmethod
     def generate_empty_map(cls, height, width, settings):
-        new_settings = map_generator.DEFAULT_LEVEL_SETTINGS.copy()
+        new_settings =DEFAULT_LEVEL_SETTINGS.copy()
         new_settings.update(settings)
 
         (min_x, max_x, min_y, max_y) = WorldMap._min_max_from_dimensions(height, width)
