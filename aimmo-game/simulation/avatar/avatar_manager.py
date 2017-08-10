@@ -1,5 +1,6 @@
 from avatar_wrapper import AvatarWrapper
 from avatar_appearance import AvatarAppearance
+import copy
 
 class AvatarManager(object):
     """
@@ -28,7 +29,7 @@ class AvatarManager(object):
 
     def remove_avatar(self, user_id):
         if user_id in self.avatars_by_id:
-            self.avatars_to_delete_by_id[user_id] = self.avatars_by_id[user_id][:]
+            self.avatars_to_delete_by_id[user_id] = copy.deepcopy(self.avatars_by_id[user_id])
             del self.avatars_by_id[user_id]
 
     @property
