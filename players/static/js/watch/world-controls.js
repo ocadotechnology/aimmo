@@ -107,10 +107,6 @@ function worldUpdate(data) {
 }
 
 // Initialisation.
-<<<<<<< HEAD
-function worldInit(data) {
-    CONTROLS.initialiseWorld(data.width, data.height, data.layout, data.minX, data.minY, data.maxX, data.maxY);
-=======
 function worldInit() {
     var width = 15;
     var height = 15;
@@ -128,7 +124,6 @@ function worldInit() {
     }
 
     CONTROLS.initialiseWorld(width, height, layout, minX, minY, maxX, maxY);
->>>>>>> acf263e... Blank map appearing on the screen. Now we need to handle updates.
 }
 
 $(document).ready(function() {

@@ -33,7 +33,7 @@ def world_init():
     socketio.emit('world-init')
 
 @socketio.on('client-ready')
-def client_ready():
+def client_ready(client_id):
     world_state.ready_to_update = True
 
 def send_world_update():

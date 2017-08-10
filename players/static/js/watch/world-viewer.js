@@ -57,8 +57,11 @@ const VIEWER = Object.create({
 
         var playerBody = this.paper.circle(playerX, playerY, playerRadius);
 
-        playerBody.attr("fill", playerData["colour"]);
-        playerBody.attr("stroke", playerData["colour"]);
+        // TODO: due to the versions merged, we do not have this feature yet
+        // playerBody.attr("fill", playerData["colour"]);
+        // playerBody.attr("stroke", playerData["colour"]);
+        playerBody.attr("fill", "#6495ED");
+        playerBody.attr("stroke", "#6495ED");
 
         var currentUserIcon;
         if (is_current_user) {
