@@ -24,8 +24,6 @@ class WorldState():
 
     def __init__(self, game_state):
         self.game_state = game_state
-        self.ready_to_update = False
-
         self.players = defaultdict(dict)
         self.map_features = defaultdict(dict)
         self.clear_updates()
@@ -38,8 +36,6 @@ class WorldState():
         }
         self.clear_updates()
 
-        #print("--------------------------------------------")
-        #print(updates)
         return updates
 
     def clear_updates(self):
@@ -104,10 +100,10 @@ class WorldState():
             for player in game_state.avatar_manager.avatars:
                 self.update_player(player_dict(player))
 
-            for player in game_state.avatar_manager.avatars_to_create:
+            for player in game_state.avatar_manager.avatars_to_create():
                 self.create_player(player_dict(player))
 
-            for player in game_state.avatar_manager.avatars_to_delete:
+            for player in game_state.avatar_manager.avatars_to_delete():
                 self.delete_player(player_dict(player))
 
             # Refresh map features dictionary.
@@ -123,16 +119,3 @@ class WorldState():
                 if cell.generates_score:
                     self.create_map_feature(MapFeature.SCORE_POINT.value, map_feature_dict(cell))
                     cell.created = True
-
-
-
-# TODO: Implement pickups
-"""
-def get_pickups_list(world):
-    pickups = []
-    for cell in world.pickup_cells():
-        pickup = cell.pickup.serialise()
-        pickup['location'] = (cell.location.x, cell.location.y)
-        pickups.append(pickup)
-    return pickups
-"""

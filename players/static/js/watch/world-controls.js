@@ -48,38 +48,32 @@ const CONTROLS = Object.create({
         var pickups = mapFeatures["pickup"];
 
         // Create obstacles.
-        for (i = 0; i < obstacles["create"].length; i++)
-        {
+        for (i = 0; i < obstacles["create"].length; i++) {
             this.world.layout[obstacles["create"][i]["x"]][obstacles["create"][i]["y"]] = 1;
         }
 
         // Delete obstacles.
-        for (i = 0; i < obstacles["delete"].length; i++)
-        {
+        for (i = 0; i < obstacles["delete"].length; i++) {
             this.world.layout[obstacles["delete"][i]["x"]][obstacles["delete"][i]["y"]] = 0;
         }
 
         // Create score points.
-        for (i = 0; i < scorePoints["create"].length; i++)
-        {
+        for (i = 0; i < scorePoints["create"].length; i++) {
             this.world.layout[scorePoints["create"][i]["x"]][scorePoints["create"][i]["y"]] = 2;
         }
 
         // Delete score points.
-        for (i = 0; i < scorePoints["delete"].length; i++)
-        {
+        for (i = 0; i < scorePoints["delete"].length; i++) {
             this.world.layout[scorePoints["delete"][i]["x"]][scorePoints["delete"][i]["y"]] = 0;
         }
 
         // Create health points.
-        for (i = 0; i < healthPoints["create"].length; i++)
-        {
+        for (i = 0; i < healthPoints["create"].length; i++) {
             this.world.layout[healthPoints["create"][i]["x"]][healthPoints["create"][i]["y"]] = 3;
         }
 
         // Delete health points.
-        for (i = 0; i < healthPoints["delete"].length; i++)
-        {
+        for (i = 0; i < healthPoints["delete"].length; i++) {
             this.world.layout[healthPoints["delete"][i]["x"]][healthPoints["delete"][i]["y"]] = 0;
         }
 
@@ -144,7 +138,5 @@ $(document).ready(function() {
         socket.on('world-update', function(msg) {
             worldUpdate(msg);
         });
-    } /*else {
-        refreshState(STATIC_DATA);
-    }*/
+    }
 });

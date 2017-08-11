@@ -57,9 +57,6 @@ const VIEWER = Object.create({
 
         var playerBody = this.paper.circle(playerX, playerY, playerRadius);
 
-        // TODO: due to the versions merged, we do not have this feature yet
-        // playerBody.attr("fill", playerData["colour"]);
-        // playerBody.attr("stroke", playerData["colour"]);
         playerBody.attr("fill", "#6495ED");
         playerBody.attr("stroke", "#6495ED");
 
@@ -99,7 +96,7 @@ const VIEWER = Object.create({
         this.clearDrawnElements(this.drawnElements.players);
 
         for (var i = 0;  i < this.world.players.length; i++) {
-            var is_current_user = this.world.players[i]["id"] === 1;//CURRENT_USER_PLAYER_KEY;
+            var is_current_user = this.world.players[i]["id"] === CURRENT_USER_PLAYER_KEY;
             var playerElement = this.constructNewPlayerElement(this.world.players[i], is_current_user);
             this.drawnElements.players.push(playerElement);
         }
@@ -113,27 +110,8 @@ const VIEWER = Object.create({
             var x = (0.5 + pickupLocation[0]) * this.appearance.cellSize;
             var y = (0.5 + this.invertY(pickupLocation[1])) * this.appearance.cellSize;
 
+            // Just for testing.
             pickup = this.drawHealth(x, y);
-            /* For now, pickups don't have a type.
-
-            switch (this.world.pickups[i].type) {
-                case 'health':
-                    pickup = this.drawHealth(x, y);
-                    break;
-                case 'invulnerability':
-                    pickup = this.drawInvulnerability(x, y);
-                    break;
-                case 'damage':
-                    pickup = this.drawDamage(x, y);
-                    break;
-                default:
-                    console.log('Unknown pickup: ' + this.world.pickups[i].type);
-                    pickup = undefined;
-            }
-
-            if (pickup !== undefined) {
-                this.drawnElements.pickups.push(pickup);
-            }*/
         }
     },
 

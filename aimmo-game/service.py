@@ -24,20 +24,25 @@ socketio = SocketIO()
 
 worker_manager = None
 
-# The world state know about the maps and the avatars and basically
-# handles the updates.
-world_state = WorldState(state_provider)
+# Every user has its own world state.
+world_state_manager = {}
 
 @socketio.on('connect')
 def world_init():
     socketio.emit('world-init')
 
+@socketio.on('disconnect')
+def exit_game():
+    del world_state_manager[flask.session['id']]
+
 @socketio.on('client-ready')
 def client_ready(client_id):
-    world_state.ready_to_update = True
+    flask.session['id'] = client_id
+    world_state = WorldState(state_provider)
+    world_state_manager[client_id] = world_state
 
 def send_world_update():
-    if world_state.ready_to_update:
+    for world_state in world_state_manager.values():
         socketio.emit(
             'world-update',
             world_state.get_updates(),
@@ -63,8 +68,6 @@ def run_game(port):
     print("Running game...")
     settings = pickle.loads(os.environ['settings'])
 
-    # TODO: this does not work with Kubernates; locally it works
-    # as http://localhost:8000/players/api/games/ is used as default
     api_url = os.environ.get('GAME_API_URL', 'http://localhost:8000/players/api/games/')
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
     player_manager = AvatarManager()
@@ -81,12 +84,10 @@ def run_game(port):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
 
-    # initialize the socket
     socketio.init_app(app, resource=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
 
     run_game(int(sys.argv[2]))
 
-    # run the flusk persistent connection
     socketio.run(
         app,
         debug=False,

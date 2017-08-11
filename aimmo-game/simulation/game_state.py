@@ -38,8 +38,6 @@ class GameState(object):
             avatar.update_effects()
 
     def update_environment(self):
-        # TODO: Call WorldUpdater instead.
-
         self._update_effects()
         num_avatars = len(self.avatar_manager.active_avatars)
         self.world_map.update(num_avatars)

@@ -1,5 +1,5 @@
-from avatar_wrapper import AvatarWrapper
-from avatar_appearance import AvatarAppearance
+from simulation.avatar.avatar_wrapper import AvatarWrapper
+from simulation.avatar.avatar_appearance import AvatarAppearance
 import copy
 
 class AvatarManager(object):
@@ -19,7 +19,6 @@ class AvatarManager(object):
         self.avatars_to_delete_by_id = {}
 
     def add_avatar(self, player_id, worker_url, location):
-        print("avatar added!!")
         avatar = AvatarWrapper(player_id, location, worker_url, AvatarAppearance("#000", "#ddd", "#777", "#fff"))
         self.avatars_to_create_by_id[player_id] = avatar
         return avatar
@@ -37,7 +36,6 @@ class AvatarManager(object):
         return self.avatars_by_id.viewvalues()
 
     # Returns the newly created avatars and then puts them in the normal avatars list.
-    @property
     def avatars_to_create(self):
         avatars_to_create_array = list(self.avatars_to_create_by_id.viewvalues())[:]
         self.avatars_by_id.update(dict(self.avatars_to_create_by_id))
@@ -46,16 +44,12 @@ class AvatarManager(object):
         return avatars_to_create_array
 
     # Returns the avatars that need to be removed from the scene.
-    @property
     def avatars_to_delete(self):
         avatars_to_delete_array = list(self.avatars_to_delete_by_id.viewvalues())[:]
         self.avatars_to_delete_by_id = {}
 
         return avatars_to_delete_array
 
-    # Note: I assume that this will be useful in the future. I have to figure out when
-    # because right now it's just the same as 'avatars'. Otherwise:
-    # TODO: Remove it.
     @property
     def active_avatars(self):
         return [player for player in self.avatars]

@@ -3,7 +3,7 @@ import time
 from threading import RLock
 from threading import Thread
 
-from action import PRIORITIES
+from simulation.action import PRIORITIES
 
 LOGGER = logging.getLogger(__name__)
 
