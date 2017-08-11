@@ -5,14 +5,14 @@ import unittest
 
 from simulation.location import Location
 
-from simulation.custom_map import EmptyMapGenerator
+from simulation.world_map import WorldMap
 from simulation.custom_map import ScoreCellDecoder
 from simulation.custom_map import ObstacleDecoder
 from simulation.custom_map import PickupDecoder
 
 class TestGenerators(unittest.TestCase):
     def setUp(self):
-        self.map = EmptyMapGenerator(2, 2, {}).get_map()
+        self.map = WorldMap.generate_empty_map(2, 2, {})
 
     def test_obstacle_decoder(self):
         ObstacleDecoder("0").decode({
