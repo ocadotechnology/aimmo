@@ -3,10 +3,7 @@
     "code": "2",
     "id" : "class:CellTransform.compute_id",
     "x" : "class:CellTransform.get_x",
-    "y" : "class:CellTransform.get_y",
-    "value" : {
-      "dsadsa" : "2"
-    }
+    "y" : "class:CellTransform.get_y"
   },
   {
     "code": "1",

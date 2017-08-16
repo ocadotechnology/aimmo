@@ -2,8 +2,6 @@ import json
 import abc
 import os
 
-from pprint import pprint
-
 from transforms import CellTransform
 
 def call_method(o, name):

@@ -2,7 +2,6 @@ from __future__ import absolute_import
 
 from simulation.levels.parsers import Parser
 from simulation.levels.transforms import CellTransform
-from pprint import pprint
 
 import os
 import unittest
@@ -116,8 +115,6 @@ class TestParser(unittest.TestCase):
     def test_map_apply_transforms(self):
         self.__with_micro_map()
         self.__with_big_model()
-
-        pprint(self.parser.map_apply_transforms())
 
         self.assertItemsEqual(self.parser.map_apply_transforms(), [{
             "code": "0",

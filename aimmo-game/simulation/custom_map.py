@@ -1,7 +1,6 @@
 import abc
 
 from simulation.levels.levels import LEVELS
-from pprint import pprint
 
 from simulation.location import Location
 from simulation.game_state import GameState
