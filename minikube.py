@@ -96,7 +96,7 @@ def get_ip():
 
 
 def create_creator_yaml():
-    orig_path = os.path.join(BASE_DIR, 'aimmo-game-creator', 'rc-aimmo-game-creator.yaml')
+    orig_path = os.path.join(BASE_DIR, 'manifests', 'rc-aimmo-game-creator.yaml')
     with open(orig_path) as orig_file:
         content = yaml.safe_load(orig_file.read().replace('latest', 'test').replace('https://staging-dot-decent-digit-629.appspot.com/aimmo', 'http://%s:8000/players' % get_ip()))
     return content
