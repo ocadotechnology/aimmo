@@ -19,13 +19,13 @@ spec:
     spec:
       containers:
       - name: aimmo-game-creator
-        image: ocadotechnology/aimmo-game-creator:latest
+        image: ocadotechnology/aimmo-game-creator:AIMMO_VERSION
         ports:
         - containerPort: 80
         env:
         - name: IMAGE_SUFFIX
-          value: latest
+          value: AIMMO_VERSION
         - name: GAME_API_URL
-          value: https://staging-dot-decent-digit-629.appspot.com/aimmo/api/games/
+          value: AIMMO_UI_URL
         - name: WORKER_MANAGER
           value: kubernetes
