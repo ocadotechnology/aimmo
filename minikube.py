@@ -121,7 +121,7 @@ def build_docker_images(minikube):
         version='auto',
     )
 
-    dirs = ('aimmo-game', 'aimmo-game-creator', 'aimmo-game-worker')
+    dirs = ('aimmo-game', 'aimmo-game-creator', 'aimmo-game-worker', 'aimmo-reverse-proxy')
     for dir in dirs:
         path = os.path.join(BASE_DIR, dir)
         tag = 'ocadotechnology/%s:test' % dir
