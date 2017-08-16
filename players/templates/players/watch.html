@@ -16,8 +16,14 @@
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
 <script type="text/javascript" src="/static/js/lib/raphael-min.js"></script>
-<script type="text/javascript" src="/static/js/watch/world-viewer.js"></script>
-<script type="text/javascript" src="/static/js/watch/world-controls.js"></script>
+
+<!-- https://stackoverflow.com/questions/11467873/how-to-append-timestamp-to-the-java-script-file-in-script-tag-url-to-avoid-cac-->
+
+<!-- <script type="text/javascript" src="/static/js/watch/world-viewer.js?v=10"></script> -->
+<!-- <script type="text/javascript" src="/static/js/watch/world-controls.js?v=10"></script> -->
+
+<script>document.write("<script type='text/javascript' src='/static/js/watch/world-viewer.js?v=" + Date.now() + "'><\/script>");</script>
+<script>document.write("<script type='text/javascript' src='/static/js/watch/world-controls.js?v=" + Date.now() + "'><\/script>");</script>
 {% endblock %}
 
 {% block content %}

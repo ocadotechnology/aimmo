@@ -1,18 +1,18 @@
 class Avatar(object):
-    def handle_turn(self, avatar_state, world_state):
+    def handle_turn(self, avatar_state, world_map):
         from simulation.action import MoveAction
         from simulation import direction
         self.avatar_state = avatar_state
 
         self.location = self.avatar_state.location
         directions = (direction.EAST, direction.SOUTH, direction.WEST, direction.NORTH)
-        direction_of_other_avatar = next((d for d in directions if world_state.is_visible(self.location + d) and world_state.get_cell(self.location + d).avatar), None)
+        direction_of_other_avatar = next((d for d in directions if world_map.is_visible(self.location + d) and world_map.get_cell(self.location + d).avatar), None)
         if direction_of_other_avatar:
             from simulation.action import AttackAction
             return AttackAction(direction_of_other_avatar)
         import random
 
-        direction_to_other_player = self.direction_to(next(cell.location for cell in world_state.all_cells() if cell.avatar and cell.location != avatar_state.location))
+        direction_to_other_player = self.direction_to(next(cell.location for cell in world_map.all_cells() if cell.avatar and cell.location != avatar_state.location))
         if direction_to_other_player:
             return MoveAction(random.choice(directions + ((direction_to_other_player,) * 10)))
         return MoveAction(random.choice(directions))

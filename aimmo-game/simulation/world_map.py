@@ -2,13 +2,21 @@ import math
 import random
 from logging import getLogger
 
-import map_generator
-from pickups import ALL_PICKUPS
+from simulation.pickups import ALL_PICKUPS
 from simulation.action import MoveAction
 from simulation.location import Location
 
 LOGGER = getLogger(__name__)
 
+DEFAULT_LEVEL_SETTINGS = {
+    'TARGET_NUM_CELLS_PER_AVATAR': 0,
+    'TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR': 0,
+    'SCORE_DESPAWN_CHANCE': 0,
+    'TARGET_NUM_PICKUPS_PER_AVATAR': 0,
+    'PICKUP_SPAWN_CHANCE': 0,
+    'NO_FOG_OF_WAR_DISTANCE': 1000,
+    'PARTIAL_FOG_OF_WAR_DISTANCE': 1000,
+}
 
 class Cell(object):
     """
@@ -23,6 +31,7 @@ class Cell(object):
         self.pickup = None
         self.partially_fogged = partially_fogged
         self.actions = []
+        self.created = False
 
     def __repr__(self):
         return 'Cell({} h={} s={} a={} p={} f{})'.format(
@@ -82,7 +91,7 @@ class WorldMap(object):
 
     @classmethod
     def generate_empty_map(cls, height, width, settings):
-        new_settings = map_generator.DEFAULT_LEVEL_SETTINGS.copy()
+        new_settings =DEFAULT_LEVEL_SETTINGS.copy()
         new_settings.update(settings)
 
         (min_x, max_x, min_y, max_y) = WorldMap._min_max_from_dimensions(height, width)
@@ -95,6 +104,16 @@ class WorldMap(object):
 
     def all_cells(self):
         return self.grid.itervalues()
+
+    # Used to know when to instantiate objects in the scene.
+    def cells_to_create(self):
+        new_cells = []
+        for cell in self.all_cells():
+            if not cell.created:
+                new_cells.append(cell)
+        return new_cells
+
+    # TODO: Cells to delete
 
     def score_cells(self):
         return (c for c in self.all_cells() if c.generates_score)
@@ -184,7 +203,7 @@ class WorldMap(object):
         self._add_pickups(num_avatars)
 
     def _expand(self, num_avatars):
-        LOGGER.info('Expanding map')
+        #LOGGER.info('Expanding map')
         start_size = self.num_cells
         target_num_cells = int(math.ceil(num_avatars * self.settings['TARGET_NUM_CELLS_PER_AVATAR']))
         num_cells_to_add = target_num_cells - self.num_cells

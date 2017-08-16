@@ -66,8 +66,10 @@ class TurnManager(Thread):
         game_state.world_map.reconstruct_interactive_state(num_avatars)
 
     def _mark_complete(self):
-        from service import get_world_state
-        requests.post(self._completion_url, json=get_world_state())
+        pass
+        # TODO: Make completion request work. For now, we assume games don't finish.
+        #from world_state import WorldState
+        #requests.post(self._completion_url, json=world_state.get_update())
 
     def run(self):
         while True:

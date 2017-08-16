@@ -1,6 +1,3 @@
-__author__ = 'Dan'
-
-
 class AvatarAppearance:
     """
     The presentation aspect of an avatar.
