@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-import cPickle as pickle
 import logging
 import os
 import sys
 
 import eventlet
+from json import loads
 
 eventlet.sleep()
 eventlet.monkey_patch()
@@ -36,13 +36,7 @@ def __client_ready(client_id):
     world_state_manager[client_id] = world_state
 
 def __exit_game(user_id):
-    pass
-
-@socketio.on('client-ready')
-def client_ready(client_id):
-    flask.session['id'] = client_id
-    world_state = WorldState(state_provider)
-    world_state_manager[client_id] = world_state
+    del world_state_manager[user_id]
 
 def __send_world_update():
     for world_state in world_state_manager.values():
@@ -60,19 +54,17 @@ def plain_world_init():
 @app.route('/plain/client-ready/<user_id>')
 def plain_client_ready(user_id):
     user_id = int(user_id)
-    __client_ready(user_id)
+    world_state = WorldState(state_provider)
+    world_state_manager[user_id] = world_state
     return 'RECEIVED USER READY ' + str(user_id)
 @app.route('/plain/exit-game/<user_id>')
 def plain_exit_game(user_id):
     user_id = int(user_id)
-    __exit_game(user_id)
     return "EXITING GAME FOR USER " + str(user_id)
 @app.route('/plain/update/<user_id>')
 def plain_update(user_id):
     user_id = int(user_id)
-    world_state = world_state_manager.get_world_state(user_id)
-    if not world_state.ready_to_update:
-        return "NOT READY"
+    world_state =  world_state_manager[user_id]
     return flask.jsonify(world_state.get_updates())
 
 # socketio routes
@@ -104,7 +96,7 @@ def run_game(port):
     global worker_manager
 
     print("Running game...")
-    settings = pickle.loads(os.environ['settings'])
+    settings = loads(os.environ['settings'])
 
     api_url = os.environ['GAME_API_URL']
     generator = getattr(map_generator, settings['GENERATOR'])(settings)

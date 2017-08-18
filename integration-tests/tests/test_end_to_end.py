@@ -29,7 +29,7 @@ class TestService(TestCase):
         self._CODE = 'class Avatar: pass'
 
     def __setup_environment(self):
-        self._VERBOSE = False
+        self._VERBOSE = True
 
         os.environ['AIMMO_MODE'] = 'threads'
         os.environ['WORKER_MANAGER'] = 'local'
@@ -60,8 +60,9 @@ class TestService(TestCase):
             if not kubernates:
                 kill_process_tree(self.django.pid)
             else:
-                print("WTF")
-                os.system("minikube delete")
+                print("Stopping minikube")
+                os.system("minikube stop")
+                kill_process_tree(self.django.pid)
         finally:
             self.session = None
 
@@ -73,11 +74,9 @@ class TestService(TestCase):
         print("> getting: " + url)
 
         result = self.session.get(url)
-        pprint(result.status_code)
 
         # asserting the response
         self.assertEqual(result.status_code, code)
-        print("wow")
         return result
 
     def __post_resouce(self, resource, code, payload):
@@ -121,15 +120,11 @@ class TestService(TestCase):
 
     def __find_game_id_by_name(self, name):
         # getting the games list
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         response = self.__get_resource("players/api/games/", 200).text
-        print(response)
         games = json.loads(response)
-        pprint(games)
 
         # getting the level list
         level_list = list(filter(lambda (x, y): name in y["name"], list(games.items())))
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!" + level_list)
         self.assertEqual(len(level_list), 1)
         level_id = list(x for x,y in level_list)[0]
 

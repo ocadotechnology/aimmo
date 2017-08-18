@@ -1,8 +1,7 @@
 from __future__ import absolute_import
 
-import cPickle as pickle
 import unittest
-from json import dumps
+from json import dumps, loads
 
 from httmock import HTTMock
 
@@ -45,7 +44,7 @@ class RequestMock(object):
         return {
             str(i): {
                 'name': 'Game %s' % i,
-                'settings': pickle.dumps({
+                'settings': dumps({
                     'test': i,
                     'test2': 'Settings %s' % i,
                 })
@@ -77,7 +76,7 @@ class TestWorkerManager(unittest.TestCase):
         for i in xrange(3):
             self.assertIn(str(i), self.worker_manager.final_workers)
             self.assertEqual(
-                pickle.loads(str(self.worker_manager.added_workers[str(i)]['settings'])),
+                loads(str(self.worker_manager.added_workers[str(i)]['settings'])),
                 {'test': i, 'test2': 'Settings %s' % i}
             )
             self.assertEqual(self.worker_manager.added_workers[str(i)]['name'], 'Game %s' % i)

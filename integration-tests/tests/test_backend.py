@@ -14,8 +14,7 @@ import subprocess
 import sys
 from httmock import HTTMock
 
-import cPickle as pickle
-from json import dumps
+from json import dumps, loads
 
 from misc import run_command_async, kill_process_tree
 
@@ -78,7 +77,7 @@ class GameCreatorRequestMock(RequestMock):
         return {
             str(i): {
                 'name': 'Level1',
-                'settings': pickle.dumps(DEFAULT_LEVEL_SETTINGS)
+                'settings': dumps(DEFAULT_LEVEL_SETTINGS)
             } for i in xrange(num_games)
         }
 
@@ -160,10 +159,6 @@ class TestService(TestCase):
     def __build_test(self, proxies, kubernetes=False):
         try:
             if kubernetes:
-                # TODO: proper start-up
-                os.system("minikube delete")
-                os.system("minikube start --vm-driver=kvm")
-
                 game = run_command_async(['python', "minikube.py"], self._SCRIPT_LOCATION)
             else:
                 game = run_command_async(['python', self._SERVICE_PY, self._SERVER_URL, self._SERVER_PORT])
