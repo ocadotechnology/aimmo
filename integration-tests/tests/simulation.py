@@ -15,6 +15,7 @@ class SnapshotProcessor(BaseSnapshotProcessor):
         self.binder = binder
         self.world_states = []
         self.player_id = player_id
+        self.player_added = False
 
     def check_player_moved_at_most_one_space(self, last_pos, curr_pos):
         if last_pos is None:
@@ -48,6 +49,12 @@ class SnapshotProcessor(BaseSnapshotProcessor):
         world_state = self.world_states[-1]
         self.world_states.append(world_state)
 
+        try:
+            self.get_player(last_world_state)
+        except IndexError:
+            return
+
+        self.player_added = True
         self.check_player_moved_at_most_one_space(
             self.get_player(last_world_state),
             self.get_player(world_state)
@@ -76,3 +83,6 @@ class SnapshotProcessor(BaseSnapshotProcessor):
             self.check_first_world_state()
         else:
             self.check_changes_world_state()
+
+    def check_player_added():
+        self.binder.assertTrue(self.player_added)

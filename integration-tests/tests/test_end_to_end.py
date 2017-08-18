@@ -79,7 +79,7 @@ class TestService(TestCase):
         self.assertEqual(result.status_code, code)
         return result
 
-    def __post_resouce(self, resource, code, payload):
+    def __post_resource(self, resource, code, payload):
         url = self._SERVER_URL + resource
         print("> posting: " + url)
 
@@ -145,7 +145,7 @@ class TestService(TestCase):
             self.__check_redirect("players/program_level/1")
 
             # posting login data
-            self.__post_resouce("django.contrib.auth/login/", 200, {
+            self.__post_resource("django.contrib.auth/login/", 200, {
                 'username':'admin',
                 'password':'admin'})
 
@@ -162,6 +162,9 @@ class TestService(TestCase):
             watch_page = self.__get_resource("players/watch/" + level1_id, 200).text
 
             host, path = self.__get_socketio_info(watch_page)
+
+            # This adds the code to the database
+            self.__get_resource("players/api/code/1", 200);
 
             # wait for 30 seconds for pods to start
             self.__pool_callback(callback=lambda: "HEALTHY" in self.session.get(host).text, tries=30)
@@ -182,6 +185,7 @@ class TestService(TestCase):
 
                 time.sleep(0.1)
                 snapshots -= 1
+            processor.check_player_added()
 
             self.assertEqual(self.__get_resource("/plain/exit-game/1", 200, host).text, "EXITING GAME FOR USER 1")
         finally:
@@ -197,7 +201,7 @@ class TestService(TestCase):
             self.__check_redirect("players/program_level/1")
 
             # posting login data
-            self.__post_resouce("django.contrib.auth/login/", 200, {
+            self.__post_resource("django.contrib.auth/login/", 200, {
                 'username':'batman',
                 'password':'batman'})
 
