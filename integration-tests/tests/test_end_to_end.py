@@ -141,23 +141,25 @@ class TestService(TestCase):
 
             self.__pool_callback(callback=lambda: self.__get_resource("", 200).status_code == 200, tries=30)
 
-            # getting the first level
-            self.__pool_callback(callback=lambda: self.__find_game_id_by_name("Level 1") != None, tries=30)
-            level1_id = self.__find_game_id_by_name("Level 1")
-
             # trying to program, getting to login page
-            self.__check_redirect("players/program_level/" + level1_id)
+            self.__check_redirect("players/program_level/1")
 
             # posting login data
             self.__post_resouce("django.contrib.auth/login/", 200, {
                 'username':'admin',
                 'password':'admin'})
 
-            # check the code is OK
-            code_page = self.__get_resource("players/program_level/" + level1_id, 200).text
+            # Check the level has been added
+            self.__pool_callback(callback=lambda: self.__find_game_id_by_name("Level 1") != None, tries=30)
+            level1_id = self.__find_game_id_by_name("Level 1")
 
-            # check we can watch the game
-            watch_page = self.__get_resource("players/watch_level/" + level1_id, 200).text
+            # Check code and watch pages
+            code_page = self.__get_resource("players/program_level/1", 200).text
+            watch_page = self.__get_resource("players/watch_level/1", 200).text
+
+            code_page = self.__get_resource("players/program/" + level1_id, 200).text
+            watch_page = self.__get_resource("players/watch/" + level1_id, 200).text
+
             host, path = self.__get_socketio_info(watch_page)
 
             # wait for 30 seconds for pods to start
@@ -169,7 +171,6 @@ class TestService(TestCase):
             processor = SnapshotProcessor(self)
             snapshots = 100
 
-            # TODO: there might be some polling needed
             while snapshots > 0:
                 # getting the world_state
                 world_state = self.__get_resource("/plain/update/1", 200, host).text
@@ -194,12 +195,8 @@ class TestService(TestCase):
 
             self.__pool_callback(callback=lambda: self.__get_resource("", 200).status_code == 200, tries=30)
 
-            # getting the first level
-            self.__pool_callback(callback=lambda: self.__find_game_id_by_name("Level 1") != None, tries=30)
-            level1_id = self.__find_game_id_by_name("Level 1")
-
             # trying to program, getting to login page
-            self.__check_redirect("players/program_level/" + level1_id)
+            self.__check_redirect("players/program_level/1")
 
             # posting login data
             self.__post_resouce("django.contrib.auth/login/", 200, {
@@ -207,7 +204,7 @@ class TestService(TestCase):
                 'password':'batman'})
 
             # trying to program, getting to login page
-            self.__check_redirect("players/program_level/" + level1_id)
+            self.__check_redirect("players/program_level/1")
         finally:
             self.__cleanup()
 
