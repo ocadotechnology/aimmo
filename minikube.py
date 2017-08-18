@@ -11,7 +11,7 @@ import socket
 import stat
 import tarfile
 import yaml
-from run import run_command
+from run import run_command, get_ip
 from urllib import urlretrieve
 from urllib2 import urlopen
 from zipfile import ZipFile
@@ -24,7 +24,6 @@ OS = platform.system().lower()
 FILE_SUFFIX = '.exe' if OS == 'windows' else ''
 KUBECTL = os.path.join(TEST_BIN, 'kubectl%s' % FILE_SUFFIX)
 MINIKUBE = os.path.join(TEST_BIN, 'minikube%s' % FILE_SUFFIX)
-
 
 def create_test_bin():
     try:

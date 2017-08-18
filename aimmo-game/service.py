@@ -106,7 +106,7 @@ def run_game(port):
     print("Running game...")
     settings = pickle.loads(os.environ['settings'])
 
-    api_url = os.environ.get('GAME_API_URL', 'http://localhost:8000/players/api/games/')
+    api_url = os.environ['GAME_API_URL']
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
     player_manager = AvatarManager()
     game_state = generator.get_game_state(player_manager)

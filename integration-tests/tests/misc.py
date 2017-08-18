@@ -10,9 +10,23 @@ import logging
 import psutil
 import time
 import sys
+import socket
 
 sys.path.append('../../')
 FNULL = open(os.devnull, 'w')
+
+def get_ip():
+    # http://stackoverflow.com/a/28950776/671626
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        # doesn't even have to be reachable
+        s.connect(('10.255.255.255', 0))
+        IP = s.getsockname()[0]
+    except:
+        IP = '127.0.0.1'
+    finally:
+        s.close()
+    return IP
 
 def run_command_async(args, cwd=".", verbose=False):
     if verbose:

@@ -17,7 +17,7 @@ FNULL = open(os.devnull, 'w')
 import logging
 import traceback
 
-from misc import run_command_async, kill_process_tree
+from misc import run_command_async, kill_process_tree, get_ip
 
 class TestService(TestCase):
     """
@@ -33,9 +33,9 @@ class TestService(TestCase):
 
         os.environ['AIMMO_MODE'] = 'threads'
         os.environ['WORKER_MANAGER'] = 'local'
-        os.environ['GAME_API_URL'] = 'http://localhost:8000/players/api/games/'
+        os.environ['GAME_API_URL'] = 'http://' + get_ip() + ':8000/players/api/games/'
 
-        self._SERVER_URL = 'http://localhost:8000/'
+        self._SERVER_URL = 'http://' + get_ip() + ':8000/'
         self._SERVER_PORT = '8000'
 
     def __start_scoketio(self, host_port, path):
@@ -73,9 +73,11 @@ class TestService(TestCase):
         print("> getting: " + url)
 
         result = self.session.get(url)
+        pprint(result.status_code)
 
         # asserting the response
         self.assertEqual(result.status_code, code)
+        print("wow")
         return result
 
     def __post_resouce(self, resource, code, payload):
@@ -119,10 +121,15 @@ class TestService(TestCase):
 
     def __find_game_id_by_name(self, name):
         # getting the games list
-        games = json.loads(self.__get_resource("players/api/games", 200).text)
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        response = self.__get_resource("players/api/games/", 200).text
+        print(response)
+        games = json.loads(response)
+        pprint(games)
 
         # getting the level list
         level_list = list(filter(lambda (x, y): name in y["name"], list(games.items())))
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!" + level_list)
         self.assertEqual(len(level_list), 1)
         level_id = list(x for x,y in level_list)[0]
 
@@ -133,13 +140,11 @@ class TestService(TestCase):
         login_form_template = """<form method="post" action="/django.contrib.auth/login/">"""
         self.assertTrue(login_form_template in login_redirect_page)
 
-    @skip("Problem with finding game by name.")
     def level_1(self, kubernates):
         try:
             self.__start_django(kubernates)
 
             self.__pool_callback(callback=lambda: self.__get_resource("", 200).status_code == 200, tries=30)
-            self.__get_resource("players", 200)
 
             # getting the first level
             self.__pool_callback(callback=lambda: self.__find_game_id_by_name("Level 1") != None, tries=30)
@@ -188,7 +193,6 @@ class TestService(TestCase):
         finally:
             self.__cleanup()
 
-    @skip("Problem with finding game by name.")
     def cant_code_without_login(self, kubernates):
         try:
             self.__start_django(kubernates)
@@ -212,13 +216,10 @@ class TestService(TestCase):
         finally:
             self.__cleanup()
 
-    @skip("Local.")
     def test_local_start_django(self): self.start_django(kubernates=False)
 
-    @skip("Problem with finding game by name.")
     def test_local_level_1(self): self.level_1(kubernates=False)
 
-    @skip("Problem with finding game by name.")
     def test_local_cant_code_without_login(self): self.cant_code_without_login(kubernates=False)
 
     @skipUnless('RUN_KUBE_TESTS' in os.environ, "See setup.py.")
