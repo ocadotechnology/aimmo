@@ -84,5 +84,5 @@ class SnapshotProcessor(BaseSnapshotProcessor):
         else:
             self.check_changes_world_state()
 
-    def check_player_added():
+    def check_player_added(self):
         self.binder.assertTrue(self.player_added)
