@@ -149,14 +149,15 @@ class TestService(TestCase):
                 'username':'admin',
                 'password':'admin'})
 
+            # Check code and watch pages; this also may add the level to DB
+            code_page = self.__get_resource("players/program_level/1", 200).text
+            watch_page = self.__get_resource("players/watch_level/1", 200).text
+
             # Check the level has been added
             self.__pool_callback(callback=lambda: self.__find_game_id_by_name("Level 1") != None, tries=30)
             level1_id = self.__find_game_id_by_name("Level 1")
 
-            # Check code and watch pages
-            code_page = self.__get_resource("players/program_level/1", 200).text
-            watch_page = self.__get_resource("players/watch_level/1", 200).text
-
+            # Check the level pages by level id
             code_page = self.__get_resource("players/program/" + level1_id, 200).text
             watch_page = self.__get_resource("players/watch/" + level1_id, 200).text
 
@@ -183,9 +184,6 @@ class TestService(TestCase):
                 snapshots -= 1
 
             self.assertEqual(self.__get_resource("/plain/exit-game/1", 200, host).text, "EXITING GAME FOR USER 1")
-
-        except Exception as e:
-            logging.error(traceback.format_exc())
         finally:
             self.__cleanup()
 
