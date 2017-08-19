@@ -47,21 +47,21 @@ def __send_world_update():
         )
 
 # plain client routes
-@app.route('/plain/connect')
-def plain_world_init():
+@app.route('/plain/<user_id>/connect')
+def plain_world_init(user_id):
     __world_init()
     return 'CONNECT'
-@app.route('/plain/client-ready/<user_id>')
+@app.route('/plain/<user_id>/client-ready')
 def plain_client_ready(user_id):
     user_id = int(user_id)
     world_state = WorldState(state_provider)
     world_state_manager[user_id] = world_state
     return 'RECEIVED USER READY ' + str(user_id)
-@app.route('/plain/exit-game/<user_id>')
+@app.route('/plain/<user_id>/exit-game')
 def plain_exit_game(user_id):
     user_id = int(user_id)
     return "EXITING GAME FOR USER " + str(user_id)
-@app.route('/plain/update/<user_id>')
+@app.route('/plain/<user_id>/update')
 def plain_update(user_id):
     user_id = int(user_id)
     world_state =  world_state_manager[user_id]

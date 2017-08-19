@@ -12,7 +12,6 @@ import time
 import sys
 import socket
 
-sys.path.append('../../')
 FNULL = open(os.devnull, 'w')
 
 def get_ip():

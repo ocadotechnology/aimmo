@@ -206,34 +206,3 @@ class TestService(TestCase):
         times = 5
         for i in xrange(times):
             self.test_local_games_get_generated()
-
-    @skip("temporary")
-    def test_kube_games_get_generated_kubernates(self):
-        self.__build_test([
-            (GameCreatorProxy(self), 1),
-            (GameConnectionProxy(self), 1),
-            (TurnProxy(self), 1)
-        ], True)
-
-from unittest import TestSuite
-from unittest import TextTestRunner
-
-# We use this locally as it is simple to work on test development
-def get_test_suite():
-    suite = TestSuite()
-
-    suite.addTest(TestService("test_killing_creator_kills_game"))
-    suite.addTest(TestService("test_games_get_generated"))
-    suite.addTest(TestService("test_games_get_generated_repeatedly"))
-    suite.addTest(TestService("test_turns_run"))
-
-    return suite
-
-def main():
-    suite = get_test_suite()
-
-    proxy = TextTestRunner()
-    proxy.run(suite)
-
-if __name__ == "__main__":
-    main()

@@ -61,6 +61,7 @@ class SnapshotProcessor(BaseSnapshotProcessor):
         )
 
     def check_only_feature_creations_happen(self, world_state):
+        print("Receiving initial world state...")
         pprint(world_state)
         for key, feature in world_state['map_features'].iteritems():
             if 'update' in feature.keys():
@@ -77,7 +78,6 @@ class SnapshotProcessor(BaseSnapshotProcessor):
     def receive_snapshot(self, world_state_string):
         world_state = json.loads(world_state_string)
 
-        # pprint(world_state_json)
         self.world_states.append(world_state)
         if len(self.world_states) == 1:
             self.check_first_world_state()

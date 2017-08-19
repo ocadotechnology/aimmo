@@ -11,7 +11,7 @@ import signal
 import subprocess
 import sys
 import json
-sys.path.append('../../')
+
 FNULL = open(os.devnull, 'w')
 
 import logging
@@ -21,6 +21,19 @@ from misc import run_command_async, kill_process_tree, get_ip
 
 class TestService(TestCase):
     """
+        This is an end-to-end test case. We test 3 scenarios:
+        1. Simple server start-up
+        2. Try to use the service with wrong credentials
+        3. Try to play the first level with a default created character
+
+        As most of the functionality is accessible using the api or other
+        methods, we use simple requests rather than Selenium (though
+        selenium should be easily be added to the module).
+
+        Resources are exposed at plain paths inside aimmo-game/service.
+        We can also use minikube with this test, but we need a different
+        nginx configuration for this.
+
         Use verbose=True to see the server logs for localhost.
     """
     def __setup_resources(self):
@@ -29,38 +42,26 @@ class TestService(TestCase):
         self._CODE = 'class Avatar: pass'
 
     def __setup_environment(self):
-        self._VERBOSE = True
-
-        os.environ['AIMMO_MODE'] = 'threads'
-        os.environ['WORKER_MANAGER'] = 'local'
-        os.environ['GAME_API_URL'] = 'http://' + get_ip() + ':8000/players/api/games/'
+        self._VERBOSE = False
 
         self._SERVER_URL = 'http://' + get_ip() + ':8000/'
         self._SERVER_PORT = '8000'
 
-    def __start_scoketio(self, host_port, path):
-        host = host_port.split(":")[0] + ":" + host_port.split(":")[1]
-        port = host_port.split(':')[2]
-
-        self.socket_io = SocketClient(str(host), int(port), path, self)
-        self.socket_io.start()
-
-    def __start_django(self, kubernates=False):
-        print(self._SERVICE_PY)
-        if not kubernates:
+    def __start_django(self, kube):
+        if not kube:
             self.django = run_command_async(["python", self._SERVICE_PY], self._SCRIPT_LOCATION, verbose=self._VERBOSE)
         else:
             self.django = run_command_async(["python", self._SERVICE_PY, "-k"], self._SCRIPT_LOCATION, verbose=self._VERBOSE)
         self.session = requests.Session()
 
-    def __cleanup(self, kubernates=False):
+    def __cleanup(self, kube):
         print("Terminating processes....")
         time.sleep(1)
         try:
-            if not kubernates:
+            if not kube:
                 kill_process_tree(self.django.pid)
             else:
-                print("Stopping minikube")
+                print("Stopping minikube...")
                 os.system("minikube stop")
                 kill_process_tree(self.django.pid)
         finally:
@@ -112,11 +113,11 @@ class TestService(TestCase):
                 print("Waiting for resource...")
         self.assertTrue(False)
 
-    def start_django(self, kubernates):
+    def start_django(self, kube):
         try:
-            self.__start_django(kubernates)
+            self.__start_django(kube)
         finally:
-            self.__cleanup()
+            self.__cleanup(kube)
 
     def __find_game_id_by_name(self, name):
         # getting the games list
@@ -135,9 +136,12 @@ class TestService(TestCase):
         login_form_template = """<form method="post" action="/django.contrib.auth/login/">"""
         self.assertTrue(login_form_template in login_redirect_page)
 
-    def level_1(self, kubernates):
+    def level_1(self, kube):
         try:
-            self.__start_django(kubernates)
+            self.__start_django(kube)
+            if kube:
+                print("Waiting for minikube to start...")
+                time.sleep(300)
 
             self.__pool_callback(callback=lambda: self.__get_resource("", 200).status_code == 200, tries=30)
 
@@ -162,22 +166,23 @@ class TestService(TestCase):
             watch_page = self.__get_resource("players/watch/" + level1_id, 200).text
 
             host, path = self.__get_socketio_info(watch_page)
+            print("HOST:" + host)
 
             # This adds the code to the database
-            self.__get_resource("players/api/code/1", 200);
+            self.__get_resource("players/api/code/1", 200)
 
-            # wait for 30 seconds for pods to start
-            self.__pool_callback(callback=lambda: "HEALTHY" in self.session.get(host).text, tries=30)
+            if not kube:
+                self.__pool_callback(callback=lambda: "HEALTHY" in self.session.get(host + "/").text, tries=30)
 
-            self.assertEqual(self.__get_resource("/plain/connect", 200, host).text, "CONNECT")
-            self.assertEqual(self.__get_resource("/plain/client-ready/1", 200, host).text, "RECEIVED USER READY 1")
+            self.assertEqual(self.__get_resource("/plain/1/connect", 200, host).text, "CONNECT")
+            self.assertEqual(self.__get_resource("/plain/1/client-ready", 200, host).text, "RECEIVED USER READY 1")
 
             processor = SnapshotProcessor(self)
             snapshots = 100
 
             while snapshots > 0:
                 # getting the world_state
-                world_state = self.__get_resource("/plain/update/1", 200, host).text
+                world_state = self.__get_resource("/plain/1/update", 200, host).text
 
                 # send the snapshot to the processor
                 # the processor will track and verify the information
@@ -185,15 +190,17 @@ class TestService(TestCase):
 
                 time.sleep(0.1)
                 snapshots -= 1
+
+            # if the user was not added to the test, then something is probably wrong
             processor.check_player_added()
 
-            self.assertEqual(self.__get_resource("/plain/exit-game/1", 200, host).text, "EXITING GAME FOR USER 1")
+            self.assertEqual(self.__get_resource("/plain/1/exit-game", 200, host).text, "EXITING GAME FOR USER 1")
         finally:
-            self.__cleanup()
+            self.__cleanup(kube)
 
-    def cant_code_without_login(self, kubernates):
+    def cant_code_without_login(self, kube):
         try:
-            self.__start_django(kubernates)
+            self.__start_django(kube)
 
             self.__pool_callback(callback=lambda: self.__get_resource("", 200).status_code == 200, tries=30)
 
@@ -208,19 +215,13 @@ class TestService(TestCase):
             # trying to program, getting to login page
             self.__check_redirect("players/program_level/1")
         finally:
-            self.__cleanup()
+            self.__cleanup(kube)
 
-    def test_local_start_django(self): self.start_django(kubernates=False)
+    def test_local_start_django(self): self.start_django(kube=False)
 
-    def test_local_level_1(self): self.level_1(kubernates=False)
+    def test_local_level_1(self): self.level_1(kube=False)
 
-    def test_local_cant_code_without_login(self): self.cant_code_without_login(kubernates=False)
+    def test_local_cant_code_without_login(self): self.cant_code_without_login(kube=False)
 
-    @skipUnless('RUN_KUBE_TESTS' in os.environ, "See setup.py.")
-    def test_kube_start_django(self): self.start_django(kubernates=True)
-
-    @skipUnless('RUN_KUBE_TESTS' in os.environ, "See setup.py.")
-    def test_kube_level_1(self): self.level_1(kubernates=True)
-
-    @skipUnless('RUN_KUBE_TESTS' in os.environ, "See setup.py.")
-    def test_kube_cant_code_without_login(self):  self.cant_code_without_login(kubernates=True)
+    @skip("The nginx proxy does not expose the plain resources.")
+    def test_kube_level_1(self): self.level_1(kube=True)

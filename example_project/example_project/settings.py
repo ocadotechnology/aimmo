@@ -122,8 +122,7 @@ def get_ip():
 
 def get_url(game):
     if os.environ.get('AIMMO_MODE', '') == 'minikube':
-        output = subprocess.check_output([os.environ['MINIKUBE_PATH'], 'service', 'game-%s' % game, '--url'])
-        return (output.strip(),  '/game/%s/socket.io' % game)
+         return (os.environ['MINIKUBE_PROXY_URL'], "/game/%s/socket.io" % game)
     else:
         return ('http://%s:%d' % (get_ip(), (6001 + int(game) * 1000)), '/socket.io')
 

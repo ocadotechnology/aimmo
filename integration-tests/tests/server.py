@@ -89,7 +89,3 @@ class MockServer():
 
             times -= 1
             self.csock.close()
-
-if __name__ == "__main__":
-    server = MockServer()
-    server.run()
