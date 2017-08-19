@@ -27,18 +27,22 @@ worker_manager = None
 # Every user has its own world state.
 world_state_manager = {}
 
-def __world_init():
+# socketio routes
+@socketio.on('connect')
+def world_init():
     socketio.emit('world-init')
 
-def __client_ready(client_id):
+@socketio.on('client-ready')
+def client_ready(client_id):
     flask.session['id'] = client_id
     world_state = WorldState(state_provider)
     world_state_manager[client_id] = world_state
 
-def __exit_game(user_id):
+@socketio.on('exit-game')
+def exit_game(user_id):
     del world_state_manager[user_id]
 
-def __send_world_update():
+def send_world_update():
     for world_state in world_state_manager.values():
         socketio.emit(
             'world-update',
@@ -46,35 +50,6 @@ def __send_world_update():
             broadcast=True,
         )
 
-# plain client routes
-@app.route('/plain/<user_id>/connect')
-def plain_world_init(user_id):
-    __world_init()
-    return 'CONNECT'
-@app.route('/plain/<user_id>/client-ready')
-def plain_client_ready(user_id):
-    user_id = int(user_id)
-    world_state = WorldState(state_provider)
-    world_state_manager[user_id] = world_state
-    return 'RECEIVED USER READY ' + str(user_id)
-@app.route('/plain/<user_id>/exit-game')
-def plain_exit_game(user_id):
-    user_id = int(user_id)
-    return "EXITING GAME FOR USER " + str(user_id)
-@app.route('/plain/<user_id>/update')
-def plain_update(user_id):
-    user_id = int(user_id)
-    world_state =  world_state_manager[user_id]
-    return flask.jsonify(world_state.get_updates())
-
-# socketio routes
-@socketio.on('connect')
-def world_init(): __world_init()
-@socketio.on('client-ready')
-def client_ready(user_id): __client_ready(user_id)
-@socketio.on('exit-game')
-def exit_game(user_id): __exit_game(user_id)
-def send_world_update(): __send_world_update()
 @socketio.on('disconnect')
 def on_disconnect():
     del world_state_manager[flask.session['id']]
@@ -91,6 +66,27 @@ def player_data(player_id):
         'options': {},       # Game options
         'state': None,
     })
+
+# Plain client routes... These are easy to work with and
+# they are not exposed in the kubernates application
+# as the proxy does not allow communication with them.
+@app.route('/plain/<user_id>/connect')
+def plain_world_init(user_id):
+    world_init()
+    return 'CONNECT'
+@app.route('/plain/<user_id>/client-ready')
+def plain_client_ready(user_id):
+    world_state = WorldState(state_provider)
+    world_state_manager[int(user_id)] = world_state
+    return 'RECEIVED USER READY ' + user_id
+@app.route('/plain/<user_id>/exit-game')
+def plain_exit_game(user_id):
+    return "EXITING GAME FOR USER " + user_id
+@app.route('/plain/<user_id>/update')
+def plain_update(user_id):
+    world_state =  world_state_manager[int(user_id)]
+    return flask.jsonify(world_state.get_updates())
+
 
 def run_game(port):
     global worker_manager
