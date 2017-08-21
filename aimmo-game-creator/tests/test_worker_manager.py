@@ -5,12 +5,6 @@ from json import dumps, loads
 
 from httmock import HTTMock
 
-# Needed for integration test to work; Leaves access to the upper level
-import os,sys,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir)
-
 from worker_manager import WorkerManager
 
 class ConcreteWorkerManager(WorkerManager):
