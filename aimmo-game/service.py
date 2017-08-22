@@ -43,12 +43,11 @@ def client_ready(client_id):
 
 def send_world_update():
     for world_state in world_state_manager.values():
-        if world_state.ready_to_update:
-            socketio.emit(
-                'world-update',
-                world_state.get_updates(),
-                broadcast=True,
-            )
+        socketio.emit(
+            'world-update',
+            world_state.get_updates(),
+            broadcast=True,
+        )
 
 @app.route('/')
 def healthcheck():
