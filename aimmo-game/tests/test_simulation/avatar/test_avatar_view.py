@@ -34,20 +34,6 @@ class TestAvatarView(TestCase):
     def setUp(self):
         pass
 
-    # Test initialisation
-
-    def test_can_initialise(self):
-        avatar_view = AvatarView(Location(1, 2), 3)
-        self.assertFalse(avatar_view is None)
-
-    def test_handles_bad_initialisation(self):
-        with self.assertRaises(ValueError):
-            avatar_view = AvatarView(None, 4)
-        with self.assertRaises(ValueError):
-            avatar_view = AvatarView(Location(3, 2), None)
-        with self.assertRaises(ValueError):
-            avatar_view = AvatarView(None, None)
-
     # Test 'location_in_view'
 
     def test_knows_when_a_location_is_inside_the_view(self):
@@ -63,11 +49,6 @@ class TestAvatarView(TestCase):
         self.assertFalse(avatar_view.location_in_view(Location(3, 0)))
         self.assertFalse(avatar_view.location_in_view(Location(0, 5)))
         self.assertFalse(avatar_view.location_in_view(Location(-4, -4)))
-
-    def test_handles_bad_locations(self):
-        avatar_view = AvatarView(Location(5, 6), 7)
-        with self.assertRaises(ValueError):
-            avatar_view.location_in_view(None)
 
     # Test 'cells_in_rectangle'
 
@@ -95,19 +76,6 @@ class TestAvatarView(TestCase):
         mock_world_map = MockWorldMap(0, 0, 5, 5)
         cells_in_rectagle = AvatarView.cells_in_rectangle(Location(-1, 1), Location(1, -1), mock_world_map)
         self.assertEqual(len(cells_in_rectagle), 1)
-
-    def test_handles_bad_arguments(self):
-        mock_world_map = MockWorldMap(1, 2, 3, 4)
-        with self.assertRaises(ValueError):
-            AvatarView.cells_in_rectangle(None, Location(7, 0), mock_world_map)
-        with self.assertRaises(ValueError):
-            AvatarView.cells_in_rectangle(Location(2, -9), None, mock_world_map)
-        with self.assertRaises(ValueError):
-            AvatarView.cells_in_rectangle(Location(-6, 3), Location(-1, 0), None)
-        with self.assertRaises(ValueError):
-            AvatarView.cells_in_rectangle(None, None, mock_world_map)
-        with self.assertRaises(ValueError):
-            AvatarView.cells_in_rectangle(None, None, None)
 
     # Test 'reveal_all_cells'
 
@@ -153,11 +121,3 @@ class TestAvatarView(TestCase):
         avatar_view.move(WEST, mock_world_map)
         avatar_view.move(NORTH, mock_world_map)
         self.assertEqual(avatar_view.cells_in_view, initial_cells_in_view)
-
-    def test_handles_bad_move(self):
-        mock_world_map =  MockWorldMap(-4, -2, 5, 8)
-        avatar_view = AvatarView(Location(0, 1), 2)
-        with self.assertRaises(ValueError):
-            avatar_view.move(None, mock_world_map)
-        with self.assertRaises(ValueError):
-            avatar_view.move(NORTH, None)
