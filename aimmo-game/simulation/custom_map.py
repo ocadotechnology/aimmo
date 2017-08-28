@@ -84,7 +84,9 @@ class JsonLevelGenerator(BaseLevelGenerator):
             ObstacleDecoder("1"),
             PickupDecoder("3"),
             PickupDecoder("4"),
-            PickupDecoder("5")
+            PickupDecoder("5"),
+
+            ObstacleDecoder("ObstacleGenerator")
         ]
 
     def _json_decode_map(self):

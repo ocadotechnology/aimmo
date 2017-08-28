@@ -3,7 +3,7 @@
 				"x": -1.0000,
 				"y": 2.0000,
 
-			"type" : "ObstacleGenerator",
+			"code" : "ObstacleGenerator",
 			"sprite" : {
 				"width" : 400,
 				"height" : 400,
@@ -15,7 +15,7 @@
 				"x": 0.0000,
 				"y": 0.0000,
 
-			"type" : "ObstacleGenerator",
+			"code" : "ObstacleGenerator",
 			"sprite" : {
 				"width" : 512,
 				"height" : 1485,
@@ -27,7 +27,7 @@
 				"x": -1.0000,
 				"y": -2.0000,
 
-			"type" : "ObstacleGenerator",
+			"code" : "ObstacleGenerator",
 			"sprite" : {
 				"width" : 400,
 				"height" : 400,
@@ -39,7 +39,7 @@
 				"x": 1.0000,
 				"y": -4.0000,
 
-			"type" : "ObstacleGenerator",
+			"code" : "ObstacleGenerator",
 			"sprite" : {
 				"width" : 512,
 				"height" : 1485,
@@ -51,7 +51,7 @@
 				"x": 1.0000,
 				"y": -4.0000,
 
-			"type" : "ObstacleGenerator",
+			"code" : "ObstacleGenerator",
 			"sprite" : {
 				"width" : 512,
 				"height" : 1024,
@@ -63,7 +63,7 @@
 				"x": -5.0000,
 				"y": 1.0000,
 
-			"type" : "ObstacleGenerator",
+			"code" : "ObstacleGenerator",
 			"sprite" : {
 				"width" : 512,
 				"height" : 1485,
@@ -75,7 +75,7 @@
 				"x": 0.0000,
 				"y": 0.0000,
 
-			"type" : "ObstacleGenerator",
+			"code" : "ObstacleGenerator",
 			"sprite" : {
 				"width" : 512,
 				"height" : 1024,
@@ -87,7 +87,7 @@
 				"x": -3.0000,
 				"y": -2.0000,
 
-			"type" : "ObstacleGenerator",
+			"code" : "ObstacleGenerator",
 			"sprite" : {
 				"width" : 512,
 				"height" : 1485,
@@ -99,7 +99,7 @@
 				"x": -1.0000,
 				"y": 0.0000,
 
-			"type" : "ObstacleGenerator",
+			"code" : "ObstacleGenerator",
 			"sprite" : {
 				"width" : 400,
 				"height" : 400,
@@ -111,7 +111,7 @@
 				"x": -1.0000,
 				"y": 1.0000,
 
-			"type" : "ObstacleGenerator",
+			"code" : "ObstacleGenerator",
 			"sprite" : {
 				"width" : 512,
 				"height" : 1485,
@@ -123,7 +123,7 @@
 				"x": -3.0000,
 				"y": 0.0000,
 
-			"type" : "ObstacleGenerator",
+			"code" : "ObstacleGenerator",
 			"sprite" : {
 				"width" : 400,
 				"height" : 400,
@@ -135,7 +135,7 @@
 				"x": -5.0000,
 				"y": 1.0000,
 
-			"type" : "ObstacleGenerator",
+			"code" : "ObstacleGenerator",
 			"sprite" : {
 				"width" : 512,
 				"height" : 1024,
@@ -147,7 +147,7 @@
 				"x": 0.0000,
 				"y": 1.0000,
 
-			"type" : "ObstacleGenerator",
+			"code" : "ObstacleGenerator",
 			"sprite" : {
 				"width" : 512,
 				"height" : 1485,
@@ -159,7 +159,7 @@
 				"x": -2.0000,
 				"y": -5.0000,
 
-			"type" : "ObstacleGenerator",
+			"code" : "ObstacleGenerator",
 			"sprite" : {
 				"width" : 512,
 				"height" : 1485,
@@ -171,7 +171,7 @@
 				"x": -2.0000,
 				"y": -1.0000,
 
-			"type" : "ObstacleGenerator",
+			"code" : "ObstacleGenerator",
 			"sprite" : {
 				"width" : 512,
 				"height" : 625,
@@ -189,7 +189,7 @@
 				"x": -2.0000,
 				"y": 3.0000,
 
-			"type" : "ObstacleGenerator",
+			"code" : "ObstacleGenerator",
 			"sprite" : {
 				"width" : 512,
 				"height" : 1024,
@@ -201,7 +201,7 @@
 				"x": -3.0000,
 				"y": -2.0000,
 
-			"type" : "ObstacleGenerator",
+			"code" : "ObstacleGenerator",
 			"sprite" : {
 				"width" : 512,
 				"height" : 1024,
@@ -213,7 +213,7 @@
 				"x": 1.0000,
 				"y": 1.0000,
 
-			"type" : "ObstacleGenerator",
+			"code" : "ObstacleGenerator",
 			"sprite" : {
 				"width" : 400,
 				"height" : 400,
@@ -225,7 +225,7 @@
 				"x": -2.0000,
 				"y": -5.0000,
 
-			"type" : "ObstacleGenerator",
+			"code" : "ObstacleGenerator",
 			"sprite" : {
 				"width" : 512,
 				"height" : 1024,
@@ -237,7 +237,7 @@
 				"x": -3.0000,
 				"y": 3.0000,
 
-			"type" : "ObstacleGenerator",
+			"code" : "ObstacleGenerator",
 			"sprite" : {
 				"width" : 512,
 				"height" : 1485,
