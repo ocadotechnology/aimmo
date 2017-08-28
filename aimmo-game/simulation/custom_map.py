@@ -50,6 +50,11 @@ class BaseGenerator(object):
         pass
 
 class EmptyMapGenerator(BaseGenerator):
+    """
+        Generates empty maps
+        - get_map_by_corners
+        - get_map - generates a map with center in (0, 0)
+    """
     def __init__(self, settings):
         self.height =  self.settings['START_HEIGHT']
         self.width = self.settings['START_WIDTH']
@@ -60,8 +65,18 @@ class EmptyMapGenerator(BaseGenerator):
         self.width = width
         self.settings = settings
 
+    @classmethod
+    def get_map_by_corners(cls, settings, corners):
+        (min_x, max_x, min_y, max_y) = corners
+        grid = {}
+        for x in xrange(min_x, max_x + 1):
+            for y in xrange(min_y, max_y + 1):
+                location = Location(x, y)
+                grid[location] = Cell(location)
+        return WorldMap(grid, settings)
+
     def get_map(self):
-        def _min_max_from_dimensions(height, width):
+        def get_corners(height, width):
             max_x = int(math.floor(width / 2))
             min_x = -(width - max_x - 1)
             max_y = int(math.floor(height / 2))
@@ -71,26 +86,16 @@ class EmptyMapGenerator(BaseGenerator):
         new_settings = DEFAULT_LEVEL_SETTINGS.copy()
         new_settings.update(self.settings)
 
-        (min_x, max_x, min_y, max_y) = _min_max_from_dimensions(self.height, self.width)
-        grid = {}
-        for x in xrange(min_x, max_x + 1):
-            for y in xrange(min_y, max_y + 1):
-                location = Location(x, y)
-                grid[location] = Cell(location)
-        return WorldMap(grid, new_settings)
+        return EmptyMapGenerator.get_map_by_corners(self.settings, get_corners(self.height, self.width))
 
 class BaseLevelGenerator(BaseGenerator):
+    """
+        BaseGenerator with default settings.
+    """
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, *args, **kwargs):
         super(BaseLevelGenerator, self).__init__(*args, **kwargs)
-        self.settings.update(DEFAULT_LEVEL_SETTINGS)
-
-class TemplateLevelGenerator(BaseLevelGenerator):
-    __metaclass__ = abc.ABCMeta
-
-    def __init__(self, *args, **kwargs):
-        super(TemplateLevelGenerator, self).__init__(*args, **kwargs)
         self.settings.update(DEFAULT_LEVEL_SETTINGS)
 
 ################################################################################
@@ -131,11 +136,7 @@ class JsonLevelGenerator(BaseLevelGenerator):
 
     def _register_json(self, json_map):
         self.json_map = json_map
-<<<<<<< HEAD
-        self.world_map = WorldMap.generate_empty_map(15, 15, self.settings)
-=======
-        self.world_map = EmptyMapGenerator(100, 100, self.settings).get_map()
->>>>>>> 006af66... Changed the WorldMap static functions to a map generator. Now the whole thing work the same but the responsability is seaprated.
+        self.world_map = EmptyMapGenerator(15, 15, self.settings).get_map()
 
     def _register_decoders(self):
         self.decoders = DECODERS
