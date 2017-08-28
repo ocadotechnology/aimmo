@@ -5,6 +5,7 @@ from logging import getLogger
 from simulation.pickups import ALL_PICKUPS
 from simulation.action import MoveAction
 from simulation.location import Location
+from world_state import MapFeature
 
 LOGGER = getLogger(__name__)
 

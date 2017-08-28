@@ -55,7 +55,17 @@ class RawLevelGenerator():
         return self
 
     def generate_json(self):
-        return self.parser.map_apply_transforms()
+        rows = len(self.parser.map)
+        cols = len(self.parser.map[0])
+
+        json = self.parser.map_apply_transforms()
+        json.append({
+            "code": "meta",
+            "rows": rows,
+            "cols": cols,
+        })
+
+        return json
 
 LEVELS = {}
 

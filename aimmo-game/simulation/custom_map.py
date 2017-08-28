@@ -155,8 +155,6 @@ class JsonLevelGenerator(BaseLevelGenerator):
             for element in find_element_by_code(self.json_map, decoder.code):
                 decoder.decode(element, self.world_map)
 
-#### Dragons be here
-
 def generate_level_class(level_nbr, LEVELS=LEVELS, COMPLETION_CHECKS=COMPLETION_CHECKS):
     level_name = "Level" + str(level_nbr)
     level_id = "level" + str(level_nbr)
