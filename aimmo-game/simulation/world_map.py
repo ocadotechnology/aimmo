@@ -34,7 +34,6 @@ class WorldMap(object):
     def __init__(self, grid, settings):
         self.grid = grid
         self.settings = settings
-
     def all_cells(self):
         return self.grid.itervalues()
 

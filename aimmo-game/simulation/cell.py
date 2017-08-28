@@ -62,6 +62,7 @@ class Cell(object):
         self.pickup = None
         self.partially_fogged = partially_fogged
         self.actions = []
+        self.created = False
 
         # Used to update the map features in the current view of the user (score points on pickups).
         self.remove_from_scene = None
