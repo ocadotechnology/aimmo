@@ -10,19 +10,30 @@ from pprint import pprint
 from simulation.location import Location
 from simulation.game_state import GameState
 from simulation.world_map import WorldMap
-<<<<<<< HEAD
-from simulation.world_map import DEFAULT_LEVEL_SETTINGS
-from simulation.world_map import Cell
 
-import sys
-current_module = sys.modules[__name__]
-=======
 from simulation.world_map import WorldMapStaticSpawnDecorator
 from simulation.world_map import DEFAULT_LEVEL_SETTINGS
 from simulation.world_map import Cell
->>>>>>> 006af66... Changed the WorldMap static functions to a map generator. Now the whole thing work the same but the responsability is seaprated.
 
 class BaseGenerator(object):
+    """
+        A map generator that exposes a game state and a check for level completion.
+
+        API:
+            - contructor(setting)
+                - a set of basic settings that the map uses at generation
+                - see DEFAULT_LEVEL_SETTINGS in simulation.world_map
+            - get_game_state(avatar_manager)
+                - exposes a game state used by the turn manager daemon
+                - for details see GameState
+            - check_complete(game_state)
+                - function to check if a map is "complete"
+                - the turn manager runs the action for each avatar, then runs check_complete afterwards
+            @abstract
+            - get_map
+                - returns the generated map
+    """
+
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, settings):
