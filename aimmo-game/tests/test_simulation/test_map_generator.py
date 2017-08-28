@@ -6,7 +6,6 @@ import unittest
 from simulation import map_generator
 from simulation.location import Location
 from simulation.map_generator import get_random_edge_index
-from simulation.world_map import WorldMap
 from .dummy_avatar import DummyAvatarManager
 from simulation.custom_map import EmptyMapGenerator
 

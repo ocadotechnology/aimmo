@@ -143,7 +143,6 @@ def watch_level(request, num):
     LOGGER.debug('Displaying game with id %s', game.id)
     return _render_game(request, game)
 
-# This function adds the Levels to the database
 def _add_and_return_level(num, user):
     game = Game(generator='Level'+num, name='Level '+num, public=False, main_user=user)
     try:
