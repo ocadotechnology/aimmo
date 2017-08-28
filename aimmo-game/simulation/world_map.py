@@ -35,6 +35,9 @@ class WorldMap(object):
         self.grid = grid
         self.settings = settings
 
+    def all_cells(self):
+        return self.grid.itervalues()
+
     # Used to know when to instantiate objects in the scene.
     def cells_to_create(self):
         new_cells = []
@@ -42,8 +45,6 @@ class WorldMap(object):
             if not cell.created:
                 new_cells.append(cell)
         return new_cells
-
-    # TODO: Cells to delete
 
     def score_cells(self):
         return (c for c in self.all_cells() if c.generates_score)

@@ -108,7 +108,7 @@ class Parser():
         self.transforms[transform.__class__.__name__] = transform
 
     @abc.abstractmethod
-    def register_transforms():
+    def register_transforms(self, x, y, width, height):
         pass
 
     # helper function for map_apply_transforms
@@ -146,11 +146,14 @@ class Parser():
 
     def map_apply_transforms(self):
         objects = []
-        for x in xrange(len(self.map)):
-            for y in xrange(len(self.map[x])):
+        width = len(self.map)
+        height = len(self.map[0])
+
+        for x in xrange(width):
+            for y in xrange(height):
                 code = self.map[x][y]
 
-                self.register_transforms(x, y)
+                self.register_transforms(x, y, width, height)
                 object_json = self.feed_json(code)
                 if object_json != None:
                     objects.append(object_json)
@@ -158,5 +161,5 @@ class Parser():
         return objects
 
 class CellParser(Parser):
-    def register_transforms(self, x, y):
-        self.register_transform(CellTransform(x, y))
+    def register_transforms(self, x, y, width, height):
+        self.register_transform(CellTransform(x, y, width, height))

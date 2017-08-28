@@ -1,16 +1,6 @@
-<<<<<<< HEAD
-2 0 0 0 2 0 1
-0 1 1 0 2 0 2
-2 0 1 0 2 0 1
-1 0 0 0 2 0 0
-0 0 0 0 0 0 1
-1 1 1 0 0 0 0
-=======
 1 1 1 1 2 2 
 0 1 1 1 2 2
 0 0 1 1 2 2
 0 0 0 1 2 2
 0 0 0 0 2 2
 0 0 0 0 0 2
-
->>>>>>> d876168... Changed CellTransform's coordinates. The level appears as it should but the rows and columns seem the be the other way round so we should look into it.

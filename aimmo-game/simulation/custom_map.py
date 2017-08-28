@@ -15,6 +15,9 @@ from simulation.world_map import WorldMapStaticSpawnDecorator
 from simulation.world_map import DEFAULT_LEVEL_SETTINGS
 from simulation.world_map import Cell
 
+import sys
+current_module = sys.modules[__name__]
+
 class BaseGenerator(object):
     """
         A map generator that exposes a game state and a check for level completion.
@@ -130,6 +133,7 @@ class JsonLevelGenerator(BaseLevelGenerator):
             maxX = int((self.meta["cols"] - 1) / 2) + 1
             minY = -int((self.meta["rows"]) / 2)
             maxY = int((self.meta["rows"] - 1) / 2) + 1
+
             self.world_map = EmptyMapGenerator.get_map_by_corners(
                 self.settings,
                 (minY, maxY, minX, maxX))
