@@ -1,12 +1,44 @@
 import json
 import abc
 import os
+import re
 
 from transforms import CellTransform
 
 def call_method(o, name):
     x = getattr(o, name)()
     return x
+
+class JSONParser():
+    """
+        A parser that loads a level from a json file.
+
+        We want to keep the old parsers for testing in the back-end, but
+        we also want the new formatted maps that are exported from the
+        Unity level generator.
+    """
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self, map_name):
+        self._SCRIPT_LOCATION = os.path.abspath(os.path.dirname(__file__))
+        self._JSON_FOLDER = os.path.join(self._SCRIPT_LOCATION, "json")
+        self.map_name = map_name
+
+    def parse_json(self):
+        def clean_json(data):
+            # cleans trailing json commas
+            data = re.sub(",[ \t\r\n]+}", "}", data)
+            data = re.sub(",[ \t\r\n]+\]", "]", data)
+
+            return data
+
+        with open(os.path.join(self._JSON_FOLDER, self.map_name), 'r') as data_file:
+            data = data_file.read().replace('\n', '')
+            self.map = json.loads(clean_json(data))
+
+    def get_objects(self):
+        self.parse_json()
+        return self.map
 
 class Parser():
     __metaclass__ = abc.ABCMeta

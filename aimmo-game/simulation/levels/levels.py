@@ -1,11 +1,32 @@
-from parsers import CellParser
+from parsers import CellParser, JSONParser
 from pprint import pprint
 
 import os
 
 _SCRIPT_LOCATION = os.path.abspath(os.path.dirname(__file__))
 _MAPS_FOLDER = os.path.join(_SCRIPT_LOCATION, "maps")
+_JSON_FOLDER = os.path.join(_SCRIPT_LOCATION, "json")
+
 _LEVEL_COUNT = len(os.listdir(_MAPS_FOLDER))
+_JSON_LEVEL_COUNT = len(os.listdir(_JSON_FOLDER))
+
+class RawJSONLevelGenerator():
+    """
+        Builder that is used for the json levels.
+
+        To add a Unity-generated level:
+            -- add a level in the json_folder
+    """
+
+    def __init__(self):
+        pass
+
+    def by_json_level_name(self, level_name):
+        self.parser = JSONParser(level_name)
+        return self
+
+    def generate_json(self):
+        return self.parser.get_objects()
 
 class RawLevelGenerator():
     """
@@ -39,13 +60,15 @@ class RawLevelGenerator():
     def generate_json(self):
         return self.parser.map_apply_transforms()
 
-LEVELS = {}
-for lvl in xrange(1, _LEVEL_COUNT + 1):
-    lvl_id = "level" + str(lvl)
-    LEVELS[lvl_id] = RawLevelGenerator().by_parser(CellParser()).by_map(lvl_id + ".txt").by_models(["objects.json"]).generate_json()
+#LEVELS = {}
+#for lvl in xrange(1, _LEVEL_COUNT + 1):
+#    lvl_id = "level" + str(lvl)
+#    LEVELS[lvl_id] = RawLevelGenerator().by_parser(CellParser()).by_map(lvl_id + ".txt").by_models(["objects.json"]).generate_json()
 
-def main():
-    pprint(LEVELS["level1"])
+LEVELS = {}
+for lvl in range(1, _JSON_LEVEL_COUNT + 1):
+    lvl_id = "level" + str(lvl)
+    LEVELS[lvl_id] = RawJSONLevelGenerator().by_json_level_name("level1.json").generate_json()
 
 if __name__ == '__main__':
-    main()
+    pprint(LEVELS["level1"])
