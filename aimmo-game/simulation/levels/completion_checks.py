@@ -4,12 +4,13 @@ def check_complete(self, game_state):
     except KeyError:
         return False
 
-    return main_avatar.score > 24
+    return main_avatar.score > 1000
 
 COMPLETION_CHECKS = {
     "level1" : check_complete,
     "level2" : check_complete,
     "level3" : check_complete,
     "level4" : check_complete,
-    "level5" : check_complete
+    "level5" : check_complete,
+    "level6" : check_complete
 }

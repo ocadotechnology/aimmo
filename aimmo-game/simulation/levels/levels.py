@@ -7,9 +7,6 @@ _SCRIPT_LOCATION = os.path.abspath(os.path.dirname(__file__))
 _MAPS_FOLDER = os.path.join(_SCRIPT_LOCATION, "maps")
 _JSON_FOLDER = os.path.join(_SCRIPT_LOCATION, "json")
 
-_LEVEL_COUNT = len(os.listdir(_MAPS_FOLDER))
-_JSON_LEVEL_COUNT = len(os.listdir(_JSON_FOLDER))
-
 class RawJSONLevelGenerator():
     """
         Builder that is used for the json levels.
@@ -60,15 +57,19 @@ class RawLevelGenerator():
     def generate_json(self):
         return self.parser.map_apply_transforms()
 
-#LEVELS = {}
-#for lvl in xrange(1, _LEVEL_COUNT + 1):
-#    lvl_id = "level" + str(lvl)
-#    LEVELS[lvl_id] = RawLevelGenerator().by_parser(CellParser()).by_map(lvl_id + ".txt").by_models(["objects.json"]).generate_json()
-
 LEVELS = {}
-for lvl in range(1, _JSON_LEVEL_COUNT + 1):
+
+TXT_LEVELS = os.listdir(_MAPS_FOLDER)
+TXT_LEVELS.sort()
+for lvl in range(1, len(TXT_LEVELS) + 1):
     lvl_id = "level" + str(lvl)
-    LEVELS[lvl_id] = RawJSONLevelGenerator().by_json_level_name("level1.json").generate_json()
+    LEVELS[lvl_id] = RawLevelGenerator().by_parser(CellParser()).by_map(TXT_LEVELS[lvl - 1]).by_models(["objects.json"]).generate_json()
+
+JSON_LEVELS = os.listdir(_JSON_FOLDER)
+JSON_LEVELS.sort()
+for lvl in range(len(TXT_LEVELS) + 1, len(JSON_LEVELS) + len(TXT_LEVELS) + 1):
+    lvl_id = "level" + str(lvl)
+    LEVELS[lvl_id] = RawJSONLevelGenerator().by_json_level_name(JSON_LEVELS[lvl - len(TXT_LEVELS) - 1]).generate_json()
 
 if __name__ == '__main__':
-    pprint(LEVELS["level1"])
+    pprint(LEVELS["level6"])
