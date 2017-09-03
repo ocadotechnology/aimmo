@@ -2,7 +2,6 @@ from __future__ import absolute_import
 
 from unittest import TestCase, skipUnless, skip
 import requests
-from pprint import pprint
 from simulation import SnapshotProcessor
 
 import os
@@ -17,7 +16,15 @@ FNULL = open(os.devnull, 'w')
 import logging
 import traceback
 
-from misc import run_command_async, kill_process_tree, get_ip
+from misc import run_command_async
+from misc import kill_process_tree
+from misc import get_ip
+
+logging.basicConfig()
+LOGGER = logging.getLogger(__name__)
+LOGGER.setLevel(logging.DEBUG)
+REQUEST_LOG = logging.getLogger("request-log")
+REQUEST_LOG.setLevel(logging.DEBUG)
 
 class TestService(TestCase):
     """
@@ -55,13 +62,13 @@ class TestService(TestCase):
         self.session = requests.Session()
 
     def __cleanup(self, kube):
-        print("Terminating processes....")
+        LOGGER.info("Terminating processes....")
         time.sleep(1)
         try:
             if not kube:
                 kill_process_tree(self.django.pid)
             else:
-                print("Stopping minikube...")
+                LOGGER.info("Stopping minikube...")
                 os.system("minikube stop")
                 kill_process_tree(self.django.pid)
         finally:
@@ -72,7 +79,7 @@ class TestService(TestCase):
             host = self._SERVER_URL
 
         url = host + resource
-        print("> getting: " + url)
+        REQUEST_LOG.info("getting: " + url)
 
         result = self.session.get(url)
 
@@ -82,7 +89,7 @@ class TestService(TestCase):
 
     def __post_resource(self, resource, code, payload):
         url = self._SERVER_URL + resource
-        print("> posting: " + url)
+        REQUEST_LOG.info("posting: " + url)
 
         # setting CSRF...
         payload['csrfmiddlewaretoken']=self.session.cookies['csrftoken']
@@ -110,7 +117,7 @@ class TestService(TestCase):
                     return
                     break
             except:
-                print("Waiting for resource...")
+                LOGGER.info("Waiting for resource...")
         self.assertTrue(False)
 
     def start_django(self, kube):
@@ -140,7 +147,7 @@ class TestService(TestCase):
         try:
             self.__start_django(kube)
             if kube:
-                print("Waiting for minikube to start...")
+                LOGGER.info("Waiting for minikube to start...")
                 time.sleep(300)
 
             self.__pool_callback(callback=lambda: self.__get_resource("", 200).status_code == 200, tries=30)
@@ -166,7 +173,7 @@ class TestService(TestCase):
             watch_page = self.__get_resource("players/watch/" + level1_id, 200).text
 
             host, path = self.__get_socketio_info(watch_page)
-            print("HOST:" + host)
+            LOGGER.info("HOST:" + host)
 
             # This adds the code to the database
             self.__get_resource("players/api/code/1", 200)

@@ -14,9 +14,16 @@ import subprocess
 import sys
 from httmock import HTTMock
 
-from json import dumps, loads
+from json import dumps
+from json import loads
 
-from misc import run_command_async, kill_process_tree
+from misc import run_command_async
+from misc import kill_process_tree
+
+import logging
+logging.basicConfig()
+LOGGER = logging.getLogger(__name__)
+LOGGER.setLevel(logging.DEBUG)
 
 ################################################################################
 
@@ -115,7 +122,7 @@ class GameProxy(ConnectionProxy):
         with HTTMock(mocker):
             ans = requests.get(self.binder._SERVER_URL + received)
             self.binder.assertEqual(len(mocker.urls_requested), 1)
-            print mocker.urls_requested[0]
+            LOGGER.info("URL requested: %s" % mocker.urls_requested[0])
             self.binder.assertEqual("/players/api/games/0/" in mocker.urls_requested[0], True)
             return ans.text
 
@@ -165,7 +172,7 @@ class TestService(TestCase):
 
             server = MockServer()
             for proxy, times in proxies:
-                print "Running " + str(proxy) + " " + str(times) + " times"
+                LOGGER.info("Running %s %d times", str(proxy), times)
                 server.register_proxy(proxy)
                 server.run(times)
                 server.clear_proxies()

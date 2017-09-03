@@ -14,6 +14,10 @@ import socket
 
 FNULL = open(os.devnull, 'w')
 
+logging.basicConfig()
+LOGGER = logging.getLogger(__name__)
+LOGGER.setLevel(logging.DEBUG)
+
 def get_ip():
     # http://stackoverflow.com/a/28950776/671626
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -43,16 +47,16 @@ def process_tree(pid):
 
 def kill_process_tree(pid):
     try:
-        print("Current process " + str(os.getpid()))
-        print("Process tree...")
+        LOGGER.info("Current process %s" % str(os.getpid()))
+        LOGGER.info("Process tree...")
         to_kill = process_tree(pid)
-        print("Killing processes..." + str(to_kill))
+        LOGGER.info("Killing processes... %s" % str(to_kill))
         for pid in to_kill:
             os.kill(pid, signal.SIGKILL)
-        print("Waiting for processes to terminate...")
+        LOGGER.info("Waiting for processes to terminate...")
         for pid in to_kill:
             os.system("wait " + str(pid))
-        print("Process tree killed successfully...")
+        LOGGER.info("Process tree killed successfully...")
     except Exception as e:
-        print("An exception occured while killing the process tree...")
+        LOGGER.warn("An exception occured while killing the process tree...")
         logging.error(traceback.format_exc())

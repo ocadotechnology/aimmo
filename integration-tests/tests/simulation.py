@@ -1,7 +1,12 @@
-from pprint import pprint
+from pprint import pformat
 import abc
 
 import json
+import logging
+
+logging.basicConfig()
+LOGGER = logging.getLogger(__name__)
+LOGGER.setLevel(logging.DEBUG)
 
 class BaseSnapshotProcessor():
     __metaclass__ = abc.ABCMeta
@@ -28,16 +33,16 @@ class SnapshotProcessor(BaseSnapshotProcessor):
         x_move = x_diff >= -1 and x_diff <= 1 and y_diff == 0
         y_move = y_diff >= -1 and y_diff <= 1 and x_diff == 0
 
-        print("Checking player movement...")
-        print(str((last_pos['x'], last_pos['y'])) + " -> " + str((curr_pos['x'], curr_pos['y'])))
+        LOGGER.info("Checking player movement...")
+        LOGGER.info(str((last_pos['x'], last_pos['y'])) + " -> " + str((curr_pos['x'], curr_pos['y'])))
         if x_diff == 0 and y_diff == 0:
-            print("No movement > OK")
+            LOGGER.info("No movement > OK")
         elif x_move:
-            print("Movement on x axes > OK")
+            LOGGER.info("Movement on x axes > OK")
         elif y_move:
-            print("Movement on y axes > OK")
+            LOGGER.info("Movement on y axes > OK")
         else:
-            print("To many moves > FAIL")
+            LOGGER.error("To many moves > FAIL")
         self.binder.assertTrue(x_move or y_move)
 
     def get_player(self, world_state):
@@ -61,8 +66,8 @@ class SnapshotProcessor(BaseSnapshotProcessor):
         )
 
     def check_only_feature_creations_happen(self, world_state):
-        print("Receiving initial world state...")
-        pprint(world_state)
+        LOGGER.info("Receiving initial world state...")
+        LOGGER.info(pformat(world_state))
         for key, feature in world_state['map_features'].iteritems():
             if 'update' in feature.keys():
                 self.binder.assertEqual(len(feature['update']), 0)
@@ -72,7 +77,7 @@ class SnapshotProcessor(BaseSnapshotProcessor):
     def check_first_world_state(self):
         world_state = self.world_states[-1]
 
-        print("Checking only feature creations happen...")
+        LOGGER.info("Checking only feature creations happen...")
         self.check_only_feature_creations_happen(world_state)
 
     def receive_snapshot(self, world_state_string):

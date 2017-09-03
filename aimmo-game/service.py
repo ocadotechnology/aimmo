@@ -68,25 +68,27 @@ def player_data(player_id):
     })
 
 # Plain client routes... These are easy to work with and
-# they are not exposed in the kubernates application
+# they are not exposed in the kubernetes application
 # as the proxy does not allow communication with them.
 @app.route('/plain/<user_id>/connect')
 def plain_world_init(user_id):
     world_init()
     return 'CONNECT'
+
 @app.route('/plain/<user_id>/client-ready')
 def plain_client_ready(user_id):
     world_state = WorldState(state_provider)
     world_state_manager[int(user_id)] = world_state
     return 'RECEIVED USER READY ' + user_id
+
 @app.route('/plain/<user_id>/exit-game')
 def plain_exit_game(user_id):
     return "EXITING GAME FOR USER " + user_id
+
 @app.route('/plain/<user_id>/update')
 def plain_update(user_id):
     world_state =  world_state_manager[int(user_id)]
     return flask.jsonify(world_state.get_updates())
-
 
 def run_game(port):
     global worker_manager

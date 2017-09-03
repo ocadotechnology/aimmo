@@ -20,9 +20,6 @@ class SimpleAvatarManager(AvatarManager):
        super(SimpleAvatarManager, self).__init__()
 
        avatar = MoveEastDummy(1, Location(0, -1))
-       self.avatars_by_id = {
-           1 : avatar
-       }
        self.avatars_to_create_by_id = {
            1 : avatar
        }
@@ -44,7 +41,7 @@ class TestServiceInternals(TestCase):
         avatar_manager = SimpleAvatarManager()
         CELLS = [
             [
-                {'pickup': MockPickup('b'), 'avatar': avatar_manager.get_avatar(self.user_id)},
+                {'pickup': MockPickup('b'), 'avatar': avatar_manager.avatars_to_create_by_id},
                 {},
                 {'generates_score': True},
             ],
