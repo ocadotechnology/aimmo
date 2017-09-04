@@ -219,7 +219,7 @@ class TestTurnManager(unittest.TestCase):
         [self.assert_at(avatars[x], Location(x, 0)) for x in range(4)]
         self.assert_at(avatars[4], Location(5, 0))
 
-    def sequential_move_chain_fails_collission(self):
+    def sequential_move_chain_fails_collision(self):
         '''
         Given:  > > > _ <
         (1)
@@ -240,7 +240,8 @@ class TestTurnManager(unittest.TestCase):
         constructor = lambda x, y: self.construct_sequential_turn_manager(x, y)
         self.build_test_by_constructor(constructor)
         self.sequential_move_chain_consecutive_avatars_fails()
-        self.sequential_move_chain_fails_collission()
+        self.sequential_move_chain_fails_collision()
+
 
 if __name__ == '__main__':
     unittest.main()

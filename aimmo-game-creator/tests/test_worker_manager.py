@@ -99,6 +99,7 @@ class TestWorkerManager(unittest.TestCase):
             )
             self.assertEqual(self.worker_manager.added_workers[str(i)]['name'], 'Game %s' % i)
 
+
 class TestLocalWorkerManager(unittest.TestCase):
 
     def test_create_worker(self):
