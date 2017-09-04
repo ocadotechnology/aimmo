@@ -41,14 +41,14 @@ class TestServiceInternals(TestCase):
         avatar_manager = SimpleAvatarManager()
         CELLS = [
             [
-                {'pickup': MockPickup('b'), 'avatar': avatar_manager.avatars_by_id[1]},
+                {'pickup': MockPickup('b'), 'avatar': avatar_manager.get_avatar(self.user_id), 'cell_content': Floor({})},
                 {},
-                {'generates_score': True},
+                {'cell_content': ScoreLocation({})},
             ],
             [
                 {},
-                {'habitable': False},
-                {'pickup': MockPickup('a')},
+                {'cell_content': Obstacle({})},
+                {'pickup': MockPickup('a'), 'cell_content': Floor({})},
             ],
         ]
         grid = {Location(x, y-1): MockCell(Location(x, y-1), **CELLS[x][y])

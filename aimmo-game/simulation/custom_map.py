@@ -89,7 +89,7 @@ class EmptyMapGenerator(BaseGenerator):
         new_settings = DEFAULT_LEVEL_SETTINGS.copy()
         new_settings.update(self.settings)
 
-        return EmptyMapGenerator.get_map_by_corners(self.settings, get_corners(self.height, self.width))
+        return EmptyMapGenerator.get_map_by_corners(new_settings, get_corners(self.height, self.width))
 
 class BaseLevelGenerator(BaseGenerator):
     """
