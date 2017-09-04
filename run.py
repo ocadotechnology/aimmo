@@ -7,11 +7,24 @@ import sys
 import time
 import traceback
 from subprocess import CalledProcessError
+import socket
+
+def get_ip():
+    # http://stackoverflow.com/a/28950776/671626
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        # doesn't even have to be reachable
+        s.connect(('10.255.255.255', 0))
+        IP = s.getsockname()[0]
+    except:
+        IP = '127.0.0.1'
+    finally:
+        s.close()
+    return IP
 
 _SCRIPT_LOCATION = os.path.abspath(os.path.dirname(__file__))
 _MANAGE_PY = os.path.join(_SCRIPT_LOCATION, 'example_project', 'manage.py')
 _SERVICE_PY = os.path.join(_SCRIPT_LOCATION, 'aimmo-game-creator', 'service.py')
-
 
 if __name__ == '__main__':
     logging.basicConfig()
@@ -60,19 +73,20 @@ def main(use_minikube):
 
     create_superuser_if_missing(username='admin', password='admin')
 
-    server_args = []
+    server_args = ['0.0.0.0:8000']
     if use_minikube:
         # Import minikube here, so we can install the deps first
         run_command(['pip', 'install', '-r', os.path.join(_SCRIPT_LOCATION, 'minikube_requirements.txt')])
         import minikube
 
         minikube.start()
-        server_args.append('0.0.0.0:8000')
         os.environ['AIMMO_MODE'] = 'minikube'
     else:
         time.sleep(2)
-        game = run_command_async(['python', _SERVICE_PY, '127.0.0.1', '5000'])
         os.environ['AIMMO_MODE'] = 'threads'
+        os.environ['GAME_API_URL'] = 'http://' + get_ip() + ":8000/players/api/games/"
+        os.environ['WORKER_MANAGER'] = 'local'
+        game = run_command_async(['python', _SERVICE_PY, get_ip(), '5000'])
     server = run_command_async(['python', _MANAGE_PY, 'runserver'] + server_args)
 
     try:

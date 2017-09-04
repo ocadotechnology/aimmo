@@ -32,6 +32,7 @@ class MockCell(Cell):
         self.name = name
         self.actions = actions
         self.partially_fogged = False
+        self.created = False
 
     def __eq__(self, other):
         return self is other

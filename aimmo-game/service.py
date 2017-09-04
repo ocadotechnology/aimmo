@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-import cPickle as pickle
 import logging
 import os
 import sys
 
 import eventlet
+from json import loads
 
 eventlet.sleep()
 eventlet.monkey_patch()
@@ -27,19 +27,20 @@ worker_manager = None
 # Every user has its own world state.
 world_state_manager = {}
 
+# socketio routes
 @socketio.on('connect')
 def world_init():
     socketio.emit('world-init')
-
-@socketio.on('disconnect')
-def exit_game():
-    del world_state_manager[flask.session['id']]
 
 @socketio.on('client-ready')
 def client_ready(client_id):
     flask.session['id'] = client_id
     world_state = WorldState(state_provider)
     world_state_manager[client_id] = world_state
+
+@socketio.on('exit-game')
+def exit_game(user_id):
+    del world_state_manager[user_id]
 
 def send_world_update():
     for world_state in world_state_manager.values():
@@ -48,6 +49,10 @@ def send_world_update():
             world_state.get_updates(),
             broadcast=True,
         )
+
+@socketio.on('disconnect')
+def on_disconnect():
+    del world_state_manager[flask.session['id']]
 
 @app.route('/')
 def healthcheck():
@@ -62,13 +67,36 @@ def player_data(player_id):
         'state': None,
     })
 
+# Plain client routes... These are easy to work with and
+# they are not exposed in the kubernetes application
+# as the proxy does not allow communication with them.
+@app.route('/plain/<user_id>/connect')
+def plain_world_init(user_id):
+    world_init()
+    return 'CONNECT'
+
+@app.route('/plain/<user_id>/client-ready')
+def plain_client_ready(user_id):
+    world_state = WorldState(state_provider)
+    world_state_manager[int(user_id)] = world_state
+    return 'RECEIVED USER READY ' + user_id
+
+@app.route('/plain/<user_id>/exit-game')
+def plain_exit_game(user_id):
+    return "EXITING GAME FOR USER " + user_id
+
+@app.route('/plain/<user_id>/update')
+def plain_update(user_id):
+    world_state =  world_state_manager[int(user_id)]
+    return flask.jsonify(world_state.get_updates())
+
 def run_game(port):
     global worker_manager
 
     print("Running game...")
-    settings = pickle.loads(os.environ['settings'])
+    settings = loads(os.environ['settings'])
 
-    api_url = os.environ.get('GAME_API_URL', 'http://localhost:8000/players/api/games/')
+    api_url = os.environ['GAME_API_URL']
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
     player_manager = AvatarManager()
     game_state = generator.get_game_state(player_manager)
