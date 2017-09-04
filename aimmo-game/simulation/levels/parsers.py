@@ -5,9 +5,11 @@ import re
 
 from transforms import CellTransform
 
+
 def call_method(o, name):
     x = getattr(o, name)()
     return x
+
 
 class JSONParser():
     """
@@ -37,6 +39,7 @@ class JSONParser():
     def get_objects(self):
         self.parse_json()
         return self.map
+
 
 class Parser():
     """

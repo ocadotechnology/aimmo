@@ -20,6 +20,7 @@ from simulation.cell import *
 
 LOGGER = logging.getLogger(__name__)
 
+
 class Main(BaseGenerator):
 
     """

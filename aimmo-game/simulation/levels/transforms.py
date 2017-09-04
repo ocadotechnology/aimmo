@@ -1,5 +1,6 @@
 import hashlib
 
+
 class CellTransform():
 	"""
 		A transform is a function callable from objects.json. E.g.:

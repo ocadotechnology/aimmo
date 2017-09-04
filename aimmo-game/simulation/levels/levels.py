@@ -7,6 +7,7 @@ _SCRIPT_LOCATION = os.path.abspath(os.path.dirname(__file__))
 _MAPS_FOLDER = os.path.join(_SCRIPT_LOCATION, "maps")
 _JSON_FOLDER = os.path.join(_SCRIPT_LOCATION, "json")
 
+
 class RawJSONLevelGenerator():
     """
         Builder that is used for the json levels.
@@ -24,6 +25,7 @@ class RawJSONLevelGenerator():
 
     def generate_json(self):
         return self.parser.get_objects()
+
 
 class RawLevelGenerator():
     """

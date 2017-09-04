@@ -10,6 +10,7 @@ from simulation.pickups import HealthPickup
 from simulation.pickups import InvulnerabilityPickup
 from simulation.pickups import DamagePickup
 
+
 class Decoder():
     """
         See @JsonLevelGenerator and @Levels first.
@@ -37,10 +38,10 @@ class Decoder():
     def decode(self, json, world_map):
         pass
 
+
 def get_sprite(json):
-    if "sprite" in json:
-        return json["sprite"]
-    return {}
+    return json.get("sprite", {})
+
 
 class ScoreCellDecoder(Decoder):
     def decode(self, json, world_map):
@@ -48,10 +49,12 @@ class ScoreCellDecoder(Decoder):
         world_map = WorldMapStaticSpawnDecorator(world_map, Location(x, y))
         world_map.get_cell(Location(x, y)).cell_content = ScoreLocation(get_sprite(json))
 
+
 class ObstacleDecoder(Decoder):
     def decode(self, json, world_map):
         x, y = int(json["x"]), int(json["y"])
         world_map.get_cell(Location(x, y)).cell_content = Obstacle(get_sprite(json))
+
 
 class PickupDecoder(Decoder):
     def decode(self, json, world_map):
@@ -63,6 +66,7 @@ class PickupDecoder(Decoder):
             world_map.get_cell(Location(x, y)).pickup = HealthPickup(world_map.get_cell(Location(x, y)), int(json["health_restored"]))
         if json["type"] == "damage":
             world_map.get_cell(Location(x, y)).pickup = DamagePickup(world_map.get_cell(Location(x, y)))
+
 
 DECODERS = [
     ScoreCellDecoder("2"),
