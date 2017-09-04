@@ -60,12 +60,16 @@ class InfiniteMap(WorldMap):
         self.updates += 1
         self.num_avatars = num_avatars
 
-    @property
-    def num_rows(self):
+    def min_x(self):
+        return float('-inf')
+
+    def max_x(self):
         return float('inf')
 
-    @property
-    def num_cols(self):
+    def min_y(self):
+        return float('-inf')
+
+    def max_y(self):
         return float('inf')
 
 

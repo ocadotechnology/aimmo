@@ -30,6 +30,7 @@ class WorldState():
 
     def get_updates(self):
         self.refresh()
+
         updates = {
             'players'      : dict(self.players),
             'map_features' : dict(self.map_features)
@@ -51,7 +52,6 @@ class WorldState():
             }
 
     # Player updates.
-
     def create_player(self, player_data):
         # Player data: {id, x, y, rotation, health, score, appearance?}
         self.players["create"].append(player_data)
@@ -65,7 +65,6 @@ class WorldState():
         self.players["update"].append(player_update)
 
     # Map features updates.
-
     def create_map_feature(self, map_feature, map_feature_data):
         self.map_features[map_feature]["create"].append(map_feature_data)
 
@@ -74,7 +73,6 @@ class WorldState():
 
     # Refresh the world state. Basically gather information from the avatar manager
     # and the world map and organise it.
-
     def refresh(self):
         def player_dict(avatar):
             return {
@@ -82,40 +80,59 @@ class WorldState():
                 'x'     : avatar.location.x,
                 'y'     : avatar.location.y,
                 'score' : avatar.score,
-                'health': avatar.health
+                'health': avatar.health,
+                # This is temporary, appearance will be more complex later on.
+                'colour': "#%06x" % (avatar.player_id * 4999)
             }
 
         def map_feature_dict(map_feature):
             return {
-                'id' : hash(map_feature),
+                'id' : str(hash(map_feature)),
                 'x'  : map_feature.location.x,
                 'y'  : map_feature.location.y
             }
 
         with self.game_state as game_state:
-            world = game_state.world_map
-
-            # Refresh players dictionary.
-
+            # Update active avatars.
             for player in game_state.avatar_manager.avatars:
                 self.update_player(player_dict(player))
 
-            for player in game_state.avatar_manager.avatars_to_create():
-                self.create_player(player_dict(player))
+            main_avatar_id = 1
+            avatar_view = game_state.avatar_manager.get_avatar(main_avatar_id).view
+            if avatar_view is None:
+                return
 
-            for player in game_state.avatar_manager.avatars_to_delete():
-                self.delete_player(player_dict(player))
+            if avatar_view.is_empty:
+                avatar_view.reveal_all_cells(game_state.world_map)
+                avatar_view.is_empty = False
 
-            # Refresh map features dictionary.
-
-            for cell in world.cells_to_create():
-
+            # Creation.
+            for cell in avatar_view.cells_to_reveal:
+                # There is an avatar.
+                if cell.avatar is not None:
+                    self.create_player(player_dict(cell.avatar))
                 # Cell is an obstacle.
                 if not cell.habitable:
                     self.create_map_feature(MapFeature.OBSTACLE.value, map_feature_dict(cell))
-                    cell.created = True
-
                 # Cell is a score point.
                 if cell.generates_score:
                     self.create_map_feature(MapFeature.SCORE_POINT.value, map_feature_dict(cell))
-                    cell.created = True
+
+            # Updates.
+            for cell in avatar_view.cells_in_view:
+                if cell.add_to_scene is not None:
+                    self.create_map_feature(cell.add_to_scene.value, map_feature_dict(cell))
+                if cell.remove_from_scene is not None:
+                    self.delete_map_feature(cell.remove_from_scene.value, map_feature_dict(cell))
+
+            # Deletion.
+            for cell in avatar_view.cells_to_clear:
+                # There is an avatar.
+                if cell.avatar is not None:
+                    self.delete_player(player_dict(cell.avatar))
+                # Cell is an obstacle.
+                if not cell.habitable:
+                    self.delete_map_feature(MapFeature.OBSTACLE.value, map_feature_dict(cell))
+                # Cell is a score point.
+                if cell.generates_score:
+                    self.delete_map_feature(MapFeature.SCORE_POINT.value, map_feature_dict(cell))
