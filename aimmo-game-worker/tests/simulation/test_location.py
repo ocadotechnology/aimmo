@@ -23,7 +23,6 @@ class TestLocation(TestCase):
         dummy_location = Location(1, 2)
         self.assertTrue("Location(1, 2)" == str(dummy_location))
 
-
     def test_not_equal(self):
         dummy_location_1 = Location(1, 1)
         dummy_location_2 = Location(2, 2)
