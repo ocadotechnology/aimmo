@@ -52,7 +52,6 @@ class WorldState():
             }
 
     # Player updates.
-
     def create_player(self, player_data):
         # Player data: {id, x, y, rotation, health, score, appearance?}
         self.players["create"].append(player_data)
@@ -66,7 +65,6 @@ class WorldState():
         self.players["update"].append(player_update)
 
     # Map features updates.
-
     def create_map_feature(self, map_feature, map_feature_data):
         self.map_features[map_feature]["create"].append(map_feature_data)
 
@@ -75,7 +73,6 @@ class WorldState():
 
     # Refresh the world state. Basically gather information from the avatar manager
     # and the world map and organise it.
-
     def refresh(self):
         def player_dict(avatar):
             return {
@@ -109,10 +106,10 @@ class WorldState():
                 avatar_view.reveal_all_cells(game_state.world_map)
                 avatar_view.is_empty = False
 
-            # Creation
+            # Creation.
             for cell in avatar_view.cells_to_reveal:
                 # There is an avatar.
-                if not cell.avatar is None:
+                if cell.avatar is not None:
                     self.create_player(player_dict(cell.avatar))
                 # Cell is an obstacle.
                 if not cell.habitable:
@@ -121,17 +118,17 @@ class WorldState():
                 if cell.generates_score:
                     self.create_map_feature(MapFeature.SCORE_POINT.value, map_feature_dict(cell))
 
-            # Updates
+            # Updates.
             for cell in avatar_view.cells_in_view:
-                if not cell.add_to_scene is None:
+                if cell.add_to_scene is not None:
                     self.create_map_feature(cell.add_to_scene.value, map_feature_dict(cell))
-                if not cell.remove_from_scene is None:
+                if cell.remove_from_scene is not None:
                     self.delete_map_feature(cell.remove_from_scene.value, map_feature_dict(cell))
 
-            # Deletion
+            # Deletion.
             for cell in avatar_view.cells_to_clear:
                 # There is an avatar.
-                if not cell.avatar is None:
+                if cell.avatar is not None:
                     self.delete_player(player_dict(cell.avatar))
                 # Cell is an obstacle.
                 if not cell.habitable:

@@ -134,3 +134,4 @@ class AvatarView():
         self.NW_horizon += move_direction
         self.SE_horizon += move_direction
         self.SW_horizon += move_direction
+        

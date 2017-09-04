@@ -33,11 +33,7 @@ class MockWorldMap(object):
 
 
 class TestAvatarView(TestCase):
-    def setUp(self):
-        pass
-
     # Test 'location_in_view'
-
     def test_knows_when_a_location_is_inside_the_view(self):
         avatar_view = AvatarView(Location(0, 0), 2)
         self.assertTrue(avatar_view.location_in_view(Location(0, 0)))
@@ -53,7 +49,6 @@ class TestAvatarView(TestCase):
         self.assertFalse(avatar_view.location_in_view(Location(-4, -4)))
 
     # Test 'cells_in_rectangle'
-
     def test_returns_one_cell_when_world_map_is_empty(self):
         mock_world_map = MockWorldMap(0, 0, 0, 0)
         cells_in_rectangle = AvatarView.cells_in_rectangle(Location(-3, 4), Location(5, -6), mock_world_map)
@@ -80,7 +75,6 @@ class TestAvatarView(TestCase):
         self.assertEqual(len(cells_in_rectagle), 1)
 
     # Test 'reveal_all_cells'
-
     def test_reveals_all_cells(self):
         mock_world_map = MockWorldMap(-25, -30, 30, 40)
         avatar_view = AvatarView(Location(-4, -8), 2)
@@ -88,7 +82,6 @@ class TestAvatarView(TestCase):
         self.assertEqual(len(avatar_view.cells_to_reveal), 16)
 
     # Test 'move'
-
     def test_correct_number_of_cells_to_clear_reveal_and_in_view(self):
         mock_world_map = MockWorldMap(-10, -10, 10, 10)
         avatar_view = AvatarView(Location(0, 0), 2)
