@@ -71,8 +71,6 @@ class SnapshotProcessor(BaseSnapshotProcessor):
         for key, feature in world_state['map_features'].iteritems():
             if 'update' in feature.keys():
                 self.binder.assertEqual(len(feature['update']), 0)
-            if 'delete' in feature.keys():
-                self.binder.assertEqual(len(feature['delete']), 0)
 
     def check_first_world_state(self):
         world_state = self.world_states[-1]

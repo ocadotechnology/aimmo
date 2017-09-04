@@ -33,6 +33,8 @@ class MockCell(Cell):
         self.actions = actions
         self.partially_fogged = False
         self.created = False
+        self.add_to_scene = None
+        self.remove_from_scene = None
 
     def __eq__(self, other):
         return self is other
