@@ -5,6 +5,7 @@ from simulation.location import Location
 from simulation.direction import EAST, WEST, NORTH, SOUTH
 from simulation.avatar.avatar_view import AvatarView
 
+
 class MockWorldMap(object):
     def __init__(self, _min_x, _min_y, _max_x, _max_y):
         self._min_x = _min_x
@@ -29,6 +30,7 @@ class MockWorldMap(object):
             return Cell(location)
         else:
             raise ValueError
+
 
 class TestAvatarView(TestCase):
     def setUp(self):
