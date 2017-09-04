@@ -5,9 +5,7 @@ import unittest
 from json import dumps
 
 from httmock import HTTMock
-
 from worker_manager import WorkerManager
-
 
 class ConcreteWorkerManager(WorkerManager):
     def __init__(self, *args, **kwargs):
