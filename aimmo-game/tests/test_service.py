@@ -17,12 +17,11 @@ from .test_simulation.test_world_map import MockCell
 
 class SimpleAvatarManager(AvatarManager):
     def __init__(self):
-       super(SimpleAvatarManager, self).__init__()
+        super(SimpleAvatarManager, self).__init__()
 
-       avatar = MoveEastDummy(1, Location(0, -1))
-       self.avatars_to_create_by_id = {
-           1 : avatar
-       }
+        avatar = MoveEastDummy(1, Location(0, -1))
+        self.avatars_by_id[1] = avatar
+
 
 class TestServiceAPI(TestCase):
     def setUp(self):
@@ -33,6 +32,7 @@ class TestServiceAPI(TestCase):
         response = self.app.get('/')
         self.assertEqual(response.data, 'HEALTHY')
 
+
 class TestServiceInternals(TestCase):
     def setUp(self):
         self.user_id = 1
@@ -41,7 +41,7 @@ class TestServiceInternals(TestCase):
         avatar_manager = SimpleAvatarManager()
         CELLS = [
             [
-                {'pickup': MockPickup('b'), 'avatar': avatar_manager.avatars_to_create_by_id},
+                {'pickup': MockPickup('b'), 'avatar': avatar_manager.avatars_by_id[1]},
                 {},
                 {'generates_score': True},
             ],
