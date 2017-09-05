@@ -5,9 +5,9 @@
       "big" : "big",
       "cool" : "cool"
     },
-    "x" : "class:CellTransform.get_x",
+    "x" : "class:MockCellTransform.get_x",
     "other" : {
-      "y" : "class:CellTransform.get_y",
+      "y" : "class:MockCellTransform.get_y",
       "test" : "class:MockTransform.mock"
     }
   }

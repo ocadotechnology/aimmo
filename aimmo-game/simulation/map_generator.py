@@ -15,15 +15,28 @@ from simulation.world_map import DEFAULT_LEVEL_SETTINGS
 
 from simulation.custom_map import BaseGenerator
 from simulation.custom_map import BaseLevelGenerator
-from simulation.custom_map import Level1
+from simulation.custom_map import EmptyMapGenerator
+from simulation.cell import *
 
 LOGGER = logging.getLogger(__name__)
 
+
 class Main(BaseGenerator):
+
+    """
+        Main Level generator used by the map creation service from the Django server.
+        Custom level generators(see package levels) can be found in @custom_map.
+        To read more about map generators, read documentation in custom_map.
+
+        Obstacles are filled according to the obstacle ratio.
+
+        Once an obstacle is added we ensure that each habitable cell can reach each other,
+        thus the map will be connex and each generated avatar can reach others.
+    """
     def get_map(self):
         height = self.settings['START_HEIGHT']
         width = self.settings['START_WIDTH']
-        world_map = WorldMap.generate_empty_map(height, width, self.settings)
+        world_map = EmptyMapGenerator(height, width, self.settings).get_map()
 
         # We designate one non-corner edge cell as empty, to ensure that the map can be expanded
         always_empty_edge_x, always_empty_edge_y = get_random_edge_index(world_map)
@@ -31,14 +44,21 @@ class Main(BaseGenerator):
 
         for cell in shuffled(world_map.all_cells()):
             if cell.location != always_empty_location and random.random() < self.settings['OBSTACLE_RATIO']:
-                cell.habitable = False
+                cell.cell_content = Obstacle({
+                      "width" : "512",
+                      "height" : "1024",
+                      "path" : "Obstacle-512x1024-isometric-top"
+                    })
                 # So long as all habitable neighbours can still reach each other,
                 # then the map cannot get bisected
                 if not _all_habitable_neighbours_can_reach_each_other(cell, world_map):
-                    cell.habitable = True
+                    cell.cell_content = Floor({
+                      "width" : "400",
+                      "height" : "400",
+                      "path" : "Grass-400x400-isometric-top"
+                    })
 
         return world_map
-
 
 def _get_edge_coordinates(height, width):
     for x in range(width):
@@ -60,6 +80,10 @@ def pairwise(iterable):
 
 
 def _all_habitable_neighbours_can_reach_each_other(cell, world_map):
+    """
+        Helper function used by Main map generator. It ensures that each habitable cell can
+        reach each other.
+    """
     neighbours = get_adjacent_habitable_cells(cell, world_map)
 
     assert len(neighbours) >= 1

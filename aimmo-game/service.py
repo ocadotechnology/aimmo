@@ -12,8 +12,10 @@ eventlet.monkey_patch()
 import flask
 from flask_socketio import SocketIO
 
-from simulation.turn_manager import state_provider
 from simulation import map_generator
+from simulation import custom_map
+
+from simulation.turn_manager import state_provider
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.turn_manager import ConcurrentTurnManager
 from simulation.worker_manager import WORKER_MANAGERS
@@ -96,8 +98,13 @@ def run_game(port):
     print("Running game...")
     settings = loads(os.environ['settings'])
 
-    api_url = os.environ['GAME_API_URL']
-    generator = getattr(map_generator, settings['GENERATOR'])(settings)
+    api_url = os.environ.get('GAME_API_URL', 'http://localhost:8000/players/api/games/')
+    if hasattr(custom_map, settings['GENERATOR']):
+        generator = getattr(custom_map, settings['GENERATOR'])(settings)
+    else:
+        generator = getattr(map_generator, settings['GENERATOR'])(settings)
+
+    global player_manager
     player_manager = AvatarManager()
     game_state = generator.get_game_state(player_manager)
 

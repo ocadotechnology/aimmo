@@ -5,6 +5,7 @@ from logging import getLogger
 from simulation.pickups import ALL_PICKUPS
 from simulation.action import MoveAction
 from simulation.location import Location
+from world_state import MapFeature
 
 LOGGER = getLogger(__name__)
 
@@ -20,62 +21,11 @@ DEFAULT_LEVEL_SETTINGS = {
     'PARTIAL_FOG_OF_WAR_DISTANCE': 1000,
 }
 
-class Cell(object):
-    """
-    Any position on the world grid.
-    """
+from simulation.action import MoveAction
+from simulation.location import Location
+from simulation.cell import *
 
-    def __init__(self, location, habitable=True, generates_score=False, partially_fogged=False):
-        self.location = location
-        self.habitable = habitable
-        self.generates_score = generates_score
-        self.avatar = None
-        self.pickup = None
-        self.partially_fogged = partially_fogged
-        self.actions = []
-
-        # Used to update the map features in the current view of the user (score points on pickups).
-        self.remove_from_scene = None
-        self.add_to_scene = None
-
-    def __repr__(self):
-        return 'Cell({} h={} s={} a={} p={} f{})'.format(
-            self.location, self.habitable, self.generates_score, self.avatar, self.pickup, self.partially_fogged)
-
-    def __eq__(self, other):
-        return self.location == other.location
-
-    def __ne__(self, other):
-        return not self == other
-
-    def __hash__(self):
-        return hash(self.location)
-
-    @property
-    def moves(self):
-        return [move for move in self.actions if isinstance(move, MoveAction)]
-
-    @property
-    def is_occupied(self):
-        return self.avatar is not None
-
-    def serialise(self):
-        if self.partially_fogged:
-            return {
-                'generates_score': self.generates_score,
-                'location': self.location.serialise(),
-                'partially_fogged': self.partially_fogged
-            }
-        else:
-            return {
-                'avatar': self.avatar.serialise() if self.avatar else None,
-                'generates_score': self.generates_score,
-                'habitable': self.habitable,
-                'location': self.location.serialise(),
-                'pickup': self.pickup.serialise() if self.pickup else None,
-                'partially_fogged': self.partially_fogged
-            }
-
+LOGGER = getLogger(__name__)
 
 class WorldMap(object):
     """
@@ -85,28 +35,6 @@ class WorldMap(object):
     def __init__(self, grid, settings):
         self.grid = grid
         self.settings = settings
-
-    @classmethod
-    def _min_max_from_dimensions(cls, height, width):
-        max_x = int(math.floor(width / 2))
-        min_x = -(width - max_x - 1)
-        max_y = int(math.floor(height / 2))
-        min_y = -(height - max_y - 1)
-        return min_x, max_x, min_y, max_y
-
-    @classmethod
-    def generate_empty_map(cls, height, width, settings):
-        new_settings = DEFAULT_LEVEL_SETTINGS.copy()
-        new_settings.update(settings)
-
-        (min_x, max_x, min_y, max_y) = WorldMap._min_max_from_dimensions(height, width)
-        grid = {}
-        for x in xrange(min_x, max_x + 1):
-            for y in xrange(min_y, max_y + 1):
-                location = Location(x, y)
-                grid[location] = Cell(location)
-        return cls(grid, new_settings)
-
     def all_cells(self):
         return self.grid.itervalues()
 
@@ -117,8 +45,6 @@ class WorldMap(object):
             if not cell.created:
                 new_cells.append(cell)
         return new_cells
-
-    # TODO: Cells to delete
 
     def score_cells(self):
         return (c for c in self.all_cells() if c.generates_score)
@@ -236,7 +162,7 @@ class WorldMap(object):
                 # Remove the score point from the scene if there was one.
                 if cell.generates_score:
                     cell.remove_from_scene = MapFeature.SCORE_POINT
-                cell.generates_score = False
+                cell.cell_content = Floor({})
 
         new_num_score_locations = len(list(self.score_cells()))
         target_num_score_locations = int(math.ceil(
@@ -248,7 +174,7 @@ class WorldMap(object):
             # Add the score point to the scene if there wasn't one.
             if not cell.generates_score:
                 cell.add_to_scene = MapFeature.SCORE_POINT
-            cell.generates_score = True
+            cell.cell_content = ScoreLocation({})
 
     def _add_pickups(self, num_avatars):
         target_num_pickups = int(math.ceil(num_avatars * self.settings['TARGET_NUM_PICKUPS_PER_AVATAR']))

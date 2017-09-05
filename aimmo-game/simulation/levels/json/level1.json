@@ -1,0 +1,247 @@
+[{
+
+				"x": -1.0000,
+				"y": 2.0000,
+
+			"code" : "ObstacleGenerator",
+			"sprite" : {
+				"width" : 400,
+				"height" : 400,
+
+				"path" : "Grass-400x400-isometric-top",
+		}
+	    		},{
+
+				"x": 0.0000,
+				"y": 0.0000,
+
+			"code" : "ObstacleGenerator",
+			"sprite" : {
+				"width" : 512,
+				"height" : 1485,
+
+				"path" : "brick-512x1485-isometric-windows-left",
+		}
+	    		},{
+
+				"x": -1.0000,
+				"y": -2.0000,
+
+			"code" : "ObstacleGenerator",
+			"sprite" : {
+				"width" : 400,
+				"height" : 400,
+
+				"path" : "Grass-400x400-isometric-top",
+		}
+	    		},{
+
+				"x": 1.0000,
+				"y": -4.0000,
+
+			"code" : "ObstacleGenerator",
+			"sprite" : {
+				"width" : 512,
+				"height" : 1485,
+
+				"path" : "brick-512x1485-isometric-windows-left",
+		}
+	    		},{
+
+				"x": 1.0000,
+				"y": -4.0000,
+
+			"code" : "ObstacleGenerator",
+			"sprite" : {
+				"width" : 512,
+				"height" : 1024,
+
+				"path" : "Obstacle-512x1024-isometric-top",
+		}
+	    		},{
+
+				"x": -5.0000,
+				"y": 1.0000,
+
+			"code" : "ObstacleGenerator",
+			"sprite" : {
+				"width" : 512,
+				"height" : 1485,
+
+				"path" : "brick-512x1485-isometric-windows-left",
+		}
+	    		},{
+
+				"x": 0.0000,
+				"y": 0.0000,
+
+			"code" : "ObstacleGenerator",
+			"sprite" : {
+				"width" : 512,
+				"height" : 1024,
+
+				"path" : "Obstacle-512x1024-isometric-top",
+		}
+	    		},{
+
+				"x": -3.0000,
+				"y": -2.0000,
+
+			"code" : "ObstacleGenerator",
+			"sprite" : {
+				"width" : 512,
+				"height" : 1485,
+
+				"path" : "brick-512x1485-isometric-windows-left",
+		}
+	    		},{
+
+				"x": -1.0000,
+				"y": 0.0000,
+
+			"code" : "ObstacleGenerator",
+			"sprite" : {
+				"width" : 400,
+				"height" : 400,
+
+				"path" : "Grass-400x400-isometric-top",
+		}
+	    		},{
+
+				"x": -1.0000,
+				"y": 1.0000,
+
+			"code" : "ObstacleGenerator",
+			"sprite" : {
+				"width" : 512,
+				"height" : 1485,
+
+				"path" : "brick-512x1485-isometric-windows-left",
+		}
+	    		},{
+
+				"x": -3.0000,
+				"y": 0.0000,
+
+			"code" : "ObstacleGenerator",
+			"sprite" : {
+				"width" : 400,
+				"height" : 400,
+
+				"path" : "Grass-400x400-isometric-top",
+		}
+	    		},{
+
+				"x": -5.0000,
+				"y": 1.0000,
+
+			"code" : "ObstacleGenerator",
+			"sprite" : {
+				"width" : 512,
+				"height" : 1024,
+
+				"path" : "Obstacle-512x1024-isometric-top",
+		}
+	    		},{
+
+				"x": 0.0000,
+				"y": 1.0000,
+
+			"code" : "ObstacleGenerator",
+			"sprite" : {
+				"width" : 512,
+				"height" : 1485,
+
+				"path" : "brick-512x1485-isometric-sidewall-left",
+		}
+	    		},{
+
+				"x": -2.0000,
+				"y": -5.0000,
+
+			"code" : "ObstacleGenerator",
+			"sprite" : {
+				"width" : 512,
+				"height" : 1485,
+
+				"path" : "brick-512x1485-isometric-windows-left",
+		}
+	    		},{
+
+				"x": -2.0000,
+				"y": -1.0000,
+
+			"code" : "ObstacleGenerator",
+			"sprite" : {
+				"width" : 512,
+				"height" : 625,
+				 "lights" : {
+				"x" : -0.707,
+				"y" : -0.125,
+				"intensity" : 1.000,
+				"color" : "#000000",
+				"range" : 4.000
+			},
+				"path" : "Street-gaslamp-iso-right-on-512x625",
+		}
+	    		},{
+
+				"x": -2.0000,
+				"y": 3.0000,
+
+			"code" : "ObstacleGenerator",
+			"sprite" : {
+				"width" : 512,
+				"height" : 1024,
+
+				"path" : "Obstacle-512x1024-isometric-top",
+		}
+	    		},{
+
+				"x": -3.0000,
+				"y": -2.0000,
+
+			"code" : "ObstacleGenerator",
+			"sprite" : {
+				"width" : 512,
+				"height" : 1024,
+
+				"path" : "Obstacle-512x1024-isometric-top",
+		}
+	    		},{
+
+				"x": 1.0000,
+				"y": 1.0000,
+
+			"code" : "ObstacleGenerator",
+			"sprite" : {
+				"width" : 400,
+				"height" : 400,
+
+				"path" : "Grass-400x400-isometric-top",
+		}
+	    		},{
+
+				"x": -2.0000,
+				"y": -5.0000,
+
+			"code" : "ObstacleGenerator",
+			"sprite" : {
+				"width" : 512,
+				"height" : 1024,
+
+				"path" : "Obstacle-512x1024-isometric-top",
+		}
+	    		},{
+
+				"x": -3.0000,
+				"y": 3.0000,
+
+			"code" : "ObstacleGenerator",
+			"sprite" : {
+				"width" : 512,
+				"height" : 1485,
+
+				"path" : "brick-512x1485-isometric-windows-left",
+		}
+	    		}]

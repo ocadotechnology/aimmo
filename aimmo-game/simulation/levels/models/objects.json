@@ -1,36 +1,57 @@
 [
   {
     "code": "2",
+    "template": "",
     "id" : "class:CellTransform.compute_id",
     "x" : "class:CellTransform.get_x",
-    "y" : "class:CellTransform.get_y"
+    "y" : "class:CellTransform.get_y",
+    "sprite" : {
+      "width" : "400",
+      "height" : "400",
+      "path" : "Grass-400x400-isometric-top"
+    }
   },
   {
     "code": "1",
+    "template": "",
     "id" : "class:CellTransform.compute_id",
     "x" : "class:CellTransform.get_x",
-    "y" : "class:CellTransform.get_y"
+    "y" : "class:CellTransform.get_y",
+    "sprite" : {
+      "width" : "512",
+      "height" : "1024",
+      "path" : "Obstacle-512x1024-isometric-top"
+    }
   },
   {
     "code": "3",
+    "template": "",
     "id" : "class:CellTransform.compute_id",
     "x" : "class:CellTransform.get_x",
     "y" : "class:CellTransform.get_y",
     "type" : "health",
-    "health_restored": "5"
+    "health_restored": "5",
+    "sprite" : {
+    }
   },
   {
     "code": "4",
+    "template": "",
     "id" : "class:CellTransform.compute_id",
     "x" : "class:CellTransform.get_x",
     "y" : "class:CellTransform.get_y",
-    "type" : "invulnerability"
+    "type" : "invulnerability",
+    "sprite" : {
+    }
   },
   {
     "code": "5",
+    "template": "",
     "id" : "class:CellTransform.compute_id",
     "x" : "class:CellTransform.get_x",
     "y" : "class:CellTransform.get_y",
-    "type" : "damage"
+    "type" : "damage",
+    "style" : {
+    }
   }
 ]
