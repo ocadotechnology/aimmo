@@ -69,7 +69,6 @@ class TurnManager(Thread):
 
     def _mark_complete(self):
         pass
-        # TODO: Make completion request work. For now, we assume games don't finish.
         # from world_state import WorldState
         # requests.post(self._completion_url, json=world_state.get_update())
 
