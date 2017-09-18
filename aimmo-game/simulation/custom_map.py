@@ -5,13 +5,13 @@ from simulation.levels.levels import LEVELS
 from simulation.location import Location
 from simulation.game_state import GameState
 from simulation.world_map import WorldMap
-from simulation.world_map import WorldMapStaticSpawnDecorator
+from simulation.world_map import world_map_static_spawn_decorator
 from simulation.world_map import DEFAULT_LEVEL_SETTINGS
-from simulation.world_map import Cell
 
 from simulation.pickups import HealthPickup
 from simulation.pickups import InvulnerabilityPickup
 from simulation.pickups import DamagePickup
+
 
 class BaseGenerator(object):
     __metaclass__ = abc.ABCMeta
@@ -29,12 +29,14 @@ class BaseGenerator(object):
     def get_map(self):
         pass
 
+
 class BaseLevelGenerator(BaseGenerator):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, *args, **kwargs):
         super(BaseLevelGenerator, self).__init__(*args, **kwargs)
         self.settings.update(DEFAULT_LEVEL_SETTINGS)
+
 
 class TemplateLevelGenerator(BaseLevelGenerator):
     __metaclass__ = abc.ABCMeta
@@ -44,6 +46,7 @@ class TemplateLevelGenerator(BaseLevelGenerator):
         self.settings.update(DEFAULT_LEVEL_SETTINGS)
 
 ################################################################################
+
 
 class Decoder():
     __metaclass__ = abc.ABCMeta
@@ -55,16 +58,19 @@ class Decoder():
     def decode(self, json, world_map):
         pass
 
+
 class ScoreCellDecoder(Decoder):
     def decode(self, json, world_map):
         x, y = int(json["x"]), int(json["y"])
-        world_map = WorldMapStaticSpawnDecorator(world_map, Location(x, y))
+        world_map = world_map_static_spawn_decorator(world_map, Location(x, y))
         world_map.get_cell(Location(x, y)).generates_score = True
+
 
 class ObstacleDecoder(Decoder):
     def decode(self, json, world_map):
         x, y = int(json["x"]), int(json["y"])
         world_map.get_cell(Location(x, y)).habitable = False
+
 
 class PickupDecoder(Decoder):
     def decode(self, json, world_map):
@@ -77,6 +83,7 @@ class PickupDecoder(Decoder):
             world_map.get_cell(Location(x, y)).pickup = DamagePickup(Location(x, y))
 
 ################################################################################
+
 
 class JsonLevelGenerator(TemplateLevelGenerator):
     def _register_json(self, json_map):
@@ -94,9 +101,9 @@ class JsonLevelGenerator(TemplateLevelGenerator):
 
     def _json_decode_map(self):
         def find_element_by_code(json, code):
-            for element in json:
-                if element["code"] == str(code):
-                    yield element
+            for value in json:
+                if value["code"] == str(code):
+                    yield value
 
         for decoder in self.decoders:
             for element in find_element_by_code(self.json_map, decoder.code):

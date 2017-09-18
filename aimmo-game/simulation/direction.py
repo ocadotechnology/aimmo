@@ -22,6 +22,7 @@ class Direction:
     def __repr__(self):
         return 'Direction(x={}, y={})'.format(self.x, self.y)
 
+
 NORTH = Direction(0, 1)
 EAST = Direction(1, 0)
 SOUTH = Direction(0, -1)

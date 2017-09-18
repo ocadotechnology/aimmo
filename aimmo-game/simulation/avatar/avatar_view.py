@@ -2,7 +2,7 @@ from simulation.location import Location
 from simulation.direction import NORTH, SOUTH, EAST, WEST
 
 
-class AvatarView():
+class AvatarView:
     """
     The custom view of the world for each of the avatars. The main
     use of this class is that when the view is moved, the game service
@@ -46,10 +46,8 @@ class AvatarView():
         self.is_empty = True
 
     def location_in_view(self, location):
-        return location.x >= self.NW_horizon.x and \
-               location.y <= self.NW_horizon.y and \
-               location.x <= self.SE_horizon.x and \
-               location.y >= self.SE_horizon.y
+        return self.NW_horizon.x <= location.x <= self.SE_horizon.x and \
+               self.SE_horizon.y <= location.y <= self.NW_horizon.y
 
     # Returns all the cells in the rectangle defined by two corners.
     @classmethod

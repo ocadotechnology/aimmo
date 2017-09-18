@@ -2,13 +2,13 @@ import math
 import random
 from logging import getLogger
 
+from simulation.world_state import MapFeature
 from simulation.pickups import ALL_PICKUPS
 from simulation.action import MoveAction
 from simulation.location import Location
 
 LOGGER = getLogger(__name__)
 
-from simulation.world_state import MapFeature
 
 DEFAULT_LEVEL_SETTINGS = {
     'TARGET_NUM_CELLS_PER_AVATAR': 0,
@@ -19,6 +19,7 @@ DEFAULT_LEVEL_SETTINGS = {
     'NO_FOG_OF_WAR_DISTANCE': 1000,
     'PARTIAL_FOG_OF_WAR_DISTANCE': 1000,
 }
+
 
 class Cell(object):
     """
@@ -208,7 +209,7 @@ class WorldMap(object):
         self._add_pickups(num_avatars)
 
     def _expand(self, num_avatars):
-        #LOGGER.info('Expanding map')
+        # LOGGER.info('Expanding map')
         start_size = self.num_cells
         target_num_cells = int(math.ceil(num_avatars * self.settings['TARGET_NUM_CELLS_PER_AVATAR']))
         num_cells_to_add = target_num_cells - self.num_cells
@@ -319,6 +320,6 @@ class WorldMap(object):
                 for x in xrange(self.min_x(), self.max_x() + 1))
 
 
-def WorldMapStaticSpawnDecorator(world_map, spawn_location):
+def world_map_static_spawn_decorator(world_map, spawn_location):
     world_map.get_random_spawn_location = lambda: spawn_location
     return world_map

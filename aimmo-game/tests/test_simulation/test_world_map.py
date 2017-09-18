@@ -6,7 +6,7 @@ from string import ascii_uppercase
 from unittest import TestCase
 
 from simulation.location import Location
-from simulation.world_map import Cell, WorldMap, WorldMapStaticSpawnDecorator
+from simulation.world_map import Cell, WorldMap, world_map_static_spawn_decorator
 from .dummy_avatar import DummyAvatar
 from .maps import MockCell, MockPickup
 
@@ -388,6 +388,6 @@ class TestWorldMapWithOriginCentre(TestWorldMap):
 
 class TestStaticSpawnDecorator(TestCase):
     def test_spawn_is_static(self):
-        decorated_map = WorldMapStaticSpawnDecorator(WorldMap({}, {}), Location(3, 7))
+        decorated_map = world_map_static_spawn_decorator(WorldMap({}, {}), Location(3, 7))
         for _ in xrange(5):
             self.assertEqual(decorated_map.get_random_spawn_location(), Location(3, 7))

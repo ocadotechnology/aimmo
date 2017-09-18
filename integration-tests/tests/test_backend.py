@@ -76,6 +76,7 @@ class RequestMock(object):
         self.urls_requested.append(url.geturl())
         return dumps(self.value)
 
+
 class GameCreatorRequestMock(RequestMock):
     """
         Mockery to expose a set of games.
@@ -88,6 +89,7 @@ class GameCreatorRequestMock(RequestMock):
             } for i in xrange(num_games)
         }
 
+
 class GameRequestMock(RequestMock):
     """
         Mockery to expose an AI behaviour.
@@ -98,6 +100,7 @@ class GameRequestMock(RequestMock):
 ################################################################################
 
 # See definition of a proxy in mock_server.py
+
 
 class GameCreatorProxy(ConnectionProxy):
     """
@@ -111,6 +114,7 @@ class GameCreatorProxy(ConnectionProxy):
             self.binder.assertEqual(len(mocker.urls_requested), 1)
             self.binder.assertEqual("/players/api/games/" in mocker.urls_requested[0], True)
             return ans.text
+
 
 class GameProxy(ConnectionProxy):
     """
@@ -126,12 +130,14 @@ class GameProxy(ConnectionProxy):
             self.binder.assertEqual("/players/api/games/0/" in mocker.urls_requested[0], True)
             return ans.text
 
+
 # TODO: for more complex tests a seam has to be exposed or socket.io needs to be supported
 class TurnProxy(ConnectionProxy):
     def apply(self, received):
         return "NotImplemented"
 
 ################################################################################
+
 
 class TestService(TestCase):
     """

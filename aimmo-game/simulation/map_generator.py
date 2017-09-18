@@ -7,10 +7,9 @@ from itertools import tee
 from six.moves import zip, range
 
 from simulation.direction import ALL_DIRECTIONS
-from simulation.game_state import GameState
 from simulation.location import Location
 from simulation.world_map import WorldMap
-from simulation.world_map import WorldMapStaticSpawnDecorator
+from simulation.world_map import world_map_static_spawn_decorator
 from simulation.world_map import DEFAULT_LEVEL_SETTINGS
 
 from simulation.custom_map import BaseGenerator
@@ -18,6 +17,7 @@ from simulation.custom_map import BaseLevelGenerator
 from simulation.custom_map import Level1
 
 LOGGER = logging.getLogger(__name__)
+
 
 class Main(BaseGenerator):
     def get_map(self):

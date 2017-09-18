@@ -1,20 +1,16 @@
 from __future__ import absolute_import
 
-from unittest import TestCase, skipUnless, skip
+from unittest import TestCase, skip
 import requests
 from simulation import SnapshotProcessor
 
 import os
 import time
-import signal
-import subprocess
-import sys
 import json
+import logging
 
 FNULL = open(os.devnull, 'w')
 
-import logging
-import traceback
 
 from misc import run_command_async
 from misc import kill_process_tree
@@ -25,6 +21,7 @@ LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.DEBUG)
 REQUEST_LOG = logging.getLogger("request-log")
 REQUEST_LOG.setLevel(logging.DEBUG)
+
 
 class TestService(TestCase):
     """
