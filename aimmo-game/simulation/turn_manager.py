@@ -69,8 +69,6 @@ class TurnManager(Thread):
 
     def _mark_complete(self):
         pass
-        # from world_state import WorldState
-        # requests.post(self._completion_url, json=world_state.get_update())
 
     def run(self):
         while True:

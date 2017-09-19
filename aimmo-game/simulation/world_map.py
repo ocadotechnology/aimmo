@@ -209,7 +209,6 @@ class WorldMap(object):
         self._add_pickups(num_avatars)
 
     def _expand(self, num_avatars):
-        # LOGGER.info('Expanding map')
         start_size = self.num_cells
         target_num_cells = int(math.ceil(num_avatars * self.settings['TARGET_NUM_CELLS_PER_AVATAR']))
         num_cells_to_add = target_num_cells - self.num_cells
