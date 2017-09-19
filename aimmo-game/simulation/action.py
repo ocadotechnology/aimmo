@@ -137,6 +137,7 @@ class AttackAction(Action):
         self.avatar.add_event(FailedAttackEvent(self.target_location))
         self.avatar.clear_action()
 
+
 ACTIONS = {
     'attack': AttackAction,
     'move': MoveAction,

@@ -284,6 +284,7 @@ class KubernetesWorkerManager(WorkerManager):
             LOGGER.debug('Removing pod %s', pod.obj['spec'])
             pod.delete()
 
+
 WORKER_MANAGERS = {
     'local': LocalWorkerManager,
     'kubernetes': KubernetesWorkerManager,
