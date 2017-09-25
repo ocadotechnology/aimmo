@@ -4,13 +4,10 @@ from simulation.levels.levels import LEVELS
 
 from simulation.location import Location
 from simulation.game_state import GameState
+from simulation.pickups import DeliveryPickup
 from simulation.world_map import WorldMap
 from simulation.world_map import world_map_static_spawn_decorator
 from simulation.world_map import DEFAULT_LEVEL_SETTINGS
-
-from simulation.pickups import HealthPickup
-from simulation.pickups import InvulnerabilityPickup
-from simulation.pickups import DamagePickup
 
 
 class BaseGenerator(object):
@@ -75,12 +72,8 @@ class ObstacleDecoder(Decoder):
 class PickupDecoder(Decoder):
     def decode(self, json, world_map):
         x, y = int(json["x"]), int(json["y"])
-        if json["type"] == "invulnerability":
-            world_map.get_cell(Location(x, y)).pickup = InvulnerabilityPickup(Location(x, y))
-        if json["type"] == "health":
-            world_map.get_cell(Location(x, y)).pickup = HealthPickup(Location(x, y), int(json["health_restored"]))
-        if json["type"] == "damage":
-            world_map.get_cell(Location(x, y)).pickup = DamagePickup(Location(x, y))
+        if json["type"] == "delivery":
+            world_map.get_cell(Location(x, y)).pickup = DeliveryPickup(Location(x, y))
 
 ################################################################################
 

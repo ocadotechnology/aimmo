@@ -12,9 +12,17 @@ class _Pickup(object):
         return self.__class__.__name__
 
     def delete(self):
+        '''
+        Deletes the pickup from the /CELL/.
+        '''
         self.cell.pickup = None
 
     def apply(self, avatar):
+        '''
+        Public method to apply the pickup to an avatar. This will vary from type of pickup
+        therefore implementation is done privately.
+        :param avatar: an Avatar object.
+        '''
         self._apply(avatar)
         self.delete()
 
@@ -27,69 +35,26 @@ class _Pickup(object):
         raise NotImplementedError()
 
 
-class HealthPickup(_Pickup):
-    def __init__(self, cell, health_restored=3):
-        super(HealthPickup, self).__init__(cell)
-        self.health_restored = health_restored
+class DeliveryPickup(_Pickup):
+    '''
+    Inherits generic functionality from _Pickup and needs to implement abstract methods.
+    '''
 
-    def __repr__(self):
-        return 'HealthPickup(health_restored={})'.format(self.health_restored)
-
-    def serialise(self):
-        return {
-                'type': 'health',
-                'health_restored': self.health_restored,
-        }
+    def __init__(self, cell):
+        super(DeliveryPickup, self).__init__(cell)
 
     def _apply(self, avatar):
-        avatar.health += self.health_restored
-
-
-class _PickupEffect(_Pickup):
-    __metaclass__ = ABCMeta
-
-    def __init__(self, *args):
-        super(_PickupEffect, self).__init__(*args)
-        self.params = []
-
-    @abstractproperty
-    def EFFECT(self):
-        raise NotImplementedError()
-
-    def _apply(self, avatar):
-        self.params.append(avatar)
-        avatar.effects.add(self.EFFECT(*self.params))
-
-
-class InvulnerabilityPickup(_PickupEffect):
-    EFFECT = effects.InvulnerabilityPickupEffect
-
-    def serialise(self):
-        return {
-                'type': 'invulnerability',
-        }
-
-
-class DamagePickup(_PickupEffect):
-    EFFECT = effects.DamagePickupEffect
-
-    def __init__(self, *args):
-        super(DamagePickup, self).__init__(*args)
-        self.damage_boost = 5
-        self.params.append(self.damage_boost)
+        avatar.pickups[DeliveryPickup] += 1 # Add a single count of this item.
 
     def __repr__(self):
-        return 'DamagePickup(damage_boost={})'.format(self.damage_boost)
+        return 'DeliveryPickup'
 
     def serialise(self):
         return {
-                'type': 'damage',
-                'damage_boost': self.damage_boost,
+                'type': 'delivery'
         }
 
 
 ALL_PICKUPS = (
-    HealthPickup,
-    InvulnerabilityPickup,
-    DamagePickup,
+    DeliveryPickup,
 )
