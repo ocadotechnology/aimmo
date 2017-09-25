@@ -1,4 +1,6 @@
 import logging
+from collections import Counter
+
 import requests
 
 from simulation.action import ACTIONS, MoveAction, WaitAction
@@ -20,6 +22,7 @@ class AvatarWrapper(object):
         self.health = 5
         self.score = 0
         self.events = []
+        self.pickups = Counter() # Empty counter as avatar has not picked anything up yet.
         self.avatar_appearance = avatar_appearance
         self.worker_url = worker_url
         self.effects = set()

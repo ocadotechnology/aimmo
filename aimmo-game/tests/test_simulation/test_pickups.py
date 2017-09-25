@@ -40,29 +40,13 @@ class _BaseCases(object):
             self.assertEqual(len(self.avatar.effects), 1)
             self.assertIsInstance(list(self.avatar.effects)[0], self.effect_class)
 
+class TestDeliveryPickup(_BaseCases.BasePickupTestCase):
+    pickup_class = pickups.DeliveryPickup
 
-class TestHealthPickup(_BaseCases.BasePickupTestCase):
-    pickup_class = pickups.HealthPickup
-
-    def test_health_increases(self):
+    def test_delivery_picked_up(self):
+        self.assertEqual(self.avatar.pickups[pickups.DeliveryPickup], 0)
         self.apply_pickup()
-        self.assertEqual(self.avatar.health, 8)
+        self.assertEqual(self.avatar.pickups[pickups.DeliveryPickup], 1)
 
     def test_serialise(self):
-        self.assertEqual(self.pickup.serialise(), {'type': 'health', 'health_restored': 3})
-
-
-class TestInvulnerabilityPickup(_BaseCases.BasePickupEffectTestCase):
-    pickup_class = pickups.InvulnerabilityPickup
-    effect_class = effects.InvulnerabilityPickupEffect
-
-    def test_serialise(self):
-        self.assertEqual(self.pickup.serialise(), {'type': 'invulnerability'})
-
-
-class TestDamagePickup(_BaseCases.BasePickupEffectTestCase):
-    pickup_class = pickups.DamagePickup
-    effect_class = effects.DamagePickupEffect
-
-    def test_serialise(self):
-        self.assertEqual(self.pickup.serialise(), {'type': 'damage', 'damage_boost': 5})
+        self.assertEqual(self.pickup.serialise(), {'type': 'delivery'})
