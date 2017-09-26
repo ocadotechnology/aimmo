@@ -118,17 +118,6 @@ class TestWorldMap(TestCase):
         self.assertIn('D', cell_names)
         self.assertEqual(len(cell_names), 4)
 
-    def test_score_cells(self):
-        score_cell1 = MockCell(generates_score=True)
-        score_cell2 = MockCell(generates_score=True)
-        no_score_cell = MockCell()
-        grid = self._grid_from_list([[score_cell1, no_score_cell], [no_score_cell, score_cell2]])
-        map = WorldMap(grid, self.settings)
-        cells = list(map.score_cells())
-        self.assertIn(score_cell1, cells)
-        self.assertIn(score_cell2, cells)
-        self.assertEqual(len(cells), 2, "Non-scoring cells present")
-
     def test_potential_spawns(self):
         spawnable1 = MockCell()
         spawnable2 = MockCell()
@@ -218,57 +207,6 @@ class TestWorldMap(TestCase):
         map = WorldMap(self._generate_grid(), self.settings)
         map.update(1)
         self.assertGridSize(map, 2)
-
-    def test_scores_removed(self):
-        self.settings['SCORE_DESPAWN_CHANCE'] = 1
-        grid = self._generate_grid()
-        grid[Location(0, 1)].generates_score = True
-        map = WorldMap(grid, self.settings)
-        map.update(1)
-        self.assertEqual(len(list(map.score_cells())), 0)
-
-    def test_score_despawn_chance(self):
-        self.settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR'] = 0
-        grid = self._generate_grid()
-        grid[Location(0, 1)].generates_score = True
-        map = WorldMap(grid, self.settings)
-        map.update(1)
-        self.assertIn(grid[Location(0, 1)], map.score_cells())
-        self.assertEqual(len(list(map.score_cells())), 1)
-
-    def test_scores_added(self):
-        self.settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR'] = 1
-        map = WorldMap(self._generate_grid(), self.settings)
-        map.update(1)
-        self.assertEqual(len(list(map.score_cells())), 1)
-
-        map.update(2)
-        self.assertEqual(len(list(map.score_cells())), 2)
-
-    def test_scores_applied(self):
-        grid = self._generate_grid()
-        avatar = DummyAvatar()
-        grid[Location(1, 1)].generates_score = True
-        grid[Location(1, 1)].avatar = avatar
-        WorldMap(grid, self.settings).update(1)
-        self.assertEqual(avatar.score, 1)
-
-    def test_scores_not_added_when_at_target(self):
-        self.settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR'] = 1
-        grid = self._generate_grid()
-        grid[Location(0, 1)].generates_score = True
-        map = WorldMap(grid, self.settings)
-        map.update(1)
-        self.assertEqual(len(list(map.score_cells())), 1)
-        self.assertIn(grid[Location(0, 1)], map.score_cells())
-
-    def test_not_enough_score_space(self):
-        self.settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR'] = 1
-        grid = self._generate_grid(1, 1)
-        grid[Location(0, 0)].avatar = 'avatar'
-        map = WorldMap(grid, self.settings)
-        map.update(1)
-        self.assertEqual(len(list(map.score_cells())), 0)
 
     def test_pickups_added(self):
         self.settings['TARGET_NUM_PICKUPS_PER_AVATAR'] = 1
