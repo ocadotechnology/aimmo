@@ -9,8 +9,6 @@ from six.moves import zip, range
 from simulation.direction import ALL_DIRECTIONS
 from simulation.location import Location
 from simulation.world_map import WorldMap
-from simulation.world_map import world_map_static_spawn_decorator
-from simulation.world_map import DEFAULT_LEVEL_SETTINGS
 
 from simulation.custom_map import BaseGenerator
 from simulation.custom_map import BaseLevelGenerator
