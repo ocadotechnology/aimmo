@@ -1,5 +1,4 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
-import effects
 
 
 class _Pickup(object):
