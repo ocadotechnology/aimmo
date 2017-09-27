@@ -4,7 +4,7 @@ from collections import defaultdict
 
 from simulation.location import Location
 from simulation.world_map import WorldMap
-from simulation.maps.cell import Cell
+from simulation.geography.cell import Cell
 
 
 class MockPickup(object):

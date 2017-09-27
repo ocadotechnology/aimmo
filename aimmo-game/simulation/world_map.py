@@ -5,7 +5,7 @@ from logging import getLogger
 from simulation.world_state import MapFeature
 from simulation.pickups import ALL_PICKUPS
 from simulation.location import Location
-from simulation.maps.cell import Cell
+from simulation.geography.cell import Cell
 
 LOGGER = getLogger(__name__)
 

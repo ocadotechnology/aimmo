@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from simulation.maps.cell import Cell
+from simulation.geography.cell import Cell
 from simulation.location import Location
 from simulation.direction import EAST, WEST, NORTH, SOUTH
 from simulation.avatar.avatar_view import AvatarView
