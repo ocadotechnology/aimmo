@@ -4,7 +4,7 @@ import unittest
 
 from simulation.avatar.avatar_appearance import AvatarAppearance
 from simulation.game_state import GameState
-from simulation.location import Location
+from simulation.geography.location import Location
 from simulation.turn_manager import ConcurrentTurnManager
 from simulation.turn_manager import SequentialTurnManager
 from .dummy_avatar import DummyAvatarManager

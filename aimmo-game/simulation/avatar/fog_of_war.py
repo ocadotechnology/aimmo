@@ -1,6 +1,6 @@
 import copy
 
-from simulation.location import Location
+from simulation.geography.location import Location
 from simulation.world_map import WorldMap
 
 

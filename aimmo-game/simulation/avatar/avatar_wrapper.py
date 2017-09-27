@@ -4,7 +4,7 @@ from collections import Counter
 import requests
 
 from simulation.action import ACTIONS, MoveAction, WaitAction
-from simulation.location import Location
+from simulation.geography.location import Location
 from simulation.avatar.avatar_view import AvatarView
 
 LOGGER = logging.getLogger(__name__)

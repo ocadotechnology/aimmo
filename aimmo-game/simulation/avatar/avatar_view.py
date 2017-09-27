@@ -1,4 +1,4 @@
-from simulation.location import Location
+from simulation.geography.location import Location
 from simulation.direction import NORTH, SOUTH, EAST, WEST
 
 
