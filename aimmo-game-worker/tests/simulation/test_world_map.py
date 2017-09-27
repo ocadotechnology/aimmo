@@ -39,13 +39,6 @@ class TestWorldMap(TestCase):
         self.assertLocationsEqual(map.all_cells(),
                                   [Location(x, y) for x in xrange(-1, 2) for y in xrange(-1, 2)])
 
-    def test_score_cells(self):
-        cells = self._generate_cells()
-        cells[0]['generates_score'] = True
-        cells[5]['generates_score'] = True
-        map = WorldMap(cells)
-        self.assertLocationsEqual(map.score_cells(), (Location(-1, -1), Location(0, 1)))
-
     def test_pickup_cells(self):
         cells = self._generate_cells()
         cells[0]['pickup'] = {'health_restored': 5}

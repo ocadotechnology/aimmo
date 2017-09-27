@@ -3,7 +3,8 @@ from __future__ import absolute_import
 from collections import defaultdict
 
 from simulation.location import Location
-from simulation.world_map import Cell, WorldMap
+from simulation.world_map import WorldMap
+from simulation.maps.cell import Cell
 
 
 class MockPickup(object):

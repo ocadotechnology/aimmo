@@ -4,8 +4,8 @@ from logging import getLogger
 
 from simulation.world_state import MapFeature
 from simulation.pickups import ALL_PICKUPS
-from simulation.action import MoveAction
 from simulation.location import Location
+from simulation.maps.cell import Cell
 
 LOGGER = getLogger(__name__)
 
@@ -19,64 +19,6 @@ DEFAULT_LEVEL_SETTINGS = {
     'NO_FOG_OF_WAR_DISTANCE': 1000,
     'PARTIAL_FOG_OF_WAR_DISTANCE': 1000,
 }
-
-
-class Cell(object):
-    """
-    Any position on the world grid.
-    """
-
-    def __init__(self, location, habitable=True, generates_score=False, partially_fogged=False):
-        self.location = location
-        self.habitable = habitable
-        self.generates_score = generates_score
-        self.avatar = None
-        self.pickup = None
-        self.partially_fogged = partially_fogged
-        self.actions = []
-
-        # Used to update the map features in the current view of the user (score points on pickups).
-        self.remove_from_scene = None
-        self.add_to_scene = None
-
-    def __repr__(self):
-        return 'Cell({} h={} s={} a={} p={} f{})'.format(
-            self.location, self.habitable, self.generates_score, self.avatar, self.pickup, self.partially_fogged)
-
-    def __eq__(self, other):
-        return self.location == other.location
-
-    def __ne__(self, other):
-        return not self == other
-
-    def __hash__(self):
-        return hash(self.location)
-
-    @property
-    def moves(self):
-        return [move for move in self.actions if isinstance(move, MoveAction)]
-
-    @property
-    def is_occupied(self):
-        return self.avatar is not None
-
-    def serialise(self):
-        if self.partially_fogged:
-            return {
-                'generates_score': self.generates_score,
-                'location': self.location.serialise(),
-                'partially_fogged': self.partially_fogged
-            }
-        else:
-            return {
-                'avatar': self.avatar.serialise() if self.avatar else None,
-                'generates_score': self.generates_score,
-                'habitable': self.habitable,
-                'location': self.location.serialise(),
-                'pickup': self.pickup.serialise() if self.pickup else None,
-                'partially_fogged': self.partially_fogged
-            }
-
 
 class WorldMap(object):
     """
@@ -110,19 +52,6 @@ class WorldMap(object):
 
     def all_cells(self):
         return self.grid.itervalues()
-
-    # Used to know when to instantiate objects in the scene.
-    def cells_to_create(self):
-        new_cells = []
-        for cell in self.all_cells():
-            if not cell.created:
-                new_cells.append(cell)
-        return new_cells
-
-    # TODO: Cells to delete
-
-    def score_cells(self):
-        return (c for c in self.all_cells() if c.generates_score)
 
     def potential_spawn_locations(self):
         return (c for c in self.all_cells()
@@ -183,29 +112,16 @@ class WorldMap(object):
         return self.num_rows * self.num_cols
 
     def update(self, num_avatars):
-        # TODO: refactor into GameState (this class does too much)
-        self._update_avatars()
-        self._update_map(num_avatars)
-
-    def _update_avatars(self):
-        self._apply_score()
         self._apply_pickups()
+        self._update_map(num_avatars)
 
     def _apply_pickups(self):
         for cell in self.pickup_cells():
             if cell.avatar is not None:
                 cell.pickup.apply(cell.avatar)
 
-    def _apply_score(self):
-        for cell in self.score_cells():
-            try:
-                cell.avatar.score += 1
-            except AttributeError:
-                pass
-
     def _update_map(self, num_avatars):
         self._expand(num_avatars)
-        self._reset_score_locations(num_avatars)
         self._add_pickups(num_avatars)
 
     def _expand(self, num_avatars):
@@ -229,26 +145,6 @@ class WorldMap(object):
     def _add_horizontal_layer(self, y):
         for x in xrange(self.min_x(), self.max_x() + 1):
             self.grid[Location(x, y)] = Cell(Location(x, y))
-
-    def _reset_score_locations(self, num_avatars):
-        for cell in self.score_cells():
-            if random.random() < self.settings['SCORE_DESPAWN_CHANCE']:
-                # Remove the score point from the scene if there was one.
-                if cell.generates_score:
-                    cell.remove_from_scene = MapFeature.SCORE_POINT
-                cell.generates_score = False
-
-        new_num_score_locations = len(list(self.score_cells()))
-        target_num_score_locations = int(math.ceil(
-            num_avatars * self.settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR']
-        ))
-        num_score_locations_to_add = target_num_score_locations - new_num_score_locations
-        locations = self._get_random_spawn_locations(num_score_locations_to_add)
-        for cell in locations:
-            # Add the score point to the scene if there wasn't one.
-            if not cell.generates_score:
-                cell.add_to_scene = MapFeature.SCORE_POINT
-            cell.generates_score = True
 
     def _add_pickups(self, num_avatars):
         target_num_pickups = int(math.ceil(num_avatars * self.settings['TARGET_NUM_PICKUPS_PER_AVATAR']))
