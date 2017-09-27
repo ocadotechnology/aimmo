@@ -2,7 +2,7 @@ import abc
 
 from simulation.levels.levels import LEVELS
 
-from simulation.location import Location
+from simulation.geography.location import Location
 from simulation.game_state import GameState
 from simulation.pickups import DeliveryPickup
 from simulation.world_map import WorldMap

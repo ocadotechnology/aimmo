@@ -6,8 +6,8 @@ from itertools import tee
 
 from six.moves import zip, range
 
-from simulation.direction import ALL_DIRECTIONS
-from simulation.location import Location
+from simulation.geography.direction import ALL_DIRECTIONS
+from simulation.geography.location import Location
 from simulation.world_map import WorldMap
 
 from simulation.custom_map import BaseGenerator

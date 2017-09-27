@@ -5,9 +5,9 @@ from string import ascii_uppercase
 
 from unittest import TestCase
 
-from simulation.location import Location
+from simulation.geography.location import Location
 from simulation.world_map import WorldMap, world_map_static_spawn_decorator
-from simulation.maps.cell import Cell
+from simulation.geography.cell import Cell
 from .dummy_avatar import DummyAvatar
 from .maps import MockCell, MockPickup
 

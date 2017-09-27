@@ -1,7 +1,7 @@
 class Avatar(object):
     def handle_turn(self, avatar_state, world_map):
         from simulation.action import MoveAction
-        from simulation import direction
+        from simulation.geography import direction
         self.avatar_state = avatar_state
 
         self.location = self.avatar_state.location
@@ -18,7 +18,7 @@ class Avatar(object):
         return MoveAction(random.choice(directions))
 
     def direction_to(self, location):
-        from simulation import direction
+        from simulation.geography import direction
         vector_to = location - self.location
         if vector_to.x != 0:
             return direction.Direction(1 if vector_to.x > 0 else -1, 0)

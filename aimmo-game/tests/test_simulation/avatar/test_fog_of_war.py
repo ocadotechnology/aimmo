@@ -3,7 +3,7 @@ from __future__ import absolute_import
 from unittest import TestCase
 
 from simulation.avatar.fog_of_war import should_partially_fog, partially_fog_cell
-from simulation.maps.cell import Cell
+from simulation.geography.cell import Cell
 
 class Serialiser(object):
     def __init__(self, content):
