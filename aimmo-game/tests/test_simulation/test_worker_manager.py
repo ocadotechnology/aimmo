@@ -6,7 +6,7 @@ from json import dumps
 from httmock import HTTMock
 
 from simulation.avatar.avatar_manager import AvatarManager
-from simulation.game_state import GameState
+from simulation.state.game_state import GameState
 from simulation.worker_manager import WorkerManager
 from .maps import InfiniteMap
 

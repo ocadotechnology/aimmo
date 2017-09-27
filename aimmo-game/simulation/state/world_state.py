@@ -1,11 +1,13 @@
 from enum import Enum
 from collections import defaultdict
 
+
 class MapFeature(Enum):
     HEALTH_POINT = 'health_point'
     SCORE_POINT = 'score_point'
     PICKUP = 'pickup'
     OBSTACLE = 'obstacle'
+
 
 class WorldState():
     """

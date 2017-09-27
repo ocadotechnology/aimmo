@@ -2,8 +2,8 @@ import abc
 
 from simulation.levels.levels import LEVELS
 
+from simulation.state.game_state import GameState
 from simulation.geography.location import Location
-from simulation.game_state import GameState
 from simulation.pickups import DeliveryPickup
 from simulation.world_map import WorldMap
 from simulation.world_map import world_map_static_spawn_decorator
