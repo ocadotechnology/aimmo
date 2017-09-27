@@ -1,7 +1,7 @@
 class Avatar(object):
     def handle_turn(self, avatar_state, world_map):
         from simulation.action import MoveAction
-        from simulation import direction
+        from simulation.geography import direction
         import random
         from simulation.action import WaitAction
 
@@ -35,6 +35,6 @@ class Avatar(object):
             return None
 
     def get_possible_directions(self):
-        from simulation import direction
+        from simulation.geography import direction
         directions = (direction.EAST, direction.SOUTH, direction.WEST, direction.NORTH)
         return [d for d in directions if self.world_map.can_move_to(self.avatar_state.location + d)]

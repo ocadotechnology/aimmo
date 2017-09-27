@@ -5,7 +5,7 @@ import unittest
 from simulation import action
 from simulation import event
 from simulation.avatar.avatar_manager import AvatarManager
-from simulation.direction import EAST
+from simulation.geography.direction import EAST
 from simulation.game_state import GameState
 from simulation.geography.location import Location
 from .dummy_avatar import MoveDummy

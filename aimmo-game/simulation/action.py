@@ -1,5 +1,5 @@
 from logging import getLogger
-from simulation.direction import Direction
+from simulation.geography.direction import Direction
 from simulation.event import FailedAttackEvent, FailedMoveEvent, MovedEvent, PerformedAttackEvent, ReceivedAttackEvent
 
 LOGGER = getLogger(__name__)
