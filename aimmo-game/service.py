@@ -12,10 +12,9 @@ eventlet.monkey_patch()
 import flask
 from flask_socketio import SocketIO
 
-from simulation.turn_manager import state_provider
+from simulation.managers.turn_manager import state_provider, ConcurrentTurnManager
 from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
-from simulation.turn_manager import ConcurrentTurnManager
 from simulation.worker_manager import WORKER_MANAGERS
 from simulation.world_state import WorldState
 
