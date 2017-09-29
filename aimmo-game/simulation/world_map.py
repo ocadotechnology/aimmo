@@ -2,6 +2,7 @@ import math
 import random
 from logging import getLogger
 
+from simulation.state.world_state import MapFeature
 from simulation.pickups import ALL_PICKUPS
 from simulation.geography.location import Location
 from simulation.geography.cell import Cell
