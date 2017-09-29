@@ -17,7 +17,7 @@ from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.turn_manager import ConcurrentTurnManager
 from simulation.worker_manager import WORKER_MANAGERS
-from simulation.world_state import WorldState
+from simulation.state.world_state import WorldState
 
 app = flask.Flask(__name__)
 socketio = SocketIO()
