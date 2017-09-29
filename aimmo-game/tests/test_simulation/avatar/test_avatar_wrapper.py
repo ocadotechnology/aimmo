@@ -86,7 +86,7 @@ class TestAvatarWrapper(TestCase):
 
     def add_effects(self, num=2):
         effects = []
-        for _ in xrange(num):
+        for _ in range(num):
             effect = MockEffect(self.avatar)
             self.avatar.effects.add(effect)
             effects.append(effect)
@@ -101,14 +101,14 @@ class TestAvatarWrapper(TestCase):
     def test_effects_not_removed(self):
         effect1, effect2 = self.add_effects()
         self.avatar.update_effects()
-        self.assertEqual(set((effect1, effect2)), self.avatar.effects)
+        self.assertEqual({effect1, effect2}, self.avatar.effects)
 
     def test_expired_effects_removed(self):
         effect1, effect2 = self.add_effects()
         effect1.expire = True
         self.avatar.update_effects()
         self.assertEqual(effect2.turns, 1)
-        self.assertEqual(self.avatar.effects, set((effect2,)))
+        self.assertEqual(self.avatar.effects, {effect2})
 
     def test_effects_applied_on_invalid_action(self):
         self.take_turn(InvalidJSONRequest)
