@@ -3,8 +3,8 @@ from __future__ import absolute_import
 import unittest
 
 from simulation.avatar.avatar_appearance import AvatarAppearance
-from simulation.game_state import GameState
 from simulation.geography.location import Location
+from simulation.state.game_state import GameState
 from simulation.turn_manager import ConcurrentTurnManager
 from simulation.turn_manager import SequentialTurnManager
 from .dummy_avatar import DummyAvatarManager
