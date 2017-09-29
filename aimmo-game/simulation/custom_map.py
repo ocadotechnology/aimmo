@@ -1,13 +1,12 @@
 import abc
 
-from simulation.levels.levels import LEVELS
-
 from simulation.geography.location import Location
-from simulation.game_state import GameState
+from simulation.levels.levels import LEVELS
 from simulation.pickups import DeliveryPickup
+from simulation.state.game_state import GameState
+from simulation.world_map import DEFAULT_LEVEL_SETTINGS
 from simulation.world_map import WorldMap
 from simulation.world_map import world_map_static_spawn_decorator
-from simulation.world_map import DEFAULT_LEVEL_SETTINGS
 
 
 class BaseGenerator(object):

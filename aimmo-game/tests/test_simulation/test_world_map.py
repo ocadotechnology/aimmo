@@ -83,7 +83,7 @@ class TestWorldMap(TestCase):
     def _generate_grid(self, columns=2, rows=2):
         alphabet = iter(ascii_uppercase)
         grid = {Location(x, y): MockCell(Location(x, y), name=next(alphabet))
-                for x in xrange(columns) for y in xrange(rows)}
+                for x in range(columns) for y in range(rows)}
         return grid
 
     def _grid_from_list(self, in_list):
@@ -110,6 +110,7 @@ class TestWorldMap(TestCase):
         self.assertGridSize(map, 5, 2)
 
     def test_all_cells(self):
+        # Try block when python2 is used.
         map = WorldMap(self._generate_grid(), self.settings)
         cell_names = [c.name for c in map.all_cells()]
         self.assertIn('A', cell_names)
@@ -117,6 +118,7 @@ class TestWorldMap(TestCase):
         self.assertIn('C', cell_names)
         self.assertIn('D', cell_names)
         self.assertEqual(len(cell_names), 4)
+
 
     def test_potential_spawns(self):
         spawnable1 = MockCell()
@@ -305,7 +307,7 @@ class TestWorldMapWithOriginCentre(TestWorldMap):
     def _generate_grid(self, columns=2, rows=2):
         alphabet = iter(ascii_uppercase)
         grid = {Location(x, y): MockCell(Location(x, y), name=next(alphabet))
-                for x in xrange(-int_ceil(columns/2.0)+1, int_floor(columns/2.0)+1) for y in xrange(-int_ceil(rows/2.0)+1, int_floor(rows/2.0)+1)}
+                for x in range(-int_ceil(columns/2.0)+1, int_floor(columns/2.0)+1) for y in range(-int_ceil(rows/2.0)+1, int_floor(rows/2.0)+1)}
 
         return grid
 
@@ -328,5 +330,5 @@ class TestWorldMapWithOriginCentre(TestWorldMap):
 class TestStaticSpawnDecorator(TestCase):
     def test_spawn_is_static(self):
         decorated_map = world_map_static_spawn_decorator(WorldMap({}, {}), Location(3, 7))
-        for _ in xrange(5):
+        for _ in range(5):
             self.assertEqual(decorated_map.get_random_spawn_location(), Location(3, 7))

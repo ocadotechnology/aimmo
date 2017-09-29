@@ -2,18 +2,17 @@ from __future__ import absolute_import
 
 from unittest import TestCase, skip
 
-from simulation.game_state import GameState
+import service
+from simulation.avatar.avatar_manager import AvatarManager
 from simulation.geography.location import Location
+from simulation.state.game_state import GameState
+from simulation.state.world_state import WorldState
 from simulation.managers.turn_manager import state_provider
 from simulation.world_map import WorldMap
-from simulation.world_state import WorldState
-from simulation.avatar.avatar_manager import AvatarManager
-
-import service
-
 from .test_simulation.dummy_avatar import MoveEastDummy
 from .test_simulation.maps import MockPickup
 from .test_simulation.test_world_map import MockCell
+
 
 class SimpleAvatarManager(AvatarManager):
     def __init__(self):
