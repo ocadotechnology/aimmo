@@ -168,7 +168,8 @@ class LocalWorkerManager(WorkerManager):
     host = '127.0.0.1'
     worker_directory = os.path.join(
         os.path.dirname(__file__),
-        '../../aimmo-game-worker/',
+        '..', '..', '..',
+        'aimmo-game-worker'
     )
 
     def __init__(self, *args, **kwargs):

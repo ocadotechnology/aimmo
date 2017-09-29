@@ -6,8 +6,8 @@ from simulation.avatar.avatar_appearance import AvatarAppearance
 from simulation.game_state import GameState
 from simulation.geography.location import Location
 from simulation.managers.turn_manager import ConcurrentTurnManager, SequentialTurnManager
-from .dummy_avatar import DummyAvatarManager, MoveEastDummy, MoveNorthDummy
-from .dummy_avatar import MoveSouthDummy, MoveWestDummy, WaitDummy
+from .dummy_avatar import WaitDummy, DummyAvatarManager
+from .dummy_avatar import MoveEastDummy, MoveNorthDummy, MoveSouthDummy, MoveWestDummy
 from .maps import InfiniteMap
 
 ORIGIN = Location(0, 0)
