@@ -1,7 +1,8 @@
 from __future__ import absolute_import
 
 from unittest import TestCase
-from simulation.avatar_state import AvatarState
+
+from simulation.avatar.avatar_state import AvatarState
 
 
 class TestAvatarState(TestCase):
