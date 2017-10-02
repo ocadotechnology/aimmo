@@ -53,8 +53,8 @@ class AvatarView:
     @classmethod
     def cells_in_rectangle(self, top_left, bottom_right, world_map):
         cells = set([])
-        for x in xrange(max(top_left.x, world_map.min_x()), min(bottom_right.x, world_map.max_x() + 1)):
-            for y in xrange(max(bottom_right.y, world_map.min_y()), min(top_left.y, world_map.max_y() + 1)):
+        for x in range(max(top_left.x, world_map.min_x()), min(bottom_right.x, world_map.max_x() + 1)):
+            for y in range(max(bottom_right.y, world_map.min_y()), min(top_left.y, world_map.max_y() + 1)):
                 cells.add(world_map.get_cell(Location(x, y)))
         return cells
 

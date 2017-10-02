@@ -4,7 +4,6 @@ import random
 import unittest
 
 from simulation import map_generator
-from simulation.geography.location import Location
 from simulation.map_generator import get_random_edge_index
 from simulation.world_map import WorldMap
 from .dummy_avatar import DummyAvatarManager
@@ -52,7 +51,7 @@ class TestHelperFunctions(unittest.TestCase):
             (0, -1), (1, -1),
         ))
         actual = frozenset(get_random_edge_index(map, rng=ConstantRng(i))
-                           for i in xrange(6))
+                           for i in range(6))
         self.assertEqual(expected, actual)
 
     def test_out_of_bounds_random_edge(self):

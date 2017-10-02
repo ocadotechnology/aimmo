@@ -49,7 +49,7 @@ class TestServiceInternals(TestCase):
             ],
         ]
         grid = {Location(x, y-1): MockCell(Location(x, y-1), **CELLS[x][y])
-                for y in xrange(3) for x in xrange(2)}
+                for y in range(3) for x in range(2)}
         state_provider.set_world(GameState(WorldMap(grid, {}), avatar_manager))
 
         world_state = WorldState(state_provider)
