@@ -67,11 +67,6 @@ class TestServiceInternals(TestCase):
         self.assertEqual(details['health'], 5)
         self.assertEqual(details['score'], 0)
 
-    def test_score_locations(self):
-        result = self.setup_world()['map_features']['score_point']['create']
-        self.assertEqual(result[0]['x'], 0)
-        self.assertEqual(result[0]['y'], 1)
-
     @skip("not implemented")
     def test_pickup_list(self):
         result = self.setup_world()['map_features']['pickup']['create']
