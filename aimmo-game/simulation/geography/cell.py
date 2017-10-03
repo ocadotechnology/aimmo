@@ -6,13 +6,12 @@ class Cell(object):
     Any position on the world grid.
     """
 
-    def __init__(self, location, habitable=True, generates_score=False, partially_fogged=False):
+    def __init__(self, location, habitable=True, generates_score=False):
         self.location = location
         self.habitable = habitable
         self.generates_score = generates_score
         self.avatar = None
         self.pickup = None
-        self.partially_fogged = partially_fogged
         self.actions = []
 
         # Used to update the map features in the current view of the user (score points on pickups).
@@ -20,8 +19,8 @@ class Cell(object):
         self.add_to_scene = None
 
     def __repr__(self):
-        return 'Cell({} h={} s={} a={} p={} f{})'.format(
-            self.location, self.habitable, self.generates_score, self.avatar, self.pickup, self.partially_fogged)
+        return 'Cell({} h={} s={} a={} p={}'.format(
+            self.location, self.habitable, self.generates_score, self.avatar, self.pickup)
 
     def __eq__(self, other):
         return self.location == other.location
@@ -41,18 +40,10 @@ class Cell(object):
         return self.avatar is not None
 
     def serialise(self):
-        if self.partially_fogged:
-            return {
-                'generates_score': self.generates_score,
-                'location': self.location.serialise(),
-                'partially_fogged': self.partially_fogged
-            }
-        else:
-            return {
-                'avatar': self.avatar.serialise() if self.avatar else None,
-                'generates_score': self.generates_score,
-                'habitable': self.habitable,
-                'location': self.location.serialise(),
-                'pickup': self.pickup.serialise() if self.pickup else None,
-                'partially_fogged': self.partially_fogged
-            }
+        return {
+            'avatar': self.avatar.serialise() if self.avatar else None,
+            'generates_score': self.generates_score,
+            'habitable': self.habitable,
+            'location': self.location.serialise(),
+            'pickup': self.pickup.serialise() if self.pickup else None,
+        }
