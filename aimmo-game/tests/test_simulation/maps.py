@@ -24,14 +24,18 @@ class MockPickup(object):
 
 class MockCell(Cell):
     def __init__(self, location=1, habitable=True, generates_score=False,
-                 avatar=None, pickup=None, name=None, actions=[]):
+                 avatar=None, pickup=None, name=None, actions=None):
         self.location = location
         self.habitable = habitable
         self.generates_score = generates_score
         self.avatar = avatar
         self.pickup = pickup
         self.name = name
-        self.actions = actions
+
+        # Generate a new empty list if one is not provided, else just
+        # get the value from the parameter.
+        self.actions = [] if actions is None else actions
+
         self.partially_fogged = False
         self.created = False
         self.add_to_scene = None
