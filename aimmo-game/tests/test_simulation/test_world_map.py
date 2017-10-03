@@ -45,7 +45,6 @@ class TestCell(TestCase):
         cell.pickup = Serialiser('pickup')
         self.expected = {
             'avatar': 'avatar',
-            'generates_score': True,
             'habitable': False,
             'location': 'location',
             'pickup': 'pickup',
@@ -122,15 +121,13 @@ class TestWorldMap(TestCase):
     def test_potential_spawns(self):
         spawnable1 = MockCell()
         spawnable2 = MockCell()
-        score_cell = MockCell(generates_score=True)
         unhabitable = MockCell(habitable=False)
         filled = MockCell(avatar='avatar')
-        grid = self._grid_from_list([[spawnable1, score_cell, unhabitable], [unhabitable, spawnable2, filled]])
+        grid = self._grid_from_list([[spawnable1, unhabitable], [unhabitable, spawnable2, filled]])
         map = WorldMap(grid, self.settings)
         cells = list(map.potential_spawn_locations())
         self.assertIn(spawnable1, cells)
         self.assertIn(spawnable2, cells)
-        self.assertNotIn(score_cell, cells, "Score cells should not be spawns")
         self.assertNotIn(unhabitable, cells, "Unhabitable cells should not be spawns")
         self.assertNotIn(filled, cells, "Cells with avatars should not be spawns")
         self.assertEqual(len(cells), 2)
