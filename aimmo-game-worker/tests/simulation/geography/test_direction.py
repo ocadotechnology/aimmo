@@ -1,8 +1,9 @@
 from __future__ import absolute_import
 
 from unittest import TestCase
-from simulation.direction import Direction
-from simulation.direction import NORTH, EAST, SOUTH, WEST, ALL_DIRECTIONS
+
+from simulation.geography.direction import Direction
+from simulation.geography.direction import NORTH, EAST, SOUTH, WEST, ALL_DIRECTIONS
 
 
 class TestDirection(TestCase):
