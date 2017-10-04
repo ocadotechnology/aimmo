@@ -7,7 +7,7 @@ from simulation.avatar.avatar_manager import AvatarManager
 from simulation.geography.location import Location
 from simulation.state.game_state import GameState
 from simulation.state.world_state import WorldState
-from simulation.turn_manager import state_provider
+from simulation.managers.turn_manager import state_provider
 from simulation.world_map import WorldMap
 from .test_simulation.dummy_avatar import MoveEastDummy
 from .test_simulation.maps import MockPickup
