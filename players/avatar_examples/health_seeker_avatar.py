@@ -1,15 +1,10 @@
 class Avatar(object):
     def handle_turn(self, avatar_state, world_map):
         from simulation.action import MoveAction
-        from simulation.geography import direction
         import random
-        from simulation.action import WaitAction
 
         self.world_map = world_map
         self.avatar_state = avatar_state
-
-        if world_map.get_cell(avatar_state.location).generates_score:
-            return WaitAction()
 
         possible_directions = self.get_possible_directions()
         directions_to_emphasise = [d for d in possible_directions if self.is_towards(d, self.get_closest_pickup_location())]
@@ -29,7 +24,7 @@ class Avatar(object):
         pickup_cells = list(self.world_map.pickup_cells())
         if pickup_cells:
             c = min(pickup_cells, key=lambda cell: self.distance_between(cell.location, self.avatar_state.location))
-            print 'targetting', c
+            print('targeting', c)
             return c.location
         else:
             return None

@@ -40,12 +40,11 @@ class TestCell(TestCase):
         self.assertNotEqual(cell1, cell2)
 
     def _create_full_cell(self):
-        cell = Cell(Serialiser('location'), False, True)
+        cell = Cell(Serialiser('location'), False)
         cell.avatar = Serialiser('avatar')
         cell.pickup = Serialiser('pickup')
         self.expected = {
             'avatar': 'avatar',
-            'generates_score': True,
             'habitable': False,
             'location': 'location',
             'pickup': 'pickup',
@@ -122,15 +121,13 @@ class TestWorldMap(TestCase):
     def test_potential_spawns(self):
         spawnable1 = MockCell()
         spawnable2 = MockCell()
-        score_cell = MockCell(generates_score=True)
         unhabitable = MockCell(habitable=False)
         filled = MockCell(avatar='avatar')
-        grid = self._grid_from_list([[spawnable1, score_cell, unhabitable], [unhabitable, spawnable2, filled]])
+        grid = self._grid_from_list([[spawnable1, unhabitable], [unhabitable, spawnable2, filled]])
         map = WorldMap(grid, self.settings)
         cells = list(map.potential_spawn_locations())
         self.assertIn(spawnable1, cells)
         self.assertIn(spawnable2, cells)
-        self.assertNotIn(score_cell, cells, "Score cells should not be spawns")
         self.assertNotIn(unhabitable, cells, "Unhabitable cells should not be spawns")
         self.assertNotIn(filled, cells, "Cells with avatars should not be spawns")
         self.assertEqual(len(cells), 2)
@@ -248,7 +245,6 @@ class TestWorldMap(TestCase):
     def test_not_enough_pickup_space(self):
         self.settings['TARGET_NUM_PICKUPS_PER_AVATAR'] = 1
         grid = self._generate_grid(1, 1)
-        grid[Location(0, 0)].generates_score = True
         map = WorldMap(grid, self.settings)
         map.update(1)
         self.assertEqual(len(list(map.pickup_cells())), 0)
