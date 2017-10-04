@@ -86,7 +86,7 @@ class GameCreatorRequestMock(RequestMock):
             str(i): {
                 'name': 'Level1',
                 'settings': dumps(DEFAULT_LEVEL_SETTINGS)
-            } for i in xrange(num_games)
+            } for i in range(num_games)
         }
 
 
@@ -150,7 +150,7 @@ class TestService(TestCase):
               self.__build_test([
                   (GameCreatorProxy(self), 1), # pair of proxy and turns
                   (GameProxy(self), 1)
-              ], False)                        # set True for kubernates
+              ], False)                        # set True for kubernetes
 
           * the service runs minikube/localhost for testing
           * kubernates tests should be named: "ktest_..."

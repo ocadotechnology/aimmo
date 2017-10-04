@@ -49,7 +49,6 @@ class TestCell(TestCase):
             'habitable': False,
             'location': 'location',
             'pickup': 'pickup',
-            'partially_fogged': False
         }
         return cell
 
