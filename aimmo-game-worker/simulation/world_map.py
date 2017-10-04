@@ -16,9 +16,6 @@ class WorldMap(object):
     def all_cells(self):
         return self.cells.values()
 
-    def score_cells(self):
-        return (c for c in self.all_cells() if c.generates_score)
-
     def pickup_cells(self):
         return (c for c in self.all_cells() if getattr(c, 'pickup', False))
 

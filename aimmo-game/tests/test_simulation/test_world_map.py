@@ -40,7 +40,7 @@ class TestCell(TestCase):
         self.assertNotEqual(cell1, cell2)
 
     def _create_full_cell(self):
-        cell = Cell(Serialiser('location'), False, True)
+        cell = Cell(Serialiser('location'), False)
         cell.avatar = Serialiser('avatar')
         cell.pickup = Serialiser('pickup')
         self.expected = {
@@ -245,7 +245,6 @@ class TestWorldMap(TestCase):
     def test_not_enough_pickup_space(self):
         self.settings['TARGET_NUM_PICKUPS_PER_AVATAR'] = 1
         grid = self._generate_grid(1, 1)
-        grid[Location(0, 0)].generates_score = True
         map = WorldMap(grid, self.settings)
         map.update(1)
         self.assertEqual(len(list(map.pickup_cells())), 0)

@@ -13,7 +13,6 @@ class TestWorldMap(TestCase):
         cells = [{
             'location': {'x': x, 'y': y},
             'habitable': True,
-            'generates_score': False,
             'avatar': None,
             'pickup': None,
         } for x in range(-columns / 2 + 1, 1 + columns / 2) for y in range(-rows / 2 + 1, 1 + rows / 2)]

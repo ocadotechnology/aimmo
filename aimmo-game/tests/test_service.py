@@ -40,7 +40,7 @@ class TestServiceInternals(TestCase):
             [
                 {'pickup': MockPickup('b'), 'avatar': avatar_manager.avatars_by_id[1]},
                 {},
-                {'generates_score': True},
+                {},
             ],
             [
                 {},

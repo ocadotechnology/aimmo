@@ -6,7 +6,7 @@ class Cell(object):
     Any position on the world grid.
     """
 
-    def __init__(self, location, habitable=True, generates_score=False):
+    def __init__(self, location, habitable=True):
         self.location = location
         self.habitable = habitable
         self.avatar = None
