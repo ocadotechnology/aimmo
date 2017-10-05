@@ -1,4 +1,9 @@
 # AI:MMO
+
+[![Code Climate](https://codeclimate.com/github/dionisioC/aimmo/badges/gpa.svg)](https://codeclimate.com/github/dionisioC/aimmo)
+[![Test Coverage](https://codeclimate.com/github/dionisioC/aimmo/badges/coverage.svg)](https://codeclimate.com/github/dionisioC/aimmo/coverage)
+[![Issue Count](https://codeclimate.com/github/dionisioC/aimmo/badges/issue_count.svg)](https://codeclimate.com/github/dionisioC/aimmo)
+
 A **M**assively **M**ulti-player **O**nline game, where players create **A**rtificially **I**ntelligent programs to play on their behalf.
 
 ## A [Code for Life](https://www.codeforlife.education/) project
