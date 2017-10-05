@@ -19,7 +19,7 @@ before_script:
   - ./cc-test-reporter before-build
 script:
   - python all_tests.py --coverage
-  - cc-test-reporter --file .coverage
+  - ./cc-test-reporter --file .coverage
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 after_success:
