@@ -18,7 +18,7 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 script:
-  - python all_tests.py --coverage
+  - python all_tests.py --coverage --pep8
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT .t coverage.py
 after_success:
