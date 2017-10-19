@@ -64,6 +64,7 @@ class WorldMap(object):
     def potential_spawn_locations(self):
         return (c for c in self.all_cells()
                 if c.habitable
+                and not c.generates_score
                 and not c.avatar
                 and not c.pickup)
 

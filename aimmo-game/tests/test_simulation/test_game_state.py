@@ -68,6 +68,12 @@ class TestGameState(TestCase):
         self.assertEqual(avatar.location.x, 10)
         self.assertEqual(avatar.location.y, 10)
 
+    def test_fog_of_war(self):
+        state = GameState(InfiniteMap(), DummyAvatarManager())
+        view = state.get_state_for(DummyAvatar(None, None), FogToEmpty())
+        self.assertEqual(len(view['world_map']['cells']), 0)
+        self.assertEqual(view['avatar_state'], 'Dummy')
+
     def test_updates_map(self):
         map = InfiniteMap()
         state = GameState(map, DummyAvatarManager())

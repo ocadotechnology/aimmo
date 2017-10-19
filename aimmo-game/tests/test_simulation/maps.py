@@ -23,18 +23,15 @@ class MockPickup(object):
 
 
 class MockCell(Cell):
-    def __init__(self, location=1, habitable=True, avatar=None, pickup=None,
-                 name=None, actions=None):
+    def __init__(self, location=1, habitable=True, generates_score=False,
+                 avatar=None, pickup=None, name=None, actions=[]):
         self.location = location
         self.habitable = habitable
+        self.generates_score = generates_score
         self.avatar = avatar
         self.pickup = pickup
         self.name = name
-
-        # Generate a new empty list if one is not provided, else just
-        # get the value from the parameter.
-        self.actions = [] if actions is None else actions
-
+        self.actions = actions
         self.partially_fogged = False
         self.created = False
         self.add_to_scene = None
@@ -94,6 +91,12 @@ class EmptyMap(WorldMap):
 
     def get_cell(self, location):
         return Cell(location)
+
+
+class ScoreOnOddColumnsMap(InfiniteMap):
+    def get_cell(self, location):
+        default_cell = Cell(location, generates_score=(location.x % 2 == 1))
+        return self._cell_cache.setdefault(location, default_cell)
 
 
 class AvatarMap(WorldMap):
