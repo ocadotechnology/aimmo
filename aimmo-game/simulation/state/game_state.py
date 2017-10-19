@@ -1,3 +1,4 @@
+from simulation.avatar import fog_of_war
 
 
 class GameState(object):
@@ -10,11 +11,12 @@ class GameState(object):
         self._completion_callback = completion_check_callback
         self.main_avatar_id = None
 
-    def get_state_for(self, avatar_wrapper):
+    def get_state_for(self, avatar_wrapper, fog_of_war=fog_of_war):
+        processed_world_map = fog_of_war.apply_fog_of_war(self.world_map, avatar_wrapper)
         return {
             'avatar_state': avatar_wrapper.serialise(),
             'world_map': {
-                'cells': [cell.serialise() for cell in self.world_map.all_cells()]
+                'cells': [cell.serialise() for cell in processed_world_map.all_cells()]
             }
         }
 

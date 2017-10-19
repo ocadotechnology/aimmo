@@ -49,7 +49,7 @@ class Parser():
         pass
 
     def feed_string(self, input_str):
-        if isinstance(input_str, str):
+        if isinstance(input_str, unicode):
             input_str = str(input_str)
 
         # e.g. class:CellTransform.compute_id
@@ -82,8 +82,8 @@ class Parser():
 
     def map_apply_transforms(self):
         objects = []
-        for x in range(len(self.map)):
-            for y in range(len(self.map[x])):
+        for x in xrange(len(self.map)):
+            for y in xrange(len(self.map[x])):
                 code = self.map[x][y]
 
                 self.register_transforms(x, y)

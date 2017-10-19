@@ -17,6 +17,7 @@ spec:
         # The api server enforces this constraint.
         app: aimmo-game-creator
     spec:
+      backoffLimit: 2
       containers:
       - name: aimmo-game-creator
         image: ocadotechnology/aimmo-game-creator:AIMMO_VERSION

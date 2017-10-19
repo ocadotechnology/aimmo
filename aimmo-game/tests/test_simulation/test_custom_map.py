@@ -1,10 +1,12 @@
 from __future__ import absolute_import
 
+import random
 import unittest
 
 from simulation.geography.location import Location
 from simulation.pickups import DeliveryPickup
 from simulation.world_map import WorldMap
+from simulation.custom_map import ScoreCellDecoder
 from simulation.custom_map import ObstacleDecoder
 from simulation.custom_map import PickupDecoder
 
@@ -36,6 +38,27 @@ class TestDecoders(unittest.TestCase):
         self.assertTrue(self.map.get_cell(Location(0, 1)).habitable)
         self.assertTrue(self.map.get_cell(Location(1, 0)).habitable)
         self.assertFalse(self.map.get_cell(Location(1, 1)).habitable)
+
+    def test_score_cell_decoder(self):
+        ScoreCellDecoder("0").decode({
+            "x" : "0",
+            "y" : "0"
+        }, self.map)
+
+        self.assertTrue(self.map.get_cell(Location(0, 0)).generates_score)
+        self.assertFalse(self.map.get_cell(Location(0, 1)).generates_score)
+        self.assertFalse(self.map.get_cell(Location(1, 0)).generates_score)
+        self.assertFalse(self.map.get_cell(Location(1, 1)).generates_score)
+
+        ScoreCellDecoder("0").decode({
+            "x" : "1",
+            "y" : "1"
+        }, self.map)
+
+        self.assertTrue(self.map.get_cell(Location(0, 0)).generates_score)
+        self.assertFalse(self.map.get_cell(Location(0, 1)).generates_score)
+        self.assertFalse(self.map.get_cell(Location(1, 0)).generates_score)
+        self.assertTrue(self.map.get_cell(Location(1, 1)).generates_score)
 
     def test_pickup_decoder(self):
         PickupDecoder("0").decode({

@@ -6,6 +6,7 @@ from simulation.pickups import DeliveryPickup
 from simulation.state.game_state import GameState
 from simulation.world_map import DEFAULT_LEVEL_SETTINGS
 from simulation.world_map import WorldMap
+from simulation.world_map import world_map_static_spawn_decorator
 
 
 class BaseGenerator(object):
@@ -53,6 +54,14 @@ class Decoder():
     def decode(self, json, world_map):
         pass
 
+
+class ScoreCellDecoder(Decoder):
+    def decode(self, json, world_map):
+        x, y = int(json["x"]), int(json["y"])
+        world_map = world_map_static_spawn_decorator(world_map, Location(x, y))
+        world_map.get_cell(Location(x, y)).generates_score = True
+
+
 class ObstacleDecoder(Decoder):
     def decode(self, json, world_map):
         x, y = int(json["x"]), int(json["y"])
@@ -75,6 +84,7 @@ class JsonLevelGenerator(TemplateLevelGenerator):
 
     def _register_decoders(self):
         self.decoders = [
+            ScoreCellDecoder("2"),
             ObstacleDecoder("1"),
             PickupDecoder("3"),
             PickupDecoder("4"),

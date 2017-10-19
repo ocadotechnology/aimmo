@@ -2,9 +2,7 @@
 import sys
 
 import requests
-from logging import getLogger
 
-LOGGER = getLogger(__name__)
 url = 'http://localhost:5001/initialise/'
 
 if len(sys.argv) > 1:
@@ -20,7 +18,7 @@ api_data = {
     'options': {},
 }
 
-LOGGER.debug("Posting: ", api_data)
+print 'Posting: ', api_data
 result = requests.post(url, json=api_data)
-LOGGER.debug(result.content)
+print result.content
 result.raise_for_status()
