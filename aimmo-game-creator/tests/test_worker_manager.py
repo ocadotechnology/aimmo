@@ -2,14 +2,11 @@ from __future__ import absolute_import
 
 import cPickle as pickle
 import unittest
-
-from json import dumps, loads
+from json import dumps
 
 from httmock import HTTMock
-import mock
 
 from worker_manager import WorkerManager
-from worker_manager import LocalWorkerManager
 
 
 class ConcreteWorkerManager(WorkerManager):
@@ -43,7 +40,7 @@ class RequestMock(object):
         return {
             str(i): {
                 'name': 'Game %s' % i,
-                'settings': dumps({
+                'settings': pickle.dumps({
                     'test': i,
                     'test2': 'Settings %s' % i,
                 })
@@ -75,7 +72,7 @@ class TestWorkerManager(unittest.TestCase):
         for i in xrange(3):
             self.assertIn(str(i), self.worker_manager.final_workers)
             self.assertEqual(
-                loads(str(self.worker_manager.added_workers[str(i)]['settings'])),
+                pickle.loads(str(self.worker_manager.added_workers[str(i)]['settings'])),
                 {'test': i, 'test2': 'Settings %s' % i}
             )
             self.assertEqual(self.worker_manager.added_workers[str(i)]['name'], 'Game %s' % i)
@@ -98,45 +95,3 @@ class TestWorkerManager(unittest.TestCase):
                 'http://test/{}/'.format(i)
             )
             self.assertEqual(self.worker_manager.added_workers[str(i)]['name'], 'Game %s' % i)
-
-
-class TestLocalWorkerManager(unittest.TestCase):
-
-    def test_create_worker(self):
-        with mock.patch('subprocess.Popen') as mocked_popen:
-            localWorkerManager = LocalWorkerManager("")
-
-            game_id = 1
-            game_data = {
-                "test" : "test"
-            }
-
-            localWorkerManager.create_worker(game_id, game_data)
-            call_args = mocked_popen.call_args
-
-            argument_dictionary = call_args[1]
-            self.assertTrue("aimmo-game" in argument_dictionary["cwd"])
-            self.assertEqual(argument_dictionary["env"]["test"], "test")
-
-    def test_remove_worker(self):
-        self.killed = False
-        class KillableWorker():
-            def __init__(self, binder):
-                self.binder = binder
-                self.binder.killed = False
-
-            def kill(self):
-                self.binder.killed = True
-
-        localWorkerManager = LocalWorkerManager("")
-        localWorkerManager.workers = {
-            1 : KillableWorker(self)
-        }
-
-        self.assertFalse(self.killed)
-        self.assertTrue(1 in localWorkerManager.workers)
-
-        localWorkerManager.remove_worker(1)
-
-        self.assertTrue(self.killed)
-        self.assertTrue(1 not in localWorkerManager.workers)

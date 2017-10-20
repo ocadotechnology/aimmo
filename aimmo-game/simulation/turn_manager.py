@@ -50,8 +50,7 @@ class TurnManager(Thread):
     def run_turn(self):
         raise NotImplementedError("Abstract method.")
 
-    @staticmethod
-    def _register_action(avatar):
+    def _register_action(self, avatar):
         """
         Send an avatar its view of the game state and register its chosen action.
         """
@@ -62,13 +61,13 @@ class TurnManager(Thread):
             with state_provider as game_state:
                 avatar.action.register(game_state.world_map)
 
-    @staticmethod
-    def _update_environment(game_state):
+    def _update_environment(self, game_state):
         num_avatars = len(game_state.avatar_manager.active_avatars)
         game_state.world_map.reconstruct_interactive_state(num_avatars)
 
     def _mark_complete(self):
-        pass
+        from service import get_world_state
+        requests.post(self._completion_url, json=get_world_state())
 
     def run(self):
         while True:

@@ -1,3 +1,4 @@
+import cPickle as pickle
 import logging
 import os
 
@@ -11,7 +12,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
 
-from json import dumps
 from models import Avatar, Game, LevelAttempt
 from players import forms
 from . import app_settings
@@ -60,7 +60,7 @@ def list_games(request):
         game.pk:
             {
                 'name': game.name,
-                'settings': dumps(game.settings_as_dict()),
+                'settings': pickle.dumps(game.settings_as_dict()),
             } for game in Game.objects.exclude_inactive()
     }
     return JsonResponse(response)

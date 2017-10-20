@@ -54,10 +54,9 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
 
 ## Running Locally
 * Clone the repo
-* Make and activate a **Python 2.7** virtualenv (We recommend [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/index.html)) - if you have a Mac see the following section. 
+* Make and activate a virtualenv (We recommend [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/index.html)) - if you have a Mac see the following section.
     * e.g. the first time, `mkvirtualenv -a path/to/aimmo aimmo`
     * and thereafter `workon aimmo`
-    * If you have multiple Python versions installed, you can specify an interpreter for the virtualenv with the `--python=/path/to/python` flag
 * `./run.py` in your aimmo dir - This will:
     * if necessary, create a superuser 'admin' with password 'admin'
     * install all of the dependencies using pip
@@ -115,4 +114,4 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
 ## How to contribute!
 __Want to help?__ You can contact us using this [contact form][c4l-contact-form] and we'll get in touch as soon as possible! Thanks a lot.
 
-[c4l-contact-form]: https://www.codeforlife.education/help/#contact
+[c4l-contact-form]: https://www.codeforlife.education/contact/

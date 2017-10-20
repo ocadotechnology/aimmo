@@ -12,7 +12,7 @@ class Avatar(object):
             return WaitAction()
 
         possible_directions = self.get_possible_directions()
-        directions_to_emphasise = [d for d in possible_directions if self.is_towards(d, self.get_closest_pickup_location())]
+        directions_to_emphasise = [d for d in possible_directions if self.is_towards(d, self.get_closest_score_location())]
         return MoveAction(random.choice(possible_directions + (directions_to_emphasise * 5)))
 
     def is_towards(self, direction, location):
@@ -20,17 +20,15 @@ class Avatar(object):
             return self.distance_between(self.avatar_state.location, location) > \
                 self.distance_between(self.avatar_state.location + direction, location)
         else:
-            return None
+            return False
 
     def distance_between(self, a, b):
         return abs(a.x - b.x) + abs(a.y - b.y)
 
-    def get_closest_pickup_location(self):
-        pickup_cells = list(self.world_state.pickup_cells())
-        if pickup_cells:
-            c = min(pickup_cells, key=lambda cell: self.distance_between(cell.location, self.avatar_state.location))
-            print 'targetting', c
-            return c.location
+    def get_closest_score_location(self):
+        score_cells = list(self.world_state.score_cells())
+        if score_cells:
+            return min(score_cells, key=lambda cell: self.distance_between(cell.location, self.avatar_state.location)).location
         else:
             return None
 

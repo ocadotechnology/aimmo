@@ -1,6 +1,6 @@
 from simulation.avatar.avatar_wrapper import AvatarWrapper
 from simulation.avatar.avatar_appearance import AvatarAppearance
-import copy
+
 
 class AvatarManager(object):
     """
@@ -19,8 +19,7 @@ class AvatarManager(object):
         return self.avatars_by_id[user_id]
 
     def remove_avatar(self, user_id):
-        if user_id in self.avatars_by_id:
-            del self.avatars_by_id[user_id]
+        del self.avatars_by_id[user_id]
 
     @property
     def avatars(self):

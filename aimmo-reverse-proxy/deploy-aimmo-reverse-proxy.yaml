@@ -11,6 +11,6 @@ spec:
     spec:
       containers:
       - name: aimmo-reverse-proxy
-        image: ocadotechnology/aimmo-reverse-proxy:AIMMO_VERSION
+        image: ocadotechnology/aimmo-reverse-proxy:latest
         ports:
         - containerPort: 80

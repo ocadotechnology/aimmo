@@ -1,5 +1,5 @@
 from logging import getLogger
-from simulation.geography.direction import Direction
+from simulation.direction import Direction
 from simulation.event import FailedAttackEvent, FailedMoveEvent, MovedEvent, PerformedAttackEvent, ReceivedAttackEvent
 
 LOGGER = getLogger(__name__)
@@ -68,9 +68,6 @@ class MoveAction(Action):
         event = MovedEvent(self.avatar.location, self.target_location)
         self.avatar.add_event(event)
 
-        # Change avatar's world view.
-        self.avatar.view.move(self.direction, world_map)
-
         world_map.get_cell(self.avatar.location).avatar = None
         self.avatar.location = self.target_location
         world_map.get_cell(self.target_location).avatar = self.avatar
@@ -136,7 +133,6 @@ class AttackAction(Action):
     def reject(self):
         self.avatar.add_event(FailedAttackEvent(self.target_location))
         self.avatar.clear_action()
-
 
 ACTIONS = {
     'attack': AttackAction,

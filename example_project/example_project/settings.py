@@ -36,7 +36,6 @@
 # identified as the original program.
 """Django settings for example_project project."""
 import subprocess
-import socket
 
 import os
 
@@ -107,24 +106,12 @@ MIDDLEWARE_CLASSES = [
    'django.contrib.messages.middleware.MessageMiddleware',
 ]
 
-def get_ip():
-    # http://stackoverflow.com/a/28950776/671626
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    try:
-        # doesn't even have to be reachable
-        s.connect(('10.255.255.255', 0))
-        IP = s.getsockname()[0]
-    except:
-        IP = '127.0.0.1'
-    finally:
-        s.close()
-    return IP
-
 def get_url(game):
     if os.environ.get('AIMMO_MODE', '') == 'minikube':
-         return (os.environ['MINIKUBE_PROXY_URL'], "/game/%s/socket.io" % game)
+        output = subprocess.check_output([os.environ['MINIKUBE_PATH'], 'service', 'game-%s' % game, '--url'])
+        return (output.strip(), '/game/%s/socket.io' % game)
     else:
-        return ('http://%s:%d' % (get_ip(), (6001 + int(game) * 1000)), '/socket.io')
+        return ('http://localhost:%d' % (6001 + int(game) * 1000), '/socket.io')
 
 AIMMO_GAME_SERVER_LOCATION_FUNCTION = get_url
 

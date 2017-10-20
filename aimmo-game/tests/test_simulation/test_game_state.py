@@ -2,8 +2,8 @@ from __future__ import absolute_import
 
 from unittest import TestCase
 
-from simulation.geography.location import Location
-from simulation.state.game_state import GameState
+from simulation.game_state import GameState
+from simulation.location import Location
 from .dummy_avatar import DummyAvatar
 from .dummy_avatar import DummyAvatarManager
 from .maps import InfiniteMap, AvatarMap, EmptyMap
@@ -53,12 +53,11 @@ class TestGameState(TestCase):
         avatar_manager.avatars_by_id[1] = avatar
         avatar_manager.avatars_by_id[2] = other_avatar
         game_state = GameState(world_map, avatar_manager)
-
-        # Ensures the only avatars in the dictionary are either 1 or 2.
-        self.assertTrue(all((id == 1 or id == 2) for id in avatar_manager.avatars_by_id.keys()))
-        self.assertTrue(avatar_manager.avatars_by_id[2].marked)
-
         return (game_state, avatar, world_map, avatar_manager)
+
+        self.assertTrue(avatar_manager.avatars_by_id[2].marked)
+        self.assertNotIn(1, avatar_manager.avatars_by_id)
+        self.assertEqual(world_map.get_cell((0, 0)).avatar, None)
 
     def test_add_avatar(self):
         state = GameState(AvatarMap(None), DummyAvatarManager())
@@ -67,6 +66,12 @@ class TestGameState(TestCase):
         avatar = state.avatar_manager.avatars_by_id[7]
         self.assertEqual(avatar.location.x, 10)
         self.assertEqual(avatar.location.y, 10)
+
+    def test_fog_of_war(self):
+        state = GameState(InfiniteMap(), DummyAvatarManager())
+        view = state.get_state_for(DummyAvatar(None, None), FogToEmpty())
+        self.assertEqual(len(view['world_map']['cells']), 0)
+        self.assertEqual(view['avatar_state'], 'Dummy')
 
     def test_updates_map(self):
         map = InfiniteMap()
