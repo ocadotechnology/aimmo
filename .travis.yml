@@ -19,9 +19,8 @@ before_script:
   - ./cc-test-reporter before-build
 script:
   - python all_tests.py --coverage
-after_script:
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --debug --coverage-input-type coverage.py
 after_success:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --debug --coverage-input-type coverage.py
   - coveralls
 deploy:
   provider: pypi
