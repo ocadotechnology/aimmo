@@ -4,6 +4,7 @@ import random
 import unittest
 
 from simulation import map_generator
+from simulation.location import Location
 from simulation.map_generator import get_random_edge_index
 from simulation.world_map import WorldMap
 from .dummy_avatar import DummyAvatarManager
@@ -51,7 +52,7 @@ class TestHelperFunctions(unittest.TestCase):
             (0, -1), (1, -1),
         ))
         actual = frozenset(get_random_edge_index(map, rng=ConstantRng(i))
-                           for i in range(6))
+                           for i in xrange(6))
         self.assertEqual(expected, actual)
 
     def test_out_of_bounds_random_edge(self):
@@ -117,3 +118,36 @@ class TestMainGenerator(_BaseGeneratorTestCase):
     def test_not_complete(self):
         game_state = self.get_game_state()
         self.assertFalse(game_state.is_complete())
+
+
+class TestLevel1Generator(_BaseGeneratorTestCase):
+    GENERATOR_CLASS = map_generator.Level1
+
+    def test_width_5(self):
+        self.assertEqual(self.get_map().num_cols, 5)
+
+    def test_height_1(self):
+        self.assertEqual(self.get_map().num_rows, 1)
+
+    def test_incomplete_without_avatars(self):
+        game_state = self.get_game_state()
+        self.assertFalse(game_state.is_complete())
+
+    def test_incomplete_at_score_0(self):
+        game_state = self.get_game_state()
+        game_state.avatar_manager.add_avatar(1, '', None)
+        game_state.main_avatar_id = 1
+        self.assertFalse(game_state.is_complete())
+
+    def test_completes_at_score_1(self):
+        game_state = self.get_game_state()
+        game_state.avatar_manager.add_avatar(1, '', None)
+        game_state.avatar_manager.avatars_by_id[1].score = 1
+        game_state.main_avatar_id = 1
+        self.assertTrue(game_state.is_complete())
+
+    def test_static_spawn(self):
+        game_state = self.get_game_state()
+        for i in xrange(5):
+            game_state.add_avatar(i, '')
+            self.assertEqual(game_state.avatar_manager.avatars_by_id[i].location, Location(-2, 0))

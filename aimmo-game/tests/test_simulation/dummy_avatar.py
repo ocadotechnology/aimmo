@@ -3,7 +3,7 @@ from __future__ import absolute_import
 from simulation.action import MoveAction, WaitAction
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.avatar.avatar_wrapper import AvatarWrapper
-from simulation.geography.direction import NORTH, EAST, SOUTH, WEST
+from simulation.direction import NORTH, EAST, SOUTH, WEST
 
 
 class DummyAvatar(AvatarWrapper):

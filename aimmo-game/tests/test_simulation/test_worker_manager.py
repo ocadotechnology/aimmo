@@ -6,7 +6,7 @@ from json import dumps
 from httmock import HTTMock
 
 from simulation.avatar.avatar_manager import AvatarManager
-from simulation.state.game_state import GameState
+from simulation.game_state import GameState
 from simulation.worker_manager import WorkerManager
 from .maps import InfiniteMap
 
@@ -46,13 +46,13 @@ class RequestMock(object):
                 'users': [{
                     'id': i,
                     'code': 'code for %s' % i,
-                } for i in range(num_users)]
+                } for i in xrange(num_users)]
             }
         }
 
     def change_code(self, id, new_code):
         users = self.value['main']['users']
-        for i in range(len(users)):
+        for i in xrange(len(users)):
             if users[i]['id'] == id:
                 users[i]['code'] = new_code
 
@@ -78,7 +78,7 @@ class TestWorkerManager(unittest.TestCase):
         with HTTMock(mocker):
             self.worker_manager.update()
         self.assertEqual(len(self.worker_manager.final_workers), 3)
-        for i in range(3):
+        for i in xrange(3):
             self.assertIn(i, self.game_state.avatar_manager.avatars_by_id)
             self.assertIn(i, self.worker_manager.final_workers)
             self.assertEqual(self.worker_manager.get_code(i), 'code for %s' % i)
@@ -91,7 +91,7 @@ class TestWorkerManager(unittest.TestCase):
             mocker.change_code(2, 'changed 2')
             self.worker_manager.update()
 
-        for i in range(4):
+        for i in xrange(4):
             self.assertIn(i, self.worker_manager.final_workers)
             self.assertIn(i, self.game_state.avatar_manager.avatars_by_id)
 

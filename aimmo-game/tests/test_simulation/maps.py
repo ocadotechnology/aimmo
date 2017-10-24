@@ -2,9 +2,8 @@ from __future__ import absolute_import
 
 from collections import defaultdict
 
-from simulation.geography.location import Location
-from simulation.world_map import WorldMap
-from simulation.geography.cell import Cell
+from simulation.location import Location
+from simulation.world_map import Cell, WorldMap
 
 
 class MockPickup(object):
@@ -23,22 +22,16 @@ class MockPickup(object):
 
 
 class MockCell(Cell):
-    def __init__(self, location=1, habitable=True, avatar=None, pickup=None,
-                 name=None, actions=None):
+    def __init__(self, location=1, habitable=True, generates_score=False,
+                 avatar=None, pickup=None, name=None, actions=[]):
         self.location = location
         self.habitable = habitable
+        self.generates_score = generates_score
         self.avatar = avatar
         self.pickup = pickup
         self.name = name
-
-        # Generate a new empty list if one is not provided, else just
-        # get the value from the parameter.
-        self.actions = [] if actions is None else actions
-
+        self.actions = actions
         self.partially_fogged = False
-        self.created = False
-        self.add_to_scene = None
-        self.remove_from_scene = None
 
     def __eq__(self, other):
         return self is other
@@ -66,16 +59,12 @@ class InfiniteMap(WorldMap):
         self.updates += 1
         self.num_avatars = num_avatars
 
-    def min_x(self):
-        return float('-inf')
-
-    def max_x(self):
+    @property
+    def num_rows(self):
         return float('inf')
 
-    def min_y(self):
-        return float('-inf')
-
-    def max_y(self):
+    @property
+    def num_cols(self):
         return float('inf')
 
 
@@ -94,6 +83,12 @@ class EmptyMap(WorldMap):
 
     def get_cell(self, location):
         return Cell(location)
+
+
+class ScoreOnOddColumnsMap(InfiniteMap):
+    def get_cell(self, location):
+        default_cell = Cell(location, generates_score=(location.x % 2 == 1))
+        return self._cell_cache.setdefault(location, default_cell)
 
 
 class AvatarMap(WorldMap):

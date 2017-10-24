@@ -5,7 +5,7 @@ import sys
 
 import flask
 
-from simulation.avatar.avatar_state import AvatarState
+from simulation.avatar_state import AvatarState
 from simulation.world_map import WorldMap
 
 app = flask.Flask(__name__)
