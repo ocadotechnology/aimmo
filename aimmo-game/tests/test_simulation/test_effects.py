@@ -45,9 +45,9 @@ class TestInvulnerabilityEffect(_BaseCases.BaseTimedEffectTestCase):
         self.assertEqual(self.avatar.resistance, 0)
 
 
-class TestDamageEffect(_BaseCases.BaseTimedEffectTestCase):
+class TestDamageBoostPickupEffect(_BaseCases.BaseTimedEffectTestCase):
     def make_effect(self, *args):
-        return effects.DamagePickupEffect(5, *args)
+        return effects.DamageBoostPickupEffect(5, *args)
 
     def test_damage_increases(self):
         self.assertEqual(self.avatar.attack_strength, 6)

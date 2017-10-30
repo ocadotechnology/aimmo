@@ -60,9 +60,9 @@ class TestInvulnerabilityPickup(_BaseCases.BasePickupEffectTestCase):
         self.assertEqual(self.pickup.serialise(), {'type': 'invulnerability'})
 
 
-class TestDamagePickup(_BaseCases.BasePickupEffectTestCase):
-    pickup_class = pickups.DamagePickup
-    effect_class = effects.DamagePickupEffect
+class TestDamageBoostPickup(_BaseCases.BasePickupEffectTestCase):
+    pickup_class = pickups.DamageBoostPickup
+    effect_class = effects.DamageBoostPickupEffect
 
     def test_serialise(self):
         self.assertEqual(self.pickup.serialise(), {'type': 'damage', 'damage_boost': 5})

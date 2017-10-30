@@ -40,12 +40,12 @@ class InvulnerabilityPickupEffect(_TimedEffect):
         self._avatar.resistance -= 1000
 
 
-class DamagePickupEffect(_TimedEffect):
+class DamageBoostPickupEffect(_TimedEffect):
     def __init__(self, damage_boost, *args):
         self._damage_boost = damage_boost
-        super(DamagePickupEffect, self).__init__(*args)
+        super(DamageBoostPickupEffect, self).__init__(*args)
         self._avatar.attack_strength += self._damage_boost
 
     def remove(self):
-        super(DamagePickupEffect, self).remove()
+        super(DamageBoostPickupEffect, self).remove()
         self._avatar.attack_strength -= self._damage_boost
