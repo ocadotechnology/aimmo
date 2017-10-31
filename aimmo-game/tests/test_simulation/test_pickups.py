@@ -23,6 +23,9 @@ class _BaseCases(object):
         def apply_pickup(self):
             self.pickup.apply(self.avatar)
 
+        def apply_second_pickup(self, pickup_two):
+            pickup_two.apply(self.avatar)
+
         def test_pickup_removed(self):
             self.apply_pickup()
             self.assertIs(self.cell.pickup, None)
@@ -105,6 +108,16 @@ class TestInvulnerabilityPickup(_BaseCases.BasePickupEffectTestCase):
         self.apply_pickup()
         self.assertIsInstance(self.pickup, pickups.InvulnerabilityPickup)
 
+    def test_second_invulnerability_can_be_picked_up(self):
+        self.assertEqual(self.avatar.resistance, 0)
+        second_pickup = self.pickup_class(MockCell())
+
+        self.apply_pickup()
+        self.assertEqual(self.avatar.resistance, 1000)
+        self.apply_second_pickup(second_pickup)
+
+        self.assertEqual(self.avatar.resistance, 2000)
+
     def test_serialise(self):
         self.assertEqual(self.pickup.serialise(), {'type': 'invulnerability'})
 
@@ -113,11 +126,11 @@ class TestDamagePickup(_BaseCases.BasePickupEffectTestCase):
     pickup_class = pickups.DamagePickup
     effect_class = effects.DamagePickupEffect
 
-    def test_damagepickup_is_applied(self):
+    def test_damage_boost_pickup_is_applied(self):
         self.apply_pickup()
         self.assertIsInstance(self.pickup, pickups.DamagePickup)
 
-    def test_damagepickup_default_params(self):
+    def test_damage_boost_pickup_default_params(self):
         self.assertEqual(len(self.avatar.effects), 0)
         self.apply_pickup()
         self.assertEqual(len(self.avatar.effects), 1)
