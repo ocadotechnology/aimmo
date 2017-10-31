@@ -53,11 +53,9 @@ class TestGameState(TestCase):
         avatar_manager.avatars_by_id[1] = avatar
         avatar_manager.avatars_by_id[2] = other_avatar
         game_state = GameState(world_map, avatar_manager)
+
         return (game_state, avatar, world_map, avatar_manager)
 
-        self.assertTrue(avatar_manager.avatars_by_id[2].marked)
-        self.assertNotIn(1, avatar_manager.avatars_by_id)
-        self.assertEqual(world_map.get_cell((0, 0)).avatar, None)
 
     def test_add_avatar(self):
         state = GameState(AvatarMap(None), DummyAvatarManager())
