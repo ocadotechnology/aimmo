@@ -8,7 +8,7 @@ from unittest import TestCase
 from simulation.location import Location
 from simulation.world_map import Cell, WorldMap, WorldMapStaticSpawnDecorator
 from .dummy_avatar import DummyAvatar
-from .maps import MockCell, MockPickup
+from .maps import MockCell, MockPickup, AvatarMap
 
 
 def int_ceil(num):
@@ -82,7 +82,7 @@ class TestWorldMap(TestCase):
     def _generate_grid(self, columns=2, rows=2):
         alphabet = iter(ascii_uppercase)
         grid = {Location(x, y): MockCell(Location(x, y), name=next(alphabet))
-                for x in xrange(columns) for y in xrange(rows)}
+                for x in range(columns) for y in range(rows)}
         return grid
 
     def _grid_from_list(self, in_list):
@@ -160,6 +160,9 @@ class TestWorldMap(TestCase):
         for x in (0, 1):
             for y in (0, 1):
                 self.assertTrue(map.is_on_map(Location(x, y)))
+
+        self.assertFalse(map.is_on_map(Location(2,2)))
+        self.assertFalse(map.is_on_map(Location(-1, 1)))
 
     def test_x_off_map(self):
         map = WorldMap(self._generate_grid(), self.settings)
@@ -313,7 +316,7 @@ class TestWorldMap(TestCase):
         map.update(1)
         self.assertEqual(len(list(map.pickup_cells())), 0)
 
-    def test_random_spawn_location(self):
+    def test_random_spawn_location_successful(self):
         cell = MockCell()
         map = WorldMap({Location(0, 0): cell}, self.settings)
         self.assertEqual(map.get_random_spawn_location(), cell.location)
@@ -361,12 +364,24 @@ class TestWorldMap(TestCase):
         map = WorldMap(self._grid_from_list(grid), self.settings)
         self.assertEqual([list(column) for column in map], grid)
 
+    def test_attackable_avatar_returns_none(self):
+        map = WorldMap(self._generate_grid(), self.settings)
+        for x in (0, 1):
+            for y in (0, 1):
+                self.assertIsNone(map.attackable_avatar(Location(x, y)))
+
+    def test_attackable_avatar_returns_avatar(self):
+        avatar = DummyAvatar()
+        map = AvatarMap(avatar)
+
+        self.assertEqual(map.attackable_avatar(Location(0, 0)), avatar)
+
 
 class TestWorldMapWithOriginCentre(TestWorldMap):
     def _generate_grid(self, columns=2, rows=2):
         alphabet = iter(ascii_uppercase)
         grid = {Location(x, y): MockCell(Location(x, y), name=next(alphabet))
-                for x in xrange(-int_ceil(columns/2.0)+1, int_floor(columns/2.0)+1) for y in xrange(-int_ceil(rows/2.0)+1, int_floor(rows/2.0)+1)}
+                for x in range(-int_ceil(columns/2.0)+1, int_floor(columns/2.0)+1) for y in range(-int_ceil(rows/2.0)+1, int_floor(rows/2.0)+1)}
 
         return grid
 
@@ -389,5 +404,5 @@ class TestWorldMapWithOriginCentre(TestWorldMap):
 class TestStaticSpawnDecorator(TestCase):
     def test_spawn_is_static(self):
         decorated_map = WorldMapStaticSpawnDecorator(WorldMap({}, {}), Location(3, 7))
-        for _ in xrange(5):
+        for _ in range(5):
             self.assertEqual(decorated_map.get_random_spawn_location(), Location(3, 7))

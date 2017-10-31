@@ -87,14 +87,14 @@ class WorldMap(object):
 
         (min_x, max_x, min_y, max_y) = WorldMap._min_max_from_dimensions(height, width)
         grid = {}
-        for x in xrange(min_x, max_x + 1):
-            for y in xrange(min_y, max_y + 1):
+        for x in range(min_x, max_x + 1):
+            for y in range(min_y, max_y + 1):
                 location = Location(x, y)
                 grid[location] = Cell(location)
         return cls(grid, new_settings)
 
     def all_cells(self):
-        return self.grid.itervalues()
+        return self.grid.values()
 
     def score_cells(self):
         return (c for c in self.all_cells() if c.generates_score)
@@ -199,11 +199,11 @@ class WorldMap(object):
         self._add_horizontal_layer(self.max_y() + 1)
 
     def _add_vertical_layer(self, x):
-        for y in xrange(self.min_y(), self.max_y() + 1):
+        for y in range(self.min_y(), self.max_y() + 1):
             self.grid[Location(x, y)] = Cell(Location(x, y))
 
     def _add_horizontal_layer(self, y):
-        for x in xrange(self.min_x(), self.max_x() + 1):
+        for x in range(self.min_x(), self.max_x() + 1):
             self.grid[Location(x, y)] = Cell(Location(x, y))
 
     def _reset_score_locations(self, num_avatars):
@@ -259,7 +259,8 @@ class WorldMap(object):
 
     def attackable_avatar(self, target_location):
         """
-        Return the avatar attackable at the given location, or None.
+        Return a boolean if the avatar is attackable at the given location
+        (or will be after next move), else return None.
         """
         try:
             cell = self.get_cell(target_location)
@@ -285,8 +286,8 @@ class WorldMap(object):
 
     def __iter__(self):
         return ((self.get_cell(Location(x, y))
-                for y in xrange(self.min_y(), self.max_y() + 1))
-                for x in xrange(self.min_x(), self.max_x() + 1))
+                for y in range(self.min_y(), self.max_y() + 1))
+                for x in range(self.min_x(), self.max_x() + 1))
 
 
 def WorldMapStaticSpawnDecorator(world_map, spawn_location):

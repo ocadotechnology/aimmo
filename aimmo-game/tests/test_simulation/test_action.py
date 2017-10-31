@@ -22,7 +22,8 @@ class TestAction(unittest.TestCase):
         self.other_avatar = MoveDummy(2, EAST_OF_ORIGIN, EAST)
         self.avatar_manager = AvatarManager()
 
-    def test_successful_move_north_action(self):
+    def test_successful_move_action(self):
+        # Move north
         game_state = GameState(InfiniteMap(), self.avatar_manager)
         action.MoveAction(self.avatar, {'x': 0, 'y': 1}).process(game_state.world_map)
 
@@ -32,12 +33,20 @@ class TestAction(unittest.TestCase):
 
         self.assertEqual(self.avatar.events, [event.MovedEvent(ORIGIN, NORTH_OF_ORIGIN)])
 
-    def test_successful_move_east_action(self):
+        # Move east
+        self.setUp()
         game_state = GameState(InfiniteMap(), self.avatar_manager)
         action.MoveAction(self.avatar, {'x': 1, 'y': 0}).process(game_state.world_map)
 
         self.assertEqual(self.avatar.location, EAST_OF_ORIGIN)
         self.assertEqual(self.avatar.events, [event.MovedEvent(ORIGIN, EAST_OF_ORIGIN)])
+
+    def test_successful_move_east_twice_action(self):
+        game_state = GameState(InfiniteMap(), self.avatar_manager)
+        action.MoveAction(self.avatar, {'x': 1, 'y': 0}).process(game_state.world_map)
+        action.MoveAction(self.avatar, {'x': 1, 'y': 0}).process(game_state.world_map)
+
+        self.assertEqual(self.avatar.location, Location(2, 0))
 
     def test_failed_move_action(self):
         game_state = GameState(EmptyMap(), self.avatar_manager)
@@ -65,6 +74,24 @@ class TestAction(unittest.TestCase):
                              damage_dealt)])
         self.assertEqual(self.other_avatar.events,
                          [event.ReceivedAttackEvent(self.avatar, damage_dealt)])
+
+    def test_successful_multiple_attack_actions(self):
+        game_state = GameState(AvatarMap(self.other_avatar), self.avatar_manager)
+        action.AttackAction(self.avatar, {'x': 0, 'y': 1}).process(game_state.world_map)
+
+        self.assertEqual(self.other_avatar.events,
+                         [event.ReceivedAttackEvent(self.avatar, 1)])
+
+        action.AttackAction(self.avatar, {'x': 0, 'y': 1}).process(game_state.world_map)
+
+        self.assertEqual(self.other_avatar.events,
+                         [event.ReceivedAttackEvent(self.avatar, 1), event.ReceivedAttackEvent(self.avatar, 1)])
+
+
+        self.assertEqual(self.avatar.location, ORIGIN)
+        self.assertEqual(self.other_avatar.location, EAST_OF_ORIGIN)
+        self.assertEqual(self.other_avatar.times_died, 0)
+        self.assertEqual(self.other_avatar.health, 3)
 
     def test_failed_attack_action(self):
         game_state = GameState(InfiniteMap(), self.avatar_manager)
