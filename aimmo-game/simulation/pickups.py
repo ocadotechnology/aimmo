@@ -80,16 +80,16 @@ class InvulnerabilityPickup(_PickupEffect):
         }
 
 
-class DamagePickup(_PickupEffect):
-    EFFECT = effects.DamagePickupEffect
+class DamageBoostPickup(_PickupEffect):
+    EFFECT = effects.DamageBoostPickupEffect
 
     def __init__(self, cell, damage_boost=5):
-        super(DamagePickup, self).__init__(cell)
+        super(DamageBoostPickup, self).__init__(cell)
         self.damage_boost = damage_boost
         self.params.append(self.damage_boost)
 
     def __repr__(self):
-        return 'DamagePickup(damage_boost={})'.format(self.damage_boost)
+        return 'DamageBoostPickup(damage_boost={})'.format(self.damage_boost)
 
     def serialise(self):
         return {
@@ -101,5 +101,5 @@ class DamagePickup(_PickupEffect):
 ALL_PICKUPS = (
     HealthPickup,
     InvulnerabilityPickup,
-    DamagePickup,
+    DamageBoostPickup,
 )
