@@ -128,7 +128,7 @@ class TestDamageBoostPickup(_BaseCases.BasePickupEffectTestCase):
 
     def test_damage_boost_pickup_is_applied(self):
         self.apply_pickup()
-        self.assertIsInstance(self.pickup, pickups.DamagePickup)
+        self.assertIsInstance(self.pickup, pickups.DamageBoostPickup)
 
     def test_damage_boost_pickup_default_params(self):
         self.assertEqual(len(self.avatar.effects), 0)

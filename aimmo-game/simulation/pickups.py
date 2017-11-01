@@ -83,9 +83,9 @@ class InvulnerabilityPickup(_PickupEffect):
 class DamageBoostPickup(_PickupEffect):
     EFFECT = effects.DamageBoostPickupEffect
 
-    def __init__(self, *args):
-        super(DamageBoostPickup, self).__init__(*args)
-        self.damage_boost = 5
+    def __init__(self, cell, damage_boost=5):
+        super(DamageBoostPickup, self).__init__(cell)
+        self.damage_boost = damage_boost
         self.params.append(self.damage_boost)
 
     def __repr__(self):
