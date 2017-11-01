@@ -28,7 +28,7 @@ class _BaseCases(object):
             self.assertNoEffects()
 
         def test_effect_expires(self):
-            for _ in xrange(10):
+            for _ in range(10):
                 self.effect.on_turn()
             self.assertTrue(self.effect.is_expired)
 
@@ -44,6 +44,9 @@ class TestInvulnerabilityEffect(_BaseCases.BaseTimedEffectTestCase):
         self.effect.remove()
         self.assertEqual(self.avatar.resistance, 0)
 
+    def test_resistance_cannot_be_removed_twice(self):
+        self.effect.remove()
+        self.assertRaises(KeyError, self.effect.remove)
 
 class TestDamageBoostPickupEffect(_BaseCases.BaseTimedEffectTestCase):
     def make_effect(self, *args):
@@ -55,3 +58,7 @@ class TestDamageBoostPickupEffect(_BaseCases.BaseTimedEffectTestCase):
     def test_damage_decreases(self):
         self.effect.remove()
         self.assertEqual(self.avatar.attack_strength, 1)
+
+    def test_damage_cannot_be_removed_twice(self):
+        self.effect.remove()
+        self.assertRaises(KeyError, self.effect.remove)

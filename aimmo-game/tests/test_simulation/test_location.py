@@ -36,10 +36,20 @@ class TestLocation(TestCase):
         expected = Location(-2, -2)
         self.assertEqual(loc_1 - loc_2, expected)
 
+        loc_2 = Location(0, 0)
+        expected = Location(1, 2)
+        self.assertEqual(loc_1 - loc_2, expected)
+
     def test_hash_equal(self):
         loc_1 = Location(3, 3)
         loc_2 = Location(3, 3)
         self.assertEqual(hash(loc_1), hash(loc_2))
+
+    def test_location_raises_exception_with_floats(self):
+        self.assertRaises(TypeError, Location, 3.2, 3)
+        self.assertRaises(TypeError, Location, 2, 2.2)
+        self.assertRaises(TypeError, Location, 2.5, 2.5)
+        self.assertRaises(TypeError, Location, 2.0, 1)
 
     def test_serialise(self):
         loc = Location(3, 9)

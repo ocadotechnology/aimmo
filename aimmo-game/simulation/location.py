@@ -1,5 +1,8 @@
 class Location(object):
     def __init__(self, x, y):
+        if((isinstance(x, int) == False) or (isinstance(y, int)) == False):
+            raise TypeError("Location needs to be an integer!")
+
         self.x = x
         self.y = y
 

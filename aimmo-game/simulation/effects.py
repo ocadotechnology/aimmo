@@ -22,7 +22,10 @@ class _TimedEffect(_Effect):
         self._time_remaining = self.EFFECT_TIME
 
     def remove(self):
-        self._avatar.effects.remove(self)
+        try:
+            self._avatar.effects.remove(self)
+        except KeyError as e:
+            raise KeyError("The avatar object does not exist! Cannot remove the effect.")
 
     def on_turn(self):
         self._time_remaining -= 1

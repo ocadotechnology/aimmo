@@ -52,7 +52,7 @@ class TestHelperFunctions(unittest.TestCase):
             (0, -1), (1, -1),
         ))
         actual = frozenset(get_random_edge_index(map, rng=ConstantRng(i))
-                           for i in xrange(6))
+                           for i in range(6))
         self.assertEqual(expected, actual)
 
     def test_out_of_bounds_random_edge(self):
@@ -148,6 +148,6 @@ class TestLevel1Generator(_BaseGeneratorTestCase):
 
     def test_static_spawn(self):
         game_state = self.get_game_state()
-        for i in xrange(5):
+        for i in range(5):
             game_state.add_avatar(i, '')
             self.assertEqual(game_state.avatar_manager.avatars_by_id[i].location, Location(-2, 0))
