@@ -26,18 +26,19 @@ class Action(object):
             world_map.get_cell(self.target_location).actions.append(self)
 
     def process(self, world_map):
-        if self.is_legal(world_map):
-            self.apply(world_map)
+        """Called externally to decide whether to process the action or not."""
+        if self._is_legal(world_map):
+            self._apply(world_map)
         else:
-            self.reject()
+            self._reject()
 
-    def is_legal(self, world_map):
+    def _is_legal(self, world_map):
         raise NotImplementedError('Abstract method')
 
-    def apply(self, world_map):
+    def _apply(self, world_map):
         raise NotImplementedError('Abstract method')
 
-    def reject(self):
+    def _reject(self):
         raise NotImplementedError('Abstract method')
 
 
@@ -45,26 +46,25 @@ class WaitAction(Action):
     def __init__(self, avatar):
         super(WaitAction, self).__init__(avatar)
 
-    def is_legal(self, world_map):
+    def _is_legal(self, world_map):
         return True
 
-    def apply(self, world_map):
+    def _apply(self, world_map):
         self.avatar.clear_action()
 
 
 class MoveAction(Action):
     def __init__(self, avatar, direction):
-        # Untrusted data!
         self.direction = Direction(**direction)
         super(MoveAction, self).__init__(avatar)
 
-    def is_legal(self, world_map):
+    def _is_legal(self, world_map):
         return world_map.can_move_to(self.target_location)
 
     def process(self, world_map):
-        self.chain(world_map, {self.avatar.location})
+        self.detect_cycles(world_map, {self.avatar.location})
 
-    def apply(self, world_map):
+    def _apply(self, world_map):
         event = MovedEvent(self.avatar.location, self.target_location)
         self.avatar.add_event(event)
 
@@ -74,25 +74,24 @@ class MoveAction(Action):
         self.avatar.clear_action()
         return True
 
-    def chain(self, world_map, visited):
-        if not self.is_legal(world_map):
-            return self.reject()
+    def detect_cycles(self, world_map, visited):
+        if not self._is_legal(world_map):
+            return self._reject()
 
-        # Detect cycles
         if self.target_location in visited:
-            return self.reject()
+            return self._reject()
 
         next_cell = world_map.get_cell(self.target_location)
         if not next_cell.is_occupied:
-            return self.apply(world_map)
+            return self._apply(world_map)
 
         next_action = next_cell.avatar.action
-        if next_action.chain(world_map, visited | {self.target_location}):
-            return self.apply(world_map)
+        if next_action.detect_cycles(world_map, visited | {self.target_location}):
+            return self._apply(world_map)
 
-        return self.reject()
+        return self._reject()
 
-    def reject(self):
+    def _reject(self):
         event = FailedMoveEvent(self.avatar.location, self.target_location)
         self.avatar.add_event(event)
         self.avatar.clear_action()
@@ -101,14 +100,13 @@ class MoveAction(Action):
 
 class AttackAction(Action):
     def __init__(self, avatar, direction):
-        # Untrusted data!
         self.direction = Direction(**direction)
         super(AttackAction, self).__init__(avatar)
 
-    def is_legal(self, world_map):
+    def _is_legal(self, world_map):
         return True if world_map.attackable_avatar(self.target_location) else False
 
-    def apply(self, world_map):
+    def _apply(self, world_map):
         attacked_avatar = world_map.attackable_avatar(self.target_location)
         damage_dealt = 1
         self.avatar.add_event(PerformedAttackEvent(attacked_avatar,
@@ -130,7 +128,7 @@ class AttackAction(Action):
             world_map.get_cell(self.target_location).avatar = None
             world_map.get_cell(respawn_location).avatar = attacked_avatar
 
-    def reject(self):
+    def _reject(self):
         self.avatar.add_event(FailedAttackEvent(self.target_location))
         self.avatar.clear_action()
 
