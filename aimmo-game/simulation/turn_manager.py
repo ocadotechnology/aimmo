@@ -83,10 +83,10 @@ class TurnManager(Thread):
                 self._run_single_turn()
             except Exception:
                 LOGGER.exception('Error while running turn')
-
-            if game_state.is_complete():
-                LOGGER.info('Game complete')
-                self._mark_complete()
+            with state_provider as game_state:
+                if game_state.is_complete():
+                    LOGGER.info('Game complete')
+                    self._mark_complete()
             time.sleep(0.5)
 
 
