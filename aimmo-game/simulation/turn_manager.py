@@ -69,15 +69,18 @@ class TurnManager(Thread):
         from service import get_world_state
         requests.post(self._completion_url, json=get_world_state())
 
+    def _run_single_turn(self):
+        self.run_turn()
+
+        with state_provider as game_state:
+            game_state.update_environment()
+
+        self.end_turn_callback()
+
     def run(self):
         while True:
             try:
-                self.run_turn()
-
-                with state_provider as game_state:
-                    game_state.update_environment()
-
-                self.end_turn_callback()
+                self._run_single_turn()
             except Exception:
                 LOGGER.exception('Error while running turn')
 
