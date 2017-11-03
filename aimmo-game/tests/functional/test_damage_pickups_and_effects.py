@@ -30,7 +30,9 @@ class TestDamagePickupsAndEffects(TestCase):
         self.assertTrue(isinstance(damage_boost_effect, pickup_created.EFFECT))
 
     def test_damage_boost_pickup_can_be_picked_up_custom(self):
-        pickup_created = DamageBoostPickup(self.cell, 15)
+        custom_value = 15
+        self.assertNotEqual(custom_value, DAMAGE_BOOST_DEFAULT)
+        pickup_created = DamageBoostPickup(self.cell, custom_value)
         self.cell.pickup = pickup_created
 
         self.game.turn_manager._run_single_turn()

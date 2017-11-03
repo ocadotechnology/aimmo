@@ -30,8 +30,10 @@ class TestHealthPickupAndEffects(TestCase):
         self.assertEqual(cell.avatar, game.avatar_manager.get_avatar(1))
         self.assertEqual(cell.avatar.health, 5)
 
+        custom_value = 10.5
+        self.assertNotEqual(custom_value, HEALTH_RESTORE_DEFAULT)
         cell = game.game_state.world_map.get_cell(Location(1, 0))
-        cell.pickup = HealthPickup(cell, 10.5)
+        cell.pickup = HealthPickup(cell, custom_value)
 
         game.turn_manager._run_single_turn()
 
