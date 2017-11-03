@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
 import effects
 
+
 class _Pickup(object):
     __metaclass__ = ABCMeta
 
@@ -28,7 +29,7 @@ class _Pickup(object):
 
 class HealthPickup(_Pickup):
     def __init__(self, cell, health_restored=3):
-        # Round the value to the nearest integer.
+        # Round the value UP (top) to the nearest integer.
         health_restored = int(round(health_restored))
 
         # Check if the value provided is legal.

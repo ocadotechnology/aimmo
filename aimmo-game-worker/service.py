@@ -39,5 +39,6 @@ def run(host, port, directory):
     app.config['DEBUG'] = False
     app.run(host, port)
 
+
 if __name__ == '__main__':
     run(host=sys.argv[1], port=int(sys.argv[2]), directory=sys.argv[3])
