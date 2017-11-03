@@ -11,6 +11,7 @@ import socket
 import stat
 import tarfile
 import yaml
+import platform
 from run import run_command
 from urllib import urlretrieve
 from urllib2 import urlopen
@@ -83,6 +84,10 @@ def download_minikube():
 
 def get_ip():
     # http://stackoverflow.com/a/28950776/671626
+    os_name = platform.system()
+    if os_name == "Darwin":
+        return socket.gethostbyname(socket.gethostname())
+
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         # doesn't even have to be reachable
