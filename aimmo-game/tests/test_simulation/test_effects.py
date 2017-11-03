@@ -48,6 +48,7 @@ class TestInvulnerabilityEffect(_BaseCases.BaseTimedEffectTestCase):
         self.effect.remove()
         self.assertRaises(KeyError, self.effect.remove)
 
+
 class TestDamageBoostPickupEffect(_BaseCases.BaseTimedEffectTestCase):
     def make_effect(self, *args):
         return effects.DamageBoostPickupEffect(5, *args)

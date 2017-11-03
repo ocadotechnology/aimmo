@@ -1,6 +1,12 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
 import effects
 
+DAMAGE_BOOST_DEFAULT = 5
+HEALTH_RESTORE_DEFAULT = 3
+HEALTH_RESTORE_MAX = 100
+AVATAR_HEALTH_MAX = 100
+
+
 class _Pickup(object):
     __metaclass__ = ABCMeta
 
@@ -27,12 +33,12 @@ class _Pickup(object):
 
 
 class HealthPickup(_Pickup):
-    def __init__(self, cell, health_restored=3):
-        # Round the value to the nearest integer.
+    def __init__(self, cell, health_restored=HEALTH_RESTORE_DEFAULT):
+        # Round the integer up to the nearest value (ceiling).
         health_restored = int(round(health_restored))
 
         # Check if the value provided is legal.
-        if 0 < health_restored <= 100:
+        if 0 < health_restored <= HEALTH_RESTORE_MAX:
             super(HealthPickup, self).__init__(cell)
             self.health_restored = health_restored
         else:
@@ -51,8 +57,8 @@ class HealthPickup(_Pickup):
         avatar.health += self.health_restored
 
         # Make sure the health is capped at 100.
-        if avatar.health > 100:
-            avatar.health = 100
+        if avatar.health > AVATAR_HEALTH_MAX:
+            avatar.health = AVATAR_HEALTH_MAX
 
 
 class _PickupEffect(_Pickup):
@@ -83,7 +89,7 @@ class InvulnerabilityPickup(_PickupEffect):
 class DamageBoostPickup(_PickupEffect):
     EFFECT = effects.DamageBoostPickupEffect
 
-    def __init__(self, cell, damage_boost=5):
+    def __init__(self, cell, damage_boost=DAMAGE_BOOST_DEFAULT):
         super(DamageBoostPickup, self).__init__(cell)
         self.damage_boost = damage_boost
         self.params.append(self.damage_boost)
