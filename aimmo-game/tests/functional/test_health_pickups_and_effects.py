@@ -3,7 +3,8 @@ from unittest import TestCase
 from mock_world import MockWorld
 
 from simulation.location import Location
-from simulation.pickups import HealthPickup
+from simulation.pickups import HealthPickup, HEALTH_RESTORE_DEFAULT, HEALTH_RESTORE_MAX, \
+                               AVATAR_HEALTH_MAX
 
 
 class TestHealthPickupAndEffects(TestCase):
@@ -20,7 +21,7 @@ class TestHealthPickupAndEffects(TestCase):
         game.turn_manager._run_single_turn()
 
         self.assertEqual(cell.avatar, game.avatar_manager.get_avatar(1))
-        self.assertEqual(cell.avatar.health, 8)
+        self.assertEqual(cell.avatar.health, 5 + HEALTH_RESTORE_DEFAULT)
 
     def test_health_pickups_and_effects_apply_custom(self):
         game = MockWorld()
@@ -45,9 +46,9 @@ class TestHealthPickupAndEffects(TestCase):
         self.assertEqual(cell.avatar.health, 5)
 
         cell = game.game_state.world_map.get_cell(Location(1, 0))
-        cell.pickup = HealthPickup(cell, 100)
+        cell.pickup = HealthPickup(cell, HEALTH_RESTORE_MAX)
 
         game.turn_manager._run_single_turn()
 
         self.assertEqual(cell.avatar, game.avatar_manager.get_avatar(1))
-        self.assertEqual(cell.avatar.health, 100)
+        self.assertEqual(cell.avatar.health, AVATAR_HEALTH_MAX)

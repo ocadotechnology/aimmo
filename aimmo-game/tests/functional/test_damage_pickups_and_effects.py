@@ -3,7 +3,7 @@ from unittest import TestCase
 from mock_world import MockWorld
 
 from simulation.location import Location
-from simulation.pickups import DamageBoostPickup
+from simulation.pickups import DamageBoostPickup, DAMAGE_BOOST_DEFAULT
 
 
 class TestDamagePickupsAndEffects(TestCase):
@@ -14,6 +14,8 @@ class TestDamagePickupsAndEffects(TestCase):
         """
         self.game = MockWorld()
         self.game.game_state.add_avatar(1, None, Location(0, 0))
+        _avatar_spawn_cell = self.game.game_state.world_map.get_cell(Location(0, 0))
+        self.initial_attack_strength = _avatar_spawn_cell.avatar.attack_strength
         self.cell = self.game.game_state.world_map.get_cell(Location(1, 0))
 
     def test_damage_boost_pickup_can_be_picked_up_default(self):
@@ -44,7 +46,7 @@ class TestDamagePickupsAndEffects(TestCase):
 
         self.game.turn_manager._run_single_turn()
 
-        self.assertTrue(self.cell.avatar.attack_strength, 6)
+        self.assertTrue(self.cell.avatar.attack_strength, self.initial_attack_strength + DAMAGE_BOOST_DEFAULT)
 
     def test_damage_boost_pickup_effect_increases_avatar_strength_custom(self):
         pickup_created = DamageBoostPickup(self.cell, 10.5)
@@ -52,4 +54,4 @@ class TestDamagePickupsAndEffects(TestCase):
 
         self.game.turn_manager._run_single_turn()
 
-        self.assertTrue(self.cell.avatar.attack_strength, 12)
+        self.assertTrue(self.cell.avatar.attack_strength, self.initial_attack_strength + 11)
