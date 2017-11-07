@@ -15,8 +15,6 @@ class TestHealthPickupAndEffects(TestCase):
         """
         self.game = MockWorld()
         self.game.game_state.add_avatar(1, None, Location(0, 0))
-        _avatar_spawn_cell = self.game.game_state.world_map.get_cell(Location(0, 0))
-        self.initial_attack_strength = _avatar_spawn_cell.avatar.attack_strength
         self.cell = self.game.game_state.world_map.get_cell(Location(1, 0))
 
     def test_health_pickups_and_effects_apply_default(self):
