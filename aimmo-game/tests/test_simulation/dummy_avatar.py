@@ -79,8 +79,10 @@ class MoveWestDummy(MoveDummy):
 
 
 class DummyAvatarManager(AvatarManager):
-    def __init__(self, dummy_list=[]):
+    def __init__(self, dummy_list=None):
         super(DummyAvatarManager, self).__init__()
+        if dummy_list is None:
+            dummy_list = []
         self.dummy_list = dummy_list
 
     def add_avatar(self, player_id, worker_url, location):
