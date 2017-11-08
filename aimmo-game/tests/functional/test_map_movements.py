@@ -13,9 +13,9 @@ class TestMapMovements(TestCase):
         'OBSTACLE_RATIO': 0,
     }
 
-    def set_up_environment(self, dummy_list=None):
+    def set_up_environment(self, dummy_list=None, location=Location(0,0)):
         self.game = MockWorld(TestMapMovements.SETTINGS, dummy_list)
-        self.game.game_state.add_avatar(1, None, Location(0, 0))
+        self.game.game_state.add_avatar(1, None, location)
         self.avatar = self.game.avatar_manager.get_avatar(1)
 
     def test_movement_five_times_in_all_directions(self):
@@ -58,3 +58,40 @@ class TestMapMovements(TestCase):
             self.game.turn_manager._run_single_turn()
 
         self.assertEqual(self.avatar.location, Location(0, -5))
+
+    def test_move_towards_map_boundaries(self):
+        """
+        Tests game behaviour when the avatar tries to move towards one of the four of the maps boundaries.
+        """
+
+        # North boundary.
+        self.set_up_environment([MoveNorthDummy], Location(0, 25))
+        self.assertFalse(self.game.game_state.world_map.is_on_map(Location(0, 26)))
+
+        self.game.turn_manager._run_single_turn()
+
+        self.assertEqual(self.avatar.location, Location(0, 25))
+
+        # South boundary.
+        self.set_up_environment([MoveSouthDummy], Location(0, -24))
+        self.assertFalse(self.game.game_state.world_map.is_on_map(Location(0, -25)))
+
+        self.game.turn_manager._run_single_turn()
+
+        self.assertEqual(self.avatar.location, Location(0, -24))
+
+        # East boundary.
+        self.set_up_environment([MoveEastDummy], Location(25, 0))
+        self.assertFalse(self.game.game_state.world_map.is_on_map(Location(26, 0)))
+
+        self.game.turn_manager._run_single_turn()
+
+        self.assertEqual(self.avatar.location, Location(25, 0))
+
+        # West boundary.
+        self.set_up_environment([MoveWestDummy], Location(-24, 0))
+        self.assertFalse(self.game.game_state.world_map.is_on_map(Location(-25, 0)))
+
+        self.game.turn_manager._run_single_turn()
+
+        self.assertEqual(self.avatar.location, Location(-24, 0))
