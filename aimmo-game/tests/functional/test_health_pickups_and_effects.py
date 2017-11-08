@@ -7,7 +7,7 @@ import hypothesis.strategies as st
 from mock_world import MockWorld
 
 from simulation.location import Location
-from simulation.pickups import HealthPickup, AVATAR_HEALTH_MAX, HEALTH_RESTORE_DEFAULT
+from simulation.pickups import HealthPickup, AVATAR_HEALTH_MAX, HEALTH_RESTORE_DEFAULT, HEALTH_RESTORE_MAX
 
 
 class TestHealthPickupAndEffects(TestCase):
@@ -50,7 +50,7 @@ class TestHealthPickupAndEffects(TestCase):
 
         self.assertEqual(self.cell.avatar.health, expected_result_health)
 
-    @given(st.floats(1, 100))
+    @given(st.floats(1, HEALTH_RESTORE_MAX))
     def test_health_pickups_and_effects_apply_custom_floats(self, restore_value):
         """
         HealthPickups with explicit float parameter provided.
@@ -68,7 +68,7 @@ class TestHealthPickupAndEffects(TestCase):
 
         self.assertEqual(self.cell.avatar.health, expected_result_health)
 
-    @given(st.integers(96, 100))
+    @given(st.integers(96, HEALTH_RESTORE_MAX))
     def test_health_effect_is_capped_at_100(self, restore_value):
         """
         Make sure health cannot go above the maximum cap. Avatar health begins at 5hp,
