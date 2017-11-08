@@ -90,6 +90,9 @@ class DamageBoostPickup(_PickupEffect):
     EFFECT = effects.DamageBoostPickupEffect
 
     def __init__(self, cell, damage_boost=DAMAGE_BOOST_DEFAULT):
+        if damage_boost <= 0:
+            raise ValueError("The damage_boost parameter is less than or equal to 0!")
+
         super(DamageBoostPickup, self).__init__(cell)
         self.damage_boost = damage_boost
         self.params.append(self.damage_boost)

@@ -1,5 +1,9 @@
 from abc import ABCMeta, abstractmethod
 
+import math
+
+import sys
+
 
 class _Effect(object):
     __metaclass__ = ABCMeta
@@ -45,7 +49,11 @@ class InvulnerabilityPickupEffect(_TimedEffect):
 
 class DamageBoostPickupEffect(_TimedEffect):
     def __init__(self, damage_boost, *args):
-        self._damage_boost = damage_boost
+        # For now we have no maximum damage boost constraints, so infinity needs to be casted into a max int.
+        if math.isinf(damage_boost):
+            damage_boost = sys.maxsize
+
+        self._damage_boost = int(round(damage_boost))
         super(DamageBoostPickupEffect, self).__init__(*args)
         self._avatar.attack_strength += self._damage_boost
 

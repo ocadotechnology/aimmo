@@ -19,6 +19,7 @@ setup(
         'requests',
         'six',
         'pykube',
+        'hypothesis',
     ],
     tests_require=[
         'django-setuptest',

@@ -1,5 +1,8 @@
 from unittest import TestCase
 
+from hypothesis import given
+import hypothesis.strategies as st
+
 from mock_world import MockWorld
 
 from simulation.location import Location
@@ -29,10 +32,10 @@ class TestDamagePickupsAndEffects(TestCase):
         damage_boost_effect = self.game.avatar_manager.get_avatar(1).effects.pop()
         self.assertTrue(isinstance(damage_boost_effect, pickup_created.EFFECT))
 
-    def test_damage_boost_pickup_can_be_picked_up_custom(self):
-        custom_value = 15
-        self.assertNotEqual(custom_value, DAMAGE_BOOST_DEFAULT)
-        pickup_created = DamageBoostPickup(self.cell, custom_value)
+    @given(st.integers(min_value=1))
+    def test_damage_boost_pickup_can_be_picked_up_custom_integer(self, boost_value):
+        self.setUp()
+        pickup_created = DamageBoostPickup(self.cell, boost_value)
         self.cell.pickup = pickup_created
 
         self.game.turn_manager._run_single_turn()
@@ -42,7 +45,23 @@ class TestDamagePickupsAndEffects(TestCase):
         damage_boost_effect = self.game.avatar_manager.get_avatar(1).effects.pop()
         self.assertTrue(isinstance(damage_boost_effect, pickup_created.EFFECT))
 
-    def test_damage_boost_pickup_effect_increases_avatar_strength_default(self):
+    @given(st.floats(min_value=1))
+    def test_damage_boost_pickup_can_be_picked_up_custom_floats(self, boost_value):
+        self.setUp()
+        pickup_created = DamageBoostPickup(self.cell, boost_value)
+        self.cell.pickup = pickup_created
+
+        self.game.turn_manager._run_single_turn()
+
+        self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
+        self.assertEqual(len(self.game.avatar_manager.get_avatar(1).effects), 1)
+        damage_boost_effect = self.game.avatar_manager.get_avatar(1).effects.pop()
+        self.assertTrue(isinstance(damage_boost_effect, pickup_created.EFFECT))
+
+    def test_damage_boost_increases_attack_strength_with_default_integer(self):
+        """
+        Damage boost with no value parameter provided (ie. default).
+        """
         pickup_created = DamageBoostPickup(self.cell)
         self.cell.pickup = pickup_created
 
@@ -50,10 +69,15 @@ class TestDamagePickupsAndEffects(TestCase):
 
         self.assertTrue(self.cell.avatar.attack_strength, self.initial_attack_strength + DAMAGE_BOOST_DEFAULT)
 
-    def test_damage_boost_pickup_effect_increases_avatar_strength_custom(self):
-        pickup_created = DamageBoostPickup(self.cell, 10.5)
+    @given(st.integers(min_value=1))
+    def test_damage_boost_increases_attack_strength_with_custom_integers(self, boost_value):
+        """
+        Damage Boost with random integers provided as a parameter.
+        """
+        self.setUp()
+        pickup_created = DamageBoostPickup(self.cell, boost_value)
         self.cell.pickup = pickup_created
 
         self.game.turn_manager._run_single_turn()
 
-        self.assertTrue(self.cell.avatar.attack_strength, self.initial_attack_strength + 11)
+        self.assertTrue(self.cell.avatar.attack_strength, self.initial_attack_strength + boost_value)
