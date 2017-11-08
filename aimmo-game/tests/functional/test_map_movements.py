@@ -13,7 +13,7 @@ class TestMapMovements(TestCase):
         'OBSTACLE_RATIO': 0,
     }
 
-    def set_up_environment(self, dummy_list=None, location=Location(0,0)):
+    def set_up_environment(self, dummy_list=None, location=Location(0, 0)):
         self.game = MockWorld(TestMapMovements.SETTINGS, dummy_list)
         self.game.game_state.add_avatar(1, None, location)
         self.avatar = self.game.avatar_manager.get_avatar(1)
@@ -95,3 +95,66 @@ class TestMapMovements(TestCase):
         self.game.turn_manager._run_single_turn()
 
         self.assertEqual(self.avatar.location, Location(-24, 0))
+
+    def test_avatar_cannot_move_into_obstacle(self):
+        self.set_up_environment([MoveEastDummy])
+        obstacle_cell = self.game.game_state.world_map.get_cell(Location(2, 0))
+        obstacle_cell.habitable = False
+        self.assertTrue(self.avatar.location, Location(0, 0))
+
+        for i in range(2):
+            self.game.turn_manager._run_single_turn()
+
+        self.assertTrue(self.avatar.location, Location(1, 0))
+
+    def test_avatars_cannot_go_into_each_other(self):
+        """
+        Two avatars moving in the same direction towards each other.
+        """
+        # Even number of cells between two avatars.
+        self.set_up_environment([MoveEastDummy, MoveWestDummy])
+        self.game.game_state.add_avatar(2, None, Location(3, 0))
+        avatar_two = self.game.avatar_manager.get_avatar(2)
+
+        self.assertEqual(self.avatar.location, Location(0, 0))
+        self.assertEqual(avatar_two.location, Location(3, 0))
+
+        for i in range(2):
+            self.game.turn_manager._run_single_turn()
+
+        # Avatar 1 & Avatar 2 only managed to move once.
+        self.assertEqual(self.avatar.location, Location(1, 0))
+        self.assertEqual(avatar_two.location, Location(2, 0))
+
+        # Odd number of cells between two avatars.
+        self.set_up_environment([MoveEastDummy, MoveWestDummy])
+        self.game.game_state.add_avatar(2, None, Location(4, 0))
+        avatar_two = self.game.avatar_manager.get_avatar(2)
+
+        self.assertEqual(self.avatar.location, Location(0, 0))
+        self.assertEqual(avatar_two.location, Location(4, 0))
+
+        for i in range(2):
+            self.game.turn_manager._run_single_turn()
+
+        # Avatar 1 managed to move twice, while Avatar 2 managed to only move once.
+        self.assertEqual(self.avatar.location, Location(2, 0))
+        self.assertEqual(avatar_two.location, Location(3, 0))
+
+    def test_sequential_avatars_tailing_each_other(self):
+        """
+        Two avatars placed beside each other horizontally. They want to move east, but SequentialTurnManager gives
+        priority to ID1. It gets blocked by ID2 so only 2 moves.
+        """
+        self.set_up_environment([MoveEastDummy, MoveEastDummy])
+        self.game.game_state.add_avatar(2, None, Location(1, 0))
+        avatar_two = self.game.avatar_manager.get_avatar(2)
+
+        self.assertEqual(self.avatar.location, Location(0, 0))
+        self.assertEqual(avatar_two.location, Location(1, 0))
+
+        for i in range(1):
+            self.game.turn_manager._run_single_turn()
+
+        self.assertEqual(self.avatar.location, Location(0, 0))
+        self.assertEqual(avatar_two.location, Location(2, 0))
