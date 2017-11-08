@@ -32,7 +32,7 @@ class TestHealthPickupAndEffects(TestCase):
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
         self.assertEqual(self.cell.avatar.health, self.initial_health + HEALTH_RESTORE_DEFAULT)
 
-    @given(st.integers(1, 100))
+    @given(st.integers(1, HEALTH_RESTORE_MAX))
     def test_health_pickups_and_effects_apply_custom_integers(self, restore_value):
         """
         HealthPickups with explicit integer parameter provided.
@@ -43,8 +43,8 @@ class TestHealthPickupAndEffects(TestCase):
         self.game.turn_manager._run_single_turn()
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
 
-        if self.initial_health + restore_value > 100:
-            expected_result_health = 100
+        if self.initial_health + restore_value > HEALTH_RESTORE_MAX:
+            expected_result_health = HEALTH_RESTORE_MAX
         else:
             expected_result_health = self.initial_health + restore_value
 
@@ -61,18 +61,19 @@ class TestHealthPickupAndEffects(TestCase):
         self.game.turn_manager._run_single_turn()
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
 
-        if self.initial_health + restore_value > 100:
-            expected_result_health = 100
+        if self.initial_health + restore_value > HEALTH_RESTORE_MAX:
+            expected_result_health = HEALTH_RESTORE_MAX
         else:
             expected_result_health = self.initial_health + int(round(restore_value))
 
         self.assertEqual(self.cell.avatar.health, expected_result_health)
 
     @given(st.integers(96, HEALTH_RESTORE_MAX))
-    def test_health_effect_is_capped_at_100(self, restore_value):
+    def test_health_effect_is_capped_at_HEALTH_RESTORE_MAX(self, restore_value):
         """
         Make sure health cannot go above the maximum cap. Avatar health begins at 5hp,
-        so every pickup in the 96-100 range would cause it to go above 100.
+        so every pickup in the 96-HEALTH_RESTORE_MAX range would cause it to go above HEALTH_RESTORE_MAX, until the
+        initial health changes.
         """
         self.setUp()
         self.cell.pickup = HealthPickup(self.cell, restore_value)
