@@ -149,8 +149,6 @@ class TestEffectExpiry(TestCase):
 
         self.assertTrue(isinstance(list(self.avatar.effects)[1], pickup_created_two.EFFECT))
         self.assertEqual(len(self.avatar.effects), 2)
-        self.assertEqual(list(self.avatar.effects)[0]._time_remaining, 8)
-        self.assertEqual(list(self.avatar.effects)[1]._time_remaining, 10)
         self.assertEqual(self.avatar.resistance, 2000)
 
         # Eight turns later, we expect the first effect to expire.
