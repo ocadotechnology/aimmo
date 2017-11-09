@@ -4,6 +4,7 @@ from mock_world import MockWorld
 
 from simulation.location import Location
 from simulation.pickups import DamageBoostPickup, InvulnerabilityPickup
+from simulation.effects import INVULNERABILITY_RESISTANCE
 
 
 class TestEffectExpiry(TestCase):
@@ -67,7 +68,7 @@ class TestEffectExpiry(TestCase):
 
         self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created.EFFECT))
         self.assertEqual(list(self.avatar.effects)[0]._time_remaining, 5)
-        self.assertEqual(self.avatar.resistance, 1000)
+        self.assertEqual(self.avatar.resistance, INVULNERABILITY_RESISTANCE)
 
         # Run 5 more turns and expect the effect to expire.
         for i in range(5):
@@ -141,7 +142,7 @@ class TestEffectExpiry(TestCase):
         self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created_one.EFFECT))
         self.assertEqual(len(self.avatar.effects), 1)
         self.assertEqual(list(self.avatar.effects)[0]._time_remaining, 10)
-        self.assertEqual(self.avatar.resistance, 1000)
+        self.assertEqual(self.avatar.resistance, INVULNERABILITY_RESISTANCE)
 
         # Move twice to the second pickup.
         for i in range(2):
@@ -149,7 +150,7 @@ class TestEffectExpiry(TestCase):
 
         self.assertTrue(isinstance(list(self.avatar.effects)[1], pickup_created_two.EFFECT))
         self.assertEqual(len(self.avatar.effects), 2)
-        self.assertEqual(self.avatar.resistance, 2000)
+        self.assertEqual(self.avatar.resistance, INVULNERABILITY_RESISTANCE * 2)
 
         # Eight turns later, we expect the first effect to expire.
         for i in range(8):
@@ -157,7 +158,7 @@ class TestEffectExpiry(TestCase):
 
         self.assertEqual(len(self.avatar.effects), 1)
         self.assertEqual(list(self.avatar.effects)[0]._time_remaining, 2)
-        self.assertEqual(self.avatar.resistance, 1000)
+        self.assertEqual(self.avatar.resistance, INVULNERABILITY_RESISTANCE)
 
         # Two turns later, the second pickup expires too.
         for i in range(2):
