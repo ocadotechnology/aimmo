@@ -22,6 +22,16 @@ class TestMovementsInMap(TestCase):
         self.game.game_state.add_avatar(1, None, location)
         self.avatar = self.game.avatar_manager.get_avatar(1)
 
+    def set_up_and_make_movements_in_a_single_direction(self, dummy_list, no_of_movements, spawn=Location(0, 0)):
+        """
+        Template function for repetitive movements in a single direction.
+        """
+        self.set_up_environment(dummy_list, spawn)
+        self.assertEqual(self.avatar.location, spawn)
+
+        for i in range(no_of_movements):
+            self.game.turn_manager._run_single_turn()
+
     def test_movement_five_times_in_all_directions(self):
         """
         Moves the avatar to the edge of the map. Each time it moves the avatar 5 times from origin in all cardinal
@@ -29,39 +39,19 @@ class TestMovementsInMap(TestCase):
         """
 
         # East.
-        self.set_up_environment([MoveEastDummy])
-        self.assertEqual(self.avatar.location, Location(0, 0))
-
-        for i in range(5):
-            self.game.turn_manager._run_single_turn()
-
+        self.set_up_and_make_movements_in_a_single_direction([MoveEastDummy], 5)
         self.assertEqual(self.avatar.location, Location(5, 0))
 
         # West.
-        self.set_up_environment([MoveWestDummy])
-        self.assertEqual(self.avatar.location, Location(0, 0))
-
-        for i in range(5):
-            self.game.turn_manager._run_single_turn()
-
+        self.set_up_and_make_movements_in_a_single_direction([MoveWestDummy], 5)
         self.assertEqual(self.avatar.location, Location(-5, 0))
 
         # North.
-        self.set_up_environment([MoveNorthDummy])
-        self.assertEqual(self.avatar.location, Location(0, 0))
-
-        for i in range(5):
-            self.game.turn_manager._run_single_turn()
-
+        self.set_up_and_make_movements_in_a_single_direction([MoveNorthDummy], 5)
         self.assertEqual(self.avatar.location, Location(0, 5))
 
         # South.
-        self.set_up_environment([MoveSouthDummy])
-        self.assertEqual(self.avatar.location, Location(0, 0))
-
-        for i in range(5):
-            self.game.turn_manager._run_single_turn()
-
+        self.set_up_and_make_movements_in_a_single_direction([MoveSouthDummy], 5)
         self.assertEqual(self.avatar.location, Location(0, -5))
 
     def test_move_towards_map_boundaries(self):
@@ -70,35 +60,23 @@ class TestMovementsInMap(TestCase):
         """
 
         # North boundary.
-        self.set_up_environment([MoveNorthDummy], Location(0, 25))
+        self.set_up_and_make_movements_in_a_single_direction([MoveNorthDummy], 2, Location(0, 25))
         self.assertFalse(self.game.game_state.world_map.is_on_map(Location(0, 26)))
-
-        self.game.turn_manager._run_single_turn()
-
         self.assertEqual(self.avatar.location, Location(0, 25))
 
         # South boundary.
-        self.set_up_environment([MoveSouthDummy], Location(0, -24))
+        self.set_up_and_make_movements_in_a_single_direction([MoveSouthDummy], 2, Location(0, -24))
         self.assertFalse(self.game.game_state.world_map.is_on_map(Location(0, -25)))
-
-        self.game.turn_manager._run_single_turn()
-
         self.assertEqual(self.avatar.location, Location(0, -24))
 
         # East boundary.
-        self.set_up_environment([MoveEastDummy], Location(25, 0))
+        self.set_up_and_make_movements_in_a_single_direction([MoveEastDummy], 2, Location(25, 0))
         self.assertFalse(self.game.game_state.world_map.is_on_map(Location(26, 0)))
-
-        self.game.turn_manager._run_single_turn()
-
         self.assertEqual(self.avatar.location, Location(25, 0))
 
         # West boundary.
-        self.set_up_environment([MoveWestDummy], Location(-24, 0))
+        self.set_up_and_make_movements_in_a_single_direction([MoveWestDummy], 2, Location(-24, 0))
         self.assertFalse(self.game.game_state.world_map.is_on_map(Location(-25, 0)))
-
-        self.game.turn_manager._run_single_turn()
-
         self.assertEqual(self.avatar.location, Location(-24, 0))
 
     def test_avatar_cannot_move_into_obstacle(self):
