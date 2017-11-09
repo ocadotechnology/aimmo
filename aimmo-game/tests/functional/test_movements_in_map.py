@@ -22,14 +22,14 @@ class TestMovementsInMap(TestCase):
         self.game.game_state.add_avatar(1, None, location)
         self.avatar = self.game.avatar_manager.get_avatar(1)
 
-    def set_up_and_make_movements_in_a_single_direction(self, dummy_list, no_of_movements, spawn=Location(0, 0)):
+    def set_up_and_make_movements_in_a_single_direction(self, dummy_list, number_of_movements, spawn=Location(0, 0)):
         """
         Template function for repetitive movements in a single direction.
         """
         self.set_up_environment(dummy_list, spawn)
         self.assertEqual(self.avatar.location, spawn)
 
-        for i in range(no_of_movements):
+        for i in range(number_of_movements):
             self.game.turn_manager._run_single_turn()
 
     def test_movement_five_times_in_all_directions(self):
