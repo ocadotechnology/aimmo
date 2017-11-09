@@ -39,17 +39,17 @@ class DummyAvatar(AvatarWrapper):
 
 
 class WaitDummy(DummyAvatar):
-    '''
+    """
     Avatar that always waits.
-    '''
+    """
     def handle_turn(self, state_view):
         return WaitAction(self)
 
 
 class MoveDummy(DummyAvatar):
-    '''
+    """
     Avatar that always moves in one direction.
-    '''
+    """
     def __init__(self, player_id, initial_location, direction):
         super(MoveDummy, self).__init__(player_id, initial_location)
         self._direction = direction

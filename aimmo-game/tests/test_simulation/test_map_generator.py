@@ -92,7 +92,7 @@ class TestMainGenerator(_BaseGeneratorTestCase):
                 self.assertGreaterEqual(c.location.x, -1)
                 self.assertGreaterEqual(c.location.y, -1)
 
-    def test_obstable_ratio(self):
+    def test_obstacle_ratio(self):
         m = self.get_map(OBSTACLE_RATIO=0)
         obstacle_cells = [cell for cell in m.all_cells() if not cell.habitable]
         self.assertEqual(len(obstacle_cells), 0)
