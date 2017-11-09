@@ -1,8 +1,9 @@
 from abc import ABCMeta, abstractmethod
 
 import math
-
 import sys
+
+INVULNERABILITY_RESISTANCE = 1000
 
 
 class _Effect(object):
@@ -40,11 +41,11 @@ class _TimedEffect(_Effect):
 class InvulnerabilityPickupEffect(_TimedEffect):
     def __init__(self, *args):
         super(InvulnerabilityPickupEffect, self).__init__(*args)
-        self._avatar.resistance += 1000
+        self._avatar.resistance += INVULNERABILITY_RESISTANCE
 
     def remove(self):
         super(InvulnerabilityPickupEffect, self).remove()
-        self._avatar.resistance -= 1000
+        self._avatar.resistance -= INVULNERABILITY_RESISTANCE
 
 
 class DamageBoostPickupEffect(_TimedEffect):
