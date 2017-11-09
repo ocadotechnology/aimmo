@@ -87,7 +87,6 @@ class TestAction(unittest.TestCase):
         self.assertEqual(self.other_avatar.events,
                          [event.ReceivedAttackEvent(self.avatar, 1), event.ReceivedAttackEvent(self.avatar, 1)])
 
-
         self.assertEqual(self.avatar.location, ORIGIN)
         self.assertEqual(self.other_avatar.location, EAST_OF_ORIGIN)
         self.assertEqual(self.other_avatar.times_died, 0)

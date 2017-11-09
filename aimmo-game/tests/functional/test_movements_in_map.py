@@ -6,7 +6,7 @@ from simulation import map_generator
 from tests.test_simulation.dummy_avatar import MoveEastDummy, MoveWestDummy, MoveNorthDummy, MoveSouthDummy, WaitDummy
 
 
-class TestMapMovements(TestCase):
+class TestMovementsInMap(TestCase):
 
     SETTINGS = {
         'START_HEIGHT': 50,
@@ -18,13 +18,14 @@ class TestMapMovements(TestCase):
         """
         Utility method for testing.
         """
-        self.game = MockWorld(TestMapMovements.SETTINGS, dummy_list, map_generator_class)
+        self.game = MockWorld(TestMovementsInMap.SETTINGS, dummy_list, map_generator_class)
         self.game.game_state.add_avatar(1, None, location)
         self.avatar = self.game.avatar_manager.get_avatar(1)
 
     def test_movement_five_times_in_all_directions(self):
         """
-        Consists of four tests. Each one moves the avatar 5 times from origin in all cardinal directions.
+        Moves the avatar to the edge of the map. Each time it moves the avatar 5 times from origin in all cardinal
+        directions.
         """
 
         # East.
