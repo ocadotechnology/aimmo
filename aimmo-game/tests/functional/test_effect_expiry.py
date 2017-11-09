@@ -82,11 +82,12 @@ class TestEffectExpiry(TestCase):
         Ensure that each damage boost effect expires at the appropriate time, even if the user stacks up on them. One
         pickup will be at (1,0) and another at (3,0).
         """
+        cell_one = self.game.game_state.world_map.get_cell(Location(1, 0))
         cell_two = self.game.game_state.world_map.get_cell(Location(3, 0))
-        pickup_created_one = DamageBoostPickup(self.cell, 10)
+        pickup_created_one = DamageBoostPickup(cell_one, 10)
         pickup_created_two = DamageBoostPickup(cell_two, 15)
 
-        self.cell.pickup = pickup_created_one
+        cell_one.pickup = pickup_created_one
         cell_two.pickup = pickup_created_two
 
         self.assertEqual(self.avatar.attack_strength, 1)
@@ -127,11 +128,12 @@ class TestEffectExpiry(TestCase):
         Ensure that each invulnerability boost effect expires at the appropriate time, even if the user stacks up on
         them. One pickup will be at (1,0) and another at (3,0).
         """
+        cell_one = self.game.game_state.world_map.get_cell(Location(1, 0))
         cell_two = self.game.game_state.world_map.get_cell(Location(3, 0))
-        pickup_created_one = InvulnerabilityPickup(self.cell)
+        pickup_created_one = InvulnerabilityPickup(cell_one)
         pickup_created_two = InvulnerabilityPickup(cell_two)
 
-        self.cell.pickup = pickup_created_one
+        cell_one.pickup = pickup_created_one
         cell_two.pickup = pickup_created_two
 
         self.assertEqual(self.avatar.resistance, 0)
