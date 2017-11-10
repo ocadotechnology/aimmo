@@ -1,10 +1,9 @@
 from unittest import TestCase
-
-from hypothesis import given
+from hypothesis import given, assume
 import hypothesis.strategies as st
+import math
 
 from mock_world import MockWorld
-
 from simulation.location import Location
 from simulation.pickups import DamageBoostPickup, DAMAGE_BOOST_DEFAULT
 
@@ -47,6 +46,7 @@ class TestDamagePickupsAndEffects(TestCase):
 
     @given(st.floats(min_value=1))
     def test_damage_boost_pickup_can_be_picked_up_custom_floats(self, boost_value):
+        assume(not math.isinf(boost_value))
         self.setUp()
         pickup_created = DamageBoostPickup(self.cell, boost_value)
         self.cell.pickup = pickup_created

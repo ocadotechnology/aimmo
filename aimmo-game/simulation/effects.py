@@ -1,7 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
 import math
-import sys
 
 INVULNERABILITY_RESISTANCE = 1000
 
@@ -50,9 +49,7 @@ class InvulnerabilityPickupEffect(_TimedEffect):
 
 class DamageBoostPickupEffect(_TimedEffect):
     def __init__(self, damage_boost, *args):
-        # For now we have no maximum damage boost constraints, so infinity needs to be casted into a max int.
-        if math.isinf(damage_boost):
-            damage_boost = sys.maxsize
+        assert not math.isinf(damage_boost)
 
         self._damage_boost = int(round(damage_boost))
         super(DamageBoostPickupEffect, self).__init__(*args)
