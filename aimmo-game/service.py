@@ -18,6 +18,7 @@ from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.turn_manager import ConcurrentTurnManager
 from simulation.worker_manager import WORKER_MANAGERS
+from simulation.pickups import pickups_update
 
 app = flask.Flask(__name__)
 socketio = SocketIO()
@@ -54,30 +55,16 @@ def player_dict(avatar):
 
 def get_world_state():
     with state_provider as game_state:
-        world = game_state.world_map
-        player_data = {p.player_id: player_dict(p) for p in game_state.avatar_manager.avatars}
-        grid_dict = defaultdict(dict)
-        for cell in world.all_cells():
-            grid_dict[cell.location.x][cell.location.y] = to_cell_type(cell)
-        pickups = []
-        for cell in world.pickup_cells():
-            pickup = cell.pickup.serialise()
-            pickup['location'] = (cell.location.x, cell.location.y)
-            pickups.append(pickup)
+        world_map = game_state.world_map
         return {
-                'players': player_data,
-                'score_locations': [(cell.location.x, cell.location.y) for cell in world.score_cells()],
-                'pickups': pickups,
-                # TODO: experiment with only sending deltas (not if not required)
-                'map_changed': True,
-                'width': world.num_cols,
-                'height': world.num_rows,
-                'minX': world.min_x(),
-                'minY': world.min_y(),
-                'maxX': world.max_x(),
-                'maxY': world.max_y(),
-                'layout': grid_dict,
-            }
+                'era': "less_flat",
+                'south_west_corner': world_map.get_serialised_south_west_corner(),
+                'north_east_corner': world_map.get_serialised_north_west_corner(),
+                'players': game_state.avatar_manager.players_update()[0],
+                'pickups': pickups_update(world_map)[0],
+                'score_locations': game_state.world_map.score_location_update()[0],
+                'obstacles': world_map.obstacles_update()[0]
+        }
 
 
 @socketio.on('connect')
