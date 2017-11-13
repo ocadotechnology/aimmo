@@ -7,6 +7,7 @@
     Anyway you can't use Ocado Technology's master.
 * The [issues are listed on ocadotechnology/aimmo](https://github.com/ocadotechnology/aimmo/issues). 
 It's even better if you're using [ZenHub](https://www.zenhub.com/) because it will allow you to look at a [Kanban-ish board](https://github.com/ocadotechnology/aimmo/issues#boards) for the project.
+The new starter / up-for-grabs issues are listed with the [help wanted label](https://github.com/ocadotechnology/aimmo/labels/help%20wanted)
 
 ## Now you want to **test** your changes and **run** the project locally...
 * To work on the project, you can use whichever editor you like. Lots here like [IntelliJ or PyCharm](https://www.jetbrains.com/), for instance.
