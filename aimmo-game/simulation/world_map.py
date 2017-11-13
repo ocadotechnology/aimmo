@@ -302,7 +302,7 @@ class WorldMap(object):
             "y": self.min_y(),
         }
 
-    def get_serialised_north_west_corner(self):
+    def get_serialised_north_east_corner(self):
         """
         Used in serialising the map size when sent to the front end. Very lightweight as it consists of two integers.
         :return: A dictionary with two values, x and y coordinates for the top right corner of the map.

@@ -113,7 +113,7 @@ class DamageBoostPickup(_PickupEffect):
                 'location': {
                     'x': self.cell.location.x,
                     'y': self.cell.location.y,
-            }
+                }
         }
 
 
