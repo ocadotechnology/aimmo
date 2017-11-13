@@ -112,6 +112,7 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
  useful.
 
 ## How to contribute!
-__Want to help?__ You can contact us using this [contact form][c4l-contact-form] and we'll get in touch as soon as possible! Thanks a lot.
+__Want to help?__ You can read the [contributing guidelines][contrib-guidelines]. You can also contact us directly using this [contact form][c4l-contact-form] and we'll get in touch as soon as possible! Thanks a lot.
 
-[c4l-contact-form]: https://www.codeforlife.education/contact/
+[c4l-contact-form]: https://www.codeforlife.education/help/#contact
+[contrib-guidelines]: https://github.com/ocadotechnology/aimmo/blob/master/CONTRIBUTING.md
