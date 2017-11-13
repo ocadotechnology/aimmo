@@ -288,7 +288,7 @@ class WorldMap(object):
 
     def __iter__(self):
         return ((self.get_cell(Location(x, y))
-                 for y in range(self.min_y(), self.max_y() + 1))
+                for y in range(self.min_y(), self.max_y() + 1))
                 for x in range(self.min_x(), self.max_x() + 1))
 
     # Serialisation Utilities
@@ -375,7 +375,6 @@ class WorldMap(object):
         return {
             'obstacles': obstacle_locations,
         }
-
 
 
 def WorldMapStaticSpawnDecorator(world_map, spawn_location):

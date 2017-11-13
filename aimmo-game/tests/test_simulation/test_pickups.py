@@ -58,9 +58,6 @@ class TestHealthPickup(_BaseCases.BasePickupTestCase):
         self.apply_pickup()
         self.assertEqual(self.avatar.health, 8)
 
-    def test_serialise(self):
-        self.assertEqual(self.pickup.serialise(), {'type': 'health', 'health_restored': 3})
-
     def test_given_custom_health_pickup_increase_health_increases(self):
         # Test 1 - increase of 5
         self.assertEqual(self.avatar.health, 5)
@@ -118,9 +115,6 @@ class TestInvulnerabilityPickup(_BaseCases.BasePickupEffectTestCase):
 
         self.assertEqual(self.avatar.resistance, 2000)
 
-    def test_serialise(self):
-        self.assertEqual(self.pickup.serialise(), {'type': 'invulnerability'})
-
 
 class TestDamageBoostPickup(_BaseCases.BasePickupEffectTestCase):
     pickup_class = pickups.DamageBoostPickup
@@ -134,10 +128,3 @@ class TestDamageBoostPickup(_BaseCases.BasePickupEffectTestCase):
         self.assertEqual(len(self.avatar.effects), 0)
         self.apply_pickup()
         self.assertEqual(len(self.avatar.effects), 1)
-
-    def test_serialise_default(self):
-        self.assertEqual(self.pickup.serialise(), {'type': 'damage', 'damage_boost': 5})
-
-    def test_serialise_custom(self):
-        self.set_custom_pickup(20)
-        self.assertEqual(self.pickup.serialise(), {'type': 'damage', 'damage_boost': 20})

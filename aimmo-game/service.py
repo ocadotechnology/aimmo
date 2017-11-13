@@ -60,10 +60,10 @@ def get_world_state():
                 'era': "less_flat",
                 'south_west_corner': world_map.get_serialised_south_west_corner(),
                 'north_east_corner': world_map.get_serialised_north_west_corner(),
-                'players': game_state.avatar_manager.players_update()[0],
-                'pickups': pickups_update(world_map)[0],
-                'score_locations': game_state.world_map.score_location_update()[0],
-                'obstacles': world_map.obstacles_update()[0]
+                'players': game_state.avatar_manager.players_update()['players'],
+                'pickups': pickups_update(world_map)['pickups'],
+                'score_locations': game_state.world_map.score_location_update()['score_locations'],
+                'obstacles': world_map.obstacles_update()['obstacles']
         }
 
 
