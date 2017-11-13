@@ -1,5 +1,6 @@
 import math
 import random
+from collections import namedtuple
 from logging import getLogger
 
 import map_generator
@@ -97,6 +98,7 @@ class WorldMap(object):
         return self.grid.values()
 
     def score_cells(self):
+        # TODO: consider changing this tuple might too slow
         return (c for c in self.all_cells() if c.generates_score)
 
     def potential_spawn_locations(self):
@@ -286,7 +288,7 @@ class WorldMap(object):
 
     def __iter__(self):
         return ((self.get_cell(Location(x, y))
-                for y in range(self.min_y(), self.max_y() + 1))
+                 for y in range(self.min_y(), self.max_y() + 1))
                 for x in range(self.min_x(), self.max_x() + 1))
 
     # Serialisation Utilities
