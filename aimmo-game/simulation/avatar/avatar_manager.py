@@ -57,5 +57,5 @@ class AvatarManager(object):
             return list_of_players
 
         return {
-            'players': _player_list()
+            'players': _generate_player_list()
         }
