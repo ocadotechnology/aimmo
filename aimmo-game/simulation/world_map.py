@@ -97,7 +97,6 @@ class WorldMap(object):
         return self.grid.values()
 
     def score_cells(self):
-        # TODO: consider changing this tuple might too slow
         return (c for c in self.all_cells() if c.generates_score)
 
     def potential_spawn_locations(self):
@@ -294,7 +293,7 @@ class WorldMap(object):
     def get_serialised_south_west_corner(self):
         """
         Used in serialising the map size when sent to the front end. Very lightweight as it consists of two integers.
-        :return: A dictionary with two values, x and y coordinates for the bottom left corner of the map.
+        :return: A dictionary with two values, x and y coordinates for the bottom left (south-west) corner of the map.
         """
         return {
             "x": self.min_x(),
@@ -304,7 +303,7 @@ class WorldMap(object):
     def get_serialised_north_east_corner(self):
         """
         Used in serialising the map size when sent to the front end. Very lightweight as it consists of two integers.
-        :return: A dictionary with two values, x and y coordinates for the top right corner of the map.
+        :return: A dictionary with two values, x and y coordinates for the top right (north-west) corner of the map.
         """
         return {
             "x": self.max_x(),
