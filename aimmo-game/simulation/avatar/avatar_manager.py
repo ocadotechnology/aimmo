@@ -40,10 +40,10 @@ class AvatarManager(object):
             Used in the serialising process to provide updates of avatars to the front end.
             :return A list with each element containing a dictionary of each player data.
             """
-            list_of_players = []
+            players = []
 
             for player in self.active_avatars:
-                list_of_players.append({
+                players.append({
                     'id': player.player_id,
                     'score': player.score,
                     'health': player.health,
@@ -54,7 +54,7 @@ class AvatarManager(object):
                     'orientation': "north"
                 })
 
-            return list_of_players
+            return players
 
         return {
             'players': _generate_player_list()

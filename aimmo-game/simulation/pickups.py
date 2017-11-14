@@ -128,15 +128,17 @@ def pickups_update(world_map):
         :return: A list containing all serialised pickups in the world_map.
         """
 
-        pickup_list = []
-        for cell in world_map.pickup_cells():
-            pickup_list.append(cell.pickup.serialise())
-        return pickup_list
+        pickups = []
 
-    pickups = _generate_pickup_list(world_map)
+        for cell in world_map.pickup_cells():
+            pickups.append(cell.pickup.serialise())
+
+        return pickups
+
+    generated_pickups = _generate_pickup_list(world_map)
 
     return {
-        'pickups': pickups,
+        'pickups': generated_pickups,
     }
 
 
