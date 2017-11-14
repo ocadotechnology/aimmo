@@ -1,6 +1,5 @@
 import math
 import random
-from collections import namedtuple
 from logging import getLogger
 
 import map_generator
