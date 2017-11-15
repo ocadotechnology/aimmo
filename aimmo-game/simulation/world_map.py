@@ -337,7 +337,7 @@ class WorldMap(object):
         score_locations = _generate_score_locations_list()
 
         return {
-            'score_locations': score_locations,
+            'scoreLocations': score_locations,
         }
 
     def obstacles_update(self):

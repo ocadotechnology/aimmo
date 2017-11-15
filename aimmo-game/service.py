@@ -58,11 +58,11 @@ def get_game_state():
         world_map = game_state.world_map
         return {
                 'era': "less_flat",
-                'south_west_corner': world_map.get_serialised_south_west_corner(),
-                'north_east_corner': world_map.get_serialised_north_east_corner(),
+                'southWestCorner': world_map.get_serialised_south_west_corner(),
+                'northEastCorner': world_map.get_serialised_north_east_corner(),
                 'players': game_state.avatar_manager.players_update()['players'],
                 'pickups': pickups_update(world_map)['pickups'],
-                'score_locations': game_state.world_map.score_location_update()['score_locations'],
+                'scoreLocations': game_state.world_map.score_location_update()['scoreLocations'],
                 'obstacles': world_map.obstacles_update()['obstacles']
         }
 

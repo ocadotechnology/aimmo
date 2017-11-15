@@ -72,7 +72,7 @@ class TestService(TestCase):
         """
         Ensures the correct score location in the "score_locations" element; is returned by the JSON.
         """
-        score_list = self.world_state_json['score_locations']
+        score_list = self.world_state_json['scoreLocations']
         self.assertEqual(score_list[0]['location']['x'], 0)
         self.assertEqual(score_list[0]['location']['y'], 1)
 
@@ -80,7 +80,7 @@ class TestService(TestCase):
         """
         Top right corner of the map must be correct to determine the map size.
         """
-        north_east_corner = self.world_state_json['north_east_corner']
+        north_east_corner = self.world_state_json['northEastCorner']
         self.assertEqual(north_east_corner['x'], 1)
         self.assertEqual(north_east_corner['y'], 1)
 
@@ -88,7 +88,7 @@ class TestService(TestCase):
         """
         Bottom left corner of the map must be correct to determine the map size.
         """
-        south_west_corner = self.world_state_json['south_west_corner']
+        south_west_corner = self.world_state_json['southWestCorner']
         self.assertEqual(south_west_corner['x'], 0)
         self.assertEqual(south_west_corner['y'], -1)
 
