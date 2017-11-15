@@ -53,7 +53,7 @@ def player_dict(avatar):
     }
 
 
-def get_world_state():
+def get_game_state():
     with state_provider as game_state:
         world_map = game_state.world_map
         return {
@@ -71,14 +71,14 @@ def get_world_state():
 def world_update_on_connect():
     emit(
         'world-update',
-        get_world_state(),
+        get_game_state(),
     )
 
 
 def send_world_update():
     socketio.emit(
         'world-update',
-        get_world_state(),
+        get_game_state(),
         broadcast=True,
     )
 

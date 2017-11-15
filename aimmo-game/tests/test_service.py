@@ -40,7 +40,7 @@ class TestService(TestCase):
 
         state_provider.set_world(GameState(WorldMap(grid, {}), self.avatar_manager))
 
-        self.world_state_json = service.get_world_state()
+        self.world_state_json = service.get_game_state()
 
     def test_healthy_flask(self):
         """
@@ -53,7 +53,7 @@ class TestService(TestCase):
 
     def test_correct_json_player_dictionary(self):
         """
-        Ensures the "players" element of the get_world_state() JSON returns the correct information for the dummy
+        Ensures the "players" element of the get_game_state() JSON returns the correct information for the dummy
         avatar provided into the world.
 
         NOTE: Orientation (and others) may be hard coded. This test WILL and SHOULD fail if the functionality is added.
