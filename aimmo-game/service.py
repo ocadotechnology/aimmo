@@ -70,14 +70,14 @@ def get_game_state():
 @socketio.on('connect')
 def world_update_on_connect():
     emit(
-        'world-update',
+        'game-state',
         get_game_state(),
     )
 
 
 def send_world_update():
     socketio.emit(
-        'world-update',
+        'game-state',
         get_game_state(),
         broadcast=True,
     )
