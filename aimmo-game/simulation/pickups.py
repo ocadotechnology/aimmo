@@ -50,7 +50,10 @@ class HealthPickup(_Pickup):
     def serialise(self):
         return {
                 'type': 'health',
-                'health_restored': self.health_restored,
+                'location': {
+                    'x': self.cell.location.x,
+                    'y': self.cell.location.y,
+                }
         }
 
     def _apply(self, avatar):
@@ -83,6 +86,10 @@ class InvulnerabilityPickup(_PickupEffect):
     def serialise(self):
         return {
                 'type': 'invulnerability',
+                'location': {
+                    'x': self.cell.location.x,
+                    'y': self.cell.location.y,
+                }
         }
 
 
@@ -102,9 +109,37 @@ class DamageBoostPickup(_PickupEffect):
 
     def serialise(self):
         return {
-                'type': 'damage',
-                'damage_boost': self.damage_boost,
+                'type': 'damage_boost',
+                'location': {
+                    'x': self.cell.location.x,
+                    'y': self.cell.location.y,
+                }
         }
+
+
+def pickups_update(world_map):
+    """
+    A serialise function used to update the pickups in the front end representation of the game.
+    """
+
+    def _generate_pickup_list(world_map):
+        """
+        Inner scope function only to be used by pickups_update().
+        :return: A list containing all serialised pickups in the world_map.
+        """
+
+        pickups = []
+
+        for cell in world_map.pickup_cells():
+            pickups.append(cell.pickup.serialise())
+
+        return pickups
+
+    generated_pickups = _generate_pickup_list(world_map)
+
+    return {
+        'pickups': generated_pickups,
+    }
 
 
 ALL_PICKUPS = (
