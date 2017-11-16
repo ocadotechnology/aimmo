@@ -49,8 +49,8 @@ const VIEWER = Object.create({
     },
 
     constructNewPlayerElement: function(playerData, is_current_user) {
-        const playerX = (0.5 + playerData.x) * this.appearance.cellSize;
-        const playerY = (0.5 + this.invertY(playerData.y)) * this.appearance.cellSize;
+        const playerX = (0.5 + playerData.location.x) * this.appearance.cellSize;
+        const playerY = (0.5 + this.invertY(playerData.location.y)) * this.appearance.cellSize;
         const playerRadius = this.appearance.cellSize * 0.5 * 0.75;
         const playerHeadRadius = playerRadius * 0.6;
         const playerEyeRadius = playerRadius * 0.2;
@@ -58,24 +58,24 @@ const VIEWER = Object.create({
 
         var playerBody = this.paper.circle(playerX, playerY, playerRadius);
 
-        playerBody.attr("fill", playerData.colours.bodyFill);
-        playerBody.attr("stroke", playerData.colours.bodyStroke);
+        playerBody.attr("fill", "#547BF9");
+        playerBody.attr("stroke", "#547BF9");
 
         var playerEyeLeft = this.paper.circle(
             playerX + playerHeadRadius * Math.cos(playerData.rotation - 1),
             playerY + playerHeadRadius * Math.sin(playerData.rotation - 1),
             playerEyeRadius
         );
-        playerEyeLeft.attr("fill", playerData.colours.eyeFill);
-        playerEyeLeft.attr("stroke", playerData.colours.eyeStroke);
+        playerEyeLeft.attr("fill", "#962828");
+        playerEyeLeft.attr("stroke", "#962828");
 
         var playerEyeRight = this.paper.circle(
             playerX + playerHeadRadius * Math.cos(playerData.rotation + 1),
             playerY + playerHeadRadius * Math.sin(playerData.rotation + 1),
             playerEyeRadius
         );
-        playerEyeRight.attr("fill", playerData.colours.eyeFill);
-        playerEyeRight.attr("stroke", playerData.colours.eyeStroke);
+        playerEyeRight.attr("fill", "#962828");
+        playerEyeRight.attr("stroke", "#962828");
 
         var currentUserIcon;
         if (is_current_user) {
@@ -90,7 +90,7 @@ const VIEWER = Object.create({
         }
 
         var playerTextAbove = this.paper.text(playerX, playerY - 20, 'Score: ' + playerData.score);
-        var playerTextBelow = this.paper.text(playerX, playerY + 20, playerData.health + 'hp, (' + playerData.x + ', ' + playerData.y + ')');
+        var playerTextBelow = this.paper.text(playerX, playerY + 20, playerData.health + 'hp, (' + playerData.location.x + ', ' + playerData.location.y + ')');
 
         var player = this.paper.set();
         player.push(
@@ -129,8 +129,8 @@ const VIEWER = Object.create({
 
         for (var i = 0; i < this.world.pickups.length; i++) {
             var pickupLocation = this.world.pickups[i].location;
-            var x = (0.5 + pickupLocation[0]) * this.appearance.cellSize;
-            var y = (0.5 + this.invertY(pickupLocation[1])) * this.appearance.cellSize;
+            var x = (0.5 + pickupLocation.x) * this.appearance.cellSize;
+            var y = (0.5 + this.invertY(pickupLocation.y)) * this.appearance.cellSize;
             switch (this.world.pickups[i].type) {
                 case 'health':
                     pickup = this.drawHealth(x, y);
@@ -138,7 +138,7 @@ const VIEWER = Object.create({
                 case 'invulnerability':
                     pickup = this.drawInvulnerability(x, y);
                     break;
-                case 'damage':
+                case 'damage_boost':
                     pickup = this.drawDamage(x, y);
                     break;
                 default:
