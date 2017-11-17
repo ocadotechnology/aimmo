@@ -15,7 +15,8 @@ class Cell(object):
     Any position on the world grid.
     """
 
-    def __init__(self, location, habitable=True, generates_score=False, partially_fogged=False):
+    def __init__(self, location, habitable=True, generates_score=False,
+                 partially_fogged=False):
         self.location = location
         self.habitable = habitable
         self.generates_score = generates_score
@@ -26,7 +27,8 @@ class Cell(object):
 
     def __repr__(self):
         return 'Cell({} h={} s={} a={} p={} f{})'.format(
-            self.location, self.habitable, self.generates_score, self.avatar, self.pickup, self.partially_fogged)
+            self.location, self.habitable, self.generates_score, self.avatar, self.pickup,
+            self.partially_fogged)
 
     def __eq__(self, other):
         return self.location == other.location
@@ -69,11 +71,19 @@ class WorldMap(object):
     """
 
     def __init__(self, grid, settings):
+        """
+        :param grid: All types of cells to be inserted into the map.
+        :param settings: Constant values provided when generating a level/map.
+        """
         self.grid = grid
         self.settings = settings
 
     @classmethod
     def _min_max_from_dimensions(cls, height, width):
+        """
+        The value provided by the user will be an integer both for the width and height
+        components. We calculate the maximum and minimum dimensions in all directions.
+        """
         max_x = int(math.floor(width / 2))
         min_x = -(width - max_x - 1)
         max_y = int(math.floor(height / 2))
@@ -100,6 +110,9 @@ class WorldMap(object):
         return (c for c in self.all_cells() if c.generates_score)
 
     def potential_spawn_locations(self):
+        """
+        Used to make sure that the cell is free before spawning.
+        """
         return (c for c in self.all_cells()
                 if c.habitable
                 and not c.generates_score
@@ -158,7 +171,6 @@ class WorldMap(object):
         return self.num_rows * self.num_cols
 
     def update(self, num_avatars):
-        # TODO: refactor into GameState (this class does too much)
         self._update_avatars()
         self._update_map(num_avatars)
 
@@ -186,7 +198,8 @@ class WorldMap(object):
     def _expand(self, num_avatars):
         LOGGER.info('Expanding map')
         start_size = self.num_cells
-        target_num_cells = int(math.ceil(num_avatars * self.settings['TARGET_NUM_CELLS_PER_AVATAR']))
+        target_num_cells = int(math.ceil(num_avatars *
+                                         self.settings['TARGET_NUM_CELLS_PER_AVATAR']))
         num_cells_to_add = target_num_cells - self.num_cells
         if num_cells_to_add > 0:
             self._add_outer_layer()
@@ -221,7 +234,8 @@ class WorldMap(object):
             cell.generates_score = True
 
     def _add_pickups(self, num_avatars):
-        target_num_pickups = int(math.ceil(num_avatars * self.settings['TARGET_NUM_PICKUPS_PER_AVATAR']))
+        target_num_pickups = int(math.ceil(num_avatars *
+                                           self.settings['TARGET_NUM_PICKUPS_PER_AVATAR']))
         LOGGER.debug('Aiming for %s new pickups', target_num_pickups)
         max_num_pickups_to_add = target_num_pickups - len(list(self.pickup_cells()))
         locations = self._get_random_spawn_locations(max_num_pickups_to_add)
@@ -292,8 +306,11 @@ class WorldMap(object):
     # Serialisation Utilities
     def get_serialised_south_west_corner(self):
         """
-        Used in serialising the map size when sent to the front end. Very lightweight as it consists of two integers.
-        :return: A dictionary with two values, x and y coordinates for the bottom left (south-west) corner of the map.
+        Used in serialising the map size when sent to the front end. Very lightweight as
+        it consists of two integers.
+
+        :return: A dictionary with two values, x and y coordinates for the bottom left
+        (south-west) corner of the map.
         """
         return {
             "x": self.min_x(),
@@ -302,8 +319,11 @@ class WorldMap(object):
 
     def get_serialised_north_east_corner(self):
         """
-        Used in serialising the map size when sent to the front end. Very lightweight as it consists of two integers.
-        :return: A dictionary with two values, x and y coordinates for the top right (north-west) corner of the map.
+        Used in serialising the map size when sent to the front end. Very lightweight as
+        it consists of two integers.
+
+        :return: A dictionary with two values, x and y coordinates for the top right
+        (north-west) corner of the map.
         """
         return {
             "x": self.max_x(),
@@ -313,13 +333,15 @@ class WorldMap(object):
     def score_location_update(self):
         """
         Used to serialise the score locations on every update.
-        :return: A dictionary with a single list that contains all score locations. Within, x and y coordinates.
+
+        :return: A dictionary with a single list that contains all score locations. Within
+        the list there are x and y coordinates.
         """
 
         def _generate_score_locations_list():
             """
-            Generates a list of all individual score locations to be further placed into an outer wrapper dictionary
-            for serialisation.
+            Generates a list of all individual score locations to be further placed into
+            an outer wrapper dictionary for serialisation.
             """
 
             serialised_list = []
@@ -343,13 +365,15 @@ class WorldMap(object):
     def obstacles_update(self):
         """
         Used to serialise the obstacle locations on every update.
-        :return: A dictionary with a single list that contains all the obstacle information generated by inner method.
+
+        :return: A dictionary with a single list that contains all the obstacle
+        information generated by inner method.
         """
 
         def _generate_obstacle_list():
             """
-            Generates a list of all obstacle locations into a list that can be then further wrapped in a dictionary
-            for serialisation.
+            Generates a list of all obstacle locations into a list that can be then
+            further wrapped in a dictionary for serialisation.
             """
 
             serialised_list = []

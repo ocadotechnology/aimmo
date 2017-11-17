@@ -7,7 +7,9 @@ import hypothesis.strategies as st
 from mock_world import MockWorld
 
 from simulation.location import Location
-from simulation.pickups import HealthPickup, AVATAR_HEALTH_MAX, HEALTH_RESTORE_DEFAULT, HEALTH_RESTORE_MAX
+from simulation.pickups import (
+    HealthPickup, AVATAR_HEALTH_MAX, HEALTH_RESTORE_DEFAULT, HEALTH_RESTORE_MAX
+)
 
 
 class TestHealthPickupAndEffects(TestCase):
@@ -30,7 +32,8 @@ class TestHealthPickupAndEffects(TestCase):
         self.game.turn_manager._run_single_turn()
 
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
-        self.assertEqual(self.cell.avatar.health, self.initial_health + HEALTH_RESTORE_DEFAULT)
+        self.assertEqual(self.cell.avatar.health, self.initial_health +
+                         HEALTH_RESTORE_DEFAULT)
 
     @given(st.integers(1, HEALTH_RESTORE_MAX))
     def test_health_pickups_and_effects_apply_custom_integers(self, restore_value):
@@ -72,8 +75,8 @@ class TestHealthPickupAndEffects(TestCase):
     def test_health_effect_is_capped_at_HEALTH_RESTORE_MAX(self, restore_value):
         """
         Make sure health cannot go above the maximum cap. Avatar health begins at 5hp,
-        so every pickup in the 96-HEALTH_RESTORE_MAX range would cause it to go above HEALTH_RESTORE_MAX, until the
-        initial health changes.
+        so every pickup in the 96-HEALTH_RESTORE_MAX range would cause it to go above
+        HEALTH_RESTORE_MAX, until the initial health changes.
         """
         self.setUp()
         self.cell.pickup = HealthPickup(self.cell, restore_value)
