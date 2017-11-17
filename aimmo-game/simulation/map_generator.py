@@ -53,8 +53,8 @@ class Main(_BaseGenerator):
         always_empty_location = Location(always_empty_edge_x, always_empty_edge_y)
 
         for cell in shuffled(world_map.all_cells()):
-            if cell.location != always_empty_location and\
-                            random.random() < self.settings['OBSTACLE_RATIO']:
+            if cell.location != (always_empty_location
+                                 and random.random() < self.settings['OBSTACLE_RATIO']):
                 cell.habitable = False
                 # So long as all habitable neighbours can still reach each other, then the
                 # map cannot get bisected.
@@ -101,7 +101,8 @@ def get_shortest_path_between(source_cell, destination_cell, world_map):
         y_distance = abs(branch_tip_location.y - destination_cell.location.y)
         return x_distance + y_distance + len(this_branch)
 
-    branches = PriorityQueue(key=manhattan_distance_to_destination_cell, init_items=[[source_cell]])
+    branches = PriorityQueue(key=manhattan_distance_to_destination_cell,
+                             init_items=[[source_cell]])
     visited_cells = set()
 
     while branches:

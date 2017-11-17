@@ -171,6 +171,7 @@ class WorldMap(object):
         return self.num_rows * self.num_cols
 
     def update(self, num_avatars):
+        # TODO: refactor into GameState (this class does too much)
         self._update_avatars()
         self._update_map(num_avatars)
 
@@ -198,8 +199,9 @@ class WorldMap(object):
     def _expand(self, num_avatars):
         LOGGER.info('Expanding map')
         start_size = self.num_cells
-        target_num_cells = int(math.ceil(num_avatars *
-                                         self.settings['TARGET_NUM_CELLS_PER_AVATAR']))
+        target_num_cells = int(math.ceil(
+            num_avatars * self.settings['TARGET_NUM_CELLS_PER_AVATAR']
+        ))
         num_cells_to_add = target_num_cells - self.num_cells
         if num_cells_to_add > 0:
             self._add_outer_layer()
@@ -234,8 +236,9 @@ class WorldMap(object):
             cell.generates_score = True
 
     def _add_pickups(self, num_avatars):
-        target_num_pickups = int(math.ceil(num_avatars *
-                                           self.settings['TARGET_NUM_PICKUPS_PER_AVATAR']))
+        target_num_pickups = int(math.ceil(
+            num_avatars * self.settings['TARGET_NUM_PICKUPS_PER_AVATAR']
+        ))
         LOGGER.debug('Aiming for %s new pickups', target_num_pickups)
         max_num_pickups_to_add = target_num_pickups - len(list(self.pickup_cells()))
         locations = self._get_random_spawn_locations(max_num_pickups_to_add)
@@ -273,8 +276,8 @@ class WorldMap(object):
 
     def attackable_avatar(self, target_location):
         """
-        Return a boolean if the avatar is attackable at the given location
-        (or will be after next move), else return None.
+        Return a boolean if the avatar is attackable at the given location (or will be
+        after next move), else return None.
         """
         try:
             cell = self.get_cell(target_location)
