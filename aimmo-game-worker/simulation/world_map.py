@@ -46,13 +46,13 @@ class WorldMap(object):
         return self.cells.values()
 
     def score_cells(self):
-        return [c for c in self.all_cells() if c.generates_score]
+        return (c for c in self.all_cells() if c.generates_score)
 
     def pickup_cells(self):
-        return [c for c in self.all_cells() if getattr(c, 'pickup', False)]
+        return (c for c in self.all_cells() if getattr(c, 'pickup', False))
 
     def partially_fogged_cells(self):
-        return [c for c in self.all_cells() if c.partially_fogged]
+        return (c for c in self.all_cells() if c.partially_fogged)
 
     def is_visible(self, location):
         return location in self.cells
