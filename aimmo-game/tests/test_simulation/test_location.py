@@ -50,8 +50,3 @@ class TestLocation(TestCase):
         self.assertRaises(TypeError, Location, 2, 2.2)
         self.assertRaises(TypeError, Location, 2.5, 2.5)
         self.assertRaises(TypeError, Location, 2.0, 1)
-
-    def test_serialise(self):
-        loc = Location(3, 9)
-        expected = {'x': 3, 'y': 9}
-        self.assertEqual(loc.serialise(), expected)
