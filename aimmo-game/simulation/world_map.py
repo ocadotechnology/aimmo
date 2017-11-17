@@ -97,7 +97,6 @@ class WorldMap(object):
         return self.grid.values()
 
     def score_cells(self):
-        # TODO: consider changing this tuple might too slow
         return (c for c in self.all_cells() if c.generates_score)
 
     def potential_spawn_locations(self):
