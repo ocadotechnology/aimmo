@@ -35,8 +35,6 @@ def to_cell_type(cell):
 
 
 def player_dict(avatar):
-    # TODO: implement better colour functionality: will eventually fall off end of numbers
-    colour = "#%06x" % (avatar.player_id * 4999)
     return {
         'id': avatar.player_id,
         'x': avatar.location.x,
@@ -46,7 +44,7 @@ def player_dict(avatar):
         'rotation': 0,
         "colours": {
             "bodyStroke": "#0ff",
-            "bodyFill": colour,
+            "bodyFill": "#%06x" % (avatar.player_id * 4999),
             "eyeStroke": "#aff",
             "eyeFill": "#eff",
         }
@@ -62,7 +60,8 @@ def get_game_state():
                 'northEastCorner': world_map.get_serialised_north_east_corner(),
                 'players': game_state.avatar_manager.players_update()['players'],
                 'pickups': pickups_update(world_map)['pickups'],
-                'scoreLocations': game_state.world_map.score_location_update()['scoreLocations'],
+                'scoreLocations': (game_state.world_map.
+                                   score_location_update()['scoreLocations']),
                 'obstacles': world_map.obstacles_update()['obstacles']
         }
 
@@ -107,9 +106,13 @@ def run_game(port):
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
     player_manager = AvatarManager()
     game_state = generator.get_game_state(player_manager)
-    turn_manager = ConcurrentTurnManager(game_state=game_state, end_turn_callback=send_world_update, completion_url=api_url+'complete/')
+    turn_manager = ConcurrentTurnManager(game_state=game_state,
+                                         end_turn_callback=send_world_update,
+                                         completion_url=api_url+'complete/')
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
-    worker_manager = WorkerManagerClass(game_state=game_state, users_url=api_url, port=port)
+    worker_manager = WorkerManagerClass(game_state=game_state,
+                                        users_url=api_url,
+                                        port=port)
     worker_manager.start()
     turn_manager.start()
 

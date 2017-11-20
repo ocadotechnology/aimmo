@@ -48,15 +48,16 @@ class Main(_BaseGenerator):
         width = self.settings['START_WIDTH']
         world_map = WorldMap.generate_empty_map(height, width, self.settings)
 
-        # We designate one non-corner edge cell as empty, to ensure that the map can be expanded
+        # We set one non-corner edge cell as empty, to ensure that the map can be expanded
         always_empty_edge_x, always_empty_edge_y = get_random_edge_index(world_map)
         always_empty_location = Location(always_empty_edge_x, always_empty_edge_y)
 
         for cell in shuffled(world_map.all_cells()):
-            if cell.location != always_empty_location and random.random() < self.settings['OBSTACLE_RATIO']:
+            if (cell.location != always_empty_location
+                    and random.random() < self.settings['OBSTACLE_RATIO']):
                 cell.habitable = False
-                # So long as all habitable neighbours can still reach each other,
-                # then the map cannot get bisected
+                # So long as all habitable neighbours can still reach each other, then the
+                # map cannot get bisected.
                 if not _all_habitable_neighbours_can_reach_each_other(cell, world_map):
                     cell.habitable = True
 
@@ -100,7 +101,8 @@ def get_shortest_path_between(source_cell, destination_cell, world_map):
         y_distance = abs(branch_tip_location.y - destination_cell.location.y)
         return x_distance + y_distance + len(this_branch)
 
-    branches = PriorityQueue(key=manhattan_distance_to_destination_cell, init_items=[[source_cell]])
+    branches = PriorityQueue(key=manhattan_distance_to_destination_cell,
+                             init_items=[[source_cell]])
     visited_cells = set()
 
     while branches:
