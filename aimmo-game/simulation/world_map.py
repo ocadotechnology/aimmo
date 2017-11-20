@@ -171,7 +171,6 @@ class WorldMap(object):
         return self.num_rows * self.num_cols
 
     def update(self, num_avatars):
-        # TODO: refactor into GameState (this class does too much)
         self._update_avatars()
         self._update_map(num_avatars)
 
