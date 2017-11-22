@@ -3,7 +3,9 @@ from unittest import TestCase
 from mock_world import MockWorld
 from simulation.location import Location
 from simulation import map_generator
-from tests.test_simulation.dummy_avatar import MoveEastDummy, MoveWestDummy, MoveNorthDummy, MoveSouthDummy, WaitDummy
+from tests.test_simulation.dummy_avatar import (
+    MoveEastDummy, MoveWestDummy, MoveNorthDummy, MoveSouthDummy, WaitDummy
+)
 
 
 class TestMovementsInMap(TestCase):
@@ -14,15 +16,19 @@ class TestMovementsInMap(TestCase):
         'OBSTACLE_RATIO': 0,
     }
 
-    def set_up_environment(self, dummy_list=None, location=Location(0, 0), map_generator_class=map_generator.Main):
+    def set_up_environment(self, dummy_list=None, location=Location(0, 0),
+                           map_generator_class=map_generator.Main):
         """
         Utility method for testing.
         """
-        self.game = MockWorld(TestMovementsInMap.SETTINGS, dummy_list, map_generator_class)
+        self.game = MockWorld(TestMovementsInMap.SETTINGS, dummy_list,
+                              map_generator_class)
         self.game.game_state.add_avatar(1, None, location)
         self.avatar = self.game.avatar_manager.get_avatar(1)
 
-    def set_up_and_make_movements_in_a_single_direction(self, dummy_list, number_of_movements, spawn=Location(0, 0)):
+    def set_up_and_make_movements_in_a_single_direction(self, dummy_list,
+                                                        number_of_movements,
+                                                        spawn=Location(0, 0)):
         """
         Template function for repetitive movements in a single direction.
         """
@@ -34,8 +40,8 @@ class TestMovementsInMap(TestCase):
 
     def test_movement_five_times_in_all_directions(self):
         """
-        Moves the avatar to the edge of the map. Each time it moves the avatar 5 times from origin in all cardinal
-        directions.
+        Moves the avatar to the edge of the map. Each time it moves the avatar 5 times
+        from origin in all cardinal directions.
         """
 
         # East.
@@ -56,32 +62,42 @@ class TestMovementsInMap(TestCase):
 
     def test_move_towards_map_boundaries(self):
         """
-        Tests game behaviour when the avatar tries to move towards one of the four of the maps boundaries.
+        Tests game behaviour when the avatar tries to move towards one of the four of the
+        maps boundaries.
         """
 
         # North boundary.
-        self.set_up_and_make_movements_in_a_single_direction([MoveNorthDummy], 2, Location(0, 25))
+        self.set_up_and_make_movements_in_a_single_direction([MoveNorthDummy], 2,
+                                                             Location(0, 25))
+
         self.assertFalse(self.game.game_state.world_map.is_on_map(Location(0, 26)))
         self.assertEqual(self.avatar.location, Location(0, 25))
 
         # South boundary.
-        self.set_up_and_make_movements_in_a_single_direction([MoveSouthDummy], 2, Location(0, -24))
+        self.set_up_and_make_movements_in_a_single_direction([MoveSouthDummy], 2,
+                                                             Location(0, -24))
+
         self.assertFalse(self.game.game_state.world_map.is_on_map(Location(0, -25)))
         self.assertEqual(self.avatar.location, Location(0, -24))
 
         # East boundary.
-        self.set_up_and_make_movements_in_a_single_direction([MoveEastDummy], 2, Location(25, 0))
+        self.set_up_and_make_movements_in_a_single_direction([MoveEastDummy], 2,
+                                                             Location(25, 0))
+
         self.assertFalse(self.game.game_state.world_map.is_on_map(Location(26, 0)))
         self.assertEqual(self.avatar.location, Location(25, 0))
 
         # West boundary.
-        self.set_up_and_make_movements_in_a_single_direction([MoveWestDummy], 2, Location(-24, 0))
+        self.set_up_and_make_movements_in_a_single_direction([MoveWestDummy], 2,
+                                                             Location(-24, 0))
+
         self.assertFalse(self.game.game_state.world_map.is_on_map(Location(-25, 0)))
         self.assertEqual(self.avatar.location, Location(-24, 0))
 
     def test_avatar_cannot_move_into_obstacle(self):
         """
-        Make sure that an avatar will stay in its location when trying to move into a obstacle cell.
+        Make sure that an avatar will stay in its location when trying to move into a
+        obstacle cell.
         """
         self.set_up_environment([MoveEastDummy])
         obstacle_cell = self.game.game_state.world_map.get_cell(Location(2, 0))
@@ -129,8 +145,9 @@ class TestMovementsInMap(TestCase):
 
     def test_sequential_avatars_tailing_each_other(self):
         """
-        Two avatars placed beside each other horizontally. They want to move east, but SequentialTurnManager gives
-        priority to ID1. It gets blocked by ID2 so only 2 moves.
+        Two avatars placed beside each other horizontally. They want to move east, but
+        SequentialTurnManager gives priority to ID1. It gets blocked by ID2 so only two
+        moves.
         """
         self.set_up_environment([MoveEastDummy, MoveEastDummy])
         self.game.game_state.add_avatar(2, None, Location(1, 0))
@@ -147,12 +164,14 @@ class TestMovementsInMap(TestCase):
 
     def test_level_one_appropriate_behaviour(self):
         """
-        Tests the appropriate behaviour of Level 1. The test should reflect everything that is written in the manual
+        Tests the appropriate behaviour of Level 1. The test should reflect everything
+        that is written in the manual
         test plan.
         """
         self.set_up_environment(dummy_list=[MoveEastDummy], location=Location(-2, 0),
                                 map_generator_class=map_generator.Level1)
-        self.assertTrue(self.game.game_state.world_map.get_cell(Location(2, 0)).generates_score)
+        score_cell = self.game.game_state.world_map.get_cell(Location(2, 0))
+        self.assertTrue(score_cell.generates_score)
         self.game.game_state.main_avatar_id = 1
 
         for i in range(5):

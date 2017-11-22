@@ -96,6 +96,15 @@ class TestHealthPickup(_BaseCases.BasePickupTestCase):
         self.set_custom_pickup(9.5)
         self.assertEqual(self.pickup.health_restored, 10)
 
+    def test_serialise(self):
+        self.assertEqual(self.pickup.serialise(), {
+            'type': 'health',
+            'location': {
+                'x': 0,
+                'y': 0,
+            }
+        })
+
 
 class TestInvulnerabilityPickup(_BaseCases.BasePickupEffectTestCase):
     pickup_class = pickups.InvulnerabilityPickup
@@ -115,6 +124,15 @@ class TestInvulnerabilityPickup(_BaseCases.BasePickupEffectTestCase):
 
         self.assertEqual(self.avatar.resistance, 2000)
 
+    def test_serialise(self):
+        self.assertEqual(self.pickup.serialise(), {
+            'type': 'invulnerability',
+            'location': {
+                'x': 0,
+                'y': 0,
+            }
+        })
+
 
 class TestDamageBoostPickup(_BaseCases.BasePickupEffectTestCase):
     pickup_class = pickups.DamageBoostPickup
@@ -128,3 +146,12 @@ class TestDamageBoostPickup(_BaseCases.BasePickupEffectTestCase):
         self.assertEqual(len(self.avatar.effects), 0)
         self.apply_pickup()
         self.assertEqual(len(self.avatar.effects), 1)
+
+    def test_serialise(self):
+        self.assertEqual(self.pickup.serialise(), {
+            'type': 'damage_boost',
+            'location': {
+                'x': 0,
+                'y': 0,
+            }
+        })

@@ -92,25 +92,25 @@ class TestWorldMap(TestCase):
                 out[Location(x, y)] = cell
         return out
 
-    def assertGridSize(self, map, expected_columns, expected_rows=None):
+    def assertGridSize(self, world_map, expected_columns, expected_rows=None):
         if expected_rows is None:
             expected_rows = expected_columns
-        self.assertEqual(map.num_rows, expected_rows)
-        self.assertEqual(map.num_cols, expected_columns)
-        self.assertEqual(map.num_cells, expected_rows*expected_columns)
-        self.assertEqual(len(list(map.all_cells())), expected_rows*expected_columns)
+        self.assertEqual(world_map.num_rows, expected_rows)
+        self.assertEqual(world_map.num_cols, expected_columns)
+        self.assertEqual(world_map.num_cells, expected_rows*expected_columns)
+        self.assertEqual(len(list(world_map.all_cells())), expected_rows*expected_columns)
 
     def test_grid_size(self):
-        map = WorldMap(self._generate_grid(1, 3), self.settings)
-        self.assertGridSize(map, 1, 3)
+        world_map = WorldMap(self._generate_grid(1, 3), self.settings)
+        self.assertGridSize(world_map, 1, 3)
 
     def test_generated_map(self):
-        map = WorldMap.generate_empty_map(2, 5, {})
-        self.assertGridSize(map, 5, 2)
+        world_map = WorldMap.generate_empty_map(2, 5, {})
+        self.assertGridSize(world_map, 5, 2)
 
     def test_all_cells(self):
-        map = WorldMap(self._generate_grid(), self.settings)
-        cell_names = [c.name for c in map.all_cells()]
+        world_map = WorldMap(self._generate_grid(), self.settings)
+        cell_names = [c.name for c in world_map.all_cells()]
         self.assertIn('A', cell_names)
         self.assertIn('B', cell_names)
         self.assertIn('C', cell_names)
@@ -121,9 +121,10 @@ class TestWorldMap(TestCase):
         score_cell1 = MockCell(generates_score=True)
         score_cell2 = MockCell(generates_score=True)
         no_score_cell = MockCell()
-        grid = self._grid_from_list([[score_cell1, no_score_cell], [no_score_cell, score_cell2]])
-        map = WorldMap(grid, self.settings)
-        cells = list(map.score_cells())
+        grid = self._grid_from_list([[score_cell1, no_score_cell],
+                                     [no_score_cell, score_cell2]])
+        world_map = WorldMap(grid, self.settings)
+        cells = list(world_map.score_cells())
         self.assertIn(score_cell1, cells)
         self.assertIn(score_cell2, cells)
         self.assertEqual(len(cells), 2, "Non-scoring cells present")
@@ -134,9 +135,10 @@ class TestWorldMap(TestCase):
         score_cell = MockCell(generates_score=True)
         unhabitable = MockCell(habitable=False)
         filled = MockCell(avatar='avatar')
-        grid = self._grid_from_list([[spawnable1, score_cell, unhabitable], [unhabitable, spawnable2, filled]])
-        map = WorldMap(grid, self.settings)
-        cells = list(map.potential_spawn_locations())
+        grid = self._grid_from_list([[spawnable1, score_cell, unhabitable],
+                                     [unhabitable, spawnable2, filled]])
+        world_map = WorldMap(grid, self.settings)
+        cells = list(world_map.potential_spawn_locations())
         self.assertIn(spawnable1, cells)
         self.assertIn(spawnable2, cells)
         self.assertNotIn(score_cell, cells, "Score cells should not be spawns")
@@ -148,104 +150,105 @@ class TestWorldMap(TestCase):
         pickup_cell1 = MockCell(pickup=MockPickup())
         pickup_cell2 = MockCell(pickup=MockPickup())
         no_pickup_cell = MockCell()
-        grid = self._grid_from_list([[pickup_cell1, no_pickup_cell], [no_pickup_cell, pickup_cell2]])
-        map = WorldMap(grid, self.settings)
-        cells = list(map.pickup_cells())
+        grid = self._grid_from_list([[pickup_cell1, no_pickup_cell],
+                                     [no_pickup_cell, pickup_cell2]])
+        world_map = WorldMap(grid, self.settings)
+        cells = list(world_map.pickup_cells())
         self.assertIn(pickup_cell1, cells)
         self.assertIn(pickup_cell2, cells)
         self.assertEqual(len(cells), 2, "Non-pickup cells present")
 
     def test_location_on_map(self):
-        map = WorldMap(self._generate_grid(), self.settings)
+        world_map = WorldMap(self._generate_grid(), self.settings)
         for x in (0, 1):
             for y in (0, 1):
-                self.assertTrue(map.is_on_map(Location(x, y)))
+                self.assertTrue(world_map.is_on_map(Location(x, y)))
 
-        self.assertFalse(map.is_on_map(Location(2,2)))
-        self.assertFalse(map.is_on_map(Location(-1, 1)))
+        self.assertFalse(world_map.is_on_map(Location(2, 2)))
+        self.assertFalse(world_map.is_on_map(Location(-1, 1)))
 
     def test_x_off_map(self):
-        map = WorldMap(self._generate_grid(), self.settings)
+        world_map = WorldMap(self._generate_grid(), self.settings)
         for y in (0, 1):
-            self.assertFalse(map.is_on_map(Location(-1, y)))
-            self.assertFalse(map.is_on_map(Location(2, y)))
+            self.assertFalse(world_map.is_on_map(Location(-1, y)))
+            self.assertFalse(world_map.is_on_map(Location(2, y)))
 
     def test_y_off_map(self):
-        map = WorldMap(self._generate_grid(), self.settings)
+        world_map = WorldMap(self._generate_grid(), self.settings)
         for x in (0, 1):
-            self.assertFalse(map.is_on_map(Location(x, -1)))
-            self.assertFalse(map.is_on_map(Location(x, 2)))
+            self.assertFalse(world_map.is_on_map(Location(x, -1)))
+            self.assertFalse(world_map.is_on_map(Location(x, 2)))
 
     def test_get_valid_cell(self):
-        map = WorldMap(self._generate_grid(), self.settings)
+        world_map = WorldMap(self._generate_grid(), self.settings)
         for x in (0, 1):
             for y in (0, 1):
                 location = Location(x, y)
-                self.assertEqual(map.get_cell(location).location, location)
+                self.assertEqual(world_map.get_cell(location).location, location)
 
     def test_get_x_off_map(self):
-        map = WorldMap(self._generate_grid(), self.settings)
+        world_map = WorldMap(self._generate_grid(), self.settings)
         for y in (0, 1):
             with self.assertRaises(ValueError):
-                map.get_cell(Location(-1, y))
+                world_map.get_cell(Location(-1, y))
             with self.assertRaises(ValueError):
-                map.get_cell(Location(2, y))
+                world_map.get_cell(Location(2, y))
 
     def test_get_y_off_map(self):
-        map = WorldMap(self._generate_grid(), self.settings)
+        world_map = WorldMap(self._generate_grid(), self.settings)
         for x in (0, 1):
             with self.assertRaises(ValueError):
-                map.get_cell(Location(x, -1))
+                world_map.get_cell(Location(x, -1))
             with self.assertRaises(ValueError):
-                map.get_cell(Location(x, 2))
+                world_map.get_cell(Location(x, 2))
 
     def test_grid_expand(self):
         self.settings['TARGET_NUM_CELLS_PER_AVATAR'] = 5
-        map = WorldMap(self._generate_grid(), self.settings)
-        map.update(1)
-        self.assertTrue(map.is_on_map(Location(-1, -1)))
-        self.assertTrue(map.is_on_map(Location(-1, 2)))
-        self.assertTrue(map.is_on_map(Location(2, 2)))
-        self.assertTrue(map.is_on_map(Location(2, -1)))
-        self.assertGridSize(map, 4)
-        map.update(4)
-        self.assertGridSize(map, 6)
-        self.assertTrue(map.is_on_map(Location(0, 3)))
-        self.assertTrue(map.is_on_map(Location(3, 0)))
-        self.assertTrue(map.is_on_map(Location(-2, 0)))
-        self.assertTrue(map.is_on_map(Location(0, -2)))
+        world_map = WorldMap(self._generate_grid(), self.settings)
+        world_map.update(1)
+        self.assertTrue(world_map.is_on_map(Location(-1, -1)))
+        self.assertTrue(world_map.is_on_map(Location(-1, 2)))
+        self.assertTrue(world_map.is_on_map(Location(2, 2)))
+        self.assertTrue(world_map.is_on_map(Location(2, -1)))
+        self.assertGridSize(world_map, 4)
+        world_map.update(4)
+        self.assertGridSize(world_map, 6)
+        self.assertTrue(world_map.is_on_map(Location(0, 3)))
+        self.assertTrue(world_map.is_on_map(Location(3, 0)))
+        self.assertTrue(world_map.is_on_map(Location(-2, 0)))
+        self.assertTrue(world_map.is_on_map(Location(0, -2)))
 
     def test_grid_doesnt_expand(self):
         self.settings['TARGET_NUM_CELLS_PER_AVATAR'] = 4
-        map = WorldMap(self._generate_grid(), self.settings)
-        map.update(1)
-        self.assertGridSize(map, 2)
+        world_map = WorldMap(self._generate_grid(), self.settings)
+        world_map.update(1)
+        self.assertGridSize(world_map, 2)
 
     def test_scores_removed(self):
         self.settings['SCORE_DESPAWN_CHANCE'] = 1
         grid = self._generate_grid()
         grid[Location(0, 1)].generates_score = True
-        map = WorldMap(grid, self.settings)
-        map.update(1)
-        self.assertEqual(len(list(map.score_cells())), 0)
+        world_map = WorldMap(grid, self.settings)
+        world_map.update(1)
+        self.assertEqual(len(list(world_map.score_cells())), 0)
 
     def test_score_despawn_chance(self):
         self.settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR'] = 0
         grid = self._generate_grid()
         grid[Location(0, 1)].generates_score = True
-        map = WorldMap(grid, self.settings)
-        map.update(1)
-        self.assertIn(grid[Location(0, 1)], map.score_cells())
-        self.assertEqual(len(list(map.score_cells())), 1)
+        world_map = WorldMap(grid, self.settings)
+        world_map.update(1)
+        self.assertIn(grid[Location(0, 1)], world_map.score_cells())
+        self.assertEqual(len(list(world_map.score_cells())), 1)
 
     def test_scores_added(self):
         self.settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR'] = 1
-        map = WorldMap(self._generate_grid(), self.settings)
-        map.update(1)
-        self.assertEqual(len(list(map.score_cells())), 1)
+        world_map = WorldMap(self._generate_grid(), self.settings)
+        world_map.update(1)
+        self.assertEqual(len(list(world_map.score_cells())), 1)
 
-        map.update(2)
-        self.assertEqual(len(list(map.score_cells())), 2)
+        world_map.update(2)
+        self.assertEqual(len(list(world_map.score_cells())), 2)
 
     def test_scores_applied(self):
         grid = self._generate_grid()
@@ -259,28 +262,28 @@ class TestWorldMap(TestCase):
         self.settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR'] = 1
         grid = self._generate_grid()
         grid[Location(0, 1)].generates_score = True
-        map = WorldMap(grid, self.settings)
-        map.update(1)
-        self.assertEqual(len(list(map.score_cells())), 1)
-        self.assertIn(grid[Location(0, 1)], map.score_cells())
+        world_map = WorldMap(grid, self.settings)
+        world_map.update(1)
+        self.assertEqual(len(list(world_map.score_cells())), 1)
+        self.assertIn(grid[Location(0, 1)], world_map.score_cells())
 
     def test_not_enough_score_space(self):
         self.settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR'] = 1
         grid = self._generate_grid(1, 1)
         grid[Location(0, 0)].avatar = 'avatar'
-        map = WorldMap(grid, self.settings)
-        map.update(1)
-        self.assertEqual(len(list(map.score_cells())), 0)
+        world_map = WorldMap(grid, self.settings)
+        world_map.update(1)
+        self.assertEqual(len(list(world_map.score_cells())), 0)
 
     def test_pickups_added(self):
         self.settings['TARGET_NUM_PICKUPS_PER_AVATAR'] = 1
         self.settings['PICKUP_SPAWN_CHANCE'] = 1
-        map = WorldMap(self._generate_grid(), self.settings)
-        map.update(1)
-        self.assertEqual(len(list(map.pickup_cells())), 1)
+        world_map = WorldMap(self._generate_grid(), self.settings)
+        world_map.update(1)
+        self.assertEqual(len(list(world_map.pickup_cells())), 1)
 
-        map.update(2)
-        self.assertEqual(len(list(map.pickup_cells())), 2)
+        world_map.update(2)
+        self.assertEqual(len(list(world_map.pickup_cells())), 2)
 
     def test_pickups_applied(self):
         grid = self._generate_grid()
@@ -295,65 +298,65 @@ class TestWorldMap(TestCase):
         self.settings['TARGET_NUM_PICKUPS_PER_AVATAR'] = 5
         self.settings['PICKUP_SPAWN_CHANCE'] = 0
         grid = self._generate_grid()
-        map = WorldMap(grid, self.settings)
-        map.update(1)
-        self.assertEqual(len(list(map.pickup_cells())), 0)
+        world_map = WorldMap(grid, self.settings)
+        world_map.update(1)
+        self.assertEqual(len(list(world_map.pickup_cells())), 0)
 
     def test_pickups_not_added_when_at_target(self):
         self.settings['TARGET_NUM_PICKUPS_PER_AVATAR'] = 1
         grid = self._generate_grid()
         grid[Location(0, 1)].pickup = MockPickup()
-        map = WorldMap(grid, self.settings)
-        map.update(1)
-        self.assertEqual(len(list(map.pickup_cells())), 1)
-        self.assertIn(grid[Location(0, 1)], map.pickup_cells())
+        world_map = WorldMap(grid, self.settings)
+        world_map.update(1)
+        self.assertEqual(len(list(world_map.pickup_cells())), 1)
+        self.assertIn(grid[Location(0, 1)], world_map.pickup_cells())
 
     def test_not_enough_pickup_space(self):
         self.settings['TARGET_NUM_PICKUPS_PER_AVATAR'] = 1
         grid = self._generate_grid(1, 1)
         grid[Location(0, 0)].generates_score = True
-        map = WorldMap(grid, self.settings)
-        map.update(1)
-        self.assertEqual(len(list(map.pickup_cells())), 0)
+        world_map = WorldMap(grid, self.settings)
+        world_map.update(1)
+        self.assertEqual(len(list(world_map.pickup_cells())), 0)
 
     def test_random_spawn_location_successful(self):
         cell = MockCell()
-        map = WorldMap({Location(0, 0): cell}, self.settings)
-        self.assertEqual(map.get_random_spawn_location(), cell.location)
+        world_map = WorldMap({Location(0, 0): cell}, self.settings)
+        self.assertEqual(world_map.get_random_spawn_location(), cell.location)
 
     def test_random_spawn_location_with_no_candidates(self):
         grid = self._generate_grid(1, 1)
-        map = WorldMap(grid, self.settings)
+        world_map = WorldMap(grid, self.settings)
         grid[Location(0, 0)].avatar = True
         with self.assertRaises(IndexError):
-            map.get_random_spawn_location()
+            world_map.get_random_spawn_location()
 
     def test_can_move_to(self):
-        map = WorldMap(self._generate_grid(), self.settings)
+        world_map = WorldMap(self._generate_grid(), self.settings)
         target = Location(1, 1)
-        self.assertTrue(map.can_move_to(target))
+        self.assertTrue(world_map.can_move_to(target))
 
     def test_cannot_move_to_cell_off_grid(self):
-        map = WorldMap(self._generate_grid(), self.settings)
+        world_map = WorldMap(self._generate_grid(), self.settings)
         target = Location(4, 1)
-        self.assertFalse(map.can_move_to(target))
+        self.assertFalse(world_map.can_move_to(target))
 
     def test_cannot_move_to_uninhabitable_cell(self):
         target = Location(0, 0)
         cell = MockCell(target, habitable=False)
-        map = WorldMap({target: cell}, self.settings)
-        self.assertFalse(map.can_move_to(target))
+        world_map = WorldMap({target: cell}, self.settings)
+        self.assertFalse(world_map.can_move_to(target))
 
     def test_cannot_move_to_habited_cell(self):
         target = Location(0, 0)
         cell = MockCell(target, avatar=DummyAvatar(target, 0))
-        map = WorldMap({target: cell}, self.settings)
+        world_map = WorldMap({target: cell}, self.settings)
         target = Location(0, 0)
-        self.assertFalse(map.can_move_to(target))
+        self.assertFalse(world_map.can_move_to(target))
 
     def test_empty_grid(self):
-        map = WorldMap({}, self.settings)
-        self.assertFalse(map.is_on_map(Location(0, 0)))
+        world_map = WorldMap({}, self.settings)
+        self.assertFalse(world_map.is_on_map(Location(0, 0)))
 
     def test_iter(self):
         grid = [
@@ -361,20 +364,20 @@ class TestWorldMap(TestCase):
             [MockCell(Location(0, -1), name='D'), MockCell(Location(0, 0), name='E'), MockCell(Location(0, 1), name='F')],
             [MockCell(Location(1, -1), name='E'), MockCell(Location(1, 0), name='G'), MockCell(Location(1, 1), name='H')],
         ]
-        map = WorldMap(self._grid_from_list(grid), self.settings)
-        self.assertEqual([list(column) for column in map], grid)
+        world_map = WorldMap(self._grid_from_list(grid), self.settings)
+        self.assertEqual([list(column) for column in world_map], grid)
 
     def test_attackable_avatar_returns_none(self):
-        map = WorldMap(self._generate_grid(), self.settings)
+        world_map = WorldMap(self._generate_grid(), self.settings)
         for x in (0, 1):
             for y in (0, 1):
-                self.assertIsNone(map.attackable_avatar(Location(x, y)))
+                self.assertIsNone(world_map.attackable_avatar(Location(x, y)))
 
     def test_attackable_avatar_returns_avatar(self):
         avatar = DummyAvatar()
-        map = AvatarMap(avatar)
+        world_map = AvatarMap(avatar)
 
-        self.assertEqual(map.attackable_avatar(Location(0, 0)), avatar)
+        self.assertEqual(world_map.attackable_avatar(Location(0, 0)), avatar)
 
 
 class TestWorldMapWithOriginCentre(TestWorldMap):
@@ -397,8 +400,8 @@ class TestWorldMapWithOriginCentre(TestWorldMap):
         return out
 
     def test_retrieve_negative(self):
-        map = WorldMap(self._generate_grid(3, 3), self.settings)
-        self.assertTrue(map.is_on_map(Location(-1, -1)))
+        world_map = WorldMap(self._generate_grid(3, 3), self.settings)
+        self.assertTrue(world_map.is_on_map(Location(-1, -1)))
 
 
 class TestStaticSpawnDecorator(TestCase):
