@@ -13,12 +13,6 @@ _MANAGE_PY = os.path.join(_SCRIPT_LOCATION, 'example_project', 'manage.py')
 _SERVICE_PY = os.path.join(_SCRIPT_LOCATION, 'aimmo-game-creator', 'service.py')
 
 
-if __name__ == '__main__':
-    logging.basicConfig()
-    sys.path.append(os.path.join(_SCRIPT_LOCATION, 'example_project'))
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
-
-
 def log(message):
     print >> sys.stderr, message
 
@@ -53,6 +47,9 @@ def create_superuser_if_missing(username, password):
 
 
 def main(use_minikube):
+    logging.basicConfig()
+    sys.path.append(os.path.join(_SCRIPT_LOCATION, 'example_project'))
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.test_settings")
 
     run_command(['pip', 'install', '-e', _SCRIPT_LOCATION])
     run_command(['python', _MANAGE_PY, 'migrate', '--noinput'])
