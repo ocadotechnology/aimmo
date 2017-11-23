@@ -1,52 +1,36 @@
-import traceback
+import os
 import signal
 import time
-import os
-import requests
 import subprocess
+from connection_set_up import (create_session, send_get_request, send_post_request,
+                               obtain_csrftoken, delete_old_database)
 
 URL = 'http://localhost:8000/players/accounts/login/'
 
-try:
-    try:
-        os.remove("../example_project/example_project/db.sqlite3")
-    except OSError:
-        pass
+delete_old_database()
 
-    p = subprocess.Popen(["python", "../run.py"])
+p = subprocess.Popen(["python",  "../run.py"])
+time.sleep(15)
 
-    session = requests.Session()
-    failCount = 0
+print("Creating session")
+session = create_session()
 
-    while failCount < 20:
-        try:
-            response = session.get(URL)
-            break
-        except requests.exceptions.RequestException as e:
-            time.sleep(1)
-            failCount += 1
-            pass
+print ("Starting GET request loop")
+get_response = send_get_request(session, URL)
 
-    # Retrieve the CSRF token first
-    if 'csrftoken' in session.cookies:
-        # Django 1.6 and up
-        csrftoken = session.cookies['csrftoken']
-    else:
-        # older versions
-        csrftoken = session.cookies['csrf']
+print("Obtaining CSRF Token.")
+csrftoken = obtain_csrftoken(session)
 
-    login_info = {
-        'username': 'admin',
-        'password': 'admin',
-        'csrfmiddlewaretoken': csrftoken,
-    }
+login_info = {
+    'username': 'admin',
+    'password': 'admin',
+    'csrfmiddlewaretoken': csrftoken,
+}
 
-    result_post = session.post(URL, data=login_info, headers=dict(Referer=URL))
+print("Sending post response")
 
-except Exception as err:
-    traceback.print_exc()
-    raise
-finally:
-    os.killpg(0, signal.SIGTERM)
-    time.sleep(0.9)
-    os.killpg(0, signal.SIGKILL)
+post_response = send_post_request(session, URL, login_info)
+
+os.killpg(0, signal.SIGTERM)
+time.sleep(0.9)
+os.killpg(0, signal.SIGKILL)
