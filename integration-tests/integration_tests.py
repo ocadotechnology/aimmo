@@ -1,58 +1,47 @@
 import traceback
-
 import signal
-
 import time
-
 import os
 import requests
 import subprocess
-from lxml import html
 
+URL = 'http://localhost:8000/players/accounts/login/'
 
 try:
-    print("start")
     try:
         os.remove("../example_project/example_project/db.sqlite3")
-    except:
+    except OSError:
         pass
-    print("db removed")
 
     p = subprocess.Popen(["python", "../run.py"])
 
-    print("os system call")
-
     session = requests.Session()
+    failCount = 0
 
-    while True:
+    while failCount < 20:
         try:
-            response = session.get('http://localhost:8000')
+            response = session.get(URL)
             break
-        except:
+        except requests.exceptions.RequestException as e:
             time.sleep(1)
+            failCount += 1
             pass
 
-    print("session created, print next")
-
-    print(response)
-
-    # Instead of the below, remove 'django.middleware.csrf.CsrfViewMiddleware' from MIDDLEWEARE in django settings JUST FOR THIS TEST!!!
-
-    # result = session.get('http://localhost:8000/players/accounts/login/')
-    # tree = html.fromstring(result.content)
-    # token = tree.xpath('//input[@name="csrfmiddlewaretoken"]/@value')
-
-    # print(token)
+    # Retrieve the CSRF token first
+    if 'csrftoken' in session.cookies:
+        # Django 1.6 and up
+        csrftoken = session.cookies['csrftoken']
+    else:
+        # older versions
+        csrftoken = session.cookies['csrf']
 
     login_info = {
         'username': 'admin',
         'password': 'admin',
-        # 'csrfmiddlewaretoken': token,
+        'csrfmiddlewaretoken': csrftoken,
     }
 
-    result_post = session.post('http://localhost:8000/players/accounts/login/', data=login_info)
-
-    print(result_post)
+    result_post = session.post(URL, data=login_info, headers=dict(Referer=URL))
 
 except Exception as err:
     traceback.print_exc()
