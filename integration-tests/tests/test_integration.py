@@ -47,4 +47,4 @@ class TestIntegration(TestCase):
         response = send_post_request(session, url, login_info)
         self.assertEquals(response.status_code, 200)
 
-        os.kill(int(p.pid), signal.SIGKILL)
+        os.kill(int(p.pid), signal.SIGTERM)
