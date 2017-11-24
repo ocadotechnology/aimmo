@@ -2,14 +2,17 @@ import os
 import signal
 import time
 import subprocess
+import logging
 from unittest import TestCase
 
 from connection_set_up import (create_session, send_get_request, send_post_request,
-                               obtain_csrftoken, delete_old_database)
+                               obtain_csrftoken, delete_old_database, is_server_healthy)
+
+logging.basicConfig(level=logging.WARNING)
 
 
 class TestIntegration(TestCase):
-    def test_default(self):
+    def test_superuser_authentication(self):
         """
         A test that will run on a clean & empty database, create all migrations, new
         browser session and passes a CSRF token with the POST input request.
@@ -20,17 +23,17 @@ class TestIntegration(TestCase):
 
         delete_old_database()
 
-        subprocess.Popen(["python",  "../run.py"], stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
-        time.sleep(15)
+        p = subprocess.Popen(["python",  "../run.py"], stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
 
-        print("Creating session...")
+        self.assertTrue(is_server_healthy(url))
+
+        logging.debug("Creating session...")
         session = create_session()
 
-        print ("Starting GET request loop...")
-        get_response = send_get_request(session, url)
+        send_get_request(session, url)
 
-        print("Obtaining CSRF Token...")
+        logging.debug("Obtaining CSRF Token...")
         csrftoken = obtain_csrftoken(session)
 
         login_info = {
@@ -39,10 +42,9 @@ class TestIntegration(TestCase):
             'csrfmiddlewaretoken': csrftoken,
         }
 
-        print("Sending post response...")
+        logging.debug("Sending post response...")
 
-        send_post_request(session, url, login_info)
+        response = send_post_request(session, url, login_info)
+        self.assertEquals(response.status_code, 200)
 
-        os.killpg(0, signal.SIGTERM)
-        time.sleep(0.9)
-        os.killpg(0, signal.SIGKILL)
+        os.kill(int(p.pid), signal.SIGKILL)

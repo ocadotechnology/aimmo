@@ -1,14 +1,19 @@
 import time
 import requests
 import os
+import logging
+
+import signal
+
+logging.basicConfig(level=logging.WARNING)
 
 
 def delete_old_database():
     try:
         os.remove("../example_project/example_project/db.sqlite3")
-        print("Database file in example_project DELETED!")
+        logging.debug("Database file in example_project DELETED!")
     except OSError:
-        print("No database file found.")
+        logging.debug("No database file found.")
         pass
 
 
@@ -33,53 +38,65 @@ def create_session():
 
 def send_get_request(session, url):
     """
-    Attempts to send a GET request up to 20 times (20s) if a RequestException is received
-    back.
+    Attempts to send a GET to the url. Server is already up as the test should
+    be calling the `is_server_healthy()` function before calling this.
 
     :param session: Object representing the browser session.
     :param url: String, containing 'http://', with the URL of the target URL.
     :return: Response of GET.
     """
-    fail_count = 0
     response = None
 
-    while fail_count < 20:
-        print("Attempting a GET request for the provided URL...")
-        try:
-            response = session.get(url)
-            response.raise_for_status()
-            break
-        except requests.exceptions.RequestException as e:
-            # Waits a second between the next attempt.
-            print(e)
-            time.sleep(1)
-            fail_count += 1
-            pass
+    logging.debug("Attempting a GET request for the provided URL...")
+    try:
+        response = session.get(url)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(e)
 
     return response
 
 
 def send_post_request(session, url, data):
     """
-    Attempts to send a POST request up to 20 times (20s) if a RequestException is received
-    back. NOTE: data must contain a CSRF token to authenticate the POST.
+    Attempts to send a POST to the url. Server is already up as the test should
+    be calling the `is_server_healthy()` function before calling this.
 
     :return: Response of POST.
     """
-    fail_count = 0
     response = None
 
-    while fail_count < 20:
-        print("Attempting a GET request for the provided URL...")
-        try:
-            response = session.post(url, data=data)
-            response.raise_for_status()
-            break
-        except requests.exceptions.RequestException as e:
-            # Waits a second between the next attempt.
-            print(e)
-            time.sleep(1)
-            fail_count += 1
-            pass
+    logging.debug("Attempting a POST request for the provided URL...")
+
+    try:
+        response = session.post(url, data=data)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(e)
 
     return response
+
+
+def is_server_healthy(url):
+    """
+    Function will only return True when the param URL returns a 2xx code. After
+    45 seconds, the check assumes a timeout.
+    :param url: http URL for the address to poll.
+    :return: boolean value to indicate result.
+    """
+
+    attempts = 0
+
+    logging.debug("Checking if the server is healthy...")
+    while attempts <= 45:
+        try:
+            status_code = requests.get(url).status_code
+            if int(str(status_code)[0]) == 2:
+                return True
+        except requests.exceptions.RequestException as e:
+            pass
+
+        attempts += 1
+        time.sleep(1)
+
+    return False
