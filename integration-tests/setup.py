@@ -1,20 +1,17 @@
-from setuptools import setup
-import unittest
-
-
-def custom_test_suite():
-    return unittest.TestLoader().discover('tests', pattern='test_*.py')
+# -*- coding: utf-8 -*-
+from setuptools import find_packages, setup
 
 
 setup(
     name='integration-tests',
+    packages=find_packages(),
     include_package_data=True,
     install_requires=[
+        'requests',
     ],
     tests_require=[
-        'httmock',
-        'psutil'
+        'requests',
     ],
-    test_suite="setup.custom_test_suite",
+    test_suite='tests',
     zip_safe=False,
 )
