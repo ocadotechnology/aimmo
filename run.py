@@ -67,7 +67,7 @@ def main(use_minikube):
 
         minikube.start()
         server_args.append('0.0.0.0:8000')
-        os.environ['AIMMO_MOD'] = 'minikube'
+        os.environ['AIMMO_MODE'] = 'minikube'
     else:
         time.sleep(2)
         game = run_command_async(['python', _SERVICE_PY, '127.0.0.1', '5000'])
