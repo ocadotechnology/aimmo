@@ -24,7 +24,6 @@ setup(
     tests_require=[
         'django-setuptest',
         'httmock',
-        'lxml',
     ],
     test_suite='setuptest.setuptest.SetupTestSuite',
     version=versioneer.get_version(),

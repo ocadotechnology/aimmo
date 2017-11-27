@@ -3,7 +3,6 @@ import requests
 import os
 import logging
 
-import signal
 
 logging.basicConfig(level=logging.WARNING)
 
@@ -52,7 +51,7 @@ def send_get_request(session, url):
         response = session.get(url)
         response.raise_for_status()
     except requests.exceptions.RequestException as e:
-        print(e)
+        logging.debug(e)
 
     return response
 
@@ -72,7 +71,7 @@ def send_post_request(session, url, data):
         response = session.post(url, data=data)
         response.raise_for_status()
     except requests.exceptions.RequestException as e:
-        print(e)
+        logging.debug(e)
 
     return response
 
