@@ -132,4 +132,7 @@ class AvatarWrapper(object):
         }
 
     def __repr__(self):
-        return 'Avatar(id={}, location={}, health={}, score={})'.format(self.player_id, self.location, self.health, self.score)
+        return 'Avatar(id={}, location={}, health={}, score={})'.format(self.player_id,
+                                                                        self.location,
+                                                                        self.health,
+                                                                        self.score)
