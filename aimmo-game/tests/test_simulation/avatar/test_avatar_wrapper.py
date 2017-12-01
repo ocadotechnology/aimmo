@@ -2,10 +2,11 @@ from __future__ import absolute_import
 
 import json
 from unittest import TestCase
-
 from httmock import HTTMock
 
 from simulation.avatar import avatar_wrapper
+from simulation.location import Location
+
 
 
 class MockEffect(object):
@@ -150,3 +151,10 @@ class TestAvatarWrapper(TestCase):
         self.avatar.resistance = 3
         self.assertEqual(self.avatar.damage(1), 0)
         self.assertEqual(self.avatar.health, 10)
+
+    def test_calculate_orientation(self):
+        # East movement
+        self.avatar.location = Location(0, 0)
+        self.avatar.previous_location = Location(-1, 0)
+
+        self.assertEqual(self.avatar.calculate_orientation(), "east")

@@ -55,7 +55,7 @@ class AvatarManager(object):
                         'x': player.location.x,
                         'y': player.location.y,
                     },
-                    'orientation': "north"
+                    'orientation': player.orientation
                 })
 
             return players

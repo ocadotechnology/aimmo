@@ -31,7 +31,9 @@ class Action(object):
     def process(self, world_map):
         """Called externally to decide whether to process the action or not."""
         if self._is_legal(world_map):
+            self.avatar.previous_location = self._avatar.location
             self._apply(world_map)
+            self.avatar.calculate_orientation()
         else:
             self._reject()
 

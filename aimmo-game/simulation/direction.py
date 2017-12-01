@@ -4,7 +4,7 @@ class Direction:
             raise ValueError
         if abs(y) not in [0, 1]:
             raise ValueError
-        if abs(x) + abs(y) != 1:
+        if abs(x) + abs(y) not in [0, 1]:
             raise ValueError
         self.x = x
         self.y = y
@@ -12,6 +12,15 @@ class Direction:
     @property
     def dict(self):
         return {'x': self.x, 'y': self.y}
+
+    def __eq__(self, other):
+        if not isinstance(other, type(self)):
+            return NotImplemented
+
+        return self.x == other.x and self.y == other.y
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __repr__(self):
         return 'Direction(x={}, y={})'.format(self.x, self.y)
