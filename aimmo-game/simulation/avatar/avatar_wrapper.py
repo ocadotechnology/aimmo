@@ -71,9 +71,9 @@ class AvatarWrapper(object):
         if _current_location == _previous_location:
             return self.orientation
 
-        if direction_of_orientation == (NORTH):
+        if direction_of_orientation == NORTH:
             return "north"
-        elif direction_of_orientation == (EAST):
+        elif direction_of_orientation == EAST:
             return "east"
         elif direction_of_orientation == WEST:
             return "west"
