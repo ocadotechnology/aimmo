@@ -13,7 +13,8 @@ import subprocess
 import sys
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-APPS = ('', 'aimmo-game/', 'aimmo-game-worker/', 'aimmo-game-creator/')
+APPS = ('', 'aimmo-game/', 'aimmo-game-worker/', 'aimmo-game-creator/',
+        'integration-tests/')
 
 
 def print_help():
@@ -39,7 +40,8 @@ def run_tests(compute_coverage):
 
         dir = os.path.join(BASE_DIR, app)
         if compute_coverage and app != '':
-            result = subprocess.call(['coverage', 'run', '--concurrency=eventlet', '--source=.', 'setup.py', 'test'], cwd=dir)
+            result = subprocess.call(['coverage', 'run', '--concurrency=eventlet',
+                                      '--source=.', 'setup.py', 'test'], cwd=dir)
         else:
             result = subprocess.call([sys.executable, 'setup.py', 'test'], cwd=dir)
         if result != 0:

@@ -13,12 +13,6 @@ _MANAGE_PY = os.path.join(_SCRIPT_LOCATION, 'example_project', 'manage.py')
 _SERVICE_PY = os.path.join(_SCRIPT_LOCATION, 'aimmo-game-creator', 'service.py')
 
 
-if __name__ == '__main__':
-    logging.basicConfig()
-    sys.path.append(os.path.join(_SCRIPT_LOCATION, 'example_project'))
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
-
-
 def log(message):
     print >> sys.stderr, message
 
@@ -49,10 +43,14 @@ def create_superuser_if_missing(username, password):
         User.objects.get_by_natural_key(username)
     except User.DoesNotExist:
         log('Creating superuser %s with password %s' % (username, password))
-        User.objects.create_superuser(username=username, email='admin@admin.com', password=password)
+        User.objects.create_superuser(username=username, email='admin@admin.com',
+                                      password=password)
 
 
 def main(use_minikube):
+    logging.basicConfig()
+    sys.path.append(os.path.join(_SCRIPT_LOCATION, 'example_project'))
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
 
     run_command(['pip', 'install', '-e', _SCRIPT_LOCATION])
     run_command(['python', _MANAGE_PY, 'migrate', '--noinput'])
@@ -63,7 +61,8 @@ def main(use_minikube):
     server_args = []
     if use_minikube:
         # Import minikube here, so we can install the deps first
-        run_command(['pip', 'install', '-r', os.path.join(_SCRIPT_LOCATION, 'minikube_requirements.txt')])
+        run_command(['pip', 'install', '-r', os.path.join(_SCRIPT_LOCATION,
+                                                          'minikube_requirements.txt')])
         import minikube
 
         minikube.start()

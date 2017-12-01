@@ -45,8 +45,10 @@ DEBUG = True
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': os.path.join(os.path.abspath(os.path.dirname(__file__)), 'db.sqlite3'),  # Or path to database file if using sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3',  # Add 'postgresql_psycopg2', 'mysql',
+                                                 # 'sqlite3' or 'oracle'.
+        'NAME': os.path.join(os.path.abspath(os.path.dirname(__file__)), 'db.sqlite3'),
+        # Or path to database file if using sqlite3.
     }
 }
 
@@ -106,12 +108,15 @@ MIDDLEWARE_CLASSES = [
    'django.contrib.messages.middleware.MessageMiddleware',
 ]
 
+
 def get_url(game):
     if os.environ.get('AIMMO_MODE', '') == 'minikube':
-        output = subprocess.check_output([os.environ['MINIKUBE_PATH'], 'service', 'game-%s' % game, '--url'])
-        return (output.strip(), '/game/%s/socket.io' % game)
+        output = subprocess.check_output([os.environ['MINIKUBE_PATH'], 'service',
+                                          'game-%s' % game, '--url'])
+        return output.strip(), '/game/%s/socket.io' % game
     else:
-        return ('http://localhost:%d' % (6001 + int(game) * 1000), '/socket.io')
+        return 'http://localhost:%d' % (6001 + int(game) * 1000), '/socket.io'
+
 
 AIMMO_GAME_SERVER_LOCATION_FUNCTION = get_url
 
