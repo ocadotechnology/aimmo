@@ -55,7 +55,7 @@ def get_game_state():
     with state_provider as game_state:
         world_map = game_state.world_map
         return {
-                'era': "less_flat",
+                'era': "lessflat",
                 'southWestCorner': world_map.get_serialised_south_west_corner(),
                 'northEastCorner': world_map.get_serialised_north_east_corner(),
                 'players': game_state.avatar_manager.players_update()['players'],
