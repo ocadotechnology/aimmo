@@ -96,10 +96,11 @@ class TestService(TestCase):
         """
         Ensure that the era (for the assets in Unity) is correct.
 
-        NOTE: This is hard coded right now to "less_flat". This test should fail when this functionality is added.
+        NOTE: This is hard coded right now to "lessflat". This test should fail when this
+        functionality is added.
         """
         era = self.world_state_json['era']
-        self.assertEqual(era, "less_flat")
+        self.assertEqual(era, "lessflat")
 
     def test_correct_json_world_pickups_returned_is_correct_amount(self):
         """
@@ -110,10 +111,11 @@ class TestService(TestCase):
 
     def test_correct_json_world_obstacles(self):
         """
-        JSON generated must return correct location, width, height, type and orientation about obstacles.
+        JSON generated must return correct location, width, height, type and orientation
+        about obstacles.
 
-        NOTE: Obstacles are highly hard coded right now. Only location changes. If any functionality is added, this test
-              WILL and SHOULD fail.
+        NOTE: Obstacles are highly hard coded right now. Only location changes. If any
+        functionality is added, this test WILL and SHOULD fail.
         """
         obstacle_list = self.world_state_json['obstacles']
         self.assertEqual(len(obstacle_list), 1)
