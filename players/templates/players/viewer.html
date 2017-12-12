@@ -1,14 +1,14 @@
-{% extends 'players/unity.html' %}
+{% extends 'players/viewer.html' %}
 
 {% block styles %}
 {{ block.super }}
 <link rel="stylesheet" href="/static/unity/TemplateData/style.css">
+<script src="/static/unity/TemplateData/UnityProgress.js"></script>
 <link rel="stylesheet" href="/static/unity/TemplateData/customStyle.css">
 {% endblock %}
 
 {% block scripts %}
   {{ block.super }}
-  <script src="/static/unity/TemplateData/UnityProgress.js"></script>
   <script src="/static/unity/Build/UnityLoader.js"></script>
   <script>
     var gameInstance = UnityLoader.instantiate("gameContainer", "/static/unity/Build/unity.json", {
