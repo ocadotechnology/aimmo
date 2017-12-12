@@ -124,7 +124,8 @@ def _render_game(request, game):
         'static_data': game.static_data or '{}',
     }
     context['game_url_base'], context['game_url_path'] = app_settings.GAME_SERVER_LOCATION_FUNCTION(game.id)
-    return render(request, 'players/watch.html', context)
+    context['game_id'] = game.id
+    return render(request, 'players/viewer.html', context)
 
 
 def watch_game(request, id):

@@ -2,6 +2,7 @@ from django.conf.urls import url
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
+from django.views.generic import RedirectView
 
 from players import views
 
@@ -23,4 +24,11 @@ urlpatterns = [
 
     url(r'^jsreverse/$', 'django_js_reverse.views.urls_js', name='aimmo/js_reverse'),  # TODO: Pull request to make django_js_reverse.urls
     url(r'^games/new/$', views.add_game, name='aimmo/new_game'),
+
+    # TODO: this is a quickfix for redirecting for the Unity resources
+    url(r'^watch/(?P<id>[0-9]+)/(?P<resource>.[0-9A-Za-z/.]+)$',
+        RedirectView.as_view(url='/static/unity/%(resource)s', permanent=False)),
+
+    url(r'^socket.io/socket.io.js',
+        RedirectView.as_view(url='https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.4/socket.io.min.js', permanent=False)),
 ]
