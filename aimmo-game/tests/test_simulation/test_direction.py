@@ -3,7 +3,7 @@ from __future__ import absolute_import
 from unittest import TestCase
 
 from simulation.direction import Direction
-
+from simulation.location import Location
 
 class TestDirection(TestCase):
     def test_good_data(self):
@@ -35,3 +35,8 @@ class TestDirection(TestCase):
         txt = repr(Direction(1, 0))
         self.assertRegexpMatches(txt, 'x *= *1')
         self.assertRegexpMatches(txt, 'y *= *0')
+
+    def test_incorrect_equality(self):
+        d1 = Direction(0, 1)
+        l1 = Location(0, 1)
+        self.assertFalse(d1 == l1)
