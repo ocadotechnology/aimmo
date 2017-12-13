@@ -5,6 +5,7 @@ from unittest import TestCase
 from simulation.direction import Direction
 from simulation.location import Location
 
+
 class TestDirection(TestCase):
     def test_good_data(self):
         d = Direction(0, 1)

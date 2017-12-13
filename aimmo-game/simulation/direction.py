@@ -22,6 +22,17 @@ class Direction:
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    @property
+    def cardinal(self):
+        if self == NORTH:
+            return "north"
+        elif self == EAST:
+            return "east"
+        elif self == WEST:
+            return "west"
+        elif self == SOUTH:
+            return "south"
+
     def __repr__(self):
         return 'Direction(x={}, y={})'.format(self.x, self.y)
 
