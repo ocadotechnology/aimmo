@@ -2,7 +2,7 @@ import math
 import random
 from logging import getLogger
 
-import map_generator
+from map_generator import DEFAULT_LEVEL_SETTINGS
 from pickups import ALL_PICKUPS
 from simulation.action import MoveAction
 from simulation.location import Location
@@ -92,7 +92,7 @@ class WorldMap(object):
 
     @classmethod
     def generate_empty_map(cls, height, width, settings):
-        new_settings = map_generator.DEFAULT_LEVEL_SETTINGS.copy()
+        new_settings = DEFAULT_LEVEL_SETTINGS.copy()
         new_settings.update(settings)
 
         (min_x, max_x, min_y, max_y) = WorldMap._min_max_from_dimensions(height, width)
