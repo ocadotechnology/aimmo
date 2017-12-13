@@ -1,0 +1,26 @@
+{% extends 'players/watch.html' %}
+
+{% block styles %}
+{{ block.super }}
+<link rel="stylesheet" href="/static/unity/TemplateData/style.css">
+<script src="/static/unity/TemplateData/UnityProgress.js"></script>
+<link rel="stylesheet" href="/static/unity/TemplateData/customStyle.css">
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script src="/static/unity/Build/UnityLoader.js"></script>
+  <script>
+    var gameInstance = UnityLoader.instantiate("gameContainer", "/static/unity/Build/unity.json", {
+      onProgress: UnityProgress
+    });
+  </script>
+{% endblock %}
+
+{% block viewer %}
+<div class="template">
+  <div class="fullWidth">
+      <div id="gameContainer"></div>
+  </div>
+</div>
+{% endblock %}
