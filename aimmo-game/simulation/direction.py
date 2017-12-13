@@ -15,7 +15,7 @@ class Direction:
 
     def __eq__(self, other):
         if not isinstance(other, type(self)):
-            return NotImplemented
+            return False
 
         return self.x == other.x and self.y == other.y
 
