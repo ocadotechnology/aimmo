@@ -31,7 +31,7 @@ class Action(object):
     def process(self, world_map):
         """Called externally to decide whether to process the action or not."""
         if self._is_legal(world_map):
-            self.avatar.previous_location = self._avatar.location
+            self.avatar.previous_location = self.avatar.location
             self._apply(world_map)
             self.avatar.orientation = self.avatar.calculate_orientation()
         else:
@@ -74,7 +74,7 @@ class MoveAction(Action):
         self.avatar.add_event(event)
 
         world_map.get_cell(self.avatar.location).avatar = None
-        self.avatar.previous_location = self._avatar.location
+        self.avatar.previous_location = self.avatar.location
         self.avatar.location = self.target_location
         self.avatar.orientation = self.avatar.calculate_orientation()
         world_map.get_cell(self.target_location).avatar = self.avatar
