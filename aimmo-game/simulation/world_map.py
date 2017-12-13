@@ -2,7 +2,7 @@ import math
 import random
 from logging import getLogger
 
-from map_generator import DEFAULT_LEVEL_SETTINGS
+from simulation.level_settings import DEFAULT_LEVEL_SETTINGS
 from pickups import ALL_PICKUPS
 from simulation.action import MoveAction
 from simulation.location import Location
