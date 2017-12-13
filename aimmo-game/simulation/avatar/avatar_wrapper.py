@@ -2,7 +2,7 @@ import logging
 import requests
 
 from simulation.action import ACTIONS, MoveAction, WaitAction
-
+from simulation.direction import Direction, NORTH, EAST, WEST, SOUTH
 
 LOGGER = logging.getLogger(__name__)
 
@@ -16,6 +16,8 @@ class AvatarWrapper(object):
     def __init__(self, player_id, initial_location, worker_url, avatar_appearance):
         self.player_id = player_id
         self.location = initial_location
+        self.previous_location = initial_location
+        self.orientation = "north"
         self.health = 5
         self.score = 0
         self.events = []
@@ -53,6 +55,23 @@ class AvatarWrapper(object):
         action_args = action_data.get('options', {})
         action_args['avatar'] = self
         return ACTIONS[action_type](**action_args)
+
+    def calculate_orientation(self):
+        """
+        Calculates the orientation of the avatar (ie. what direction the avatar is pointed
+        towards) for rendering in the front end of the game.
+        :return: A string representation of a cardinal direction.
+        """
+        _current_location = self.location
+        _previous_location = self.previous_location
+
+        direction_of_orientation = Direction(_current_location.x - _previous_location.x,
+                                             _current_location.y - _previous_location.y)
+
+        if _current_location == _previous_location:
+            return self.orientation
+
+        return direction_of_orientation.cardinal
 
     def decide_action(self, state_view):
         try:
@@ -104,4 +123,7 @@ class AvatarWrapper(object):
         }
 
     def __repr__(self):
-        return 'Avatar(id={}, location={}, health={}, score={})'.format(self.player_id, self.location, self.health, self.score)
+        return 'Avatar(id={}, location={}, health={}, score={})'.format(self.player_id,
+                                                                        self.location,
+                                                                        self.health,
+                                                                        self.score)
