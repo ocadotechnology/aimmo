@@ -73,3 +73,6 @@ test-bin/
 
 # Hypothesis seed examples
 aimmo-game/.hypothesis
+
+# Unity Build
+players/static/unity/**
