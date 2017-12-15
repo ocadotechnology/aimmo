@@ -9,11 +9,6 @@ from .dummy_avatar import DummyAvatarManager
 from .maps import InfiniteMap, AvatarMap, EmptyMap
 
 
-class FogToEmpty(object):
-    def apply_fog_of_war(self, world_map, wrapper):
-        return EmptyMap()
-
-
 class TestGameState(TestCase):
     def test_remove_non_existant_avatar(self):
         state = GameState(None, DummyAvatarManager())
