@@ -9,11 +9,6 @@ from .dummy_avatar import DummyAvatarManager
 from .maps import InfiniteMap, AvatarMap, EmptyMap
 
 
-class FogToEmpty(object):
-    def apply_fog_of_war(self, world_map, wrapper):
-        return EmptyMap()
-
-
 class TestGameState(TestCase):
     def test_remove_non_existant_avatar(self):
         state = GameState(None, DummyAvatarManager())
@@ -56,7 +51,6 @@ class TestGameState(TestCase):
 
         return (game_state, avatar, world_map, avatar_manager)
 
-
     def test_add_avatar(self):
         state = GameState(AvatarMap(None), DummyAvatarManager())
         state.add_avatar(7, "")
@@ -64,12 +58,6 @@ class TestGameState(TestCase):
         avatar = state.avatar_manager.avatars_by_id[7]
         self.assertEqual(avatar.location.x, 10)
         self.assertEqual(avatar.location.y, 10)
-
-    def test_fog_of_war(self):
-        state = GameState(InfiniteMap(), DummyAvatarManager())
-        view = state.get_state_for(DummyAvatar(None, None), FogToEmpty())
-        self.assertEqual(len(view['world_map']['cells']), 0)
-        self.assertEqual(view['avatar_state'], 'Dummy')
 
     def test_updates_map(self):
         map = InfiniteMap()
