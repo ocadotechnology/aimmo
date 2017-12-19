@@ -7,6 +7,8 @@ from simulation.action import PRIORITIES
 
 LOGGER = logging.getLogger(__name__)
 
+TURN_INTERVAL = 2
+
 
 class GameStateProvider:
     """
@@ -87,7 +89,7 @@ class TurnManager(Thread):
                 if game_state.is_complete():
                     LOGGER.info('Game complete')
                     self._mark_complete()
-            time.sleep(0.5)
+            time.sleep(TURN_INTERVAL)
 
 
 class SequentialTurnManager(TurnManager):
