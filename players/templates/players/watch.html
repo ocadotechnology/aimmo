@@ -25,7 +25,7 @@ var port = proc[1];
 
 function SendAllConnect() {
   console.log("Sending Messages...");
-  gameInstance.SendMessage("World Controller", "SetGameURL", host);
+  gameInstance.SendMessage("World Controller", "SetGameURL", `${host}:${port}${path}`);
   gameInstance.SendMessage("World Controller", "SetGamePort", parseInt(port));
   gameInstance.SendMessage("World Controller", "EstablishConnection");
 }
