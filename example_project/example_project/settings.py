@@ -113,9 +113,9 @@ def get_url(game):
     if os.environ.get('AIMMO_MODE', '') == 'minikube':
         output = subprocess.check_output([os.environ['MINIKUBE_PATH'], 'service',
                                           'game-%s' % game, '--url'])
-        return output.strip(), '/game/%s/socket.io' % game
+        return output.strip(), '/game/%s' % game
     else:
-        return 'http://localhost:%d' % (6001 + int(game) * 1000), '/socket.io'
+        return 'http://localhost:%d' % (6001 + int(game) * 1000), ''
 
 
 AIMMO_GAME_SERVER_LOCATION_FUNCTION = get_url

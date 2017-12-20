@@ -12,6 +12,7 @@ eventlet.monkey_patch()
 
 import flask
 from flask_socketio import SocketIO, emit
+from flask_cors import CORS
 
 from simulation.turn_manager import state_provider
 from simulation import map_generator
@@ -21,6 +22,7 @@ from simulation.worker_manager import WORKER_MANAGERS
 from simulation.pickups import pickups_update
 
 app = flask.Flask(__name__)
+CORS(app, supports_credentials=True)
 socketio = SocketIO()
 
 worker_manager = None

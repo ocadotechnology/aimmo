@@ -20,6 +20,7 @@ setup(
         'six',
         'pykube',
         'hypothesis',
+        'flask-cors'
     ],
     tests_require=[
         'django-setuptest',

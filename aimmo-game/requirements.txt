@@ -4,3 +4,4 @@ flask-socketio
 pykube
 requests
 six
+flask-cors
