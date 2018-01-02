@@ -25,3 +25,19 @@ The new starter / up-for-grabs issues are listed with the [help wanted label](ht
 * Do not accept a PR yourself - at least someone else should review your code and approve it first.
 * Some old PRs will need to see the branch rebased on the current master
 * When a PR is accepted, **congrats!** It will be merged on master.
+
+## Some conventions to keep in mind...
+We follow PEP8 convention quite strictly however we do make a few exceptions to this rule. They are as follows:
+
+#### Maximum Line Length
+PEP8 specifies that the maximum line length is to be limited to *79 characters* with some lines even shorter than this. We replace this rule and try to stick to *90 characters*.
+
+#### Line Breaking after/before binary operators
+The internet seems be divided and PEP8 had some major changes when it comes to this rule. We have agreed that we want to strictly use binary operators on the **next** line, as opposed to before the line break.
+
+#### Indentation on line breaks
+The indentation should be kept consistent by the use of **parenthesis** appropriately. Example:
+```python
+if (cell.location != always_empty_location
+        and random.random() < self.settings['OBSTACLE_RATIO']):
+```
