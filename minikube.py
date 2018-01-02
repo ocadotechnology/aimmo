@@ -99,6 +99,18 @@ def get_ip():
         s.close()
     return IP
 
+def restart_ingress_addon(minikube):
+    try:
+        run_command([minikube, 'addons', 'disable', 'ingress'])
+    except:
+        pass
+    run_command([minikube, 'addons', 'enable', 'ingress'])
+
+def create_ingress_yaml():
+    path = os.path.join(BASE_DIR, 'ingress.yaml')
+    with open(path) as yaml_file:
+        content = yaml.safe_load(yaml_file.read())
+    return content
 
 def create_creator_yaml():
     orig_path = os.path.join(BASE_DIR, 'aimmo-game-creator', 'rc-aimmo-game-creator.yaml')
@@ -141,17 +153,33 @@ def build_docker_images(minikube):
                 print(line['stream'], end='')
 
 
-def restart_pods(game_creator):
+def restart_pods(game_creator, ingress):
     print('Restarting pods')
     kubernetes.config.load_kube_config(context='minikube')
-    v1_api = kubernetes.client.CoreV1Api()
-    for rc in v1_api.list_namespaced_replication_controller('default').items:
-        v1_api.delete_namespaced_replication_controller(body=kubernetes.client.V1DeleteOptions(), name=rc.metadata.name, namespace='default')
-    for pod in v1_api.list_namespaced_pod('default').items:
-        v1_api.delete_namespaced_pod(body=kubernetes.client.V1DeleteOptions(), name=pod.metadata.name, namespace='default')
-    for service in v1_api.list_namespaced_service('default').items:
-        v1_api.delete_namespaced_service(name=service.metadata.name, namespace='default')
-    v1_api.create_namespaced_replication_controller(
+    api_instance = kubernetes.client.CoreV1Api()
+    extensions_api_instance = kubernetes.client.ExtensionsV1beta1Api()
+    for rc in api_instance.list_namespaced_replication_controller('default').items:
+        api_instance.delete_namespaced_replication_controller(
+            body=kubernetes.client.V1DeleteOptions(),
+            name=rc.metadata.name,
+            namespace='default')
+    for pod in api_instance.list_namespaced_pod('default').items:
+        api_instance.delete_namespaced_pod(
+            body=kubernetes.client.V1DeleteOptions(),
+            name=pod.metadata.name,
+            namespace='default')
+    for service in api_instance.list_namespaced_service('default').items:
+        api_instance.delete_namespaced_service(
+            name=service.metadata.name,
+            namespace='default')
+    for ingress in extensions_api_instance.list_namespaced_ingress('default').items:
+        extensions_api_instance.delete_namespaced_ingress(
+            name=ingress.metadata.name,
+            namespace='default',
+            body=kubernetes.client.V1DeleteOptions())
+
+    extensions_api_instance.create_namespaced_ingress("default", ingress)
+    api_instance.create_namespaced_replication_controller(
         body=game_creator,
         namespace='default',
     )
@@ -166,6 +194,8 @@ def start():
     os.environ['MINIKUBE_PATH'] = minikube
     start_cluster(minikube)
     build_docker_images(minikube)
+    restart_ingress_addon(minikube)
+    ingress = create_ingress_yaml()
     game_creator = create_creator_yaml()
-    restart_pods(game_creator)
+    restart_pods(game_creator, ingress)
     print('Cluster ready')
