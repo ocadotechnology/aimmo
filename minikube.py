@@ -153,7 +153,7 @@ def build_docker_images(minikube):
                 print(line['stream'], end='')
 
 
-def restart_pods(game_creator, ingress):
+def restart_pods(game_creator, ingress_yaml):
     print('Restarting pods')
     kubernetes.config.load_kube_config(context='minikube')
     api_instance = kubernetes.client.CoreV1Api()
@@ -178,7 +178,7 @@ def restart_pods(game_creator, ingress):
             namespace='default',
             body=kubernetes.client.V1DeleteOptions())
 
-    extensions_api_instance.create_namespaced_ingress("default", ingress)
+    extensions_api_instance.create_namespaced_ingress("default", ingress_yaml)
     api_instance.create_namespaced_replication_controller(
         body=game_creator,
         namespace='default',
