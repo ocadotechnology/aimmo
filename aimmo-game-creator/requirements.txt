@@ -1,2 +1,3 @@
 pykube
 eventlet
+kubernetes
