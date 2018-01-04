@@ -176,10 +176,9 @@ class KubernetesWorkerManager(WorkerManager):
 
     def _create_ingress_paths_for_existing_games(self):
         games = self._data.get_games()
-        print("YOLOYLOYLYOYLYOYLYOYLYOY")
         for game_id in games:
             print(game_id)
-            self_add_path_to_ingress(game_id)
+            self._add_path_to_ingress(game_id)
 
     def _create_game_rc(self, id, environment_variables):
         environment_variables['SOCKETIO_RESOURCE'] = "game-%s" % id
