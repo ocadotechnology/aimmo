@@ -16,17 +16,17 @@
 var GAME_URL_BASE = "{{ game_url_base }}";
 var GAME_URL_PATH = "{{ game_url_path }}";
 
-
 // Send host and port to Unity.
 var path = GAME_URL_PATH;
 var proc = (GAME_URL_BASE.substr("http://".length)).split(":");
 var host = proc[0];
-var port = proc[1];
 
 function SendAllConnect() {
   console.log("Sending Messages...");
-  gameInstance.SendMessage("World Controller", "SetGameURL", `${host}${path}`);
-  gameInstance.SendMessage("World Controller", "SetGamePort", parseInt(port));
+  console.log(`${host}${path}`);
+  gameInstance.SendMessage("World Controller", "SetGameURL", host);
+  gameInstance.SendMessage("World Controller", "SetGamePort", 0);
+  gameInstance.SendMessage("World Controller", "SetGamePath", path);
   gameInstance.SendMessage("World Controller", "EstablishConnection");
 }
 

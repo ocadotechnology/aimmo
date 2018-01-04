@@ -113,7 +113,7 @@ def get_url(game):
     if os.environ.get('AIMMO_MODE', '') == 'minikube':
         output = subprocess.check_output([os.environ['MINIKUBE_PATH'], 'service',
                                           'game-%s' % game, '--url'])
-        return output.strip(), '/game/%s' % game
+        return 'http://dev.aimmo.codeforlife.education', '/game-%s' % game
     else:
         return 'http://localhost:%d' % (6001 + int(game) * 1000), ''
 
