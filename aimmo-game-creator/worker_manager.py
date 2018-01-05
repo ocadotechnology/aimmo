@@ -177,7 +177,6 @@ class KubernetesWorkerManager(WorkerManager):
     def _create_ingress_paths_for_existing_games(self):
         games = self._data.get_games()
         for game_id in games:
-            print(game_id)
             self._add_path_to_ingress(game_id)
 
     def _create_game_rc(self, id, environment_variables):
