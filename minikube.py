@@ -4,18 +4,15 @@ from __future__ import print_function
 import docker
 import errno
 import kubernetes
-import platform
 import os
 import re
 import socket
 import stat
-import tarfile
 import yaml
 import platform
 from run import run_command
 from urllib import urlretrieve
 from urllib2 import urlopen
-from zipfile import ZipFile
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 TEST_BIN = os.path.join(BASE_DIR, 'test-bin')
