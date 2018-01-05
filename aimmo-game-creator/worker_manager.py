@@ -283,16 +283,36 @@ class KubernetesWorkerManager(WorkerManager):
 
         patch = [
             {
-                "op": "add",
-                "path": "/spec/rules/0/http/paths/-",
-                "value": path
+                'op': 'add',
+                'path': '/spec/rules/0/http/paths/-',
+                'value': path
             }
         ]
 
-        self._api_instance.patch_namespaced_ingress("aimmo-ingress", "default", patch)
+        self._api_instance.patch_namespaced_ingress('aimmo-ingress', 'default', patch)
+
+    def _remove_path_from_ingress(self, game_id):
+        backend = kubernetes.client.V1beta1IngressBackend('game-%s' % game_id, 80)
+        path = kubernetes.client.V1beta1HTTPIngressPath(backend, '/game-%s' % game_id)
+        ingress = self._api_instance.list_namespaced_ingress("default").items[0]
+        paths = ingress.spec.rules[0].http.paths
+        try:
+            index_to_delete = paths.index(path)
+        except ValueError:
+            return
+
+        patch = [
+            {
+                'op': 'remove',
+                'path': '/spec/rules/0/http/paths/%s' % index_to_delete
+            }
+        ]
+
+        self._api_instance.patch_namespaced_ingress('aimmo-ingress', 'default', patch)
 
     def remove_worker(self, game_id):
-        for object_type in (pykube.ReplicationController, pykube.Service):
+        self._remove_path_from_ingress(game_id)
+        for object_type in (pykube.ReplicationController, pykube.Service, pykube.Pod):
             for game in object_type.objects(self._api).\
                 filter(selector={'app': 'aimmo-game',
                                  'game_id': game_id}):
