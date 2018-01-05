@@ -22,8 +22,7 @@ var proc = (GAME_URL_BASE.substr("http://".length)).split(":");
 var host = proc[0];
 
 function SendAllConnect() {
-  console.log("Sending Messages...");
-  console.log(`${host}${path}`);
+  console.log(`Sending Messages to ${host}${path}`);
   gameInstance.SendMessage("World Controller", "SetGameURL", host);
   gameInstance.SendMessage("World Controller", "SetGamePort", 0);
   gameInstance.SendMessage("World Controller", "SetGamePath", path);
