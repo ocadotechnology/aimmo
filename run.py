@@ -2,6 +2,7 @@
 import logging
 import os
 import signal
+import psutil
 import subprocess
 import sys
 import time
@@ -47,7 +48,7 @@ def create_superuser_if_missing(username, password):
                                       password=password)
 
 
-def main(use_minikube):
+def main(use_minikube, server_wait=True):
     logging.basicConfig()
     sys.path.append(os.path.join(_SCRIPT_LOCATION, 'example_project'))
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
@@ -78,7 +79,11 @@ def main(use_minikube):
         game.wait()
     except NameError:
         pass
-    server.wait()
+
+    if server_wait is True:
+        server.wait()
+
+    return PROCESSES
 
 
 if __name__ == '__main__':
