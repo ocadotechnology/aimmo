@@ -22,6 +22,7 @@ class TestKubernetes(TestCase):
         time.sleep(120)
         kubernetes.config.load_kube_config(context='minikube')
         self.api_instance = kubernetes.client.CoreV1Api()
+        self.api_extension_instance = kubernetes.client.ExtensionsV1beta1Api()
 
     def tearDown(self):
         """
@@ -38,11 +39,11 @@ class TestKubernetes(TestCase):
             for child in children:
                 child.terminate()
 
-    def test_clean_starting_state_of_pods(self):
+    def test_clean_starting_state_of_cluster(self):
         """
         The purpose of this test is to check the correct number
         of pods, replication controllers and services are created.
-        All pods created by the game will be in the "default"
+        All components created by the game will be in the "default"
         namespace.
         """
 
@@ -64,3 +65,29 @@ class TestKubernetes(TestCase):
         self.assertEqual(len(api_response.items), 1)
         self.assertTrue(pod_item.metadata.name == "kubernetes")
 
+    def test_correct_initial_ingress_yaml(self):
+        """
+        This test will ensure that the initial yaml created on a
+        fresh state of the cluster. It assumes: ingress name, no backend
+        and only one specific rule, with only one path specified!
+        """
+        api_response = self.api_extension_instance.list_namespaced_ingress("default")
+        self.assertEquals(api_response.items, 1)
+
+        # NAME
+        self.assertEqual(api_response.items[0].metadata.name, "aimmo-ingress")
+
+        # NO BACKEND
+        self.assertEqual(api_response.items[0].spec.backend, None)
+
+        # RULES
+        rule = api_response.items[0].spec.rules[0]
+        self.assertEqual(len(api_response.items[0].spec.rules), 1)
+        self.assertEqual(rule.host,
+                         "dev.aimmo.codeforlife.education")
+
+        # PATHS
+        path = rule.http.path[0]
+        self.assertEqual(len(rule.http.paths), 1)
+        self.assertEqual(path.service_name, "default_http_backend")
+        self.assertEqual(path.path, None)

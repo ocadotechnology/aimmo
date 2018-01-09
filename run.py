@@ -2,7 +2,6 @@
 import logging
 import os
 import signal
-import psutil
 import subprocess
 import sys
 import time
