@@ -142,7 +142,7 @@ def build_docker_images(minikube):
         print("Building %s..." % tag)
         status = client.build(
             decode=True,
-            path=dir,
+            path=path,
             tag=tag,
         )
         for line in status:
