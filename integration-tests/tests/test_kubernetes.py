@@ -2,12 +2,9 @@ import logging
 import psutil
 import time
 import kubernetes.client
-import sys
+from .. import run
 from unittest import TestCase
 from connection_set_up import delete_old_database
-
-sys.path.append("/run.py")
-from run import main
 
 logging.basicConfig(level=logging.WARNING)
 
@@ -22,7 +19,7 @@ class TestKubernetes(TestCase):
         """
         delete_old_database()
         time.sleep(120)
-        main(use_minikube=True, server_wait=False)
+        run.main(use_minikube=True, server_wait=False)
         kubernetes.config.load_kube_config(context='minikube')
         self.api_instance = kubernetes.client.CoreV1Api()
         self.api_extension_instance = kubernetes.client.ExtensionsV1beta1Api()
