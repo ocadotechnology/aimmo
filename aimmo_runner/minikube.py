@@ -186,12 +186,12 @@ def start():
     if platform.machine().lower() not in ('amd64', 'x86_64'):
         raise ValueError('Requires 64-bit')
     create_test_bin()
-    download_kubectl()
-    minikube = download_minikube()
-    os.environ['MINIKUBE_PATH'] = minikube
-    start_cluster(minikube)
-    build_docker_images(minikube)
-    restart_ingress_addon(minikube)
+    # download_kubectl()
+    # minikube = download_minikube()
+    os.environ['MINIKUBE_PATH'] = "minikube"
+    start_cluster("minikube")
+    build_docker_images("minikube")
+    restart_ingress_addon("minikube")
     ingress = create_ingress_yaml()
     game_creator = create_creator_yaml()
     restart_pods(game_creator, ingress)
