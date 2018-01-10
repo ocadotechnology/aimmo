@@ -18,7 +18,6 @@ class TestKubernetes(TestCase):
         api instance from the kubernetes client.
         """
         delete_old_database()
-        self.processes = main(use_minikube=True, server_wait=False)
         time.sleep(120)
         kubernetes.config.load_kube_config(context='minikube')
         self.api_instance = kubernetes.client.CoreV1Api()
@@ -28,16 +27,16 @@ class TestKubernetes(TestCase):
         """
         Kills the process and its children peacefully.
         """
-        for process in self.processes:
-            try:
-                parent = psutil.Process(process.pid)
-            except psutil.NoSuchProcess:
-                return
-
-            children = parent.children(recursive=True)
-
-            for child in children:
-                child.terminate()
+        # for process in self.processes:
+        #     try:
+        #         parent = psutil.Process(process.pid)
+        #     except psutil.NoSuchProcess:
+        #         return
+        #
+        #     children = parent.children(recursive=True)
+        #
+        #     for child in children:
+        #         child.terminate()
 
     def test_clean_starting_state_of_cluster(self):
         """
