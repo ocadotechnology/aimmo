@@ -5,10 +5,14 @@ import sys
 import time
 from subprocess import CalledProcessError
 
-if os.environ['CI'] == "true":
-    _ROOT_DIR_LOCATION = os.environ['TRAVIS_BUILD_DIR']
-else:
+try:
+    if os.environ['CI'] == "true":
+        _ROOT_DIR_LOCATION = os.environ['TRAVIS_BUILD_DIR']
+    else:
+        _ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
+except KeyError:
     _ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
+
 
 _MANAGE_PY = os.path.join(_ROOT_DIR_LOCATION, 'example_project', 'manage.py')
 _SERVICE_PY = os.path.join(_ROOT_DIR_LOCATION, 'aimmo-game-creator', 'service.py')
@@ -52,10 +56,6 @@ def run(use_minikube, server_wait=True):
     logging.basicConfig()
     sys.path.append(os.path.join(_ROOT_DIR_LOCATION, 'example_project'))
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
-
-    print("ayooooooooooooooo this is it ")
-    print(_ROOT_DIR_LOCATION)
-    print("finiiiiiiiiiiish")
 
     run_command(['pip', 'install', '-e', _ROOT_DIR_LOCATION])
     run_command(['python', _MANAGE_PY, 'migrate', '--noinput'])
