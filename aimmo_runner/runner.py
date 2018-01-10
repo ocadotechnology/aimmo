@@ -49,6 +49,10 @@ def run(use_minikube, server_wait=True):
     sys.path.append(os.path.join(_ROOT_DIR_LOCATION, 'example_project'))
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
 
+    print("ayooooooooooooooo this is it ")
+    print(_ROOT_DIR_LOCATION)
+    print("finiiiiiiiiiiish")
+    
     run_command(['pip', 'install', '-e', _ROOT_DIR_LOCATION])
     run_command(['python', _MANAGE_PY, 'migrate', '--noinput'])
     run_command(['python', _MANAGE_PY, 'collectstatic', '--noinput'])
