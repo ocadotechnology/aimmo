@@ -2,9 +2,12 @@ import logging
 import psutil
 import time
 import kubernetes.client
-# from run import main
+import sys
 from unittest import TestCase
 from connection_set_up import delete_old_database
+
+sys.path.append("/run.py")
+from run import main
 
 logging.basicConfig(level=logging.WARNING)
 
@@ -19,6 +22,7 @@ class TestKubernetes(TestCase):
         """
         delete_old_database()
         time.sleep(120)
+        main(use_minikube=True, server_wait=False)
         kubernetes.config.load_kube_config(context='minikube')
         self.api_instance = kubernetes.client.CoreV1Api()
         self.api_extension_instance = kubernetes.client.ExtensionsV1beta1Api()
@@ -27,16 +31,16 @@ class TestKubernetes(TestCase):
         """
         Kills the process and its children peacefully.
         """
-        # for process in self.processes:
-        #     try:
-        #         parent = psutil.Process(process.pid)
-        #     except psutil.NoSuchProcess:
-        #         return
-        #
-        #     children = parent.children(recursive=True)
-        #
-        #     for child in children:
-        #         child.terminate()
+        for process in self.processes:
+            try:
+                parent = psutil.Process(process.pid)
+            except psutil.NoSuchProcess:
+                return
+
+            children = parent.children(recursive=True)
+
+            for child in children:
+                child.terminate()
 
     def test_clean_starting_state_of_cluster(self):
         """
