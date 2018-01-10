@@ -5,9 +5,9 @@ import sys
 import time
 from subprocess import CalledProcessError
 
-_SCRIPT_LOCATION = os.path.abspath(os.path.dirname(__file__))
-_MANAGE_PY = os.path.join(_SCRIPT_LOCATION, 'example_project', 'manage.py')
-_SERVICE_PY = os.path.join(_SCRIPT_LOCATION, 'aimmo-game-creator', 'service.py')
+_ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
+_MANAGE_PY = os.path.join(_ROOT_DIR_LOCATION, 'example_project', 'manage.py')
+_SERVICE_PY = os.path.join(_ROOT_DIR_LOCATION, 'aimmo-game-creator', 'service.py')
 
 
 def log(message):
@@ -46,10 +46,10 @@ def create_superuser_if_missing(username, password):
 
 def run(use_minikube, server_wait=True):
     logging.basicConfig()
-    sys.path.append(os.path.join(_SCRIPT_LOCATION, 'example_project'))
+    sys.path.append(os.path.join(_ROOT_DIR_LOCATION, 'example_project'))
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
 
-    run_command(['pip', 'install', '-e', _SCRIPT_LOCATION])
+    run_command(['pip', 'install', '-e', _ROOT_DIR_LOCATION])
     run_command(['python', _MANAGE_PY, 'migrate', '--noinput'])
     run_command(['python', _MANAGE_PY, 'collectstatic', '--noinput'])
 
@@ -58,9 +58,9 @@ def run(use_minikube, server_wait=True):
     server_args = []
     if use_minikube:
         # Import minikube here, so we can install the deps first
-        run_command(['pip', 'install', '-r', os.path.join(_SCRIPT_LOCATION,
+        run_command(['pip', 'install', '-r', os.path.join(_ROOT_DIR_LOCATION,
                                                           'minikube_requirements.txt')])
-        import minikube
+        from aimmo_runner import minikube
 
         minikube.start()
         server_args.append('0.0.0.0:8000')

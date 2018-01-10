@@ -10,11 +10,11 @@ import socket
 import stat
 import yaml
 import platform
-from run import run_command
+from runner import run_command
 from urllib import urlretrieve
 from urllib2 import urlopen
 
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 TEST_BIN = os.path.join(BASE_DIR, 'test-bin')
 OS = platform.system().lower()
 FILE_SUFFIX = '.exe' if OS == 'windows' else ''
