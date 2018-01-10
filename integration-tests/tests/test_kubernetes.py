@@ -1,8 +1,8 @@
 import logging
-import psutil
+# import psutil
 import time
 import kubernetes.client
-from run import main
+# from run import main
 from unittest import TestCase
 from connection_set_up import delete_old_database
 
