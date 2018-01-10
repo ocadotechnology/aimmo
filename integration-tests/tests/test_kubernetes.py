@@ -2,9 +2,13 @@ import logging
 import psutil
 import time
 import kubernetes.client
-from .. import run
 from unittest import TestCase
 from connection_set_up import delete_old_database
+
+import sys
+sys.path.append("..")
+
+from .. import run
 
 logging.basicConfig(level=logging.WARNING)
 
