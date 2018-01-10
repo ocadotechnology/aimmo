@@ -5,7 +5,11 @@ import sys
 import time
 from subprocess import CalledProcessError
 
-_ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
+if os.environ['CI'] == "true":
+    _ROOT_DIR_LOCATION = os.environ['TRAVIS_BUILD_DIR']
+else:
+    _ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
+
 _MANAGE_PY = os.path.join(_ROOT_DIR_LOCATION, 'example_project', 'manage.py')
 _SERVICE_PY = os.path.join(_ROOT_DIR_LOCATION, 'aimmo-game-creator', 'service.py')
 
@@ -52,7 +56,7 @@ def run(use_minikube, server_wait=True):
     print("ayooooooooooooooo this is it ")
     print(_ROOT_DIR_LOCATION)
     print("finiiiiiiiiiiish")
-    
+
     run_command(['pip', 'install', '-e', _ROOT_DIR_LOCATION])
     run_command(['python', _MANAGE_PY, 'migrate', '--noinput'])
     run_command(['python', _MANAGE_PY, 'collectstatic', '--noinput'])
