@@ -4,11 +4,7 @@ import time
 import kubernetes.client
 from unittest import TestCase
 from connection_set_up import delete_old_database
-
-import sys
-sys.path.append("..")
-
-from .. import run
+from aimmo_runner import runner
 
 logging.basicConfig(level=logging.WARNING)
 
@@ -23,7 +19,7 @@ class TestKubernetes(TestCase):
         """
         delete_old_database()
         time.sleep(120)
-        run.main(use_minikube=True, server_wait=False)
+        self.processes = runner.run(use_minikube=True, server_wait=False)
         kubernetes.config.load_kube_config(context='minikube')
         self.api_instance = kubernetes.client.CoreV1Api()
         self.api_extension_instance = kubernetes.client.ExtensionsV1beta1Api()
