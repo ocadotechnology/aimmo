@@ -1,5 +1,5 @@
 import logging
-# import psutil
+import psutil
 import time
 import kubernetes.client
 # from run import main
