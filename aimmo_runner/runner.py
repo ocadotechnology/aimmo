@@ -14,7 +14,7 @@ from subprocess import CalledProcessError
 # except KeyError:
 #     _ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
 
-_ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
+_ROOT_DIR_LOCATION = os.path.abspath((os.path.dirname(__file__)))
 
 _MANAGE_PY = os.path.join(_ROOT_DIR_LOCATION, 'example_project', 'manage.py')
 _SERVICE_PY = os.path.join(_ROOT_DIR_LOCATION, 'aimmo-game-creator', 'service.py')
