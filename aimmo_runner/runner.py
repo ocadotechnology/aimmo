@@ -5,6 +5,7 @@ import time
 from shell_api import log, run_command, run_command_async
 
 sys.path.append("/home/travis/build/ocadotechnology/aimmo")
+sys.path.append("/home/travis/build/ocadotechnology/aimmo/aimmo_runner")
 
 try:
     if os.environ['CI'] == "true":
