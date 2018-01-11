@@ -46,7 +46,7 @@ def run(use_minikube, server_wait=True):
         # Import minikube here, so we can install the deps first
         run_command(['pip', 'install', '-r', os.path.join(_ROOT_DIR_LOCATION,
                                                           'minikube_requirements.txt')])
-        from minikube import start
+        from aimmo_runner.minikube import start
 
         start()
         server_args.append('0.0.0.0:8000')
