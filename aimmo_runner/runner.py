@@ -14,6 +14,7 @@ try:
 except KeyError:
     _ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
 
+sys.path.append(_ROOT_DIR_LOCATION, '/players')
 
 _MANAGE_PY = os.path.join(_ROOT_DIR_LOCATION, 'example_project', 'manage.py')
 _SERVICE_PY = os.path.join(_ROOT_DIR_LOCATION, 'aimmo-game-creator', 'service.py')
