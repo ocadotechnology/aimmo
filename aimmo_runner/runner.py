@@ -4,6 +4,7 @@ import subprocess
 import sys
 import time
 from subprocess import CalledProcessError
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 try:
     if os.environ['CI'] == "true":
