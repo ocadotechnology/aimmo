@@ -54,9 +54,10 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
 
 ## Running Locally
 * Clone the repo
-* Make and activate a virtualenv (We recommend [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/index.html)) - if you have a Mac see the following section.
+* Make and activate a virtualenv (We recommend [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/index.html)) - if you have a **Mac see the following section**.
     * e.g. the first time, `mkvirtualenv -a path/to/aimmo aimmo`
     * and thereafter `workon aimmo`
+    * You may need to set your virtualenvwrapper version to python2. [See more here](https://stackoverflow.com/questions/32489304/change-default-python-version-with-virtualenvwrapper-virtualenv).
 * `./run.py` in your aimmo dir - This will:
     * if necessary, create a superuser 'admin' with password 'admin'
     * install all of the dependencies using pip
@@ -82,8 +83,7 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
 * Usage: `python run.py -k`. This will:
     * Download Docker, Minikube, and Kubectl into a `test-bin` folder in the project's root directory.
     * Run `minikube start` (if the cluster is not already running).
-    * Build each image.
-    * Start aimmo-game-creator.
+    * Images are built and a aimmo-game-creator is created in your cluster. You can preview this in your kubernetes dashboard. Run `minikube dashboard` to open this.
     * Perform the same setup that run.py normally performs.
     * Start the Django project (which is not kubernetes controlled) on localhost:8000.
 * Run the same command to update all the images.
@@ -91,15 +91,16 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
 #### Interacting with the cluster
 * `kubectl` and `minikube` (both in the `test-bin` folder, note that this is not on your PATH) can be used to interact with the cluster.
 * Running either command without any options will give the most useful commands.
-* `./test-bin/minikube dashboard` to open the kubernetes dashboard in your def
+* `minikube dashboard` to open the kubernetes dashboard in your def
 
 ## Testing Locally
 *`./all_tests.py` will run all tests (note that this is several pages of output).
 * `--coverage` option generates coverage data using coverage.py
 
 ## Useful commands
-* To create an admin account:
+* To create an another admin account:
 `python example_project/manage.py createsuperuser`
+   * By default, we create an admin account with credentials admin:admin when you start the project.
 
 ### Installing virtualenvwrapper on Mac
 * Run `pip install virtualenvwrapper`
