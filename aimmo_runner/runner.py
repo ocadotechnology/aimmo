@@ -44,6 +44,13 @@ def run_command_async(args):
 
 
 def create_superuser_if_missing(username, password):
+    print("yolo")
+    print(sys.path)
+    print("yolo")
+    print("yolo")
+    print("yolo")
+    print("yolo")
+
     from django.contrib.auth.models import User
     try:
         User.objects.get_by_natural_key(username)
