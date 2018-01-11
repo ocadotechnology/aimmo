@@ -5,16 +5,14 @@ import sys
 import time
 from subprocess import CalledProcessError
 
-#
-# try:
-#     if os.environ['CI'] == "true":
-#         _ROOT_DIR_LOCATION = os.environ['TRAVIS_BUILD_DIR']
-#     else:
-#         _ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
-# except KeyError:
-#     _ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
+try:
+    if os.environ['CI'] == "true":
+        _ROOT_DIR_LOCATION = os.environ['TRAVIS_BUILD_DIR']
+    else:
+        _ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
+except KeyError:
+    _ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
 
-_ROOT_DIR_LOCATION = os.path.abspath((os.path.dirname(__file__)))
 
 _MANAGE_PY = os.path.join(_ROOT_DIR_LOCATION, 'example_project', 'manage.py')
 _SERVICE_PY = os.path.join(_ROOT_DIR_LOCATION, 'aimmo-game-creator', 'service.py')
