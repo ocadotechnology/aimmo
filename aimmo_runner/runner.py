@@ -4,7 +4,8 @@ import subprocess
 import sys
 import time
 from subprocess import CalledProcessError
-sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
+
+sys.path.append("/home/travis/build/ocadotechnology/aimmo")
 
 try:
     if os.environ['CI'] == "true":
@@ -13,8 +14,6 @@ try:
         _ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
 except KeyError:
     _ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
-
-sys.path.append(_ROOT_DIR_LOCATION + '/players')
 
 _MANAGE_PY = os.path.join(_ROOT_DIR_LOCATION, 'example_project', 'manage.py')
 _SERVICE_PY = os.path.join(_ROOT_DIR_LOCATION, 'aimmo-game-creator', 'service.py')
@@ -45,13 +44,6 @@ def run_command_async(args):
 
 
 def create_superuser_if_missing(username, password):
-    print("yolo")
-    print(sys.path)
-    print("yolo")
-    print("yolo")
-    print("yolo")
-    print("yolo")
-
     from django.contrib.auth.models import User
     try:
         User.objects.get_by_natural_key(username)
