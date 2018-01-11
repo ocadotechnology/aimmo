@@ -3,6 +3,7 @@ import os
 import subprocess
 import sys
 import time
+import django
 from subprocess import CalledProcessError
 
 try:
