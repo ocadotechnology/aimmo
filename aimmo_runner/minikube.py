@@ -2,82 +2,13 @@
 from __future__ import print_function
 
 import docker
-import errno
 import kubernetes
 import os
 import re
 import socket
-import stat
 import yaml
 import platform
-from runner import run_command
-from urllib import urlretrieve
-from urllib2 import urlopen
-
-BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-TEST_BIN = os.path.join(BASE_DIR, 'test-bin')
-OS = platform.system().lower()
-FILE_SUFFIX = '.exe' if OS == 'windows' else ''
-KUBECTL = os.path.join(TEST_BIN, 'kubectl%s' % FILE_SUFFIX)
-MINIKUBE = os.path.join(TEST_BIN, 'minikube%s' % FILE_SUFFIX)
-
-
-def create_test_bin():
-    try:
-        os.makedirs(TEST_BIN)
-    except OSError as err:
-        if err.errno != errno.EEXIST:
-            raise
-
-
-def get_latest_github_version(repo):
-    result = urlopen('https://github.com/%s/releases/latest' % repo)
-    return result.geturl().split('/')[-1]
-
-
-def download_exec(url, dest):
-    dest = urlretrieve(url, dest)[0]
-    make_exec(dest)
-
-
-def make_exec(file):
-    current_stat = os.stat(file)
-    os.chmod(file, current_stat.st_mode | stat.S_IEXEC)
-
-
-def binary_exists(filename):
-    # Check if binary is callable on our path
-    try:
-        run_command([filename], True)
-        return True
-    except OSError:
-        return False
-
-
-def download_kubectl():
-    if binary_exists('kubectl'):
-        return
-    if os.path.isfile(KUBECTL):
-        return
-    print('Downloading kubectl')
-    version = get_latest_github_version('kubernetes/kubernetes')
-    url = 'http://storage.googleapis.com/kubernetes-release/release/%s/bin/%s/amd64/kubectl%s' % (version, OS, FILE_SUFFIX)
-    download_exec(url, KUBECTL)
-
-
-def download_minikube():
-    # First check for the user's installation. Don't break it if they have one
-    if binary_exists('minikube'):
-        return 'minikube'
-
-    if os.path.isfile(MINIKUBE):
-        return MINIKUBE
-    print('Downloading minikube')
-    version = get_latest_github_version('kubernetes/minikube')
-    url = 'https://storage.googleapis.com/minikube/releases/%s/minikube-%s-amd64%s' % (version, OS, FILE_SUFFIX)
-    download_exec(url, MINIKUBE)
-    return MINIKUBE
-
+from shell_api import (run_command, create_test_bin, BASE_DIR)
 
 def get_ip():
     # http://stackoverflow.com/a/28950776/671626
@@ -96,6 +27,7 @@ def get_ip():
         s.close()
     return IP
 
+
 def restart_ingress_addon(minikube):
     try:
         run_command([minikube, 'addons', 'disable', 'ingress'])
@@ -103,11 +35,13 @@ def restart_ingress_addon(minikube):
         pass
     run_command([minikube, 'addons', 'enable', 'ingress'])
 
+
 def create_ingress_yaml():
     path = os.path.join(BASE_DIR, 'ingress.yaml')
     with open(path) as yaml_file:
         content = yaml.safe_load(yaml_file.read())
     return content
+
 
 def create_creator_yaml():
     orig_path = os.path.join(BASE_DIR, 'aimmo-game-creator', 'rc-aimmo-game-creator.yaml')

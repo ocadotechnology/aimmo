@@ -1,9 +1,8 @@
 import logging
 import os
-import subprocess
 import sys
 import time
-from subprocess import CalledProcessError
+from shell_api import log, run_command, run_command_async
 
 sys.path.append("/home/travis/build/ocadotechnology/aimmo")
 
@@ -18,29 +17,7 @@ except KeyError:
 _MANAGE_PY = os.path.join(_ROOT_DIR_LOCATION, 'example_project', 'manage.py')
 _SERVICE_PY = os.path.join(_ROOT_DIR_LOCATION, 'aimmo-game-creator', 'service.py')
 
-
-def log(message):
-    print >> sys.stderr, message
-
-
-def run_command(args, capture_output=False):
-    try:
-        if capture_output:
-            return subprocess.check_output(args)
-        else:
-            subprocess.check_call(args)
-    except CalledProcessError as e:
-        log('Command failed with exit status %d: %s' % (e.returncode, ' '.join(args)))
-        raise
-
-
 PROCESSES = []
-
-
-def run_command_async(args):
-    p = subprocess.Popen(args)
-    PROCESSES.append(p)
-    return p
 
 
 def create_superuser_if_missing(username, password):
@@ -77,8 +54,11 @@ def run(use_minikube, server_wait=True):
     else:
         time.sleep(2)
         game = run_command_async(['python', _SERVICE_PY, '127.0.0.1', '5000'])
+        PROCESSES.append(game)
         os.environ['AIMMO_MODE'] = 'threads'
+
     server = run_command_async(['python', _MANAGE_PY, 'runserver'] + server_args)
+    PROCESSES.append(server)
 
     try:
         game.wait()
