@@ -74,14 +74,11 @@ def build_docker_images(minikube):
         path = os.path.join(BASE_DIR, dir)
         tag = 'ocadotechnology/%s:test' % dir
         print("Building %s..." % tag)
-        status = client.build(
-            decode=True,
+        client.images.build(
             path=path,
             tag=tag,
+            encoding='gzip'
         )
-        for line in status:
-            if 'stream' in line:
-                print(line['stream'], end='')
 
 
 def restart_pods(game_creator, ingress_yaml):
