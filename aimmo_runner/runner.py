@@ -50,16 +50,8 @@ def run(use_minikube, server_wait=True):
         parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         sys.path.append(os.path.join(parent_dir, "aimmo_runner"))
 
-        print("WATCHHHHHHHHHHH ITTTTTT")
-        import aimmo_runner
-        print(aimmo_runner.__file__)
-        print(aimmo_runner.__path__)
-        
         from aimmo_runner import minikube
-
         minikube.start()
-
-
 
         server_args.append('0.0.0.0:8000')
         os.environ['AIMMO_MODE'] = 'minikube'

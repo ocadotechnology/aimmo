@@ -20,6 +20,8 @@ setup(
         'hypothesis',
         'flask-cors',
         'psutil',
+        'docker',
+        'kubernetes',
     ],
     zip_safe=False,
 )
