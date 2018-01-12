@@ -5,7 +5,6 @@ import time
 from shell_api import log, run_command, run_command_async
 
 sys.path.append("/home/travis/build/ocadotechnology/aimmo")
-sys.path.append("/home/travis/build/ocadotechnology/aimmo/aimmo_runner")
 
 try:
     if os.environ['CI'] == "true":
@@ -47,9 +46,20 @@ def run(use_minikube, server_wait=True):
         # Import minikube here, so we can install the deps first
         run_command(['pip', 'install', '-r', os.path.join(_ROOT_DIR_LOCATION,
                                                           'minikube_requirements.txt')])
-        from aimmo_runner.minikube import start
 
-        start()
+        print("current working dir: " + os.getcwd())
+        print("..............................................")
+        print("printing sys path\n")
+        print(sys.path)
+
+        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        sys.path.append(os.path.join(parent_dir, "aimmo_runner"))
+        from aimmo_runner import minikube
+
+        minikube.start()
+
+
+
         server_args.append('0.0.0.0:8000')
         os.environ['AIMMO_MODE'] = 'minikube'
     else:
