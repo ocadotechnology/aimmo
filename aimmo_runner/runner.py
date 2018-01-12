@@ -47,13 +47,14 @@ def run(use_minikube, server_wait=True):
         run_command(['pip', 'install', '-r', os.path.join(_ROOT_DIR_LOCATION,
                                                           'minikube_requirements.txt')])
 
-        print("current working dir: " + os.getcwd())
-        print("..............................................")
-        print("printing sys path\n")
-        print(sys.path)
-
         parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         sys.path.append(os.path.join(parent_dir, "aimmo_runner"))
+
+        print("WATCHHHHHHHHHHH ITTTTTT")
+        import aimmo_runner
+        print(aimmo_runner.__file__)
+        print(aimmo_runner.__path__)
+        
         from aimmo_runner import minikube
 
         minikube.start()
