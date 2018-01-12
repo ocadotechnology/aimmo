@@ -11,6 +11,7 @@ Optional arguments:
 import os
 import subprocess
 import sys
+from aimmo_runner import runner
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 APPS = ('', 'aimmo-game/', 'aimmo-game-worker/', 'aimmo-game-creator/',
@@ -27,6 +28,7 @@ def main():
         sys.exit(0)
     else:
         compute_coverage = '--coverage' in sys.argv or '-c' in sys.argv
+        runner.run_command(['pip', 'install', '-e', BASE_DIR])
         sys.exit(run_tests(compute_coverage))
 
 
