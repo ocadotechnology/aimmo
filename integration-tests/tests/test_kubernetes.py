@@ -4,7 +4,7 @@ import time
 import kubernetes.client
 from unittest import TestCase
 from connection_set_up import delete_old_database
-from aimmo_runner import runner
+from aimmo_runner import runner, shell_api
 
 logging.basicConfig(level=logging.WARNING)
 
@@ -18,8 +18,8 @@ class TestKubernetes(TestCase):
         api instance from the kubernetes client.
         """
         delete_old_database()
-        time.sleep(120)
         self.processes = runner.run(use_minikube=True, server_wait=False)
+        time.sleep(120)
         kubernetes.config.load_kube_config(context='minikube')
         self.api_instance = kubernetes.client.CoreV1Api()
         self.api_extension_instance = kubernetes.client.ExtensionsV1beta1Api()
@@ -52,42 +52,44 @@ class TestKubernetes(TestCase):
         self.assertEqual(len(api_response.items), 1)
         pod_item = api_response.items[0]
         self.assertTrue(pod_item.metadata.name.startswith("aimmo-game-creator-"))
-        self.assertEquals(len(pod_item.metadata.owner_references), 1)
-        self.assertEquals(pod_item.metadata.owner_references[0].kind, "ReplicationController")
+        self.assertEqual(len(pod_item.metadata.owner_references), 1)
+        self.assertEqual(pod_item.metadata.owner_references[0].kind, "ReplicationController")
 
         # REPLICATION CONTROLLERS
         api_response = self.api_instance.list_namespaced_replication_controller("default")
         self.assertEqual(len(api_response.items), 1)
+        pod_item = api_response.items[0]
         self.assertTrue(pod_item.metadata.name.startswith("aimmo-game-creator"))
 
         # SERVICES
         api_response = self.api_instance.list_namespaced_service("default")
         self.assertEqual(len(api_response.items), 1)
-        self.assertTrue(pod_item.metadata.name == "kubernetes")
+        pod_item = api_response.items[0]
+        self.assertEqual(pod_item.metadata.name, "kubernetes")
 
-    # def test_correct_initial_ingress_yaml(self):
-    #     """
-    #     This test will ensure that the initial yaml created on a
-    #     fresh state of the cluster. It assumes: ingress name, no backend
-    #     and only one specific rule, with only one path specified!
-    #     """
-    #     api_response = self.api_extension_instance.list_namespaced_ingress("default")
-    #     self.assertEquals(api_response.items, 1)
-    #
-    #     # NAME
-    #     self.assertEqual(api_response.items[0].metadata.name, "aimmo-ingress")
-    #
-    #     # NO BACKEND
-    #     self.assertEqual(api_response.items[0].spec.backend, None)
-    #
-    #     # RULES
-    #     rule = api_response.items[0].spec.rules[0]
-    #     self.assertEqual(len(api_response.items[0].spec.rules), 1)
-    #     self.assertEqual(rule.host,
-    #                      "dev.aimmo.codeforlife.education")
-    #
-    #     # PATHS
-    #     path = rule.http.path[0]
-    #     self.assertEqual(len(rule.http.paths), 1)
-    #     self.assertEqual(path.service_name, "default_http_backend")
-    #     self.assertEqual(path.path, None)
+    def test_correct_initial_ingress_yaml(self):
+        """
+        This test will ensure that the initial yaml created on a
+        fresh state of the cluster. It assumes: ingress name, no backend
+        and only one specific rule, with only one path specified!
+        """
+        api_response = self.api_extension_instance.list_namespaced_ingress("default")
+        self.assertEquals(len(api_response.items), 1)
+
+        # NAME
+        self.assertEqual(api_response.items[0].metadata.name, "aimmo-ingress")
+
+        # NO BACKEND
+        self.assertEqual(api_response.items[0].spec.backend, None)
+
+        # RULES
+        rule = api_response.items[0].spec.rules[0]
+        self.assertEqual(len(api_response.items[0].spec.rules), 1)
+        self.assertEqual(rule.host,
+                         "dev.aimmo.codeforlife.education")
+
+        # PATHS
+        path = rule.http.paths[0]
+        self.assertEqual(len(rule.http.paths), 1)
+        self.assertEqual(path.backend.service_name, "default-http-backend")
+        self.assertEqual(path.path, None)
