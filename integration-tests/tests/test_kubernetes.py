@@ -138,7 +138,7 @@ class TestKubernetes(unittest.TestCase):
     @unittest.skip("Not Implemented.")
     def test_adding_game_appends_path_to_ingress(self):
         """
-        Adding a game (level), will append the path to the ingress
+        Adding a game (level), will append the correct path to the ingress at /game-1.
         """
         pass
 

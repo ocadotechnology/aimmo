@@ -129,6 +129,7 @@ def _log_in_as_a_superuser():
     response = send_post_request(session, url, login_info)
     assert(response.status_code == 200)
 
+    print ("log in csrf: ", csrftoken)
     return csrftoken, session
 
 
@@ -142,20 +143,24 @@ def create_custom_game_default_settings(name):
     url = 'http://localhost:8000/players/games/new/'
 
     data = {
-        "csrfmiddlewaretoken":	csrftoken,
-        "name":	"testGame",
-        "public":	"on",
-        "can_play":	"1",
-        "generator":	"Main",
-        "target_num_cells_per_avatar":	"16",
-        "target_num_score_locations_per_avatar":	"0.5",
-        "score_despawn_chance":	"0.02",
-        "target_num_pickups_per_avatar":	"0.5",
-        "pickup_spawn_chance":	"0.02",
-        "obstacle_ratio":	"0.1",
-        "start_height":	"11",
-        "start_width":	"11",
+        "csrfmiddlewaretoken": csrftoken,
+        "name": name,
+        "public": "on",
+        "can_play": "1",
+        "generator": "Main",
+        "target_num_cells_per_avatar": "16",
+        "target_num_score_locations_per_avatar": "0.5",
+        "score_despawn_chance": "0.02",
+        "target_num_pickups_per_avatar": "0.5",
+        "pickup_spawn_chance": "0.02",
+        "obstacle_ratio": "0.1",
+        "start_height": "11",
+        "start_width": "11",
     }
 
+    print("is server healthy? ", is_server_healthy(url))
+
     response = send_post_request(session, url, data)
+    print ("post csrf: ", csrftoken)
+
     print(response)
