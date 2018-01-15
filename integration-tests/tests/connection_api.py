@@ -99,3 +99,63 @@ def is_server_healthy(url):
         time.sleep(1)
 
     return False
+
+
+def _log_in_as_a_superuser():
+    """
+    A private wrapper function for all the utilities that will
+    log a user in with the correct credentials and take care of
+    all CSRF token exchange.
+    """
+    url = 'http://localhost:8000/players/accounts/login/'
+    assert(is_server_healthy(url))
+
+    logging.debug("Creating session...")
+    session = create_session()
+
+    send_get_request(session, url)
+
+    logging.debug("Obtaining CSRF Token...")
+    csrftoken = obtain_csrftoken(session)
+
+    login_info = {
+        'username': 'admin',
+        'password': 'admin',
+        'csrfmiddlewaretoken': csrftoken,
+    }
+
+    logging.debug("Sending post response...")
+
+    response = send_post_request(session, url, login_info)
+    assert(response.status_code == 200)
+
+    return csrftoken, session
+
+
+def create_custom_game_default_settings(name):
+    """
+    Sends an appropriate POST request to create a game with a
+    given name, using default settings provided.
+    """
+    csrftoken, session = _log_in_as_a_superuser()
+
+    url = 'http://localhost:8000/players/games/new/'
+
+    data = {
+        "csrfmiddlewaretoken":	csrftoken,
+        "name":	"testGame",
+        "public":	"on",
+        "can_play":	"1",
+        "generator":	"Main",
+        "target_num_cells_per_avatar":	"16",
+        "target_num_score_locations_per_avatar":	"0.5",
+        "score_despawn_chance":	"0.02",
+        "target_num_pickups_per_avatar":	"0.5",
+        "pickup_spawn_chance":	"0.02",
+        "obstacle_ratio":	"0.1",
+        "start_height":	"11",
+        "start_width":	"11",
+    }
+
+    response = send_post_request(session, url, data)
+    assert(response.status_code == 200)

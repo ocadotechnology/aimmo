@@ -5,8 +5,8 @@ import subprocess
 import logging
 from unittest import TestCase
 
-from connection_set_up import (create_session, send_get_request, send_post_request,
-                               obtain_csrftoken, delete_old_database, is_server_healthy)
+from connection_api import (create_session, send_get_request, send_post_request,
+                            obtain_csrftoken, delete_old_database, is_server_healthy)
 
 logging.basicConfig(level=logging.WARNING)
 

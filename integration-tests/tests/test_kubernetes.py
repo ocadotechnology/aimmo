@@ -3,8 +3,8 @@ import psutil
 import time
 import kubernetes.client
 from unittest import TestCase
-from connection_set_up import delete_old_database
-from aimmo_runner import runner, shell_api
+from aimmo_runner import runner
+from connection_api import (delete_old_database, create_custom_game_default_settings)
 
 logging.basicConfig(level=logging.WARNING)
 
@@ -93,3 +93,44 @@ class TestKubernetes(TestCase):
         self.assertEqual(len(rule.http.paths), 1)
         self.assertEqual(path.backend.service_name, "default-http-backend")
         self.assertEqual(path.path, None)
+
+    def test_adding_custom_game_sets_cluster_correctly(self):
+        """
+        Log into the server as admin (superuser) and create a game
+        with the name "testGame", using the default settings provided.
+        """
+
+        create_custom_game_default_settings(name="testGame")
+
+        # WORKER
+        # Is created last, so it's safe to check for only its
+        # existence when waiting for the cluster to get ready.
+
+        time_elapsed = 0
+
+        while time_elapsed <= 60:
+            api_response = self.api_instance.list_namespaced_pod("default")
+
+            if time_elapsed == 60:
+                self.fail("Worker not created!")
+
+            for item in api_response.items:
+                if item.metadata.generate_name.startsWith("aimmo-1-worker-1"):
+                    break
+
+            time_elapsed += 1
+            time.sleep(1)
+
+        # SERVICE
+        api_response = self.api_instance.list_namespaced_service("default")
+
+        service_names = [service.metadata.name for service in api_response.items]
+        if "game-1" not in service_names:
+            self.fail("Service not created!")
+
+        # REPLICATION CONTROLLERS
+        api_response = self.api_instance.list_namespaced_replication_controller("default")
+
+        rc_names = [rc.metadata.name for rc in api_response.items]
+        if "game-1" not in rc_names:
+            self.fail("Replication controller not created!")

@@ -30,10 +30,10 @@ def get_ip():
 
 def restart_ingress_addon(minikube):
     try:
-        run_command(['sudo', minikube, 'addons', 'disable', 'ingress'])
+        run_command([minikube, 'addons', 'disable', 'ingress'])
     except:
         pass
-    run_command(['sudo', minikube, 'addons', 'enable', 'ingress'])
+    run_command([minikube, 'addons', 'enable', 'ingress'])
 
 
 def create_ingress_yaml():
