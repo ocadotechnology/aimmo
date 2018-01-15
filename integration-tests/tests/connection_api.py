@@ -158,4 +158,4 @@ def create_custom_game_default_settings(name):
     }
 
     response = send_post_request(session, url, data)
-    assert(response.status_code == 200)
+    print(response)

@@ -1,15 +1,15 @@
 import logging
+import unittest
 import psutil
 import time
 import kubernetes.client
-from unittest import TestCase
 from aimmo_runner import runner
 from connection_api import (delete_old_database, create_custom_game_default_settings)
 
 logging.basicConfig(level=logging.WARNING)
 
 
-class TestKubernetes(TestCase):
+class TestKubernetes(unittest.TestCase):
     def setUp(self):
         """
         Sets a clean database for each test before running
@@ -134,3 +134,19 @@ class TestKubernetes(TestCase):
         rc_names = [rc.metadata.name for rc in api_response.items]
         if "game-1" not in rc_names:
             self.fail("Replication controller not created!")
+
+    @unittest.skip("Not Implemented.")
+    def test_adding_game_appends_path_to_ingress(self):
+        """
+        Adding a game (level), will append the path to the ingress
+        """
+        pass
+
+    @unittest.skip("Not Implemented.")
+    def test_remove_old_ingress_paths_on_startup(self):
+        """
+        A game is created in the minikube instance and ingress path is appended. The
+        cluster is then stopped and started again with a fresh database. When this happens,
+        we check that the ingress paths are returned to default again.
+        """
+        pass
