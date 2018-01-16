@@ -39,6 +39,7 @@ class TestKubernetes(unittest.TestCase):
             for child in children:
                 child.terminate()
 
+    @unittest.skip("Debugging.")
     def test_clean_starting_state_of_cluster(self):
         """
         The purpose of this test is to check the correct number
@@ -67,6 +68,7 @@ class TestKubernetes(unittest.TestCase):
         pod_item = api_response.items[0]
         self.assertEqual(pod_item.metadata.name, "kubernetes")
 
+    @unittest.skip("Debugging.")
     def test_correct_initial_ingress_yaml(self):
         """
         This test will ensure that the initial yaml created on a
@@ -110,7 +112,6 @@ class TestKubernetes(unittest.TestCase):
                     self.fail("Worker not created!")
 
                 for item in api_response.items:
-                    print item
                     if item.metadata.generate_name.startswith("aimmo-1-worker-1"):
                         return
 
@@ -123,7 +124,9 @@ class TestKubernetes(unittest.TestCase):
         # Is created last, so it's safe to check for only its
         # existence when waiting for the cluster to get ready.
 
-        _wait_for_kubernetes_cluster(self.api_instance)
+        # _wait_for_kubernetes_cluster(self.api_instance)
+
+        time.sleep(60)
 
         # SERVICE
         api_response = self.api_instance.list_namespaced_service("default")

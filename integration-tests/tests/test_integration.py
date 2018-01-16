@@ -13,6 +13,7 @@ logging.basicConfig(level=logging.WARNING)
 
 class TestIntegration(unittest.TestCase):
 
+    @unittest.skip("Debugging.")
     def test_superuser_authentication(self):
         """
         A test that will run on a clean & empty database, create all migrations, new
