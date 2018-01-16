@@ -110,6 +110,7 @@ class TestKubernetes(unittest.TestCase):
                     self.fail("Worker not created!")
 
                 for item in api_response.items:
+                    print item
                     if item.metadata.generate_name.startswith("aimmo-1-worker-1"):
                         return
 
