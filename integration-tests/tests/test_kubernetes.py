@@ -104,7 +104,7 @@ class TestKubernetes(unittest.TestCase):
             time_elapsed = 0
 
             while time_elapsed <= 60:
-                api_response = self.api_instance.list_namespaced_pod("default")
+                api_response = api_instance.list_namespaced_pod("default")
 
                 if time_elapsed == 60:
                     self.fail("Worker not created!")
