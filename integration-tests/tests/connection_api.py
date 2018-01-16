@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.WARNING)
 
 def delete_old_database():
     dirname = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    filename = '/example_project/example_project/db.sqlite3'
+    filename = 'example_project/example_project/db.sqlite3'
     path = os.path.abspath(os.path.join(dirname, filename))
 
     try:
