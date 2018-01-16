@@ -165,4 +165,18 @@ def create_custom_game_default_settings(name):
 
     response = session.post(url, data=data, headers=headers)
 
+    csrftoken = session.cookies['csrftoken']
+    headers = {'X-CSRFToken': csrftoken, 'Referer': 'http://localhost:8000/players/program/1/'}
+    url = 'http://localhost:8000/players/api/code/1/'
+
+    data = {
+        "csrfmiddlewaretoken": csrftoken,
+        "code": "class+Avatar(object)%3A%0A++++def+handle_turn(self%2C+world_view%2C+events)%3A%0A+" +
+                "+++++++from+simulation.action+import+MoveAction%0A++++++++from+simulation.direction" +
+                "+import+ALL_DIRECTIONS%0A++++++++import+random%0A%0A++++++++return+MoveAction(random" +
+                ".choice(ALL_DIRECTIONS))%0A"
+    }
+
+    response = session.post(url, data=data, headers=headers)
+
     return response

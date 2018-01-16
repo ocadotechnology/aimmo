@@ -102,26 +102,29 @@ class TestKubernetes(unittest.TestCase):
         with the name "testGame", using the default settings provided.
         """
 
+        def _wait_for_kubernetes_cluster(api_instance):
+            time_elapsed = 0
+
+            while time_elapsed <= 60:
+                api_response = self.api_instance.list_namespaced_pod("default")
+
+                if time_elapsed == 60:
+                    self.fail("Worker not created!")
+
+                for item in api_response.items:
+                    if item.metadata.generate_name.startswith("aimmo-1-worker-1"):
+                        return
+
+                time_elapsed += 1
+                time.sleep(1)
+
         create_custom_game_default_settings(name="testGame")
 
         # WORKER
         # Is created last, so it's safe to check for only its
         # existence when waiting for the cluster to get ready.
 
-        time_elapsed = 0
-
-        while time_elapsed <= 60:
-            api_response = self.api_instance.list_namespaced_pod("default")
-
-            if time_elapsed == 60:
-                self.fail("Worker not created!")
-
-            for item in api_response.items:
-                if item.metadata.generate_name.startswith("aimmo-1-worker-1"):
-                    break
-
-            time_elapsed += 1
-            time.sleep(1)
+        _wait_for_kubernetes_cluster(self.api_instance)
 
         # SERVICE
         api_response = self.api_instance.list_namespaced_service("default")
