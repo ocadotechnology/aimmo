@@ -8,10 +8,16 @@ logging.basicConfig(level=logging.WARNING)
 
 
 def delete_old_database():
+    dirname = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    filename = '/example_project/example_project/db.sqlite3'
+    path = os.path.abspath(os.path.join(dirname, filename))
+
     try:
-        os.remove("../example_project/example_project/db.sqlite3")
+        os.remove(path)
+        print("Delete")
         logging.debug("Database file in example_project DELETED!")
     except OSError:
+        print("no deleto")
         logging.debug("No database file found.")
         pass
 
