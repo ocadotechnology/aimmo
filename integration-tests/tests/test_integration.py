@@ -3,7 +3,7 @@ import signal
 import time
 import subprocess
 import logging
-from unittest import TestCase
+import unittest
 
 from connection_api import (create_session, send_get_request, send_post_request,
                             obtain_csrftoken, delete_old_database, is_server_healthy)
@@ -11,7 +11,9 @@ from connection_api import (create_session, send_get_request, send_post_request,
 logging.basicConfig(level=logging.WARNING)
 
 
-class TestIntegration(TestCase):
+class TestIntegration(unittest.TestCase):
+
+    @unittest.skip("debugging")
     def test_superuser_authentication(self):
         """
         A test that will run on a clean & empty database, create all migrations, new

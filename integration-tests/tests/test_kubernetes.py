@@ -39,7 +39,7 @@ class TestKubernetes(unittest.TestCase):
             for child in children:
                 child.terminate()
 
-    @unittest.skip
+    @unittest.skip("For debugging")
     def test_clean_starting_state_of_cluster(self):
         """
         The purpose of this test is to check the correct number
@@ -68,7 +68,7 @@ class TestKubernetes(unittest.TestCase):
         pod_item = api_response.items[0]
         self.assertEqual(pod_item.metadata.name, "kubernetes")
 
-    @unittest.skip
+    @unittest.skip("For debugging")
     def test_correct_initial_ingress_yaml(self):
         """
         This test will ensure that the initial yaml created on a

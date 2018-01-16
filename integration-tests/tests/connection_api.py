@@ -129,7 +129,6 @@ def _log_in_as_a_superuser():
     response = send_post_request(session, url, login_info)
     assert(response.status_code == 200)
 
-    print ("log in csrf: ", csrftoken)
     return csrftoken, session
 
 
@@ -141,6 +140,10 @@ def create_custom_game_default_settings(name):
     csrftoken, session = _log_in_as_a_superuser()
 
     url = 'http://localhost:8000/players/games/new/'
+
+    print("is server healthy? ", is_server_healthy(url))
+
+    csrftoken = session.cookies['csrftoken']
 
     data = {
         "csrfmiddlewaretoken": csrftoken,
@@ -158,9 +161,8 @@ def create_custom_game_default_settings(name):
         "start_width": "11",
     }
 
-    print("is server healthy? ", is_server_healthy(url))
+    headers = {'X-CSRFToken': csrftoken, 'Referer': 'http://localhost:8000/players/accounts/login/'}
 
-    response = send_post_request(session, url, data)
-    print ("post csrf: ", csrftoken)
+    response = session.post(url, data=data, headers=headers)
 
-    print(response)
+    return response
