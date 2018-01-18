@@ -66,28 +66,3 @@ def get_latest_github_version(repo):
     result = urlopen('https://github.com/%s/releases/latest' % repo)
     return result.geturl().split('/')[-1]
 
-
-# def download_kubectl():
-#     if binary_exists('kubectl'):
-#         return
-#     if os.path.isfile(KUBECTL):
-#         return
-#     print('Downloading kubectl')
-#     version = get_latest_github_version('kubernetes/kubernetes')
-#     url = 'http://storage.googleapis.com/kubernetes-release/release/%s/bin/%s/amd64/kubectl%s' % (version, OS,
-#                                                                                                   FILE_SUFFIX)
-#     download_exec(url, KUBECTL)
-#
-#
-# def download_minikube():
-#     # First check for the user's installation. Don't break it if they have one
-#     if binary_exists('minikube'):
-#         return 'minikube'
-#
-#     if os.path.isfile(MINIKUBE):
-#         return MINIKUBE
-#     print('Downloading minikube')
-#     version = get_latest_github_version('kubernetes/minikube')
-#     url = 'https://storage.googleapis.com/minikube/releases/%s/minikube-%s-amd64%s' % (version, OS, FILE_SUFFIX)
-#     download_exec(url, MINIKUBE)
-#     return MINIKUBE

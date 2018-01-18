@@ -92,10 +92,8 @@ def is_server_healthy(url):
 
     logging.debug("Checking if the server is healthy...")
     while attempts <= 45:
-        print ("attempt: ", attempts)
         try:
             status_code = requests.get(url).status_code
-            print("Printing status code: ", status_code)
             if int(str(status_code)[0]) == 2:
                 return True
         except requests.exceptions.RequestException as e:
