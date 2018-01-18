@@ -102,12 +102,12 @@ class TestKubernetes(unittest.TestCase):
         """
 
         def _wait_for_kubernetes_cluster(api_instance):
-            time_elapsed = 0
+            timeout = 0
 
-            while time_elapsed <= 200:
+            while timeout <= 200:
                 temp_response = api_instance.list_namespaced_pod("default")
 
-                if time_elapsed == 200:
+                if timeout == 200:
                     for item in temp_response.items:
                         if item.metadata.name.startswith("game"):
                             print("printing")
@@ -118,7 +118,7 @@ class TestKubernetes(unittest.TestCase):
                     if item.metadata.name.startswith("aimmo-1-worker"):
                         return
 
-                time_elapsed += 1
+                timeout += 1
                 time.sleep(1)
 
         request_response = create_custom_game_default_settings(name="testGame")
