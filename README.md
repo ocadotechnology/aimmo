@@ -80,8 +80,8 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
     * All platforms: VT-x/AMD-v virtualization.
     * Linux: [Virtualbox](https://www.virtualbox.org/wiki/Downloads).
     * OSX: either [Virtualbox](https://www.virtualbox.org/wiki/Downloads) or [VMWare Fusion](http://www.vmware.com/products/fusion.html).
+* Download Docker, Minikube, and Kubectl before running the script.
 * Usage: `python run.py -k`. This will:
-    * Download Docker, Minikube, and Kubectl into a `test-bin` folder in the project's root directory.
     * Run `minikube start` (if the cluster is not already running).
     * Images are built and a aimmo-game-creator is created in your cluster. You can preview this in your kubernetes dashboard. Run `minikube dashboard` to open this.
     * Perform the same setup that run.py normally performs.
