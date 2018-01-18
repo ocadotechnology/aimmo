@@ -45,7 +45,7 @@ def run(use_minikube, server_wait=True):
     if use_minikube:
         # Import minikube here, so we can install the deps first
         parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        sys.path.append(os.path.join(parent_dir, "aimmo_runner"))
+        sys.path.append(os.path.join(parent_dir, 'aimmo_runner'))
 
         os.chdir(ROOT_DIR_LOCATION)
         run_command(['pip', 'install', '-r', os.path.join(ROOT_DIR_LOCATION,
