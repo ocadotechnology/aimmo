@@ -1,2 +1,2 @@
 docker-py >= 1.10
-kubernetes
+kubernetes == 4.0.0

@@ -33,7 +33,7 @@ We follow PEP8 convention quite strictly however we do make a few exceptions to 
 PEP8 specifies that the maximum line length is to be limited to *79 characters* with some lines even shorter than this. We replace this rule and try to stick to *90 characters*.
 
 #### Line Breaking after/before binary operators
-The internet seems be divided and PEP8 had some major changes when it comes to this rule. We have agreed that we want to strictly use binary operators on the **next** line, as opposed to before the line break.
+The internet seems to be divided and PEP8 had some major changes when it comes to this rule. We have agreed that we want to strictly use binary operators on the **next** line, as opposed to before the line break.
 
 #### Indentation on line breaks
 The indentation should be kept consistent by the use of **parenthesis** appropriately. Example:

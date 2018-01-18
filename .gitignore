@@ -76,3 +76,6 @@ aimmo-game/.hypothesis
 
 # Unity Build
 players/static/unity/**
+
+# Mac Generated Files
+.DS_Store

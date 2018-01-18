@@ -84,8 +84,8 @@ def send_world_update():
     )
 
 
-@app.route('/')
-def healthcheck():
+@app.route('/game-<game_id>')
+def healthcheck(game_id):
     return 'HEALTHY'
 
 

@@ -9,6 +9,7 @@ setup(
     install_requires=[
         'eventlet',
         'pykube',
+        'kubernetes == 4.0.0'
     ],
     tests_require=[
         'httmock',

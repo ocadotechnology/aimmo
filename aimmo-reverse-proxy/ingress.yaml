@@ -1,8 +1,0 @@
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: aimmo-ingress
-spec:
-  backend:
-    serviceName: aimmo-reverse-proxy
-    servicePort: 80
