@@ -1,2 +1,2 @@
-docker >= 1.10
+docker >= 2.7, < 2.8
 kubernetes == 4.0.0
