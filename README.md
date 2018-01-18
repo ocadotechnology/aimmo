@@ -81,6 +81,7 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
     * Linux: [Virtualbox](https://www.virtualbox.org/wiki/Downloads).
     * OSX: either [Virtualbox](https://www.virtualbox.org/wiki/Downloads) or [VMWare Fusion](http://www.vmware.com/products/fusion.html).
 * Download Docker, Minikube, and Kubectl before running the script.
+    * On Mac ([download homebrew](https://brew.sh/)) and run `brew update && brew install kubectl && brew cask install docker minikube virtualbox`.
 * Usage: `python run.py -k`. This will:
     * Run `minikube start` (if the cluster is not already running).
     * Images are built and a aimmo-game-creator is created in your cluster. You can preview this in your kubernetes dashboard. Run `minikube dashboard` to open this.
