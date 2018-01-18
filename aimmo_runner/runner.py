@@ -8,14 +8,14 @@ sys.path.append("/home/travis/build/ocadotechnology/aimmo")
 
 try:
     if os.environ['CI'] == "true":
-        _ROOT_DIR_LOCATION = os.environ['TRAVIS_BUILD_DIR']
+        ROOT_DIR_LOCATION = os.environ['TRAVIS_BUILD_DIR']
     else:
-        _ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
+        ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
 except KeyError:
-    _ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
+    ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
 
-_MANAGE_PY = os.path.join(_ROOT_DIR_LOCATION, 'example_project', 'manage.py')
-_SERVICE_PY = os.path.join(_ROOT_DIR_LOCATION, 'aimmo-game-creator', 'service.py')
+_MANAGE_PY = os.path.join(ROOT_DIR_LOCATION, 'example_project', 'manage.py')
+_SERVICE_PY = os.path.join(ROOT_DIR_LOCATION, 'aimmo-game-creator', 'service.py')
 
 PROCESSES = []
 
@@ -32,10 +32,10 @@ def create_superuser_if_missing(username, password):
 
 def run(use_minikube, server_wait=True):
     logging.basicConfig()
-    sys.path.append(os.path.join(_ROOT_DIR_LOCATION, 'example_project'))
+    sys.path.append(os.path.join(ROOT_DIR_LOCATION, 'example_project'))
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
 
-    run_command(['pip', 'install', '-e', _ROOT_DIR_LOCATION])
+    run_command(['pip', 'install', '-e', ROOT_DIR_LOCATION])
     run_command(['python', _MANAGE_PY, 'migrate', '--noinput'])
     run_command(['python', _MANAGE_PY, 'collectstatic', '--noinput'])
 
@@ -47,13 +47,8 @@ def run(use_minikube, server_wait=True):
         parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         sys.path.append(os.path.join(parent_dir, "aimmo_runner"))
 
-        print("printing current working directory")
-        print(os.getcwd())
-        print("changing it to root")
-        os.chdir(_ROOT_DIR_LOCATION)
-        print("making sure it works")
-        print(os.getcwd())
-        run_command(['pip', 'install', '-r', os.path.join(_ROOT_DIR_LOCATION,
+        os.chdir(ROOT_DIR_LOCATION)
+        run_command(['pip', 'install', '-r', os.path.join(ROOT_DIR_LOCATION,
                                                           'minikube_requirements.txt')])
         from aimmo_runner import minikube
         minikube.start()
@@ -69,12 +64,12 @@ def run(use_minikube, server_wait=True):
     server = run_command_async(['python', _MANAGE_PY, 'runserver'] + server_args)
     PROCESSES.append(server)
 
-    try:
-        game.wait()
-    except NameError:
-        pass
-
     if server_wait is True:
+        try:
+            game.wait()
+        except NameError:
+            pass
+
         server.wait()
 
     return PROCESSES

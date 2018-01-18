@@ -14,10 +14,8 @@ def delete_old_database():
 
     try:
         os.remove(path)
-        print("Delete")
         logging.debug("Database file in example_project DELETED!")
     except OSError:
-        print("no deleto")
         logging.debug("No database file found.")
         pass
 
@@ -94,8 +92,10 @@ def is_server_healthy(url):
 
     logging.debug("Checking if the server is healthy...")
     while attempts <= 45:
+        print ("attempt: ", attempts)
         try:
             status_code = requests.get(url).status_code
+            print("Printing status code: ", status_code)
             if int(str(status_code)[0]) == 2:
                 return True
         except requests.exceptions.RequestException as e:
@@ -168,20 +168,6 @@ def create_custom_game_default_settings(name):
     }
 
     headers = {'X-CSRFToken': csrftoken, 'Referer': 'http://localhost:8000/players/accounts/login/'}
-
-    response = session.post(url, data=data, headers=headers)
-
-    csrftoken = session.cookies['csrftoken']
-    headers = {'X-CSRFToken': csrftoken, 'Referer': 'http://localhost:8000/players/program/1/'}
-    url = 'http://localhost:8000/players/api/code/1/'
-
-    data = {
-        "csrfmiddlewaretoken": csrftoken,
-        "code": "class+Avatar(object)%3A%0A++++def+handle_turn(self%2C+world_view%2C+events)%3A%0A+" +
-                "+++++++from+simulation.action+import+MoveAction%0A++++++++from+simulation.direction" +
-                "+import+ALL_DIRECTIONS%0A++++++++import+random%0A%0A++++++++return+MoveAction(random" +
-                ".choice(ALL_DIRECTIONS))%0A"
-    }
 
     response = session.post(url, data=data, headers=headers)
 
