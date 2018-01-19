@@ -19,10 +19,8 @@ class TestIntegration(unittest.TestCase):
         """
         Kills the process and its children peacefully.
         """
-        print(self.processes)
 
         for process in self.processes:
-            print(process)
             try:
                 parent = psutil.Process(process.pid)
             except psutil.NoSuchProcess:
@@ -47,7 +45,7 @@ class TestIntegration(unittest.TestCase):
         delete_old_database()
 
         os.chdir(runner.ROOT_DIR_LOCATION)
-        self.processes = runner.run(use_minikube=False, server_wait=False)
+        self.processes = runner.run(use_minikube=False, server_wait=False, capture_output=True)
 
         self.assertTrue(is_server_healthy(url))
 

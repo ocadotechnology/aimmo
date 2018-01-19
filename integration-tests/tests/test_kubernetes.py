@@ -18,7 +18,7 @@ class TestKubernetes(unittest.TestCase):
         api instance from the kubernetes client.
         """
         delete_old_database()
-        self.processes = runner.run(use_minikube=True, server_wait=False)
+        self.processes = runner.run(use_minikube=True, server_wait=False, capture_output=True)
         time.sleep(120)
         kubernetes.config.load_kube_config(context='minikube')
         self.api_instance = kubernetes.client.CoreV1Api()
@@ -108,10 +108,6 @@ class TestKubernetes(unittest.TestCase):
                 temp_response = api_instance.list_namespaced_pod("default")
 
                 if timeout == 200:
-                    for item in temp_response.items:
-                        if item.metadata.name.startswith("game"):
-                            print("printing")
-                            print(item)
                     self.fail("Worker not created!")
 
                 for item in temp_response.items:

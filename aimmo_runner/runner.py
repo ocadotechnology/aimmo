@@ -30,14 +30,14 @@ def create_superuser_if_missing(username, password):
                                       password=password)
 
 
-def run(use_minikube, server_wait=True):
+def run(use_minikube, server_wait=True, capture_output=False):
     logging.basicConfig()
     sys.path.append(os.path.join(ROOT_DIR_LOCATION, 'example_project'))
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
 
-    run_command(['pip', 'install', '-e', ROOT_DIR_LOCATION])
-    run_command(['python', _MANAGE_PY, 'migrate', '--noinput'])
-    run_command(['python', _MANAGE_PY, 'collectstatic', '--noinput'])
+    run_command(['pip', 'install', '-e', ROOT_DIR_LOCATION], capture_output=capture_output)
+    run_command(['python', _MANAGE_PY, 'migrate', '--noinput'], capture_output=capture_output)
+    run_command(['python', _MANAGE_PY, 'collectstatic', '--noinput'], capture_output=capture_output)
 
     create_superuser_if_missing(username='admin', password='admin')
 
@@ -48,8 +48,8 @@ def run(use_minikube, server_wait=True):
         sys.path.append(os.path.join(parent_dir, 'aimmo_runner'))
 
         os.chdir(ROOT_DIR_LOCATION)
-        run_command(['pip', 'install', '-r', os.path.join(ROOT_DIR_LOCATION,
-                                                          'minikube_requirements.txt')])
+        run_command(['pip', 'install', '-r', os.path.join(ROOT_DIR_LOCATION, 'minikube_requirements.txt')],
+                    capture_output=capture_output)
         from aimmo_runner import minikube
         minikube.start()
 
@@ -57,11 +57,11 @@ def run(use_minikube, server_wait=True):
         os.environ['AIMMO_MODE'] = 'minikube'
     else:
         time.sleep(2)
-        game = run_command_async(['python', _SERVICE_PY, '127.0.0.1', '5000'])
+        game = run_command_async(['python', _SERVICE_PY, '127.0.0.1', '5000'], capture_output=capture_output)
         PROCESSES.append(game)
         os.environ['AIMMO_MODE'] = 'threads'
 
-    server = run_command_async(['python', _MANAGE_PY, 'runserver'] + server_args)
+    server = run_command_async(['python', _MANAGE_PY, 'runserver'] + server_args, capture_output=capture_output)
     PROCESSES.append(server)
 
     if server_wait is True:

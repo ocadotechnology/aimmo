@@ -13,7 +13,7 @@ OS = platform.system().lower()
 FILE_SUFFIX = '.exe' if OS == 'windows' else ''
 KUBECTL = os.path.join(TEST_BIN, 'kubectl%s' % FILE_SUFFIX)
 MINIKUBE = os.path.join(TEST_BIN, 'minikube%s' % FILE_SUFFIX)
-
+FNULL = open(os.devnull, 'w')
 
 def log(message):
     sys.stderr.write(message + "\n")
@@ -30,8 +30,11 @@ def run_command(args, capture_output=False):
         raise
 
 
-def run_command_async(args):
-    p = subprocess.Popen(args)
+def run_command_async(args, capture_output=False):
+    if capture_output is True:
+        p = subprocess.Popen(args, stdout=FNULL, stderr=subprocess.STDOUT)
+    else:
+        p = subprocess.Popen(args)
     return p
 
 
