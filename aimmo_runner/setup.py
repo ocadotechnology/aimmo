@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 from setuptools import find_packages, setup
 
-import versioneer
 
 setup(
-    name='aimmo',
-    cmdclass=versioneer.get_cmdclass(),
+    name='aimmo_runner',
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
@@ -20,14 +18,11 @@ setup(
         'six',
         'pykube',
         'hypothesis',
-        'flask-cors >= 3.0, < 3.1',
-        'psutil >= 5.4, < 5.5',
+        'flask-cors',
+        'psutil',
+        'docker',
+        'kubernetes',
     ],
-    tests_require=[
-        'django-setuptest',
-        'httmock',
-    ],
-    test_suite='setuptest.setuptest.SetupTestSuite',
-    version=versioneer.get_version(),
     zip_safe=False,
 )
+

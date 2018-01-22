@@ -8,8 +8,12 @@ logging.basicConfig(level=logging.WARNING)
 
 
 def delete_old_database():
+    dirname = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    filename = 'example_project/example_project/db.sqlite3'
+    path = os.path.abspath(os.path.join(dirname, filename))
+
     try:
-        os.remove("../example_project/example_project/db.sqlite3")
+        os.remove(path)
         logging.debug("Database file in example_project DELETED!")
     except OSError:
         logging.debug("No database file found.")
@@ -99,3 +103,70 @@ def is_server_healthy(url):
         time.sleep(1)
 
     return False
+
+
+def _log_in_as_a_superuser():
+    """
+    A private wrapper function for all the utilities that will
+    log a user in with the correct credentials and take care of
+    all CSRF token exchange.
+    """
+    url = 'http://localhost:8000/players/accounts/login/'
+    assert(is_server_healthy(url))
+
+    logging.debug("Creating session...")
+    session = create_session()
+
+    send_get_request(session, url)
+
+    logging.debug("Obtaining CSRF Token...")
+    csrftoken = obtain_csrftoken(session)
+
+    login_info = {
+        'username': 'admin',
+        'password': 'admin',
+        'csrfmiddlewaretoken': csrftoken,
+    }
+
+    logging.debug("Sending post response...")
+
+    response = send_post_request(session, url, login_info)
+    assert(response.status_code == 200)
+
+    return csrftoken, session
+
+
+def create_custom_game_default_settings(name):
+    """
+    Sends an appropriate POST request to create a game with a
+    given name, using default settings provided.
+    """
+    csrftoken, session = _log_in_as_a_superuser()
+
+    url = 'http://localhost:8000/players/games/new/'
+
+    print("is server healthy? ", is_server_healthy(url))
+
+    csrftoken = session.cookies['csrftoken']
+
+    data = {
+        "csrfmiddlewaretoken": csrftoken,
+        "name": name,
+        "public": "on",
+        "can_play": "1",
+        "generator": "Main",
+        "target_num_cells_per_avatar": "16",
+        "target_num_score_locations_per_avatar": "0.5",
+        "score_despawn_chance": "0.02",
+        "target_num_pickups_per_avatar": "0.5",
+        "pickup_spawn_chance": "0.02",
+        "obstacle_ratio": "0.1",
+        "start_height": "11",
+        "start_width": "11",
+    }
+
+    headers = {'X-CSRFToken': csrftoken, 'Referer': 'http://localhost:8000/players/accounts/login/'}
+
+    response = session.post(url, data=data, headers=headers)
+
+    return response

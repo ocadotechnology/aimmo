@@ -11,6 +11,8 @@ setup(
     ],
     tests_require=[
         'requests',
+        'psutil',
+        'kubernetes',
     ],
     test_suite='tests',
     zip_safe=False,

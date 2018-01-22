@@ -12,5 +12,6 @@ def main():
                                         'http://localhost:8000/players/api/games/'))
     worker_manager.run()
 
+
 if __name__ == '__main__':
     main()
