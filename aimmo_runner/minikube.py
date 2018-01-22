@@ -10,6 +10,8 @@ import yaml
 import platform
 from shell_api import (run_command, create_test_bin, BASE_DIR)
 
+MINIKUBE_EXECUTABLE = "minikube"
+
 def get_ip():
     # http://stackoverflow.com/a/28950776/671626
     os_name = platform.system()
@@ -117,10 +119,10 @@ def start():
     if platform.machine().lower() not in ('amd64', 'x86_64'):
         raise ValueError('Requires 64-bit')
     create_test_bin()
-    os.environ['MINIKUBE_PATH'] = "minikube"
-    start_cluster("minikube")
-    build_docker_images("minikube")
-    restart_ingress_addon("minikube")
+    os.environ['MINIKUBE_PATH'] = MINIKUBE_EXECUTABLE
+    start_cluster(MINIKUBE_EXECUTABLE)
+    build_docker_images(MINIKUBE_EXECUTABLE)
+    restart_ingress_addon(MINIKUBE_EXECUTABLE)
     ingress = create_ingress_yaml()
     game_creator = create_creator_yaml()
     restart_pods(game_creator, ingress)
