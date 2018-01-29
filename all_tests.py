@@ -33,6 +33,8 @@ def main():
 
 
 def run_tests(compute_coverage):
+    os.environ['DJANGO_SETTINGS_MODULE'] = "../test_settings"
+
     def app_name(app):
         return 'players' if app == '' else app
 

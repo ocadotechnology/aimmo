@@ -6,6 +6,7 @@ from django.test import Client, TestCase
 
 from players import models, views
 
+
 class TestViews(TestCase):
     CODE = 'class Avatar: pass'
 
