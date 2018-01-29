@@ -11,7 +11,7 @@ PIPELINE_ENABLED = False
 ROOT_URLCONF = 'django_autoconfig.autourlconf'
 STATIC_ROOT = '.tests_static/'
 
-GAME_SERVER_LOCATION_FUNCTION = lambda game_id: ('base %s' % game_id, 'path %s' % game_id)
+GAME_SERVER_URL_FUNCTION = lambda game_id: ('base %s' % game_id, 'path %s' % game_id)
 GAME_SERVER_PORT_FUNCTION = lambda game_id: 8001
 GAME_SERVER_SSL_FLAG = False
 
