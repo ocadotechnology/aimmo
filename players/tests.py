@@ -6,9 +6,6 @@ from django.test import Client, TestCase
 
 from players import models, views
 
-views.app_settings.GAME_SERVER_LOCATION_FUNCTION = lambda num: ('base %s' % num, 'path %s' % num)
-
-
 class TestViews(TestCase):
     CODE = 'class Avatar: pass'
 
