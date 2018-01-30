@@ -54,7 +54,7 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
 
 ## Running Locally
 * Clone the repo
-* Make and activate a virtualenv (We recommend [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/index.html)) - if you have a **Mac see the following section**.
+* Make and activate a virtualenv (We recommend [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/index.html)) - if you have a **Mac see the section at the bottom**.
     * e.g. the first time, `mkvirtualenv -a path/to/aimmo aimmo`
     * and thereafter `workon aimmo`
     * You may need to set your virtualenvwrapper version to python2. [See more here](https://stackoverflow.com/questions/32489304/change-default-python-version-with-virtualenvwrapper-virtualenv).
@@ -112,6 +112,9 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
 ```
 * [This blog post](http://mkelsey.com/2013/04/30/how-i-setup-virtualenv-and-virtualenvwrapper-on-my-mac/) may also be
  useful.
+
+## Common/Known Issues
+* If you get an error saying `no module named google.auth` after trying to run `./run.py` or `./run.py -k`, rerun the command again and the dependancy should be detected. This is a logged issue and we are working to solve it.
 
 ## How to contribute!
 __Want to help?__ You can read the [contributing guidelines][contrib-guidelines]. You can also contact us directly using this [contact form][c4l-contact-form] and we'll get in touch as soon as possible! Thanks a lot.
