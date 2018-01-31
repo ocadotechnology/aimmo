@@ -66,10 +66,6 @@ kubernetes.config.load_kube_config()
 api_instance = kubernetes.client.CoreV1Api()
 extensions_api_instance = kubernetes.client.ExtensionsV1beta1Api()
 
-# TODO later: "kubectl cluster-info" might be useful here to check status?
-
-# TODO later: restart ingress
-
 ingress = create_ingress_yaml()
 game_creator_rc = create_creator_yaml()
 
