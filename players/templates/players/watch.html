@@ -15,17 +15,17 @@
 <script type="text/javascript">
 var GAME_URL_BASE = "{{ game_url_base }}";
 var GAME_URL_PATH = "{{ game_url_path }}";
+var GAME_URL_PORT = {{ game_url_port }};
+var GAME_SSL_FLAG = "{{ game_ssl_flag }}";
+
 
 // Send host and port to Unity.
-var path = GAME_URL_PATH;
-var proc = (GAME_URL_BASE.substr("http://".length)).split(":");
-var host = proc[0];
-
 function SendAllConnect() {
-  console.log(`Sending Messages to ${host}${path}`);
-  gameInstance.SendMessage("World Controller", "SetGameURL", host);
-  gameInstance.SendMessage("World Controller", "SetGamePort", 0);
-  gameInstance.SendMessage("World Controller", "SetGamePath", path);
+  console.log(`SendAllConnect function call details: base: ${GAME_URL_BASE} path: ${GAME_URL_PATH} port: ${GAME_URL_PORT} SSL_FLAG: ${GAME_SSL_FLAG}`);
+  gameInstance.SendMessage("World Controller", "SetGameURL", GAME_URL_BASE);
+  gameInstance.SendMessage("World Controller", "SetGamePort", GAME_URL_PORT);
+  gameInstance.SendMessage("World Controller", "SetGamePath", GAME_URL_PATH);
+  gameInstance.SendMessage("World Controller", "SetSSL", GAME_SSL_FLAG);
   gameInstance.SendMessage("World Controller", "EstablishConnection");
 }
 

@@ -109,16 +109,25 @@ MIDDLEWARE_CLASSES = [
 ]
 
 
-def get_url(game):
+def get_game_url_base_and_path(game):
     if os.environ.get('AIMMO_MODE', '') == 'minikube':
         output = subprocess.check_output([os.environ['MINIKUBE_PATH'], 'service',
                                           'game-%s' % game, '--url'])
-        return 'http://dev.aimmo.codeforlife.education', '/game-%s' % game
+        return 'local.aimmo.codeforlife.education', '/game-%s' % game
     else:
-        return 'http://localhost:%d' % (6001 + int(game) * 1000), ''
+        return 'localhost', ''
 
 
-AIMMO_GAME_SERVER_LOCATION_FUNCTION = get_url
+def get_game_port(game):
+    if os.environ.get('AIMMO_MODE', '') == 'minikube':
+        return 0
+
+    return 6001 + int(game) * 1000
+
+
+AIMMO_GAME_SERVER_URL_FUNCTION = get_game_url_base_and_path
+AIMMO_GAME_SERVER_PORT_FUNCTION = get_game_port
+AIMMO_GAME_SERVER_SSL_FLAG = False
 
 try:
     from example_project.local_settings import *  # pylint: disable=E0611
