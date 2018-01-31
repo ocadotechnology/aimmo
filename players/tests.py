@@ -6,9 +6,9 @@ from django.test import Client, TestCase
 
 from players import models, views
 
-views.app_settings.GAME_SERVER_URL_FUNCTION = lambda num: ('base %s' % num, 'path %s' % num)
-views.app_settings.GAME_SERVER_PORT_FUNCTION = lambda num: 0
-views.app_settings.GAME_SERVER_SSL_FLAG = lambda ssl: True
+views.app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: ('base %s' % game_id, 'path %s' % game_id)
+views.app_settings.GAME_SERVER_PORT_FUNCTION = lambda game_id: 0
+views.app_settings.GAME_SERVER_SSL_FLAG = True
 
 
 class TestViews(TestCase):
