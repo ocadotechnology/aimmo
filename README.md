@@ -82,6 +82,7 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
     * OSX: either [Virtualbox](https://www.virtualbox.org/wiki/Downloads) or [VMWare Fusion](http://www.vmware.com/products/fusion.html).
 * Download Docker, Minikube, and Kubectl before running the script.
     * On Mac ([download homebrew](https://brew.sh/)) and run `brew update && brew install kubectl && brew cask install docker minikube virtualbox`.
+* Alter your `/etc/hosts` file by adding the following to the end of the file: `192.168.99.100 local.aimmo.codeforlife.education`. You may be required to run this with `sudo` as the file is protected.
 * Usage: `python run.py -k`. This will:
     * Run `minikube start` (if the cluster is not already running).
     * Images are built and a aimmo-game-creator is created in your cluster. You can preview this in your kubernetes dashboard. Run `minikube dashboard` to open this.
