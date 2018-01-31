@@ -54,7 +54,7 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
 
 ## Running Locally
 * Clone the repo
-* Make and activate a virtualenv (We recommend [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/index.html)) - if you have a **Mac see the section at the bottom**.
+* Make and activate a virtualenv (We recommend [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/index.html)) - if you have a **[Mac see the section at the bottom](https://github.com/ocadotechnology/aimmo#installing-virtualenvwrapper-on-mac)**.
     * e.g. the first time, `mkvirtualenv -a path/to/aimmo aimmo`
     * and thereafter `workon aimmo`
     * You may need to set your virtualenvwrapper version to python2. [See more here](https://stackoverflow.com/questions/32489304/change-default-python-version-with-virtualenvwrapper-virtualenv).
