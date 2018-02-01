@@ -2,24 +2,29 @@ from google.cloud import container_v1
 import os
 import kubernetes
 import yaml
+import requests
 
-# THIS WILL BREAK WHEN THE FILE IS MOVED. IT LOOKS FOR ROOT OF PROJECT.
+# THIS IS A TEMPORARY LOCAL SCRIPT TO DEPLOY INGRESS ON DEV. WHEN AUTOMATIC
+# DEPLOYMENT ON APP-ENGINE IS ADDED. THIS CAN BE DELETED.
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+
 
 def create_ingress_yaml():
     print("printing basedir: ", BASE_DIR)
-    path = os.path.join(BASE_DIR, 'ingress.yaml')
+    path = os.path.join(BASE_DIR, 'dev_ingress.yaml')
     print("printing path: ", path)
 
     with open(path) as yaml_file:
         content = yaml.safe_load(yaml_file.read())
     return content
 
+
 def create_creator_yaml():
     path = os.path.join(BASE_DIR, 'aimmo-game-creator', 'rc-aimmo-game-creator.yaml')
     with open(path) as yaml_file:
         content = yaml.safe_load(yaml_file.read())
     return content
+
 
 def restart_pods(game_creator, ingress_yaml):
     for rc in api_instance.list_namespaced_replication_controller('default').items:
@@ -42,23 +47,19 @@ def restart_pods(game_creator, ingress_yaml):
             namespace='default',
             body=kubernetes.client.V1DeleteOptions())
 
-    extensions_api_instance.create_namespaced_ingress("default", ingress_yaml.replace('local.aimmo.codeforlife.education', 'dev.aimmo.codeforlife.education'))
+    extensions_api_instance.create_namespaced_ingress("default", ingress_yaml)
 
     api_instance.create_namespaced_replication_controller(
         body=game_creator,
         namespace='default',
     )
 
-# You need to be authenticated automatically for this to work. Locally you
-# run "gcloud auth application-default login"
+
 client = container_v1.ClusterManagerClient()
 
 # project_id and zone can be found on the GCP UI. Ours are:
 project_id = 'decent-digit-629'
 zone = 'europe-west1-b'
-
-# list_of_clusters = client.list_clusters(project_id, zone)
-# print list_of_clusters
 
 # Load the default service account. Should be authenticated locally by the above
 # login command.
