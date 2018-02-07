@@ -117,7 +117,7 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
 ## Common/Known Issues
 * If you get an error saying `no module named google.auth` after trying to run `./run.py` or `./run.py -k`, rerun the command again and the dependency should be detected. This is a [logged issue][auth-issue] and we are working to solve it.
 [auth-issue]: https://github.com/ocadotechnology/aimmo/issues/449
-* When deploying semaphoreCI, the cache may be old and corrupt one of the packages being installed by `pip`. The error you may get may look like this `error: Error -5 while decompressing data: incomplete or truncated stream`. You need to `ssh` into the appropriate server and delete the cache directory. Another solution is to `pip install` with the `--no-cache-dir` flag but we do not recommend this.
+* When deploying with semaphoreCI, the cache may be old and corrupt one of the packages being installed by `pip`. The error you may get may look like this `error: Error -5 while decompressing data: incomplete or truncated stream`. You need to `ssh` into the appropriate server and delete the cache directory. Another solution is to `pip install` with the `--no-cache-dir` flag but we do not recommend this.
 
 ## How to contribute!
 __Want to help?__ You can read the [contributing guidelines][contrib-guidelines]. You can also contact us directly using this [contact form][c4l-contact-form] and we'll get in touch as soon as possible! Thanks a lot.
