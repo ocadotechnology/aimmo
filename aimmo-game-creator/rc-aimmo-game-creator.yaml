@@ -26,6 +26,6 @@ spec:
         - name: IMAGE_SUFFIX
           value: latest
         - name: GAME_API_URL
-          value: https://staging-dot-decent-digit-629.appspot.com/aimmo/api/games/
+          value: REPLACE_ME
         - name: WORKER_MANAGER
           value: kubernetes
