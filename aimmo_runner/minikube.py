@@ -12,6 +12,7 @@ from shell_api import (run_command, create_test_bin, BASE_DIR)
 
 MINIKUBE_EXECUTABLE = "minikube"
 
+
 def get_ip():
     # http://stackoverflow.com/a/28950776/671626
     os_name = platform.system()
@@ -48,7 +49,7 @@ def create_ingress_yaml():
 def create_creator_yaml():
     orig_path = os.path.join(BASE_DIR, 'aimmo-game-creator', 'rc-aimmo-game-creator.yaml')
     with open(orig_path) as orig_file:
-        content = yaml.safe_load(orig_file.read().replace('latest', 'test').replace('https://staging-dot-decent-digit-629.appspot.com/aimmo', 'http://%s:8000/players' % get_ip()))
+        content = yaml.safe_load(orig_file.read().replace('latest', 'test').replace('REPLACE_ME', 'http://%s:8000/players' % get_ip()))
     return content
 
 
