@@ -82,7 +82,7 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
     * OSX: either [Virtualbox](https://www.virtualbox.org/wiki/Downloads) or [VMWare Fusion](http://www.vmware.com/products/fusion.html).
 * Download Docker, Minikube, and Kubectl before running the script.
     * On Mac ([download homebrew](https://brew.sh/)) and run `brew update && brew install kubectl && brew cask install docker minikube virtualbox`.
-    * On Ubuntu ([download snap](https://snapcraft.io/)) and run `sudo snap install kubectl --classic` and follow the ([docker installation instructions](https://docs.docker.com/install/linux/docker-ce/ubuntu/)).
+    * On Ubuntu ([download snap](https://snapcraft.io/)) and run `sudo snap install kubectl --classic` then follow the ([docker installation instructions](https://docs.docker.com/install/linux/docker-ce/ubuntu/)).
     * On Windows ([download chocolatey](https://chocolatey.org/)) and run `choco install kubernetes-cli` followed by the ([docker installation instructions for Windows](https://docs.docker.com/docker-for-windows/)).
 * Alter your `/etc/hosts` file by adding the following to the end of the file: `192.168.99.100 local.aimmo.codeforlife.education`. You may be required to run this with `sudo` as the file is protected.
 * Usage: `python run.py -k`. This will:
