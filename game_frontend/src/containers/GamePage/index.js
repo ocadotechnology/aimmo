@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { actions } from '../../redux/features/GhibliMovies'
-import Movie from '../../components/Movie'
+import { actions } from 'features/GhibliMovies'
+import Movie from 'components/Movie'
 
 class GamePage extends Component {
   render () {
