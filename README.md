@@ -82,6 +82,8 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
     * OSX: either [Virtualbox](https://www.virtualbox.org/wiki/Downloads) or [VMWare Fusion](http://www.vmware.com/products/fusion.html).
 * Download Docker, Minikube, and Kubectl before running the script.
     * On Mac ([download homebrew](https://brew.sh/)) and run `brew update && brew install kubectl && brew cask install docker minikube virtualbox`.
+    * On Ubuntu ([download snap](https://snapcraft.io/)) and run `sudo snap install kubectl --classic` and follow the ([docker installation instructions](https://docs.docker.com/install/linux/docker-ce/ubuntu/)).
+    * On Windows ([download chocolatey](https://chocolatey.org/)) and run `choco install kubernetes-cli` followed by the ([docker installation instructions for Windows](https://docs.docker.com/docker-for-windows/)).
 * Alter your `/etc/hosts` file by adding the following to the end of the file: `192.168.99.100 local.aimmo.codeforlife.education`. You may be required to run this with `sudo` as the file is protected.
 * Usage: `python run.py -k`. This will:
     * Run `minikube start` (if the cluster is not already running).
@@ -91,9 +93,9 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
 * Run the same command to update all the images.
 
 #### Interacting with the cluster
-* `kubectl` and `minikube` (both in the `test-bin` folder, note that this is not on your PATH) can be used to interact with the cluster.
+* `kubectl` and `minikube` can be used to interact with the cluster.
 * Running either command without any options will give the most useful commands.
-* `minikube dashboard` to open the kubernetes dashboard in your def
+* `minikube dashboard` to open the kubernetes dashboard in your browser.
 
 ## Testing Locally
 *`./all_tests.py` will run all tests (note that this is several pages of output).
