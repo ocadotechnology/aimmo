@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { actions } from 'features/GhibliMovies'
 import Movie from 'components/Movie'
@@ -23,6 +24,11 @@ class GamePage extends Component {
       </div>
     )
   }
+}
+
+GamePage.propTypes = {
+  movies: PropTypes.string,
+  fetchMovies: PropTypes.func
 }
 
 const mapStateToProps = state => {
