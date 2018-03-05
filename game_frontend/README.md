@@ -10,8 +10,11 @@ This folder contains the frontend for the AI:MMO game. It is written in single p
 
 ### Prerequisites
 
-- Node && npm
-- (Optional) yarn
+- [Node && npm](https://nodejs.org/en/download/)
+- [Parcel](https://parceljs.org/)
+- (Recommended) [yarn](https://yarnpkg.com/en/)
+
+### Build dependencies
 
 Once you have cloned this repository, open up your terminal and `cd` into this folder and run:
 
@@ -24,6 +27,20 @@ if you don't have yarn you can run use npm directly instead:
 ```
 npm install
 ```
+
+## Usage
+
+### Standalone
+
+It's possible to run the frontend by itself. To do so, run the command below in this folder:
+
+```
+parcel index.html
+```
+
+### With Django
+
+Coming soon...
 
 ## How does it all work?
 
