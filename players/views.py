@@ -174,3 +174,17 @@ def add_game(request):
     else:
         form = forms.AddGameForm()
     return render(request, 'players/add_game.html', {'form': form})
+
+
+def current_avatar_in_game(request, game_id):
+    game = get_object_or_404(Game, id=game_id)
+
+    if not game.can_user_play(request.user.id):
+        return HttpResponse('User unauthorized to play', status=401)
+
+    try:
+        avatar = game.avatar_set.get(owner=request.user.id)
+    except Avatar.DoesNotExist:
+        return HttpResponse('Avatar does not exist for this user', status=404)
+
+    return JsonResponse({'current_avatar_id' : avatar.id})
