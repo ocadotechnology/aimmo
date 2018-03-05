@@ -15,7 +15,10 @@ People program Avatars. Avatars play the game. A player's aim is to create a bet
 By getting people to compete to program better Avatars, we can teach them all sorts of algorithms and optimisation techniques. For example, a really good Avatar might incorporate AI techniques such as neural networks in order to make more optimal decisions.
 
 ## The Game
-The world is a 2D grid. Some cells are impassable. Some cells generate score. Some cells contain pick-ups.
+
+**Note** the game frontend lives [here](https://github.com/ocadotechnology/aimmo/tree/react_integration/game_frontend)
+
+The world is a isometric 3D grid. Some cells are impassable. Some cells generate score. Some cells contain pick-ups.
 
 There are other Avatars in the world. The more Avatars there are, the bigger the world gets.
 
