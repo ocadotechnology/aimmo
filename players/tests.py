@@ -263,6 +263,10 @@ class TestViews(TestCase):
         c.post(reverse('aimmo/complete_game', kwargs={'id': 1}), 'static', content_type='application/json')
         self.assertEqual(models.Game.objects.get(id=1).static_data, 'static')
 
+    def test_current_avatar_api_for_non_existant_game(self):
+        c = Client()
+        response = c.get(reverse('aimmo/current_avatar_in_game', kwargs={'game_id': 1}))
+        self.assertEqual(response.status_code, 404)
 
 
 class TestModels(TestCase):
