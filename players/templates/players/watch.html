@@ -17,6 +17,25 @@ var GAME_URL_BASE = "{{ game_url_base }}";
 var GAME_URL_PATH = "{{ game_url_path }}";
 var GAME_URL_PORT = {{ game_url_port }};
 var GAME_SSL_FLAG = "{{ game_ssl_flag }}";
+var GAME_ID = {{ game_id }};
+
+// Sends a AJAX GET request to
+function GetCurrentAvatarID() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'api/games/{{ game_id }}/current_avatar/');
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            console.log(`I GOT A 200 YEOOO. My game id is: ${GAME_ID} and avatar: ${xhr.responseText}`);
+        }
+        else {
+            alert('Request failed.  Returned status of ' + xhr.status);
+        }
+    };
+
+    xhr.send();
+}
+
+GetCurrentAvatarID();
 
 
 // Send host and port to Unity.
