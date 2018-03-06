@@ -23,8 +23,9 @@
     "eslint-plugin-standard": "^3.0.1",
     "jest": "^22.4.0",
     "module-resolver": "^1.0.0",
-    "sinon": "^4.3.0",
-    "react-test-renderer": "^16.2.0"
+    "react-test-renderer": "^16.2.0",
+    "redux-test-utils": "^0.2.2",
+    "sinon": "^4.3.0"
   },
   "dependencies": {
     "react": "^16.2.0",
