@@ -15,6 +15,7 @@ export class GamePage extends Component {
       <div>
         <div>Welcome to the AIMMO game screen</div>
         <Button
+          id='fetch-movies-button'
           onClick={() => { this.props.fetchMovies() }}>
           Get the GhibliMovies!
         </Button>

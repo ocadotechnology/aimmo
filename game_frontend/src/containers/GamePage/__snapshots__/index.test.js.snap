@@ -24,6 +24,7 @@ ShallowWrapper {
           Welcome to the AIMMO game screen
         </div>,
         <styled.button
+          id="fetch-movies-button"
           onClick={[Function]}
         >
           Get the GhibliMovies!
@@ -50,6 +51,7 @@ ShallowWrapper {
         "nodeType": "class",
         "props": Object {
           "children": "Get the GhibliMovies!",
+          "id": "fetch-movies-button",
           "onClick": [Function],
         },
         "ref": null,
@@ -81,6 +83,7 @@ ShallowWrapper {
             Welcome to the AIMMO game screen
           </div>,
           <styled.button
+            id="fetch-movies-button"
             onClick={[Function]}
           >
             Get the GhibliMovies!
@@ -107,6 +110,7 @@ ShallowWrapper {
           "nodeType": "class",
           "props": Object {
             "children": "Get the GhibliMovies!",
+            "id": "fetch-movies-button",
             "onClick": [Function],
           },
           "ref": null,

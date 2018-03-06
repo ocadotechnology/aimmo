@@ -30,4 +30,17 @@ describe('<GamePage />', () => {
 
     expect(component).toMatchSnapshot()
   })
+
+  it('should call fetchMovies when I click on the button', () => {
+    const fetchMovies = jest.fn()
+    const props = {
+      movies: [],
+      fetchMovies
+    }
+
+    const component = shallow(<GamePage {...props} />)
+
+    component.find('#fetch-movies-button').simulate('click')
+    expect(fetchMovies.mock.calls.length).toBe(1)
+  })
 })
