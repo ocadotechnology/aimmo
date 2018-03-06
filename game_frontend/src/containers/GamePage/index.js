@@ -5,7 +5,7 @@ import { actions } from 'features/GhibliMovies'
 import Movie from 'components/Movie'
 import Button from 'components/Button'
 
-class GamePage extends Component {
+export class GamePage extends Component {
   render () {
     const movieItems = this.props.movies.map(movie =>
       <Movie key={movie.id} movie={movie} />
@@ -28,7 +28,7 @@ class GamePage extends Component {
 }
 
 GamePage.propTypes = {
-  movies: PropTypes.string,
+  movies: PropTypes.array,
   fetchMovies: PropTypes.func
 }
 
