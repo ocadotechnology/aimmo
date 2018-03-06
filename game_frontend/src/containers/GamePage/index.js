@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { actions } from 'features/GhibliMovies'
 import Movie from 'components/Movie'
+import Button from 'components/Button'
 
 class GamePage extends Component {
   render () {
@@ -13,10 +14,10 @@ class GamePage extends Component {
     return (
       <div>
         <div>Welcome to the AIMMO game screen</div>
-        <button
+        <Button
           onClick={() => { this.props.fetchMovies() }}>
           Get the GhibliMovies!
-        </button>
+        </Button>
         <ul>
           {movieItems}
         </ul>
