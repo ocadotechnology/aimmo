@@ -5,7 +5,8 @@
       "root": ["./src"],
       "alias": {
         "components": "./src/components",
-        "features": "./src/redux/features"
+        "features": "./src/redux/features",
+        "containers": "./src/containers",
       }
     }]
   ]
