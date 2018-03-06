@@ -12,26 +12,6 @@ const singleMovie = {
 }
 
 describe('<Movie />', () => {
-  it('should contain the string Test Title', () => {
-    const wrapper = shallow(<Movie movie={singleMovie} />)
-    expect(wrapper.text()).toContain('Test Title')
-  })
-
-  it('should contain the string Test Director', () => {
-    const wrapper = shallow(<Movie movie={singleMovie} />)
-    expect(wrapper.text()).toContain('Test Director')
-  })
-
-  it('should contain the string Test Producer', () => {
-    const wrapper = shallow(<Movie movie={singleMovie} />)
-    expect(wrapper.text()).toContain('Test Producer')
-  })
-
-  it('should contain the string 20/03/2018', () => {
-    const wrapper = shallow(<Movie movie={singleMovie} />)
-    expect(wrapper.text()).toContain('20/03/2018')
-  })
-
   it('renders correctly', () => {
     const tree = renderer.create(<Movie movie={singleMovie} />).toJSON()
     expect(tree).toMatchSnapshot()
