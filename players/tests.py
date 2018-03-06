@@ -268,6 +268,28 @@ class TestViews(TestCase):
         response = c.get(reverse('aimmo/current_avatar_in_game', kwargs={'game_id': 1}))
         self.assertEqual(response.status_code, 404)
 
+    def test_current_avatar_api_for_unauthorised_games(self):
+        c = Client()
+        self.game.public = False
+        self.game.can_play = [self.user]
+        self.game.save()
+        c = self.login()
+        response = c.get(reverse('aimmo/current_avatar_in_game', kwargs={'game_id': 1}))
+        self.assertEqual(response.status_code, 401)
+
+    def test_current_avatar_api_for_two_users(self):
+        first_user = self.login()
+        second_user = User.objects.create_user('test2', 'test2@example.com', 'password2')
+        second_user.save()
+
+        self.game.can_play = [first_user, second_user]
+
+        first_response = first_user.get(reverse('aimmo/current_avatar_in_game', kwargs={'game_id': 1}))
+        self.assertEqual(first_response.json()['current_avatar_id'], 1)
+
+        second_response = second_user.get(reverse('aimmo/current_avatar_in_game', kwargs={'game_id': 1}))
+        self.assertEqual(second_response.json()['current_avatar_id'], 2)
+
 
 class TestModels(TestCase):
     @classmethod
