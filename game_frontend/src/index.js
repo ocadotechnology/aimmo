@@ -2,7 +2,7 @@ import React from 'react'
 import {render} from 'react-dom'
 import 'rxjs'
 
-import { Provider as ReduxProvider } from 'react-redux'
+import { Provider } from 'react-redux'
 
 import GamePage from './containers/GamePage'
 import configureStore from './redux/store'
@@ -15,9 +15,9 @@ const initialState = {
 const reduxStore = configureStore(initialState)
 
 const RootJSX = () => (
-  <ReduxProvider store={reduxStore}>
+  <Provider store={reduxStore}>
     <GamePage />
-  </ReduxProvider>
+  </Provider>
 )
 
 const root = document.getElementById('root')
