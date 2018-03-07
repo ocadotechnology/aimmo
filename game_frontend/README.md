@@ -10,9 +10,9 @@ This folder contains the frontend for the AI:MMO game. It is written in single p
 
 ### Prerequisites
 
-- [Node && npm](https://nodejs.org/en/download/)
+- [Node](https://nodejs.org/en/download/)
 - [Parcel](https://parceljs.org/)
-- (Recommended) [yarn](https://yarnpkg.com/en/)
+- [yarn](https://yarnpkg.com/en/)
 
 ### Build dependencies
 
@@ -20,12 +20,6 @@ Once you have cloned this repository, open up your terminal and `cd` into this f
 
 ```
 yarn
-```
-
-if you don't have yarn you can run use npm directly instead:
-
-```
-npm install
 ```
 
 ## Usage
@@ -42,13 +36,19 @@ parcel index.html
 
 Coming soon...
 
+### Running Tests
+
+```
+yarn test
+```
+
 ## How does it all work?
 
 A quick outline of the sequence of calls and state management can be useful to understand the
-way Redux, RxJS and React can work together to provide our front-end efficiently. This is written
-as a **general use case and not connected to our project in any way** (with some examples).
+way Redux, RxJS and React can work together to provide our front-end efficiently.
 
-[We recommend reading this article before seeing our architecture.](https://medium.freecodecamp.org/scaling-your-redux-app-with-ducks-6115955638be)
+We use [re-ducks](https://medium.freecodecamp.org/scaling-your-redux-app-with-ducks-6115955638be) for our architecture.
+
 ### HTML Entry
 The entry point to our application is an `index.html` file. This lives at the root of the front-end folder.
 The most important part is that it defines a javascript index
