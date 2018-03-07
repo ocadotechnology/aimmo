@@ -282,7 +282,7 @@ class TestViews(TestCase):
         second_user = User.objects.create_user('test2', 'test2@example.com', 'password2')
         second_user.save()
 
-        self.game.can_play = [first_user, second_user]
+        self.game.can_play = [first_user.id, second_user.id]
 
         first_response = first_user.get(reverse('aimmo/current_avatar_in_game', kwargs={'game_id': 1}))
         self.assertEqual(first_response.json()['current_avatar_id'], 1)
