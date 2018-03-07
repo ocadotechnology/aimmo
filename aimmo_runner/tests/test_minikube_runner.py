@@ -1,19 +1,12 @@
 import logging
 import mock
 from unittest import TestCase
-from aimmo_runner.minikube import get_ip, create_creator_yaml
+from aimmo_runner.minikube import create_creator_yaml
 
 logging.basicConfig(level=logging.WARNING)
 
 
 class TestMinikubeRunner(TestCase):
-
-    @mock.patch('aimmo_runner.minikube.get_ip', return_value='127.0.0.1')
-    def test_get_ip(self, mocked_get_ip_func):
-        """
-        In minikube mode we want this to return localhost for other utilities to work.
-        """
-        self.assertEqual(get_ip(), '127.0.0.1')
 
     @mock.patch('aimmo_runner.minikube.get_ip', return_value='127.0.0.1')
     def test_game_creator_function_creates_correct_game_url(self, mocked_get_ip_func):
