@@ -127,6 +127,8 @@ def _render_game(request, game):
     context['game_url_port'] = app_settings.GAME_SERVER_PORT_FUNCTION(game.id)
     context['game_ssl_flag'] = app_settings.GAME_SERVER_SSL_FLAG
     context['game_id'] = game.id
+    context['web_host_base'] = request.get_host()
+
     return render(request, 'players/viewer.html', context)
 
 
