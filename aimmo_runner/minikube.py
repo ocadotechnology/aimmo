@@ -49,7 +49,7 @@ def create_ingress_yaml():
 def create_creator_yaml():
     orig_path = os.path.join(BASE_DIR, 'aimmo-game-creator', 'rc-aimmo-game-creator.yaml')
     with open(orig_path) as orig_file:
-        content = yaml.safe_load(orig_file.read().replace('latest', 'test').replace('REPLACE_ME', 'http://%s:8000/players' % get_ip()))
+        content = yaml.safe_load(orig_file.read().replace('latest', 'test').replace('REPLACE_ME', 'http://%s:8000/players/api/games/' % get_ip()))
     return content
 
 
