@@ -298,8 +298,8 @@ class TestViews(TestCase):
         second_response = client_two.get(reverse('aimmo/current_avatar_in_game', kwargs={'game_id': 1}))
 
         # Status code starts with 2, success response can be different than 200.
-        self.assertEqual(str(first_response.status_code)[0], 2)
-        self.assertEqual(str(first_response.status_code)[0], 2)
+        self.assertEqual(int(str(first_response.status_code)[0]), 2)
+        self.assertEqual(int(str(first_response.status_code)[0]), 2)
 
         # JSON is returned as string so needs to be evaluated.
         first_id = ast.literal_eval(first_response.content)['current_avatar_id']
