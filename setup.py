@@ -23,6 +23,7 @@ setup(
         'flask-cors >= 3.0, < 3.1',
         'psutil >= 5.4, < 5.5',
         'mock',
+        'docker',
     ],
     tests_require=[
         'django-setuptest',
