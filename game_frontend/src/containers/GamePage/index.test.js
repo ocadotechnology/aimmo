@@ -1,8 +1,6 @@
 /* eslint-env jest */
-// import { shallowWithStore } from 'enzyme'
-// import { createMockStore } from 'redux-te'
 import ConnectedGamePage, { GamePage } from 'containers/GamePage'
-import { createMockStore } from 'redux-test-utils'
+import configureStore from 'redux-mock-store'
 import { shallow } from 'enzyme'
 import shallowWithStore from 'containers/testHelpers/shallowWithStore'
 import React from 'react'
@@ -15,7 +13,7 @@ describe('<GamePage />', () => {
       }
     }
 
-    const store = createMockStore(testState)
+    const store = configureStore([])(testState)
     const component = shallowWithStore(<ConnectedGamePage />, store)
 
     expect(component.dive()).toBeDefined()

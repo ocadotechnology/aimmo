@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { actions } from 'features/GhibliMovies'
@@ -12,7 +12,7 @@ export class GamePage extends Component {
     )
 
     return (
-      <div>
+      <Fragment>
         <div>Welcome to the AIMMO game screen</div>
         <Button
           id='fetch-movies-button'
@@ -22,8 +22,7 @@ export class GamePage extends Component {
         <ul>
           {movieItems}
         </ul>
-
-      </div>
+      </Fragment>
     )
   }
 }

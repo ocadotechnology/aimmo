@@ -1,11 +1,10 @@
-import { ajax } from 'rxjs/observable/dom/ajax'
 import actions from './actions'
 import types from './types'
 
-const fetchMoviesEpic = action$ =>
+const fetchMoviesEpic = (action$, store, { getJSON }) =>
   action$.ofType(types.FETCH_MOVIES)
     .mergeMap(action =>
-      ajax.getJSON('https://ghibliapi.herokuapp.com/films')
+      getJSON('https://ghibliapi.herokuapp.com/films')
         .map(response => actions.receiveMovies(response))
     )
 
