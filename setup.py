@@ -24,6 +24,8 @@ setup(
         'psutil >= 5.4, < 5.5',
         'mock',
         'docker',
+        'kubernetes',
+        'PyYAML',
     ],
     tests_require=[
         'django-setuptest',
