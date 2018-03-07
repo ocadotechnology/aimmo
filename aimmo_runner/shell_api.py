@@ -15,6 +15,7 @@ KUBECTL = os.path.join(TEST_BIN, 'kubectl%s' % FILE_SUFFIX)
 MINIKUBE = os.path.join(TEST_BIN, 'minikube%s' % FILE_SUFFIX)
 FNULL = open(os.devnull, 'w')
 
+
 def log(message):
     sys.stderr.write(message + "\n")
 

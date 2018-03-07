@@ -26,6 +26,10 @@ setup(
     tests_require=[
         'django-setuptest',
         'httmock',
+        'mock == 2.0.0',
+        'docker == 2.7.0',
+        'kubernetes == 4.0.0',
+        'PyYAML == 3.12',
     ],
     test_suite='setuptest.setuptest.SetupTestSuite',
     version=versioneer.get_version(),

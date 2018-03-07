@@ -26,6 +26,6 @@ spec:
         - name: IMAGE_SUFFIX
           value: latest
         - name: GAME_API_URL
-          value: REPLACE_ME
+          value: REPLACE_ME/api/games
         - name: WORKER_MANAGER
           value: kubernetes
