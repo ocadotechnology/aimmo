@@ -92,7 +92,7 @@ class WorkerManager(object):
 
         # Spawn worker
         LOGGER.info("Spawning worker for game %s" % game_data['name'])
-        game_data['GAME_API_URL'] = '{}{}'.format(self.games_url, game_id)
+        game_data['GAME_API_URL'] = '{}{}/'.format(self.games_url, game_id)
         self.create_worker(game_id, game_data)
 
     def _parallel_map(self, func, *iterable_args):
