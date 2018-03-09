@@ -45,12 +45,12 @@ function GetCurrentAvatarID(gameInstance) {
 // Send host and port to Unity.
 function SendAllConnect() {
   console.log(`SendAllConnect function call details: base: ${GAME_URL_BASE} path: ${GAME_URL_PATH} port: ${GAME_URL_PORT} SSL_FLAG: ${GAME_SSL_FLAG}`);
+  GetCurrentAvatarID(gameInstance);
   gameInstance.SendMessage("World Controller", "SetGameURL", GAME_URL_BASE);
   gameInstance.SendMessage("World Controller", "SetGamePort", GAME_URL_PORT);
   gameInstance.SendMessage("World Controller", "SetGamePath", GAME_URL_PATH);
   gameInstance.SendMessage("World Controller", "SetSSL", GAME_SSL_FLAG);
   gameInstance.SendMessage("World Controller", "EstablishConnection");
-  GetCurrentAvatarID(gameInstance);
 }
 
 </script>
