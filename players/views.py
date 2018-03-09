@@ -50,7 +50,8 @@ def code(request, id):
     if request.method == 'POST':
         avatar.code = request.POST['code']
         avatar.save()
-        return _post_code_success_response('Your code was saved!<br><br><a href="%s">Watch</a>' % reverse('aimmo/watch', kwargs={'id': game.id}))
+        return _post_code_success_response(
+            'Your code was saved!<br><br><a href="%s">Watch</a>' % reverse('aimmo/watch', kwargs={'id': game.id}))
     else:
         return HttpResponse(avatar.code)
 
@@ -127,6 +128,8 @@ def _render_game(request, game):
     context['game_url_port'] = app_settings.GAME_SERVER_PORT_FUNCTION(game.id)
     context['game_ssl_flag'] = app_settings.GAME_SERVER_SSL_FLAG
     context['game_id'] = game.id
+    context['web_host_base'] = request.get_host()
+
     return render(request, 'players/viewer.html', context)
 
 
@@ -148,7 +151,7 @@ def watch_level(request, num):
 
 
 def _add_and_return_level(num, user):
-    game = Game(generator='Level'+num, name='Level '+num, public=False, main_user=user)
+    game = Game(generator='Level' + num, name='Level ' + num, public=False, main_user=user)
     try:
         game.save()
     except ValidationError as e:
@@ -174,3 +177,17 @@ def add_game(request):
     else:
         form = forms.AddGameForm()
     return render(request, 'players/add_game.html', {'form': form})
+
+
+def current_avatar_in_game(request, game_id):
+    game = get_object_or_404(Game, id=game_id)
+
+    if not game.can_user_play(request.user.id):
+        return HttpResponse('User unauthorized to play', status=401)
+
+    try:
+        avatar = game.avatar_set.get(owner=request.user.id)
+    except Avatar.DoesNotExist:
+        return HttpResponse('Avatar does not exist for this user', status=404)
+
+    return JsonResponse({'current_avatar_id': avatar.id})

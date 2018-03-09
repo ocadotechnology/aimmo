@@ -17,11 +17,35 @@ var GAME_URL_BASE = "{{ game_url_base }}";
 var GAME_URL_PATH = "{{ game_url_path }}";
 var GAME_URL_PORT = {{ game_url_port }};
 var GAME_SSL_FLAG = "{{ game_ssl_flag }}";
+var GAME_ID = {{ game_id }};
+var WEB_HOST_URL = "{{ web_host_base }}";
+
+
+// Sends a AJAX GET request to
+function GetCurrentAvatarID(gameInstance) {
+    var xhr = new XMLHttpRequest();
+    var protocol = (GAME_SSL_FLAG) ? 'http://' : 'https://';
+    var current_avatar_url = `${protocol}${WEB_HOST_URL}/players/api/games/${GAME_ID}/current_avatar/`;
+
+    xhr.open('GET', current_avatar_url);
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            var CURRENT_AVATAR_ID = JSON.parse(xhr.responseText).current_avatar_id;
+            gameInstance.SendMessage("World Controller", "SetCurrentAvatarID", CURRENT_AVATAR_ID)
+        }
+        else {
+            console.warn('Current avatar ID not resolved! Returned status:' + xhr.status);
+        }
+    };
+
+    xhr.send();
+}
 
 
 // Send host and port to Unity.
 function SendAllConnect() {
   console.log(`SendAllConnect function call details: base: ${GAME_URL_BASE} path: ${GAME_URL_PATH} port: ${GAME_URL_PORT} SSL_FLAG: ${GAME_SSL_FLAG}`);
+  GetCurrentAvatarID(gameInstance);
   gameInstance.SendMessage("World Controller", "SetGameURL", GAME_URL_BASE);
   gameInstance.SendMessage("World Controller", "SetGamePort", GAME_URL_PORT);
   gameInstance.SendMessage("World Controller", "SetGamePath", GAME_URL_PATH);
