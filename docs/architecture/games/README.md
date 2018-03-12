@@ -3,13 +3,13 @@
 ---
 
 ## Game Components
-- [Avatar](FAQ.md) 
-- [Action](FAQ.md) 
-- [Map Generator](FAQ.md) 
-- [Pickups](FAQ.md) 
-- [Turn Manager](FAQ.md) 
-- [Worker Manager](FAQ.md) 
-- [World Map](FAQ.md)
+- [Avatar](avatar.md) 
+- [Actions](actions.md) 
+- [Map Generator](generators.md) 
+- [Pickups](pickups.md) 
+- [Turn Manager](turn-manager.md) 
+- [Worker Manager](worker-manager.md) 
+- [World Map](world-map.md)
 
 ## In Short
 - Maintains game state
