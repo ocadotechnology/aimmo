@@ -6,19 +6,19 @@ This section describes the whole game architecture and how things are structured
 
 ## Components
 
-[The UI (`players` directory)](...) 
+[The UI (`players` directory)](ui/README.md) 
 
 A Django app used for the front-end and database interaction (one globally). There are static Unity build files to render the game in browser.
 
-[Games (`aimmo-game` directory)](...)
+[Games (`aimmo-game` directory)](games/README.md)
 
 Holds and updates the game state (one per game).
 
-[Game Creator (`aimmo-game-creator` directory)](...)
+[Game Creator (`aimmo-game-creator` directory)](game-creator/README.md)
 
 Responsible for creating games (one globally).
 
-[Workers (`aimmo-game-worker` directory)](...)
+[Workers (`aimmo-game-worker` directory)](workers/README.md)
 
 Contains the code for an avatar which is given a game state and returns the avatar's action for that turn.
 
