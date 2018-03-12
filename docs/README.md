@@ -3,4 +3,38 @@
 ---
 
 ## Getting started
+The first required steps to get familiar with the project and run it locally.
 - [FAQ](FAQ.md) - Frequently asked questions with answers.
+- [Usage](usage.md) - How to get the project up and running.
+- [Common Issues](common-issues.md) - Common issues and their solutions.
+
+## Architecture
+
+Architecture of the project. How things are structured, what components exist, etc.
+- [Architecture](architecture/README.md)
+    - [Game Creator](architecture/game-creator/README.md)
+    - [Games](architecture/games/README.md)
+    - [Workers](architecture/workers/README.md)
+    - [UI](architecture/ui/README.md)
+
+
+### Infrastucture
+
+We touch on the technologies that support the project essential to the component communication.
+- [Infrastructure](infrastructure/README.md)
+
+### Testing 
+
+Levels of testing within AI:MMO.
+
+- [Testing](testing/README.md)
+    - [Manual Test Plan](testing/test-plan.md)
+    - [Automatic Test Plan](testing/automatic-testing.md)
+
+### Deployment
+
+The process of continuous integration of our project onto our cloud.
+
+- [Deployment](deployment/README.md)
+    - [Sequence of Deployment Events](deployment/deployment-events.md)
+    - [Admin NGINX & SSL setup on GCP](deployment/nginx-setup.md)
