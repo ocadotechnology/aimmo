@@ -32,7 +32,7 @@ Even with these basic mechanics, there is quite a lot of complexity in creating 
 
 
 ## Quick Start
-1. Clone the repo. Preferably the master branch.
+1. **Fork** the repo.
 2. Take a look at our [usage guidelines](docs/usage.md) to see how to get started.
 
 ## Architecture

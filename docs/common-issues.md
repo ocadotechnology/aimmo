@@ -11,6 +11,8 @@ detected. This is a [logged issue](https://github.com/ocadotechnology/aimmo/issu
 
 ## When deploying I get `error: Error -5 while decompressing data (...)`
 
+**This issue can only be solved by a repository admin.**
+
 When deploying with semaphoreCI, the cache may be old and corrupt one of the packages being installed by `pip`. 
 
 The error you may get may look like this `error: Error -5 while decompressing data: incomplete or truncated stream`. 
