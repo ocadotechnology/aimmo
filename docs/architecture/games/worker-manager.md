@@ -2,18 +2,18 @@
 
 ---
 
-The worker manager runs room loop responsible for updating the user's code, user arrival and departure. It is a daemon that runs as part of the [Game](Game) service.
+The worker manager runs room loop responsible for updating the user's code, user arrival and departure. It is a daemon that runs as part of the [Game](README.md) service.
 
 The loop runs as follows:
 * remove the users with different code
 * add missing users
 * delete extra users: i.e. users that have no code
-* update main avatar -- obsolete, see [Flask Microservice](flask-microservice)
+* update main avatar -- obsolete
 
-At each update the list of users is pulled from the [Django game API](game-api), which retrieves the data from the database.
+At each update the list of users is pulled from the django game API, which retrieves the data from the database.
 
 **Adding users**(function called spawn) is a central part of the work-flow. A user is added as follows:
-* kill the old [Worker](worker)
+* kill the old worker
 * pull the code from the database
 * add a new Worker (with the new code)
 * add the **avatar** back into the game 
