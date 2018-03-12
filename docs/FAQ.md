@@ -16,9 +16,7 @@ This repository hosts the source code of the **AI:MMO game**. AI:MMO is a follow
     - the main portal (as well as registration, dashboards, materials...), [Code For Life Portal](https://github.com/ocadotechnology/codeforlife-portal)
     - the first coding game of Code for Life for primary schools, [Rapid Router](https://github.com/ocadotechnology/rapid-router)
     - the [deployment code for Google App Engine](https://github.com/ocadotechnology/codeforlife-deploy-appengine)
-    
-You can read more about this in our [README](readme.md).
-    
+        
 ## I have an issue with the project, who do I contact, what do I do?
 The first step is to [**check the common/known issues**](common-issues.md) page to see if your issue is a common one and we know about
 the solution. 
