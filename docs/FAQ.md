@@ -1,4 +1,4 @@
-[Documentation Table Of Contents](TOC.md)
+[Documentation Table Of Contents](README.md)
 # Frequently Asked Questions
 - [What is this project? Who are Code for Life?](#what-is-this-project?-who-are-code-for-life?)
 - [I have an issue with the project, who do I contact, what do I do?](#i-have-an-issue-with-the-project,-who-do-i-contact,-what-do-i-do?)
