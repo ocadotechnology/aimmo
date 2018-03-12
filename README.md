@@ -11,7 +11,7 @@ By getting people to compete to program better Avatars, we can teach them all so
 2. Take a look at our [usage guidelines](docs/usage.md) to see how to get started.
 
 ## Documentation
-Take a look at our [documentation table of contents][docs/FAQ.md]. This is available offline along with
+Take a look at our [documentation table of contents](docs/FAQ.md). This is available offline along with
 the project.
 
 ## How to contribute!
