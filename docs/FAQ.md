@@ -8,7 +8,7 @@
 
 ## What is Code For Life? Who are Code for Life?
 - Ocado Technology's FREE Code for Life initiative has been developed to inspire the next generation of computer scientists and to help teachers deliver the computing curriculum.
-This repository hosts the source code of the **AI:MMO game**. AI:MMO is aimed as a follow-on from Rapid Router to teach computing to secondary-school age children.
+This repository hosts the source code of the **AI:MMO game**. AI:MMO is a follow-on from Rapid Router to teach computing to secondary-school age children.
 
 - It's ***FREE*** forever!
 
