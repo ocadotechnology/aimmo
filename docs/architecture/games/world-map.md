@@ -11,7 +11,6 @@ A cell has the following components:
 * avatars - see [Game Objects](game-objects) for more details
 * pickup - see [Game Objects](game-objects) for more details
 * cell content - the cell content can either be a score cell, an obstacle or a plain floor cell
-* [fog of war](fog-of-war)
 * actions - an array where the intended actions of different avatars are registered and, afterwards, applied
 
 ### World Map basic functionality 
