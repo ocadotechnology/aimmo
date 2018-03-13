@@ -21,8 +21,7 @@ setup(
         'flask-cors',
         'psutil',
         'docker',
-        'kubernetes',
+        'kubernetes == 5.0.0',
     ],
     zip_safe=False,
 )
-
