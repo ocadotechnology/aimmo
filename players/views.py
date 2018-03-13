@@ -172,6 +172,7 @@ def add_game(request):
             game = form.save(commit=False)
             game.generator = 'Main'
             game.owner = request.user
+            game.main_user = request.user
             game.save()
             return redirect('aimmo/program', id=game.id)
     else:
