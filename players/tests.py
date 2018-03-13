@@ -309,7 +309,7 @@ class TestViews(TestCase):
         self.assertEqual(first_id, 1)
         self.assertEqual(second_id, 2)
 
-    def test_current_avatar_api_returns_404_for_logged_out_user(self):
+    def test_current_avatar_api_call_returns_404_for_logged_out_user(self):
         user = self.user
         models.Avatar(owner=user, code=self.CODE, game=self.game).save()
         client_one = Client()
