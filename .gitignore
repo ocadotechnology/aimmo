@@ -79,3 +79,6 @@ players/static/unity/**
 
 # Mac Generated Files
 .DS_Store
+
+# Game Frontend
+node_modules

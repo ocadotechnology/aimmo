@@ -12,7 +12,7 @@ setup(
     tests_require=[
         'requests',
         'psutil',
-        'kubernetes',
+        'kubernetes == 5.0.0',
     ],
     test_suite='tests',
     zip_safe=False,
