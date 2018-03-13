@@ -1,14 +1,16 @@
 [![js-standard-style](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
 
+
+
 # AI:MMO Frontend
 
 ## Description
 
-This folder contains the frontend for the AI:MMO game. It is written in single page application written in [React](https://reactjs.org/). We use [Redux](https://redux.js.org/) for state management and [redux-observable](https://redux-observable.js.org/) for handling our side effects (e.g. asynchronous calls). To learn more about how we connect all of these together, feel free to check out our [How does it all work](#how-does-it-all-work) section.
+This folder contains the frontend for the AI:MMO game. It is a single page application using [React](https://reactjs.org/). We use [Redux](https://redux.js.org/) for state management and [redux-observable](https://redux-observable.js.org/) for handling our side effects (e.g. asynchronous calls). To learn more about how we connect all of these together, feel free to check out our [How does it all work](#how-does-it-all-work) section.
 
 ## Installation for Contributors
 
-### Prerequisites
+### Requirements
 
 - [Node](https://nodejs.org/en/download/)
 - [Parcel](https://parceljs.org/)
@@ -16,7 +18,7 @@ This folder contains the frontend for the AI:MMO game. It is written in single p
 
 ### Build dependencies
 
-Once you have cloned this repository, open up your terminal and `cd` into this folder and run:
+Once you have cloned this repository, run the command below in this folder:
 
 ```
 yarn
@@ -42,87 +44,58 @@ Coming soon...
 yarn test
 ```
 
+## Contributing
+
+- tests
+- standard style guide (state exceptions)
+
+
 ## How does it all work?
 
-A quick outline of the sequence of calls and state management can be useful to understand the
-way Redux, RxJS and React can work together to provide our front-end efficiently.
+### Prequisite Reading
 
-We use [re-ducks](https://medium.freecodecamp.org/scaling-your-redux-app-with-ducks-6115955638be) for our architecture.
+If you are new to React and Redux we recommend reading these resources:
 
-### HTML Entry
-The entry point to our application is an `index.html` file. This lives at the root of the front-end folder.
-The most important part is that it defines a javascript index
-page written in React by a `<script>` tag.
+- [React tutorial](https://reactjs.org/tutorial/tutorial.html)
+- [Thinking in React](https://reactjs.org/docs/thinking-in-react.html)
+- [Redux and React tutorial](https://www.valentinog.com/blog/react-redux-tutorial-beginners/)
+  
+In order to make sure our project structure is scalable we use [re-ducks](https://medium.freecodecamp.org/scaling-your-redux-app-with-ducks-6115955638be).
 
-### React Entry
-The `index.js` file living in the `src` folder will be responsible for a couple of
-things:
-* It sets the initial state for each of the reducers (see reducers)
-* Configures the store using the global initial state mentioned above (see stores)
-* Sets the root JSX code, usually our entry container for the page.
-* And finally renders the JSX code to the `root` HTML element.
+### Optional reading
 
-### Containers
-As the JSX code is rendered, usually an initial container is specified
-there so let's dig deeper (see "a bit on containers vs components")
+The links here aren't necessary for helping you contribute straight away but they will help you out as you get more comfortable with our project:
 
-We tend to structure containers into different folders, then have an `index.js` entry point for each
-individual one. This file will map the current global state and the dispatch to the props of the component.
-This is done by a `connect(mapStateToPropsFunction, mapDispatchToPropsFunction)(ComponentName)` call.
-These functions should be defined there. They should return a *JSON* with the key as
-the name of the prop, and the appropriate state or dispatch assigned to it.
-This way every time the state changes, it will be connected to the local prop of the component.
+- [Jest testing cheatsheet](https://devhints.io/jest)
+- [Redux Observables](https://redux-observable.js.org/)
+- [RxJS Marble Testing](https://github.com/ReactiveX/rxjs/blob/master/doc/writing-marble-tests.md)
 
-We may want to add some user interaction with the state here, for example some logic when
-a user presses a button. To do this particular example we can assign a action dispatch function
-(connected to the component in the `connect` mentioned above by assigning it to a prop) to a `onClick`
-function. This way every time a user presses this button, an action dispatch will be called.
+### How we integrate with Django
 
+Coming soon...
 
-### Actions & Types
-Actions are part of the Redux architecture. They usually live in `redux/featutes/FeatureName/actions.js`.
-They are simple data elements which are dispatched to the middleware. We define action
-types in a file called `types.js`, for example:
+### Technology Stack
 
-``const FETCH_MOVIES = 'features/GhibliMovies/FETCH_MOVIES'``.
+- React
+- Redux
+- redux-observable
+- styled-components
 
-These types get imported to the `actions.js` file and get dispatched with the
-JSON under the appropriate function. Therefore, the user clicking the button will be taken
-to this action dispatch, which refers to the type from `types.js` file.
+#### For developers
+
+- Parcel
+- StandardJS
+- Babel
+
+#### For testing
+
+- Jest
+- Enzyme
+
+### Building for Production
+
+Coming soon...
 
 
-### A bit on containers vs components
 
-A nice way to think of these is to think of them as smart and dumb components.
-A container is a *smart* piece of logic, a component is *not*. Smart in this
-context refers to state management. **Components are purely
-for UI rendering. They do not access state or alter it**. On the other hand the
-containers are **smart, they alter the state in one way or another.**
 
-### Middleware
-
-Actions that get dispatched usually pass through some kind of middleware. In our
-case this will `redux-observable` which provide **epics**. We can check which
-type is passed into the middlware by `action$.ofType()` and write appropriate logic
-in *rxJS*. The result of this is *usually* passed on to the reducer.
-
-### Reducer
-
-Arguably the most important piece of the whole architecture. This specifies how the
-application's **state changes** in response to payloads of informations received by
-**actions**. Reducers do not *mutate* the state, they create *new* state. Remember,
-actions only describe that *something happened*, but don't describe how *application's
-state changes*.
-
-In our case we return the new state based on the action (further passed by the
-middleware epic).
-
-This is mapped to the state as the reducer was combined with other reducers to form
-a store at the start entry of our application (see above).
-
-### Re-rendering
-
-Because our state has been changed and because we have connected
-`mapStateToProps` to the container; then our props change and the
-React DOM appropriately updates the DOM, thus showing a response from the
-page to user action.
