@@ -16,7 +16,7 @@ By getting people to compete to program better Avatars, we can teach them all so
 
 ## The Game
 
-**Note**: the game frontend lives [here](https://github.com/ocadotechnology/aimmo/tree/react_integration/game_frontend)
+**Note**: The game frontend lives [here](https://github.com/ocadotechnology/aimmo/tree/react_integration/game_frontend)
 
 The world is a isometric 3D grid. Some cells are impassable. Some cells generate score. Some cells contain pick-ups.
 
