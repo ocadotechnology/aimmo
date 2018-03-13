@@ -78,9 +78,9 @@ def get_game(request, id):
     }
     for avatar in game.avatar_set.all():
         if avatar.owner_id == game.main_user_id:
-            response['main']['main_avatar'] = avatar.owner_id
+            response['main']['main_avatar'] = avatar.id
         response['main']['users'].append({
-            'id': avatar.owner_id,
+            'id': avatar.id,
             'code': avatar.code,
         })
     return JsonResponse(response)

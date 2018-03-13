@@ -299,7 +299,7 @@ class TestViews(TestCase):
 
         # Status code starts with 2, success response can be different than 200.
         self.assertEqual(str(first_response.status_code)[0], "2")
-        self.assertEqual(str(first_response.status_code)[0], "2")
+        self.assertEqual(str(second_response.status_code)[0], "2")
 
         # JSON is returned as string so needs to be evaluated.
         first_id = ast.literal_eval(first_response.content)['current_avatar_id']
@@ -307,6 +307,20 @@ class TestViews(TestCase):
 
         self.assertEqual(first_id, 1)
         self.assertEqual(second_id, 2)
+
+    def test_current_avatar_api_returns_404_for_logged_out_user(self):
+        # Set up the first avatar
+        first_user = self.user
+        models.Avatar(owner=first_user, code=self.CODE, game=self.game).save()
+        client_one = Client()
+
+        self.game.public = True
+        self.game.can_play = [first_user]
+        self.game.save()
+
+        first_response = client_one.get(reverse('aimmo/current_avatar_in_game', kwargs={'game_id': 1}))
+
+        self.assertEqual(first_response.status_code, 404)
 
 
 class TestModels(TestCase):
