@@ -10,7 +10,7 @@ The avatar functionality is separated in several classes:
 - avatar view - a personalized view of the worlds for each avatar
 - avatar appearance - fields used only by the Raphael JS client
 - the avatar manager - a structure that keeps a list of avatars. It is used by the Turn Manager to update the environment
-- fog of war
+- fog of war (currently removed, but this feature will return eventually)
 
 ### The Avatar Wrapper
 The avatar wrapper represents the application's view of a character, together with an API that communicates to the worker via HTTP GETs.

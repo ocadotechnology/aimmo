@@ -1,6 +1,6 @@
 [Documentation Table Of Contents](README.md)
 # Frequently Asked Questions
-- [What is this project? Who are Code for Life?](#what-is-code-for-life-who-are-code-for-life)
+- [What is Code For Life?](#what-is-code-for-life)
 - [I have an issue with the project, who do I contact, what do I do?](#i-have-an-issue-with-the-project-who-do-i-contact-what-do-i-do)
 - [I want to contribute... How?](#i-want-to-contribute-how)
 

@@ -11,7 +11,7 @@ The Turn Manager runs as follows:
 * check if the level is complete (the MMO will probably not finish) 
 
 The alternatives for pooling each avatar for its decisions are:
-* SequentialTurnManager - get and apply each avatar's action in turn
+* SequentialTurnManager (used locally for testing) - get and apply each avatar's action in turn 
 * ConcurrentTurnManager - concurrently get the intended actions from all avatars and register them on the world map; then apply actions in order of priority
 
 Using one or the other turn manager impacts the game-play. For a sequential turn manager you are sure that your action is going the be applied if it is correct in accordance with the world you see(as a worker). For a concurrent turn manager, as multiple players might intend to go(or, more generally, apply an action) to a single cell, the game becomes more complex from the user point of view.

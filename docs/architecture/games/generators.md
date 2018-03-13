@@ -16,9 +16,9 @@ Obstacles are filled according to the obstacle ratio. Once an obstacle is added 
 
 The `get_map` method builds the map gradually adding random obstacles until the obstacle ratio is reached.(see [World Map](world-map) settings) 
 
-To ensure that the map is connected, we check that all the adjacent habitable cells can reach all the other cells. This strategy is guaranteed to work. We know that all the habitable cells are connected. Adding an obstacle can either disconnect the component in two or keep a connected component. If the component is disconnected by the new added cell, then we have the guarantee that the neighbours of the new added cell will not reach each other. Thus, we have only to check if neighbors can reach each other.
+To ensure that the map is connected, we check that all the adjacent habitable cells can reach all the other cells. This strategy is guaranteed to work. We know that all the habitable cells are connected. Adding an obstacle can either disconnect the component in two or keep a connected component. If the component is disconnected by the new added cell, then we have the guarantee that the neighbours of the new added cell will not reach each other. Thus, we have only to check if neighbours can reach each other.
 
-To check that neighbors reach each other efficiently we use A* for path finding. The chosen [admissible heuristic](https://en.wikipedia.org/wiki/Admissible_heuristic) function is the Manhattan distance function. A detailed presentation of the algorithm and choosing heuristics can be found [here](http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html).
+To check that neighbours reach each other efficiently we use A* for path finding. The chosen [admissible heuristic](https://en.wikipedia.org/wiki/Admissible_heuristic) function is the Manhattan distance function. A detailed presentation of the algorithm and choosing heuristics can be found [here](http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html).
 
 #### Levels JSON
 We store our levels in `JSON` for the backend and `*.unity` scene files for the frontend. The below is a _**proposed**_ format that we think will cover all the situations we need for the level 1 milestone.
