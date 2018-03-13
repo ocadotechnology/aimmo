@@ -31,7 +31,6 @@ function GetCurrentAvatarID(gameInstance) {
     xhr.onload = function() {
         if (xhr.status === 200) {
             var CURRENT_AVATAR_ID = JSON.parse(xhr.responseText).current_avatar_id;
-            console.log(`Sending BACKEND: ${CURRENT_AVATAR_ID}`);
             gameInstance.SendMessage("World Controller", "SetCurrentAvatarID", CURRENT_AVATAR_ID);
         }
         else {
