@@ -4,7 +4,7 @@
 
 A pickup is an object that is automatically grabbed by avatars in the same cell as the pickup. The pickup gets destroyed and generates an effect it is grabbed. An effect is an object that encapsulates a function that gets applied to an avatar on each turn. (see [Turn Manager](turn-manager.md))
 
-#### Pickups 
+### Pickups 
 
 A Pickup is attached to a cell. Getting a pickup should attach an effect to an avatar. Once the pickup is attached to the avatar, it gets deleted.
 
@@ -20,7 +20,7 @@ The different types of pickup supported are:
     * an **effect-based pickup**
     * applies a DamagePickupEffect 
 
-#### Effects
+### Effects
 
 An Effect is a class that gets applied once per turn. The effect interface consists of the function `on_turn` which gets applied each turn.
 

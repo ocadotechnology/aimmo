@@ -11,8 +11,7 @@ By getting people to compete to program better Avatars, we can teach them all so
 2. Take a look at our [usage guidelines](docs/usage.md) to see how to get started.
 
 ## Documentation
-Take a look at our [documentation table of contents](docs/README.md). This is available offline along with
-the project.
+Take a look at our [documentation table of contents](docs/README.md). 
 
 ## How to contribute!
 __Want to help?__ You can read the [contributing guidelines][contrib-guidelines]. You can also contact us directly using this [contact form][c4l-contact-form] and we'll get in touch as soon as possible! Thanks a lot.

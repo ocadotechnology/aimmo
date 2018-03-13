@@ -20,7 +20,7 @@ Architecture of the project. How things are structured, what components exist, e
 
 ### Infrastucture
 
-We touch on the technologies that support the project essential to the component communication.
+We describe the technologies that are underlying to the project and support it
 - [Infrastructure](infrastructure/README.md)
 
 ### Testing 
@@ -33,7 +33,7 @@ Levels of testing within AI:MMO.
 
 ### Deployment
 
-The process of continuous integration of our project onto our cloud.
+The process of continuous integration and deployment of our project onto our cloud.
 
 - [Deployment](deployment/README.md)
     - [Sequence of Deployment Events](deployment/deployment-events.md)

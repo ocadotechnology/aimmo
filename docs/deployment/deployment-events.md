@@ -8,7 +8,7 @@ Our package Django app `players` is deployed to [Pypi](https://pypi.python.org/p
 
 The rest of the components are Dockerized. Travis CI automatically recognizes the **Dockerfiles** inside of each of the modules and pushes the newly created images to the **Docker Hub Registry**. Each of the components are then pulled automatically by the Google Cloud Container Engine. 
 
-After all the Travis processes are finished, a curl request is made to the Semaphore CI. The Semaphore CI is responsible for orchestrating the deployment processes for all the Code For Life repositories. The Django application `aimmo` is installed directly from Pypi together with all the other modules. Due to the modularity of Django, the aimmo app can be just plugged inside the bigger Django project. _Currently, the pulled version in production will be the latest._
+After all the Travis processes are finished, a curl request is made to SemaphoreCI. The Semaphore CI is responsible for orchestrating the deployment processes for all the Code For Life repositories. The Django application `aimmo` is installed directly from Pypi together with all the other modules. Due to the modularity of Django, the aimmo app can be just plugged inside the bigger Django project. _Currently, the pulled version in production will be the latest._
 
 The application is then deployed to the Google Cloud. This finishes our build.
 

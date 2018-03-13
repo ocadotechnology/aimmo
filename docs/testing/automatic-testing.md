@@ -20,7 +20,7 @@ Our functional tests can be found in `[module name]/tests/functional`. They gene
 TODO
 
 ## Testing Tools
-Hypothesis is a property based tool that can be used to run tests with a way wider range of scenario's than we could possibly design. It tends to find edge cases that we may have (and have already) missed various times. We encourage to convert current tests to make use of this framework as well as designing new ones with this.
+[Hypothesis](https://hypothesis.works/) is a property based tool that can be used to run tests with a way wider range of scenario's than we could possibly design. It tends to find edge cases that we may have (and have already) missed various times. We encourage to convert current tests to make use of this framework as well as designing new ones with this.
 
 ## Coverage Tools
 Our coverage tool right now is [coveralls](https://coveralls.io/). For the moment we do not count the coverage over the tests. This gives a closer to reality coverage, but it does not check if all the tests run.

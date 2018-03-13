@@ -5,13 +5,13 @@
 An action is a pair (avatar, location). The action is registered onto the WorldMap by being appended to a cell.
 
 The action is processed by calling the apply function only if:
-- the action is legal it is applied
-- not it is rejected
+- the action is legal
+- it's not rejected
 
 The exposed interface is:
 
 - **apply**
-    - has to return true if application succeeded
+    - has to return true if event application succeeded
     - attaches an event to the avatar
 - **is_legal**
     - returns if an action is legal from the point of view of the map
@@ -24,7 +24,7 @@ Each of the 3 elements of the interface are implemented differently by different
 The current types of actions as:
 - **WaitAction**
     - wait is always legal
-    - no actions get attatched to the avatar
+    - no actions get attached to the avatar
 - **MoveAction**
     - *is_legal*
         - the responsibility is passed to world_map

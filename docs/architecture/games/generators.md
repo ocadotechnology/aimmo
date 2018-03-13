@@ -8,7 +8,7 @@ A map generator is a class that inherits from BaseGenerator and has to implement
 
 #### The Main Map Generator
 
-The main map is supposed to be used for the generation of big words. The whole map is randomly generated, but the generation is regulated by the [World Map](world-map) settings.
+The main map is supposed to be used for the generation of big worlds. The whole map is randomly generated, but the generation is regulated by the [World Map](world-map) settings.
 
 Obstacles are filled according to the obstacle ratio. Once an obstacle is added we ensure that each habitable cell can reach each other, thus the map will be connected and each generated avatar can reach others. 
 
@@ -16,7 +16,7 @@ Obstacles are filled according to the obstacle ratio. Once an obstacle is added 
 
 The `get_map` method builds the map gradually adding random obstacles until the obstacle ratio is reached.(see [World Map](world-map) settings) 
 
-To ensure that the map is connected, we check that all the adjacent habitable cells can reach all the other cells. This strategy is guaranteed to work. We know that all the habitable cells are connected. Adding an obstacle can either disconnect the component in two or keep a connected component. If the component is disconnected by the new added cell, then we have the guarantee that the neighbors of the new added cell will not reach each other. Thus, we have only to check if neighbors can reach each other.
+To ensure that the map is connected, we check that all the adjacent habitable cells can reach all the other cells. This strategy is guaranteed to work. We know that all the habitable cells are connected. Adding an obstacle can either disconnect the component in two or keep a connected component. If the component is disconnected by the new added cell, then we have the guarantee that the neighbours of the new added cell will not reach each other. Thus, we have only to check if neighbors can reach each other.
 
 To check that neighbors reach each other efficiently we use A* for path finding. The chosen [admissible heuristic](https://en.wikipedia.org/wiki/Admissible_heuristic) function is the Manhattan distance function. A detailed presentation of the algorithm and choosing heuristics can be found [here](http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html).
 

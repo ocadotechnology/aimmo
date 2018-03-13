@@ -8,7 +8,7 @@ This section describes the whole game architecture and how things are structured
 
 [The UI (`players` directory)](ui/README.md) 
 
-A Django app used for the front-end and database interaction (one globally). There are static Unity build files to render the game in browser.
+A Django app used for the front-end and database interaction. There are static Unity build files to render the game in browser.
 
 [Games (`aimmo-game` directory)](games/README.md)
 
@@ -26,5 +26,5 @@ Contains the code for an avatar which is given a game state and returns the avat
 
 **Avatar:** a player's in-game representation. A player can have up to one per game.
 
-**Player:** a single person with an account.
+**Player:** an individual with an account.
 
