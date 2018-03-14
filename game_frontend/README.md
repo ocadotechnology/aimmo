@@ -36,7 +36,13 @@ parcel index.html
 
 ### With Django
 
-Coming soon...
+Our Django runner calls `djangoBundler.js` when running the project for you so nothing special needs to done! Run this command in the root of this repository (make sure you are in your virtualenv):
+
+```
+./run.py -k
+```
+
+`djangoBundler.js` is a custom `parcel-bundler` we use to make sure we generate a Django template as an entry point for the React code.
 
 ### Running Tests
 
@@ -59,7 +65,7 @@ If you are new to React and Redux we recommend reading these resources:
 - [React tutorial](https://reactjs.org/tutorial/tutorial.html)
 - [Thinking in React](https://reactjs.org/docs/thinking-in-react.html)
 - [Redux and React tutorial](https://www.valentinog.com/blog/react-redux-tutorial-beginners/)
-  
+
 In order to make sure our project structure is scalable we use [re-ducks](https://medium.freecodecamp.org/scaling-your-redux-app-with-ducks-6115955638be).
 
 ### Optional reading
@@ -95,7 +101,3 @@ Coming soon...
 ### Building for Production
 
 Coming soon...
-
-
-
-
