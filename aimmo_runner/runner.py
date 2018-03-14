@@ -2,6 +2,7 @@ import logging
 import os
 import sys
 import time
+from django.conf import settings
 from shell_api import log, run_command, run_command_async
 
 sys.path.append("/home/travis/build/ocadotechnology/aimmo")
@@ -16,6 +17,7 @@ except KeyError:
 
 _MANAGE_PY = os.path.join(ROOT_DIR_LOCATION, 'example_project', 'manage.py')
 _SERVICE_PY = os.path.join(ROOT_DIR_LOCATION, 'aimmo-game-creator', 'service.py')
+_FRONTEND_BUNDLER_JS = os.path.join(ROOT_DIR_LOCATION, 'game_frontend', 'djangoBundler.js')
 
 PROCESSES = []
 
@@ -61,8 +63,11 @@ def run(use_minikube, server_wait=True, capture_output=False):
         PROCESSES.append(game)
         os.environ['AIMMO_MODE'] = 'threads'
 
+    os.environ['NODE_ENV'] = 'development' if settings.DEBUG else 'production'
     server = run_command_async(['python', _MANAGE_PY, 'runserver'] + server_args, capture_output=capture_output)
+    frontend_bundler = run_command_async(['node', _FRONTEND_BUNDLER_JS], capture_output=capture_output)
     PROCESSES.append(server)
+    PROCESSES.append(frontend_bundler)
 
     if server_wait is True:
         try:
