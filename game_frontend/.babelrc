@@ -2,11 +2,10 @@
   "presets": ["react-app"],
   "plugins": [
     ["module-resolver", {
+      "cwd": "babelrc",
       "root": ["./src"],
       "alias": {
-        "components": "./src/components",
         "features": "./src/redux/features",
-        "containers": "./src/containers",
       }
     }]
   ]
