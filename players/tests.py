@@ -1,5 +1,6 @@
 import logging
 import ast
+import json
 
 from django.contrib.auth.models import AnonymousUser, User
 from django.core.urlresolvers import reverse
@@ -299,7 +300,7 @@ class TestViews(TestCase):
 
         # Status code starts with 2, success response can be different than 200.
         self.assertEqual(str(first_response.status_code)[0], "2")
-        self.assertEqual(str(first_response.status_code)[0], "2")
+        self.assertEqual(str(second_response.status_code)[0], "2")
 
         # JSON is returned as string so needs to be evaluated.
         first_id = ast.literal_eval(first_response.content)['current_avatar_id']
@@ -307,6 +308,42 @@ class TestViews(TestCase):
 
         self.assertEqual(first_id, 1)
         self.assertEqual(second_id, 2)
+
+    def test_current_avatar_api_call_returns_404_for_logged_out_user(self):
+        user = self.user
+        models.Avatar(owner=user, code=self.CODE, game=self.game).save()
+        client_one = Client()
+
+        self.game.public = True
+        self.game.can_play = [user]
+        self.game.save()
+
+        first_response = client_one.get(reverse('aimmo/current_avatar_in_game', kwargs={'game_id': 1}))
+
+        self.assertEqual(first_response.status_code, 404)
+
+    def test_id_of_current_avatar_same_as_games_url(self):
+        """
+        Ensures that the id's are consistent throughout the project. Check for ID's received
+        by the current_avatar URL as well as the games URL api.
+        """
+        user = self.user
+        models.Avatar(owner=user, code=self.CODE, game=self.game).save()
+        client = self.login()
+
+        self.game.public = True
+        self.game.can_play = [user]
+        self.game.save()
+
+        current_avatar_api_response = client.get(reverse('aimmo/current_avatar_in_game', kwargs={'game_id': 1}))
+        games_api_response = client.get(reverse('aimmo/game_details', kwargs={'id': 1}))
+
+        current_avatar_id = ast.literal_eval(current_avatar_api_response.content)['current_avatar_id']
+        games_api_users = json.loads(games_api_response.content)['main']['users']
+
+        self.assertEqual(current_avatar_id, 1)
+        self.assertEqual(len(games_api_users), 1)
+        self.assertEqual(games_api_users[0]['id'], 1)
 
 
 class TestModels(TestCase):
