@@ -10,7 +10,8 @@ urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='players/home.html'), name='aimmo/home'),
 
     url(r'^accounts/login/$', auth_views.login),
-    url(r'^accounts/logout/$', auth_views.logout, name='aimmo/logout'),
+    url(r'^accounts/logout/$', auth_views.logout, {'next_page' : 'aimmo/logout_success'}, name='aimmo/logout'),
+    url(r'^accounts/logout_success/$', TemplateView.as_view(template_name='registration/success_logout.html'), name='aimmo/logout_success'),
 
     url(r'^program/(?P<id>[0-9]+)/$', login_required(views.ProgramView.as_view()), name='aimmo/program'),
     url(r'^program_level/(?P<num>[0-9]+)/$', login_required(views.program_level), name='aimmo/program_level'),
