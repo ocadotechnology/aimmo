@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='players/home.html'), name='aimmo/home'),
 
     url(r'^accounts/login/$', auth_views.login),
+    url(r'^accounts/logout/$', auth_views.logout, name='aimmo/logout'),
 
     url(r'^program/(?P<id>[0-9]+)/$', login_required(views.ProgramView.as_view()), name='aimmo/program'),
     url(r'^program_level/(?P<num>[0-9]+)/$', login_required(views.program_level), name='aimmo/program_level'),
