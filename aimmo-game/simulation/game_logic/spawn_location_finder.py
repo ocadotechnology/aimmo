@@ -19,20 +19,20 @@ class SpawnLocationFinder:
                 and not c.avatar
                 and not c.pickup)
 
-        def _get_random_spawn_locations(self, max_locations):
-            if max_locations <= 0:
-                return []
-            potential_locations = list(self.potential_spawn_locations())
-            try:
-                return random.sample(potential_locations, max_locations)
-            except ValueError:
-                LOGGER.debug('Not enough potential locations')
-                return potential_locations
+    def get_random_spawn_locations(self, max_locations):
+        if max_locations <= 0:
+            return []
+        potential_locations = list(self.potential_spawn_locations())
+        try:
+            return random.sample(potential_locations, max_locations)
+        except ValueError:
+            LOGGER.debug('Not enough potential locations')
+            return potential_locations
 
-        def get_random_spawn_location(self):
-            """Return a single random spawn location.
+    def get_random_spawn_location(self):
+        """Return a single random spawn location.
 
-            Throws:
-                IndexError: if there are no possible locations.
-            """
-            return self._get_random_spawn_locations(1)[0].location
+        Throws:
+            IndexError: if there are no possible locations.
+        """
+        return self.get_random_spawn_locations(1)[0].location

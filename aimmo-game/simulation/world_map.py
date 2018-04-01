@@ -6,6 +6,7 @@ from simulation.level_settings import DEFAULT_LEVEL_SETTINGS
 from pickups import ALL_PICKUPS
 from simulation.action import MoveAction
 from simulation.location import Location
+from simulation.game_logic import SpawnLocationFinder
 
 LOGGER = getLogger(__name__)
 
@@ -77,6 +78,7 @@ class WorldMap(object):
         """
         self.grid = grid
         self.settings = settings
+        self._spawn_location_finder = SpawnLocationFinder(self)
 
     @classmethod
     def _min_max_from_dimensions(cls, height, width):
@@ -239,7 +241,7 @@ class WorldMap(object):
         ))
         LOGGER.debug('Aiming for %s new pickups', target_num_pickups)
         max_num_pickups_to_add = target_num_pickups - len(list(self.pickup_cells()))
-        locations = self._get_random_spawn_locations(max_num_pickups_to_add)
+        locations = self._spawn_location_finder.get_random_spawn_locations(max_num_pickups_to_add)
         for cell in locations:
             if random.random() < self.settings['PICKUP_SPAWN_CHANCE']:
                 LOGGER.info('Adding new pickup at %s', cell)
@@ -281,6 +283,9 @@ class WorldMap(object):
     # TODO this is game logic
     def get_partial_fog_distance(self):
         return self.settings['PARTIAL_FOG_OF_WAR_DISTANCE']
+
+    def get_random_spawn_location(self):
+        self._spawn_location_finder.get_random_spawn_location()
 
     def __repr__(self):
         return repr(self.grid)
@@ -387,5 +392,5 @@ class WorldMap(object):
 
 
 def WorldMapStaticSpawnDecorator(world_map, spawn_location):
-    world_map.get_random_spawn_location = lambda: spawn_location
+    world_map._spawn_location_finder.get_random_spawn_location = lambda: spawn_location
     return world_map
