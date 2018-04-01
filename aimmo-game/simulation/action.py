@@ -1,5 +1,6 @@
 from logging import getLogger
 from simulation.direction import Direction
+from simulation.game_logic.spawn_location_finder import SpawnLocationFinder
 from simulation.event import (
     FailedAttackEvent, FailedMoveEvent, MovedEvent, PerformedAttackEvent,
     ReceivedAttackEvent
@@ -130,8 +131,10 @@ class AttackAction(Action):
 
         if attacked_avatar.health <= 0:
             # Move responsibility for this to avatar.die() ?
-            respawn_location = world_map.get_random_spawn_location()
+            spawn_location_finder = SpawnLocationFinder(world_map)
+            respawn_location = spawn_location_finder.get_random_spawn_location()
             attacked_avatar.die(respawn_location)
+            # TODO this logic shouldn't be here
             world_map.get_cell(self.target_location).avatar = None
             world_map.get_cell(respawn_location).avatar = attacked_avatar
 

@@ -106,19 +106,11 @@ class WorldMap(object):
     def all_cells(self):
         return self.grid.values()
 
+    # TODO this is game logic
     def score_cells(self):
         return (c for c in self.all_cells() if c.generates_score)
 
-    def potential_spawn_locations(self):
-        """
-        Used to make sure that the cell is free before spawning.
-        """
-        return (c for c in self.all_cells()
-                if c.habitable
-                and not c.generates_score
-                and not c.avatar
-                and not c.pickup)
-
+    # TODO this is game logic
     def pickup_cells(self):
         return (c for c in self.all_cells() if c.pickup)
 
@@ -174,15 +166,18 @@ class WorldMap(object):
         self._update_avatars()
         self._update_map(num_avatars)
 
+    # TODO this is game logic
     def _update_avatars(self):
         self._apply_score()
         self._apply_pickups()
 
+    # TODO this is game logic
     def _apply_pickups(self):
         for cell in self.pickup_cells():
             if cell.avatar is not None:
                 cell.pickup.apply(cell.avatar)
 
+    # TODO this is game logic
     def _apply_score(self):
         for cell in self.score_cells():
             try:
@@ -190,11 +185,13 @@ class WorldMap(object):
             except AttributeError:
                 pass
 
+    # TODO this is game logic
     def _update_map(self, num_avatars):
         self._expand(num_avatars)
         self._reset_score_locations(num_avatars)
         self._add_pickups(num_avatars)
 
+    # TODO this is game logic
     def _expand(self, num_avatars):
         LOGGER.info('Expanding map')
         start_size = self.num_cells
@@ -220,6 +217,7 @@ class WorldMap(object):
         for x in range(self.min_x(), self.max_x() + 1):
             self.grid[Location(x, y)] = Cell(Location(x, y))
 
+    # TODO this is game logic
     def _reset_score_locations(self, num_avatars):
         for cell in self.score_cells():
             if random.random() < self.settings['SCORE_DESPAWN_CHANCE']:
@@ -234,6 +232,7 @@ class WorldMap(object):
         for cell in locations:
             cell.generates_score = True
 
+    # TODO this is game logic
     def _add_pickups(self, num_avatars):
         target_num_pickups = int(math.ceil(
             num_avatars * self.settings['TARGET_NUM_PICKUPS_PER_AVATAR']
@@ -246,24 +245,7 @@ class WorldMap(object):
                 LOGGER.info('Adding new pickup at %s', cell)
                 cell.pickup = random.choice(ALL_PICKUPS)(cell)
 
-    def _get_random_spawn_locations(self, max_locations):
-        if max_locations <= 0:
-            return []
-        potential_locations = list(self.potential_spawn_locations())
-        try:
-            return random.sample(potential_locations, max_locations)
-        except ValueError:
-            LOGGER.debug('Not enough potential locations')
-            return potential_locations
-
-    def get_random_spawn_location(self):
-        """Return a single random spawn location.
-
-        Throws:
-            IndexError: if there are no possible locations.
-        """
-        return self._get_random_spawn_locations(1)[0].location
-
+    # TODO this is game logic
     def can_move_to(self, target_location):
         if not self.is_on_map(target_location):
             return False
@@ -273,6 +255,7 @@ class WorldMap(object):
                 and (not cell.is_occupied or cell.avatar.is_moving)
                 and len(cell.moves) <= 1)
 
+    # TODO this is game logic
     def attackable_avatar(self, target_location):
         """
         Return a boolean if the avatar is attackable at the given location (or will be
@@ -291,9 +274,11 @@ class WorldMap(object):
 
         return None
 
+    # TODO this is game logic
     def get_no_fog_distance(self):
         return self.settings['NO_FOG_OF_WAR_DISTANCE']
 
+    # TODO this is game logic
     def get_partial_fog_distance(self):
         return self.settings['PARTIAL_FOG_OF_WAR_DISTANCE']
 
