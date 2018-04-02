@@ -4,7 +4,7 @@ from collections import defaultdict
 
 from simulation.location import Location
 from simulation.world_map import Cell, WorldMap
-from simulation.game_logic.spawn_location_finder import SpawnLocationFinder
+from simulation.game_logic import SpawnLocationFinder
 
 
 class MockPickup(object):
