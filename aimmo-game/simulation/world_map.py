@@ -1,12 +1,10 @@
 import math
-import random
 from logging import getLogger
 
 from simulation.level_settings import DEFAULT_LEVEL_SETTINGS
-from pickups import ALL_PICKUPS
 from simulation.action import MoveAction
 from simulation.location import Location
-from simulation.game_logic import SpawnLocationFinder
+from simulation.game_logic import SpawnLocationFinder, ScoreLocationUpdater, MapContext, PickupUpdater
 
 LOGGER = getLogger(__name__)
 
@@ -221,31 +219,15 @@ class WorldMap(object):
 
     # TODO this is game logic
     def _reset_score_locations(self, num_avatars):
-        for cell in self.score_cells():
-            if random.random() < self.settings['SCORE_DESPAWN_CHANCE']:
-                cell.generates_score = False
-
-        new_num_score_locations = len(list(self.score_cells()))
-        target_num_score_locations = int(math.ceil(
-            num_avatars * self.settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR']
-        ))
-        num_score_locations_to_add = target_num_score_locations - new_num_score_locations
-        locations = self._spawn_location_finder.get_random_spawn_locations(num_score_locations_to_add)
-        for cell in locations:
-            cell.generates_score = True
+        score_location_updater = ScoreLocationUpdater()
+        context = MapContext(num_avatars=num_avatars)
+        score_location_updater.update(self, context=context)
 
     # TODO this is game logic
     def _add_pickups(self, num_avatars):
-        target_num_pickups = int(math.ceil(
-            num_avatars * self.settings['TARGET_NUM_PICKUPS_PER_AVATAR']
-        ))
-        LOGGER.debug('Aiming for %s new pickups', target_num_pickups)
-        max_num_pickups_to_add = target_num_pickups - len(list(self.pickup_cells()))
-        locations = self._spawn_location_finder.get_random_spawn_locations(max_num_pickups_to_add)
-        for cell in locations:
-            if random.random() < self.settings['PICKUP_SPAWN_CHANCE']:
-                LOGGER.info('Adding new pickup at %s', cell)
-                cell.pickup = random.choice(ALL_PICKUPS)(cell)
+        pickup_updater = PickupUpdater()
+        context = MapContext(num_avatars=num_avatars)
+        pickup_updater.update(self, context=context)
 
     # TODO this is game logic
     def can_move_to(self, target_location):
