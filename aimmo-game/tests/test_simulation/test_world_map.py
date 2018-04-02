@@ -6,7 +6,8 @@ from string import ascii_uppercase
 from unittest import TestCase
 
 from simulation.location import Location
-from simulation.world_map import Cell, WorldMap, WorldMapStaticSpawnDecorator
+from simulation.cell import Cell
+from simulation.world_map import WorldMap, WorldMapStaticSpawnDecorator
 from simulation.game_logic import SpawnLocationFinder
 from .dummy_avatar import DummyAvatar
 from .maps import MockCell, MockPickup, AvatarMap

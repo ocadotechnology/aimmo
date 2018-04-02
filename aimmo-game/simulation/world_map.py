@@ -2,66 +2,11 @@ import math
 from logging import getLogger
 
 from simulation.level_settings import DEFAULT_LEVEL_SETTINGS
-from simulation.action import MoveAction
 from simulation.location import Location
-from simulation.game_logic import SpawnLocationFinder, ScoreLocationUpdater, MapContext, PickupUpdater
+from simulation.game_logic import SpawnLocationFinder, ScoreLocationUpdater, MapContext, PickupUpdater, MapExpander
+from simulation.cell import Cell
 
 LOGGER = getLogger(__name__)
-
-
-class Cell(object):
-    """
-    Any position on the world grid.
-    """
-
-    def __init__(self, location, habitable=True, generates_score=False,
-                 partially_fogged=False):
-        self.location = location
-        self.habitable = habitable
-        self.generates_score = generates_score
-        self.avatar = None
-        self.pickup = None
-        self.partially_fogged = partially_fogged
-        self.actions = []
-
-    def __repr__(self):
-        return 'Cell({} h={} s={} a={} p={} f{})'.format(
-            self.location, self.habitable, self.generates_score, self.avatar, self.pickup,
-            self.partially_fogged)
-
-    def __eq__(self, other):
-        return self.location == other.location
-
-    def __ne__(self, other):
-        return not self == other
-
-    def __hash__(self):
-        return hash(self.location)
-
-    @property
-    def moves(self):
-        return [move for move in self.actions if isinstance(move, MoveAction)]
-
-    @property
-    def is_occupied(self):
-        return self.avatar is not None
-
-    def serialise(self):
-        if self.partially_fogged:
-            return {
-                'generates_score': self.generates_score,
-                'location': self.location.serialise(),
-                'partially_fogged': self.partially_fogged
-            }
-        else:
-            return {
-                'avatar': self.avatar.serialise() if self.avatar else None,
-                'generates_score': self.generates_score,
-                'habitable': self.habitable,
-                'location': self.location.serialise(),
-                'pickup': self.pickup.serialise() if self.pickup else None,
-                'partially_fogged': self.partially_fogged
-            }
 
 
 class WorldMap(object):
@@ -187,47 +132,10 @@ class WorldMap(object):
 
     # TODO this is game logic
     def _update_map(self, num_avatars):
-        self._expand(num_avatars)
-        self._reset_score_locations(num_avatars)
-        self._add_pickups(num_avatars)
-
-    # TODO this is game logic
-    def _expand(self, num_avatars):
-        LOGGER.info('Expanding map')
-        start_size = self.num_cells
-        target_num_cells = int(math.ceil(
-            num_avatars * self.settings['TARGET_NUM_CELLS_PER_AVATAR']
-        ))
-        num_cells_to_add = target_num_cells - self.num_cells
-        if num_cells_to_add > 0:
-            self._add_outer_layer()
-            assert self.num_cells > start_size
-
-    def _add_outer_layer(self):
-        self._add_vertical_layer(self.min_x() - 1)
-        self._add_vertical_layer(self.max_x() + 1)
-        self._add_horizontal_layer(self.min_y() - 1)
-        self._add_horizontal_layer(self.max_y() + 1)
-
-    def _add_vertical_layer(self, x):
-        for y in range(self.min_y(), self.max_y() + 1):
-            self.grid[Location(x, y)] = Cell(Location(x, y))
-
-    def _add_horizontal_layer(self, y):
-        for x in range(self.min_x(), self.max_x() + 1):
-            self.grid[Location(x, y)] = Cell(Location(x, y))
-
-    # TODO this is game logic
-    def _reset_score_locations(self, num_avatars):
-        score_location_updater = ScoreLocationUpdater()
         context = MapContext(num_avatars=num_avatars)
-        score_location_updater.update(self, context=context)
-
-    # TODO this is game logic
-    def _add_pickups(self, num_avatars):
-        pickup_updater = PickupUpdater()
-        context = MapContext(num_avatars=num_avatars)
-        pickup_updater.update(self, context=context)
+        MapExpander().update(self, context=context)
+        ScoreLocationUpdater().update(self, context=context)
+        PickupUpdater().update(self, context=context)
 
     # TODO this is game logic
     def can_move_to(self, target_location):
