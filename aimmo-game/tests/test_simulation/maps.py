@@ -4,6 +4,7 @@ from collections import defaultdict
 
 from simulation.location import Location
 from simulation.world_map import Cell, WorldMap
+from simulation.game_logic.spawn_location_finder import SpawnLocationFinder
 
 
 class MockPickup(object):
@@ -39,6 +40,7 @@ class MockCell(Cell):
 
 class InfiniteMap(WorldMap):
     def __init__(self):
+        self._spawn_location_finder = SpawnLocationFinder(self)
         self._cell_cache = {}
         [self.get_cell(Location(x, y)) for x in range(5) for y in range(5)]
         self.updates = 0
