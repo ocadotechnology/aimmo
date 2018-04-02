@@ -6,7 +6,7 @@ from simulation.level_settings import DEFAULT_LEVEL_SETTINGS
 from pickups import ALL_PICKUPS
 from simulation.action import MoveAction
 from simulation.location import Location
-from simulation.game_logic import SpawnLocationFinder
+from simulation.game_logic.spawn_location_finder import SpawnLocationFinder
 
 LOGGER = getLogger(__name__)
 
@@ -230,7 +230,7 @@ class WorldMap(object):
             num_avatars * self.settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR']
         ))
         num_score_locations_to_add = target_num_score_locations - new_num_score_locations
-        locations = self._get_random_spawn_locations(num_score_locations_to_add)
+        locations = self._spawn_location_finder.get_random_spawn_locations(num_score_locations_to_add)
         for cell in locations:
             cell.generates_score = True
 
@@ -285,7 +285,7 @@ class WorldMap(object):
         return self.settings['PARTIAL_FOG_OF_WAR_DISTANCE']
 
     def get_random_spawn_location(self):
-        self._spawn_location_finder.get_random_spawn_location()
+        return self._spawn_location_finder.get_random_spawn_location()
 
     def __repr__(self):
         return repr(self.grid)
