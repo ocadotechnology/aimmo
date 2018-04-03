@@ -37,7 +37,7 @@ jobs:
         install:
           - ls && cd game_frontend && yarn
         script:
-          - cd game_frontend && yarn test
+          - ls && cd game_frontend && yarn test
       - stage: deploy
         script: skip
         deploy:
