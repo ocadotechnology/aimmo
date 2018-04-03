@@ -35,9 +35,9 @@ jobs:
           - coveralls
       - # Frontend tests
         install:
-          - ls && cd game_frontend && yarn
+          - cd game_frontend && yarn
         script:
-          - ls && cd game_frontend && yarn test
+          - yarn test
       - stage: deploy
         script: skip
         deploy:
