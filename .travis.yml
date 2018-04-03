@@ -29,6 +29,8 @@ jobs:
           - python all_tests.py --coverage
         after_success:
           - coveralls
+      - stage: deploy
+        script: skip
         deploy:
           provider: pypi
           user: ocadotechnology
