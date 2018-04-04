@@ -1,45 +1,26 @@
-import React, { Component, Fragment } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { actions } from 'features/GhibliMovies'
-import Movie from 'components/Movie'
-import Button from 'components/Button'
+import React, { Component } from 'react'
+import Menu from 'components/Menu'
+import IDE from 'components/IDE'
+import Game from 'components/Game'
+import styled from 'styled-components'
+
+const GamePageContainer = styled.div`
+  display: grid;
+  grid-template: "menu ide game" 1fr / 150px 1fr 1fr;
+  width: 100vw;
+  height: 100vh;
+`
 
 export class GamePage extends Component {
   render () {
-    const movieItems = this.props.movies.map(movie =>
-      <Movie key={movie.id} movie={movie} />
-    )
-
     return (
-      <Fragment>
-        <div>Welcome to the AIMMO game screen</div>
-        <Button
-          id='fetch-movies-button'
-          onClick={() => { this.props.fetchMovies() }}>
-          Get the GhibliMovies!
-        </Button>
-        <ul>
-          {movieItems}
-        </ul>
-      </Fragment>
+      <GamePageContainer>
+        <Menu />
+        <IDE />
+        <Game />
+      </GamePageContainer>
     )
   }
 }
 
-GamePage.propTypes = {
-  movies: PropTypes.array,
-  fetchMovies: PropTypes.func
-}
-
-const mapStateToProps = state => {
-  return {
-    movies: state.movieReducer.movies
-  }
-}
-
-const mapDispatchToProps = {
-  fetchMovies: actions.fetchMovies
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(GamePage)
+export default GamePage
