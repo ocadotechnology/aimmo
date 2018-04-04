@@ -6,7 +6,10 @@ import styled from 'styled-components'
 
 const GamePageContainer = styled.div`
   display: grid
-  grid-template: 1fr / 150px 1fr 1fr
+  grid-template: 80px 1fr 150px / 100px 1fr 1fr
+  grid-template-areas: "menu ide-menu game-menu"
+                       "menu ide-editor game-view"
+                       "menu ide-console game-view";
   width: 100vw
   height: 100vh
 `
