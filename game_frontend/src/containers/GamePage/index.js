@@ -5,10 +5,10 @@ import Game from 'components/Game'
 import styled from 'styled-components'
 
 const GamePageContainer = styled.div`
-  display: grid;
-  grid-template: "menu ide game" 1fr / 150px 1fr 1fr;
-  width: 100vw;
-  height: 100vh;
+  display: grid
+  grid-template: 1fr / 150px 1fr 1fr
+  width: 100vw
+  height: 100vh
 `
 
 export class GamePage extends Component {
