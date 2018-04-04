@@ -10,7 +10,7 @@ env:
 git:
   depth: 9999999 # Building untagged builds needs enough depth to get the latest tag
 stages:
-  - test
+  - name: test
   - name: deploy
     if: branch = master
 jobs:
