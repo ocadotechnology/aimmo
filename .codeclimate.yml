@@ -1,0 +1,26 @@
+---
+engines:
+  csslint:
+    enabled: true
+  eslint:
+    enabled: true
+  fixme:
+    enabled: true
+  pep8:
+    enabled: true
+    checks:
+      E501:
+        enabled: false
+  radon:
+    enabled: true
+  scss-lint:
+    enabled: false
+exclude_paths:
+  - "game/_version.py"
+  - "versioneer.py"
+ratings:
+  paths:
+  - "**.css"
+  - "**.js"
+  - "**.py"
+  - "**.scss"
