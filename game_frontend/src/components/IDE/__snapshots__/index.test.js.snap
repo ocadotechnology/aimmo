@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<IDE /> renders correctly 1`] = `
+Array [
+  <nav
+    className="sc-bdVaJa hZrXC"
+  />,
+  <div
+    className="sc-bwzfXH ivIhpv"
+  />,
+  <div
+    className="sc-htpNat crVCkv"
+  />,
+]
+`;
