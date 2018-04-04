@@ -1,4 +1,3 @@
-import styled from 'styled-components'
 import React, { Component, Fragment } from 'react'
 import IDEMenu from 'components/IDEMenu'
 import IDEEditor from 'components/IDEEditor'
