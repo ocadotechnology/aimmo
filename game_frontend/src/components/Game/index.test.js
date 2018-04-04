@@ -1,11 +1,12 @@
 /* eslint-env jest */
 import React from 'react'
 import Game from 'components/Game'
-import renderer from 'react-test-renderer'
+import { shallow } from 'enzyme'
+import toJson from 'enzyme-to-json'
 
 describe('<Game />', () => {
   it('renders correctly', () => {
-    const tree = renderer.create(<Game />).toJSON()
-    expect(tree).toMatchSnapshot()
+    const tree = shallow(<Game />)
+    expect(toJson(tree)).toMatchSnapshot()
   })
 })

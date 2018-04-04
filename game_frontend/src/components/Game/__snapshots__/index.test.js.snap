@@ -1,12 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<Game /> renders correctly 1`] = `
-Array [
-  <nav
-    className="sc-bdVaJa dHptmf"
-  />,
-  <div
-    className="sc-bwzfXH eDaynt"
-  />,
-]
+<React.Fragment>
+  <styled.nav />
+  <styled.div />
+</React.Fragment>
 `;
