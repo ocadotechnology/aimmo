@@ -1,6 +1,8 @@
 # AI:MMO
 A **M**assively **M**ulti-player **O**nline game, where players create **A**rtificially **I**ntelligent programs to play on their behalf.
 
+[![Code Climate](https://codeclimate.com/github/ocadotechnology/aimmo/badges/gpa.svg)](https://codeclimate.com/github/ocadotechnology/aimmo)
+
 ## Objective
 People program Avatars. Avatars play the game. A player's aim is to create a better Avatar than other people's Avatars. A "better" Avatar is one that scores points faster than other people's Avatars.
 
