@@ -5,8 +5,7 @@ import os
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, Http404
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -50,10 +49,9 @@ def code(request, id):
     if request.method == 'POST':
         avatar.code = request.POST['code']
         avatar.save()
-        return _post_code_success_response(
-            'Your code was saved!<br><br><a href="%s">Watch</a>' % reverse('aimmo/watch', kwargs={'id': game.id}))
+        return HttpResponse(status=200)
     else:
-        return HttpResponse(avatar.code)
+        return JsonResponse({'code': avatar.code})
 
 
 def list_games(request):
