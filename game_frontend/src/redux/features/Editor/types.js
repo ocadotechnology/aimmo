@@ -1,0 +1,14 @@
+const GET_CODE_REQUEST = 'features/Editor/GET_CODE_REQUEST'
+const GET_CODE_SUCCESS = 'features/Editor/GET_CODE_SUCCESS'
+const GET_CODE_FAILURE = 'features/Editor/GET_CODE_FAILURE'
+
+const POST_CODE_REQUEST = 'features/Editor/POST_CODE_REQUEST'
+const POST_CODE_SUCCESS = 'features/Editor/POST_CODE_SUCCESS'
+
+export default {
+  GET_CODE_REQUEST,
+  GET_CODE_SUCCESS,
+  GET_CODE_FAILURE,
+  POST_CODE_REQUEST,
+  POST_CODE_SUCCESS
+}
