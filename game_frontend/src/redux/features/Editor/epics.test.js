@@ -3,6 +3,10 @@ import { Observable, TestScheduler } from 'rxjs'
 import { ActionsObservable } from 'redux-observable'
 import getCodeEpic from './epics'
 import actions from './actions'
+import configureStore from 'redux-mock-store'
+
+const middlewares = []
+const mockStore = configureStore(middlewares)
 
 const deepEquals = (actual, expected) =>
   expect(actual).toEqual(expected)
@@ -18,7 +22,7 @@ describe('getCodeEpic', () => {
     const marbles2 = '-b-'
     const values = {
       a: actions.getCodeRequest(),
-      b: actions.getCodeReceived({ code })
+      b: actions.getCodeReceived(code)
     }
 
     const testScheduler = createTestScheduler()
@@ -29,7 +33,7 @@ describe('getCodeEpic', () => {
       return Observable.of({ code })
     }
 
-    const actual = getCodeEpic(source, null, { getJSON: mockGetJSON })
+    const actual = getCodeEpic(source, mockStore({game: { id: 1 }}), { getJSON: mockGetJSON })
 
     testScheduler.expectObservable(actual).toBe(marbles2, values)
     testScheduler.flush()

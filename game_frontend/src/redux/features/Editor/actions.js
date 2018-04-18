@@ -1,11 +1,8 @@
 import types from './types'
 
-const getCodeRequest = gameID => (
+const getCodeRequest = () => (
   {
-    type: types.GET_CODE_REQUEST,
-    payload: {
-      gameID
-    }
+    type: types.GET_CODE_REQUEST
   }
 )
 

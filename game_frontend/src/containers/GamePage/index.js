@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { actions } from 'features/Editor'
 import IDE from 'components/IDE'
 import Game from 'components/Game'
 
@@ -17,11 +20,26 @@ export class GamePage extends Component {
   render () {
     return (
       <GamePageContainer>
-        <IDE />
+        <IDE code={this.props.code} getCode={this.props.getCode} />
         <Game />
       </GamePageContainer>
     )
   }
 }
 
-export default GamePage
+GamePage.propTypes = {
+  code: PropTypes.string,
+  getCode: PropTypes.func
+}
+
+const mapStateToProps = state => {
+  return {
+    code: state.editor.code
+  }
+}
+
+const mapDispatchToProps = {
+  getCode: actions.getCodeRequest
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(GamePage)

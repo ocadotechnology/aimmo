@@ -5,7 +5,7 @@ import os
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, JsonResponse, Http404
+from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -30,8 +30,9 @@ def _create_response(status, message):
     return JsonResponse(response)
 
 
-@login_required
 def code(request, id):
+    if not request.user:
+        return HttpResponseForbidden()
     game = get_object_or_404(Game, id=id)
     if not game.can_user_play(request.user):
         raise Http404

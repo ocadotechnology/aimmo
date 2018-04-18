@@ -4,12 +4,12 @@ const editorReducer = (state = {}, action) => {
   switch (action.type) {
     case types.GET_CODE_SUCCESS:
       return {
-        code: action.payload.code,
-        ...state
+        ...state,
+        code: action.payload.code
       }
     default:
       return state
   }
 }
 
-export default { editorReducer }
+export default editorReducer

@@ -4,12 +4,15 @@ import 'rxjs'
 
 import { Provider } from 'react-redux'
 
-import GamePage from './components/GamePage'
+import GamePage from './containers/GamePage'
 import configureStore from './redux/store'
 
 const initialState = {
-  movieReducer: {
+  ghibli: {
     movies: []
+  },
+  editor: {
+    code: ''
   }
 }
 const reduxStore = configureStore(initialState)

@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import { combineEpics } from 'redux-observable'
-import movieReducer, { movieEpics } from './GhibliMovies'
+import ghibliReducer, { movieEpics } from './GhibliMovies'
 import editorReducer, { editorEpics } from './Editor'
 
 const rootEpic = combineEpics(
@@ -8,10 +8,11 @@ const rootEpic = combineEpics(
   editorEpics
 )
 
-const rootReducer = combineReducers(
-  movieReducer,
-  editorReducer
-)
+const rootReducer = combineReducers({
+  ghibli: ghibliReducer,
+  editor: editorReducer,
+  game: (state = { id: 1 }) => state
+})
 
 export {
   rootEpic,
