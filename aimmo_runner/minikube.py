@@ -64,7 +64,7 @@ def start_cluster(minikube):
     if 'minikube: Running' in status:
         print('Cluster already running')
     else:
-        run_command([minikube, 'start', '--memory=2048', '--cpus=2', '--bootstrapper=localkube'])
+        run_command([minikube, 'start', '--memory=2048', '--cpus=2'])
 
 
 def build_docker_images(minikube):
