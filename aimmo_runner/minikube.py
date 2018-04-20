@@ -8,7 +8,10 @@ import re
 import socket
 import yaml
 import platform
+from subprocess import CalledProcessError
+
 from shell_api import (run_command, create_test_bin, BASE_DIR)
+
 
 MINIKUBE_EXECUTABLE = "minikube"
 
@@ -54,7 +57,10 @@ def create_creator_yaml():
 
 
 def start_cluster(minikube):
-    status = run_command([minikube, 'status'], True)
+    try:
+        status = run_command([minikube, 'status'], True)
+    except CalledProcessError:
+        status = "not running"
     if 'minikube: Running' in status:
         print('Cluster already running')
     else:
