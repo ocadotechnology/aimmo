@@ -23,6 +23,7 @@
     "eslint-plugin-react": "^7.6.1",
     "eslint-plugin-standard": "^3.0.1",
     "jest": "^22.4.0",
+    "jest-styled-components": "^5.0.1",
     "module-resolver": "^1.0.0",
     "parcel-bundler": "^1.6.2",
     "react-test-renderer": "^16.2.0",
