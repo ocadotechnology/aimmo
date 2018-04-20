@@ -8,7 +8,10 @@ import re
 import socket
 import yaml
 import platform
+from subprocess import CalledProcessError
+
 from shell_api import (run_command, create_test_bin, BASE_DIR)
+
 
 MINIKUBE_EXECUTABLE = "minikube"
 
