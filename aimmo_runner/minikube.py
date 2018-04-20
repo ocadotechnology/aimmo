@@ -54,7 +54,10 @@ def create_creator_yaml():
 
 
 def start_cluster(minikube):
-    status = run_command([minikube, 'status'], True)
+    try:
+        status = run_command([minikube, 'status'], True)
+    except CalledProcessError:
+        status = "not running"
     if 'minikube: Running' in status:
         print('Cluster already running')
     else:
