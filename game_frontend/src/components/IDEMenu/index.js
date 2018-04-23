@@ -11,7 +11,9 @@ export default class IDEMenu extends Component {
   render () {
     return (
       <IDEMenuLayout>
-        <button onClick={this.props.getCode} >Get Code</button>
+        <button
+          id='get-code-button'
+          onClick={this.props.getCode} >Get Code</button>
       </IDEMenuLayout>
     )
   }
