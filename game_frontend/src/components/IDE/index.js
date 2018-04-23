@@ -8,7 +8,7 @@ export default class IDE extends Component {
   render () {
     return (
       <Fragment>
-        <IDEMenu getCode={this.props.getCode} />
+        <IDEMenu getCode={this.props.getCode} postCode={this.props.postCode} />
         <IDEEditor code={this.props.code} />
         <IDEConsole />
       </Fragment>
@@ -18,5 +18,6 @@ export default class IDE extends Component {
 
 IDE.propTypes = {
   code: PropTypes.string,
-  getCode: PropTypes.func
+  getCode: PropTypes.func,
+  postCode: PropTypes.func
 }

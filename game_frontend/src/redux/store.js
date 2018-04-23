@@ -12,7 +12,7 @@ export default function configureStore (initialState) {
       createEpicMiddleware(rootEpic, {
         dependencies: {
           getJSON: ajax.getJSON,
-          post: ajax.post
+          ajax: ajax
         }
       })
     ))

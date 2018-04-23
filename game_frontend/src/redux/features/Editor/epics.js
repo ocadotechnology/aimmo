@@ -14,10 +14,10 @@ const getCodeEpic = (action$, store, { getJSON }) =>
         }))
     )
 
-const postCodeEpic = (action$, store, { post }) =>
+const postCodeEpic = (action$, store, { ajax }) =>
   action$.ofType(types.POST_CODE_REQUEST)
     .mergeMap(action =>
-      post(`/players/api/code/${store.getState().game.id}/`, { code: store.getState().editor.code })
+      ajax({url: `/players/api/code/${store.getState().game.id}/`, body: { code: store.getState().editor.code }, withCredentials: true})
         .map(response => actions.postCodeReceived())
         .catch(error => Observable.of({
           type: types.POST_CODE_FAILURE,

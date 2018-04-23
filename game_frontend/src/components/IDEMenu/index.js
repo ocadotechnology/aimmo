@@ -14,11 +14,15 @@ export default class IDEMenu extends Component {
         <button
           id='get-code-button'
           onClick={this.props.getCode} >Get Code</button>
+        <button
+          id='post-code-button'
+          onClick={this.props.postCode} >Post Code</button>
       </IDEMenuLayout>
     )
   }
 }
 
 IDEMenu.propTypes = {
-  getCode: PropTypes.func
+  getCode: PropTypes.func,
+  postCode: PropTypes.func
 }

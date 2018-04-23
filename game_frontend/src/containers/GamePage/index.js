@@ -20,7 +20,7 @@ export class GamePage extends Component {
   render () {
     return (
       <GamePageContainer>
-        <IDE code={this.props.code} getCode={this.props.getCode} />
+        <IDE code={this.props.code} getCode={this.props.getCode} postCode={this.props.postCode} />
         <Game />
       </GamePageContainer>
     )
@@ -29,7 +29,8 @@ export class GamePage extends Component {
 
 GamePage.propTypes = {
   code: PropTypes.string,
-  getCode: PropTypes.func
+  getCode: PropTypes.func,
+  postCode: PropTypes.func
 }
 
 const mapStateToProps = state => {
@@ -39,7 +40,8 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-  getCode: actions.getCodeRequest
+  getCode: actions.getCodeRequest,
+  postCode: actions.postCodeRequest
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(GamePage)
