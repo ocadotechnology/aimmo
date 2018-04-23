@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Game /> renders correctly 1`] = `
+<React.Fragment>
+  <styled.nav />
+  <styled.div />
+</React.Fragment>
+`;

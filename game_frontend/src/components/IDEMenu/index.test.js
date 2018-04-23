@@ -1,11 +1,11 @@
 /* eslint-env jest */
 import React from 'react'
-import Button from 'components/Button'
+import IDEMenu from 'components/IDEMenu'
 import renderer from 'react-test-renderer'
 
-describe('<Button />', () => {
+describe('<IDEMenu />', () => {
   it('renders correctly', () => {
-    const tree = renderer.create(<Button>Button</Button>).toJSON()
+    const tree = renderer.create(<IDEMenu></IDEMenu>).toJSON()
     expect(tree).toMatchSnapshot()
   })
 })
