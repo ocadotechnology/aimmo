@@ -4,6 +4,7 @@ const GET_CODE_FAILURE = 'features/Editor/GET_CODE_FAILURE'
 
 const POST_CODE_REQUEST = 'features/Editor/POST_CODE_REQUEST'
 const POST_CODE_SUCCESS = 'features/Editor/POST_CODE_SUCCESS'
+const POST_CODE_FAILURE = 'features/Editor/POST_CODE_FAILURE'
 
 export default {
   GET_CODE_REQUEST,

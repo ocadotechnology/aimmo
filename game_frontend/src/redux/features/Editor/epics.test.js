@@ -1,7 +1,7 @@
 /* eslint-env jest */
 import { Observable, TestScheduler } from 'rxjs'
 import { ActionsObservable } from 'redux-observable'
-import getCodeEpic from './epics'
+import epics from './epics'
 import actions from './actions'
 import configureStore from 'redux-mock-store'
 
@@ -33,7 +33,42 @@ describe('getCodeEpic', () => {
       return Observable.of({ code })
     }
 
-    const actual = getCodeEpic(source, mockStore({game: { id: 1 }}), { getJSON: mockGetJSON })
+    const actual = epics.getCodeEpic(source, mockStore({game: { id: 1 }}), { getJSON: mockGetJSON })
+
+    testScheduler.expectObservable(actual).toBe(marbles2, values)
+    testScheduler.flush()
+  })
+})
+
+describe('postCodeEpic', () => {
+  it('posts the code', () => {
+    const code = 'class Avatar'
+
+    const marbles1 = '-a-'
+    const marbles2 = '-b-'
+    const values = {
+      a: actions.postCodeRequest(),
+      b: actions.postCodeReceived()
+    }
+
+    const testScheduler = createTestScheduler()
+    const source = ActionsObservable.from(
+      testScheduler.createColdObservable(marbles1, values)
+    )
+    const mockPost = () => {
+      return Observable.of({})
+    }
+
+    const state = {
+      game: {
+        id: 1
+      },
+      editor: {
+        code: code
+      }
+    }
+
+    const actual = epics.postCodeEpic(source, mockStore(state), { post: mockPost })
 
     testScheduler.expectObservable(actual).toBe(marbles2, values)
     testScheduler.flush()

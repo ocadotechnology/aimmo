@@ -14,4 +14,16 @@ const getCodeEpic = (action$, store, { getJSON }) =>
         }))
     )
 
-export default getCodeEpic
+const postCodeEpic = (action$, store, { post }) =>
+  action$.ofType(types.POST_CODE_REQUEST)
+    .mergeMap(action =>
+      post(`/players/api/code/${store.getState().game.id}/`, { code: store.getState().editor.code })
+        .map(response => actions.postCodeReceived())
+        .catch(error => Observable.of({
+          type: types.POST_CODE_FAILURE,
+          payload: error.xhr.response,
+          error: true
+        }))
+    )
+
+export default { getCodeEpic, postCodeEpic }

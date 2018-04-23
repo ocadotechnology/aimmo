@@ -10,7 +10,10 @@ export default function configureStore (initialState) {
     initialState,
     composeWithDevTools(applyMiddleware(
       createEpicMiddleware(rootEpic, {
-        dependencies: { getJSON: ajax.getJSON }
+        dependencies: {
+          getJSON: ajax.getJSON,
+          post: ajax.post
+        }
       })
     ))
   )
