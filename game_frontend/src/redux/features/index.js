@@ -5,8 +5,7 @@ import editorReducer, { editorEpics } from './Editor'
 
 const rootEpic = combineEpics(
   movieEpics,
-  editorEpics.getCodeEpic,
-  editorEpics.postCodeEpic
+  ...Object.values(editorEpics)
 )
 
 const rootReducer = combineReducers({
