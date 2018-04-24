@@ -10,6 +10,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
+from django.middleware.csrf import get_token
 
 from models import Avatar, Game, LevelAttempt
 from players import forms
@@ -191,3 +192,11 @@ def current_avatar_in_game(request, game_id):
         return HttpResponse('Avatar does not exist for this user', status=404)
 
     return JsonResponse({'current_avatar_id': avatar.id})
+
+
+def csrfToken(request):
+    if request.method == 'GET':
+        token = get_token(request)
+        return JsonResponse({'csrfToken': token})
+    else:
+        return HttpResponse(status=405)
