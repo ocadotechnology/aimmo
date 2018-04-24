@@ -1,6 +1,9 @@
 import actions from './actions'
 import types from './types'
 import { Observable } from 'rxjs'
+import { map, catchError } from 'rxjs/operators'
+import { ofType } from 'redux-observable'
+import { getCSRFToken, postOperator } from './api'
 
 const getCodeEpic = (action$, store, { getJSON }) =>
   action$.ofType(types.GET_CODE_REQUEST)
@@ -14,16 +17,24 @@ const getCodeEpic = (action$, store, { getJSON }) =>
         }))
     )
 
-const postCodeEpic = (action$, store, { ajax }) =>
-  action$.ofType(types.POST_CODE_REQUEST)
-    .mergeMap(action =>
-      ajax({url: `/players/api/code/${store.getState().game.id}/`, body: { code: store.getState().editor.code }, withCredentials: true})
-        .map(response => actions.postCodeReceived())
-        .catch(error => Observable.of({
-          type: types.POST_CODE_FAILURE,
-          payload: error.xhr.response,
-          error: true
-        }))
+const postCodeEpic = (action$, store, { post, getJSON }) => {
+  return action$
+    .pipe(
+      ofType(types.POST_CODE_REQUEST),
+      getCSRFToken(getJSON),
+      postOperator(
+        `/players/api/code/${store.getState().game.id}/`,
+        { code: store.getState().editor.code },
+        post
+      ),
+      map(response => actions.postCodeReceived()),
+      catchError(error => Observable.of({
+        type: types.POST_CODE_FAILURE,
+        payload: error.xhr.response,
+        error: true
+      })
+      )
     )
+}
 
 export default { getCodeEpic, postCodeEpic }
