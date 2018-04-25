@@ -132,7 +132,6 @@ class AttackAction(Action):
             # Move responsibility for this to avatar.die() ?
             respawn_location = world_map.get_random_spawn_location()
             attacked_avatar.die(respawn_location)
-            # TODO this logic shouldn't be here
             world_map.get_cell(self.target_location).avatar = None
             world_map.get_cell(respawn_location).avatar = attacked_avatar
 

@@ -51,11 +51,9 @@ class WorldMap(object):
     def all_cells(self):
         return self.grid.values()
 
-    # TODO this is game logic
     def score_cells(self):
         return (c for c in self.all_cells() if c.generates_score)
 
-    # TODO this is game logic
     def pickup_cells(self):
         return (c for c in self.all_cells() if c.pickup)
 
@@ -111,18 +109,15 @@ class WorldMap(object):
         self._update_avatars()
         self._update_map(num_avatars)
 
-    # TODO this is game logic
     def _update_avatars(self):
         self._apply_score()
         self._apply_pickups()
 
-    # TODO this is game logic
     def _apply_pickups(self):
         for cell in self.pickup_cells():
             if cell.avatar is not None:
                 cell.pickup.apply(cell.avatar)
 
-    # TODO this is game logic
     def _apply_score(self):
         for cell in self.score_cells():
             try:
@@ -130,14 +125,12 @@ class WorldMap(object):
             except AttributeError:
                 pass
 
-    # TODO this is game logic
     def _update_map(self, num_avatars):
         context = MapContext(num_avatars=num_avatars)
         MapExpander().update(self, context=context)
         ScoreLocationUpdater().update(self, context=context)
         PickupUpdater().update(self, context=context)
 
-    # TODO this is game logic
     def can_move_to(self, target_location):
         if not self.is_on_map(target_location):
             return False
@@ -147,7 +140,6 @@ class WorldMap(object):
                 and (not cell.is_occupied or cell.avatar.is_moving)
                 and len(cell.moves) <= 1)
 
-    # TODO this is game logic
     def attackable_avatar(self, target_location):
         """
         Return a boolean if the avatar is attackable at the given location (or will be
@@ -166,11 +158,9 @@ class WorldMap(object):
 
         return None
 
-    # TODO this is game logic
     def get_no_fog_distance(self):
         return self.settings['NO_FOG_OF_WAR_DISTANCE']
 
-    # TODO this is game logic
     def get_partial_fog_distance(self):
         return self.settings['PARTIAL_FOG_OF_WAR_DISTANCE']
 
