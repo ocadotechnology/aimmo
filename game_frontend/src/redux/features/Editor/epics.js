@@ -29,8 +29,7 @@ const postCodeEpic = (action$, store, { api }) => {
         type: types.POST_CODE_FAILURE,
         payload: error.xhr.response,
         error: true
-      })
-      )
+      }))
     )
 }
 
