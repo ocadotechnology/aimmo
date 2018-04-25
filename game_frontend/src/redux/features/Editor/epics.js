@@ -20,8 +20,7 @@ const postCodeEpic = (action$, store, { api }) => {
   return action$
     .pipe(
       ofType(types.POST_CODE_REQUEST),
-      api.post.getCSRFToken,
-      api.post.postOperator(
+      api.post(
         `/players/api/code/${store.getState().game.id}/`,
         { code: store.getState().editor.code }
       ),

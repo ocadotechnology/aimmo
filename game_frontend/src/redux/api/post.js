@@ -1,4 +1,5 @@
 import { ajax } from 'rxjs/observable/dom/ajax'
+import { pipe } from 'rxjs/Rx'
 import api from '../api'
 
 const getCSRFToken = action$ => {
@@ -17,4 +18,11 @@ const postOperator = (url, body) => csrfToken$ => {
   })
 }
 
-export default { getCSRFToken, postOperator }
+const post = (url, body) => (
+  pipe(
+    getCSRFToken,
+    postOperator(url, body)
+  )
+)
+
+export default post
