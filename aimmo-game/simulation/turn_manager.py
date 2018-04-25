@@ -2,6 +2,7 @@ import logging
 import time
 from threading import RLock
 from threading import Thread
+import requests
 
 from simulation.action import PRIORITIES
 
