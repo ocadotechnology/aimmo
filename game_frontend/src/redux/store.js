@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware } from 'redux'
 import { rootEpic, rootReducer } from './features'
 import { createEpicMiddleware } from 'redux-observable'
-import { ajax } from 'rxjs/observable/dom/ajax'
+import api from './api'
 import { composeWithDevTools } from 'redux-devtools-extension'
 
 export default function configureStore (initialState) {
@@ -11,8 +11,7 @@ export default function configureStore (initialState) {
     composeWithDevTools(applyMiddleware(
       createEpicMiddleware(rootEpic, {
         dependencies: {
-          getJSON: ajax.getJSON,
-          post: ajax.post
+          api
         }
       })
     ))

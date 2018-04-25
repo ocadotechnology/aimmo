@@ -3,12 +3,11 @@ import types from './types'
 import { Observable } from 'rxjs'
 import { map, catchError } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
-import { getCSRFToken, postOperator } from './api'
 
-const getCodeEpic = (action$, store, { getJSON }) =>
+const getCodeEpic = (action$, store, { api }) =>
   action$.ofType(types.GET_CODE_REQUEST)
     .mergeMap(action =>
-      getJSON(`/players/api/code/${store.getState().game.id}/`, {withCredentials: true})
+      api.get(`code/${store.getState().game.id}/`)
         .map(response => actions.getCodeReceived(response.code))
         .catch(error => Observable.of({
           type: types.GET_CODE_FAILURE,
@@ -17,15 +16,14 @@ const getCodeEpic = (action$, store, { getJSON }) =>
         }))
     )
 
-const postCodeEpic = (action$, store, { post, getJSON }) => {
+const postCodeEpic = (action$, store, { api }) => {
   return action$
     .pipe(
       ofType(types.POST_CODE_REQUEST),
-      getCSRFToken(getJSON),
-      postOperator(
+      api.post.getCSRFToken,
+      api.post.postOperator(
         `/players/api/code/${store.getState().game.id}/`,
-        { code: store.getState().editor.code },
-        post
+        { code: store.getState().editor.code }
       ),
       map(response => actions.postCodeReceived()),
       catchError(error => Observable.of({
