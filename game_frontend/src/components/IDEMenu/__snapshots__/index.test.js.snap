@@ -15,5 +15,11 @@ exports[`<IDEMenu /> renders correctly 1`] = `
   >
     Get Code
   </button>
+  <button
+    id="post-code-button"
+    onClick={undefined}
+  >
+    Post Code
+  </button>
 </nav>
 `;

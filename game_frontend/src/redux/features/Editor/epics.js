@@ -16,8 +16,8 @@ const getCodeEpic = (action$, store, { api }) =>
         }))
     )
 
-const postCodeEpic = (action$, store, { api }) => {
-  return action$
+const postCodeEpic = (action$, store, { api }) =>
+  action$
     .pipe(
       ofType(types.POST_CODE_REQUEST),
       api.post(
@@ -31,6 +31,5 @@ const postCodeEpic = (action$, store, { api }) => {
         error: true
       }))
     )
-}
 
 export default { getCodeEpic, postCodeEpic }
