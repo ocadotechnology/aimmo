@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import IDEMenu from 'components/IDEMenu'
-import IDEEditor from 'components/IDEEditor'
+import IDEEditor from 'containers/IDEEditor'
 import IDEConsole from 'components/IDEConsole'
 
 export default class IDE extends Component {
