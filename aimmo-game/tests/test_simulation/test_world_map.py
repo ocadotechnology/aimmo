@@ -6,7 +6,9 @@ from string import ascii_uppercase
 from unittest import TestCase
 
 from simulation.location import Location
-from simulation.world_map import Cell, WorldMap, WorldMapStaticSpawnDecorator
+from simulation.cell import Cell
+from simulation.world_map import WorldMap, WorldMapStaticSpawnDecorator
+from simulation.game_logic import SpawnLocationFinder
 from .dummy_avatar import DummyAvatar
 from .maps import MockCell, MockPickup, AvatarMap
 
@@ -138,7 +140,8 @@ class TestWorldMap(TestCase):
         grid = self._grid_from_list([[spawnable1, score_cell, unhabitable],
                                      [unhabitable, spawnable2, filled]])
         world_map = WorldMap(grid, self.settings)
-        cells = list(world_map.potential_spawn_locations())
+        spawn_location_finder = SpawnLocationFinder(world_map)
+        cells = list(spawn_location_finder.potential_spawn_locations())
         self.assertIn(spawnable1, cells)
         self.assertIn(spawnable2, cells)
         self.assertNotIn(score_cell, cells, "Score cells should not be spawns")
