@@ -1,68 +1,12 @@
 import math
-import random
 from logging import getLogger
 
 from simulation.level_settings import DEFAULT_LEVEL_SETTINGS
-from pickups import ALL_PICKUPS
-from simulation.action import MoveAction
 from simulation.location import Location
+from simulation.game_logic import SpawnLocationFinder, ScoreLocationUpdater, MapContext, PickupUpdater, MapExpander
+from simulation.cell import Cell
 
 LOGGER = getLogger(__name__)
-
-
-class Cell(object):
-    """
-    Any position on the world grid.
-    """
-
-    def __init__(self, location, habitable=True, generates_score=False,
-                 partially_fogged=False):
-        self.location = location
-        self.habitable = habitable
-        self.generates_score = generates_score
-        self.avatar = None
-        self.pickup = None
-        self.partially_fogged = partially_fogged
-        self.actions = []
-
-    def __repr__(self):
-        return 'Cell({} h={} s={} a={} p={} f{})'.format(
-            self.location, self.habitable, self.generates_score, self.avatar, self.pickup,
-            self.partially_fogged)
-
-    def __eq__(self, other):
-        return self.location == other.location
-
-    def __ne__(self, other):
-        return not self == other
-
-    def __hash__(self):
-        return hash(self.location)
-
-    @property
-    def moves(self):
-        return [move for move in self.actions if isinstance(move, MoveAction)]
-
-    @property
-    def is_occupied(self):
-        return self.avatar is not None
-
-    def serialise(self):
-        if self.partially_fogged:
-            return {
-                'generates_score': self.generates_score,
-                'location': self.location.serialise(),
-                'partially_fogged': self.partially_fogged
-            }
-        else:
-            return {
-                'avatar': self.avatar.serialise() if self.avatar else None,
-                'generates_score': self.generates_score,
-                'habitable': self.habitable,
-                'location': self.location.serialise(),
-                'pickup': self.pickup.serialise() if self.pickup else None,
-                'partially_fogged': self.partially_fogged
-            }
 
 
 class WorldMap(object):
@@ -77,6 +21,7 @@ class WorldMap(object):
         """
         self.grid = grid
         self.settings = settings
+        self._spawn_location_finder = SpawnLocationFinder(self)
 
     @classmethod
     def _min_max_from_dimensions(cls, height, width):
@@ -108,16 +53,6 @@ class WorldMap(object):
 
     def score_cells(self):
         return (c for c in self.all_cells() if c.generates_score)
-
-    def potential_spawn_locations(self):
-        """
-        Used to make sure that the cell is free before spawning.
-        """
-        return (c for c in self.all_cells()
-                if c.habitable
-                and not c.generates_score
-                and not c.avatar
-                and not c.pickup)
 
     def pickup_cells(self):
         return (c for c in self.all_cells() if c.pickup)
@@ -191,78 +126,10 @@ class WorldMap(object):
                 pass
 
     def _update_map(self, num_avatars):
-        self._expand(num_avatars)
-        self._reset_score_locations(num_avatars)
-        self._add_pickups(num_avatars)
-
-    def _expand(self, num_avatars):
-        LOGGER.info('Expanding map')
-        start_size = self.num_cells
-        target_num_cells = int(math.ceil(
-            num_avatars * self.settings['TARGET_NUM_CELLS_PER_AVATAR']
-        ))
-        num_cells_to_add = target_num_cells - self.num_cells
-        if num_cells_to_add > 0:
-            self._add_outer_layer()
-            assert self.num_cells > start_size
-
-    def _add_outer_layer(self):
-        self._add_vertical_layer(self.min_x() - 1)
-        self._add_vertical_layer(self.max_x() + 1)
-        self._add_horizontal_layer(self.min_y() - 1)
-        self._add_horizontal_layer(self.max_y() + 1)
-
-    def _add_vertical_layer(self, x):
-        for y in range(self.min_y(), self.max_y() + 1):
-            self.grid[Location(x, y)] = Cell(Location(x, y))
-
-    def _add_horizontal_layer(self, y):
-        for x in range(self.min_x(), self.max_x() + 1):
-            self.grid[Location(x, y)] = Cell(Location(x, y))
-
-    def _reset_score_locations(self, num_avatars):
-        for cell in self.score_cells():
-            if random.random() < self.settings['SCORE_DESPAWN_CHANCE']:
-                cell.generates_score = False
-
-        new_num_score_locations = len(list(self.score_cells()))
-        target_num_score_locations = int(math.ceil(
-            num_avatars * self.settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR']
-        ))
-        num_score_locations_to_add = target_num_score_locations - new_num_score_locations
-        locations = self._get_random_spawn_locations(num_score_locations_to_add)
-        for cell in locations:
-            cell.generates_score = True
-
-    def _add_pickups(self, num_avatars):
-        target_num_pickups = int(math.ceil(
-            num_avatars * self.settings['TARGET_NUM_PICKUPS_PER_AVATAR']
-        ))
-        LOGGER.debug('Aiming for %s new pickups', target_num_pickups)
-        max_num_pickups_to_add = target_num_pickups - len(list(self.pickup_cells()))
-        locations = self._get_random_spawn_locations(max_num_pickups_to_add)
-        for cell in locations:
-            if random.random() < self.settings['PICKUP_SPAWN_CHANCE']:
-                LOGGER.info('Adding new pickup at %s', cell)
-                cell.pickup = random.choice(ALL_PICKUPS)(cell)
-
-    def _get_random_spawn_locations(self, max_locations):
-        if max_locations <= 0:
-            return []
-        potential_locations = list(self.potential_spawn_locations())
-        try:
-            return random.sample(potential_locations, max_locations)
-        except ValueError:
-            LOGGER.debug('Not enough potential locations')
-            return potential_locations
-
-    def get_random_spawn_location(self):
-        """Return a single random spawn location.
-
-        Throws:
-            IndexError: if there are no possible locations.
-        """
-        return self._get_random_spawn_locations(1)[0].location
+        context = MapContext(num_avatars=num_avatars)
+        MapExpander().update(self, context=context)
+        ScoreLocationUpdater().update(self, context=context)
+        PickupUpdater().update(self, context=context)
 
     def can_move_to(self, target_location):
         if not self.is_on_map(target_location):
@@ -296,6 +163,9 @@ class WorldMap(object):
 
     def get_partial_fog_distance(self):
         return self.settings['PARTIAL_FOG_OF_WAR_DISTANCE']
+
+    def get_random_spawn_location(self):
+        return self._spawn_location_finder.get_random_spawn_location()
 
     def __repr__(self):
         return repr(self.grid)
@@ -402,5 +272,5 @@ class WorldMap(object):
 
 
 def WorldMapStaticSpawnDecorator(world_map, spawn_location):
-    world_map.get_random_spawn_location = lambda: spawn_location
+    world_map._spawn_location_finder.get_random_spawn_location = lambda: spawn_location
     return world_map
