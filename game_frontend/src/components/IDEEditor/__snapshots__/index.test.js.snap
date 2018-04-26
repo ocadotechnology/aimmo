@@ -9,8 +9,14 @@ exports[`<IDEEditor /> renders correctly 1`] = `
 <div
   className="c0"
 >
-  <p>
-    class Avatar
-  </p>
+  <div
+    id="ace_editor"
+    style={
+      Object {
+        "height": "100%",
+        "width": "100%",
+      }
+    }
+  />
 </div>
 `;

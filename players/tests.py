@@ -76,7 +76,7 @@ class TestViews(TestCase):
         c = self.login()
         response = c.get(reverse('aimmo/code', kwargs={'id': 1}))
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content, self.CODE)
+        self.assertJSONEqual(response.content, {'code': self.CODE})
 
     def test_program(self):
         c = self.login()
