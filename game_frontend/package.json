@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "react": "^16.2.0",
+    "react-ace": "^6.1.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.7",
     "redux": "^3.7.2",

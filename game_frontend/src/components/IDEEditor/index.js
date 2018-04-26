@@ -15,7 +15,7 @@ export default class IDEEditor extends Component {
         <AceEditor
           mode='javascript'
           theme='idle_fingers'
-          name='blah2'
+          name='ace_editor'
           onLoad={this.onLoad}
           onChange={this.onChange}
           fontSize={14}
