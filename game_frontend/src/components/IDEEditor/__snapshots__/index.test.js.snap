@@ -8,5 +8,9 @@ exports[`<IDEEditor /> renders correctly 1`] = `
 
 <div
   className="c0"
-/>
+>
+  <p>
+    class Avatar
+  </p>
+</div>
 `;

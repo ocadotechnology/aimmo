@@ -69,14 +69,14 @@ class TestViews(TestCase):
         c = self.login()
         response = c.get(reverse('aimmo/code', kwargs={'id': 1}))
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.content.startswith('class Avatar'))
+        self.assertTrue(json.loads(response.content)['code'].startswith('class Avatar'))
 
     def test_retrieve_code(self):
         models.Avatar(owner=self.user, code=self.CODE, game=self.game).save()
         c = self.login()
         response = c.get(reverse('aimmo/code', kwargs={'id': 1}))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, self.CODE)
+        self.assertJSONEqual(response.content, self.CODE)
 
     def test_program(self):
         c = self.login()

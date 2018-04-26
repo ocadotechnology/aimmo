@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^statistics/$', TemplateView.as_view(template_name='players/statistics.html'), name='aimmo/statistics'),
     url(r'^game_ide/$', TemplateView.as_view(template_name='players/game_ide.html'), name='aimmo/game_ide'),
 
+    url(r'^api/csrf_token', views.csrfToken, name='aimmo/csrf_token'),
     url(r'^api/code/(?P<id>[0-9]+)/$', views.code, name='aimmo/code'),
     url(r'^api/games/$', views.list_games, name='aimmo/games'),
     url(r'^api/games/(?P<id>[0-9]+)/$', views.get_game, name='aimmo/game_details'),

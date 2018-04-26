@@ -5,12 +5,12 @@ import os
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, Http404
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
+from django.middleware.csrf import get_token
 
 from models import Avatar, Game, LevelAttempt
 from players import forms
@@ -31,8 +31,9 @@ def _create_response(status, message):
     return JsonResponse(response)
 
 
-@login_required
 def code(request, id):
+    if not request.user:
+        return HttpResponseForbidden()
     game = get_object_or_404(Game, id=id)
     if not game.can_user_play(request.user):
         raise Http404
@@ -50,10 +51,9 @@ def code(request, id):
     if request.method == 'POST':
         avatar.code = request.POST['code']
         avatar.save()
-        return _post_code_success_response(
-            'Your code was saved!<br><br><a href="%s">Watch</a>' % reverse('aimmo/watch', kwargs={'id': game.id}))
+        return HttpResponse(status=200)
     else:
-        return HttpResponse(avatar.code)
+        return JsonResponse({'code': avatar.code})
 
 
 def list_games(request):
@@ -192,3 +192,11 @@ def current_avatar_in_game(request, game_id):
         return HttpResponse('Avatar does not exist for this user', status=404)
 
     return JsonResponse({'current_avatar_id': avatar.id})
+
+
+def csrfToken(request):
+    if request.method == 'GET':
+        token = get_token(request)
+        return JsonResponse({'csrfToken': token})
+    else:
+        return HttpResponse(status=405)

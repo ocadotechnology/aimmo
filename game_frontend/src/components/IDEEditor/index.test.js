@@ -5,7 +5,7 @@ import renderer from 'react-test-renderer'
 
 describe('<IDEEditor />', () => {
   it('renders correctly', () => {
-    const tree = renderer.create(<IDEEditor></IDEEditor>).toJSON()
+    const tree = renderer.create(<IDEEditor code='class Avatar' />).toJSON()
     expect(tree).toMatchSnapshot()
   })
 })

@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<GamePage /> matches snapshot 1`] = `
+<styled.div>
+  <IDE
+    code="class Avatar"
+    getCode={[MockFunction]}
+  />
+  <Game />
+</styled.div>
+`;

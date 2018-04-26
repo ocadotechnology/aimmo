@@ -8,5 +8,18 @@ exports[`<IDEMenu /> renders correctly 1`] = `
 
 <nav
   className="c0"
-/>
+>
+  <button
+    id="get-code-button"
+    onClick={undefined}
+  >
+    Get Code
+  </button>
+  <button
+    id="post-code-button"
+    onClick={undefined}
+  >
+    Post Code
+  </button>
+</nav>
 `;

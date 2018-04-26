@@ -1,10 +1,10 @@
 /* eslint-env jest */
-import reducers from './reducers'
+import movieReducer from './reducers'
 import actions from './actions'
 
 describe('movieReducer', () => {
   it('should return the initial state', () => {
-    expect(reducers.movieReducer(undefined, {})).toEqual({})
+    expect(movieReducer(undefined, {})).toEqual({})
   })
 
   it('should handle RECEIVE_MOVIES', () => {
@@ -24,7 +24,7 @@ describe('movieReducer', () => {
       }
     ]
     const action = actions.receiveMovies(movies)
-    expect(reducers.movieReducer({}, action)).toEqual({
+    expect(movieReducer({}, action)).toEqual({
       movies
     })
   })
