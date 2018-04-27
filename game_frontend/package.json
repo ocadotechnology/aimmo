@@ -31,13 +31,15 @@
     "shelljs": "^0.8.1"
   },
   "dependencies": {
+    "hoek": "^5.0.3",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.7",
     "redux": "^3.7.2",
     "redux-observable": "^0.18.0",
     "rxjs": "^5.5.6",
-    "styled-components": "^3.2.5"
+    "styled-components": "^3.2.5",
+    "update": "^0.7.4"
   },
   "scripts": {
     "test": "jest"
