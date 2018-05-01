@@ -1,20 +1,25 @@
 import actions from './actions'
 import types from './types'
-import { Observable } from 'rxjs'
-import { map, catchError, debounceTime, tap } from 'rxjs/operators'
+import { Observable, Scheduler } from 'rxjs'
+import { map, mergeMap, catchError, debounceTime } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
+const backgroundScheduler = Scheduler.async
+
 const getCodeEpic = (action$, store, { api }) =>
-  action$.ofType(types.GET_CODE_REQUEST)
-    .mergeMap(action =>
-      api.get(`code/${store.getState().game.id}/`)
-        .map(response => actions.getCodeReceived(response.code))
-        .catch(error => Observable.of({
+  action$.pipe(
+    ofType(types.GET_CODE_REQUEST),
+    mergeMap(action =>
+      api.get(`code/${store.getState().game.id}/`).pipe(
+        map(response => actions.getCodeReceived(response.code)),
+        catchError(error => Observable.of({
           type: types.GET_CODE_FAILURE,
           payload: error.xhr.response,
           error: true
         }))
+      )
     )
+  )
 
 const postCodeEpic = (action$, store, { api }) =>
   action$
@@ -32,13 +37,11 @@ const postCodeEpic = (action$, store, { api }) =>
       }))
     )
 
-const changeCodeEpic = action$ =>
+const changeCodeEpic = (action$, store, dependencies, scheduler = backgroundScheduler) =>
   action$.pipe(
     ofType(types.EDITOR_CHANGED),
-    tap(console.log),
-    debounceTime(3),
-    map(action => actions.changeCode(action.payload.code)),
-    tap(console.log)
+    debounceTime(300, scheduler),
+    map(action => actions.changeCode(action.payload.code))
   )
 
 export default {

@@ -12,8 +12,10 @@ const mockStore = configureStore(middlewares)
 const deepEquals = (actual, expected) =>
   expect(actual).toEqual(expected)
 
-const createTestScheduler = () =>
-  new TestScheduler(deepEquals)
+const createTestScheduler = (frameTimeFactor = 10) => {
+  TestScheduler.frameTimeFactor = frameTimeFactor
+  return new TestScheduler(deepEquals)
+}
 
 describe('getCodeEpic', () => {
   it('gets the code', () => {
@@ -118,22 +120,22 @@ describe('postCodeEpic', () => {
 
 describe('changeCodeEpic', () => {
   it('Only changes code after a certain amount of time', () => {
-    const expectMarbles = '-a--------a----|'
-    const actualMarbles = '-----b---------(b|)'
+    const sourceMarbles = '-a-a--------'
+    const expectMarbles = '---------b--'
 
     const values = {
       a: actions.editorChanged(''),
       b: actions.changeCode('')
     }
 
-    const testScheduler = createTestScheduler()
+    const testScheduler = createTestScheduler(50)
     const source$ = ActionsObservable.from(
-      testScheduler.createColdObservable(expectMarbles, values)
+      testScheduler.createColdObservable(sourceMarbles, values)
     )
 
-    const actual = epics.changeCodeEpic(source$)
+    const actual = epics.changeCodeEpic(source$, mockStore({}), {}, testScheduler)
 
-    testScheduler.expectObservable(actual).toBe(actualMarbles, values)
+    testScheduler.expectObservable(actual).toBe(expectMarbles, values)
     testScheduler.flush()
   })
 })
