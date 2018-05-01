@@ -27,9 +27,29 @@ const postCodeReceived = () => (
   }
 )
 
+const changeCode = code => (
+  {
+    type: types.CHANGE_CODE,
+    payload: {
+      code
+    }
+  }
+)
+
+const editorChanged = code => (
+  {
+    type: types.EDITOR_CHANGED,
+    payload: {
+      code
+    }
+  }
+)
+
 export default {
   getCodeRequest,
   getCodeReceived,
   postCodeRequest,
-  postCodeReceived
+  postCodeReceived,
+  changeCode,
+  editorChanged
 }

@@ -2,6 +2,9 @@ import styled from 'styled-components'
 import React, { Component } from 'react'
 import AceEditor from 'react-ace'
 import 'brace/theme/idle_fingers'
+import 'brace/mode/python'
+import 'brace/snippets/python'
+import 'brace/ext/language_tools'
 import { connect } from 'react-redux'
 import { actions } from 'features/Editor'
 import PropTypes from 'prop-types'
@@ -10,18 +13,16 @@ const IDEEditorLayout = styled.div`
   background-color: #2F4F4F
   grid-area: ide-editor
 `
-
 export class IDEEditor extends Component {
-
   render () {
     return (
       <IDEEditorLayout>
         <AceEditor
-          mode='javascript'
+          mode='python'
           theme='idle_fingers'
           name='ace_editor'
           onLoad={this.props.getCode}
-          onChange={this.onChange}
+          onChange={this.props.editorChanged}
           fontSize={14}
           showPrintMargin
           showGutter
@@ -32,7 +33,7 @@ export class IDEEditor extends Component {
           setOptions={{
             enableBasicAutocompletion: true,
             enableLiveAutocompletion: true,
-            enableSnippets: false,
+            enableSnippets: true,
             showLineNumbers: true,
             tabSize: 2
           }} />
@@ -44,7 +45,7 @@ export class IDEEditor extends Component {
 IDEEditor.propTypes = {
   code: PropTypes.string,
   getCode: PropTypes.func,
-  postCode: PropTypes.func
+  editorChanged: PropTypes.func
 }
 
 const mapStateToProps = state => {
@@ -55,7 +56,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   getCode: actions.getCodeRequest,
-  postCode: actions.postCodeRequest
+  editorChanged: actions.editorChanged
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(IDEEditor)

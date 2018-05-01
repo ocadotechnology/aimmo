@@ -2,16 +2,12 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 // import toJson from 'enzyme-to-json'
-import { GamePage } from 'containers/GamePage'
+import GamePage from 'components/GamePage'
 
 describe('<GamePage />', () => {
   it('matches snapshot', () => {
-    const props = {
-      code: 'class Avatar',
-      getCode: jest.fn()
-    }
 
-    const component = shallow(<GamePage {...props} />)
+    const component = shallow(<GamePage />)
 
     expect(component).toMatchSnapshot()
   })

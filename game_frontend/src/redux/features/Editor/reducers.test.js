@@ -14,4 +14,12 @@ describe('editorReducer', () => {
     const action = actions.getCodeReceived('class Avatar')
     expect(editorReducer({}, action)).toEqual(expectedState)
   })
+
+  it('should handle CHANGE_CODE', () => {
+    const expectedState = {
+      code: 'class Avatar'
+    }
+    const action = actions.changeCode('class Avatar')
+    expect(editorReducer({}, action)).toEqual(expectedState)
+  })
 })

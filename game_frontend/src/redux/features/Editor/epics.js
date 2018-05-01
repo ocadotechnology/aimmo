@@ -1,7 +1,7 @@
 import actions from './actions'
 import types from './types'
 import { Observable } from 'rxjs'
-import { map, catchError } from 'rxjs/operators'
+import { map, catchError, debounceTime, tap } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
 const getCodeEpic = (action$, store, { api }) =>
@@ -32,4 +32,17 @@ const postCodeEpic = (action$, store, { api }) =>
       }))
     )
 
-export default { getCodeEpic, postCodeEpic }
+const changeCodeEpic = action$ =>
+  action$.pipe(
+    ofType(types.EDITOR_CHANGED),
+    tap(console.log),
+    debounceTime(3),
+    map(action => actions.changeCode(action.payload.code)),
+    tap(console.log)
+  )
+
+export default {
+  getCodeEpic,
+  postCodeEpic,
+  changeCodeEpic
+}
