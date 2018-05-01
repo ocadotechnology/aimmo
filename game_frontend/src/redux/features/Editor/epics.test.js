@@ -115,3 +115,25 @@ describe('postCodeEpic', () => {
     testScheduler.flush()
   })
 })
+
+describe('changeCodeEpic', () => {
+  it('Only changes code after a certain amount of time', () => {
+    const expectMarbles = '-a--------a----|'
+    const actualMarbles = '-----b---------(b|)'
+
+    const values = {
+      a: actions.editorChanged(''),
+      b: actions.changeCode('')
+    }
+
+    const testScheduler = createTestScheduler()
+    const source$ = ActionsObservable.from(
+      testScheduler.createColdObservable(expectMarbles, values)
+    )
+
+    const actual = epics.changeCodeEpic(source$)
+
+    testScheduler.expectObservable(actual).toBe(actualMarbles, values)
+    testScheduler.flush()
+  })
+})
