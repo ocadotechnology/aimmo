@@ -27,7 +27,7 @@ const postCodeEpic = (action$, store, { api }) =>
       ofType(types.POST_CODE_REQUEST),
       api.post(
         `/players/api/code/${store.getState().game.id}/`,
-        { code: store.getState().editor.code }
+        () => ({ code: store.getState().editor.code })
       ),
       map(response => actions.postCodeReceived()),
       catchError(error => Observable.of({

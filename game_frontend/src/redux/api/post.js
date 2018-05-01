@@ -8,14 +8,13 @@ const getCSRFToken = action$ =>
       .map(response => response.csrfToken)
   )
 
-const postOperator = (url, body) => csrfToken$ => (
+const postOperator = (url, body) => csrfToken$ =>
   csrfToken$.mergeMap(csrfToken =>
-    ajax.post(url, body, {
+    ajax.post(url, body(), {
       withCredentials: true,
       'X-CSRFToken': csrfToken
     })
   )
-)
 
 const post = (url, body) =>
   pipe(
