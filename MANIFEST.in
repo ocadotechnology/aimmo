@@ -1,3 +1,2 @@
 graft players/static
 graft players/templates
-graft game_frontend
