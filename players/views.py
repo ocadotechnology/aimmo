@@ -3,6 +3,7 @@ import logging
 import os
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, Http404
@@ -174,6 +175,7 @@ def add_game(request):
             game.owner = request.user
             game.main_user = request.user
             game.save()
+            game.can_play.add(*User.objects.all())
             return redirect('aimmo/program', id=game.id)
     else:
         form = forms.AddGameForm()
