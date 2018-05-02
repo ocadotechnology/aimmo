@@ -17,7 +17,6 @@ engines:
     enabled: false
 exclude_patterns:
   - "*.test.js"
-exclude_paths:
   - "game/_version.py"
   - "versioneer.py"
   - "game_frontend/djangoBundler.js"
