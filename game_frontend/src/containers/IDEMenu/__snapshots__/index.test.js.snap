@@ -10,12 +10,6 @@ exports[`<IDEMenu /> renders correctly 1`] = `
   className="c0"
 >
   <button
-    id="get-code-button"
-    onClick={undefined}
-  >
-    Get Code
-  </button>
-  <button
     id="post-code-button"
     onClick={undefined}
   >

@@ -4,7 +4,7 @@ import 'rxjs'
 
 import { Provider } from 'react-redux'
 
-import GamePage from './containers/GamePage'
+import GamePage from './components/GamePage'
 import configureStore from './redux/store'
 
 const initialState = {

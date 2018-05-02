@@ -2,10 +2,7 @@
 
 exports[`<GamePage /> matches snapshot 1`] = `
 <styled.div>
-  <IDE
-    code="class Avatar"
-    getCode={[MockFunction]}
-  />
+  <IDE />
   <Game />
 </styled.div>
 `;
