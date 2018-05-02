@@ -25,7 +25,7 @@ var WEB_HOST_URL = "{{ web_host_base }}";
 function GetCurrentAvatarID(gameInstance) {
     var xhr = new XMLHttpRequest();
     var protocol = GAME_SSL_FLAG === 'True' ? 'https://' : 'http://';
-    var current_avatar_url = `${protocol}${WEB_HOST_URL}/players/api/games/${GAME_ID}/current_avatar/`;
+    var current_avatar_url = `/api/games/${GAME_ID}/current_avatar/`;
 
     xhr.open('GET', current_avatar_url);
     xhr.onload = function() {
