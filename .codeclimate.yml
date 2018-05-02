@@ -16,7 +16,7 @@ engines:
   scss-lint:
     enabled: false
 exclude_patterns:
-  - *.test.js
+  - "*.test.js"
 exclude_paths:
   - "game/_version.py"
   - "versioneer.py"
