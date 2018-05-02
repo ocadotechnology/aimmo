@@ -54,7 +54,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   getCode: actions.getCodeRequest,
-  editorChanged: actions.editorChanged
+  editorChanged: actions.keyPressed
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(IDEEditor)

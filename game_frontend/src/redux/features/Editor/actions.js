@@ -36,9 +36,9 @@ const changeCode = code => (
   }
 )
 
-const editorChanged = code => (
+const keyPressed = code => (
   {
-    type: types.EDITOR_CHANGED,
+    type: types.KEY_PRESSED,
     payload: {
       code
     }
@@ -51,5 +51,5 @@ export default {
   postCodeRequest,
   postCodeReceived,
   changeCode,
-  editorChanged
+  keyPressed
 }

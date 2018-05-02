@@ -39,7 +39,7 @@ const postCodeEpic = (action$, store, { api }) =>
 
 const changeCodeEpic = (action$, store, dependencies, scheduler = backgroundScheduler) =>
   action$.pipe(
-    ofType(types.EDITOR_CHANGED),
+    ofType(types.KEY_PRESSED),
     debounceTime(300, scheduler),
     map(action => actions.changeCode(action.payload.code))
   )

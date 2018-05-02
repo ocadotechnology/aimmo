@@ -124,7 +124,7 @@ describe('changeCodeEpic', () => {
     const expectMarbles = '---------b--'
 
     const values = {
-      a: actions.editorChanged(''),
+      a: actions.keyPressed(''),
       b: actions.changeCode('')
     }
 

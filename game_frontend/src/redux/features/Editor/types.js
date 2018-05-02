@@ -7,7 +7,7 @@ const POST_CODE_SUCCESS = 'features/Editor/POST_CODE_SUCCESS'
 const POST_CODE_FAILURE = 'features/Editor/POST_CODE_FAILURE'
 
 const CHANGE_CODE = 'features/Editor/CHANGE_CODE'
-const EDITOR_CHANGED = 'features/Editor/EDITOR_CHANGED'
+const KEY_PRESSED = 'features/Editor/KEY_PRESSED'
 
 export default {
   GET_CODE_REQUEST,
@@ -17,5 +17,5 @@ export default {
   POST_CODE_SUCCESS,
   POST_CODE_FAILURE,
   CHANGE_CODE,
-  EDITOR_CHANGED
+  KEY_PRESSED
 }
