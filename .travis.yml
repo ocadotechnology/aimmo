@@ -39,6 +39,8 @@ jobs:
         script:
           - yarn test
       - stage: deploy
+        env:
+          - NODE_ENV=production
         install:
           - pushd game_frontend
           - yarn
