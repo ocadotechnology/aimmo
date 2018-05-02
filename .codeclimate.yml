@@ -1,5 +1,6 @@
 ---
-engines:
+version: "2"
+plugins:
   csslint:
     enabled: true
   eslint:
@@ -15,12 +16,8 @@ engines:
     enabled: true
   scss-lint:
     enabled: false
-exclude_paths:
+exclude_patterns:
+  - "*.test.js"
   - "game/_version.py"
   - "versioneer.py"
-ratings:
-  paths:
-  - "**.css"
-  - "**.js"
-  - "**.py"
-  - "**.scss"
+  - "game_frontend/djangoBundler.js"
