@@ -50,6 +50,7 @@ jobs:
           - node djangoBundler.js
           - popd
         deploy:
+          skip_cleanup: true
           provider: pypi
           user: ocadotechnology
           password:
