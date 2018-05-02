@@ -119,7 +119,7 @@ describe('postCodeEpic', () => {
 })
 
 describe('changeCodeEpic', () => {
-  it('Only changes code after a certain amount of time', () => {
+  it('makes sure the state is not constantly updating due to changes in the editor', () => {
     const sourceMarbles = '-a-a--------'
     const expectMarbles = '---------b--'
 

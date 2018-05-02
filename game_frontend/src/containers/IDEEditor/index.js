@@ -48,11 +48,9 @@ IDEEditor.propTypes = {
   editorChanged: PropTypes.func
 }
 
-const mapStateToProps = state => {
-  return {
-    code: state.editor.code
-  }
-}
+const mapStateToProps = state => ({
+  code: state.editor.code
+})
 
 const mapDispatchToProps = {
   getCode: actions.getCodeRequest,
