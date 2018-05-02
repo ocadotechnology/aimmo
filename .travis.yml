@@ -39,7 +39,14 @@ jobs:
         script:
           - yarn test
       - stage: deploy
-        script: skip
+        install:
+          - pushd game_frontend
+          - yarn
+          - popd
+        script:
+          - pushd game_frontend
+          - node djangoBundler.js
+          - popd
         deploy:
           provider: pypi
           user: ocadotechnology
