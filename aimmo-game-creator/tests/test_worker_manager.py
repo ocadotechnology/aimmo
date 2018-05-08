@@ -11,11 +11,11 @@ from game_manager import GameManager
 
 class ConcreteGameManager(GameManager):
     def __init__(self, *args, **kwargs):
-        self.final_games = set()
         self.clear()
         super(ConcreteGameManager, self).__init__(*args, **kwargs)
 
     def clear(self):
+        self.final_games = set()
         self.removed_games = []
         self.added_games = {}
 
