@@ -23,7 +23,7 @@ class ConcreteGameManager(GameManager):
         self.added_games[game_id] = data
         self.final_games.add(game_id)
 
-    def remove_game(self, game_id):
+    def delete_game(self, game_id):
         self.removed_games.append(game_id)
         try:
             self.final_games.remove(game_id)
