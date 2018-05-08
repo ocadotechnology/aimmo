@@ -1,7 +1,7 @@
 # Common / Known Issues
 - [When running the game I get `no module named google.auth`](#when-running-the-game-i-get-`no-module-named-google.auth`)
 - [When deploying I get `error: Error -5 while decompressing data (...)`](#when-deploying-i-get-error-error--5-while-decompressing-data-)
-- [When running the game I get `ImportError: No module named django.conf`](#TODO)
+- [When running the game I get `ImportError: No module named django.conf`](#when-running-the-game-i-get-importerror-no-module-named-djangoconf)
 ---
 
 ## When running the game I get `no module named google.auth`
