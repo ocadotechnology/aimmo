@@ -6,27 +6,27 @@ from json import dumps
 
 from httmock import HTTMock
 
-from worker_manager import WorkerManager
+from game_manager import GameManager
 
 
-class ConcreteWorkerManager(WorkerManager):
+class ConcreteGameManager(GameManager):
     def __init__(self, *args, **kwargs):
-        self.final_workers = set()
+        self.final_games = set()
         self.clear()
-        super(ConcreteWorkerManager, self).__init__(*args, **kwargs)
+        super(ConcreteGameManager, self).__init__(*args, **kwargs)
 
     def clear(self):
-        self.removed_workers = []
-        self.added_workers = {}
+        self.removed_games = []
+        self.added_games = {}
 
-    def create_worker(self, game_id, data):
-        self.added_workers[game_id] = data
-        self.final_workers.add(game_id)
+    def create_game(self, game_id, data):
+        self.added_games[game_id] = data
+        self.final_games.add(game_id)
 
-    def remove_worker(self, game_id):
-        self.removed_workers.append(game_id)
+    def remove_game(self, game_id):
+        self.removed_games.append(game_id)
         try:
-            self.final_workers.remove(game_id)
+            self.final_games.remove(game_id)
         except KeyError:
             pass
 
@@ -39,10 +39,10 @@ class RequestMock(object):
     def _generate_response(self, num_games):
         return {
             str(i): {
-                'name': 'Game %s' % i,
-                'settings': pickle.dumps({
-                    'test': i,
-                    'test2': 'Settings %s' % i,
+                "name": "Game {}".format(i),
+                "settings": pickle.dumps({
+                    "test": i,
+                    "test2": "Settings {}".format(i),
                 })
             } for i in xrange(num_games)
         }
@@ -52,46 +52,46 @@ class RequestMock(object):
         return dumps(self.value)
 
 
-class TestWorkerManager(unittest.TestCase):
+class TestGameManager(unittest.TestCase):
     def setUp(self):
-        self.worker_manager = ConcreteWorkerManager('http://test/')
+        self.game_manager = ConcreteGameManager("http://test/")
 
     def test_correct_url_requested(self):
         mocker = RequestMock(0)
         with HTTMock(mocker):
-            self.worker_manager.update()
+            self.game_manager.update()
         self.assertEqual(len(mocker.urls_requested), 1)
-        self.assertRegexpMatches(mocker.urls_requested[0], 'http://test/*')
+        self.assertRegexpMatches(mocker.urls_requested[0], "http://test/*")
 
-    def test_workers_added(self):
+    def test_games_added(self):
         mocker = RequestMock(3)
         with HTTMock(mocker):
-            self.worker_manager.update()
-        self.assertEqual(len(self.worker_manager.final_workers), 3)
-        self.assertEqual(len(list(self.worker_manager._data.get_games())), 3)
+            self.game_manager.update()
+        self.assertEqual(len(self.game_manager.final_games), 3)
+        self.assertEqual(len(list(self.game_manager._data.get_games())), 3)
         for i in xrange(3):
-            self.assertIn(str(i), self.worker_manager.final_workers)
+            self.assertIn(str(i), self.game_manager.final_games)
             self.assertEqual(
-                pickle.loads(str(self.worker_manager.added_workers[str(i)]['settings'])),
-                {'test': i, 'test2': 'Settings %s' % i}
+                pickle.loads(str(self.game_manager.added_games[str(i)]["settings"])),
+                {"test": i, "test2": "Settings {}".format(i)}
             )
-            self.assertEqual(self.worker_manager.added_workers[str(i)]['name'], 'Game %s' % i)
+            self.assertEqual(self.game_manager.added_games[str(i)]["name"], "Game {}".format(i))
 
     def test_remove_games(self):
         mocker = RequestMock(3)
         with HTTMock(mocker):
-            self.worker_manager.update()
-            del mocker.value['1']
-            self.worker_manager.update()
-        self.assertNotIn(1, self.worker_manager.final_workers)
+            self.game_manager.update()
+            del mocker.value["1"]
+            self.game_manager.update()
+        self.assertNotIn(1, self.game_manager.final_games)
 
-    def test_added_workers_given_correct_url(self):
+    def test_added_games_given_correct_url(self):
         mocker = RequestMock(3)
         with HTTMock(mocker):
-            self.worker_manager.update()
+            self.game_manager.update()
         for i in xrange(3):
             self.assertEqual(
-                self.worker_manager.added_workers[str(i)]['GAME_API_URL'],
-                'http://test/{}/'.format(i)
+                self.game_manager.added_games[str(i)]["GAME_API_URL"],
+                "http://test/{}/".format(i)
             )
-            self.assertEqual(self.worker_manager.added_workers[str(i)]['name'], 'Game %s' % i)
+            self.assertEqual(self.game_manager.added_games[str(i)]["name"], "Game {}".format(i))
