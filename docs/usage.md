@@ -7,6 +7,7 @@
 ---
 
 ## Running Locally with no containers
+* Follow the instructions at [game frontend documentation](https://github.com/ocadotechnology/aimmo/blob/master/game_frontend/README.md) in order to install all the frontend requirements.
 * Make and activate a virtualenv (We recommend [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/index.html)) - if you have a **[Mac see the section at the bottom](https://github.com/ocadotechnology/aimmo/blob/master/docs/usage.md#on-mac)**.
     * e.g. the first time, `mkvirtualenv -a path/to/aimmo aimmo`
     * and thereafter `workon aimmo`
@@ -28,13 +29,14 @@
 
 
 ## Running with Kubernetes with containers
+* Follow the instructions at [game frontend documentation](https://github.com/ocadotechnology/aimmo/blob/master/game_frontend/README.md) in order to install all the frontend requirements.
 * By default, the local environment runs each worker in a Python thread. However, for some testing, it is useful to run as a Kubernetes cluster. Note that this is not for most testing, the default is more convenient as the Kubernetes cluster is slow and runs into resource limits with ~10 avatars.
 * Linux, Windows (minikube is experimental though), and OSX (untested) are supported.
 * Prerequisites:
     * All platforms: VT-x/AMD-v virtualization.
     * Linux: [Virtualbox](https://www.virtualbox.org/wiki/Downloads).
     * OSX: either [Virtualbox](https://www.virtualbox.org/wiki/Downloads) or [VMWare Fusion](http://www.vmware.com/products/fusion.html).
-* Download Docker, Minikube, and Kubectl before running the script.
+* Download Docker, Minikube, and Kubectl before running the script. 
     * On Mac ([download homebrew](https://brew.sh/)) and run `brew update && brew install kubectl && brew cask install docker minikube virtualbox`.
     * On Ubuntu ([download snap](https://snapcraft.io/)) and run `sudo snap install kubectl --classic` then follow the ([docker installation instructions](https://docs.docker.com/install/linux/docker-ce/ubuntu/)).
     * On Windows ([download chocolatey](https://chocolatey.org/)) and run `choco install kubernetes-cli` followed by the ([docker installation instructions for Windows](https://docs.docker.com/docker-for-windows/)).
