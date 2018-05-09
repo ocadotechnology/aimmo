@@ -95,12 +95,12 @@ class WorkerManager(threading.Thread):
 
         return None
 
-    def create_game_worker(self, player_id):
+    def create_worker(self, player_id):
         """Create a worker."""
 
         raise NotImplemented
 
-    def remove_game_worker(self, player_id):
+    def remove_worker(self, player_id):
         """Remove a worker for the given player."""
 
         raise NotImplemented
@@ -112,13 +112,13 @@ class WorkerManager(threading.Thread):
 
         # Kill worker
         LOGGER.info("Removing worker for user %s" % user['id'])
-        self.remove_game_worker(user['id'])
+        self.remove_worker(user['id'])
 
         self._data.set_code(user)
 
         # Spawn worker
         LOGGER.info("Spawning worker for user %s" % user['id'])
-        worker_url = self.create_game_worker(user['id'])
+        worker_url = self.create_worker(user['id'])
 
         # Add avatar back into game
         self._data.add_avatar(user, worker_url)
@@ -150,7 +150,7 @@ class WorkerManager(threading.Thread):
             known_avatars = set(user['id'] for user in game['users'])
             removed_user_ids = self._data.remove_unknown_avatars(known_avatars)
             LOGGER.debug("Removing users: %s" % removed_user_ids)
-            self._parallel_map(self.remove_game_worker, removed_user_ids)
+            self._parallel_map(self.remove_worker, removed_user_ids)
 
             # Update main avatar
             self._data.set_main_avatar(game_data['main']['main_avatar'])
@@ -176,7 +176,7 @@ class LocalWorkerManager(WorkerManager):
         self.port_counter = itertools.count(1989)
         super(LocalWorkerManager, self).__init__(*args, **kwargs)
 
-    def create_game_worker(self, player_id):
+    def create_worker(self, player_id):
         assert(player_id not in self.workers)
         port = self.port_counter.next()
         env = os.environ.copy()
@@ -205,7 +205,7 @@ class LocalWorkerManager(WorkerManager):
         LOGGER.info("Worker started for %s, listening at %s", player_id, worker_url)
         return worker_url
 
-    def remove_game_worker(self, player_id):
+    def remove_worker(self, player_id):
         if player_id in self.workers:
             self.workers[player_id].kill()
             del self.workers[player_id]
@@ -220,7 +220,7 @@ class KubernetesWorkerManager(WorkerManager):
         self.game_url = os.environ['GAME_URL']
         super(KubernetesWorkerManager, self).__init__(*args, **kwargs)
 
-    def create_game_worker(self, player_id):
+    def create_worker(self, player_id):
         pod = Pod(
             self.api,
             {
@@ -275,7 +275,7 @@ class KubernetesWorkerManager(WorkerManager):
         LOGGER.info("Worker started for %s, listening at %s", player_id, worker_url)
         return worker_url
 
-    def remove_game_worker(self, player_id):
+    def remove_worker(self, player_id):
         for pod in Pod.objects(self.api).filter(selector={
             'app': 'aimmo-game-worker',
             'game': self.game_id,
