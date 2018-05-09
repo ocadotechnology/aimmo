@@ -59,11 +59,6 @@ class GameManager(object):
         self._pool = GreenPool(size=3)
         super(GameManager, self).__init__()
 
-    def get_persistent_state(self, player_id):
-        """Get the persistent state for a game"""
-
-        return None
-
     @abstractmethod
     def create_game(self, game_id, game_data):
         """Creates a new game"""
@@ -93,15 +88,6 @@ class GameManager(object):
             LOGGER.error("Failed to create game {}".format(game_data["name"]))
             LOGGER.exception(ex)
 
-    def _parallel_map(self, func, *iterable_args):
-        list(self._pool.imap(func, *iterable_args))
-
-    def run(self):
-        while True:
-            self.update()
-            LOGGER.info("Sleeping")
-            time.sleep(10)
-
     def update(self):
         try:
             LOGGER.info("Waking up")
@@ -125,9 +111,23 @@ class GameManager(object):
             LOGGER.debug("Removing games: {}".format(removed_game_ids))
             self._parallel_map(self.delete_game, removed_game_ids)
 
+    def get_persistent_state(self, player_id):
+        """Get the persistent state of a game"""
+
+        return None
+
+    def run(self):
+        while True:
+            self.update()
+            LOGGER.info("Sleeping")
+            time.sleep(10)
+
+    def _parallel_map(self, func, *iterable_args):
+        list(self._pool.imap(func, *iterable_args))
+
 
 class LocalGameManager(GameManager):
-    """Relies on them already being created already."""
+    """Manages games running on local host"""
 
     host = "127.0.0.1"
     game_directory = os.path.join(
@@ -163,7 +163,7 @@ class LocalGameManager(GameManager):
 
 
 class KubernetesGameManager(GameManager):
-    """Kubernetes game manager."""
+    """Manages games running on Kubernetes cluster"""
 
     def __init__(self, *args, **kwargs):
         self._api = pykube.HTTPClient(pykube.KubeConfig.from_service_account())

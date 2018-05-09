@@ -7,8 +7,8 @@ from game_manager import GAME_MANAGERS
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
-    GameManagerClass = GAME_MANAGERS[os.environ.get('GAME_MANAGER', 'local')]
-    game_manager = GameManagerClass(os.environ.get('GAME_API_URL',
+    game_manager_class = GAME_MANAGERS[os.environ.get('GAME_MANAGER', 'local')]
+    game_manager = game_manager_class(os.environ.get('GAME_API_URL',
                                         'http://localhost:8000/players/api/games/'))
     game_manager.run()
 
