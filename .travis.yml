@@ -39,8 +39,18 @@ jobs:
         script:
           - yarn test
       - stage: deploy
-        script: skip
+        env:
+          - NODE_ENV=production
+        install:
+          - pushd game_frontend
+          - yarn
+          - popd
+        script:
+          - pushd game_frontend
+          - node djangoBundler.js
+          - popd
         deploy:
+          skip_cleanup: true
           provider: pypi
           user: ocadotechnology
           password:

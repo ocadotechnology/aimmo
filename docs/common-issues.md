@@ -1,6 +1,7 @@
 # Common / Known Issues
 - [When running the game I get `no module named google.auth`](#when-running-the-game-i-get-`no-module-named-google.auth`)
-- [When deploying I get `error: Error -5 while decompressing data (...)`](#when-deploying-i-get-`error:-error--5-while-decompressing-data-(...)`)
+- [When deploying I get `error: Error -5 while decompressing data (...)`](#when-deploying-i-get-error-error--5-while-decompressing-data-)
+- [When running the game I get `ImportError: No module named django.conf`](#when-running-the-game-i-get-importerror-no-module-named-djangoconf)
 ---
 
 ## When running the game I get `no module named google.auth`
@@ -18,3 +19,7 @@ When deploying with semaphoreCI, the cache may be old and corrupt one of the pac
 The error you may get may look like this `error: Error -5 while decompressing data: incomplete or truncated stream`. 
 
 You need to `ssh` into the appropriate server and delete the cache directory. Another solution is to `pip install` with the `--no-cache-dir` flag but we do not recommend this.
+
+## When running the game I get `ImportError: No module named django.conf`
+
+Run a pip install command to install django before running the project. Django should then resolve all the other dependencies specified in the setup file. To do this run: `pip install django=={version}`. You can find `version` from the `setup.py` file at the time.

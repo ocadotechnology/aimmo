@@ -73,31 +73,33 @@ class Command(BaseCommand):
         parser.add_argument('avatar-code', choices=_AVATAR_CODES,
                             action=LoadCodeAction,
                             help='The code to use for the avatar.')
+        parser.add_argument('game-id', type=int)
 
     # A command must define handle()
     def handle(self, *args, **options):
         num_users = options['num-users']
         code = options['avatar-code']
+        game_id = options['game-id']
 
         for _ in xrange(num_users):
             random_string = str(uuid.uuid4())[:8]
             username = 'zombie-%s' % random_string
             password = '123'
             user = self.create_user(username, password)
-            self.post_code(user, code)
+            self.post_code(user, code, game_id)
 
     def create_user(self, username, password):
         user = User.objects.create_user(username, 'user@example.com', password)
         self.stdout.write('Created user %s with password: %s' % (username, password))
         return user
 
-    def post_code(self, user, player_code):
+    def post_code(self, user, player_code, game_id):
         request = self.request_factory.post('/any_path', data={'code': player_code})
         session_key = None
         request.session = self.engine.SessionStore(session_key)
         request.user = user
 
-        response = code_view(request)
+        response = code_view(request, game_id)
         if response.status_code == 200:
             self.stdout.write('Posted code for player %s' % user)
         else:
