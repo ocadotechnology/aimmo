@@ -63,7 +63,8 @@ def start_cluster(minikube):
 
 def build_docker_images(minikube):
     print('Building docker images')
-    raw_env_settings = run_command([minikube, 'docker-env', '--shell="bash"'], True)
+    raw_env_settings = run_command([minikube, 'docker-env', '--shell="bash"'], False)
+
     matches = re.finditer(r'^export (.+)="(.+)"$', raw_env_settings, re.MULTILINE)
     env = dict([(m.group(1), m.group(2)) for m in matches])
 
