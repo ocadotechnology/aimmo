@@ -80,6 +80,7 @@ def start_cluster(minikube):
     else:
         run_command([minikube, 'start', '--memory=2048', '--cpus=2'])
 
+
 def create_docker_client(raw_env_settings):
     """
     Creates a docker client using the python SDK.
@@ -100,6 +101,7 @@ def create_docker_client(raw_env_settings):
             version='auto'
         )
 
+
 def vm_none_enabled(raw_env_settings):
     """
     Check if the VM driver is enabled or not. This is important to see where
@@ -108,6 +110,7 @@ def vm_none_enabled(raw_env_settings):
     :return: Boolean value indicating if enabled or not.
     """
     return False if 'driver does not support' in raw_env_settings else True
+
 
 def build_docker_images(minikube):
     """
