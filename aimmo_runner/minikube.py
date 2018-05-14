@@ -12,6 +12,7 @@ from shell_api import (run_command, create_test_bin, BASE_DIR)
 
 MINIKUBE_EXECUTABLE = "minikube"
 
+
 def get_ip():
     """
     Get a single primary IP address. This will not return all IPs in the
@@ -79,35 +80,44 @@ def start_cluster(minikube):
     else:
         run_command([minikube, 'start', '--memory=2048', '--cpus=2'])
 
+def create_docker_client(raw_env_settings):
+    """
+    Creates a docker client using the python SDK.
+    :param raw_env_settings: String that is returned by the 'minikube docker-env' command.
+    :return:
+    """
+    if vm_none_enabled(raw_env_settings):
+        matches = re.finditer(r'^export (.+)="(.+)"$', raw_env_settings, re.MULTILINE)
+        env_variables = dict([(m.group(1), m.group(2)) for m in matches])
+
+        return docker.from_env(
+            environment=env_variables,
+            version='auto',
+        )
+    else:
+        # VM driver is set
+        return docker.from_env(
+            version='auto'
+        )
+
+def vm_none_enabled(raw_env_settings):
+    """
+    Check if the VM driver is enabled or not. This is important to see where
+    the environment variables live.
+    :param raw_env_settings: String that is returned by the 'minikube docker-env' command.
+    :return: Boolean value indicating if enabled or not.
+    """
+    return False if 'driver does not support' in raw_env_settings else True
 
 def build_docker_images(minikube):
     """
     Finds environment settings and builds docker images for each directory.
     :param minikube: Executable command to run in terminal.
     """
-    def _vm_none_enabled():
-        """
-        Check if the VM driver is enabled or not. This is important to see where
-        the environment variables live.
-        :return: Boolean value indicating if enabled or not.
-        """
-        return False if 'driver does not support' in raw_env_settings else True
-
     print('Building docker images')
     raw_env_settings = run_command([minikube, 'docker-env', '--shell="bash"'], True)
-    if _vm_none_enabled():
-        matches = re.finditer(r'^export (.+)="(.+)"$', raw_env_settings, re.MULTILINE)
-        env_variables = dict([(m.group(1), m.group(2)) for m in matches])
 
-        client = docker.from_env(
-            environment=env_variables,
-            version='auto',
-        )
-    else:
-        # VM driver is set
-        client = docker.from_env(
-            version='auto'
-        )
+    client = create_docker_client(raw_env_settings)
 
     directories = ('aimmo-game', 'aimmo-game-creator', 'aimmo-game-worker')
     for dir in directories:
