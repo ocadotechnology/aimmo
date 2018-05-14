@@ -29,20 +29,24 @@
 
 
 ## Running with Kubernetes with containers
+**64bit environment is required for this mode!**
 * Follow the instructions at [game frontend documentation](https://github.com/ocadotechnology/aimmo/blob/master/game_frontend/README.md) in order to install all the frontend requirements.
-* By default, the local environment runs each worker in a Python thread. However, for some testing, it is useful to run as a Kubernetes cluster. Note that this is not for most testing, the default is more convenient as the Kubernetes cluster is slow and runs into resource limits with ~10 avatars.
-* Linux, Windows (minikube is experimental though), and OSX (untested) are supported.
+* By default, the local environment runs each worker in a Python thread. This is the closest mode that reflects the environment in production. However, this will require much more resources.
+* Linux, Windows, and OSX.
 * Prerequisites:
     * All platforms: VT-x/AMD-v virtualization.
     * Linux: [Virtualbox](https://www.virtualbox.org/wiki/Downloads).
     * OSX: either [Virtualbox](https://www.virtualbox.org/wiki/Downloads) or [VMWare Fusion](http://www.vmware.com/products/fusion.html).
-* Download Docker, Minikube, and Kubectl before running the script. 
-    * On Mac ([download homebrew](https://brew.sh/)) and run `brew update && brew install kubectl && brew cask install docker minikube virtualbox`.
+* To download Docker, Minikube, and Kubectl before running the script. 
+    * On Mac ([download homebrew](https://brew.sh/)) and run `brew update && brew cask install docker virtualbox`. 
+        * Install a fixed minikube version (at the time of this article this is 0.25.2 but you can confirm that [here](https://github.com/ocadotechnology/aimmo/blob/b0fd1bf852b1b2630a8546d173798ec9a670c480/.travis.yml#L23)). To do this write 
+        `curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-darwin-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
+        ` and replace the version with the desired one. 
     * On Ubuntu ([download snap](https://snapcraft.io/)) and run `sudo snap install kubectl --classic` then follow the ([docker installation instructions](https://docs.docker.com/install/linux/docker-ce/ubuntu/)).
     * On Windows ([download chocolatey](https://chocolatey.org/)) and run `choco install kubernetes-cli` followed by the ([docker installation instructions for Windows](https://docs.docker.com/docker-for-windows/)).
 * Alter your `/etc/hosts` file by adding the following to the end of the file: `192.168.99.100 local.aimmo.codeforlife.education`. You may be required to run this with `sudo` as the file is protected.
 * Usage: `python run.py -k`. This will:
-    * Run `minikube start` (if the cluster is not already running).
+    * Run `minikube start --memory=2048 -cpus=2`. Feel free to change these values appropriately to your specifiation.
     * Images are built and a aimmo-game-creator is created in your cluster. You can preview this in your kubernetes dashboard. Run `minikube dashboard` to open this.
     * Perform the same setup that run.py normally performs.
     * Start the Django project (which is not kubernetes controlled) on localhost:8000.
