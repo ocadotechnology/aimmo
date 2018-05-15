@@ -36,8 +36,6 @@ def _get_available_code_files(base_directory):
 _AVATAR_CODES = list(_get_available_code_files(_AVATAR_CODES_DIRECTORY))
 
 # Code file loading
-
-
 def _load_code_file(filename):
     if not filename.endswith('.py'):
         filename = filename + '.py'
