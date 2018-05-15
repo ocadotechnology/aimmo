@@ -41,12 +41,12 @@ class Game(models.Model):
     generator = models.CharField(max_length=20, choices=GAME_GENERATORS, default=GAME_GENERATORS[0][0])
     target_num_cells_per_avatar = models.FloatField(default=16)
     target_num_score_locations_per_avatar = models.FloatField(default=0.5)
-    score_despawn_chance = models.FloatField(default=0.02)
-    target_num_pickups_per_avatar = models.FloatField(default=0.5)
-    pickup_spawn_chance = models.FloatField(default=0.02)
+    score_despawn_chance = models.FloatField(default=0.05)
+    target_num_pickups_per_avatar = models.FloatField(default=1.2)
+    pickup_spawn_chance = models.FloatField(default=0.1)
     obstacle_ratio = models.FloatField(default=0.1)
-    start_height = models.IntegerField(default=11)
-    start_width = models.IntegerField(default=11)
+    start_height = models.IntegerField(default=31)
+    start_width = models.IntegerField(default=31)
 
     @property
     def is_active(self):
