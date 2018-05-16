@@ -11,8 +11,9 @@ For the sake of correct version control, we have saved the yaml files at the tim
 
 To set up from scratch do the following:
 * Install gcloud locally. This is usually done by the following command: `pip install google-cloud`. At the time of writing the version is `0.32.0` and Google Cloud SDK of `189.0.0`.
+* Set the current project for this workspace by typing: `gcloud config set project decent-digit-629`.
 * Authenticate accordingly. You can read up on this [**here**](https://cloud.google.com/appengine/docs/standard/python/oauth/). Usually the following should work: `gcloud auth login`. This will open a web browser and will ask you to authenticate and give permissions to the google account. You should then (or only) run `gcloud auth application-default login` which will create the kubeconfig required for `kubectl` to work. 
-* Get credentials to the appropriate cluster you want to work on by doing the following command: `gcloud container clusters get-credentials [dev/staging/default]`
+* Get credentials to the appropriate cluster you want to work on by doing the following command: `gcloud container clusters get-credentials [dev/staging/default] --zone europe-west1-b`
 * `kubectl apply -f` should now be used on the following files (see path above to find these files):
     * `namespace.yaml`, `default-backend-service.yaml`, `default-backend-deployment.yaml`, `configmap.yaml`, `tcp-services-configmap.yaml`, `udp-services-configmap.yaml`. 
 * Now install no RBAC roles by doing the same on `without-rbac.yaml`.

@@ -229,11 +229,11 @@ class KubernetesWorkerManager(WorkerManager):
                                     'name': 'aimmo-game',
                                     'resources': {
                                         'limits': {
-                                            'cpu': '1000m',
+                                            'cpu': '300m',
                                             'memory': '128Mi',
                                         },
                                         'requests': {
-                                            'cpu': '100m',
+                                            'cpu': '10m',
                                             'memory': '64Mi',
                                         },
                                     },
