@@ -256,6 +256,10 @@ class KubernetesWorkerManager(WorkerManager):
                                 'cpu': '10m',
                                 'memory': '64Mi',
                             },
+                            'requests': {
+                                'cpu': '7m',
+                                'memory': '32Mi',
+                            },
                         },
                     },
                 ],
