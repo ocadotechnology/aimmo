@@ -165,6 +165,33 @@ def _add_and_return_level(num, user):
     return game
 
 
+def get_independent_students():
+    indep_students = []
+    for s in Student.objects.all():
+        if s.is_independent():
+            indep_students.append(s)
+    return indep_students
+
+
+def get_users(user):
+    users = []
+    if hasattr(user, 'userprofile'):
+        if hasattr(user.userprofile, 'teacher'):
+            users.append(user.userprofile.teacher)
+            classes = user.userprofile.teacher.class_teacher.all()
+            for c in classes:
+                if c.has_students():
+                    users.extend(c.get_logged_in_students())
+        elif hasattr(user.userprofile, 'student'):
+            if user.userprofile.student.is_independent():
+                users.extend(get_independent_students())
+        else:
+            users = User.objects.all()
+    else:
+        users = User.objects.all()
+    return users
+
+
 @login_required
 def add_game(request):
     if request.method == 'POST':
@@ -175,7 +202,8 @@ def add_game(request):
             game.owner = request.user
             game.main_user = request.user
             game.save()
-            game.can_play.add(*User.objects.all())
+            users = get_users(request.user)
+            game.can_play.add(*users)
             return redirect('aimmo/program', id=game.id)
     else:
         form = forms.AddGameForm()
