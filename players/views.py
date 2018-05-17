@@ -176,7 +176,7 @@ def get_independent_students():
 def get_users(user):
     users = []
     if hasattr(user, 'userprofile'):
-        if hasattr(user.userprofile, 'teacher'):
+        if hasattr(user.userprofile, 'teacher') and user.userprofile.teacher.has_school():
             users.append(user.userprofile.teacher)
             classes = user.userprofile.teacher.class_teacher.all()
             for c in classes:
@@ -185,6 +185,9 @@ def get_users(user):
         elif hasattr(user.userprofile, 'student'):
             if user.userprofile.student.is_independent():
                 users.extend(get_independent_students())
+            else:
+                c = user.userprofile.student.class_field
+                users.extend(c.get_logged_in_students())
         else:
             users = User.objects.all()
     else:
