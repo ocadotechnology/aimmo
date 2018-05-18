@@ -276,7 +276,7 @@ class KubernetesGameManager(GameManager):
         service.create()
 
     def _add_path_to_ingress(self, game_id):
-        backend = kubernetes.client.V1beta1IngressBackend("game-{}".format(game_id, 80))
+        backend = kubernetes.client.V1beta1IngressBackend("game-{}".format(game_id), 80)
         path = kubernetes.client.V1beta1HTTPIngressPath(backend, "/game-{}".format(game_id))
 
         patch = [
