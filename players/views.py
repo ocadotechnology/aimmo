@@ -173,26 +173,31 @@ def get_independent_students():
     return indep_students
 
 
+def get_students_from_class(user, is_teacher):
+    students = []
+    if is_teacher:
+        classes = user.class_teacher.all()
+        for c in classes:
+            students.extend(c.students.all())
+    else:
+        c = user.class_field
+        students.extend(c.students.all())
+    return students
+
+
 def get_users(user):
     users = []
     if hasattr(user, 'userprofile'):
         if hasattr(user.userprofile, 'teacher') and user.userprofile.teacher.has_school():
             users.append(user.userprofile.teacher)
-            classes = user.userprofile.teacher.class_teacher.all()
-            for c in classes:
-                if c.has_students():
-                    users.extend(c.get_logged_in_students())
+            return users.extend(get_students_from_class(user.userprofile.teacher, True))
         elif hasattr(user.userprofile, 'student'):
             if user.userprofile.student.is_independent():
-                users.extend(get_independent_students())
+                return users.extend(get_independent_students())
             else:
-                c = user.userprofile.student.class_field
-                users.extend(c.get_logged_in_students())
-        else:
-            users = User.objects.all()
-    else:
-        users = User.objects.all()
-    return users
+                return get_students_from_class(user.userprofile.student, False)
+        return User.objects.all()
+    return User.objects.all()
 
 
 @login_required
@@ -206,6 +211,7 @@ def add_game(request):
             game.main_user = request.user
             game.save()
             users = get_users(request.user)
+            # TODO: If this does not work, use a loop
             game.can_play.add(*users)
             return redirect('aimmo/program', id=game.id)
     else:
