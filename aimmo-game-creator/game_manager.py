@@ -286,7 +286,8 @@ class KubernetesGameManager(GameManager):
 
     def _add_path_to_ingress(self, game_id):
         backend = kubernetes.client.V1beta1IngressBackend(KubernetesGameManager._create_game_name(game_id), 80)
-        path = kubernetes.client.V1beta1HTTPIngressPath(backend, KubernetesGameManager._create_game_name(game_id))
+        path = kubernetes.client.V1beta1HTTPIngressPath(backend,
+                                                        "/{}".format(KubernetesGameManager._create_game_name(game_id)))
 
         patch = [
             {
@@ -300,7 +301,8 @@ class KubernetesGameManager(GameManager):
 
     def _remove_path_from_ingress(self, game_id):
         backend = kubernetes.client.V1beta1IngressBackend(KubernetesGameManager._create_game_name(game_id), 80)
-        path = kubernetes.client.V1beta1HTTPIngressPath(backend, KubernetesGameManager._create_game_name(game_id))
+        path = kubernetes.client.V1beta1HTTPIngressPath(backend,
+                                                        "/{}".format(KubernetesGameManager._create_game_name(game_id)))
         ingress = self._api_instance.list_namespaced_ingress("default").items[0]
         paths = ingress.spec.rules[0].http.paths
         try:
