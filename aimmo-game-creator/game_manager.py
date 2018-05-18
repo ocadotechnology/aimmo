@@ -177,8 +177,17 @@ class KubernetesGameManager(GameManager):
         for game_id in games:
             self._add_path_to_ingress(game_id)
 
+    @staticmethod
+    def _create_game_name(id):
+        """
+        Creates a name that will be used as the pod name as well as in other places.
+        :param id: Integer indicating the GAME_ID of the game.
+        :return: A string with the game appended with the id.
+        """
+        return "game-{}".format(id)
+
     def _create_game_rc(self, id, environment_variables):
-        environment_variables["SOCKETIO_RESOURCE"] = "game-{}".format(id)
+        environment_variables["SOCKETIO_RESOURCE"] = KubernetesGameManager._create_game_name(id)
         environment_variables["GAME_ID"] = id
         environment_variables["GAME_URL"] = "http://game-{}".format(id)
         environment_variables["PYKUBE_KUBERNETES_SERVICE_HOST"] = "kubernetes"
@@ -189,7 +198,7 @@ class KubernetesGameManager(GameManager):
                 "kind": "ReplicationController",
                 "apiVersion": "v1",
                 "metadata": {
-                    "name": "game-{}".format(id),
+                    "name": KubernetesGameManager._create_game_name(id),
                     "namespace": "default",
                     "labels": {
                         "app": "aimmo-game",
@@ -251,7 +260,7 @@ class KubernetesGameManager(GameManager):
                 "kind": "Service",
                 "apiVersion": "v1",
                 "metadata": {
-                    "name": "game-{}".format(id),
+                    "name": KubernetesGameManager._create_game_name(id),
                     "labels": {
                         "app": "aimmo-game",
                         "game_id": id,
@@ -276,8 +285,8 @@ class KubernetesGameManager(GameManager):
         service.create()
 
     def _add_path_to_ingress(self, game_id):
-        backend = kubernetes.client.V1beta1IngressBackend("game-{}".format(game_id), 80)
-        path = kubernetes.client.V1beta1HTTPIngressPath(backend, "/game-{}".format(game_id))
+        backend = kubernetes.client.V1beta1IngressBackend(KubernetesGameManager._create_game_name(game_id), 80)
+        path = kubernetes.client.V1beta1HTTPIngressPath(backend, KubernetesGameManager._create_game_name(game_id))
 
         patch = [
             {
@@ -290,8 +299,8 @@ class KubernetesGameManager(GameManager):
         self._api_instance.patch_namespaced_ingress("aimmo-ingress", "default", patch)
 
     def _remove_path_from_ingress(self, game_id):
-        backend = kubernetes.client.V1beta1IngressBackend("game-{}".format(game_id), 80)
-        path = kubernetes.client.V1beta1HTTPIngressPath(backend, "/game-{}".format(game_id))
+        backend = kubernetes.client.V1beta1IngressBackend(KubernetesGameManager._create_game_name(game_id), 80)
+        path = kubernetes.client.V1beta1HTTPIngressPath(backend, KubernetesGameManager._create_game_name(game_id))
         ingress = self._api_instance.list_namespaced_ingress("default").items[0]
         paths = ingress.spec.rules[0].http.paths
         try:
