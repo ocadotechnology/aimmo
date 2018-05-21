@@ -29,6 +29,7 @@ def main():
     else:
         compute_coverage = '--coverage' in sys.argv or '-c' in sys.argv
         runner.run_command(['pip', 'install', '-e', BASE_DIR])
+        runner.run_command(['pip', 'install', 'codeforlife-portal'])
         sys.exit(run_tests(compute_coverage))
 
 
