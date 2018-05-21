@@ -40,9 +40,9 @@ DEFAULT_SETTINGS = {
     'AUTOCONFIG_INDEX_VIEW': 'aimmo/home',
     'STATIC_URL': '/static/',
 }
-
 SETTINGS = {
     'INSTALLED_APPS': [
+        'portal',
         'django.contrib.auth',
         'django.contrib.messages',
         'django.contrib.staticfiles',
@@ -64,3 +64,4 @@ SETTINGS = {
     ],
     'USE_TZ': True,
 }
+
