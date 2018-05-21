@@ -2,7 +2,7 @@ import cPickle as pickle
 import logging
 import os
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
@@ -20,6 +20,12 @@ from portal.models import Student, Class, UserProfile
 
 LOGGER = logging.getLogger(__name__)
 
+def preview_user_check(user):
+    return user.userprofile.preview_user
+
+def preview_user_required(view_function):
+    return login_required(user_passes_test(preview_user_check))
+
 
 def _post_code_success_response(message):
     return _create_response("SUCCESS", message)
@@ -33,7 +39,7 @@ def _create_response(status, message):
     return JsonResponse(response)
 
 
-@login_required
+@preview_user_required
 def code(request, id):
     game = get_object_or_404(Game, id=id)
     if not game.can_user_play(request.user):
@@ -209,7 +215,7 @@ def get_users(user):
     return User.objects.all()
 
 
-@login_required
+@preview_user_required
 def add_game(request):
     if request.method == 'POST':
         form = forms.AddGameForm(request.POST)
