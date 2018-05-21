@@ -199,9 +199,7 @@ def get_users(user):
             if user.userprofile.student.is_independent():
                 return users.extend(get_independent_students())
             else:
-
                 return get_students_from_class(user.userprofile.student, False)
-        return User.objects.all()
     return User.objects.all()
 
 
