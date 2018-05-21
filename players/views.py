@@ -180,12 +180,10 @@ def get_students_from_class(user, is_teacher):
     students = []
     if is_teacher:
         classes = user.class_teacher.all()
-        print "Adding students from all of the teacher's classes"
         for c in classes:
             students.extend(c.students.all())
     else:
         c = user.class_field
-        print "Adding all students from the same class"
         students.extend(c.students.all())
     return students
 
@@ -195,19 +193,15 @@ def get_users(user):
     users = []
     if hasattr(user, 'userprofile'):
         if hasattr(user.userprofile, 'teacher') and user.userprofile.teacher.has_school():
-            print "Got here"
             users.append(user.userprofile.teacher)
             return users.extend(get_students_from_class(user.userprofile.teacher, True))
         elif hasattr(user.userprofile, 'student'):
             if user.userprofile.student.is_independent():
-                print "Adding all independent students"
                 return users.extend(get_independent_students())
             else:
 
                 return get_students_from_class(user.userprofile.student, False)
-        print "Adding all users"
         return User.objects.all()
-    print "Adding all users"
     return User.objects.all()
 
 
@@ -223,7 +217,6 @@ def add_game(request):
             game.main_user = request.user
             game.save()
             users = get_users(request.user)
-            # TODO: If this does not work, use a loop
             game.can_play.add(*users)
             return redirect('aimmo/program', id=game.id)
     else:
