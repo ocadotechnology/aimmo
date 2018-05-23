@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 from django.views.generic import RedirectView
 
 from players import views
-from permissions import preview_user
+from app_settings import preview_user
 
 urlpatterns = [
     url(r'^$', login_required(preview_user(TemplateView.as_view(template_name='players/home.html'))), name='aimmo/home'),

@@ -17,9 +17,11 @@ from models import Avatar, Game, LevelAttempt
 from players import forms
 from . import app_settings
 from portal.models import Student, Class, UserProfile
-from permissions import preview_user
+
 
 LOGGER = logging.getLogger(__name__)
+
+preview_user = app_settings.preview_user
 
 
 def _post_code_success_response(message):
@@ -167,7 +169,7 @@ def _add_and_return_level(num, user):
     level_attempt.save()
     return game
 
-
+# TODO: Delete this
 def get_independent_students():
     indep_students = []
     for s in Student.objects.all():
@@ -175,7 +177,7 @@ def get_independent_students():
             indep_students.append(s)
     return indep_students
 
-
+# TODO: Delete this
 def get_students_from_class(user, is_teacher):
     students = []
     if is_teacher:
@@ -187,9 +189,10 @@ def get_students_from_class(user, is_teacher):
         students.extend(c.students.all())
     return students
 
-
-def get_users(user):
+# TODO: Delete this
+def get_users_for_new_game(request):
     print "Getting users"
+    user = request.user
     users = []
     if hasattr(user, 'userprofile'):
         if hasattr(user.userprofile, 'teacher') and user.userprofile.teacher.has_school():
@@ -214,7 +217,7 @@ def add_game(request):
             game.owner = request.user
             game.main_user = request.user
             game.save()
-            users = get_users(request.user)
+            users = get_users_for_new_game(request)
             game.can_play.add(*users)
             return redirect('aimmo/program', id=game.id)
     else:
