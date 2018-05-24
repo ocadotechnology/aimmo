@@ -16,8 +16,7 @@ from django.views.generic import TemplateView
 from models import Avatar, Game, LevelAttempt
 from players import forms
 from . import app_settings
-from portal.models import Student, Class, UserProfile
-
+from app_settings import get_users_for_new_game
 
 LOGGER = logging.getLogger(__name__)
 
@@ -169,42 +168,6 @@ def _add_and_return_level(num, user):
     level_attempt.save()
     return game
 
-# TODO: Delete this
-def get_independent_students():
-    indep_students = []
-    for s in Student.objects.all():
-        if s.is_independent():
-            indep_students.append(s)
-    return indep_students
-
-# TODO: Delete this
-def get_students_from_class(user, is_teacher):
-    students = []
-    if is_teacher:
-        classes = user.class_teacher.all()
-        for c in classes:
-            students.extend(c.students.all())
-    else:
-        c = user.class_field
-        students.extend(c.students.all())
-    return students
-
-# TODO: Delete this
-def get_users_for_new_game(request):
-    print "Getting users"
-    user = request.user
-    users = []
-    if hasattr(user, 'userprofile'):
-        if hasattr(user.userprofile, 'teacher') and user.userprofile.teacher.has_school():
-            users.append(user.userprofile.teacher)
-            return users.extend(get_students_from_class(user.userprofile.teacher, True))
-        elif hasattr(user.userprofile, 'student'):
-            if user.userprofile.student.is_independent():
-                return users.extend(get_independent_students())
-            else:
-                return get_students_from_class(user.userprofile.student, False)
-    return User.objects.all()
-
 
 @login_required
 @preview_user
@@ -218,7 +181,8 @@ def add_game(request):
             game.main_user = request.user
             game.save()
             users = get_users_for_new_game(request)
-            game.can_play.add(*users)
+            if users is not None:
+                game.can_play.add(*users)
             return redirect('aimmo/program', id=game.id)
     else:
         form = forms.AddGameForm()

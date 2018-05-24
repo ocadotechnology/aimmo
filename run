@@ -5,7 +5,6 @@ cd "${BASH_SOURCE%/*}"
 trap 'kill -- -$$' INT TERM
 
 pip install -e .
-pip install 'codeforlife-portal >= 1.0.0.post.dev1'
 ./example_project/manage.py migrate --noinput
 ./example_project/manage.py collectstatic --noinput
 ./example_project/manage.py runserver "$@" &
