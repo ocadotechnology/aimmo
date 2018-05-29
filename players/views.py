@@ -95,7 +95,7 @@ def get_connection_params(request, game_id):
     :return: JsonResponse object with the contents.
     """
     return JsonResponse(
-        utilities.get_environment_connection_settings(request, game_id)
+        utilities.get_environment_connection_settings(game_id)
     )
 
 

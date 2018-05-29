@@ -45,11 +45,21 @@ const keyPressed = code => (
   }
 )
 
+const getConnectionParamsRequest = gameID => (
+  {
+    type: types.GET_CONNECTION_PARAMS_REQUEST,
+    payload: {
+      gameID
+    }
+  }
+)
+
 export default {
   getCodeRequest,
   getCodeReceived,
   postCodeRequest,
   postCodeReceived,
   changeCode,
-  keyPressed
+  keyPressed,
+  getConnectionParamsRequest
 }

@@ -1,8 +1,9 @@
 import styled from 'styled-components'
 import React, { Component } from 'react'
-import Unity, { RegisterExternalListener, UnityEvent } from "react-unity-webgl"
+import Unity, { RegisterExternalListener, UnityEvent } from 'react-unity-webgl'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { actions } from 'features/Editor'
 
 const GameViewLayout = styled.div`
   background-color: purple
@@ -10,11 +11,16 @@ const GameViewLayout = styled.div`
 `
 
 export class GameView extends Component {
-  constructor() {
+  constructor(props) {
     // It's recommended to register the callback before loading Unity.
-    super()
+    super(props)
     console.log("constructor")
+
+    // Send a request to the Django's API to get all relevant information.
+    let connectionParams = this.props.getConnectionParams()
+
     RegisterExternalListener("SendAllConnect", this.sendAllConnect.bind(this))
+
     // TODO: probably move below to epics or something
     this.setGameURL = new UnityEvent("World Controller", "SetGameURL")
     this.setGamePort = new UnityEvent("World Controller", "SetGamePort")
@@ -25,11 +31,11 @@ export class GameView extends Component {
 
   sendAllConnect() {
     console.log("sendAllConnect hit")
-    this.setGameURL("test")
-    this.setGamePort(0)
-    this.setGamePath("/yo")
-    this.setSSL("True")
-    this.establishConnection()
+    // this.setGameURL("test")
+    // this.setGamePort(0)
+    // this.setGamePath("/yo")
+    // this.setSSL("True")
+    // this.establishConnection()
     console.log("finished")
   }
   
@@ -47,6 +53,8 @@ export class GameView extends Component {
 
 const mapStateToProps = () => ({})
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = {
+  getConnectionParams: actions.getConnectionParamsRequest
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(GameView)

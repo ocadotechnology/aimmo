@@ -1,7 +1,7 @@
 import actions from './actions'
 import types from './types'
 import { Observable, Scheduler } from 'rxjs'
-import { map, mergeMap, catchError, debounceTime } from 'rxjs/operators'
+import { map, mergeMap, catchError, debounceTime, tap } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
 const backgroundScheduler = Scheduler.async
@@ -44,8 +44,21 @@ const changeCodeEpic = (action$, store, dependencies, scheduler = backgroundSche
     map(action => actions.changeCode(action.payload.code))
   )
 
+const getConnectionParamsEpic = (action$, store, { api }) => {
+  console.log(api)
+  return action$.pipe(
+      ofType(types.GET_CONNECTION_PARAMS_REQUEST),
+      tap(console.log),
+      mergeMap(action => 
+        api.get(`games/${store.getState().game.id}/get_connection_params/`)
+      ),
+      tap(console.log)
+    )
+  }
+
 export default {
   getCodeEpic,
   postCodeEpic,
-  changeCodeEpic
+  changeCodeEpic,
+  getConnectionParamsEpic
 }
