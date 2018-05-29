@@ -22,8 +22,10 @@ def get_aimmo_preview_user_decorator():
 def get_users_for_new_game_function(request):
     if USERS_FOR_NEW_AIMMO_GAME:
         func = import_string(PREVIEW_USER_AIMMO_DECORATOR)
+        print "Imported function"
         return func(request)
     else:
+        print "Returning all user objects"
         return User.objects.all()
 
 

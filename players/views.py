@@ -172,6 +172,7 @@ def _add_and_return_level(num, user):
 @login_required
 @preview_user
 def add_game(request):
+    print "Inside add game"
     if request.method == 'POST':
         form = forms.AddGameForm(request.POST)
         if form.is_valid():
@@ -180,6 +181,7 @@ def add_game(request):
             game.owner = request.user
             game.main_user = request.user
             game.save()
+            print "Calling get users for new game"
             users = get_users_for_new_game(request)
             if users is not None:
                 game.can_play.add(*users)
