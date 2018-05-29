@@ -28,7 +28,7 @@ def get_users_for_new_game_function(request):
         LOGGER.info('Function found')
         return func(request)
     else:
-        return None
+        return User.objects.all()
 
 
 preview_user = get_aimmo_preview_user_decorator()
