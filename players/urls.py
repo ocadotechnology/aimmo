@@ -21,10 +21,11 @@ urlpatterns = [
     url(r'^game_ide/$', TemplateView.as_view(template_name='players/game_ide.html'), name='aimmo/game_ide'),
 
     url(r'^api/csrf_token', views.csrfToken, name='aimmo/csrf_token'),
-    url(r'^api/code/(?P<id>[0-9]+)/$', views.code, name='aimmo/code'),
+    url(r'^api/code/(?P<game_id>[0-9]+)/$', views.code, name='aimmo/code'),
     url(r'^api/games/$', views.list_games, name='aimmo/games'),
-    url(r'^api/games/(?P<id>[0-9]+)/$', views.get_game, name='aimmo/game_details'),
-    url(r'^api/games/(?P<id>[0-9]+)/complete/$', views.mark_game_complete, name='aimmo/complete_game'),
+    url(r'^api/games/(?P<game_id>[0-9]+)/$', views.get_game, name='aimmo/game_details'),
+    url(r'^api/games/(?P<game_id>[0-9]+)/get_connection_params/$', views.get_connection_params, name='aimmo/game_details'),
+    url(r'^api/games/(?P<game_id>[0-9]+)/complete/$', views.mark_game_complete, name='aimmo/complete_game'),
     url(r'^api/games/(?P<game_id>[0-9]+)/current_avatar/$', views.current_avatar_in_game, name='aimmo/current_avatar_in_game'),
 
     url(r'^jsreverse/$', 'django_js_reverse.views.urls_js', name='aimmo/js_reverse'),  # TODO: Pull request to make django_js_reverse.urls

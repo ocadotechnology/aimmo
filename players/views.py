@@ -4,7 +4,6 @@ import os
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
 from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
@@ -13,8 +12,7 @@ from django.views.generic import TemplateView
 from django.middleware.csrf import get_token
 
 from models import Avatar, Game, LevelAttempt
-from players import forms
-from . import app_settings
+from players import forms, utilities
 
 LOGGER = logging.getLogger(__name__)
 
@@ -31,10 +29,10 @@ def _create_response(status, message):
     return JsonResponse(response)
 
 
-def code(request, id):
+def code(request, game_id):
     if not request.user:
         return HttpResponseForbidden()
-    game = get_object_or_404(Game, id=id)
+    game = get_object_or_404(Game, id=game_id)
     if not game.can_user_play(request.user):
         raise Http404
     try:
@@ -47,7 +45,7 @@ def code(request, id):
         with open(initial_code_file_name) as initial_code_file:
             initial_code = initial_code_file.read()
         avatar = Avatar.objects.create(owner=request.user, code=initial_code,
-                                       game_id=id)
+                                       game_id=game_id)
     if request.method == 'POST':
         avatar.code = request.POST['code']
         avatar.save()
@@ -67,8 +65,9 @@ def list_games(request):
     return JsonResponse(response)
 
 
-def get_game(request, id):
-    game = get_object_or_404(Game, id=id)
+def get_game(request, game_id):
+    # TODO: consider removing request? check urls to see if its used
+    game = get_object_or_404(Game, id=game_id)
     response = {
         'main': {
             'parameters': [],
@@ -86,10 +85,24 @@ def get_game(request, id):
     return JsonResponse(response)
 
 
+def get_connection_params(request, game_id):
+    """
+    An API view which returns the correct connection settings required
+    to run the game in different environments. These values will change
+    depending on where the project is started (ie. local, etc).
+    :param request: Request object used to generate this response.
+    :param game_id: Integer with the ID of the game.
+    :return: JsonResponse object with the contents.
+    """
+    return JsonResponse(
+        utilities.get_environment_connection_settings(request, game_id)
+    )
+
+
 @csrf_exempt
 @require_http_methods(['POST'])
-def mark_game_complete(request, id):
-    game = get_object_or_404(Game, id=id)
+def mark_game_complete(request, game_id):
+    game = get_object_or_404(Game, id=game_id)
     game.completed = True
     game.static_data = request.body
     game.save()
@@ -118,26 +131,11 @@ def program_level(request, num):
     return render(request, 'players/program.html', {'game_id': game.id})
 
 
-def _render_game(request, game):
-    context = {
-        'current_user_player_key': request.user.pk,
-        'active': game.is_active,
-        'static_data': game.static_data or '{}',
-    }
-    context['game_url_base'], context['game_url_path'] = app_settings.GAME_SERVER_URL_FUNCTION(game.id)
-    context['game_url_port'] = app_settings.GAME_SERVER_PORT_FUNCTION(game.id)
-    context['game_ssl_flag'] = app_settings.GAME_SERVER_SSL_FLAG
-    context['game_id'] = game.id
-    context['web_host_base'] = request.get_host()
-
-    return render(request, 'players/viewer.html', context)
-
-
 def watch_game(request, id):
     game = get_object_or_404(Game, id=id)
     if not game.can_user_play(request.user):
         raise Http404
-    return _render_game(request, game)
+    return utilities.render_game(request, game)
 
 
 def watch_level(request, num):
@@ -147,7 +145,7 @@ def watch_level(request, num):
         LOGGER.debug('Adding level')
         game = _add_and_return_level(num, request.user)
     LOGGER.debug('Displaying game with id %s', game.id)
-    return _render_game(request, game)
+    return utilities.render_game(request, game)
 
 
 def _add_and_return_level(num, user):
