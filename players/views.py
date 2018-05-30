@@ -85,7 +85,7 @@ def get_game(request, game_id):
     return JsonResponse(response)
 
 
-def get_connection_params(request, game_id):
+def connection_params(request, game_id):
     """
     An API view which returns the correct connection settings required
     to run the game in different environments. These values will change
