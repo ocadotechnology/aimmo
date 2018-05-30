@@ -170,7 +170,7 @@ def _add_and_return_level(num, user):
 
 
 @login_required
-# @preview_user
+@preview_user
 def add_game(request):
     LOGGER.info('Inside add game')
     if request.method == 'POST':
