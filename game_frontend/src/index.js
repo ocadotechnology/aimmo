@@ -12,7 +12,13 @@ const initialState = {
     movies: []
   },
   editor: {
-    code: ''
+    code: '',
+    connectionParams: {
+        game_url_base: '',
+        game_url_path: '',
+        game_url_port: 0,
+        game_ssl_flag: false
+      }
   }
 }
 const reduxStore = configureStore(initialState)

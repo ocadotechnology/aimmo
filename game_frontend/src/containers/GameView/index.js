@@ -14,10 +14,9 @@ export class GameView extends Component {
   constructor(props) {
     // It's recommended to register the callback before loading Unity.
     super(props)
-    console.log("constructor")
 
     // Send a request to the Django's API to get all relevant information.
-    let connectionParams = this.props.getConnectionParams()
+    this.props.getConnectionParams()
 
     RegisterExternalListener("SendAllConnect", this.sendAllConnect.bind(this))
 
@@ -30,12 +29,13 @@ export class GameView extends Component {
   }
 
   sendAllConnect() {
+    // TODO: do some checking if canEmit before actually doing it (FIRST DO THIS IN EPICS)
     console.log("sendAllConnect hit")
-    // this.setGameURL("test")
-    // this.setGamePort(0)
-    // this.setGamePath("/yo")
-    // this.setSSL("True")
-    // this.establishConnection()
+    this.setGameURL.emit(this.props.gameURL)
+    this.setGamePort.emit(this.props.gamePort)
+    this.setGamePath.emit(this.props.gamePath)
+    this.setSSL.emit("False")
+    this.establishConnection.emit()
     console.log("finished")
   }
   
@@ -51,7 +51,21 @@ export class GameView extends Component {
   }
 }
 
-const mapStateToProps = () => ({})
+GameView.propTypes = {
+  gameURL: PropTypes.string,
+  gamePath: PropTypes.string,
+  gamePort: PropTypes.number,
+  sslFlag: PropTypes.bool,
+  getConnectionParams: PropTypes.func
+}
+
+const mapStateToProps = state => ({
+  // TODO: change this to not be inside editor reducer but instead its own one
+  gameURL: state.editor.connectionParams.game_url_base,
+  gamePath: state.editor.connectionParams.game_url_path,
+  gamePort: state.editor.connectionParams.game_url_port,
+  sslFlag: state.editor.connectionParams.game_ssl_flag
+})
 
 const mapDispatchToProps = {
   getConnectionParams: actions.getConnectionParamsRequest
