@@ -44,15 +44,21 @@ const changeCodeEpic = (action$, store, dependencies, scheduler = backgroundSche
     map(action => actions.changeCode(action.payload.code))
   )
 
+  // TODO: refactor all these catchErrors into individual actions instead of creating them here each time
+  // TODO: maybe remove the return and change this back into an arrow function
 const getConnectionParamsEpic = (action$, store, { api }) => {
-  console.log(api)
   return action$.pipe(
       ofType(types.GET_CONNECTION_PARAMS_REQUEST),
-      tap(console.log),
       mergeMap(action => 
-        api.get(`games/${store.getState().game.id}/get_connection_params/`)
-      ),
-      tap(console.log)
+        api.get(`games/${store.getState().game.id}/connection_params/`).pipe(
+          map(response => actions.getConnectionParamsSuccess(response)),
+          catchError(error => Observable.of({
+            type: types.GET_CONNECTION_PARAMS_FAIL,
+            payload: error.xhr.response,
+            error: true
+          }))
+        )
+      )
     )
   }
 

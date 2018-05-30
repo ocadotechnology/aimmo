@@ -54,6 +54,15 @@ const getConnectionParamsRequest = gameID => (
   }
 )
 
+const getConnectionParamsSuccess = connectionParams => (
+  {
+    type: types.GET_CONNECTION_PARAMS_SUCCESS,
+    payload: {
+      connectionParams
+    }
+  }
+)
+
 export default {
   getCodeRequest,
   getCodeReceived,
@@ -61,5 +70,6 @@ export default {
   postCodeReceived,
   changeCode,
   keyPressed,
-  getConnectionParamsRequest
+  getConnectionParamsRequest,
+  getConnectionParamsSuccess
 }
