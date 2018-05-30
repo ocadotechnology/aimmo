@@ -34,6 +34,7 @@ export class GameView extends Component {
     this.setGameURL.emit(this.props.gameURL)
     this.setGamePort.emit(this.props.gamePort)
     this.setGamePath.emit(this.props.gamePath)
+    // TODO: convert prop bool to string here instead of hard coding
     this.setSSL.emit("False")
     this.establishConnection.emit()
     console.log("finished")
