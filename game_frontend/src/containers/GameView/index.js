@@ -27,15 +27,12 @@ export class GameView extends Component {
   }
 
   sendAllConnect() {
-    // TODO: do some checking if canEmit before actually doing it 
-    console.log("sendAllConnect hit")
     this.props.emitUnityEvent(this.setGameURL, this.props.gameURL)
     this.props.emitUnityEvent(this.setGamePort, this.props.gamePort)
     this.props.emitUnityEvent(this.setGamePath, this.props.gamePath)
     // TODO: convert prop bool to string here instead of hard coding
     this.props.emitUnityEvent(this.setSSL, "False")
     this.establishConnection.emit()
-    console.log("finished")
   }
   
   render() {
