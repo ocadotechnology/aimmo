@@ -1,6 +1,16 @@
 import types from './types'
 
 const editorReducer = (state = {}, action) => {
+  const emitUnityEvent = (unityFunction, parameter = {}) => {
+    if(unityFunction.canEmit())
+    {
+      if(parameter != {})
+        unityFunction.emit(parameter)
+      else
+        unityFunction.emit()
+    }
+  }
+
   switch (action.type) {
     case types.GET_CODE_SUCCESS:
     case types.CHANGE_CODE:
@@ -13,6 +23,9 @@ const editorReducer = (state = {}, action) => {
         ...state,
         connectionParams: action.payload.connectionParams
       }
+    case types.EMIT_UNITY_EVENT:
+      emitUnityEvent(action.payload.unityFunction, action.payload.parameter)
+      return state
     default:
       return state
   }

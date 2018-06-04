@@ -63,6 +63,16 @@ const getConnectionParamsSuccess = connectionParams => (
   }
 )
 
+const emitUnityEvent = (unityFunction, parameter) => (
+  {
+    type: types.EMIT_UNITY_EVENT,
+    payload: {
+      unityFunction,
+      parameter
+    }
+  }
+)
+
 export default {
   getCodeRequest,
   getCodeReceived,
@@ -71,5 +81,6 @@ export default {
   changeCode,
   keyPressed,
   getConnectionParamsRequest,
-  getConnectionParamsSuccess
+  getConnectionParamsSuccess,
+  emitUnityEvent
 }

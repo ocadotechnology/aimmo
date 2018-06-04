@@ -12,7 +12,6 @@ const GameViewLayout = styled.div`
 
 export class GameView extends Component {
   constructor(props) {
-    // It's recommended to register the callback before loading Unity.
     super(props)
 
     // Send a request to the Django's API to get all relevant information.
@@ -20,7 +19,6 @@ export class GameView extends Component {
 
     RegisterExternalListener("SendAllConnect", this.sendAllConnect.bind(this))
 
-    // TODO: probably move below to epics or something
     this.setGameURL = new UnityEvent("World Controller", "SetGameURL")
     this.setGamePort = new UnityEvent("World Controller", "SetGamePort")
     this.setGamePath = new UnityEvent("World Controller", "SetGamePath")
@@ -29,13 +27,13 @@ export class GameView extends Component {
   }
 
   sendAllConnect() {
-    // TODO: do some checking if canEmit before actually doing it (FIRST DO THIS IN EPICS)
+    // TODO: do some checking if canEmit before actually doing it 
     console.log("sendAllConnect hit")
-    this.setGameURL.emit(this.props.gameURL)
-    this.setGamePort.emit(this.props.gamePort)
-    this.setGamePath.emit(this.props.gamePath)
+    this.props.emitUnityEvent(this.setGameURL, this.props.gameURL)
+    this.props.emitUnityEvent(this.setGamePort, this.props.gamePort)
+    this.props.emitUnityEvent(this.setGamePath, this.props.gamePath)
     // TODO: convert prop bool to string here instead of hard coding
-    this.setSSL.emit("False")
+    this.props.emitUnityEvent(this.setSSL, "False")
     this.establishConnection.emit()
     console.log("finished")
   }
@@ -61,7 +59,8 @@ GameView.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  // TODO: change this to not be inside editor reducer but instead its own one
+  // TODO: create issue to change this to not be inside editor reducer but instead its own one
+  // EDITOR refers to the redux feature, not just the "editor" in the UI. bad naming =(
   gameURL: state.editor.connectionParams.game_url_base,
   gamePath: state.editor.connectionParams.game_url_path,
   gamePort: state.editor.connectionParams.game_url_port,
@@ -69,7 +68,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = {
-  getConnectionParams: actions.getConnectionParamsRequest
+  getConnectionParams: actions.getConnectionParamsRequest,
+  emitUnityEvent: actions.emitUnityEvent
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(GameView)

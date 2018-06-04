@@ -44,8 +44,8 @@ const changeCodeEpic = (action$, store, dependencies, scheduler = backgroundSche
     map(action => actions.changeCode(action.payload.code))
   )
 
-  // TODO: refactor all these catchErrors into individual actions instead of creating them here each time
-  // TODO: maybe remove the return and change this back into an arrow function
+// TODO: refactor all these catchErrors into individual actions instead of creating them here each time
+// TODO: maybe remove the return and change this back into an arrow function
 const getConnectionParamsEpic = (action$, store, { api }) => {
   return action$.pipe(
       ofType(types.GET_CONNECTION_PARAMS_REQUEST),
