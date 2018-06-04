@@ -32,13 +32,15 @@ def create_superuser_if_missing(username, password):
                                       password=password)
 
 
-def run(use_minikube, server_wait=True, capture_output=False):
+def run(use_minikube, server_wait=True, capture_output=False, test_env=False):
     logging.basicConfig()
     sys.path.append(os.path.join(ROOT_DIR_LOCATION, 'example_project'))
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
 
     run_command(['pip', 'install', '-e', ROOT_DIR_LOCATION], capture_output=capture_output)
-    run_command(['python', _MANAGE_PY, 'migrate', '--noinput'], capture_output=capture_output)
+    run_command(['pip', 'install', 'codeforlife-portal'], capture_output=capture_output)
+    if not test_env:
+        run_command(['python', _MANAGE_PY, 'migrate', '--noinput'], capture_output=capture_output)
     run_command(['python', _MANAGE_PY, 'collectstatic', '--noinput'], capture_output=capture_output)
 
     create_superuser_if_missing(username='admin', password='admin')
