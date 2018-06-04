@@ -38,7 +38,6 @@ def run(use_minikube, server_wait=True, capture_output=False):
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
 
     run_command(['pip', 'install', '-e', ROOT_DIR_LOCATION], capture_output=capture_output)
-    #run_command(['pip', 'install', 'codeforlife-portal'], capture_output=capture_output)
     run_command(['python', _MANAGE_PY, 'migrate', '--noinput'], capture_output=capture_output)
     run_command(['python', _MANAGE_PY, 'collectstatic', '--noinput'], capture_output=capture_output)
 

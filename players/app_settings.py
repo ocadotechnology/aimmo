@@ -11,8 +11,6 @@ GAME_SERVER_SSL_FLAG = getattr(settings, 'AIMMO_GAME_SERVER_SSL_FLAG', False)
 PREVIEW_USER_AIMMO_DECORATOR = getattr(settings, 'PREVIEW_USER_AIMMO_DECORATOR', None)
 USERS_FOR_NEW_AIMMO_GAME = getattr(settings, 'USERS_FOR_NEW_AIMMO_GAME', None)
 
-LOGGER = logging.getLogger(__name__)
-
 
 def get_aimmo_preview_user_decorator():
     if PREVIEW_USER_AIMMO_DECORATOR:
