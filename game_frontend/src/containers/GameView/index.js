@@ -18,20 +18,14 @@ export class GameView extends Component {
     this.props.getConnectionParams()
 
     RegisterExternalListener("SendAllConnect", this.sendAllConnect.bind(this))
-
-    this.setGameURL = new UnityEvent("World Controller", "SetGameURL")
-    this.setGamePort = new UnityEvent("World Controller", "SetGamePort")
-    this.setGamePath = new UnityEvent("World Controller", "SetGamePath")
-    this.setSSL = new UnityEvent("World Controller", "SetSSL")
-    this.establishConnection = new UnityEvent("World Controller", "EstablishConnection")
   }
 
   sendAllConnect() {
-    this.props.emitUnityEvent(this.setGameURL, this.props.gameURL)
-    this.props.emitUnityEvent(this.setGamePort, this.props.gamePort)
-    this.props.emitUnityEvent(this.setGamePath, this.props.gamePath)
-    this.props.emitUnityEvent(this.setSSL, this.serialisedSSLFlag())
-    this.establishConnection.emit()
+    this.props.emitUnityEvent("World Controller", "SetGameURL", this.props.gameURL)
+    this.props.emitUnityEvent("World Controller", "SetGamePort", this.props.gamePort)
+    this.props.emitUnityEvent("World Controller", "SetGamePath", this.props.gamePath)
+    this.props.emitUnityEvent("World Controller", "SetSSL", this.serialisedSSLFlag())
+    this.props.emitUnityEvent("World Controller", "EstablishConnection", undefined)
   }
 
   serialisedSSLFlag() {

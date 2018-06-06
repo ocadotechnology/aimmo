@@ -63,11 +63,12 @@ const getConnectionParamsSuccess = connectionParams => (
   }
 )
 
-const emitUnityEvent = (unityFunction, parameter) => (
+const emitUnityEvent = (gameObjectName, unityFunctionName, parameter) => (
   {
     type: types.EMIT_UNITY_EVENT,
     payload: {
-      unityFunction,
+      gameObjectName,
+      unityFunctionName,
       parameter
     }
   }

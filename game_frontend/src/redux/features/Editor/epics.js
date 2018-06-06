@@ -1,7 +1,7 @@
 import actions from './actions'
 import types from './types'
 import { Observable, Scheduler } from 'rxjs'
-import { map, mergeMap, catchError, debounceTime, tap } from 'rxjs/operators'
+import { map, mapTo, mergeMap, catchError, debounceTime, tap } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
 const backgroundScheduler = Scheduler.async
@@ -62,9 +62,19 @@ const getConnectionParamsEpic = (action$, store, { api }) => {
     )
   }
 
+const emitUnityEventEpic = (action$, store, { api }) => {
+  return action$.pipe(
+    ofType(types.EMIT_UNITY_EVENT), 
+    api.emitUnityEvent,
+    map(event => ({ type: 'SUCCESS' }))
+    // catchError(error => Observable.of({type: 'NAH'}))
+  )
+}
+
 export default {
   getCodeEpic,
   postCodeEpic,
   changeCodeEpic,
-  getConnectionParamsEpic
+  getConnectionParamsEpic,
+  emitUnityEventEpic
 }
