@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { actions } from 'features/Editor'
 
 const IDEMenuLayout = styled.nav`
-  background-color: pink
+  background-color: ${props => props.theme.palette.background.default}
   grid-area: ide-menu
 `
 
