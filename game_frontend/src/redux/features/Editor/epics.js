@@ -44,8 +44,7 @@ const changeCodeEpic = (action$, store, dependencies, scheduler = backgroundSche
     map(action => actions.changeCode(action.payload.code))
   )
 
-// TODO: refactor all these catchErrors into individual actions instead of creating them here each time
-// TODO: maybe remove the return and change this back into an arrow function
+// TODO: maybe refactor all these catchErrors into individual actions instead of creating them here each time
 const getConnectionParamsEpic = (action$, store, { api }) => {
   return action$.pipe(
       ofType(types.GET_CONNECTION_PARAMS_REQUEST),
@@ -64,10 +63,19 @@ const getConnectionParamsEpic = (action$, store, { api }) => {
 
 const emitUnityEventEpic = (action$, store, { api }) => {
   return action$.pipe(
-    ofType(types.EMIT_UNITY_EVENT), 
-    api.emitUnityEvent,
-    map(event => ({ type: 'SUCCESS' }))
-    // catchError(error => Observable.of({type: 'NAH'}))
+    tap(action => console.log(action)),
+    ofType(types.EMIT_UNITY_EVENT),
+    mergeMap(action =>
+      Observable.of(action).pipe(
+        api.emitUnityEvent,
+        map(event => ({ type: 'SUCCESS' })),
+        catchError(error => Observable.of({
+            type: types.EMIT_UNITY_EVENT_FAIL,
+            error: true
+          })
+        )
+      )
+    )
   )
 }
 
