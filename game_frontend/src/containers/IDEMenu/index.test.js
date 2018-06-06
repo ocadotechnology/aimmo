@@ -3,7 +3,7 @@ import React from 'react'
 import { IDEMenu } from 'containers/IDEMenu'
 import renderer from 'react-test-renderer'
 import { shallow } from 'enzyme'
-import withTheme from '../../testHelpers/withTheme'
+import withTheme from 'testHelpers/withTheme'
 
 describe('<IDEMenu />', () => {
   it('renders correctly', () => {

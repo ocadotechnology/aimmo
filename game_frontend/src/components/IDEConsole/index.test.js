@@ -2,7 +2,7 @@
 import React from 'react'
 import IDEConsole from 'components/IDEConsole'
 import renderer from 'react-test-renderer'
-import withTheme from '../../testHelpers/withTheme'
+import withTheme from 'testHelpers/withTheme'
 
 describe('<IDEConsole />', () => {
   it('renders correctly', () => {
