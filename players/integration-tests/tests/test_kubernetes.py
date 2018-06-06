@@ -18,7 +18,7 @@ class TestKubernetes(unittest.TestCase):
         api instance from the kubernetes client.
         """
         delete_old_database()
-        self.processes = runner.run(use_minikube=True, server_wait=False, capture_output=True, test_env=True)
+        self.processes = runner.run_something(use_minikube=True, server_wait=False, capture_output=True, test_env=True)
         time.sleep(120)
         kubernetes.config.load_kube_config(context='minikube')
         self.api_instance = kubernetes.client.CoreV1Api()

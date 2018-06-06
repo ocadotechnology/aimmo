@@ -9,11 +9,15 @@ import psutil
 from aimmo_runner import runner
 from connection_api import (create_session, send_get_request, send_post_request,
                             obtain_csrftoken, delete_old_database, is_server_healthy)
+from django.conf import settings
 
 logging.basicConfig(level=logging.WARNING)
 
 
 class TestIntegration(unittest.TestCase):
+    def __init__(self, *args, **kwargs):
+        super(TestIntegration, self).__init__(*args, **kwargs)
+        self.processes = []
 
     def tearDown(self):
         """
@@ -45,7 +49,7 @@ class TestIntegration(unittest.TestCase):
         delete_old_database()
 
         os.chdir(runner.ROOT_DIR_LOCATION)
-        self.processes = runner.run(use_minikube=False, server_wait=False, capture_output=True)
+        self.processes = runner.run_something(use_minikube=False, server_wait=False, capture_output=True, test_env=True)
 
         self.assertTrue(is_server_healthy(url))
 

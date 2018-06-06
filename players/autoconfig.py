@@ -42,7 +42,6 @@ DEFAULT_SETTINGS = {
 }
 SETTINGS = {
     'INSTALLED_APPS': [
-        'portal',
         'django.contrib.auth',
         'django.contrib.messages',
         'django.contrib.staticfiles',
