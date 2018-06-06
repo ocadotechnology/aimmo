@@ -32,6 +32,7 @@
     "shelljs": "^0.8.1"
   },
   "dependencies": {
+    "@material-ui/core": "^1.2.0",
     "react": "^16.2.0",
     "react-ace": "^6.1.0",
     "react-dom": "^16.2.0",
