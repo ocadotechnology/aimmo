@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import Unity, { RegisterExternalListener, UnityEvent } from 'react-unity-webgl'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { actions } from 'features/Editor'
+import { actions } from 'features/Game'
 
 const GameViewLayout = styled.div`
   background-color: purple
@@ -55,10 +55,10 @@ GameView.propTypes = {
 
 const mapStateToProps = state => ({
   // TODO: issue #619
-  gameURL: state.editor.connectionParams.game_url_base,
-  gamePath: state.editor.connectionParams.game_url_path,
-  gamePort: state.editor.connectionParams.game_url_port,
-  sslFlag: state.editor.connectionParams.game_ssl_flag
+  gameURL: state.gameView.connectionParams.game_url_base,
+  gamePath: state.gameView.connectionParams.game_url_path,
+  gamePort: state.gameView.connectionParams.game_url_port,
+  sslFlag: state.gameView.connectionParams.game_ssl_flag
 })
 
 const mapDispatchToProps = {
