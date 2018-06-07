@@ -14,8 +14,9 @@ const initialState = {
   editor: {
     code: ''
   },
-  gameView: {
+  game: {
     connectionParams: {
+      id: 1,
       game_url_base: '',
       game_url_path: '',
       game_url_port: 0,

@@ -13,8 +13,7 @@ const rootEpic = combineEpics(
 const rootReducer = combineReducers({
   ghibli: ghibliReducer,
   editor: editorReducer,
-  gameView: gameReducer,
-  game: (state = { id: 1 }) => state
+  game: gameReducer,
 })
 
 export {

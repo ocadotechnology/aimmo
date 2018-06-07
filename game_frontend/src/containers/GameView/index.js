@@ -54,11 +54,10 @@ GameView.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  // TODO: issue #619
-  gameURL: state.gameView.connectionParams.game_url_base,
-  gamePath: state.gameView.connectionParams.game_url_path,
-  gamePort: state.gameView.connectionParams.game_url_port,
-  sslFlag: state.gameView.connectionParams.game_ssl_flag
+  gameURL: state.game.connectionParams.game_url_base,
+  gamePath: state.game.connectionParams.game_url_path,
+  gamePort: state.game.connectionParams.game_url_port,
+  sslFlag: state.game.connectionParams.game_ssl_flag
 })
 
 const mapDispatchToProps = {
