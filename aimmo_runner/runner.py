@@ -5,9 +5,7 @@ import sys
 import time
 from django.conf import settings
 from shell_api import log, run_command, run_command_async
-print "GOT HERE, About to import User"
-print sys.path
-#sys.path.append("/home/travis/build/ocadotechnology/aimmo")
+sys.path.append("/home/travis/build/ocadotechnology/aimmo")
 
 try:
     if os.environ['CI'] == "true":
@@ -29,8 +27,8 @@ PROCESSES = []
 
 
 def create_superuser_if_missing(username, password):
-    from django.contrib.auth.models import User
     print "About to import user"
+    from django.contrib.auth.models import User
     print "imported user"
     try:
         User.objects.get_by_natural_key(username)
@@ -44,15 +42,16 @@ def create_superuser_if_missing(username, password):
 
 def run_something(use_minikube, server_wait=True, capture_output=False, test_env=False):
     logging.basicConfig()
-    sys.path.append(os.path.join(ROOT_DIR_LOCATION, 'example_project'))
-    if os.environ['DJANGO_SETTINGS_MODULE'] is None:
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
-    django.setup()
+    # sys.path.append(os.path.join(ROOT_DIR_LOCATION, 'example_project'))
+    # if os.environ['DJANGO_SETTINGS_MODULE'] is None:
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "test_settings")
+    # django.setup()
     print "GETTING ENV"
     run_command(['pip', 'install', '-e', ROOT_DIR_LOCATION], capture_output=capture_output)
+    run_command(['python', _MANAGE_PY, 'migrate', '--noinput'], capture_output=capture_output)
     if not test_env:
-        run_command(['python', _MANAGE_PY, 'migrate', '--noinput'], capture_output=capture_output)
-    run_command(['python', _MANAGE_PY, 'collectstatic', '--noinput'], capture_output=capture_output)
+        print "INSIDE NON TEST ENV CASE"
+        run_command(['python', _MANAGE_PY, 'collectstatic', '--noinput'], capture_output=capture_output)
 
     create_superuser_if_missing(username='admin', password='admin')
 

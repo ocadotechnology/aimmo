@@ -44,18 +44,19 @@ class TestIntegration(unittest.TestCase):
         
         Server gets killed at the end of the test.
         """
-        url = 'http://localhost:8000/players/accounts/login/'
+        url_string = 'aimmo/login'
 
         delete_old_database()
 
         os.chdir(runner.ROOT_DIR_LOCATION)
         self.processes = runner.run_something(use_minikube=False, server_wait=False, capture_output=True, test_env=True)
 
-        self.assertTrue(is_server_healthy(url))
+        self.assertTrue(is_server_healthy(url_string))
 
         logging.debug("Creating session...")
         session = create_session()
 
+        url = 'http://localhost:8000/players/accounts/login/'
         send_get_request(session, url)
 
         logging.debug("Obtaining CSRF Token...")
