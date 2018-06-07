@@ -9,6 +9,8 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'players',
+    'integration_tests',
+    'aimmo_runner',
 ]
 PIPELINE_ENABLED = False
 ROOT_URLCONF = 'django_autoconfig.autourlconf'
