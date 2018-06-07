@@ -68,7 +68,7 @@ const emitUnityEventEpic = (action$, store, { api }) => {
     mergeMap(action =>
       Observable.of(action).pipe(
         api.emitUnityEvent,
-        map(event => ({ type: 'SUCCESS' })),
+        map(event => ({ type: types.EMIT_UNITY_EVENT_SUCCESS })),
         catchError(error => Observable.of({
             type: types.EMIT_UNITY_EVENT_FAIL,
             error: true

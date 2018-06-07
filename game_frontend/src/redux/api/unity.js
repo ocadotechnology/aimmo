@@ -4,8 +4,7 @@ import { UnityEvent } from "react-unity-webgl";
 const emitUnityEvent =  action$ => {
     return action$.map(
         action => {
-            // let unityEvent = new UnityEvent(action.payload.gameObjectName, action.payload.unityFunctionName)
-            throw "yolo"
+            let unityEvent = new UnityEvent(action.payload.gameObjectName, action.payload.unityFunctionName)
 
             if(unityEvent.canEmit()) {
                 unityEvent.emit(action.payload.parameter)
