@@ -7,7 +7,6 @@ from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
 
 from players import models, views
-from portal.models import UserProfile
 
 views.app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: ('base %s' % game_id, 'path %s' % game_id)
 views.app_settings.GAME_SERVER_PORT_FUNCTION = lambda game_id: 0
@@ -22,9 +21,9 @@ class TestViews(TestCase):
         cls.user = User.objects.create_user('test', 'test@example.com', 'password')
         cls.user.is_staff = True
         cls.user.save()
-        profile = UserProfile.objects.create(user=cls.user)
-        profile.preview_user = True
-        profile.save()
+        #profile = UserProfile.objects.create(user=cls.user)
+        # profile.preview_user = True
+        # profile.save()
         cls.game = models.Game(id=1, name='test')
         cls.game.save()
 

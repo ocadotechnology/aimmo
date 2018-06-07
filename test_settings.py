@@ -9,7 +9,6 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'players',
-    'portal'
 ]
 PIPELINE_ENABLED = False
 ROOT_URLCONF = 'django_autoconfig.autourlconf'
