@@ -20,15 +20,15 @@ export class GameView extends Component {
   }
 
   sendAllConnect() {
-    this.props.emitUnityEvent("World Controller", "SetGameURL", this.props.gameURL)
-    this.props.emitUnityEvent("World Controller", "SetGamePort", this.props.gamePort)
-    this.props.emitUnityEvent("World Controller", "SetGamePath", this.props.gamePath)
-    this.props.emitUnityEvent("World Controller", "SetSSL", this.serialisedSSLFlag())
-    this.props.emitUnityEvent("World Controller", "EstablishConnection", "k")
+    this.props.setGameURL(this.props.gameURL)
+    this.props.setGamePath(this.props.gamePath)
+    this.props.setGamePort(this.props.gamePort)
+    this.props.setGameSSL(this.serialisedSSLFlag())
+    this.props.establishGameConnection()
   }
 
   serialisedSSLFlag() {
-    let boolString = this.props.sslFlag.toString()
+    let boolString = this.props.gameSSL.toString()
     
     return boolString.charAt(0).toUpperCase() + boolString.slice(1)
   }
@@ -57,12 +57,17 @@ const mapStateToProps = state => ({
   gameURL: state.game.connectionParams.game_url_base,
   gamePath: state.game.connectionParams.game_url_path,
   gamePort: state.game.connectionParams.game_url_port,
-  sslFlag: state.game.connectionParams.game_ssl_flag
+  gameSSL: state.game.connectionParams.game_ssl_flag
 })
 
 const mapDispatchToProps = {
   getConnectionParams: actions.getConnectionParamsRequest,
-  emitUnityEvent: actions.emitUnityEvent
+  emitUnityEvent: actions.emitUnityEvent,
+  setGameURL: actions.setGameURL,
+  setGamePath: actions.setGamePath,
+  setGamePort: actions.setGamePort,
+  setGameSSL: actions.setGameSSL,
+  establishGameConnection: actions.establishGameConnection
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(GameView)
