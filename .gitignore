@@ -87,4 +87,5 @@ players/templates/players/game_ide.html
 # Game Frontend
 node_modules
 
-game_frontend/\.vscode/launch\.json
+# VSCode
+game_frontend/\.vscode/
