@@ -20,23 +20,6 @@ const getConnectionParamsEpic = (action$, store, { api }) => {
         )
       )
     }
-  
-const emitUnityEventEpic = (action$, store, { api }) => {
-    return action$.pipe(
-        ofType(types.EMIT_UNITY_EVENT),
-        mergeMap(action =>
-        Observable.of(action).pipe(
-            api.emitUnityEvent,
-            map(event => ({ type: types.EMIT_UNITY_EVENT_SUCCESS })),
-            catchError(error => Observable.of({
-                type: types.EMIT_UNITY_EVENT_FAIL,
-                error: true
-            })
-            )
-        )
-        )
-    )
-}
 
 const setGameURLEpic = (action$, store, { api }) => {
     return action$.pipe(
@@ -125,7 +108,6 @@ const establishGameConnectionEpic = (action$, store, { api }) => {
 
 export default {
     getConnectionParamsEpic,
-    emitUnityEventEpic,
     setGameURLEpic,
     setGamePathEpic,
     setGamePortEpic,

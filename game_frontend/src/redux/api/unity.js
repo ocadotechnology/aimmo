@@ -1,24 +1,6 @@
 import { UnityEvent } from "react-unity-webgl";
 
-
-const emitUnityEvent =  action$ => {
-    return action$.map(
-        action => {
-            let unityEvent = new UnityEvent(action.payload.gameObjectName, action.payload.unityFunctionName)
-
-            if(unityEvent.canEmit()) {
-                unityEvent.emit(action.payload.parameter)
-            }
-            else {
-                throw "Cannot emit the function: " + action.payload.unityFunctionName + "!"
-            }
-            
-            return unityEvent
-        }
-    )
-}
-
-const emitAUnityEvent = (unityEvent, data) => {
+const emitUnityEvent = (unityEvent, data) => {
     if(unityEvent.canEmit()) {
         unityEvent.emit(data)
     }
@@ -33,7 +15,7 @@ const setGameURL = action$ => {
         action => {
             let unityEvent = new UnityEvent("World Controller", "SetGameURL")
 
-            emitAUnityEvent(unityEvent, action.payload.gameURL)
+            emitUnityEvent(unityEvent, action.payload.gameURL)
             
             return unityEvent
         }
@@ -45,7 +27,7 @@ const setGamePath = action$ => {
         action => {
             let unityEvent = new UnityEvent("World Controller", "SetGamePath")
 
-            emitAUnityEvent(unityEvent, action.payload.gamePath)
+            emitUnityEvent(unityEvent, action.payload.gamePath)
             
             return unityEvent
         }
@@ -57,7 +39,7 @@ const setGamePort = action$ => {
         action => {
             let unityEvent = new UnityEvent("World Controller", "SetGamePort")
 
-            emitAUnityEvent(unityEvent, action.payload.gamePort)
+            emitUnityEvent(unityEvent, action.payload.gamePort)
             
             return unityEvent
         }
@@ -69,7 +51,7 @@ const setGameSSL = action$ => {
         action => {
             let unityEvent = new UnityEvent("World Controller", "SetSSL")
 
-            emitAUnityEvent(unityEvent, action.payload.gameSSLFlag)
+            emitUnityEvent(unityEvent, action.payload.gameSSLFlag)
             
             return unityEvent
         }
@@ -81,7 +63,7 @@ const establishGameConnection = action$ => {
         action => {
             let unityEvent = new UnityEvent("World Controller", "EstablishConnection")
 
-            emitAUnityEvent(unityEvent, "OK")
+            emitUnityEvent(unityEvent, "OK")
             
             return unityEvent
         }
