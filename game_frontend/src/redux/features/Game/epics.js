@@ -4,7 +4,6 @@ import { Observable } from 'rxjs'
 import { map, mergeMap, catchError, tap } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
-// TODO: maybe refactor all these catchErrors into individual actions instead of creating them here each time
 const getConnectionParamsEpic = (action$, store, { api }) => {
     return action$.pipe(
         ofType(types.GET_CONNECTION_PARAMS_REQUEST),
