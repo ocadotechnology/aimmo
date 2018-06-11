@@ -18,17 +18,6 @@ const getConnectionParamsSuccess = connectionParams => (
   }
 )
 
-const emitUnityEvent = (gameObjectName, unityFunctionName, parameter) => (
-  {
-    type: types.EMIT_UNITY_EVENT,
-    payload: {
-      gameObjectName,
-      unityFunctionName,
-      parameter
-    }
-  }
-)
-
 const setGameURL = gameURL => (
   {
     type: types.SET_GAME_URL,
@@ -74,7 +63,6 @@ const establishGameConnection = () => (
 export default {
   getConnectionParamsRequest,
   getConnectionParamsSuccess,
-  emitUnityEvent,
   setGameURL,
   setGamePath,
   setGamePort,

@@ -38,7 +38,12 @@ describe('getCodeEpic', () => {
 
     const mockAPI = { api: { get: mockGetJSON } }
 
-    const actual = epics.getCodeEpic(source$, mockStore({game: { id: 1 }}), mockAPI)
+    const actual = epics.getCodeEpic(source$, mockStore(
+      { game: 
+        { connectionParams: 
+          { id: 1 }
+        }
+      }), mockAPI)
 
     testScheduler.expectObservable(actual).toBe(marbles2, values)
     testScheduler.flush()
@@ -66,7 +71,9 @@ describe('postCodeEpic', () => {
 
     const state = {
       game: {
-        id: 1
+        connectionParams: {
+          id: 1
+        }
       },
       editor: {
         code: code
@@ -104,7 +111,9 @@ describe('postCodeEpic', () => {
 
     const state = {
       game: {
-        id: 1
+        connectionParams: {
+          id: 1
+        }
       },
       editor: {
         code: code

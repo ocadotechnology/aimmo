@@ -62,7 +62,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   getConnectionParams: actions.getConnectionParamsRequest,
-  emitUnityEvent: actions.emitUnityEvent,
   setGameURL: actions.setGameURL,
   setGamePath: actions.setGamePath,
   setGamePort: actions.setGamePort,
