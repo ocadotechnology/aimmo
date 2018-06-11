@@ -2,6 +2,7 @@
 import React from 'react'
 import { IDEEditor } from 'containers/IDEEditor'
 import { shallow } from 'enzyme/build/index'
+import { withTheme } from 'testHelpers/withTheme'
 
 describe('<IDEEditor />', () => {
   it('matches snapshot', () => {
@@ -11,7 +12,7 @@ describe('<IDEEditor />', () => {
       postCode: jest.fn()
     }
 
-    const component = shallow(<IDEEditor {...props} />)
+    const component = shallow(withTheme(<IDEEditor {...props} />))
 
     expect(component).toMatchSnapshot()
   })

@@ -8,6 +8,7 @@ import 'brace/ext/language_tools'
 import { connect } from 'react-redux'
 import { actions } from 'features/Editor'
 import PropTypes from 'prop-types'
+import { withTheme } from '@material-ui/core/styles'
 
 const IDEEditorLayout = styled.div`
   background-color: #2F4F4F
@@ -23,7 +24,7 @@ export class IDEEditor extends Component {
           name='ace_editor'
           onLoad={this.props.getCode}
           onChange={this.props.editorChanged}
-          fontSize={14}
+          fontSize={this.props.theme.additionalVariables.typography.code.fontSize}
           showPrintMargin
           showGutter
           highlightActiveLine
@@ -35,7 +36,8 @@ export class IDEEditor extends Component {
             enableLiveAutocompletion: true,
             enableSnippets: true,
             showLineNumbers: true,
-            tabSize: 2
+            tabSize: 2,
+            fontFamily: this.props.theme.additionalVariables.typography.code.fontFamily
           }} />
       </IDEEditorLayout>
     )
@@ -45,7 +47,8 @@ export class IDEEditor extends Component {
 IDEEditor.propTypes = {
   code: PropTypes.string,
   getCode: PropTypes.func,
-  editorChanged: PropTypes.func
+  editorChanged: PropTypes.func,
+  theme: PropTypes.object
 }
 
 const mapStateToProps = state => ({
@@ -57,4 +60,4 @@ const mapDispatchToProps = {
   editorChanged: actions.keyPressed
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(IDEEditor)
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme()(IDEEditor))
