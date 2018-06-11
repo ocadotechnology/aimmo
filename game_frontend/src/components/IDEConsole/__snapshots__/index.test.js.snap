@@ -2,7 +2,7 @@
 
 exports[`<IDEConsole /> renders correctly 1`] = `
 .c0 {
-  background-color: #DDDDDD;
+  background-color: #303030;
   grid-area: ide-console;
 }
 

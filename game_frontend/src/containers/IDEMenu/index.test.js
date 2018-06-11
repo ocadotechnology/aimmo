@@ -3,10 +3,11 @@ import React from 'react'
 import { IDEMenu } from 'containers/IDEMenu'
 import renderer from 'react-test-renderer'
 import { shallow } from 'enzyme'
+import withTheme from 'testHelpers/withTheme'
 
 describe('<IDEMenu />', () => {
   it('renders correctly', () => {
-    const tree = renderer.create(<IDEMenu />).toJSON()
+    const tree = renderer.create(withTheme(<IDEMenu />)).toJSON()
     expect(tree).toMatchSnapshot()
   })
 
