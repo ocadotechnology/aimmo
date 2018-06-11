@@ -29,10 +29,10 @@ def _create_response(status, message):
     return JsonResponse(response)
 
 
-def code(request, game_id):
+def code(request, id):
     if not request.user:
         return HttpResponseForbidden()
-    game = get_object_or_404(Game, id=game_id)
+    game = get_object_or_404(Game, id=id)
     if not game.can_user_play(request.user):
         raise Http404
     try:
@@ -45,7 +45,7 @@ def code(request, game_id):
         with open(initial_code_file_name) as initial_code_file:
             initial_code = initial_code_file.read()
         avatar = Avatar.objects.create(owner=request.user, code=initial_code,
-                                       game_id=game_id)
+                                       game_id=id)
     if request.method == 'POST':
         avatar.code = request.POST['code']
         avatar.save()
@@ -65,9 +65,9 @@ def list_games(request):
     return JsonResponse(response)
 
 
-def get_game(request, game_id):
+def get_game(request, id):
     # TODO: consider removing request? check urls to see if its used
-    game = get_object_or_404(Game, id=game_id)
+    game = get_object_or_404(Game, id=id)
     response = {
         'main': {
             'parameters': [],
@@ -85,24 +85,24 @@ def get_game(request, game_id):
     return JsonResponse(response)
 
 
-def connection_params(request, game_id):
+def connection_params(request, id):
     """
     An API view which returns the correct connection settings required
     to run the game in different environments. These values will change
     depending on where the project is started (ie. local, etc).
     :param request: Request object used to generate this response.
-    :param game_id: Integer with the ID of the game.
+    :param id: Integer with the ID of the game.
     :return: JsonResponse object with the contents.
     """
     return JsonResponse(
-        utilities.get_environment_connection_settings(game_id)
+        utilities.get_environment_connection_settings(id)
     )
 
 
 @csrf_exempt
 @require_http_methods(['POST'])
-def mark_game_complete(request, game_id):
-    game = get_object_or_404(Game, id=game_id)
+def mark_game_complete(request, id):
+    game = get_object_or_404(Game, id=id)
     game.completed = True
     game.static_data = request.body
     game.save()
@@ -178,8 +178,8 @@ def add_game(request):
     return render(request, 'players/add_game.html', {'form': form})
 
 
-def current_avatar_in_game(request, game_id):
-    game = get_object_or_404(Game, id=game_id)
+def current_avatar_in_game(request, id):
+    game = get_object_or_404(Game, id=id)
 
     if not game.can_user_play(request.user.id):
         return HttpResponse('User unauthorized to play', status=401)
