@@ -88,12 +88,11 @@ def is_server_healthy(url):
     :param url: http URL for the address to poll.
     :return: boolean value to indicate result.
     """
-    print url
-    client = Client()
     attempts = 0
     print "About to enter while loop"
     logging.debug("Checking if the server is healthy...")
-    response = client.get(reverse(url))
+    client = Client()
+    response = client.get('http://localhost:8000/players/accounts/login/')
     status_code = response.status_code
     if int(str(status_code)[0]) == 2:
         return True

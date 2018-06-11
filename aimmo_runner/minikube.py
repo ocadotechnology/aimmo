@@ -74,11 +74,17 @@ def start_cluster(minikube):
     Starts the cluster unless it has been already started by the user.
     :param minikube: Executable minikube installed beforehand.
     """
-    status = run_command([minikube, 'status'], True)
-    if 'minikube: Running' in status:
-        print('Cluster already running')
-    else:
-        run_command([minikube, 'start', '--memory=2048', '--cpus=2'])
+    try:
+        status = run_command([minikube, 'status'], True)
+        if 'minikube: Running' in status:
+            print ("INSIDE IF CASE, TRY")
+            print('Cluster already running')
+        else:
+            print ("INSIDE ELSE CASE, TRY")
+            run_command([minikube, 'start', '--memory=2048', '--cpus=2'])
+    except:
+        pass
+
 
 
 def create_docker_client(raw_env_settings):

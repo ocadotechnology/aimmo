@@ -42,7 +42,7 @@ def create_superuser_if_missing(username, password):
 
 def run_something(use_minikube, server_wait=True, capture_output=False, test_env=False):
     logging.basicConfig()
-    # sys.path.append(os.path.join(ROOT_DIR_LOCATION, 'example_project'))
+    sys.path.append(os.path.join(ROOT_DIR_LOCATION, 'example_project'))
     # if os.environ['DJANGO_SETTINGS_MODULE'] is None:
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "test_settings")
     # django.setup()
