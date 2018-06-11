@@ -2,7 +2,7 @@
 import React from 'react'
 import { IDEEditor } from 'containers/IDEEditor'
 import { shallow } from 'enzyme/build/index'
-import { withTheme } from 'testHelpers/withTheme'
+import withTheme from 'testHelpers/withTheme'
 
 describe('<IDEEditor />', () => {
   it('matches snapshot', () => {
