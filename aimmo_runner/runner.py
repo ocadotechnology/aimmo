@@ -9,15 +9,11 @@ sys.path.append("/home/travis/build/ocadotechnology/aimmo")
 
 try:
     if os.environ['CI'] == "true":
-        print "CI TRUE"
         ROOT_DIR_LOCATION = os.environ['TRAVIS_BUILD_DIR']
     else:
-        print "CI NOT TRUE"
         ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
 except KeyError:
-    print "HELLO"
     ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
-print "HELLO00000"
 print ROOT_DIR_LOCATION
 _MANAGE_PY = os.path.join(ROOT_DIR_LOCATION, 'example_project', 'manage.py')
 _SERVICE_PY = os.path.join(ROOT_DIR_LOCATION, 'aimmo-game-creator', 'service.py')
@@ -27,14 +23,10 @@ PROCESSES = []
 
 
 def create_superuser_if_missing(username, password):
-    print "About to import user"
     from django.contrib.auth.models import User
-    print "imported user"
     try:
         User.objects.get_by_natural_key(username)
-        print "try case"
     except User.DoesNotExist:
-        print "GOT HERE"
         log('Creating superuser %s with password %s' % (username, password))
         User.objects.create_superuser(username=username, email='admin@admin.com',
                                       password=password)
@@ -42,15 +34,15 @@ def create_superuser_if_missing(username, password):
 
 def run_something(use_minikube, server_wait=True, capture_output=False, test_env=False):
     logging.basicConfig()
-    sys.path.append(os.path.join(ROOT_DIR_LOCATION, 'example_project'))
-    # if os.environ['DJANGO_SETTINGS_MODULE'] is None:
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "test_settings")
-    # django.setup()
-    print "GETTING ENV"
+    if test_env:
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "test_settings")
+    else:
+        sys.path.append(os.path.join(ROOT_DIR_LOCATION, 'example_project'))
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
+
     run_command(['pip', 'install', '-e', ROOT_DIR_LOCATION], capture_output=capture_output)
-    run_command(['python', _MANAGE_PY, 'migrate', '--noinput'], capture_output=capture_output)
     if not test_env:
-        print "INSIDE NON TEST ENV CASE"
+        run_command(['python', _MANAGE_PY, 'migrate', '--noinput'], capture_output=capture_output)
         run_command(['python', _MANAGE_PY, 'collectstatic', '--noinput'], capture_output=capture_output)
 
     create_superuser_if_missing(username='admin', password='admin')

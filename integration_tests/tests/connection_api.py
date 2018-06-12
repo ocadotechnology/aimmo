@@ -2,8 +2,6 @@ import time
 import requests
 import os
 import logging
-from django.test.client import Client
-from django.core.urlresolvers import reverse
 
 logging.basicConfig(level=logging.WARNING)
 
@@ -89,13 +87,17 @@ def is_server_healthy(url):
     :return: boolean value to indicate result.
     """
     attempts = 0
-    print "About to enter while loop"
     logging.debug("Checking if the server is healthy...")
-    client = Client()
-    response = client.get('http://localhost:8000/players/accounts/login/')
-    status_code = response.status_code
-    if int(str(status_code)[0]) == 2:
-        return True
+    while attempts <= 45:
+        try:
+            status_code = requests.get(url).status_code
+            if int(str(status_code)[0]) == 2:
+                return True
+        except requests.exceptions.RequestException as e:
+            pass
+
+        attempts += 1
+        time.sleep(1)
 
     return False
 
