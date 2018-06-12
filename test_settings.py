@@ -14,6 +14,29 @@ INSTALLED_APPS = [
     'integration_tests',
     'aimmo_runner',
 ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler'
+        },
+    },
+    'loggers': {
+        'views': {
+            'handlers': ['console'],
+            'level': 'DEBUG'
+        },
+    }
+}
+
 print "SETUP INSTALLED APPS"
 PIPELINE_ENABLED = False
 ROOT_URLCONF = 'django_autoconfig.autourlconf'
