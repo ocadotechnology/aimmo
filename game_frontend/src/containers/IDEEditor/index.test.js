@@ -1,8 +1,7 @@
 /* eslint-env jest */
 import React from 'react'
 import { IDEEditor } from 'containers/IDEEditor'
-import { shallow } from 'enzyme/build/index'
-import withTheme from 'testHelpers/withTheme'
+import createShallowWithTheme from 'testHelpers/createShallow'
 
 describe('<IDEEditor />', () => {
   it('matches snapshot', () => {
@@ -12,7 +11,7 @@ describe('<IDEEditor />', () => {
       postCode: jest.fn()
     }
 
-    const component = shallow(withTheme(<IDEEditor {...props} />))
+    const component = createShallowWithTheme(<IDEEditor {...props} />)
 
     expect(component).toMatchSnapshot()
   })

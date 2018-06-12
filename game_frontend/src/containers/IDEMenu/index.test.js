@@ -1,13 +1,12 @@
 /* eslint-env jest */
 import React from 'react'
 import { IDEMenu } from 'containers/IDEMenu'
-import renderer from 'react-test-renderer'
 import { shallow } from 'enzyme'
-import withTheme from 'testHelpers/withTheme'
+import createShallowWithTheme from 'testHelpers/createShallow'
 
 describe('<IDEMenu />', () => {
   it('renders correctly', () => {
-    const tree = renderer.create(withTheme(<IDEMenu />)).toJSON()
+    const tree = createShallowWithTheme(<IDEMenu />)
     expect(tree).toMatchSnapshot()
   })
 
