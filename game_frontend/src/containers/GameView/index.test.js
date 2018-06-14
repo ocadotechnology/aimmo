@@ -22,4 +22,44 @@ describe('<GameView />', () => {
     const component = shallow(<GameView {...props} />)
     expect(component).toMatchSnapshot()
   })
+
+  it('serialisedSSLFlag function returns correctly', () => {
+
+    const props = {
+      getConnectionParams: jest.fn(),
+      gameSSL: false
+    }
+
+    const flagReturned = shallow(<GameView {...props} />).instance().serialisedSSLFlag()
+    expect(flagReturned).toBe("False")
+  })
+
+  it('sendAllConnect function calls all action dispatchers', () => {
+
+    const setGameURL = jest.fn()
+    const setGamePath = jest.fn()
+    const setGamePort = jest.fn()
+    const setGameSSL = jest.fn()
+    const establishGameConnection = jest.fn()
+
+    const props = {
+      gameURL: 'test',
+      gamePath: '/test',
+      gamePort: 8000,
+      gameSSL: false,
+      getConnectionParams: jest.fn(),
+      setGameURL,
+      setGamePath,
+      setGamePort,
+      setGameSSL,
+      establishGameConnection
+    }
+
+    const wrapper = shallow(<GameView {...props} />)
+
+    // Make the function call
+    wrapper.instance().sendAllConnect()
+
+    expect(setGameURL.mock.calls.length).toBe(1)
+  })
 })
