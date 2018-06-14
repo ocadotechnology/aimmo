@@ -18,7 +18,7 @@ const getConnectionParamsEpic = (action$, store, { api }) => {
           )
         )
       )
-    }
+}
 
 const setGameURLEpic = (action$, store, { api }) => {
     return action$.pipe(
