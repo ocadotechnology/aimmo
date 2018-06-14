@@ -16,8 +16,11 @@ from django.views.generic import TemplateView
 from models import Avatar, Game, LevelAttempt
 from players import forms
 from . import app_settings
+from app_settings import get_users_for_new_game_function
 
 LOGGER = logging.getLogger(__name__)
+
+preview_user = app_settings.preview_user
 
 
 def _post_code_success_response(message):
@@ -33,6 +36,7 @@ def _create_response(status, message):
 
 
 @login_required
+@preview_user
 def code(request, id):
     game = get_object_or_404(Game, id=id)
     if not game.can_user_play(request.user):
@@ -166,6 +170,7 @@ def _add_and_return_level(num, user):
 
 
 @login_required
+@preview_user
 def add_game(request):
     if request.method == 'POST':
         form = forms.AddGameForm(request.POST)
@@ -175,7 +180,9 @@ def add_game(request):
             game.owner = request.user
             game.main_user = request.user
             game.save()
-            game.can_play.add(*User.objects.all())
+            users = get_users_for_new_game_function(request)
+            if users is not None:
+                game.can_play.add(*users)
             return redirect('aimmo/program', id=game.id)
     else:
         form = forms.AddGameForm()
