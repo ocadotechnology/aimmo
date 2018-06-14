@@ -8,7 +8,7 @@ from aimmo_runner import runner
 
 if __name__ == '__main__':
     try:
-        runner.run_something('--kube' in sys.argv or '-k' in sys.argv)
+        runner.run('--kube' in sys.argv or '-k' in sys.argv)
     except Exception as err:
         traceback.print_exc()
         raise

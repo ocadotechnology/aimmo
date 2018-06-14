@@ -136,4 +136,3 @@ except ImportError:
 
 from django_autoconfig import autoconfig
 autoconfig.configure_settings(globals())
-print "SETUP ex proj GLOBAL CONFIGURATIONS"
