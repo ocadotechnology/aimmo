@@ -84,7 +84,6 @@ def start_cluster(minikube):
         pass
 
 
-
 def create_docker_client(raw_env_settings):
     """
     Creates a docker client using the python SDK.
