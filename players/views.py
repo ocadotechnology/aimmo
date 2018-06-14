@@ -15,7 +15,7 @@ from django.views.generic import TemplateView
 from models import Avatar, Game, LevelAttempt
 from players import forms
 from . import app_settings
-from app_settings import get_users_for_new_game_function
+from app_settings import get_users_for_new_game
 
 LOGGER = logging.getLogger(__name__)
 
@@ -179,7 +179,7 @@ def add_game(request):
             game.owner = request.user
             game.main_user = request.user
             game.save()
-            users = get_users_for_new_game_function(request)
+            users = get_users_for_new_game(request)
             if users is not None:
                 game.can_play.add(*users)
             return redirect('aimmo/program', id=game.id)

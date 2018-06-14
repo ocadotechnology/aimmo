@@ -65,7 +65,8 @@ def create_creator_yaml():
     """
     orig_path = os.path.join(BASE_DIR, 'aimmo-game-creator', 'rc-aimmo-game-creator.yaml')
     with open(orig_path) as orig_file:
-        content = yaml.safe_load(orig_file.read().replace('latest', 'test').replace('REPLACE_ME', 'http://%s:8000/players/api/games/' % get_ip()))
+        content = yaml.safe_load(orig_file.read().replace('latest', 'test').replace('REPLACE_ME',
+                                                                                    'http://%s:8000/players/api/games/' % get_ip()))
     return content
 
 
@@ -74,14 +75,11 @@ def start_cluster(minikube):
     Starts the cluster unless it has been already started by the user.
     :param minikube: Executable minikube installed beforehand.
     """
-    try:
-        status = run_command([minikube, 'status'], True)
-        if 'minikube: Running' in status:
-            print('Cluster already running')
-        else:
-            run_command([minikube, 'start', '--memory=2048', '--cpus=2'])
-    except:
-        pass
+    status = run_command([minikube, 'status'], True)
+    if 'minikube: Running' in status:
+        print('Cluster already running')
+    else:
+        run_command([minikube, 'start', '--memory=2048', '--cpus=2'])
 
 
 def create_docker_client(raw_env_settings):
