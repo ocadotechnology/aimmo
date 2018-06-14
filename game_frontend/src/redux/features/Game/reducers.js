@@ -1,6 +1,6 @@
 import types from './types'
 
-const editorReducer = (state = {}, action) => {
+const gameReducer = (state = {}, action) => {
   switch (action.type) {
     case types.GET_CONNECTION_PARAMS_SUCCESS:
       return {
@@ -12,4 +12,4 @@ const editorReducer = (state = {}, action) => {
   }
 }
 
-export default editorReducer
+export default gameReducer
