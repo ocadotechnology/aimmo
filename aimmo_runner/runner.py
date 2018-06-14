@@ -5,6 +5,7 @@ import sys
 import time
 from django.conf import settings
 from shell_api import log, run_command, run_command_async
+
 sys.path.append("/home/travis/build/ocadotechnology/aimmo")
 
 try:
@@ -32,7 +33,7 @@ def create_superuser_if_missing(username, password):
                                       password=password)
 
 
-def run_something(use_minikube, server_wait=True, capture_output=False, test_env=False):
+def run(use_minikube, server_wait=True, capture_output=False, test_env=False):
     logging.basicConfig()
     if test_env:
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "test_settings")
@@ -64,22 +65,22 @@ def run_something(use_minikube, server_wait=True, capture_output=False, test_env
         os.environ['AIMMO_MODE'] = 'minikube'
     else:
         time.sleep(2)
-        game_testing = run_command_async(['python', _SERVICE_PY, '127.0.0.1', '5000'], capture_output=capture_output)
-        PROCESSES.append(game_testing)
+        game = run_command_async(['python', _SERVICE_PY, '127.0.0.1', '5000'], capture_output=capture_output)
+        PROCESSES.append(game)
         os.environ['AIMMO_MODE'] = 'threads'
 
     os.environ['NODE_ENV'] = 'development' if settings.DEBUG else 'production'
-    server_testing = run_command_async(['python', _MANAGE_PY, 'runserver'] + server_args, capture_output=capture_output)
+    server = run_command_async(['python', _MANAGE_PY, 'runserver'] + server_args, capture_output=capture_output)
     frontend_bundler = run_command_async(['node', _FRONTEND_BUNDLER_JS], capture_output=capture_output)
-    PROCESSES.append(server_testing)
+    PROCESSES.append(server)
     PROCESSES.append(frontend_bundler)
 
     if server_wait is True:
         try:
-            game_testing.wait()
+            game.wait()
         except NameError:
             pass
 
-        server_testing.wait()
+        server.wait()
 
     return PROCESSES

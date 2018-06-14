@@ -21,9 +21,6 @@ class TestViews(TestCase):
         cls.user = User.objects.create_user('test', 'test@example.com', 'password')
         cls.user.is_staff = True
         cls.user.save()
-        #profile = UserProfile.objects.create(user=cls.user)
-        # profile.preview_user = True
-        # profile.save()
         cls.game = models.Game(id=1, name='test')
         cls.game.save()
 

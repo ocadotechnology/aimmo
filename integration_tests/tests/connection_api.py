@@ -3,6 +3,7 @@ import requests
 import os
 import logging
 
+
 logging.basicConfig(level=logging.WARNING)
 
 
@@ -86,7 +87,9 @@ def is_server_healthy(url):
     :param url: http URL for the address to poll.
     :return: boolean value to indicate result.
     """
+
     attempts = 0
+
     logging.debug("Checking if the server is healthy...")
     while attempts <= 45:
         try:
@@ -98,7 +101,7 @@ def is_server_healthy(url):
 
         attempts += 1
         time.sleep(1)
-
+    print "Is server healthy failed"
     return False
 
 

@@ -23,7 +23,6 @@ def get_aimmo_preview_user_decorator():
 def get_users_for_new_game_function(request):
     if USERS_FOR_NEW_AIMMO_GAME:
         func = import_string(USERS_FOR_NEW_AIMMO_GAME)
-        LOGGER.info('Function found')
         return func(request)
     else:
         return User.objects.all()
