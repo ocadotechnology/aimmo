@@ -5,7 +5,7 @@ DATABASES = {
         'NAME': os.path.join(os.path.abspath(os.path.dirname(__file__)), 'db.sqlite3'),
     },
 }
-print "SETUP DB"
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

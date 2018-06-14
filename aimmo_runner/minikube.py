@@ -77,10 +77,8 @@ def start_cluster(minikube):
     try:
         status = run_command([minikube, 'status'], True)
         if 'minikube: Running' in status:
-            print ("INSIDE IF CASE, TRY")
             print('Cluster already running')
         else:
-            print ("INSIDE ELSE CASE, TRY")
             run_command([minikube, 'start', '--memory=2048', '--cpus=2'])
     except:
         pass

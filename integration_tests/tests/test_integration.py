@@ -40,17 +40,12 @@ class TestIntegration(unittest.TestCase):
         
         Server gets killed at the end of the test.
         """
-        import django
-        django.setup()
-        from django.test.utils import setup_test_environment
-        setup_test_environment()
         url_string = 'aimmo/login'
         delete_old_database()
 
         os.chdir(runner.ROOT_DIR_LOCATION)
         self.processes = runner.run_something(use_minikube=False, server_wait=False, capture_output=True, test_env=True)
         client = Client()
-        print reverse(url_string)
         response = client.get(reverse(url_string))
         self.assertEquals(response.status_code, 200)
         csrf_token = response.context['csrf_token']
