@@ -66,7 +66,6 @@ def list_games(request):
 
 
 def get_game(request, id):
-    # TODO: consider removing request? check urls to see if its used
     game = get_object_or_404(Game, id=id)
     response = {
         'main': {
