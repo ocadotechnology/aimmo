@@ -60,7 +60,6 @@ class KubernetesBaseSetup():
     def create_docker_client(self):
         pass
 
-
     def build_docker_images(self):
         """
         Finds environment settings and builds docker images for each directory.

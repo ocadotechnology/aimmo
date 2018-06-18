@@ -13,6 +13,7 @@ from aimmo_runner.kubernetes_setup import KubernetesBaseSetup
 
 MINIKUBE_EXECUTABLE = "minikube"
 
+
 class MinikubeRunner(KubernetesBaseSetup):
 
     def restart_ingress_addon(self):
@@ -26,7 +27,6 @@ class MinikubeRunner(KubernetesBaseSetup):
             pass
         run_command([MINIKUBE_EXECUTABLE, 'addons', 'enable', 'ingress'])
 
-
     def start_cluster(self):
         """
         Starts the cluster unless it has been already started by the user.
@@ -37,7 +37,6 @@ class MinikubeRunner(KubernetesBaseSetup):
             print('Cluster already running')
         else:
             run_command([MINIKUBE_EXECUTABLE, 'start', '--memory=2048', '--cpus=2'])
-
 
     def create_docker_client(self):
         """
@@ -60,7 +59,6 @@ class MinikubeRunner(KubernetesBaseSetup):
                 version='auto'
             )
 
-
     def vm_none_enabled(self, raw_env_settings):
         """
         Check if the VM driver is enabled or not. This is important to see where
@@ -69,7 +67,6 @@ class MinikubeRunner(KubernetesBaseSetup):
         :return: Boolean value indicating if enabled or not.
         """
         return False if 'driver does not support' in raw_env_settings else True
-
 
     def load_kube_config(self):
         kubernetes.config.load_kube_config(context='minikube')

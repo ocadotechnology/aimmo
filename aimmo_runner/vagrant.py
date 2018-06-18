@@ -11,6 +11,7 @@ import platform
 from shell_api import (run_command, create_test_bin, BASE_DIR)
 from aimmo_runner.kubernetes_setup import KubernetesBaseSetup
 
+
 class VagrantRunner(KubernetesBaseSetup):
     def create_docker_client(self):
         """
@@ -21,7 +22,6 @@ class VagrantRunner(KubernetesBaseSetup):
         return docker.from_env(
             version='auto'
         )
-
 
     def load_kube_config(self):
         kubernetes.config.load_kube_config(config_file='/vagrant/kubeconfig_aimmo.yml', context='service-account-context')
