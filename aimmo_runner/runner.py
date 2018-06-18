@@ -33,7 +33,32 @@ def create_superuser_if_missing(username, password):
                                       password=password)
 
 
-def run(use_minikube, server_wait=True, capture_output=False, test_env=False):
+def install_kubernetes_dependencies(capture_output):
+    parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.append(os.path.join(parent_dir, 'aimmo_runner'))
+
+    os.chdir(ROOT_DIR_LOCATION)
+    run_command(['pip', 'install', '-r', os.path.join(ROOT_DIR_LOCATION, 'minikube_requirements.txt')],
+                capture_output=capture_output)
+
+    os.environ['AIMMO_MODE'] = 'minikube'
+
+
+def setup_minikube(capture_output):
+    install_kubernetes_dependencies(capture_output)
+    # Import minikube here, so we can install the deps first
+    from aimmo_runner.minikube import MinikubeRunner
+    MinikubeRunner().start()
+
+
+def setup_vagrant(capture_output):
+    install_kubernetes_dependencies(capture_output)
+    # Import vagrant here, so we can install the deps first
+    from aimmo_runner.vagrant import VagrantRunner
+    VagrantRunner().start()
+
+
+def run(use_minikube, use_vagrant=False, server_wait=True, capture_output=False, test_env=False):
     logging.basicConfig()
     if test_env:
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "test_settings")
@@ -48,21 +73,10 @@ def run(use_minikube, server_wait=True, capture_output=False, test_env=False):
 
     create_superuser_if_missing(username='admin', password='admin')
 
-    server_args = []
     if use_minikube:
-        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        sys.path.append(os.path.join(parent_dir, 'aimmo_runner'))
-
-        os.chdir(ROOT_DIR_LOCATION)
-        run_command(['pip', 'install', '-r', os.path.join(ROOT_DIR_LOCATION, 'minikube_requirements.txt')],
-                    capture_output=capture_output)
-
-        # Import minikube here, so we can install the deps first
-        from aimmo_runner import minikube
-        minikube.start()
-
-        server_args.append('0.0.0.0:8000')
-        os.environ['AIMMO_MODE'] = 'minikube'
+        setup_minikube(capture_output)
+    elif use_vagrant:
+        setup_vagrant(capture_output)
     else:
         time.sleep(2)
         game = run_command_async(['python', _SERVICE_PY, '127.0.0.1', '5000'], capture_output=capture_output)
@@ -70,7 +84,10 @@ def run(use_minikube, server_wait=True, capture_output=False, test_env=False):
         os.environ['AIMMO_MODE'] = 'threads'
 
     os.environ['NODE_ENV'] = 'development' if settings.DEBUG else 'production'
-    server = run_command_async(['python', _MANAGE_PY, 'runserver'] + server_args, capture_output=capture_output)
+    if use_vagrant:
+        server = run_command_async(['python', _MANAGE_PY, 'runserver', '0.0.0.0:8000'], capture_output=capture_output)
+    else:
+        server = run_command_async(['python', _MANAGE_PY, 'runserver'], capture_output=capture_output)
     frontend_bundler = run_command_async(['node', _FRONTEND_BUNDLER_JS], capture_output=capture_output)
     PROCESSES.append(server)
     PROCESSES.append(frontend_bundler)
