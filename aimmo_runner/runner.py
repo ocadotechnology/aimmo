@@ -32,7 +32,7 @@ def create_superuser_if_missing(username, password):
                                       password=password)
 
 
-def install_kubernetes_dependencies():
+def install_kubernetes_dependencies(capture_output):
     parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     sys.path.append(os.path.join(parent_dir, 'aimmo_runner'))
 
@@ -42,14 +42,14 @@ def install_kubernetes_dependencies():
 
     os.environ['AIMMO_MODE'] = 'minikube'
 
-def setup_minikube():
-    install_kubernetes_dependencies()
+def setup_minikube(capture_output):
+    install_kubernetes_dependencies(capture_output)
     # Import minikube here, so we can install the deps first
     from aimmo_runner.minikube import MinikubeRunner
     MinikubeRunner().start()
 
-def setup_vagrant():
-    install_kubernetes_dependencies()
+def setup_vagrant(capture_output):
+    install_kubernetes_dependencies(capture_output)
     # Import vagrant here, so we can install the deps first
     from aimmo_runner.vagrant import VagrantRunner
     VagrantRunner().start()
@@ -67,9 +67,9 @@ def run(use_minikube, use_vagrant=False, server_wait=True, capture_output=False)
     create_superuser_if_missing(username='admin', password='admin')
 
     if use_minikube:
-        setup_minikube()
+        setup_minikube(capture_output)
     elif use_vagrant:
-        setup_vagrant()
+        setup_vagrant(capture_output)
     else:
         time.sleep(2)
         game = run_command_async(['python', _SERVICE_PY, '127.0.0.1', '5000'], capture_output=capture_output)
