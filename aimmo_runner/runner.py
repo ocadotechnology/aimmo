@@ -32,6 +32,29 @@ def create_superuser_if_missing(username, password):
                                       password=password)
 
 
+def install_kubernetes_dependencies():
+    parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.append(os.path.join(parent_dir, 'aimmo_runner'))
+
+    os.chdir(ROOT_DIR_LOCATION)
+    run_command(['pip', 'install', '-r', os.path.join(ROOT_DIR_LOCATION, 'minikube_requirements.txt')],
+                capture_output=capture_output)
+
+    os.environ['AIMMO_MODE'] = 'minikube'
+
+def setup_minikube():
+    install_kubernetes_dependencies()
+    # Import minikube here, so we can install the deps first
+    from aimmo_runner.minikube import MinikubeRunner
+    MinikubeRunner().start()
+
+def setup_vagrant():
+    install_kubernetes_dependencies()
+    # Import vagrant here, so we can install the deps first
+    from aimmo_runner.vagrant import VagrantRunner
+    VagrantRunner().start()
+
+
 def run(use_minikube, use_vagrant=False, server_wait=True, capture_output=False):
     logging.basicConfig()
     sys.path.append(os.path.join(ROOT_DIR_LOCATION, 'example_project'))
@@ -43,24 +66,10 @@ def run(use_minikube, use_vagrant=False, server_wait=True, capture_output=False)
 
     create_superuser_if_missing(username='admin', password='admin')
 
-    if use_minikube or use_vagrant:
-        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        sys.path.append(os.path.join(parent_dir, 'aimmo_runner'))
-
-        os.chdir(ROOT_DIR_LOCATION)
-        run_command(['pip', 'install', '-r', os.path.join(ROOT_DIR_LOCATION, 'minikube_requirements.txt')],
-                    capture_output=capture_output)
-
-        os.environ['AIMMO_MODE'] = 'minikube'
-
     if use_minikube:
-        # Import minikube here, so we can install the deps first
-        from aimmo_runner.minikube import MinikubeRunner
-        MinikubeRunner().start()
+        setup_minikube()
     elif use_vagrant:
-        # Import vagrant here, so we can install the deps first
-        from aimmo_runner.vagrant import VagrantRunner
-        VagrantRunner().start()
+        setup_vagrant()
     else:
         time.sleep(2)
         game = run_command_async(['python', _SERVICE_PY, '127.0.0.1', '5000'], capture_output=capture_output)
