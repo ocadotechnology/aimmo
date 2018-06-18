@@ -32,7 +32,7 @@ def create_superuser_if_missing(username, password):
                                       password=password)
 
 
-def run(use_minikube, server_wait=True, capture_output=False):
+def run(use_minikube, use_vagrant=False, server_wait=True, capture_output=False):
     logging.basicConfig()
     sys.path.append(os.path.join(ROOT_DIR_LOCATION, 'example_project'))
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
@@ -43,8 +43,7 @@ def run(use_minikube, server_wait=True, capture_output=False):
 
     create_superuser_if_missing(username='admin', password='admin')
 
-    server_args = []
-    if use_minikube:
+    if use_minikube or use_vagrant:
         parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         sys.path.append(os.path.join(parent_dir, 'aimmo_runner'))
 
@@ -52,12 +51,16 @@ def run(use_minikube, server_wait=True, capture_output=False):
         run_command(['pip', 'install', '-r', os.path.join(ROOT_DIR_LOCATION, 'minikube_requirements.txt')],
                     capture_output=capture_output)
 
-        # Import minikube here, so we can install the deps first
-        from aimmo_runner import minikube
-        minikube.start()
-
-        server_args.append('0.0.0.0:8000')
         os.environ['AIMMO_MODE'] = 'minikube'
+
+    if use_minikube:
+        # Import minikube here, so we can install the deps first
+        from aimmo_runner.minikube import MinikubeRunner
+        MinikubeRunner().start()
+    elif use_vagrant:
+        # Import vagrant here, so we can install the deps first
+        from aimmo_runner.vagrant import VagrantRunner
+        VagrantRunner().start()
     else:
         time.sleep(2)
         game = run_command_async(['python', _SERVICE_PY, '127.0.0.1', '5000'], capture_output=capture_output)
@@ -65,7 +68,10 @@ def run(use_minikube, server_wait=True, capture_output=False):
         os.environ['AIMMO_MODE'] = 'threads'
 
     os.environ['NODE_ENV'] = 'development' if settings.DEBUG else 'production'
-    server = run_command_async(['python', _MANAGE_PY, 'runserver'] + server_args, capture_output=capture_output)
+    if use_vagrant:
+        server = run_command_async(['python', _MANAGE_PY, 'runserver', '0.0.0.0:8000'], capture_output=capture_output)
+    else:
+        server = run_command_async(['python', _MANAGE_PY, 'runserver'], capture_output=capture_output)
     frontend_bundler = run_command_async(['node', _FRONTEND_BUNDLER_JS], capture_output=capture_output)
     PROCESSES.append(server)
     PROCESSES.append(frontend_bundler)
