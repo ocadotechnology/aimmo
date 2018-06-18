@@ -8,7 +8,8 @@ from aimmo_runner import runner
 
 if __name__ == '__main__':
     try:
-        runner.run('--kube' in sys.argv or '-k' in sys.argv)
+        runner.run(use_minikube='--kube' in sys.argv or '-k' in sys.argv,
+                    use_vagrant='--vagrant' in sys.argv or '-v' in sys.argv)
     except Exception as err:
         traceback.print_exc()
         raise
