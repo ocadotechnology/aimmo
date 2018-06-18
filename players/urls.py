@@ -8,7 +8,7 @@ from players import views
 from app_settings import preview_user_required
 
 urlpatterns = [
-    url(r'^$', login_required(preview_user(TemplateView.as_view(template_name='players/home.html'))), name='aimmo/home'),
+    url(r'^$', login_required(preview_user_required(TemplateView.as_view(template_name='players/home.html'))), name='aimmo/home'),
 
     url(r'^accounts/login/$', auth_views.login, name='aimmo/login'),
     url(r'^accounts/logout/$', auth_views.logout, {'next_page' : 'aimmo/logout_success'}, name='aimmo/logout'),
