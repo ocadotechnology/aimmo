@@ -25,6 +25,6 @@ def get_users_for_new_game(request):
     return User.objects.all()
 
 
-preview_user = get_aimmo_preview_user_decorator()
+preview_user_required = get_aimmo_preview_user_decorator()
 
 MAX_LEVEL = 1
