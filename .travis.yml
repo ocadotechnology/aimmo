@@ -26,6 +26,8 @@ jobs:
           - minikube update-context
           # Wait for Kubernetes to be up and ready.
           - JSONPATH='{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}{@.type}={@.status};{end}{end}'; until kubectl get nodes -o jsonpath="$JSONPATH" 2>&1 | grep -q "Ready=True"; do sleep 1; done
+        before_install:
+          - gem install sass --version 3.3.4
         install:
           - pip install .
           - pip install coveralls
@@ -39,8 +41,18 @@ jobs:
         script:
           - yarn test
       - stage: deploy
-        script: skip
+        env:
+          - NODE_ENV=production
+        install:
+          - pushd game_frontend
+          - yarn
+          - popd
+        script:
+          - pushd game_frontend
+          - node djangoBundler.js
+          - popd
         deploy:
+          skip_cleanup: true
           provider: pypi
           user: ocadotechnology
           password:
