@@ -1,3 +1,4 @@
+import django
 import logging
 import os
 import sys
@@ -42,11 +43,13 @@ def install_kubernetes_dependencies(capture_output):
 
     os.environ['AIMMO_MODE'] = 'minikube'
 
+
 def setup_minikube(capture_output):
     install_kubernetes_dependencies(capture_output)
     # Import minikube here, so we can install the deps first
     from aimmo_runner.minikube import MinikubeRunner
     MinikubeRunner().start()
+
 
 def setup_vagrant(capture_output):
     install_kubernetes_dependencies(capture_output)
@@ -55,14 +58,18 @@ def setup_vagrant(capture_output):
     VagrantRunner().start()
 
 
-def run(use_minikube, use_vagrant=False, server_wait=True, capture_output=False):
+def run(use_minikube, use_vagrant=False, server_wait=True, capture_output=False, test_env=False):
     logging.basicConfig()
-    sys.path.append(os.path.join(ROOT_DIR_LOCATION, 'example_project'))
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
+    if test_env:
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "test_settings")
+    else:
+        sys.path.append(os.path.join(ROOT_DIR_LOCATION, 'example_project'))
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
 
     run_command(['pip', 'install', '-e', ROOT_DIR_LOCATION], capture_output=capture_output)
-    run_command(['python', _MANAGE_PY, 'migrate', '--noinput'], capture_output=capture_output)
-    run_command(['python', _MANAGE_PY, 'collectstatic', '--noinput'], capture_output=capture_output)
+    if not test_env:
+        run_command(['python', _MANAGE_PY, 'migrate', '--noinput'], capture_output=capture_output)
+        run_command(['python', _MANAGE_PY, 'collectstatic', '--noinput'], capture_output=capture_output)
 
     create_superuser_if_missing(username='admin', password='admin')
 

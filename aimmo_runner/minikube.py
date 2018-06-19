@@ -5,8 +5,6 @@ import docker
 import kubernetes
 import os
 import re
-import socket
-import yaml
 import platform
 from shell_api import (run_command, create_test_bin, BASE_DIR)
 from aimmo_runner.kubernetes_setup import KubernetesBaseSetup
