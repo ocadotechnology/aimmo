@@ -1,6 +1,6 @@
 import post from './post'
 import get from './get'
-import * as unity from './unity'
+import unity from './unity'
 
 export default { 
     get, 
