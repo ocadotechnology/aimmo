@@ -61,5 +61,9 @@ describe('<GameView />', () => {
     wrapper.instance().sendAllConnect()
 
     expect(setGameURL.mock.calls.length).toBe(1)
+    expect(setGamePath.mock.calls.length).toBe(1)
+    expect(setGamePort.mock.calls.length).toBe(1)
+    expect(setGameSSL.mock.calls.length).toBe(1)
+    expect(establishGameConnection.mock.calls.length).toBe(1)
   })
 })

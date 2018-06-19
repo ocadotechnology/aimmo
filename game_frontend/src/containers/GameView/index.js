@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 import { actions } from 'features/Game'
 
 const GameViewLayout = styled.div`
-  background-color: purple
   grid-area: game-view
 `
 
