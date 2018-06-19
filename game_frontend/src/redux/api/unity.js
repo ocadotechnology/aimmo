@@ -70,7 +70,7 @@ const establishGameConnection = action$ => {
     )
 }
 
-export { 
+export default { 
     emitUnityEvent, 
     setGameURL,
     setGamePath,

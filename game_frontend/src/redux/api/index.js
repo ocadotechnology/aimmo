@@ -1,21 +1,14 @@
 import post from './post'
 import get from './get'
-import { 
-    emitUnityEvent, 
-    setGameURL, 
-    setGamePath, 
-    setGamePort, 
-    setGameSSL, 
-    establishGameConnection 
-} from './unity'
+import * as unity from './unity'
 
 export default { 
     get, 
     post, 
-    emitUnityEvent, 
-    setGameURL,
-    setGamePath,
-    setGamePort,
-    setGameSSL,
-    establishGameConnection
+    emitUnityEvent: unity.emitUnityEvent, 
+    setGameURL: unity.setGameURL,
+    setGamePath: unity.setGamePath,
+    setGamePort: unity.setGamePort,
+    setGameSSL: unity.setGameSSL,
+    establishGameConnection: unity.establishGameConnection
 }
