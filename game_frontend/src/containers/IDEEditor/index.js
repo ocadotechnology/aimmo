@@ -10,7 +10,7 @@ import { actions } from 'features/Editor'
 import PropTypes from 'prop-types'
 import { withTheme } from '@material-ui/core/styles'
 
-const IDEEditorLayout = styled.div`
+export const IDEEditorLayout = styled.div`
   background-color: #2F4F4F
   grid-area: ide-editor
 `

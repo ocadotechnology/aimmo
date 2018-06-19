@@ -49,3 +49,14 @@ exports[`<IDEEditor /> matches snapshot 1`] = `
   />
 </styled.div>
 `;
+
+exports[`<IDEEditorLayout /> renders correctly 1`] = `
+.c0 {
+  background-color: #2F4F4F;
+  grid-area: ide-editor;
+}
+
+<div
+  className="c0"
+/>
+`;

@@ -9,3 +9,14 @@ exports[`<IDEMenu /> renders correctly 1`] = `
   </button>
 </styled.nav>
 `;
+
+exports[`<IDEMenuLayout /> renders correctly 1`] = `
+.c0 {
+  background-color: #303030;
+  grid-area: ide-menu;
+}
+
+<nav
+  className="c0"
+/>
+`;
