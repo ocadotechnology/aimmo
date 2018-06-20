@@ -23,17 +23,8 @@ const getConnectionParamsEpic = (action$, store, { api }) => {
 const setGameURLEpic = (action$, store, { api }) => {
     return action$.pipe(
         ofType(types.SET_GAME_URL),
-        mergeMap(action =>
-        Observable.of(action).pipe(
-            api.setGameURL,
-            map(event => ({ type: types.SET_GAME_URL_SUCCESS })),
-            catchError(error => Observable.of({
-                type: types.SET_GAME_URL_FAIL,
-                error: true
-            })
-            )
-        )
-        )
+        map(action => actions.unityEvent("SetGameURL", action.payload.gameURL)), 
+        api.sendUnityEvent
     )
 }
 
@@ -42,7 +33,7 @@ const setGamePathEpic = (action$, store, { api }) => {
         ofType(types.SET_GAME_PATH),
         mergeMap(action =>
         Observable.of(action).pipe(
-            api.setGamePath, 
+            map(action => api.setGamePath("SetGamePath", action.payload.gamePath)), 
             map(event => ({ type: types.SET_GAME_PATH_SUCCESS })),
             catchError(error => Observable.of({
                 type: types.SET_GAME_PATH_FAIL,
@@ -59,7 +50,7 @@ const setGamePortEpic = (action$, store, { api }) => {
         ofType(types.SET_GAME_PORT),
         mergeMap(action =>
         Observable.of(action).pipe(
-            api.setGamePort, 
+            map(action => api.setGamePort("SetGamePort", action.payload.gamePort)), 
             map(event => ({ type: types.SET_GAME_PORT_SUCCESS })),
             catchError(error => Observable.of({
                 type: types.SET_GAME_PORT_FAIL,

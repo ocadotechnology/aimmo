@@ -5,7 +5,8 @@ import unity from './unity'
 export default { 
     get, 
     post, 
-    emitUnityEvent: unity.emitUnityEvent, 
+    emitUnityEvent: unity.emitUnityEvent,
+    sendUnityEvent: unity.sendUnityEvent,
     setGameURL: unity.setGameURL,
     setGamePath: unity.setGamePath,
     setGamePort: unity.setGamePort,

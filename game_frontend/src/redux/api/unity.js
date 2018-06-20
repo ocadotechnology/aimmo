@@ -1,23 +1,36 @@
 import { UnityEvent } from "react-unity-webgl";
+import { Observable } from 'rxjs'
+import { map, mergeMap, catchError, tap } from 'rxjs/operators'
+import { ofType } from 'redux-observable'
+import types from '../features/Game/types'
+import actions from '../features/Game/types'
 
-const emitUnityEvent = (unityEvent, data) => {
-    if(unityEvent.canEmit()) {
-        unityEvent.emit(data)
-    }
-    else {
-        throw "Cannot emit the function " + unityEvent + "!"
-    }
+const sendUnityEvent = action$ => {
+    return action$.mergeMap(action =>
+        Observable.of(action).pipe(
+            emitUnityEvent,
+            map(event => ({ type: types.SET_GAME_URL_SUCCESS })),
+            catchError(error => Observable.of({
+                type: types.SET_GAME_URL_FAIL,
+                error: true
+            })
+            )
+        )
+        )
 }
 
 
-const setGameURL = action$ => {
+const emitUnityEvent = action$ => {
     return action$.map(
         action => {
-            let unityEvent = new UnityEvent("World Controller", "SetGameURL")
+            let unityEvent = new UnityEvent("World Controller", action.payload.unityEvent)
 
-            emitUnityEvent(unityEvent, action.payload.gameURL)
-            
-            return unityEvent
+            if(unityEvent.canEmit()) {
+                unityEvent.emit(action.payload.unityData)
+            }
+            else {
+                throw "Cannot emit the function!" 
+            }
         }
     )
 }
@@ -71,8 +84,8 @@ const establishGameConnection = action$ => {
 }
 
 export default { 
-    emitUnityEvent, 
-    setGameURL,
+    emitUnityEvent,
+    sendUnityEvent,
     setGamePath,
     setGamePort,
     setGameSSL,

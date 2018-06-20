@@ -7,7 +7,7 @@ const getConnectionParamsRequest = gameID => (
         gameID
       }
     }
-  )
+)
 
 const getConnectionParamsSuccess = connectionParams => (
   {
@@ -24,6 +24,18 @@ const setGameURL = gameURL => (
     payload: {
       gameURL
     }
+  }
+)
+
+const setGameURLSuccess = () => (
+  {
+    type: types.SET_GAME_URL_SUCCESS
+  }
+)
+
+const setGameURLFail = () => (
+  {
+    type: types.SET_GAME_URL_FAIL
   }
 )
 
@@ -60,12 +72,26 @@ const establishGameConnection = () => (
   }
 )
 
+const unityEvent = (unityEvent, unityData) => (
+  {
+    type: types.UNITY_EVENT,
+    payload: {
+      unityEvent,
+      unityData
+    }
+  }
+)
+
+
+
 export default {
   getConnectionParamsRequest,
   getConnectionParamsSuccess,
   setGameURL,
+  setGameURLSuccess,
   setGamePath,
   setGamePort,
   setGameSSL,
-  establishGameConnection
+  establishGameConnection,
+  unityEvent
 }
