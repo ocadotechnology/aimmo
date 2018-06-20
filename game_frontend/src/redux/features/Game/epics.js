@@ -23,7 +23,12 @@ const getConnectionParamsEpic = (action$, store, { api }) => {
 const setGameURLEpic = (action$, store, { api }) => {
     return action$.pipe(
         ofType(types.SET_GAME_URL),
-        map(action => actions.unityEvent("SetGameURL", action.payload.gameURL)), 
+        map(action => actions.unityEvent(
+            "SetGameURL", 
+            action.payload.gameURL,
+            actions.setGameURLSuccess(),
+            actions.setGameURLFail()
+        )), 
         api.sendUnityEvent
     )
 }

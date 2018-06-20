@@ -72,12 +72,14 @@ const establishGameConnection = () => (
   }
 )
 
-const unityEvent = (unityEvent, unityData) => (
+const unityEvent = (unityEvent, unityData, successAction, failAction) => (
   {
     type: types.UNITY_EVENT,
     payload: {
       unityEvent,
-      unityData
+      unityData,
+      successAction,
+      failAction
     }
   }
 )
@@ -89,6 +91,7 @@ export default {
   getConnectionParamsSuccess,
   setGameURL,
   setGameURLSuccess,
+  setGameURLFail,
   setGamePath,
   setGamePort,
   setGameSSL,

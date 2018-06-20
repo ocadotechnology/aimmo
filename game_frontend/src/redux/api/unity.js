@@ -9,12 +9,8 @@ const sendUnityEvent = action$ => {
     return action$.mergeMap(action =>
         Observable.of(action).pipe(
             emitUnityEvent,
-            map(event => ({ type: types.SET_GAME_URL_SUCCESS })),
-            catchError(error => Observable.of({
-                type: types.SET_GAME_URL_FAIL,
-                error: true
-            })
-            )
+            map(event => (action.payload.successAction)),
+            catchError(error => Observable.of(action.payload.failAction))
         )
         )
 }
