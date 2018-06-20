@@ -10,7 +10,7 @@
   "devDependencies": {
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
-    "enzyme-to-json": "^3.3.3",
+    "enzyme-to-json": "^3.3.4",
     "eslint": "^4.18.0",
     "eslint-config-standard": "^11.0.0",
     "eslint-config-standard-react": "^5.0.0",
@@ -40,7 +40,8 @@
     "redux-observable": "^0.18.0",
     "rxjs": "^5.5.10",
     "shelljs": "^0.8.1",
-    "styled-components": "^3.2.5"
+    "styled-components": "^3.2.5",
+    "webfontloader": "^1.6.28"
   },
   "scripts": {
     "test": "jest"

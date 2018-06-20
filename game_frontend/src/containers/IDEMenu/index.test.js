@@ -1,13 +1,12 @@
 /* eslint-env jest */
 import React from 'react'
-import { IDEMenu } from 'containers/IDEMenu'
-import renderer from 'react-test-renderer'
+import { IDEMenu, IDEMenuLayout } from 'containers/IDEMenu'
 import { shallow } from 'enzyme'
-import withTheme from 'testHelpers/withTheme'
+import createShallowWithTheme from 'testHelpers/createShallow'
 
 describe('<IDEMenu />', () => {
   it('renders correctly', () => {
-    const tree = renderer.create(withTheme(<IDEMenu />)).toJSON()
+    const tree = createShallowWithTheme(<IDEMenu />)
     expect(tree).toMatchSnapshot()
   })
 
@@ -21,5 +20,12 @@ describe('<IDEMenu />', () => {
 
     component.find('#post-code-button').simulate('click')
     expect(postCode.mock.calls.length).toBe(1)
+  })
+})
+
+describe('<IDEMenuLayout />', () => {
+  it('renders correctly', () => {
+    const tree = createShallowWithTheme(<IDEMenuLayout />)
+    expect(tree).toMatchSnapshot()
   })
 })

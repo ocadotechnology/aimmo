@@ -3,7 +3,7 @@
 exports[`<IDE /> renders correctly 1`] = `
 <React.Fragment>
   <Connect(IDEMenu) />
-  <Connect(IDEEditor) />
+  <Connect(WithTheme(IDEEditor)) />
   <styled.div />
 </React.Fragment>
 `;

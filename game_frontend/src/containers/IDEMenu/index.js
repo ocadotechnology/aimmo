@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { actions } from 'features/Editor'
 
-const IDEMenuLayout = styled.nav`
+export const IDEMenuLayout = styled.nav`
   background-color: ${props => props.theme.palette.background.default}
   grid-area: ide-menu
 `

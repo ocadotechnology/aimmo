@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Code /> renders correctly 1`] = `
+.c0 {
+  font-family: 'Source Code Pro',monospace;
+  color: #FFFFFF;
+}
+
+<p
+  className="c0"
+>
+  Code
+</p>
+`;
