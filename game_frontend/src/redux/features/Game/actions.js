@@ -48,12 +48,36 @@ const setGamePath = gamePath => (
   }
 )
 
+const setGamePathSuccess = () => (
+  {
+    type: types.SET_GAME_PATH_SUCCESS
+  }
+)
+
+const setGamePathFail = () => (
+  {
+    type: types.SET_GAME_PATH_FAIL
+  }
+)
+
 const setGamePort = gamePort => (
   {
     type: types.SET_GAME_PORT,
     payload: {
       gamePort
     }
+  }
+)
+
+const setGamePortSuccess = () => (
+  {
+    type: types.SET_GAME_PORT_SUCCESS
+  }
+)
+
+const setGamePortFail = () => (
+  {
+    type: types.SET_GAME_PORT_FAIL
   }
 )
 
@@ -66,9 +90,33 @@ const setGameSSL = gameSSLFlag => (
   }
 )
 
+const setGameSSLSuccess = () => (
+  {
+    type: types.SET_GAME_SSL_SUCCESS
+  }
+)
+
+const setGameSSLFail = () => (
+  {
+    type: types.SET_GAME_SSL_FAIL
+  }
+)
+
 const establishGameConnection = () => (
   {
     type: types.ESTABLISH_GAME_CONNECTION
+  }
+)
+
+const establishGameConnectionSuccess = () => (
+  {
+    type: types.ESTABLISH_GAME_CONNECTION_SUCCESS
+  }
+)
+
+const establishGameConnectionFail = () => (
+  {
+    type: types.ESTABLISH_GAME_CONNECTION_FAIL
   }
 )
 
@@ -93,8 +141,16 @@ export default {
   setGameURLSuccess,
   setGameURLFail,
   setGamePath,
+  setGamePathSuccess,
+  setGamePathFail,
   setGamePort,
+  setGamePortSuccess,
+  setGamePortFail,
   setGameSSL,
+  setGameSSLSuccess,
+  setGameSSLFail,
   establishGameConnection,
+  establishGameConnectionSuccess,
+  establishGameConnectionFail,
   unityEvent
 }

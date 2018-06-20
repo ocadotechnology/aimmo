@@ -5,85 +5,29 @@ import { ofType } from 'redux-observable'
 import types from '../features/Game/types'
 import actions from '../features/Game/types'
 
-const sendUnityEvent = action$ => {
-    return action$.mergeMap(action =>
+const sendUnityEvent = action$ => 
+    action$.mergeMap(action =>
         Observable.of(action).pipe(
-            emitUnityEvent,
-            map(event => (action.payload.successAction)),
+            emitToUnity,
+            map(event => action.payload.successAction),
             catchError(error => Observable.of(action.payload.failAction))
         )
-        )
-}
+    )
 
 
-const emitUnityEvent = action$ => {
-    return action$.map(
+const emitToUnity = action$ => 
+    action$.map(
         action => {
             let unityEvent = new UnityEvent("World Controller", action.payload.unityEvent)
 
             if(unityEvent.canEmit()) {
                 unityEvent.emit(action.payload.unityData)
-            }
-            else {
+            } else {
                 throw "Cannot emit the function!" 
             }
         }
     )
-}
-
-const setGamePath = action$ => {
-    return action$.map(
-        action => {
-            let unityEvent = new UnityEvent("World Controller", "SetGamePath")
-
-            emitUnityEvent(unityEvent, action.payload.gamePath)
-            
-            return unityEvent
-        }
-    )
-}
-
-const setGamePort = action$ => {
-    return action$.map(
-        action => {
-            let unityEvent = new UnityEvent("World Controller", "SetGamePort")
-
-            emitUnityEvent(unityEvent, action.payload.gamePort)
-            
-            return unityEvent
-        }
-    )
-}
-
-const setGameSSL = action$ => {
-    return action$.map(
-        action => {
-            let unityEvent = new UnityEvent("World Controller", "SetSSL")
-
-            emitUnityEvent(unityEvent, action.payload.gameSSLFlag)
-            
-            return unityEvent
-        }
-    )
-}
-
-const establishGameConnection = action$ => {
-    return action$.map(
-        action => {
-            let unityEvent = new UnityEvent("World Controller", "EstablishConnection")
-
-            emitUnityEvent(unityEvent, "OK")
-            
-            return unityEvent
-        }
-    )
-}
 
 export default { 
-    emitUnityEvent,
-    sendUnityEvent,
-    setGamePath,
-    setGamePort,
-    setGameSSL,
-    establishGameConnection
+    sendUnityEvent
 }
