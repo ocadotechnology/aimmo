@@ -10,15 +10,15 @@ const GameViewLayout = styled.div`
 `
 
 export class GameView extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.props.getConnectionParams()
 
-    RegisterExternalListener("SendAllConnect", this.sendAllConnect.bind(this))
+    RegisterExternalListener('SendAllConnect', this.sendAllConnect.bind(this))
   }
 
-  sendAllConnect() {
+  sendAllConnect () {
     this.props.setGameURL(this.props.gameURL)
     this.props.setGamePath(this.props.gamePath)
     this.props.setGamePort(this.props.gamePort)
@@ -26,18 +26,18 @@ export class GameView extends Component {
     this.props.establishGameConnection()
   }
 
-  serialisedSSLFlag() {
-    let boolString = this.props.gameSSL.toString()
-    
+  serialisedSSLFlag () {
+    let boolString = this.props.sslFlag.toString()
+
     return boolString.charAt(0).toUpperCase() + boolString.slice(1)
   }
-  
-  render() {
+
+  render () {
     return (
       <GameViewLayout>
         <Unity
-          src="/static/unity/Build/unity.json"
-          loader="/static/unity/Build/UnityLoader.js"
+          src='/static/unity/Build/unity.json'
+          loader='/static/unity/Build/UnityLoader.js'
         />
       </GameViewLayout>
     )
@@ -49,7 +49,12 @@ GameView.propTypes = {
   gamePath: PropTypes.string,
   gamePort: PropTypes.number,
   sslFlag: PropTypes.bool,
-  getConnectionParams: PropTypes.func
+  getConnectionParams: PropTypes.func,
+  setGameURL: PropTypes.func,
+  setGamePath: PropTypes.func,
+  setGamePort: PropTypes.func,
+  setGameSSL: PropTypes.func,
+  establishGameConnection: PropTypes.func
 }
 
 const mapStateToProps = state => ({
