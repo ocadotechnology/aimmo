@@ -1,7 +1,7 @@
 import actions from './actions'
 import types from './types'
 import { Observable, Scheduler } from 'rxjs'
-import { map, mapTo, mergeMap, catchError, debounceTime, tap } from 'rxjs/operators'
+import { map, mergeMap, catchError, debounceTime } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
 const backgroundScheduler = Scheduler.async

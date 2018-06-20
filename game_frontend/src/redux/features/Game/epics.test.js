@@ -5,8 +5,6 @@ import epics from './epics'
 import actions from './actions'
 import types from './types'
 import configureStore from 'redux-mock-store'
-import { connect } from 'tls';
-import { SIGBREAK } from 'constants';
 
 const middlewares = []
 const mockStore = configureStore(middlewares)
@@ -26,7 +24,6 @@ describe('getConnectionParamsEpic', () => {
       id: 1
     }
 
-
     const marbles1 = '-a-'
     const marbles2 = '-b-'
     const values = {
@@ -39,18 +36,18 @@ describe('getConnectionParamsEpic', () => {
       testScheduler.createColdObservable(marbles1, values)
     )
     const mockGetJSON = () => {
-      return Observable.of({ id: connectionParams.id})
+      return Observable.of({id: connectionParams.id})
     }
 
     const mockAPI = { api: { get: mockGetJSON } }
 
     const actual = epics.getConnectionParamsEpic(source$, mockStore({
-        game: {
-            connectionParams:
+      game: {
+        connectionParams:
             {
-                id: 1
-            }  
-        }
+              id: 1
+            }
+      }
     }), mockAPI)
 
     testScheduler.expectObservable(actual).toBe(marbles2, values)
@@ -75,7 +72,7 @@ describe('setGameURLEpic', () => {
     )
 
     const mockSetGameURL = () => {
-      return Observable.of("mockedUnityEvent")
+      return Observable.of('mockedUnityEvent')
     }
 
     const mockAPI = { api: { setGameURL: mockSetGameURL } }
@@ -104,7 +101,7 @@ describe('setGamePath', () => {
     )
 
     const mockSetGamePath = () => {
-      return Observable.of("mockedUnityEvent")
+      return Observable.of('mockedUnityEvent')
     }
 
     const mockAPI = { api: { setGamePath: mockSetGamePath } }
@@ -133,7 +130,7 @@ describe('setGamePort', () => {
     )
 
     const mockSetGamePort = () => {
-      return Observable.of("mockedUnityEvent")
+      return Observable.of('mockedUnityEvent')
     }
 
     const mockAPI = { api: { setGamePort: mockSetGamePort } }
@@ -162,7 +159,7 @@ describe('setGameSSL', () => {
     )
 
     const mockSetGameSSL = () => {
-      return Observable.of("mockedUnityEvent")
+      return Observable.of('mockedUnityEvent')
     }
 
     const mockAPI = { api: { setGameSSL: mockSetGameSSL } }
@@ -176,7 +173,6 @@ describe('setGameSSL', () => {
 
 describe('establishGameConnection', () => {
   it('establishes the connection with the game', () => {
-
     const marbles1 = '-a-'
     const marbles2 = '-b-'
     const values = {
@@ -190,7 +186,7 @@ describe('establishGameConnection', () => {
     )
 
     const mockEstablishGameConnection = () => {
-      return Observable.of("mockedUnityEvent")
+      return Observable.of('mockedUnityEvent')
     }
 
     const mockAPI = { api: { establishGameConnection: mockEstablishGameConnection } }

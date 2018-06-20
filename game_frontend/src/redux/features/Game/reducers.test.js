@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import actions from './actions'
-import gameReducer from './reducers';
+import gameReducer from './reducers'
 
 describe('gameReducer', () => {
   it('should return the initial state', () => {
@@ -10,11 +10,11 @@ describe('gameReducer', () => {
   it('should handle GET_CONNECTION_PARAMS_SUCCESS', () => {
     const expectedState = {
       connectionParams: {
-          id: 1
+        id: 1
       },
-      initialState: "someValue"
+      initialState: 'someValue'
     }
     const action = actions.getConnectionParamsSuccess({ id: 1 })
-    expect(gameReducer({initialState: "someValue"}, action)).toEqual(expectedState)
+    expect(gameReducer({initialState: 'someValue'}, action)).toEqual(expectedState)
   })
 })

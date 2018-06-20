@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import React, { Component } from 'react'
-import Unity, { RegisterExternalListener, UnityEvent } from 'react-unity-webgl'
+import Unity, { RegisterExternalListener } from 'react-unity-webgl'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { actions } from 'features/Game'

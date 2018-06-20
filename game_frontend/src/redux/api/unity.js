@@ -1,9 +1,6 @@
-import { UnityEvent } from 'react-unity-webgl';
+import { UnityEvent } from 'react-unity-webgl'
 import { Observable } from 'rxjs'
-import { map, mergeMap, catchError, tap } from 'rxjs/operators'
-import { ofType } from 'redux-observable'
-import types from '../features/Game/types'
-import actions from '../features/Game/types'
+import { map, catchError } from 'rxjs/operators'
 
 const sendUnityEvent = action$ =>
   action$.mergeMap(action =>
@@ -22,7 +19,7 @@ const emitToUnity = action$ =>
       if (unityEvent.canEmit()) {
         unityEvent.emit(action.payload.unityData)
       } else {
-        throw 'Cannot emit the function!'
+        throw new Error('Cannot emit the function!')
       }
     }
   )
