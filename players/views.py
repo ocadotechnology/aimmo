@@ -34,11 +34,8 @@ def _create_response(status, message):
     return JsonResponse(response)
 
 
-<<<<<<< HEAD
-=======
 @login_required
 @preview_user_required
->>>>>>> master
 def code(request, id):
     if not request.user:
         return HttpResponseForbidden()
