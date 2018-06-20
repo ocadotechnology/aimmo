@@ -5,6 +5,8 @@ plugins:
     enabled: true
   eslint:
     enabled: true
+    config:
+      config: .eslintrc
   fixme:
     enabled: true
   pep8:
