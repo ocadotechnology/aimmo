@@ -86,3 +86,6 @@ players/templates/players/game_ide.html
 
 # Game Frontend
 node_modules
+
+# Vagrant
+.vagrant/**

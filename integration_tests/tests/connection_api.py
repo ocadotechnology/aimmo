@@ -101,7 +101,6 @@ def is_server_healthy(url):
 
         attempts += 1
         time.sleep(1)
-
     return False
 
 

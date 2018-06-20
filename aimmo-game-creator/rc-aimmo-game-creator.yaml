@@ -27,5 +27,5 @@ spec:
           value: latest
         - name: GAME_API_URL
           value: REPLACE_ME
-        - name: WORKER_MANAGER
+        - name: GAME_MANAGER
           value: kubernetes
