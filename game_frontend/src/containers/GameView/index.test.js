@@ -5,7 +5,6 @@ import { shallow } from 'enzyme/build/index'
 
 describe('<GameView />', () => {
   it('matches snapshot', () => {
-
     const props = {
       gameURL: 'test',
       gamePath: '/test',
@@ -24,18 +23,16 @@ describe('<GameView />', () => {
   })
 
   it('serialisedSSLFlag function returns correctly', () => {
-
     const props = {
       getConnectionParams: jest.fn(),
       gameSSL: false
     }
 
     const flagReturned = shallow(<GameView {...props} />).instance().serialisedSSLFlag()
-    expect(flagReturned).toBe("False")
+    expect(flagReturned).toBe('False')
   })
 
   it('sendAllConnect function calls all action dispatchers', () => {
-
     const setGameURL = jest.fn()
     const setGamePath = jest.fn()
     const setGamePort = jest.fn()
@@ -57,7 +54,6 @@ describe('<GameView />', () => {
 
     const wrapper = shallow(<GameView {...props} />)
 
-    // Make the function call
     wrapper.instance().sendAllConnect()
 
     expect(setGameURL.mock.calls.length).toBe(1)
