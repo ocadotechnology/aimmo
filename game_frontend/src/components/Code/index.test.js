@@ -1,11 +1,11 @@
 /* eslint-env jest */
 import React from 'react'
-import GameMenu from 'components/GameMenu'
+import Code from 'components/Code'
 import createShallowWithTheme from 'testHelpers/createShallow'
 
-describe('<GameMenu />', () => {
+describe('<Code />', () => {
   it('renders correctly', () => {
-    const tree = createShallowWithTheme(<GameMenu />)
+    const tree = createShallowWithTheme(<Code>Code</Code>)
     expect(tree).toMatchSnapshot()
   })
 })

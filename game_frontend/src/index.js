@@ -10,6 +10,14 @@ import theme from './theme'
 import GamePage from './components/GamePage'
 import configureStore from './redux/store'
 
+import WebFont from 'webfontloader'
+
+WebFont.load({
+  typekit: {
+    id: 'mrl4ieu'
+  }
+})
+
 const initialState = {
   ghibli: {
     movies: []
