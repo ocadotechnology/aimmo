@@ -13,6 +13,7 @@ from django.middleware.csrf import get_token
 
 from models import Avatar, Game, LevelAttempt
 from players import forms, utilities
+from app_settings import get_users_for_new_game, preview_user_required
 
 LOGGER = logging.getLogger(__name__)
 
@@ -29,6 +30,8 @@ def _create_response(status, message):
     return JsonResponse(response)
 
 
+@login_required
+@preview_user_required
 def code(request, id):
     if not request.user:
         return HttpResponseForbidden()
@@ -162,6 +165,7 @@ def _add_and_return_level(num, user):
 
 
 @login_required
+@preview_user_required
 def add_game(request):
     if request.method == 'POST':
         form = forms.AddGameForm(request.POST)
@@ -171,6 +175,9 @@ def add_game(request):
             game.owner = request.user
             game.main_user = request.user
             game.save()
+            users = get_users_for_new_game(request)
+            if users is not None:
+                game.can_play.add(*users)
             return redirect('aimmo/program', id=game.id)
     else:
         form = forms.AddGameForm()

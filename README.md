@@ -1,5 +1,5 @@
 # AI:MMO
-A **M**assively **M**ulti-player **O**nline game, where players create **A**rtificially **I**ntelligent programs to play on their behalf.
+A **M**assively **M**ultiplayer **O**nline game, where players create **A**rtificially **I**ntelligent programs to play on their behalf.
 
 [![Code Climate](https://codeclimate.com/github/ocadotechnology/aimmo/badges/gpa.svg)](https://codeclimate.com/github/ocadotechnology/aimmo)
 
@@ -13,7 +13,7 @@ By getting people to compete to program better Avatars, we can teach them all so
 2. Take a look at our [usage guidelines](docs/usage.md) to see how to get started.
 
 ## Documentation
-Take a look at our [documentation table of contents](docs/README.md). 
+Take a look at our [documentation table of contents](docs/README.md).
 
 ## How to contribute!
 __Want to help?__ You can read the [contributing guidelines][contrib-guidelines]. You can also contact us directly using this [contact form][c4l-contact-form] and we'll get in touch as soon as possible! Thanks a lot.
