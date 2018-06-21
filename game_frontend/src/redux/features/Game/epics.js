@@ -8,7 +8,7 @@ const getConnectionParametersEpic = (action$, store, { api }) => {
   return action$.pipe(
     ofType(types.GET_CONNECTION_PARAMETERS_REQUEST),
     mergeMap(action =>
-      api.get(`games/${store.getState().game.connectionParameters.id}/connection_params/`).pipe(
+      api.get(`games/${store.getState().game.connectionParameters.id}/connection_parameters/`).pipe(
         map(response => actions.getConnectionParametersSuccess(response)),
         catchError(error => Observable.of({
           type: types.GET_CONNECTION_PARAMETERS_FAIL,
