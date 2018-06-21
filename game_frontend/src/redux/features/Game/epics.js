@@ -63,7 +63,7 @@ const setGameSSLEpic = (action$, store, { api }) => {
   return action$.pipe(
     ofType(types.SET_GAME_SSL),
     map(action => actions.unityEvent(
-      'SetGameSSL',
+      'SetSSL',
       action.payload.gameSSLFlag,
       actions.setGameSSLSuccess(),
       actions.setGameSSLFail()

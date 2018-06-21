@@ -27,7 +27,7 @@ export class GameView extends Component {
   }
 
   serialisedSSLFlag () {
-    let boolString = this.props.sslFlag.toString()
+    let boolString = this.props.gameSSL.toString()
 
     return boolString.charAt(0).toUpperCase() + boolString.slice(1)
   }
@@ -48,7 +48,7 @@ GameView.propTypes = {
   gameURL: PropTypes.string,
   gamePath: PropTypes.string,
   gamePort: PropTypes.number,
-  sslFlag: PropTypes.bool,
+  gameSSL: PropTypes.bool,
   getConnectionParams: PropTypes.func,
   setGameURL: PropTypes.func,
   setGamePath: PropTypes.func,
