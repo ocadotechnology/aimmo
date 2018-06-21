@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { actions } from 'features/Game'
 
-const GameViewLayout = styled.div`
+export const GameViewLayout = styled.div`
   grid-area: game-view
 `
 

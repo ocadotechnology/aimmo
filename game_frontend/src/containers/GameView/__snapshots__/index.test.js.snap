@@ -8,3 +8,13 @@ exports[`<GameView /> matches snapshot 1`] = `
   />
 </styled.div>
 `;
+
+exports[`<GameViewLayout /> matches snapshot 1`] = `
+.c0 {
+  grid-area: game-view;
+}
+
+<div
+  className="c0"
+/>
+`;

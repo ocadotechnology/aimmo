@@ -1,7 +1,8 @@
 /* eslint-env jest */
 import React from 'react'
-import { GameView } from 'containers/GameView'
+import { GameView, GameViewLayout } from 'containers/GameView'
 import { shallow } from 'enzyme/build/index'
+import createShallowWithTheme from 'testHelpers/createShallow'
 
 describe('<GameView />', () => {
   it('matches snapshot', () => {
@@ -61,5 +62,12 @@ describe('<GameView />', () => {
     expect(setGamePort.mock.calls.length).toBe(1)
     expect(setGameSSL.mock.calls.length).toBe(1)
     expect(establishGameConnection.mock.calls.length).toBe(1)
+  })
+})
+
+describe('<GameViewLayout />', () => {
+  it('matches snapshot', () => {
+    const tree = createShallowWithTheme(<GameViewLayout />)
+    expect(tree).toMatchSnapshot()
   })
 })
