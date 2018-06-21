@@ -59,8 +59,8 @@ describe('setGameURLEpic', () => {
   it('sets the game URL', () => {
     const gameURL = 'test'
 
-    const marbles1 = '-a-'
-    const marbles2 = '-b-'
+    const marbles1 = 'a--'
+    const marbles2 = '(b|)--'
     const values = {
       a: actions.setGameURL(gameURL),
       b: { type: types.SET_GAME_URL_SUCCESS }
@@ -71,11 +71,11 @@ describe('setGameURLEpic', () => {
       testScheduler.createColdObservable(marbles1, values)
     )
 
-    const mockSetGameURL = () => {
-      return Observable.of('mockedUnityEvent')
+    const mockSetUnityEvent = () => {
+      return Observable.of(values.b)
     }
 
-    const mockAPI = { api: { setGameURL: mockSetGameURL } }
+    const mockAPI = { api: { sendUnityEvent: mockSetUnityEvent } }
 
     const actual = epics.setGameURLEpic(source$, mockStore({}), mockAPI)
 
@@ -88,8 +88,8 @@ describe('setGamePath', () => {
   it('sets the game path', () => {
     const gamePath = 'test'
 
-    const marbles1 = '-a-'
-    const marbles2 = '-b-'
+    const marbles1 = 'a--'
+    const marbles2 = '(b|)--'
     const values = {
       a: actions.setGamePath(gamePath),
       b: { type: types.SET_GAME_PATH_SUCCESS }
@@ -100,11 +100,11 @@ describe('setGamePath', () => {
       testScheduler.createColdObservable(marbles1, values)
     )
 
-    const mockSetGamePath = () => {
-      return Observable.of('mockedUnityEvent')
+    const mockSendUnityEvent = () => {
+      return Observable.of(values.b)
     }
 
-    const mockAPI = { api: { setGamePath: mockSetGamePath } }
+    const mockAPI = { api: { sendUnityEvent: mockSendUnityEvent } }
 
     const actual = epics.setGamePathEpic(source$, mockStore({}), mockAPI)
 
@@ -117,8 +117,8 @@ describe('setGamePort', () => {
   it('sets the game port', () => {
     const gamePort = 8000
 
-    const marbles1 = '-a-'
-    const marbles2 = '-b-'
+    const marbles1 = 'a--'
+    const marbles2 = '(b|)-'
     const values = {
       a: actions.setGamePort(gamePort),
       b: { type: types.SET_GAME_PORT_SUCCESS }
@@ -129,11 +129,11 @@ describe('setGamePort', () => {
       testScheduler.createColdObservable(marbles1, values)
     )
 
-    const mockSetGamePort = () => {
-      return Observable.of('mockedUnityEvent')
+    const mockSendUnityEvent = () => {
+      return Observable.of(values.b)
     }
 
-    const mockAPI = { api: { setGamePort: mockSetGamePort } }
+    const mockAPI = { api: { sendUnityEvent: mockSendUnityEvent } }
 
     const actual = epics.setGamePortEpic(source$, mockStore({}), mockAPI)
 
@@ -146,8 +146,8 @@ describe('setGameSSL', () => {
   it('sets the game SSL flag', () => {
     const gameSSL = false
 
-    const marbles1 = '-a-'
-    const marbles2 = '-b-'
+    const marbles1 = 'a--'
+    const marbles2 = '(b|)--'
     const values = {
       a: actions.setGameSSL(gameSSL),
       b: { type: types.SET_GAME_SSL_SUCCESS }
@@ -158,11 +158,11 @@ describe('setGameSSL', () => {
       testScheduler.createColdObservable(marbles1, values)
     )
 
-    const mockSetGameSSL = () => {
-      return Observable.of('mockedUnityEvent')
+    const mockSendUnityEvent = () => {
+      return Observable.of(values.b)
     }
 
-    const mockAPI = { api: { setGameSSL: mockSetGameSSL } }
+    const mockAPI = { api: { sendUnityEvent: mockSendUnityEvent } }
 
     const actual = epics.setGameSSLEpic(source$, mockStore({}), mockAPI)
 
@@ -173,8 +173,8 @@ describe('setGameSSL', () => {
 
 describe('establishGameConnection', () => {
   it('establishes the connection with the game', () => {
-    const marbles1 = '-a-'
-    const marbles2 = '-b-'
+    const marbles1 = 'a--'
+    const marbles2 = '(b|)--'
     const values = {
       a: actions.establishGameConnection(),
       b: { type: types.ESTABLISH_GAME_CONNECTION_SUCCESS }
@@ -185,11 +185,11 @@ describe('establishGameConnection', () => {
       testScheduler.createColdObservable(marbles1, values)
     )
 
-    const mockEstablishGameConnection = () => {
-      return Observable.of('mockedUnityEvent')
+    const mockSendUnityEvent = () => {
+      return Observable.of(values.b)
     }
 
-    const mockAPI = { api: { establishGameConnection: mockEstablishGameConnection } }
+    const mockAPI = { api: { sendUnityEvent: mockSendUnityEvent } }
 
     const actual = epics.establishGameConnectionEpic(source$, mockStore({}), mockAPI)
 
