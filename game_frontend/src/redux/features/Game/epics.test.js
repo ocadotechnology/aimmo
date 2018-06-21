@@ -63,7 +63,7 @@ describe('setGameURLEpic', () => {
     const marbles2 = '(b|)--'
     const values = {
       a: actions.setGameURL(gameURL),
-      b: { type: types.SET_GAME_URL_SUCCESS }
+      b: actions.setGameURLSuccess()
     }
 
     const testScheduler = createTestScheduler()
@@ -92,7 +92,7 @@ describe('setGamePath', () => {
     const marbles2 = '(b|)--'
     const values = {
       a: actions.setGamePath(gamePath),
-      b: { type: types.SET_GAME_PATH_SUCCESS }
+      b: actions.setGamePathSuccess()
     }
 
     const testScheduler = createTestScheduler()
@@ -121,7 +121,7 @@ describe('setGamePort', () => {
     const marbles2 = '(b|)-'
     const values = {
       a: actions.setGamePort(gamePort),
-      b: { type: types.SET_GAME_PORT_SUCCESS }
+      b: actions.setGamePortSuccess()
     }
 
     const testScheduler = createTestScheduler()
@@ -150,7 +150,7 @@ describe('setGameSSL', () => {
     const marbles2 = '(b|)--'
     const values = {
       a: actions.setGameSSL(gameSSL),
-      b: { type: types.SET_GAME_SSL_SUCCESS }
+      b: actions.setGameSSLSuccess()
     }
 
     const testScheduler = createTestScheduler()
@@ -177,7 +177,7 @@ describe('establishGameConnection', () => {
     const marbles2 = '(b|)--'
     const values = {
       a: actions.establishGameConnection(),
-      b: { type: types.ESTABLISH_GAME_CONNECTION_SUCCESS }
+      b: actions.establishGameConnectionSuccess()
     }
 
     const testScheduler = createTestScheduler()
