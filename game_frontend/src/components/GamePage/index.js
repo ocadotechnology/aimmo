@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import IDE from 'components/IDE'
 import Game from 'components/Game'
 
-const GamePageContainer = styled.div`
+export const GamePageLayout = styled.div`
   display: grid
   grid-template: 80px 1fr 150px / 1fr 1fr
   grid-template-areas: "ide-menu game-menu"
@@ -16,10 +16,10 @@ const GamePageContainer = styled.div`
 export default class GamePage extends Component {
   render () {
     return (
-      <GamePageContainer>
+      <GamePageLayout>
         <IDE />
         <Game />
-      </GamePageContainer>
+      </GamePageLayout>
     )
   }
 }
