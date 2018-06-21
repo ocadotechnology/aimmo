@@ -39,8 +39,8 @@ describe('getCodeEpic', () => {
     const mockAPI = { api: { get: mockGetJSON } }
 
     const actual = epics.getCodeEpic(source$, mockStore(
-      { game: 
-        { connectionParams: 
+      { game:
+        { connectionParameters:
           { id: 1 }
         }
       }), mockAPI)
@@ -71,7 +71,7 @@ describe('postCodeEpic', () => {
 
     const state = {
       game: {
-        connectionParams: {
+        connectionParameters: {
           id: 1
         }
       },
@@ -111,7 +111,7 @@ describe('postCodeEpic', () => {
 
     const state = {
       game: {
-        connectionParams: {
+        connectionParameters: {
           id: 1
         }
       },

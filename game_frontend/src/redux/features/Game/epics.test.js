@@ -17,18 +17,18 @@ const createTestScheduler = (frameTimeFactor = 10) => {
   return new TestScheduler(deepEquals)
 }
 
-describe('getConnectionParamsEpic', () => {
+describe('getConnectionParametersEpic', () => {
   it('gets a ID connection param', () => {
     const gameIDRequested = 1
-    const connectionParams = {
+    const connectionParameters = {
       id: 1
     }
 
     const marbles1 = '-a-'
     const marbles2 = '-b-'
     const values = {
-      a: actions.getConnectionParamsRequest(gameIDRequested),
-      b: actions.getConnectionParamsSuccess(connectionParams)
+      a: actions.getConnectionParametersRequest(gameIDRequested),
+      b: actions.getConnectionParametersSuccess(connectionParameters)
     }
 
     const testScheduler = createTestScheduler()
@@ -36,14 +36,14 @@ describe('getConnectionParamsEpic', () => {
       testScheduler.createColdObservable(marbles1, values)
     )
     const mockGetJSON = () => {
-      return Observable.of({id: connectionParams.id})
+      return Observable.of({id: connectionParameters.id})
     }
 
     const mockAPI = { api: { get: mockGetJSON } }
 
-    const actual = epics.getConnectionParamsEpic(source$, mockStore({
+    const actual = epics.getConnectionParametersEpic(source$, mockStore({
       game: {
-        connectionParams:
+        connectionParameters:
             {
               id: 1
             }

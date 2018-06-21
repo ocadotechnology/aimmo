@@ -4,14 +4,14 @@ import { Observable } from 'rxjs'
 import { map, mergeMap, catchError } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
-const getConnectionParamsEpic = (action$, store, { api }) => {
+const getConnectionParametersEpic = (action$, store, { api }) => {
   return action$.pipe(
-    ofType(types.GET_CONNECTION_PARAMS_REQUEST),
+    ofType(types.GET_CONNECTION_PARAMETERS_REQUEST),
     mergeMap(action =>
-      api.get(`games/${store.getState().game.connectionParams.id}/connection_params/`).pipe(
-        map(response => actions.getConnectionParamsSuccess(response)),
+      api.get(`games/${store.getState().game.connectionParameters.id}/connection_params/`).pipe(
+        map(response => actions.getConnectionParametersSuccess(response)),
         catchError(error => Observable.of({
-          type: types.GET_CONNECTION_PARAMS_FAIL,
+          type: types.GET_CONNECTION_PARAMETERS_FAIL,
           payload: error.xhr.response,
           error: true
         }))
@@ -86,7 +86,7 @@ const establishGameConnectionEpic = (action$, store, { api }) => {
 }
 
 export default {
-  getConnectionParamsEpic,
+  getConnectionParametersEpic,
   setGameURLEpic,
   setGamePathEpic,
   setGamePortEpic,

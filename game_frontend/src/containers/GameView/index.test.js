@@ -10,7 +10,7 @@ describe('<GameView />', () => {
       gamePath: '/test',
       gamePort: 8000,
       gameSSL: false,
-      getConnectionParams: jest.fn(),
+      getConnectionParameters: jest.fn(),
       setGameURL: jest.fn(),
       setGamePath: jest.fn(),
       setGamePort: jest.fn(),
@@ -24,7 +24,7 @@ describe('<GameView />', () => {
 
   it('serialisedSSLFlag function returns correctly', () => {
     const props = {
-      getConnectionParams: jest.fn(),
+      getConnectionParameters: jest.fn(),
       gameSSL: false
     }
 
@@ -44,7 +44,7 @@ describe('<GameView />', () => {
       gamePath: '/test',
       gamePort: 8000,
       gameSSL: false,
-      getConnectionParams: jest.fn(),
+      getConnectionParameters: jest.fn(),
       setGameURL,
       setGamePath,
       setGamePort,

@@ -13,7 +13,7 @@ export class GameView extends Component {
   constructor (props) {
     super(props)
 
-    this.props.getConnectionParams()
+    this.props.getConnectionParameters()
 
     RegisterExternalListener('SendAllConnect', this.sendAllConnect.bind(this))
   }
@@ -49,7 +49,7 @@ GameView.propTypes = {
   gamePath: PropTypes.string,
   gamePort: PropTypes.number,
   gameSSL: PropTypes.bool,
-  getConnectionParams: PropTypes.func,
+  getConnectionParameters: PropTypes.func,
   setGameURL: PropTypes.func,
   setGamePath: PropTypes.func,
   setGamePort: PropTypes.func,
@@ -58,14 +58,14 @@ GameView.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  gameURL: state.game.connectionParams.game_url_base,
-  gamePath: state.game.connectionParams.game_url_path,
-  gamePort: state.game.connectionParams.game_url_port,
-  gameSSL: state.game.connectionParams.game_ssl_flag
+  gameURL: state.game.connectionParameters.game_url_base,
+  gamePath: state.game.connectionParameters.game_url_path,
+  gamePort: state.game.connectionParameters.game_url_port,
+  gameSSL: state.game.connectionParameters.game_ssl_flag
 })
 
 const mapDispatchToProps = {
-  getConnectionParams: actions.getConnectionParamsRequest,
+  getConnectionParameters: actions.getConnectionParametersRequest,
   setGameURL: actions.setGameURL,
   setGamePath: actions.setGamePath,
   setGamePort: actions.setGamePort,

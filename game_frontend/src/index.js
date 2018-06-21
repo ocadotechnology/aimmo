@@ -26,7 +26,7 @@ const initialState = {
     code: ''
   },
   game: {
-    connectionParams: {
+    connectionParameters: {
       id: 1,
       game_url_base: '',
       game_url_path: '',
