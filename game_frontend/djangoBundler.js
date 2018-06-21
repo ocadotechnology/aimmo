@@ -10,7 +10,10 @@ const options = {
   outDir,
   outFile: 'index.html',
   publicUrl: './',
-  watch: process.env.NODE_ENV !== 'production'
+  watch: process.env.NODE_ENV !== 'production',
+  minify: false,
+  target: 'browser',
+  cache: false
 }
 
 const templateFolder = Path.resolve(Path.join(__dirname, '../players/templates/players'))
