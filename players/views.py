@@ -12,7 +12,7 @@ from django.views.generic import TemplateView
 from django.middleware.csrf import get_token
 
 from models import Avatar, Game, LevelAttempt
-from players import forms, utilities
+from players import forms, game_helpers
 from app_settings import get_users_for_new_game, preview_user_required
 
 LOGGER = logging.getLogger(__name__)
@@ -96,7 +96,7 @@ def connection_parameters(request, id):
     :return: JsonResponse object with the contents.
     """
     return JsonResponse(
-        utilities.get_environment_connection_settings(id)
+        game_helpers.get_environment_connection_settings(id)
     )
 
 
@@ -136,7 +136,7 @@ def watch_game(request, id):
     game = get_object_or_404(Game, id=id)
     if not game.can_user_play(request.user):
         raise Http404
-    return utilities.render_game(request, game)
+    return game_helpers.render_game(request, game)
 
 
 def watch_level(request, num):
@@ -146,7 +146,7 @@ def watch_level(request, num):
         LOGGER.debug('Adding level')
         game = _add_and_return_level(num, request.user)
     LOGGER.debug('Displaying game with id %s', game.id)
-    return utilities.render_game(request, game)
+    return game_helpers.render_game(request, game)
 
 
 def _add_and_return_level(num, user):
