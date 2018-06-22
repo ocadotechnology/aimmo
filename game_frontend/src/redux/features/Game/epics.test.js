@@ -3,7 +3,6 @@ import { Observable, TestScheduler } from 'rxjs'
 import { ActionsObservable } from 'redux-observable'
 import epics from './epics'
 import actions from './actions'
-import types from './types'
 import configureStore from 'redux-mock-store'
 
 const middlewares = []
@@ -75,7 +74,7 @@ describe('setGameURLEpic', () => {
       return Observable.of(values.b)
     }
 
-    const mockAPI = { api: { sendUnityEvent: mockSetUnityEvent } }
+    const mockAPI = { api: { unity: { sendUnityEvent: mockSetUnityEvent } } }
 
     const actual = epics.setGameURLEpic(source$, mockStore({}), mockAPI)
 
@@ -104,7 +103,7 @@ describe('setGamePath', () => {
       return Observable.of(values.b)
     }
 
-    const mockAPI = { api: { sendUnityEvent: mockSendUnityEvent } }
+    const mockAPI = { api: { unity: { sendUnityEvent: mockSendUnityEvent } } }
 
     const actual = epics.setGamePathEpic(source$, mockStore({}), mockAPI)
 
@@ -133,7 +132,7 @@ describe('setGamePort', () => {
       return Observable.of(values.b)
     }
 
-    const mockAPI = { api: { sendUnityEvent: mockSendUnityEvent } }
+    const mockAPI = { api: { unity: { sendUnityEvent: mockSendUnityEvent } } }
 
     const actual = epics.setGamePortEpic(source$, mockStore({}), mockAPI)
 
@@ -162,7 +161,7 @@ describe('setGameSSL', () => {
       return Observable.of(values.b)
     }
 
-    const mockAPI = { api: { sendUnityEvent: mockSendUnityEvent } }
+    const mockAPI = { api: { unity: { sendUnityEvent: mockSendUnityEvent } } }
 
     const actual = epics.setGameSSLEpic(source$, mockStore({}), mockAPI)
 
@@ -189,7 +188,7 @@ describe('establishGameConnection', () => {
       return Observable.of(values.b)
     }
 
-    const mockAPI = { api: { sendUnityEvent: mockSendUnityEvent } }
+    const mockAPI = { api: { unity: { sendUnityEvent: mockSendUnityEvent } } }
 
     const actual = epics.establishGameConnectionEpic(source$, mockStore({}), mockAPI)
 
