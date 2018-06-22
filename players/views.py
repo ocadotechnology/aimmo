@@ -183,8 +183,8 @@ def add_game(request):
     return render(request, 'players/add_game.html', {'form': form})
 
 
-def current_avatar_in_game(request, id):
-    game = get_object_or_404(Game, id=id)
+def current_avatar_in_game(request, game_id):
+    game = get_object_or_404(Game, id=game_id)
 
     if not game.can_user_play(request.user.id):
         return HttpResponse('User unauthorized to play', status=401)
