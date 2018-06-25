@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "features": [
+        "redux/features"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
