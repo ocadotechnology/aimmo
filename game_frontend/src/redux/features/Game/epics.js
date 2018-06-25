@@ -12,7 +12,7 @@ const getConnectionParametersEpic = (action$, store, { api }) => {
         map(response => actions.getConnectionParametersSuccess(response)),
         catchError(error => Observable.of({
           type: types.GET_CONNECTION_PARAMETERS_FAIL,
-          payload: error.xhr.response,
+          payload: error,
           error: true
         }))
       )
@@ -29,7 +29,7 @@ const setGameURLEpic = (action$, store, { api }) => {
       actions.setGameURLSuccess(),
       actions.setGameURLFail()
     )),
-    api.unity.sendUnityEvent
+    api.sendExternalEvent(api.emitToUnity)
   )
 }
 
@@ -42,7 +42,7 @@ const setGamePathEpic = (action$, store, { api }) => {
       actions.setGamePathSuccess(),
       actions.setGamePathFail()
     )),
-    api.unity.sendUnityEvent
+    api.sendExternalEvent(api.emitToUnity)
   )
 }
 
@@ -55,7 +55,7 @@ const setGamePortEpic = (action$, store, { api }) => {
       actions.setGamePortSuccess(),
       actions.setGamePortFail()
     )),
-    api.unity.sendUnityEvent
+    api.sendExternalEvent(api.emitToUnity)
   )
 }
 
@@ -68,7 +68,7 @@ const setGameSSLEpic = (action$, store, { api }) => {
       actions.setGameSSLSuccess(),
       actions.setGameSSLFail()
     )),
-    api.unity.sendUnityEvent
+    api.sendExternalEvent(api.emitToUnity)
   )
 }
 
@@ -81,7 +81,7 @@ const establishGameConnectionEpic = (action$, store, { api }) => {
       actions.establishGameConnectionSuccess(),
       actions.establishGameConnectionFail()
     )),
-    api.unity.sendUnityEvent
+    api.sendExternalEvent(api.emitToUnity)
   )
 }
 

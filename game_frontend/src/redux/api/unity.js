@@ -2,10 +2,10 @@ import { UnityEvent } from 'react-unity-webgl'
 import { Observable } from 'rxjs'
 import { map, catchError } from 'rxjs/operators'
 
-const sendUnityEvent = action$ =>
+const sendExternalEvent = communicator => action$ =>
   action$.mergeMap(action =>
     Observable.of(action).pipe(
-      emitToUnity,
+      communicator,
       map(event => action.payload.successAction),
       catchError(error => Observable.of(action.payload.failAction))
     )
@@ -24,6 +24,7 @@ const emitToUnity = action$ =>
     }
   )
 
-export default {
-  sendUnityEvent
+export {
+  sendExternalEvent,
+  emitToUnity
 }
