@@ -9,7 +9,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'django >= 1.8.3, < 1.9.0',
+        'django >= 1.8.3, < 1.9.13',
         'django-autoconfig >= 0.3.6, < 1.0.0',
         'django-forms-bootstrap',
         'django-js-reverse',
@@ -24,7 +24,7 @@ setup(
         'psutil >= 5.4, < 5.5',
     ],
     tests_require=[
-        'django-setuptest',
+        'django-setuptest==0.2.1',
         'httmock',
         'mock == 2.0.0',
         'docker == 2.7.0',

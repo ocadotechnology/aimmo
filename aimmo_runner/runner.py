@@ -71,6 +71,7 @@ def run(use_minikube, use_vagrant=False, server_wait=True, capture_output=False,
         run_command(['python', _MANAGE_PY, 'migrate', '--noinput'], capture_output=capture_output)
         run_command(['python', _MANAGE_PY, 'collectstatic', '--noinput'], capture_output=capture_output)
 
+    django.setup()
     create_superuser_if_missing(username='admin', password='admin')
 
     if use_minikube:
