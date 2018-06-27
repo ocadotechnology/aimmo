@@ -197,6 +197,41 @@ describe('setGameSSL', () => {
     testScheduler.expectObservable(actual).toBe(marbles2, values)
     testScheduler.flush()
   })
+
+  it('catches the error and returns a fail action without completing the observable', () => {
+    const gameSSL = false
+    const error = new Error('Noooo!!')
+
+    const marbles1 = '-a--'
+    const marbles2 = '-b--'
+    const values = {
+      a: actions.setGameSSL(gameSSL),
+      b: actions.setGameSSLFail(error)
+    }
+
+    const testScheduler = createTestScheduler()
+    const source$ = ActionsObservable.from(
+      testScheduler.createColdObservable(marbles1, values)
+    )
+
+    const mockEmitToUnity = () => {
+      return Observable.throw(error)
+    }
+
+    const mockAPI = {
+      api: {
+        unity: {
+          ...api.unity,
+          emitToUnity: mockEmitToUnity
+        }
+      }
+    }
+
+    const actual = epics.setGameSSLEpic(source$, mockStore({}), mockAPI)
+
+    testScheduler.expectObservable(actual).toBe(marbles2, values)
+    testScheduler.flush()
+  })
 })
 
 describe('establishGameConnection', () => {

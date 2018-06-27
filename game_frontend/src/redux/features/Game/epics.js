@@ -27,7 +27,7 @@ const setGameURLEpic = (action$, store, { api }) => {
       'SetGameURL',
       action.payload.gameURL,
       actions.setGameURLSuccess(),
-      actions.setGameURLFail()
+      actions.setGameURLFail
     )),
     api.unity.sendExternalEvent(api.unity.emitToUnity)
   )
@@ -40,7 +40,7 @@ const setGamePathEpic = (action$, store, { api }) => {
       'SetGamePath',
       action.payload.gamePath,
       actions.setGamePathSuccess(),
-      actions.setGamePathFail()
+      actions.setGamePathFail
     )),
     api.unity.sendExternalEvent(api.unity.emitToUnity)
   )
@@ -53,7 +53,7 @@ const setGamePortEpic = (action$, store, { api }) => {
       'SetGamePort',
       action.payload.gamePort,
       actions.setGamePortSuccess(),
-      actions.setGamePortFail()
+      actions.setGamePortFail
     )),
     api.unity.sendExternalEvent(api.unity.emitToUnity)
   )
@@ -66,7 +66,7 @@ const setGameSSLEpic = (action$, store, { api }) => {
       'SetSSL',
       action.payload.gameSSLFlag,
       actions.setGameSSLSuccess(),
-      actions.setGameSSLFail()
+      actions.setGameSSLFail
     )),
     api.unity.sendExternalEvent(api.unity.emitToUnity)
   )
@@ -79,7 +79,7 @@ const establishGameConnectionEpic = (action$, store, { api }) => {
       'EstablishConnection',
       '',
       actions.establishGameConnectionSuccess(),
-      actions.establishGameConnectionFail()
+      actions.establishGameConnectionFail
     )),
     api.unity.sendExternalEvent(api.unity.emitToUnity)
   )
