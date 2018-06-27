@@ -24,6 +24,15 @@ const initialState = {
   },
   editor: {
     code: ''
+  },
+  game: {
+    connectionParameters: {
+      id: 1,
+      game_url_base: '',
+      game_url_path: '',
+      game_url_port: 0,
+      game_ssl_flag: false
+    }
   }
 }
 

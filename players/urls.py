@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^api/code/(?P<id>[0-9]+)/$', views.code, name='aimmo/code'),
     url(r'^api/games/$', views.list_games, name='aimmo/games'),
     url(r'^api/games/(?P<id>[0-9]+)/$', views.get_game, name='aimmo/game_details'),
+    url(r'^api/games/(?P<id>[0-9]+)/connection_parameters/$', views.connection_parameters, name='aimmo/connection_parameters'),
     url(r'^api/games/(?P<id>[0-9]+)/complete/$', views.mark_game_complete, name='aimmo/complete_game'),
     url(r'^api/games/(?P<game_id>[0-9]+)/current_avatar/$', views.current_avatar_in_game, name='aimmo/current_avatar_in_game'),
 

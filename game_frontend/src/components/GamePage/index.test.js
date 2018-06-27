@@ -1,12 +1,21 @@
 /* eslint-env jest */
 import React from 'react'
+import GamePage, { GamePageLayout } from 'components/GamePage'
+import createShallowWithTheme from 'testHelpers/createShallow'
 import { shallow } from 'enzyme'
-import GamePage from 'components/GamePage'
 
 describe('<GamePage />', () => {
   it('matches snapshot', () => {
-    const component = shallow(<GamePage />)
+    const tree = shallow(<GamePage />)
 
-    expect(component).toMatchSnapshot()
+    expect(tree).toMatchSnapshot()
+  })
+})
+
+describe('<GamePageLayout />', () => {
+  it('matches snapshot', () => {
+    const tree = createShallowWithTheme(<GamePageLayout />)
+
+    expect(tree).toMatchSnapshot()
   })
 })
