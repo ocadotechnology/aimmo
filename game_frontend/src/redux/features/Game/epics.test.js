@@ -77,8 +77,10 @@ describe('setGameURLEpic', () => {
 
     const mockAPI = {
       api: {
-        sendExternalEvent: api.sendExternalEvent,
-        emitToUnity: mockEmitToUnity
+        unity: {
+          ...api.unity,
+          emitToUnity: mockEmitToUnity
+        }
       }
     }
 
@@ -111,8 +113,10 @@ describe('setGamePath', () => {
 
     const mockAPI = {
       api: {
-        sendExternalEvent: api.sendExternalEvent,
-        emitToUnity: mockEmitToUnity
+        unity: {
+          ...api.unity,
+          emitToUnity: mockEmitToUnity
+        }
       }
     }
 
@@ -145,8 +149,10 @@ describe('setGamePort', () => {
 
     const mockAPI = {
       api: {
-        sendExternalEvent: api.sendExternalEvent,
-        emitToUnity: mockEmitToUnity
+        unity: {
+          ...api.unity,
+          emitToUnity: mockEmitToUnity
+        }
       }
     }
 
@@ -179,8 +185,10 @@ describe('setGameSSL', () => {
 
     const mockAPI = {
       api: {
-        sendExternalEvent: api.sendExternalEvent,
-        emitToUnity: mockEmitToUnity
+        unity: {
+          ...api.unity,
+          emitToUnity: mockEmitToUnity
+        }
       }
     }
 
@@ -211,8 +219,10 @@ describe('establishGameConnection', () => {
 
     const mockAPI = {
       api: {
-        sendExternalEvent: api.sendExternalEvent,
-        emitToUnity: mockEmitToUnity
+        unity: {
+          ...api.unity,
+          emitToUnity: mockEmitToUnity
+        }
       }
     }
 

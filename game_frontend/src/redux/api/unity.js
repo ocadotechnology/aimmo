@@ -7,7 +7,7 @@ const sendExternalEvent = communicator => action$ =>
     Observable.of(action).pipe(
       communicator,
       map(event => action.payload.successAction),
-      catchError(error => Observable.of(action.payload.failAction))
+      catchError(error => Observable.of(action.payload.failAction(error)))
     )
   )
 
@@ -24,7 +24,7 @@ const emitToUnity = action$ =>
     }
   )
 
-export {
+export default {
   sendExternalEvent,
   emitToUnity
 }

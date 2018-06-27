@@ -33,9 +33,12 @@ const setGameURLSuccess = () => (
   }
 )
 
-const setGameURLFail = () => (
+const setGameURLFail = error => (
   {
-    type: types.SET_GAME_URL_FAIL
+    type: types.SET_GAME_URL_FAIL,
+    payload: {
+      error
+    }
   }
 )
 
@@ -54,9 +57,12 @@ const setGamePathSuccess = () => (
   }
 )
 
-const setGamePathFail = () => (
+const setGamePathFail = error => (
   {
-    type: types.SET_GAME_PATH_FAIL
+    type: types.SET_GAME_PATH_FAIL,
+    payload: {
+      error
+    }
   }
 )
 
@@ -75,9 +81,12 @@ const setGamePortSuccess = () => (
   }
 )
 
-const setGamePortFail = () => (
+const setGamePortFail = error => (
   {
-    type: types.SET_GAME_PORT_FAIL
+    type: types.SET_GAME_PORT_FAIL,
+    payload: {
+      error
+    }
   }
 )
 
@@ -96,9 +105,12 @@ const setGameSSLSuccess = () => (
   }
 )
 
-const setGameSSLFail = () => (
+const setGameSSLFail = error => (
   {
-    type: types.SET_GAME_SSL_FAIL
+    type: types.SET_GAME_SSL_FAIL,
+    payload: {
+      error
+    }
   }
 )
 
@@ -114,9 +126,12 @@ const establishGameConnectionSuccess = () => (
   }
 )
 
-const establishGameConnectionFail = () => (
+const establishGameConnectionFail = error => (
   {
-    type: types.ESTABLISH_GAME_CONNECTION_FAIL
+    type: types.ESTABLISH_GAME_CONNECTION_FAIL,
+    payload: {
+      error
+    }
   }
 )
 

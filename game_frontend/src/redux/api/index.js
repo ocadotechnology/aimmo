@@ -1,10 +1,9 @@
 import post from './post'
 import get from './get'
-import { sendExternalEvent, emitToUnity } from './unity'
+import unity from './unity'
 
 export default {
   get,
   post,
-  sendExternalEvent,
-  emitToUnity
+  unity
 }
