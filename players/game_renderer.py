@@ -20,7 +20,7 @@ def render_game(request, game):
 
     context.update(connection_settings)
 
-    return render(request, 'players/viewer.html', context)
+    return render(request, 'players/game_ide.html', context)
 
 
 def get_environment_connection_settings(game_id):

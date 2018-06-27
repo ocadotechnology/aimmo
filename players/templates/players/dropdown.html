@@ -5,8 +5,4 @@
     {% endfor %}
     <li role="seperator" class="divider"></li>
     <li><a href="{% url 'aimmo/new_game' %}">Create a new game</a></li>
-    <li class="navbar-brand">Levels</li>
-    {% for i in level_numbers %}
-    <li><a href="{% url base_url|add:"_level" num=i %}">Level {{ i }}</a></li>
-    {% endfor %}
 </ul>
