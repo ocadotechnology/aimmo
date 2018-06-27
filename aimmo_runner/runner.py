@@ -50,6 +50,7 @@ def setup_minikube(capture_output):
     from aimmo_runner.minikube import MinikubeRunner
     MinikubeRunner().start()
 
+
 def run(use_minikube, server_wait=True, capture_output=False, test_env=False):
     logging.basicConfig()
     if test_env:
