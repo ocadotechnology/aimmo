@@ -5,7 +5,7 @@
       "cwd": "babelrc",
       "root": ["./src"],
       "alias": {
-        "features": "./src/redux/features",
+        "features": "./src/redux/features"
       }
     }]
   ]

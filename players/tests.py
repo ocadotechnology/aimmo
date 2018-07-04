@@ -57,14 +57,6 @@ class TestViews(TestCase):
         response = c.post(reverse('aimmo/code', kwargs={'id': 1}), {'code': self.CODE})
         self.assertEqual(response.status_code, 404)
 
-    def test_login_required_for_code(self):
-        self.game.public = False
-        self.game.can_play = [self.user]
-        self.game.save()
-        c = Client()
-        response = c.post(reverse('aimmo/program', kwargs={'id': 1}), {'code': self.CODE})
-        self.assertNotEqual(response.status_code, 200)
-
     def test_default_code(self):
         c = self.login()
         response = c.get(reverse('aimmo/code', kwargs={'id': 1}))
@@ -78,24 +70,6 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(response.content, {'code': self.CODE})
 
-    def test_program(self):
-        c = self.login()
-        response = c.get(reverse('aimmo/program', kwargs={'id': 1}))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['game_id'], 1)
-
-    def test_program_for_non_existant_game(self):
-        c = self.login()
-        response = c.get(reverse('aimmo/program', kwargs={'id': 2}))
-        self.assertEqual(response.status_code, 404)
-
-    def test_program_for_non_authed_user(self):
-        self.game.public = False
-        self.game.save()
-        c = self.login()
-        response = c.get(reverse('aimmo/program', kwargs={'id': 1}))
-        self.assertEqual(response.status_code, 404)
-
     def _associate_game_as_level_num(self, level_num=1, user=None, game=None):
         if game is None:
             game = self.game
@@ -104,97 +78,34 @@ class TestViews(TestCase):
         models.LevelAttempt(user=user, game=game, level_number=level_num).save()
         models.Game(name='Wrong').save()
 
-    def test_program_level(self):
-        self._associate_game_as_level_num()
+    def test_play(self):
         c = self.login()
-        response = c.get(reverse('aimmo/program_level', kwargs={'num': 1}))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['game_id'], 1)
-
-    def test_program_level_creates_level(self):
-        if models.Game.objects.filter(levelattempt__user=self.user, levelattempt__level_number=1).exists():
-            self.skipTest('DB is polluted, alreaday a level attempt for level 1')
-        c = self.login()
-        response = c.get(reverse('aimmo/program_level', kwargs={'num': 1}))
-        self.assertEqual(response.status_code, 200)
-        game = models.Game.objects.get(id=response.context['game_id'])
-        self.assertEqual(game.name, 'Level 1', 'Game name should be "Level 1"')
-        self.assertEqual(game.owner, None, 'Game should not have an owner')
-        self.assertEqual(game.public, False, 'Game should not be public')
-        self.assertEqual(list(game.can_play.all()), [self.user], 'Game should be playable by current user')
-        self.assertEqual(game.completed, False, 'Game should not be completed')
-        self.assertEqual(game.main_user, self.user, 'Game should have current user as main user')
-        self.assertEqual(game.generator, 'Level1', 'Game should use "Level1" generator')
-        self.assertEqual(game.levelattempt.user, self.user, 'Game should be an attempt for the current user')
-        self.assertEqual(game.levelattempt.level_number, 1, 'Game should be an attempt at level 1')
-
-    def test_program_level_too_high(self):
-        c = self.login()
-        # We cause a warning by using a level too high which is expected
-        logging.disable(logging.WARNING)
-        response = c.get(reverse('aimmo/program_level', kwargs={'num': 1000}))
-        logging.disable(logging.INFO)
-        self.assertEqual(response.status_code, 404)
-
-    def test_watch(self):
-        c = self.login()
-        response = c.get(reverse('aimmo/watch', kwargs={'id': 1}))
+        response = c.get(reverse('aimmo/play', kwargs={'id': 1}))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['current_user_player_key'], self.user.pk)
         self.assertEqual(response.context['game_url_base'], 'base 1')
         self.assertEqual(response.context['game_url_path'], 'path 1')
 
-    def test_watch_for_non_existant_watch(self):
+    def test_play_for_non_existant_game(self):
         c = self.login()
-        response = c.get(reverse('aimmo/watch', kwargs={'id': 2}))
+        response = c.get(reverse('aimmo/play', kwargs={'id': 2}))
         self.assertEqual(response.status_code, 404)
 
-    def test_watch_for_non_authed_user(self):
+    def test_play_for_non_authed_user(self):
         self.game.public = False
         self.game.save()
         c = self.login()
-        response = c.get(reverse('aimmo/watch', kwargs={'id': 1}))
+        response = c.get(reverse('aimmo/play', kwargs={'id': 1}))
         self.assertEqual(response.status_code, 404)
 
-    def test_watch_level(self):
-        self._associate_game_as_level_num()
-        c = self.login()
-        response = c.get(reverse('aimmo/watch_level', kwargs={'num': 1}))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['current_user_player_key'], self.user.pk)
-        self.assertEqual(response.context['game_url_base'], 'base 1')
-        self.assertEqual(response.context['game_url_path'], 'path 1')
-
-    def test_watch_level_creates_level(self):
-        if models.Game.objects.filter(levelattempt__user=self.user, levelattempt__level_number=1).exists():
-            self.skipTest('DB polluted, already a level attempt present')
-        c = self.login()
-        response = c.get(reverse('aimmo/watch_level', kwargs={'num': 1}))
-        self.assertEqual(response.status_code, 200)
-        game = models.Game.objects.get(levelattempt__user=self.user, levelattempt__level_number=1)
-        self.assertEqual(list(game.can_play.all()), [self.user], 'Game should be playable by current user')
-        self.assertEqual(game.completed, False, 'Game should not be completed')
-        self.assertEqual(game.main_user, self.user, 'Game should have current user as main user')
-        self.assertEqual(game.generator, 'Level1', 'Game should use "Level1" generator')
-        self.assertEqual(game.levelattempt.user, self.user, 'Game should be an attempt for the current user')
-        self.assertEqual(game.levelattempt.level_number, 1, 'Game should be an attempt at level 1')
-
-    def test_watch_level_too_high(self):
-        c = self.login()
-        # We cause a warning by using a level too high which is expected
-        logging.disable(logging.WARNING)
-        response = c.get(reverse('aimmo/watch_level', kwargs={'num': 1000}))
-        logging.disable(logging.INFO)
-        self.assertEqual(response.status_code, 404)
-
-    def test_watch_inactive_level(self):
+    def test_play_inactive_level(self):
         c = self.login()
         self.game.completed = True
         if self.game.is_active:
             self.skipTest('Completed game is active')
         self.game.static_data = '{"test": 1}'
         self.game.save()
-        response = c.get(reverse('aimmo/watch', kwargs={'id': 1}))
+        response = c.get(reverse('aimmo/play', kwargs={'id': 1}))
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context['active'])
         self.assertEqual(response.context['static_data'], '{"test": 1}')

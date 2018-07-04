@@ -27,13 +27,19 @@ const initialState = {
   },
   game: {
     connectionParameters: {
-      id: 1,
+      id: getGameIDFromURL() || 1,
       game_url_base: '',
       game_url_path: '',
       game_url_port: 0,
       game_ssl_flag: false
     }
   }
+}
+
+function getGameIDFromURL () {
+  const url = window.location.href
+  const gameIDFinder = /\/play\/([0-9]+)/
+  return gameIDFinder.exec(url)[1]
 }
 
 const reduxStore = configureStore(initialState)

@@ -58,12 +58,8 @@
 
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        <li class="dropdown {% block nav-program-class %}{% endblock %}"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Program<span class="sr-only"> (current)</span><span class="caret"</span></a>
-                            {% game_dropdown_list 'aimmo/program' %}
-                        </li>
-                        </li>
-                        <li class="dropdown {% block nav-watch-class %}{% endblock %}"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Watch<span class="caret"></span></a>
-                            {% game_dropdown_list 'aimmo/watch' %}
+                        <li class="dropdown {% block nav-watch-class %}{% endblock %}"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Play<span class="caret"></span></a>
+                            {% game_dropdown_list 'aimmo/play' %}
                         </li>
                         <li class="{% block nav-statistics-class %}{% endblock %}"><a href="{% url 'aimmo/statistics' %}">Statistics</a></li>
                         <li><a href="{% url 'aimmo/logout' %}">Logout</a></li>

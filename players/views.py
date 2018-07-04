@@ -122,16 +122,6 @@ class ProgramView(TemplateView):
         return context
 
 
-def program_level(request, num):
-    try:
-        game = Game.objects.get(levelattempt__user=request.user, levelattempt__level_number=num)
-    except Game.DoesNotExist:
-        LOGGER.debug('Adding level')
-        game = _add_and_return_level(num, request.user)
-    LOGGER.debug('Programming game with id %s', game.id)
-    return render(request, 'players/program.html', {'game_id': game.id})
-
-
 def watch_game(request, id):
     game = get_object_or_404(Game, id=id)
     if not game.can_user_play(request.user):
@@ -177,7 +167,7 @@ def add_game(request):
             users = get_users_for_new_game(request)
             if users is not None:
                 game.can_play.add(*users)
-            return redirect('aimmo/program', id=game.id)
+            return redirect('aimmo/play', id=game.id)
     else:
         form = forms.AddGameForm()
     return render(request, 'players/add_game.html', {'form': form})
