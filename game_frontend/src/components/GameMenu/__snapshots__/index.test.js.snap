@@ -2,7 +2,7 @@
 
 exports[`<GameMenu /> renders correctly 1`] = `
 .c0 {
-  background-color: pink;
+  background-color: #303030;
   grid-area: game-menu;
 }
 

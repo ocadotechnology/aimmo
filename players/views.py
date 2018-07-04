@@ -4,22 +4,18 @@ import os
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
-from django.http import HttpResponse, Http404
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
+from django.middleware.csrf import get_token
 
 from models import Avatar, Game, LevelAttempt
-from players import forms
-from . import app_settings
-from app_settings import get_users_for_new_game
+from players import forms, game_renderer
+from app_settings import get_users_for_new_game, preview_user_required
 
 LOGGER = logging.getLogger(__name__)
-
-preview_user_required = app_settings.preview_user_required
 
 
 def _post_code_success_response(message):
@@ -37,6 +33,8 @@ def _create_response(status, message):
 @login_required
 @preview_user_required
 def code(request, id):
+    if not request.user:
+        return HttpResponseForbidden()
     game = get_object_or_404(Game, id=id)
     if not game.can_user_play(request.user):
         raise Http404
@@ -54,10 +52,9 @@ def code(request, id):
     if request.method == 'POST':
         avatar.code = request.POST['code']
         avatar.save()
-        return _post_code_success_response(
-            'Your code was saved!<br><br><a href="%s">Watch</a>' % reverse('aimmo/watch', kwargs={'id': game.id}))
+        return HttpResponse(status=200)
     else:
-        return HttpResponse(avatar.code)
+        return JsonResponse({'code': avatar.code})
 
 
 def list_games(request):
@@ -88,6 +85,19 @@ def get_game(request, id):
             'code': avatar.code,
         })
     return JsonResponse(response)
+
+
+def connection_parameters(request, id):
+    """
+    An API view which returns the correct connection settings required
+    to run the game in different environments. These values will change
+    depending on where the project is started (ie. local, etc).
+    :param id: Integer with the ID of the game.
+    :return: JsonResponse object with the contents.
+    """
+    return JsonResponse(
+        game_renderer.get_environment_connection_settings(id)
+    )
 
 
 @csrf_exempt
@@ -122,26 +132,11 @@ def program_level(request, num):
     return render(request, 'players/program.html', {'game_id': game.id})
 
 
-def _render_game(request, game):
-    context = {
-        'current_user_player_key': request.user.pk,
-        'active': game.is_active,
-        'static_data': game.static_data or '{}',
-    }
-    context['game_url_base'], context['game_url_path'] = app_settings.GAME_SERVER_URL_FUNCTION(game.id)
-    context['game_url_port'] = app_settings.GAME_SERVER_PORT_FUNCTION(game.id)
-    context['game_ssl_flag'] = app_settings.GAME_SERVER_SSL_FLAG
-    context['game_id'] = game.id
-    context['web_host_base'] = request.get_host()
-
-    return render(request, 'players/viewer.html', context)
-
-
 def watch_game(request, id):
     game = get_object_or_404(Game, id=id)
     if not game.can_user_play(request.user):
         raise Http404
-    return _render_game(request, game)
+    return game_renderer.render_game(request, game)
 
 
 def watch_level(request, num):
@@ -151,7 +146,7 @@ def watch_level(request, num):
         LOGGER.debug('Adding level')
         game = _add_and_return_level(num, request.user)
     LOGGER.debug('Displaying game with id %s', game.id)
-    return _render_game(request, game)
+    return game_renderer.render_game(request, game)
 
 
 def _add_and_return_level(num, user):
@@ -200,3 +195,11 @@ def current_avatar_in_game(request, game_id):
         return HttpResponse('Avatar does not exist for this user', status=404)
 
     return JsonResponse({'current_avatar_id': avatar.id})
+
+
+def csrfToken(request):
+    if request.method == 'GET':
+        token = get_token(request)
+        return JsonResponse({'csrfToken': token})
+    else:
+        return HttpResponse(status=405)

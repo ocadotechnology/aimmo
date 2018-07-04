@@ -6,11 +6,11 @@ from django.contrib.auth.models import AnonymousUser, User
 from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
 
-from players import models, views
+from players import models, app_settings
 
-views.app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: ('base %s' % game_id, 'path %s' % game_id)
-views.app_settings.GAME_SERVER_PORT_FUNCTION = lambda game_id: 0
-views.app_settings.GAME_SERVER_SSL_FLAG = True
+app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: ('base %s' % game_id, 'path %s' % game_id)
+app_settings.GAME_SERVER_PORT_FUNCTION = lambda game_id: 0
+app_settings.GAME_SERVER_SSL_FLAG = True
 
 
 class TestViews(TestCase):
@@ -69,14 +69,14 @@ class TestViews(TestCase):
         c = self.login()
         response = c.get(reverse('aimmo/code', kwargs={'id': 1}))
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.content.startswith('class Avatar'))
+        self.assertTrue(json.loads(response.content)['code'].startswith('class Avatar'))
 
     def test_retrieve_code(self):
         models.Avatar(owner=self.user, code=self.CODE, game=self.game).save()
         c = self.login()
         response = c.get(reverse('aimmo/code', kwargs={'id': 1}))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, self.CODE)
+        self.assertJSONEqual(response.content, {'code': self.CODE})
 
     def test_program(self):
         c = self.login()

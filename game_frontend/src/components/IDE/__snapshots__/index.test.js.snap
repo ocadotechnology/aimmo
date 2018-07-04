@@ -2,8 +2,8 @@
 
 exports[`<IDE /> renders correctly 1`] = `
 <React.Fragment>
-  <styled.nav />
-  <styled.div />
+  <Connect(IDEMenu) />
+  <Connect(WithTheme(IDEEditor)) />
   <styled.div />
 </React.Fragment>
 `;

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
-import IDEMenu from 'components/IDEMenu'
-import IDEEditor from 'components/IDEEditor'
+import IDEMenu from 'containers/IDEMenu'
+import IDEEditor from 'containers/IDEEditor'
 import IDEConsole from 'components/IDEConsole'
 
 export default class IDE extends Component {

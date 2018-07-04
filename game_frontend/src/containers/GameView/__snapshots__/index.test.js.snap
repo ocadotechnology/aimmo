@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<GameView /> matches snapshot 1`] = `
+<styled.div>
+  <Unity
+    loader="/static/unity/Build/UnityLoader.js"
+    src="/static/unity/Build/unity.json"
+  />
+</styled.div>
+`;
+
+exports[`<GameViewLayout /> matches snapshot 1`] = `
+.c0 {
+  grid-area: game-view;
+}
+
+<div
+  className="c0"
+/>
+`;

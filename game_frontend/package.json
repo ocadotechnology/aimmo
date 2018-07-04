@@ -10,7 +10,7 @@
   "devDependencies": {
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
-    "enzyme-to-json": "^3.3.3",
+    "enzyme-to-json": "^3.3.4",
     "eslint": "^4.18.0",
     "eslint-config-standard": "^11.0.0",
     "eslint-config-standard-react": "^5.0.0",
@@ -25,21 +25,24 @@
     "redux-mock-store": "^1.5.1"
   },
   "dependencies": {
-    "hoek": "^5.0.3",
+    "@material-ui/core": "^1.2.0",
+    "babel-core": "^6.26.0",
+    "babel-plugin-module-resolver": "^3.1.1",
+    "babel-preset-react-app": "^3.1.1",
+    "babel-runtime": "^6.23.0",
+    "parcel-bundler": "^1.9.2",
     "react": "^16.2.0",
+    "react-ace": "^6.1.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.7",
+    "react-unity-webgl": "^6.5.0",
     "redux": "^3.7.2",
     "redux-observable": "^0.18.0",
-    "rxjs": "^5.5.6",
-    "styled-components": "^3.2.5",
-    "update": "^0.7.4",
+    "redux-devtools-extension": "^2.13.2",
+    "rxjs": "^5.5.10",
     "shelljs": "^0.8.1",
-    "parcel-bundler": "^1.6.2",
-    "module-resolver": "^1.0.0",
-    "babel-core": "^6.26.0",
-    "babel-plugin-module-resolver": "^3.1.0",
-    "babel-preset-react-app": "^3.1.1"
+    "styled-components": "^3.2.5",
+    "webfontloader": "^1.6.28"
   },
   "scripts": {
     "test": "jest"

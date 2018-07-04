@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<IDEEditor /> matches snapshot 1`] = `
+<styled.div>
+  <ReactAce
+    cursorStart={1}
+    editorProps={Object {}}
+    enableBasicAutocompletion={false}
+    enableLiveAutocompletion={false}
+    focus={false}
+    fontSize="1rem"
+    height="100%"
+    highlightActiveLine={true}
+    maxLines={null}
+    minLines={null}
+    mode="python"
+    name="ace_editor"
+    onChange={null}
+    onLoad={[MockFunction]}
+    onPaste={null}
+    onScroll={null}
+    readOnly={false}
+    scrollMargin={
+      Array [
+        0,
+        0,
+        0,
+        0,
+      ]
+    }
+    setOptions={
+      Object {
+        "enableBasicAutocompletion": true,
+        "enableLiveAutocompletion": true,
+        "enableSnippets": true,
+        "fontFamily": "'Source Code Pro', monospace",
+        "showLineNumbers": true,
+        "tabSize": 2,
+      }
+    }
+    showGutter={true}
+    showPrintMargin={true}
+    style={Object {}}
+    tabSize={4}
+    theme="idle_fingers"
+    value="class Avatar"
+    width="100%"
+    wrapEnabled={false}
+  />
+</styled.div>
+`;
+
+exports[`<IDEEditorLayout /> renders correctly 1`] = `
+.c0 {
+  background-color: #2F4F4F;
+  grid-area: ide-editor;
+}
+
+<div
+  className="c0"
+/>
+`;

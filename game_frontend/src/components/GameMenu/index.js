@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 const GameMenu = styled.nav`
-  background-color: pink
+  background-color: ${props => props.theme.palette.background.default}
   grid-area: game-menu
 `
 

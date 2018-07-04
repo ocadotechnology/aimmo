@@ -89,3 +89,6 @@ node_modules
 
 # Vagrant
 .vagrant/**
+
+# VSCode
+game_frontend/\.vscode/

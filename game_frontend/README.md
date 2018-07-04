@@ -28,7 +28,7 @@ yarn
 
 ### Standalone
 
-It's possible to run the frontend by itself. To do so, run the command below in this folder:
+It's possible to run the frontend by itself. To do so, run the command below in this folder. **Note:** the Unity WebGL build will not show in standalone mode and you will need to run the project with Django.
 
 ```
 parcel index.html
