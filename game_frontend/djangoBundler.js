@@ -4,7 +4,7 @@ const shell = require('shelljs')
 const fs = require('fs')
 
 const file = Path.join(__dirname, './index.html')
-const outDir = Path.join(__dirname, '../players/static/react')
+const outDir = Path.join(__dirname, '../aimmo/static/react')
 
 const options = {
   outDir,
@@ -16,7 +16,7 @@ const options = {
   cache: process.env.NODE_ENV === 'production'
 }
 
-const templateFolder = Path.resolve(Path.join(__dirname, '../players/templates/players'))
+const templateFolder = Path.resolve(Path.join(__dirname, '../aimmo/templates/players'))
 
 const bundler = new Bundler(file, options)
 

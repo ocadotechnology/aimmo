@@ -3,7 +3,7 @@ Any helper functions used for the unity game.
 """
 
 from django.shortcuts import render
-from players import app_settings
+from aimmo import app_settings
 
 
 def render_game(request, game):

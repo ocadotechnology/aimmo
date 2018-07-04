@@ -9,7 +9,7 @@ DATABASES = {
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
-    'players',
+    'aimmo',
     'integration_tests',
     'aimmo_runner',
 ]

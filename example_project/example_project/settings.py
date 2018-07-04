@@ -69,7 +69,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'players',
+    'aimmo',
     'django_forms_bootstrap',
 )
 
@@ -95,9 +95,9 @@ LOGGING = {
     }
 }
 
-LOGIN_URL = '/players/accounts/login/'
+LOGIN_URL = '/aimmo/accounts/login/'
 
-LOGIN_REDIRECT_URL = '/players/'
+LOGIN_REDIRECT_URL = '/aimmo/'
 
 MIDDLEWARE_CLASSES = [
    'django.contrib.sessions.middleware.SessionMiddleware',

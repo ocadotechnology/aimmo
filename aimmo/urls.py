@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 from django.views.generic import RedirectView
 
-from players import views
+from aimmo import views
 from app_settings import preview_user_required
 
 urlpatterns = [
