@@ -51,14 +51,7 @@ def setup_minikube(capture_output):
     MinikubeRunner().start()
 
 
-def setup_vagrant(capture_output):
-    install_kubernetes_dependencies(capture_output)
-    # Import vagrant here, so we can install the deps first
-    from aimmo_runner.vagrant import VagrantRunner
-    VagrantRunner().start()
-
-
-def run(use_minikube, use_vagrant=False, server_wait=True, capture_output=False, test_env=False):
+def run(use_minikube, server_wait=True, capture_output=False, test_env=False):
     logging.basicConfig()
     if test_env:
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "test_settings")
@@ -76,8 +69,6 @@ def run(use_minikube, use_vagrant=False, server_wait=True, capture_output=False,
 
     if use_minikube:
         setup_minikube(capture_output)
-    elif use_vagrant:
-        setup_vagrant(capture_output)
     else:
         time.sleep(2)
         game = run_command_async(['python', _SERVICE_PY, '127.0.0.1', '5000'], capture_output=capture_output)
@@ -85,10 +76,8 @@ def run(use_minikube, use_vagrant=False, server_wait=True, capture_output=False,
         os.environ['AIMMO_MODE'] = 'threads'
 
     os.environ['NODE_ENV'] = 'development' if settings.DEBUG else 'production'
-    if use_vagrant:
-        server = run_command_async(['python', _MANAGE_PY, 'runserver', '0.0.0.0:8000'], capture_output=capture_output)
-    else:
-        server = run_command_async(['python', _MANAGE_PY, 'runserver'], capture_output=capture_output)
+
+    server = run_command_async(['python', _MANAGE_PY, 'runserver'], capture_output=capture_output)
     frontend_bundler = run_command_async(['node', _FRONTEND_BUNDLER_JS], capture_output=capture_output)
     PROCESSES.append(server)
     PROCESSES.append(frontend_bundler)

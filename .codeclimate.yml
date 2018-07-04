@@ -5,6 +5,8 @@ plugins:
     enabled: true
   eslint:
     enabled: true
+    config:
+      config: game_frontend/.eslintrc.json
   fixme:
     enabled: true
   pep8:
