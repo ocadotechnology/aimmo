@@ -1,0 +1,6 @@
+# Ignore everything
+*
+
+# Except new UI paths.
+!game_frontend/src/*
+
