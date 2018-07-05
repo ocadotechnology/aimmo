@@ -3,14 +3,15 @@
 - [Running with Kubernetes with containers](#running-with-kubernetes-with-containers)
 - [Testing Locally](#testing-locally)
 - [Useful Commands](#useful-commands)
-- [Installing pipenv](#installing-pipenv)
+- [Installing virtualenvwrapper](#installing-virtualenvwrapper)
 ---
 
 ## Running Locally with no containers
 * Follow the instructions at [game frontend documentation](https://github.com/ocadotechnology/aimmo/blob/master/game_frontend/README.md) in order to install all the frontend requirements.
-* Make and activate a virtualenv (We recommend [pipenv](https://docs.pipenv.org/)) - if you have a **[Mac see the section at the bottom](https://github.com/ocadotechnology/aimmo/blob/master/docs/usage.md#on-mac)**.
-    * To set this up, run `./ubuntu_setup.sh`. This will install nodejs, yarn, as well as pipenv. 
-    * The next time you would like to use your virtualenv, run `pipenv shell`.
+* Make and activate a virtualenv (We recommend [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/index.html)) - if you have a **[Mac see the section at the bottom](https://github.com/ocadotechnology/aimmo/blob/master/docs/usage.md#on-mac)**.
+    * e.g. the first time, `mkvirtualenv -a path/to/aimmo aimmo`
+    * and thereafter `workon aimmo`
+    * You may need to set your virtualenvwrapper version to python2. [See more here](https://stackoverflow.com/questions/32489304/change-default-python-version-with-virtualenvwrapper-virtualenv).
 * `./run.py` in your aimmo dir - This will:
     * if necessary, create a superuser 'admin' with password 'admin'
     * install all of the dependencies using pip
@@ -66,8 +67,13 @@
 `python example_project/manage.py createsuperuser`
    * By default, we create an admin account with credentials admin:admin when you start the project.
    
-## Installing pipenv
+## Installing virtualenvwrapper
 ### On Mac:
-* Run `brew install pipenv`
-* To activate your virtualenv, run `pipenv shell`
-
+* Run `pip install virtualenvwrapper`
+* Add the following to ~/.bashrc:
+```
+ export WORKON_HOME=$HOME/.virtualenvs
+ source /usr/local/bin/virtualenvwrapper.sh
+```
+* [This blog post](http://mkelsey.com/2013/04/30/how-i-setup-virtualenv-and-virtualenvwrapper-on-my-mac/) may also be
+ useful.
