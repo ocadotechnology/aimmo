@@ -133,6 +133,7 @@ def build_docker_images(minikube):
             encoding='gzip'
         )
 
+
 def delete_components(api_instance, extensions_api_instance):
     for rc in api_instance.list_namespaced_replication_controller('default').items:
         api_instance.delete_namespaced_replication_controller(
@@ -154,6 +155,7 @@ def delete_components(api_instance, extensions_api_instance):
             namespace='default',
             body=kubernetes.client.V1DeleteOptions())
 
+
 def restart_pods(game_creator_yaml, ingress_yaml):
     """
     Disables all the components running in the cluster and starts them again
@@ -165,7 +167,7 @@ def restart_pods(game_creator_yaml, ingress_yaml):
     kubernetes.config.load_kube_config(context='minikube')
     api_instance = kubernetes.client.CoreV1Api()
     extensions_api_instance = kubernetes.client.ExtensionsV1beta1Api()
-    
+
     delete_components(api_instance, extensions_api_instance)
 
     extensions_api_instance.create_namespaced_ingress("default", ingress_yaml)
@@ -173,7 +175,6 @@ def restart_pods(game_creator_yaml, ingress_yaml):
         body=game_creator_yaml,
         namespace='default',
     )
-
 
 def start():
     """
