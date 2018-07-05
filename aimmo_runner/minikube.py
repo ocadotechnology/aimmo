@@ -133,18 +133,7 @@ def build_docker_images(minikube):
             encoding='gzip'
         )
 
-
-def restart_pods(game_creator_yaml, ingress_yaml):
-    """
-    Disables all the components running in the cluster and starts them again
-    with fresh updated state.
-    :param game_creator_yaml: Replication controller yaml settings file.
-    :param ingress_yaml: Ingress yaml settings file.
-    """
-    print('Restarting pods')
-    kubernetes.config.load_kube_config(context='minikube')
-    api_instance = kubernetes.client.CoreV1Api()
-    extensions_api_instance = kubernetes.client.ExtensionsV1beta1Api()
+def delete_components(api_instance, extensions_api_instance):
     for rc in api_instance.list_namespaced_replication_controller('default').items:
         api_instance.delete_namespaced_replication_controller(
             body=kubernetes.client.V1DeleteOptions(),
@@ -164,6 +153,20 @@ def restart_pods(game_creator_yaml, ingress_yaml):
             name=ingress.metadata.name,
             namespace='default',
             body=kubernetes.client.V1DeleteOptions())
+
+def restart_pods(game_creator_yaml, ingress_yaml):
+    """
+    Disables all the components running in the cluster and starts them again
+    with fresh updated state.
+    :param game_creator_yaml: Replication controller yaml settings file.
+    :param ingress_yaml: Ingress yaml settings file.
+    """
+    print('Restarting pods')
+    kubernetes.config.load_kube_config(context='minikube')
+    api_instance = kubernetes.client.CoreV1Api()
+    extensions_api_instance = kubernetes.client.ExtensionsV1beta1Api()
+    
+    delete_components(api_instance, extensions_api_instance)
 
     extensions_api_instance.create_namespaced_ingress("default", ingress_yaml)
     api_instance.create_namespaced_replication_controller(
