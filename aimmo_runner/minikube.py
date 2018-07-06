@@ -176,6 +176,7 @@ def restart_pods(game_creator_yaml, ingress_yaml):
         namespace='default',
     )
 
+
 def start():
     """
     The entry point to the minikube class. Sends calls appropriately to set
