@@ -57,7 +57,7 @@ def run(use_minikube, server_wait=True, capture_output=False, test_env=False):
         run_command(['pip', 'install', '-r', os.path.join(ROOT_DIR_LOCATION, 'minikube_requirements.txt')],
                     capture_output=capture_output)
 
-        # Import minikube here, so we can install the deps first
+        # Import minikube here, so we can install the dependencies first
         from aimmo_runner import minikube
         minikube.start()
 
