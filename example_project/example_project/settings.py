@@ -111,6 +111,8 @@ MIDDLEWARE_CLASSES = [
 
 def get_game_url_base_and_path(game):
     if os.environ.get('AIMMO_MODE', '') == 'minikube':
+        output = subprocess.check_output([os.environ['MINIKUBE_PATH'], 'service',
+                                          'game-%s' % game, '--url'])
         return 'local.aimmo.codeforlife.education', '/game-%s' % game
     else:
         return 'localhost', ''

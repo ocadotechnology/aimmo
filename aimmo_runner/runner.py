@@ -33,24 +33,6 @@ def create_superuser_if_missing(username, password):
                                       password=password)
 
 
-def install_kubernetes_dependencies(capture_output):
-    parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    sys.path.append(os.path.join(parent_dir, 'aimmo_runner'))
-
-    os.chdir(ROOT_DIR_LOCATION)
-    run_command(['pip', 'install', '-r', os.path.join(ROOT_DIR_LOCATION, 'minikube_requirements.txt')],
-                capture_output=capture_output)
-
-    os.environ['AIMMO_MODE'] = 'minikube'
-
-
-def setup_minikube(capture_output):
-    install_kubernetes_dependencies(capture_output)
-    # Import minikube here, so we can install the deps first
-    from aimmo_runner.minikube import MinikubeRunner
-    MinikubeRunner().start()
-
-
 def run(use_minikube, server_wait=True, capture_output=False, test_env=False):
     logging.basicConfig()
     if test_env:
@@ -64,11 +46,23 @@ def run(use_minikube, server_wait=True, capture_output=False, test_env=False):
         run_command(['python', _MANAGE_PY, 'migrate', '--noinput'], capture_output=capture_output)
         run_command(['python', _MANAGE_PY, 'collectstatic', '--noinput'], capture_output=capture_output)
 
-    django.setup()
     create_superuser_if_missing(username='admin', password='admin')
 
+    server_args = []
     if use_minikube:
-        setup_minikube(capture_output)
+        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        sys.path.append(os.path.join(parent_dir, 'aimmo_runner'))
+
+        os.chdir(ROOT_DIR_LOCATION)
+        run_command(['pip', 'install', '-r', os.path.join(ROOT_DIR_LOCATION, 'minikube_requirements.txt')],
+                    capture_output=capture_output)
+
+        # Import minikube here, so we can install the dependencies first
+        from aimmo_runner import minikube
+        minikube.start()
+
+        server_args.append('0.0.0.0:8000')
+        os.environ['AIMMO_MODE'] = 'minikube'
     else:
         time.sleep(2)
         game = run_command_async(['python', _SERVICE_PY, '127.0.0.1', '5000'], capture_output=capture_output)
@@ -76,8 +70,7 @@ def run(use_minikube, server_wait=True, capture_output=False, test_env=False):
         os.environ['AIMMO_MODE'] = 'threads'
 
     os.environ['NODE_ENV'] = 'development' if settings.DEBUG else 'production'
-
-    server = run_command_async(['python', _MANAGE_PY, 'runserver'], capture_output=capture_output)
+    server = run_command_async(['python', _MANAGE_PY, 'runserver'] + server_args, capture_output=capture_output)
     frontend_bundler = run_command_async(['node', _FRONTEND_BUNDLER_JS], capture_output=capture_output)
     PROCESSES.append(server)
     PROCESSES.append(frontend_bundler)
