@@ -34,7 +34,7 @@
 # copyright notice and these terms. You must not misrepresent the origins of this
 # program; modified versions of the program must be marked as such and not
 # identified as the original program.
-'''Players autoconfig'''
+'''aimmo autoconfig'''
 
 DEFAULT_SETTINGS = {
     'AUTOCONFIG_INDEX_VIEW': 'aimmo/home',

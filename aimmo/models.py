@@ -4,7 +4,7 @@ from os import urandom
 from django.contrib.auth.models import User
 from django.db import models
 
-from players import app_settings
+from aimmo import app_settings
 
 GAME_GENERATORS = [
     ('Main', 'Open World'),  # Default

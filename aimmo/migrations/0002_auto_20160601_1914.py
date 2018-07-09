@@ -7,13 +7,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('players', '0005_auto_20160808_1545'),
+        ('aimmo', '0001_initial'),
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='game',
-            name='static_data',
-            field=models.TextField(null=True, blank=True),
+        migrations.RemoveField(
+            model_name='avatar',
+            name='player',
+        ),
+        migrations.DeleteModel(
+            name='Avatar',
         ),
     ]

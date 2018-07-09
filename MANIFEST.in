@@ -1,2 +1,2 @@
-graft players/static
-graft players/templates
+graft aimmo/static
+graft aimmo/templates

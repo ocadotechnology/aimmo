@@ -75,11 +75,11 @@ test-bin/
 aimmo-game/.hypothesis
 
 # Unity Build
-players/static/unity/**
+aimmo/static/unity/**
 
 # Frontend generated files
-players/static/react/
-players/templates/players/game_ide.html
+aimmo/static/react/
+aimmo/templates/players/game_ide.html
 
 # Mac Generated Files
 .DS_Store

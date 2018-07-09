@@ -6,7 +6,7 @@ This section describes the whole game architecture and how things are structured
 
 ## Components
 
-[The UI (`players` directory)](ui/README.md) 
+[The UI (`aimmo` directory)](ui/README.md) 
 
 A Django app used for the front-end and database interaction. There are static Unity build files to render the game in browser.
 

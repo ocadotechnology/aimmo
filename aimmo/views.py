@@ -12,7 +12,7 @@ from django.views.generic import TemplateView
 from django.middleware.csrf import get_token
 
 from models import Avatar, Game, LevelAttempt
-from players import forms, game_renderer
+from aimmo import forms, game_renderer
 from app_settings import get_users_for_new_game, preview_user_required
 
 LOGGER = logging.getLogger(__name__)

@@ -1,4 +1,4 @@
-## The UI (`players` directory)
+## The UI (`aimmo` directory)
 
 ---
 

@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 
-from players.models import Game
+from aimmo.models import Game
 
 
 class AddGameForm(ModelForm):
