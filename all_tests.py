@@ -33,7 +33,7 @@ def main():
 
 def run_tests(compute_coverage):
     def app_name(app):
-        return 'players' if app == '' else app
+        return 'aimmo' if app == '' else app
 
     failed_apps = []
     for app in APPS:

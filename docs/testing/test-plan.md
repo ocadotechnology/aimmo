@@ -43,7 +43,7 @@ class Avatar(object):
 ### Check the following:
 **Prior to playing the game:**
 * Ensure there are no custom games running (Watch menu).
-* Go to Program->Create a new game (/players/games/new). Select any name, select yourself in the 'Can Play' menu.
+* Go to Program->Create a new game (/aimmo/games/new). Select any name, select yourself in the 'Can Play' menu.
 * Ensure 'Generator' is set to "Open World". Save, watch.
 * A grid should show with an avatar moving around randomly.
 * The score location should move randomly from time to time (depending on settings).
