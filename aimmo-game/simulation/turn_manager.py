@@ -44,10 +44,10 @@ class TurnManager(Thread):
     """
     daemon = True
 
-    def __init__(self, game_state, end_turn_callback, completion_url):
+    def __init__(self, game_state, end_turn_callback, communicator):
         state_provider.set_world(game_state)
         self.end_turn_callback = end_turn_callback
-        self._completion_url = completion_url
+        self.communicator = communicator
         super(TurnManager, self).__init__()
 
     def run_turn(self):
@@ -70,7 +70,7 @@ class TurnManager(Thread):
 
     def _mark_complete(self):
         from service import get_world_state
-        requests.post(self._completion_url, json=get_world_state())
+        self.communicator.mark_game_complete(data=get_world_state())
 
     def _run_single_turn(self):
         self.run_turn()
