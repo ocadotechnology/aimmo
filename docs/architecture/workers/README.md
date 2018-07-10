@@ -10,7 +10,7 @@ The initialization of the worker has the responsibility of getting the user code
 
 Updating the code of a user is done with the help of the database through the [game API](game-api). The game API resource for getting the code and for posting new code is shared: when a GET is made, we receive the avatar code, a POST is made, we update the avatar code.
 
-The code and options are saved inside a directory. The directory is built when the `initilization.py` file is executed. The [LocalWorkerManager](worker-manager)(from [Game](game)) does not call the initialization.py function, updating the files by hand, then running the service.py. The [KubernetesWorkerManager](worker-manger)(from [Game](game)) run both functions by running the shell file `run.py`.
+The code and options are saved inside a directory. The directory is built when the `initilise.py` file is executed. The [LocalWorkerManager](worker-manager)(from [Game](game)) does not call the `initialise.py` file, updating the files by hand, then running the `service.py`. The [KubernetesWorkerManager](worker-manger)(from [Game](game)) run both functions by running the shell file `run.sh`.
 
 ```shell
 set -e

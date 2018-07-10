@@ -61,8 +61,8 @@ class TurnManager(Thread):
             state_view = game_state.get_state_for(avatar)
 
         if avatar.decide_action(state_view):
-            with state_provider as game_state:
-                avatar.action.register(game_state.world_map)
+                with state_provider as game_state:
+                    avatar.action.register(game_state.world_map)
 
     def _update_environment(self, game_state):
         num_avatars = len(game_state.avatar_manager.active_avatars)

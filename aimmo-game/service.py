@@ -56,6 +56,9 @@ def player_dict(avatar):
 def get_game_state():
     with state_provider as game_state:
         world_map = game_state.world_map
+
+        print("Printing players")
+        print(game_state.avatar_manager.players_update()['players'])
         return {
                 'era': "less_flat",
                 'southWestCorner': world_map.get_serialised_south_west_corner(),

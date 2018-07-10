@@ -25,6 +25,7 @@ def main(args, url):
     with open('{}/avatar.py'.format(data_dir), 'w') as avatar_file:
         avatar_file.write(code)
 
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     main(sys.argv, url=os.environ['DATA_URL'])

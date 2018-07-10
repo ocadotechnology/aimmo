@@ -16,7 +16,7 @@ from pykube import KubeConfig
 from pykube import Pod
 
 LOGGER = logging.getLogger(__name__)
-
+LOGGER.setLevel(logging.DEBUG)
 
 class _WorkerManagerData(object):
     """
@@ -33,19 +33,20 @@ class _WorkerManagerData(object):
         self._game_state.remove_avatar(user_id)
         del self._user_codes[user_id]
 
+    def is_new_avatar(self, user):
+        with self._lock:
+            existing_code = self._user_codes.get(user['id'], None)
+            return existing_code is None
+
     def remove_user_if_code_is_different(self, user):
         with self._lock:
             existing_code = self._user_codes.get(user['id'], None)
-            if existing_code != user['code']:
-                # Remove avatar from the game, so it stops being called for turns
-                if existing_code is not None:
-                    self._remove_avatar(user['id'])
-                return True
-            else:
-                return False
+            return existing_code != user['code']
 
     def add_avatar(self, user, worker_url):
         with self._lock:
+            LOGGER.info("printing game_state avatar_manager")
+            LOGGER.info(self._game_state.avatar_manager.avatars_by_id)
             # Add avatar back into game
             self._game_state.add_avatar(
                 user_id=user['id'], worker_url="%s/turn/" % worker_url)
@@ -137,16 +138,25 @@ class WorkerManager(threading.Thread):
             game = game_data['main']
 
             # Remove users with different code
+            pods_to_recreate = []
             users_to_add = []
+
             for user in game['users']:
+                if self._data.is_new_avatar(user):
+                    users_to_add.append(user['id'])
                 if self._data.remove_user_if_code_is_different(user):
-                    users_to_add.append(user)
+                    pods_to_recreate.append(user['id'])
             LOGGER.debug("Need to add users: %s" % [x['id'] for x in users_to_add])
 
-            # Add missing users
-            self._parallel_map(self.spawn, users_to_add)
+            # Add new worker pods
+            self._parallel_map(self.create_worker, users_to_add)
 
-            # Delete extra users
+            # Recreate worker pods
+            self._parallel_map(self.remove_worker, pods_to_recreate)
+            self._parallel_map(self.create_worker, pods_to_recreate)
+
+
+        # Delete extra users
             known_avatars = set(user['id'] for user in game['users'])
             removed_user_ids = self._data.remove_unknown_avatars(known_avatars)
             LOGGER.debug("Removing users: %s" % removed_user_ids)
