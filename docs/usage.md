@@ -3,14 +3,13 @@
 - [Running with Kubernetes with containers](#running-with-kubernetes-with-containers)
 - [Testing Locally](#testing-locally)
 - [Useful Commands](#useful-commands)
-- [Installing pipenv](#installing-pipenv)
 ---
 
 ## Running Locally with no containers
 * Follow the instructions at [game frontend documentation](https://github.com/ocadotechnology/aimmo/blob/master/game_frontend/README.md) in order to install all the frontend requirements.
-* Make and activate a virtualenv (We recommend [pipenv](https://docs.pipenv.org/)) - if you have a **[Mac see the section at the bottom](https://github.com/ocadotechnology/aimmo/blob/master/docs/usage.md#on-mac)**.
-    * To set this up, run `./ubuntu_setup.sh`. This will install nodejs, yarn, as well as pipenv. 
-    * The next time you would like to use your virtualenv, run `pipenv shell`.
+* Make and activate a virtualenv (We recommend [pipenv](https://docs.pipenv.org/)).
+    * On **Mac**, run `brew install pipenv` using the `brew` package manager. Then run `pipenv install` followed by `pipenv shell`.
+    * On **Ubuntu**, run `sudo ubuntu_setup.sh`. This will install nodejs, yarn, as well as pipenv. Now run the following: `pipenv shell`.
 * `./run.py` in your aimmo dir - This will:
     * if necessary, create a superuser 'admin' with password 'admin'
     * install all of the dependencies using pip
@@ -67,9 +66,3 @@
 * To create an another admin account:
 `python example_project/manage.py createsuperuser`
    * By default, we create an admin account with credentials admin:admin when you start the project.
-   
-## Installing pipenv
-### On Mac:
-* Run `brew install pipenv`
-* To activate your virtualenv, run `pipenv shell`
-

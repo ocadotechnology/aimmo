@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('players', '0004_auto_20160808_1511'),
+        ('aimmo', '0004_auto_20160808_1511'),
     ]
 
     operations = [
@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='levelattempt',
             name='game',
-            field=models.OneToOneField(to='players.Game'),
+            field=models.OneToOneField(to='aimmo.Game'),
         ),
         migrations.AddField(
             model_name='levelattempt',

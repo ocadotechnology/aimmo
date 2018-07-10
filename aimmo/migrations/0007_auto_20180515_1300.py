@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('players', '0006_game_static_data'),
+        ('aimmo', '0006_game_static_data'),
     ]
 
     operations = [

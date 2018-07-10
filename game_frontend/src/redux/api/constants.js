@@ -1,1 +1,1 @@
-export const API_PATH = '/players/api/'
+export const API_PATH = '/aimmo/api/'

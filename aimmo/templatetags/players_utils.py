@@ -1,6 +1,6 @@
 from django import template
 
-from players import app_settings
+from aimmo import app_settings
 
 register = template.Library()
 

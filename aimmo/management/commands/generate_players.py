@@ -7,7 +7,7 @@ from django.test import RequestFactory
 from importlib import import_module
 from django.conf import settings
 from django.contrib.auth.models import User
-from players.views import code as code_view
+from aimmo.views import code as code_view
 
 
 def _nth_dirname(path, n):
