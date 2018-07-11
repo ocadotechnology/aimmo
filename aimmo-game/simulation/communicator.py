@@ -1,7 +1,10 @@
 import requests
 
 class Communicator():
-
+    """
+    This class encapsulates the commmunication between aimmo-game 
+    and the django server
+    """
     def __init__(self, api_url, completion_url):
         self.api_url = api_url
         self.completion_url = completion_url
