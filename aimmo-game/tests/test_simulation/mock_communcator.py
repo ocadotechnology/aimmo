@@ -9,7 +9,10 @@ class MockCommunicator(Communicator):
                 "users": [
                     {
                         "id": 1,
-                        "code": "class Avatar:"
+                        "code": "class Avatar(object):\n" \
+                                "    def handle_turn(self, world_view, events):\n" \
+                                "        from simulation.action import WaitAction\n" \
+                                "        return WaitAction()\n"
                     }
                 ]
             }
