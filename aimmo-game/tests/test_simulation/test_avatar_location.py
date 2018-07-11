@@ -7,6 +7,7 @@ from simulation.map_generator import Main
 from simulation.avatar.avatar_manager import AvatarManager
 from .concrete_worker_manager import ConcreteWorkerManager
 
+
 class MockCommunicator(Communicator):
     def __init__(self):
         self.data = {
@@ -30,65 +31,40 @@ class MockCommunicator(Communicator):
         return {}
 
 
+class FakeGameRunner():
+
+    def __init__(self, settings={'START_WIDTH': 3, 'START_HEIGHT': 3, 'OBSTACLE_RATIO': 0}):
+        self.settings = settings
+        self.map_generator = Main(settings)
+        self.player_manager = AvatarManager()
+        self.mock_communicator = MockCommunicator()
+        self.game_state = self.map_generator.get_game_state(self.player_manager)
+        self.worker_manager = ConcreteWorkerManager(game_state=self.game_state, communicator=self.mock_communicator)
+        self.turn_manager = ConcurrentTurnManager(game_state=self.game_state, end_turn_callback=lambda: None,
+                                                  communicator=self.mock_communicator)
+        random.seed(0)
+
+    def run_single_turn(self):
+        self.worker_manager.update()
+        self.turn_manager._run_single_turn()
+
+    def get_avatar(self, avatar_id):
+        return self.game_state.avatar_manager.get_avatar(avatar_id)
+
+    def change_avatar_code(self, avatar_id, code):
+        avatar = (user for user in self.mock_communicator.data["main"]["users"] if user["id"] == avatar_id).next()
+        avatar["code"] = code
+
+
 class TestAvatarLocation(unittest.TestCase):
 
-    def test_wait_action(self):
-        settings = {'START_WIDTH': 3, 'START_HEIGHT': 3, 'OBSTACLE_RATIO': 0}
-        map_generator = Main(settings)
-        player_manager = AvatarManager()
-        mock_communicator = MockCommunicator()
-        game_state = map_generator.get_game_state(player_manager)
-        worker_manager = ConcreteWorkerManager(game_state=game_state, communicator=mock_communicator)
-        turn_manager = ConcurrentTurnManager(game_state=game_state, end_turn_callback = lambda: None, communicator=mock_communicator)
-        random.seed(0)
-        worker_manager.update()
-        turn_manager._run_single_turn()
-        state_before_code_change = game_state.get_state_for(game_state.avatar_manager.active_avatars[0])
-        mock_communicator.data["main"]["users"][0]["code"] = "class Avatar: different code"
-        worker_manager.update()
-        turn_manager._run_single_turn()
-        state_after_code_change = game_state.get_state_for(game_state.avatar_manager.active_avatars[0])
-        self.assertEqual(state_before_code_change, state_after_code_change)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    def test_avatar_location_stays_same_after_code_change(self):
+        game_runner = FakeGameRunner()
+        game_runner.run_single_turn()
+        avatar_location_before_code_change = game_runner.get_avatar(1).location
+        game_runner.change_avatar_code(1, "class Avatar: different code")
+        game_runner.run_single_turn()
+        avatar_location_after_code_change = game_runner.get_avatar(1).location
+        self.assertEqual(avatar_location_before_code_change, avatar_location_after_code_change)
 
 
