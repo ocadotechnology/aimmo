@@ -10,4 +10,4 @@ python ./initialise.py $dir
 
 export PYTHONPATH=$dir:$PYTHONPATH
 
-exec python ./service.py $1 $2 $dir
+exec python ./service.py $1 $2

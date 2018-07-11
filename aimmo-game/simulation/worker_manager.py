@@ -69,6 +69,15 @@ class _WorkerManagerData(object):
         with self._lock:
             self._game_state.main_avatar_id = avatar_id
 
+    def get_avatar_from_user_id(self, user_id):
+        """
+        Accesses the avatar manager from the game state to receive the avatar
+        object.
+        :param user_id: The ID of the worker in this game instance.
+        :return: Avatar object
+        """
+        return self._game_state.avatar_manager.get_avatar(user_id)
+
 
 class WorkerManager(threading.Thread):
     """
@@ -104,8 +113,8 @@ class WorkerManager(threading.Thread):
         """
         Helper function to kill the worker, set new code in the WorkerManagerData
         and spawn a new worker.
-        :param user_id:
-        :return:
+        :param user: Dict containing the user code, id etc.
+        :return: A string representing a full URL to the turn API of the worker.
         """
         user_id = user['id']
 
@@ -131,15 +140,13 @@ class WorkerManager(threading.Thread):
         worker_url = self.recreate_worker(user)
 
         # Update the worker_url of the avatar.
-        # TODO: refactor this so that you don't need to use these private instance variables
-        avatar = self._data._game_state.avatar_manager.get_avatar(user_id)
-
+        avatar = self._data.get_avatar_from_user_id(user_id)
         LOGGER.info("worker_url " + "%s/turn/" % worker_url)
         avatar.worker_url = "%s/turn/" % worker_url
 
     def add_new_user(self, user):
         """
-        TODO
+        Adds a new avatar to the game state so we keep track of it in each turn.
         :param user: Dict containing the user code, id etc.
         """
         user_id = user['id']
@@ -179,8 +186,7 @@ class WorkerManager(threading.Thread):
             # Recreate worker pods
             self._parallel_map(self.recreate_user, users_to_recreate)
 
-
-        # Delete extra users
+            # Delete extra users
             known_avatars = set(user['id'] for user in game['users'])
             removed_user_ids = self._data.remove_unknown_avatars(known_avatars)
             LOGGER.debug("Removing users: %s" % removed_user_ids)

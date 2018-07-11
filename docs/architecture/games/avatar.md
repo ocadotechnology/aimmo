@@ -12,7 +12,7 @@ The avatar functionality is separated in several classes:
 - the avatar manager - a structure that keeps a list of avatars. It is used by the Turn Manager to update the environment
 - fog of war (currently removed, but this feature will return eventually)
 
-### The Avatar Wrapper
+### `AvatarWrapper`
 The avatar wrapper represents the application's view of a character, together with an API that communicates to the worker via HTTP GETs.
 
 The main functionality is:
@@ -29,3 +29,7 @@ Deciding an action is done by making a GET request to the Game API and processin
 
 - die - dies and respawns at new location
 - damage - take damage
+
+
+### `AvatarManager`
+This is responsible for adding and removing avatars and managing the list of avatars that the main game simulation has a access to. 
