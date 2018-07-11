@@ -47,9 +47,9 @@ class AvatarWrapper(object):
         return isinstance(self.action, MoveAction)
 
     def _fetch_action(self, state_view):
-        response = requests.post(self.worker_url, json=state_view).json()
+        response = requests.post(self.worker_url, json=state_view)
         response.raise_for_status()
-        return response
+        return response.json()
 
     def _construct_action(self, data):
         action_data = data['action']
