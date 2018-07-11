@@ -7,39 +7,30 @@ import flask
 
 from simulation.avatar_state import AvatarState
 from simulation.world_map import WorldMap
-from simulation.action import WaitAction
+from avatar_runner import AvatarRunner
 
 app = flask.Flask(__name__)
 LOGGER = logging.getLogger(__name__)
 
-worker_avatar = None
-
+avatar_runner = None
 
 @app.route('/turn/', methods=['POST'])
 def process_turn():
     LOGGER.info('Calculating action')
     data = flask.request.get_json()
 
-    try:
-        from avatar import Avatar
-        global worker_avatar
-        worker_avatar = Avatar()
-
-        world_map = WorldMap(**data['world_map'])
-        avatar_state = AvatarState(**data['avatar_state'])
-
-        action = worker_avatar.handle_turn(avatar_state, world_map)
-    except Exception as e:
-        LOGGER.info("Do stuff later with the errored code.")
-        LOGGER.info(e)
-        action = WaitAction()
+    world_map = WorldMap(**data['world_map'])
+    avatar_state = AvatarState(**data['avatar_state'])
+    
+    action = avatar_runner.handle_turn(world_map, avatar_state)
 
     return flask.jsonify(action=action.serialise())
 
 
 def run(host, port):
     logging.basicConfig(level=logging.DEBUG)
-
+    global avatar_runner
+    avatar_runner = AvatarRunner()
     app.config['DEBUG'] = False
     app.run(host, port)
 
