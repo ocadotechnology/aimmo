@@ -18,6 +18,7 @@ from pykube import Pod
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.DEBUG)
 
+
 class _WorkerManagerData(object):
     """
     This class is thread safe
@@ -45,8 +46,6 @@ class _WorkerManagerData(object):
 
     def add_avatar(self, user, worker_url):
         with self._lock:
-            LOGGER.info("printing game_state avatar_manager")
-            LOGGER.info(self._game_state.avatar_manager.avatars_by_id)
             # Add avatar back into game
             self._game_state.add_avatar(
                 user_id=user['id'], worker_url="%s/turn/" % worker_url)
@@ -91,11 +90,6 @@ class WorkerManager(threading.Thread):
     def get_code(self, player_id):
         return self._data.get_code(player_id)
 
-    def get_persistent_state(self, player_id):
-        """Get the persistent state for a worker."""
-
-        return None
-
     def create_worker(self, player_id):
         """Create a worker."""
 
@@ -106,24 +100,55 @@ class WorkerManager(threading.Thread):
 
         raise NotImplemented
 
-    # TODO handle failure
-    def spawn(self, user):
-        # Get persistent state from worker
-        persistent_state = self.get_persistent_state(user['id'])  # noqa: F841
+    def recreate_worker(self, user):
+        """
+        Helper function to kill the worker, set new code in the WorkerManagerData
+        and spawn a new worker.
+        :param user_id:
+        :return:
+        """
+        user_id = user['id']
 
-        # Kill worker
-        LOGGER.info("Removing worker for user %s" % user['id'])
-        self.remove_worker(user['id'])
+        LOGGER.info("Removing worker for user %s" % user_id)
+        self.remove_worker(user_id)
 
         self._data.set_code(user)
 
         # Spawn worker
-        LOGGER.info("Spawning worker for user %s" % user['id'])
-        worker_url = self.create_worker(user['id'])
+        LOGGER.info("Spawning worker for user %s" % user_id)
+        worker_url = self.create_worker(user_id)
 
-        # Add avatar back into game
+        return worker_url
+
+    def recreate_user(self, user):
+        """
+        Removes and creates new worker pods. Sets the new user code in between
+        to the user_codes of _WorkerManagerData.
+        :param user: Dict containing the user code, id etc.
+        """
+        user_id = user['id']
+
+        worker_url = self.recreate_worker(user)
+
+        # Update the worker_url of the avatar.
+        # TODO: refactor this so that you don't need to use these private instance variables
+        avatar = self._data._game_state.avatar_manager.get_avatar(user_id)
+
+        LOGGER.info("worker_url " + "%s/turn/" % worker_url)
+        avatar.worker_url = "%s/turn/" % worker_url
+
+    def add_new_user(self, user):
+        """
+        TODO
+        :param user: Dict containing the user code, id etc.
+        """
+        user_id = user['id']
+
+        worker_url = self.recreate_worker(user)
+
+        # Add avatar into game
         self._data.add_avatar(user, worker_url)
-        LOGGER.info('Added user %s', user['id'])
+        LOGGER.info('Added user %s', user_id)
 
     def _parallel_map(self, func, iterable_args):
         list(self._pool.imap(func, iterable_args))
@@ -138,22 +163,21 @@ class WorkerManager(threading.Thread):
             game = game_data['main']
 
             # Remove users with different code
-            pods_to_recreate = []
-            users_to_add = []
+            users_to_recreate = []
+            new_users_to_add = []
 
             for user in game['users']:
                 if self._data.is_new_avatar(user):
-                    users_to_add.append(user['id'])
+                    new_users_to_add.append(user)
                 if self._data.remove_user_if_code_is_different(user):
-                    pods_to_recreate.append(user['id'])
-            LOGGER.debug("Need to add users: %s" % [x['id'] for x in users_to_add])
+                    users_to_recreate.append(user)
+            LOGGER.debug("Need to add users: %s" % [x['id'] for x in new_users_to_add])
 
             # Add new worker pods
-            self._parallel_map(self.create_worker, users_to_add)
+            self._parallel_map(self.add_new_user, new_users_to_add)
 
             # Recreate worker pods
-            self._parallel_map(self.remove_worker, pods_to_recreate)
-            self._parallel_map(self.create_worker, pods_to_recreate)
+            self._parallel_map(self.recreate_user, users_to_recreate)
 
 
         # Delete extra users
