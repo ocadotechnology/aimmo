@@ -168,4 +168,4 @@ def create_custom_game_default_settings(name):
 
     response = session.post(url, data=data, headers=headers)
 
-    return response
+    return response, session

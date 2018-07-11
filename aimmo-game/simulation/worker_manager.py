@@ -76,13 +76,13 @@ class WorkerManager(threading.Thread):
     """
     daemon = True
 
-    def __init__(self, game_state, users_url, port=5000):
+    def __init__(self, game_state, communicator, port=5000):
         """
 
         :param thread_pool:
         """
         self._data = _WorkerManagerData(game_state, {})
-        self.users_url = users_url
+        self.communicator = communicator
         self._pool = GreenPool(size=3)
         self.port = port
         super(WorkerManager, self).__init__()
@@ -156,7 +156,7 @@ class WorkerManager(threading.Thread):
     def update(self):
         try:
             LOGGER.info("Waking up")
-            game_data = requests.get(self.users_url).json()
+            game_data = self.communicator.get_game_metadata()
         except (requests.RequestException, ValueError) as err:
             LOGGER.error("Failed to obtain game data : %s", err)
         else:

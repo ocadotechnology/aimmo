@@ -117,7 +117,7 @@ class TestKubernetes(unittest.TestCase):
                 timeout += 1
                 time.sleep(1)
 
-        request_response = create_custom_game_default_settings(name="testGame")
+        request_response, _ = create_custom_game_default_settings(name="testGame")
 
         # WORKER
         _wait_for_kubernetes_cluster(self.api_instance)
