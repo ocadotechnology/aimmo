@@ -2,7 +2,7 @@ import random
 
 from simulation import map_generator
 from simulation.turn_manager import SequentialTurnManager
-
+from tests.test_simulation.mock_communcator import MockCommunicator
 from tests.test_simulation.dummy_avatar import DummyAvatarManager, MoveEastDummy
 
 SETTINGS = {
@@ -27,4 +27,4 @@ class MockWorld(object):
         self.avatar_manager = DummyAvatarManager(dummies_list)
         self.game_state = self.generator.get_game_state(self.avatar_manager)
         self.turn_manager = SequentialTurnManager(game_state=self.game_state, end_turn_callback=lambda: None,
-                                                  completion_url='')
+                                                    communicator=MockCommunicator())
