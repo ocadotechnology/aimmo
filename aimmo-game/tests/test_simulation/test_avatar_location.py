@@ -18,5 +18,3 @@ class TestAvatarLocation(unittest.TestCase):
         game_runner.run_single_turn()
         avatar_location_after_code_change = game_runner.get_avatar(1).location
         self.assertEqual(avatar_location_before_code_change, avatar_location_after_code_change)
-
-

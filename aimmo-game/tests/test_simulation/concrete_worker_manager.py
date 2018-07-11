@@ -20,4 +20,3 @@ class ConcreteWorkerManager(WorkerManager):
             self.final_workers.remove(player_id)
         except KeyError:
             pass
-            
