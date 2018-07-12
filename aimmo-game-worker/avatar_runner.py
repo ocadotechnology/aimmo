@@ -11,7 +11,7 @@ class AvatarRunner:
             self.avatar = Avatar()
         else:
             self.avatar = avatar
-    
+
     def handle_turn(self, world_map, avatar_state):
         try:
             return self.avatar.handle_turn(avatar_state, world_map)

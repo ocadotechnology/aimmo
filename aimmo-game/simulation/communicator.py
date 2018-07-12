@@ -1,5 +1,6 @@
 import requests
 
+
 class Communicator():
     """
     This class encapsulates the commmunication between aimmo-game 
