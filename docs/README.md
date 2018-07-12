@@ -11,6 +11,7 @@ The first required steps to get familiar with the project and run it locally.
 ## Architecture
 
 Architecture of the project. How things are structured, what components exist, etc.
+![](architecture/uml.png?raw=true)
 - [Architecture](architecture/README.md)
     - [Game Creator](architecture/game-creator/README.md)
     - [Games](architecture/games/README.md)
