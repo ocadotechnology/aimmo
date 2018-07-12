@@ -7,7 +7,7 @@ import subprocess
 import tempfile
 import requests
 
-from worker_manager import WorkerManager
+from .worker_manager import WorkerManager
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.DEBUG)
