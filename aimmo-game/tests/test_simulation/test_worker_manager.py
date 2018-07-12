@@ -1,17 +1,14 @@
 from __future__ import absolute_import
-
-import unittest
-from json import dumps
-
-from httmock import HTTMock
-import mock
-
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.game_state import GameState
-from simulation.worker_manager import WorkerManager
 from .maps import InfiniteMap
 from .concrete_worker_manager import ConcreteWorkerManager
 from .mock_communicator import MockCommunicator
+from json import dumps
+
+import unittest
+import mock
+
 
 class RequestMock(object):
     def __init__(self, num_users):
@@ -50,6 +47,7 @@ class TestWorkerManager(unittest.TestCase):
     def test_correct_url(self):
         self.mock_communicator.get_game_metadata = mock.MagicMock()
         self.worker_manager.update()
+        # noinspection PyUnresolvedReferences
         self.mock_communicator.get_game_metadata.assert_called_once()
 
     def test_workers_added(self):
