@@ -11,7 +11,7 @@ from simulation.game_state import GameState
 from simulation.worker_manager import WorkerManager
 from .maps import InfiniteMap
 from .concrete_worker_manager import ConcreteWorkerManager
-from .mock_communcator import MockCommunicator
+from .mock_communicator import MockCommunicator
 
 class RequestMock(object):
     def __init__(self, num_users):

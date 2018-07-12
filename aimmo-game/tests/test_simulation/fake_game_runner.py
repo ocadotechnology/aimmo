@@ -1,15 +1,18 @@
 import random
-from simulation.worker_manager import WorkerManager
 from simulation.turn_manager import ConcurrentTurnManager
 from simulation.map_generator import Main
 from simulation.avatar.avatar_manager import AvatarManager
 from .concrete_worker_manager import ConcreteWorkerManager
-from .mock_communcator import MockCommunicator
+from .mock_communicator import MockCommunicator
 
 
-class FakeGameRunner():
+class FakeGameRunner:
 
-    def __init__(self, settings={'START_WIDTH': 3, 'START_HEIGHT': 3, 'OBSTACLE_RATIO': 0}):
+    def __init__(self, settings=None):
+        # Default argument is now immutable
+        if settings is None:
+            settings = {'START_WIDTH': 3, 'START_HEIGHT': 3, 'OBSTACLE_RATIO': 0}
+
         self.settings = settings
         self.map_generator = Main(settings)
         self.player_manager = AvatarManager()

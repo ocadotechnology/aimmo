@@ -10,7 +10,7 @@ from simulation.turn_manager import ConcurrentTurnManager
 from .dummy_avatar import (DummyAvatarManager, MoveEastDummy, MoveNorthDummy,
                            MoveSouthDummy, MoveWestDummy, WaitDummy)
 from .maps import InfiniteMap
-from .mock_communcator import MockCommunicator
+from .mock_communicator import MockCommunicator
 
 ORIGIN = Location(0, 0)
 

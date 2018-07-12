@@ -1,5 +1,6 @@
 from simulation.communicator import Communicator
 
+
 class MockCommunicator(Communicator):
     def __init__(self):
         self.data = {
