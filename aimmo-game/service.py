@@ -1,26 +1,24 @@
 #!/usr/bin/env python
+
 import cPickle as pickle
 import logging
 import os
 import sys
-from collections import defaultdict
-
 import eventlet
+import flask
+
+
+from flask_socketio import SocketIO, emit
+from flask_cors import CORS
+from simulation import map_generator
+from simulation.turn_manager import state_provider, ConcurrentTurnManager
+from simulation.avatar.avatar_manager import AvatarManager
+from simulation.worker_managers import WORKER_MANAGERS
+from simulation.pickups import pickups_update
+from simulation.communicator import Communicator
 
 eventlet.sleep()
 eventlet.monkey_patch()
-
-import flask
-from flask_socketio import SocketIO, emit
-from flask_cors import CORS
-
-from simulation.turn_manager import state_provider
-from simulation import map_generator
-from simulation.avatar.avatar_manager import AvatarManager
-from simulation.turn_manager import ConcurrentTurnManager
-from simulation.worker_manager import WORKER_MANAGERS
-from simulation.pickups import pickups_update
-from simulation.communicator import Communicator
 
 app = flask.Flask(__name__)
 CORS(app, supports_credentials=True)

@@ -1,19 +1,10 @@
-import atexit
-import itertools
-import json
 import logging
-import os
-import subprocess
-import tempfile
 import threading
 import time
 
 import requests
 from eventlet.greenpool import GreenPool
 from eventlet.semaphore import Semaphore
-from pykube import HTTPClient
-from pykube import KubeConfig
-from pykube import Pod
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.DEBUG)
@@ -76,7 +67,8 @@ class _WorkerManagerData(object):
         :param user_id: The ID of the worker in this game instance.
         :return: Avatar object
         """
-        return self._game_state.avatar_manager.get_avatar(user_id)
+        with self._lock:
+            return self._game_state.avatar_manager.get_avatar(user_id)
 
 
 class WorkerManager(threading.Thread):
@@ -86,10 +78,6 @@ class WorkerManager(threading.Thread):
     daemon = True
 
     def __init__(self, game_state, communicator, port=5000):
-        """
-
-        :param thread_pool:
-        """
         self._data = _WorkerManagerData(game_state, {})
         self.communicator = communicator
         self._pool = GreenPool(size=3)
@@ -102,12 +90,12 @@ class WorkerManager(threading.Thread):
     def create_worker(self, player_id):
         """Create a worker."""
 
-        raise NotImplemented
+        raise NotImplementedError
 
     def remove_worker(self, player_id):
         """Remove a worker for the given player."""
 
-        raise NotImplemented
+        raise NotImplementedError
 
     def recreate_worker(self, user):
         """
@@ -200,135 +188,3 @@ class WorkerManager(threading.Thread):
             self.update()
             LOGGER.info("Sleeping")
             time.sleep(10)
-
-
-class LocalWorkerManager(WorkerManager):
-    """Relies on them already being created already."""
-
-    host = '127.0.0.1'
-    worker_directory = os.path.join(
-        os.path.dirname(__file__),
-        '../../aimmo-game-worker/',
-    )
-
-    def __init__(self, *args, **kwargs):
-        self.workers = {}
-        self.port_counter = itertools.count(1989)
-        super(LocalWorkerManager, self).__init__(*args, **kwargs)
-
-    def create_worker(self, player_id):
-        assert(player_id not in self.workers)
-        port = self.port_counter.next()
-        env = os.environ.copy()
-        data_dir = tempfile.mkdtemp()
-
-        LOGGER.debug('Data dir is %s', data_dir)
-        data = requests.get("http://127.0.0.1:{}/player/{}".format(self.port, player_id)).json()
-
-        options = data['options']
-        with open('{}/options.json'.format(data_dir), 'w') as options_file:
-            json.dump(options, options_file)
-
-        code = data['code']
-        with open('{}/avatar.py'.format(data_dir), 'w') as avatar_file:
-            avatar_file.write(code)
-
-        env['PYTHONPATH'] = data_dir
-
-        process = subprocess.Popen(['python', 'service.py', self.host, str(port), str(data_dir)], cwd=self.worker_directory, env=env)
-        atexit.register(process.kill)
-        self.workers[player_id] = process
-        worker_url = 'http://%s:%d' % (
-            self.host,
-            port,
-        )
-        LOGGER.info("Worker started for %s, listening at %s", player_id, worker_url)
-        return worker_url
-
-    def remove_worker(self, player_id):
-        if player_id in self.workers:
-            self.workers[player_id].kill()
-            del self.workers[player_id]
-
-
-class KubernetesWorkerManager(WorkerManager):
-    """Kubernetes worker manager."""
-
-    def __init__(self, *args, **kwargs):
-        self.api = HTTPClient(KubeConfig.from_service_account())
-        self.game_id = os.environ['GAME_ID']
-        self.game_url = os.environ['GAME_URL']
-        super(KubernetesWorkerManager, self).__init__(*args, **kwargs)
-
-    def create_worker(self, player_id):
-        pod = Pod(
-            self.api,
-            {
-             'kind': 'Pod',
-             'apiVersion': 'v1',
-             'metadata': {
-                'generateName': "aimmo-%s-worker-%s-" % (self.game_id, player_id),
-                'labels': {
-                    'app': 'aimmo-game-worker',
-                    'game': self.game_id,
-                    'player': str(player_id),
-                    },
-                },
-             'spec': {
-                'containers': [
-                    {
-                        'env': [
-                            {
-                                'name': 'DATA_URL',
-                                'value': "%s/player/%d" % (self.game_url, player_id),
-                            },
-                        ],
-                        'name': 'aimmo-game-worker',
-                        'image': 'ocadotechnology/aimmo-game-worker:%s' % os.environ.get('IMAGE_SUFFIX', 'latest'),
-                        'ports': [
-                            {
-                                'containerPort': 5000,
-                                'protocol': 'TCP'
-                            }
-                        ],
-                        'resources': {
-                            'limits': {
-                                'cpu': '10m',
-                                'memory': '64Mi',
-                            },
-                            'requests': {
-                                'cpu': '7m',
-                                'memory': '32Mi',
-                            },
-                        },
-                    },
-                ],
-             },
-            }
-        )
-        pod.create()
-        iterations = 0
-        while pod.obj['status']['phase'] == 'Pending':
-            if iterations > 30:
-                raise EnvironmentError('Could not start worker %s, details %s' % (player_id, pod.obj))
-            LOGGER.debug('Waiting for worker %s', player_id)
-            time.sleep(5)
-            pod.reload()
-            iterations += 1
-        worker_url = "http://%s:5000" % pod.obj['status']['podIP']
-        LOGGER.info("Worker started for %s, listening at %s", player_id, worker_url)
-        return worker_url
-
-    def remove_worker(self, player_id):
-        for pod in Pod.objects(self.api).filter(selector={
-            'app': 'aimmo-game-worker',
-            'game': self.game_id,
-            'player': str(player_id),
-        }):
-            LOGGER.debug('Removing pod %s', pod.obj['spec'])
-            pod.delete()
-
-WORKER_MANAGERS = {
-    'local': LocalWorkerManager,
-    'kubernetes': KubernetesWorkerManager,
-}
