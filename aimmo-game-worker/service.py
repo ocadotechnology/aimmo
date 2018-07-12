@@ -14,6 +14,7 @@ LOGGER = logging.getLogger(__name__)
 
 avatar_runner = None
 
+
 @app.route('/turn/', methods=['POST'])
 def process_turn():
     LOGGER.info('Calculating action')
