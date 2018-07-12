@@ -1,8 +1,6 @@
 #!/usr/bin/env python
-import json
 import logging
 import sys
-
 import flask
 
 from simulation.avatar_state import AvatarState
@@ -22,7 +20,7 @@ def process_turn():
 
     world_map = WorldMap(**data['world_map'])
     avatar_state = AvatarState(**data['avatar_state'])
-    
+
     action = avatar_runner.handle_turn(world_map, avatar_state)
 
     return flask.jsonify(action=action.serialise())
