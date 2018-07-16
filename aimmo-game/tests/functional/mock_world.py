@@ -1,8 +1,9 @@
 import random
 
+
 from simulation import map_generator
 from simulation.turn_manager import SequentialTurnManager
-from tests.test_simulation.mock_communcator import MockCommunicator
+from tests.test_simulation.mock_communicator import MockCommunicator
 from tests.test_simulation.dummy_avatar import DummyAvatarManager, MoveEastDummy
 
 SETTINGS = {

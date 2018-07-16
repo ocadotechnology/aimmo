@@ -1,7 +1,7 @@
-from kubernetes_worker_manager import KubernetesWorkerManager
-from local_worker_manager import LocalWorkerManager
+from kubernetes_worker_manager import KubernetesWorkerManager as _KWorkerManager
+from local_worker_manager import LocalWorkerManager as _LWorkerManager
 
 WORKER_MANAGERS = {
-    'local': LocalWorkerManager,
-    'kubernetes': KubernetesWorkerManager,
+    'local': _KWorkerManager,
+    'kubernetes': _LWorkerManager,
 }
