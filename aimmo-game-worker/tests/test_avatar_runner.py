@@ -1,5 +1,4 @@
 from unittest import TestCase
-import json
 from avatar_runner import AvatarRunner
 from simulation.action import WaitAction
 

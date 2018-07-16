@@ -4,7 +4,7 @@ from simulation.action import WaitAction
 LOGGER = logging.getLogger(__name__)
 
 
-class AvatarRunner:
+class AvatarRunner(object):
     def __init__(self, avatar=None):
         if avatar is None:
             from avatar import Avatar

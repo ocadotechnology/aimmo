@@ -4,8 +4,6 @@ from .fake_game_runner import FakeGameRunner
 
 class TestAvatarLocation(unittest.TestCase):
 
-
-
     def test_avatar_location_stays_same_after_code_change(self):
         game_runner = FakeGameRunner()
         new_code = "class Avatar(object):\n" \

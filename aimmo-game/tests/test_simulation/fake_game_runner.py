@@ -6,7 +6,7 @@ from .concrete_worker_manager import ConcreteWorkerManager
 from .mock_communicator import MockCommunicator
 
 
-class FakeGameRunner:
+class FakeGameRunner(object):
 
     def __init__(self, settings=None):
         # Default argument is now immutable
