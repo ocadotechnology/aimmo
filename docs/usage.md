@@ -9,7 +9,7 @@
 * Follow the instructions at [game frontend documentation](https://github.com/ocadotechnology/aimmo/blob/master/game_frontend/README.md) in order to install all the frontend requirements.
 * Make and activate a virtualenv (We recommend [pipenv](https://docs.pipenv.org/)).
     * On **Mac**, run `brew install pipenv` using the `brew` package manager. Then run `pipenv install` followed by `pipenv shell`.
-    * On **Ubuntu**, run `sudo ubuntu_setup.sh`. This will install nodejs, yarn, as well as pipenv. Now run the following: `pipenv shell`.
+    * On **Ubuntu**, run `sudo bash ubuntu_setup.sh`. This will install nodejs, yarn, as well as pipenv. Now run the following: `pipenv shell`.
 * `./run.py` in your aimmo dir - This will:
     * if necessary, create a superuser 'admin' with password 'admin'
     * install all of the dependencies using pip
