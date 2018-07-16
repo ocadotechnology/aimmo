@@ -1,7 +1,4 @@
-from simulation.communicator import Communicator
-
-
-class MockCommunicator:
+class MockCommunicator(object):
     def __init__(self):
         self.data = {
             "main": {

@@ -1,9 +1,9 @@
 import requests
 
 
-class Communicator():
+class Communicator(object):
     """
-    This class encapsulates the commmunication between aimmo-game 
+    This class encapsulates the communication between aimmo-game
     and the django server
     """
     def __init__(self, api_url, completion_url):
@@ -15,5 +15,3 @@ class Communicator():
 
     def mark_game_complete(self, data=None):
         return requests.post(requests.post(self.completion_url, json=data))
-
-
