@@ -1,5 +1,7 @@
+from __future__ import absolute_import
 
 from unittest import TestCase
+
 from simulation.location import Location
 from simulation.world_map import WorldMap
 
