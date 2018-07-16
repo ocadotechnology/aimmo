@@ -19,11 +19,11 @@ class MockCommunicator(object):
     def get_game_metadata(self):
         return self.data
 
-    def mark_game_complete(self, data=None):
+    def mark_game_complete(self):
         return {}
 
-    def change_code(self, id, new_code):
+    def change_code(self, avatar_id, new_code):
         users = self.data['main']['users']
         for i in range(len(users)):
-            if users[i]['id'] == id:
+            if users[i]['id'] == avatar_id:
                 users[i]['code'] = new_code
