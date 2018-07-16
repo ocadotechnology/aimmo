@@ -14,7 +14,6 @@ import sys
 from aimmo_runner import runner
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-#APPS = ('integration_tests/', 'aimmo/', 'aimmo-game/', 'aimmo-game-worker/', 'aimmo-game-creator/',)
 APPS = ('aimmo/', 'integration_tests/', 'aimmo-game-worker/', 'aimmo-game-creator/', 'aimmo-game/')
 
 def print_help():

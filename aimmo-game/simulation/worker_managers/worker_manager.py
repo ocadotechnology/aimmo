@@ -7,7 +7,6 @@ from eventlet.greenpool import GreenPool
 from eventlet.semaphore import Semaphore
 
 LOGGER = logging.getLogger(__name__)
-LOGGER.setLevel(logging.DEBUG)
 
 
 class _WorkerManagerData(object):
@@ -30,7 +29,7 @@ class _WorkerManagerData(object):
             existing_code = self._user_codes.get(user['id'], None)
             return existing_code is None
 
-    def remove_user_if_code_is_different(self, user):
+    def is_new_code_different_than_existing(self, user):
         with self._lock:
             existing_code = self._user_codes.get(user['id'], None)
             return existing_code != user['code']
@@ -164,7 +163,7 @@ class WorkerManager(threading.Thread):
             for user in game['users']:
                 if self._data.is_new_avatar(user):
                     new_users_to_add.append(user)
-                if self._data.remove_user_if_code_is_different(user):
+                if self._data.is_new_code_different_than_existing(user):
                     users_to_recreate.append(user)
             LOGGER.debug("Need to add users: %s" % [x['id'] for x in new_users_to_add])
 
