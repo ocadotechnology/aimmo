@@ -6,13 +6,11 @@ from simulation.avatar.avatar_appearance import AvatarAppearance
 from simulation.game_state import GameState
 from simulation.location import Location
 from simulation.turn_manager import ConcurrentTurnManager
-from .dummy_avatar import DummyAvatarManager
-from .dummy_avatar import MoveEastDummy
-from .dummy_avatar import MoveNorthDummy
-from .dummy_avatar import MoveSouthDummy
-from .dummy_avatar import MoveWestDummy
-from .dummy_avatar import WaitDummy
+
+from .dummy_avatar import (DummyAvatarManager, MoveEastDummy, MoveNorthDummy,
+                           MoveSouthDummy, MoveWestDummy, WaitDummy)
 from .maps import InfiniteMap
+from .mock_communicator import MockCommunicator
 
 ORIGIN = Location(0, 0)
 
@@ -37,7 +35,7 @@ class TestTurnManager(unittest.TestCase):
         self.game_state = MockGameState(InfiniteMap(), self.avatar_manager)
         self.turn_manager = ConcurrentTurnManager(game_state=self.game_state,
                                                   end_turn_callback=lambda: None,
-                                                  completion_url='')
+                                                  communicator=MockCommunicator())
         for index, location in enumerate(locations):
             self.game_state.add_avatar(index, "", location)
         return self.turn_manager

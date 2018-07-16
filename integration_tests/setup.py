@@ -13,7 +13,8 @@ setup(
         'requests',
         'psutil',
         'kubernetes == 5.0.0',
+        'django-setuptest==0.2.1',
     ],
-    test_suite='tests',
+    test_suite='setuptest.setuptest.SetupTestSuite',
     zip_safe=False,
 )

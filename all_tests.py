@@ -14,7 +14,7 @@ import sys
 from aimmo_runner import runner
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-APPS = ('', 'aimmo-game/', 'aimmo-game-worker/', 'aimmo-game-creator/',)
+APPS = ('aimmo/', 'integration_tests/', 'aimmo-game-worker/', 'aimmo-game-creator/', 'aimmo-game/')
 
 
 def print_help():
@@ -32,13 +32,10 @@ def main():
 
 
 def run_tests(compute_coverage):
-    def app_name(app):
-        return 'aimmo' if app == '' else app
-
     failed_apps = []
+
     for app in APPS:
         print('Testing {}'.format(app))
-
         dir = os.path.join(BASE_DIR, app)
         if compute_coverage and app != '':
             result = subprocess.call(['coverage', 'run', '--concurrency=eventlet',
@@ -47,10 +44,12 @@ def run_tests(compute_coverage):
             result = subprocess.call([sys.executable, 'setup.py', 'test'], cwd=dir)
         if result != 0:
             print('Tests failed: '.format(result))
-            failed_apps.append(app_name(app))
+            failed_apps.append(app)
+
     if compute_coverage:
         coverage_files = [app + '.coverage' for app in APPS]
         subprocess.call(['coverage', 'combine'] + coverage_files, cwd=BASE_DIR)
+
     if failed_apps:
         print('The app(s) %s had failed tests' % ', '.join(failed_apps))
         return 1

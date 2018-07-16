@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 
 setup(
-    name='aimmo-game',
+    name='aimmo',
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
@@ -16,8 +16,10 @@ setup(
     ],
     tests_require=[
         'httmock',
-        'mock'
+        'mock',
+        'django-setuptest==0.2.1',
+
     ],
-    test_suite='tests',
+    test_suite='setuptest.setuptest.SetupTestSuite',
     zip_safe=False,
 )
