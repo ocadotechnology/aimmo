@@ -28,4 +28,4 @@ class MockWorld(object):
         self.avatar_manager = DummyAvatarManager(dummies_list)
         self.game_state = self.generator.get_game_state(self.avatar_manager)
         self.turn_manager = SequentialTurnManager(game_state=self.game_state, end_turn_callback=lambda: None,
-                                                    communicator=MockCommunicator())
+                                                  communicator=MockCommunicator())

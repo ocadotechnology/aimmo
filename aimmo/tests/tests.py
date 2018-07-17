@@ -16,6 +16,27 @@ app_settings.GAME_SERVER_SSL_FLAG = True
 class TestViews(TestCase):
     CODE = 'class Avatar: pass'
 
+    EXPECTED_GAMES = {
+        'main': {
+            'parameters': [],
+            'main_avatar': 1,
+            'users': [
+                {
+                    'id': 1,
+                    'code': CODE,
+                },
+                {
+                    'id': 2,
+                    'code': 'test2',
+                },
+                {
+                    'id': 3,
+                    'code': 'test3',
+                },
+            ]
+        }
+    }
+
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user('test', 'test@example.com', 'password')
@@ -118,29 +139,9 @@ class TestViews(TestCase):
         models.Avatar(owner=self.user, code=self.CODE, pk=1, game=self.game).save()
         models.Avatar(owner=user2, code='test2', pk=2, game=self.game).save()
         models.Avatar(owner=user3, code='test3', pk=3, game=self.game).save()
-        expected = {
-            'main': {
-                'parameters': [],
-                'main_avatar': 1,
-                'users': [
-                    {
-                        'id': 1,
-                        'code': self.CODE,
-                    },
-                    {
-                        'id': 2,
-                        'code': 'test2',
-                    },
-                    {
-                        'id': 3,
-                        'code': 'test3',
-                    },
-                ]
-            }
-        }
         c = Client()
         response = c.get(reverse('aimmo/game_details', kwargs={'id': 1}))
-        self.assertJSONEqual(response.content, expected)
+        self.assertJSONEqual(response.content, self.EXPECTED_GAMES)
 
     def test_games_api_for_non_existant_game(self):
         c = Client()
