@@ -88,7 +88,6 @@ def send_world_update():
 def healthcheck(game_id):
     return 'HEALTHY'
 
-
 @app.route('/player/<player_id>')
 def player_data(player_id):
     player_id = int(player_id)
