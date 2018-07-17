@@ -150,7 +150,7 @@ class LocalGameManager(GameManager):
             port,
         ]
         env = os.environ.copy()
-        game_data = {str(k):str(v) for k, v in game_data.items()}
+        game_data = {str(k): str(v) for k, v in game_data.items()}
         env.update(game_data)
         self.games[game_id] = subprocess.Popen(process_args, cwd=self.game_directory, env=env)
         game_url = "http://{}:{}".format(self.host, port)
