@@ -27,14 +27,14 @@ class MockGameState(GameState):
 
 
 class TestTurnManager(unittest.TestCase):
-    '''
+    """
         Key:
             > : Avatar moving eastward
             < : Avatar moving westward
             x : Avatar waiting / blocked
             o : Avatar successfully moved
             ! : Dead avatar (that should be waiting)
-    '''
+    """
 
     def construct_default_avatar_appearance(self):
         return AvatarAppearance("#000", "#ddd", "#777", "#fff")
@@ -61,11 +61,11 @@ class TestTurnManager(unittest.TestCase):
         self.turn_manager.run_turn()
 
     def test_run_turn(self):
-        '''
+        """
         Given:  > _
         (1)
         Expect: _ o
-        '''
+        """
         self.construct_turn_manager([MoveEastDummy], [ORIGIN])
         avatar = self.get_avatar(0)
 
@@ -74,11 +74,11 @@ class TestTurnManager(unittest.TestCase):
         self.assert_at(avatar, RIGHT_OF_ORIGIN)
 
     def test_run_several_turns(self):
-        '''
+        """
         Given:  > _ _ _ _ _
         (5)
         Expect: _ _ _ _ _ o
-        '''
+        """
         self.construct_turn_manager([MoveEastDummy], [ORIGIN])
         avatar = self.get_avatar(0)
 
@@ -87,13 +87,13 @@ class TestTurnManager(unittest.TestCase):
         self.assertEqual(avatar.location, FIVE_RIGHT_OF_ORIGIN)
 
     def test_run_several_turns_and_avatars(self):
-        '''
+        """
         Given:  > _ _ _ _ _
                 > _ _ _ _ _
         (5)
         Expect: _ _ _ _ _ o
                 _ _ _ _ _ o
-        '''
+        """
         self.construct_turn_manager([MoveEastDummy, MoveEastDummy],
                                     [ORIGIN,        ABOVE_ORIGIN])
         avatar0 = self.get_avatar(0)
@@ -106,11 +106,11 @@ class TestTurnManager(unittest.TestCase):
         self.assert_at(avatar1, FIVE_RIGHT_OF_ORIGIN_AND_ONE_ABOVE)
 
     def test_move_chain_succeeds(self):
-        '''
+        """
         Given:  > > > > > _
 
         Expect: _ o o o o o
-        '''
+        """
         self.construct_turn_manager([MoveEastDummy for _ in range(5)],
                                     [Location(x, 0) for x in range(5)])
         avatars = [self.get_avatar(i) for i in range(5)]
@@ -120,11 +120,11 @@ class TestTurnManager(unittest.TestCase):
         [self.assert_at(avatars[x], Location(x + 1, 0)) for x in range(5)]
 
     def test_move_chain_fails_occupied(self):
-        '''
+        """
         Given:  > > x _
 
         Expect: x x x _
-        '''
+        """
         self.construct_turn_manager([MoveEastDummy, MoveEastDummy, WaitDummy],
                                     [Location(x, 0) for x in range(3)])
         avatars = [self.get_avatar(i) for i in range(3)]
@@ -134,11 +134,11 @@ class TestTurnManager(unittest.TestCase):
         [self.assert_at(avatars[x], Location(x, 0)) for x in range(3)]
 
     def test_move_chain_fails_occupied_by_dead_avatar(self):
-        '''
+        """
         Given: > > ! _
 
         Expect: x x ! _
-        '''
+        """
 
         self.construct_turn_manager([MoveEastDummy, MoveEastDummy, DeadDummy], [Location(x, 0) for x in range(3)])
         avatars = [self.get_avatar(i) for i in range(3)]
@@ -147,13 +147,11 @@ class TestTurnManager(unittest.TestCase):
         self.run_turn()
         [self.assert_at(avatars[x], Location(x, 0)) for x in range(3)]
 
-
-
     def test_move_fails_collision(self):
-        '''
+        """
         Given: > _ <
         Expect: x _ x
-        '''
+        """
 
         self.construct_turn_manager([MoveEastDummy, MoveWestDummy], [Location(0, 0), Location(2, 0)])
         avatars = [self.get_avatar(i) for i in range(2)]
@@ -167,11 +165,11 @@ class TestTurnManager(unittest.TestCase):
         self.assert_at(avatars[1], Location(2, 0))
 
     def test_move_chain_fails_collision(self):
-        '''
+        """
         Given:  > > > _ <
         (1)
         Expect: x x x _ x
-        '''
+        """
         locations = [Location(0, 0), Location(1, 0), Location(2, 0), Location(4, 0)]
         self.construct_turn_manager(
             [MoveEastDummy, MoveEastDummy, MoveEastDummy, MoveWestDummy],
@@ -183,13 +181,13 @@ class TestTurnManager(unittest.TestCase):
         [self.assert_at(avatars[i], locations[i]) for i in range(4)]
 
     def test_move_chain_fails_cycle(self):
-        '''
+        """
         Given:  > v
                 ^ <
         (1)
         Expect: x x
                 x x
-        '''
+        """
         locations = [Location(0, 1), Location(1, 1), Location(1, 0), Location(0, 0)]
         self.construct_turn_manager(
             [MoveEastDummy, MoveSouthDummy, MoveWestDummy, MoveNorthDummy],
@@ -201,13 +199,13 @@ class TestTurnManager(unittest.TestCase):
         [self.assert_at(avatars[i], locations[i]) for i in range(4)]
 
     def test_move_chain_fails_spiral(self):
-        '''
+        """
         Given:  > > v
                   ^ <
         (1)
         Expect: x x x
                   x x
-        '''
+        """
         locations = [Location(0, 1),
                      Location(1, 1),
                      Location(2, 1),
@@ -221,6 +219,7 @@ class TestTurnManager(unittest.TestCase):
         [self.assert_at(avatars[i], locations[i]) for i in range(5)]
         self.run_turn()
         [self.assert_at(avatars[i], locations[i]) for i in range(5)]
+
 
 if __name__ == '__main__':
     unittest.main()

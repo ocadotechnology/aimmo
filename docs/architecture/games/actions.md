@@ -60,3 +60,4 @@ A `WaitAction` is always legal. A `MoveAction` is legal if and only if:
  Where neither of the avatars have moved.
  
  This detection of collisions is done by registering actions with the cells where the avatars attempt to move and the `detect_cycles` method in the `MoveAction` class.
+ 

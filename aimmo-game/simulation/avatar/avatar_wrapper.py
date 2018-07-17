@@ -91,7 +91,8 @@ class AvatarWrapper(object):
             self._action = action
             return True
 
-        # Returning False here means that the action won't be registered on the cell (although it will be registered on the avatar)
+        # Returning False here means that the action won't be registered on the cell
+        # (although it will be registered on the avatar)
         self._action = WaitAction(self)
         return False
 
