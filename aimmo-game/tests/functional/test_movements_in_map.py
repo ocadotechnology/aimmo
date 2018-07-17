@@ -4,7 +4,7 @@ from mock_world import MockWorld
 from simulation.location import Location
 from simulation import map_generator
 from tests.test_simulation.dummy_avatar import (
-    MoveEastDummy, MoveWestDummy, MoveNorthDummy, MoveSouthDummy, WaitDummy
+    MoveEastDummy, MoveWestDummy, MoveNorthDummy, MoveSouthDummy, WaitDummy, DeadDummy
 )
 
 
@@ -142,6 +142,18 @@ class TestMovementsInMap(TestCase):
         # Avatar 1 managed to move twice, while Avatar 2 managed to only move once.
         self.assertEqual(self.avatar.location, Location(2, 0))
         self.assertEqual(avatar_two.location, Location(3, 0))
+
+        # Live avatar can't move into a square occupied by a 'dead' (no worker) avatar
+        self.set_up_environment([DeadDummy, MoveWestDummy])
+        self.game.game_state.add_avatar(2, None, Location(1, 0))
+        avatar_two = self.game.avatar_manager.get_avatar(2)
+
+        self.assertEqual(self.avatar.location, Location(0, 0))
+        self.assertEqual(avatar_two.location, Location(1, 0))
+        self.game.turn_manager._run_single_turn()
+
+        self.assertEqual(self.avatar.location, Location(0, 0))
+        self.assertEqual(avatar_two.location, Location(1, 0))
 
     def test_sequential_avatars_tailing_each_other(self):
         """
