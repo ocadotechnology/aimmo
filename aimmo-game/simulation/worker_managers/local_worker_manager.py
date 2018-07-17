@@ -45,7 +45,8 @@ class LocalWorkerManager(WorkerManager):
 
         env['PYTHONPATH'] = data_dir
 
-        process = subprocess.Popen(['python', 'service.py', self.host, str(port), str(data_dir)], cwd=self.worker_directory, env=env)
+        process = subprocess.Popen(['python', 'service.py', self.host, str(port), str(data_dir)],
+                                   cwd=self.worker_directory, env=env)
         atexit.register(process.kill)
         self.workers[player_id] = process
         worker_url = 'http://%s:%d' % (

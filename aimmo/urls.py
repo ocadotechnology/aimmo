@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'^$', login_required(preview_user_required(TemplateView.as_view(template_name='players/home.html'))), name='aimmo/home'),
 
     url(r'^accounts/login/$', auth_views.login, name='aimmo/login'),
-    url(r'^accounts/logout/$', auth_views.logout, {'next_page' : 'aimmo/logout_success'}, name='aimmo/logout'),
+    url(r'^accounts/logout/$', auth_views.logout, {'next_page': 'aimmo/logout_success'}, name='aimmo/logout'),
     url(r'^accounts/logout_success/$', TemplateView.as_view(template_name='registration/success_logout.html'), name='aimmo/logout_success'),
 
     url(r'^play/(?P<id>[0-9]+)/$', login_required(preview_user_required(views.watch_game)), name='aimmo/play'),

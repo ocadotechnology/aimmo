@@ -69,4 +69,3 @@ def make_exec(file):
 def get_latest_github_version(repo):
     result = urlopen('https://github.com/%s/releases/latest' % repo)
     return result.geturl().split('/')[-1]
-
