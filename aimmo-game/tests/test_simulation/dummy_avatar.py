@@ -17,8 +17,7 @@ class DummyAvatar(AvatarWrapper):
         self.resistance = 0
 
     def decide_action(self, state_view):
-        self._action = self.handle_turn(state_view)
-        return True
+        raise NotImplementedError()
 
     def handle_turn(self, state_view):
         raise NotImplementedError()
@@ -38,7 +37,36 @@ class DummyAvatar(AvatarWrapper):
         return amount
 
 
-class WaitDummy(DummyAvatar):
+class LiveDummy(DummyAvatar):
+    """
+    An avatar that still has a fully functioning worker.
+    """
+
+    def __init__(self, player_id=1, initial_location=(0, 0)):
+        super(LiveDummy, self).__init__(player_id, initial_location)
+
+    def decide_action(self, state_view):
+        self._action = self.handle_turn(state_view)
+        return True
+
+
+class DeadDummy(DummyAvatar):
+    """
+    An avatar whose worker is no longer responding or returning an invalid action.
+    """
+
+    def __init__(self, player_id=1, initial_location=(0, 0)):
+        super(DeadDummy, self).__init__(player_id, initial_location)
+
+    def decide_action(self, state_view):
+        self._action = self.handle_turn(state_view)
+        return False
+
+    def handle_turn(self, state_view):
+        return WaitAction(self)
+
+
+class WaitDummy(LiveDummy):
     """
     Avatar that always waits.
     """
@@ -46,7 +74,7 @@ class WaitDummy(DummyAvatar):
         return WaitAction(self)
 
 
-class MoveDummy(DummyAvatar):
+class MoveDummy(LiveDummy):
     """
     Avatar that always moves in one direction.
     """

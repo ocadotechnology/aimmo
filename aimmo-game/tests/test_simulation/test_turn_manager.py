@@ -8,7 +8,7 @@ from simulation.location import Location
 from simulation.turn_manager import ConcurrentTurnManager
 
 from .dummy_avatar import (DummyAvatarManager, MoveEastDummy, MoveNorthDummy,
-                           MoveSouthDummy, MoveWestDummy, WaitDummy)
+                           MoveSouthDummy, MoveWestDummy, WaitDummy, DeadDummy)
 from .maps import InfiniteMap
 from .mock_communicator import MockCommunicator
 
@@ -27,6 +27,15 @@ class MockGameState(GameState):
 
 
 class TestTurnManager(unittest.TestCase):
+    '''
+        Key:
+            > : Avatar moving eastward
+            < : Avatar moving westward
+            x : Avatar waiting / blocked
+            o : Avatar successfully moved
+            ! : Dead avatar (that should be waiting)
+    '''
+
     def construct_default_avatar_appearance(self):
         return AvatarAppearance("#000", "#ddd", "#777", "#fff")
 
@@ -123,6 +132,39 @@ class TestTurnManager(unittest.TestCase):
         [self.assert_at(avatars[x], Location(x, 0)) for x in range(3)]
         self.run_turn()
         [self.assert_at(avatars[x], Location(x, 0)) for x in range(3)]
+
+    def test_move_chain_fails_occupied_by_dead_avatar(self):
+        '''
+        Given: > > ! _
+
+        Expect: x x ! _
+        '''
+
+        self.construct_turn_manager([MoveEastDummy, MoveEastDummy, DeadDummy], [Location(x, 0) for x in range(3)])
+        avatars = [self.get_avatar(i) for i in range(3)]
+
+        [self.assert_at(avatars[x], Location(x, 0)) for x in range(3)]
+        self.run_turn()
+        [self.assert_at(avatars[x], Location(x, 0)) for x in range(3)]
+
+
+
+    def test_move_fails_collision(self):
+        '''
+        Given: > _ <
+        Expect: x _ x
+        '''
+
+        self.construct_turn_manager([MoveEastDummy, MoveWestDummy], [Location(0, 0), Location(2, 0)])
+        avatars = [self.get_avatar(i) for i in range(2)]
+
+        self.assert_at(avatars[0], Location(0, 0))
+        self.assert_at(avatars[1], Location(2, 0))
+
+        self.run_turn()
+
+        self.assert_at(avatars[0], Location(0, 0))
+        self.assert_at(avatars[1], Location(2, 0))
 
     def test_move_chain_fails_collision(self):
         '''
