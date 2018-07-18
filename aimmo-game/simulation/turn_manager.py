@@ -2,7 +2,6 @@ import logging
 import time
 from threading import RLock
 from threading import Thread
-import requests
 
 from simulation.action import PRIORITIES
 
@@ -53,14 +52,15 @@ class TurnManager(Thread):
     def run_turn(self):
         raise NotImplementedError("Abstract method.")
 
-    def _register_action(self, avatar):
+    def _register_action_and_logs(self, avatar):
         """
-        Send an avatar its view of the game state and register its chosen action.
+        Send an avatar its view of the game state and register its
+        chosen action & logs.
         """
         with state_provider as game_state:
             state_view = game_state.get_state_for(avatar)
 
-        if avatar.decide_action(state_view):
+        if avatar.decide_action_and_logs(state_view):
                 with state_provider as game_state:
                     avatar.action.register(game_state.world_map)
 
@@ -102,7 +102,7 @@ class SequentialTurnManager(TurnManager):
             avatars = game_state.avatar_manager.active_avatars
 
         for avatar in avatars:
-            self._register_action(avatar)
+            self._register_action_and_logs(avatar)
             with state_provider as game_state:
                 location_to_clear = avatar.action.target_location
                 avatar.action.process(game_state.world_map)
@@ -112,13 +112,13 @@ class SequentialTurnManager(TurnManager):
 class ConcurrentTurnManager(TurnManager):
     def run_turn(self):
         """
-        Concurrently get the intended actions from all avatars and register
+        Concurrently get the intended actions from all avatars and regioster
         them on the world map. Then apply actions in order of priority.
         """
         with state_provider as game_state:
             avatars = game_state.avatar_manager.active_avatars
 
-        threads = [Thread(target=self._register_action,
+        threads = [Thread(target=self._register_action_and_logs,
                           args=(avatar,)) for avatar in avatars]
 
         [thread.start() for thread in threads]

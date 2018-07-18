@@ -16,7 +16,7 @@ class DummyAvatar(AvatarWrapper):
         self.effects = set()
         self.resistance = 0
 
-    def decide_action(self, state_view):
+    def decide_action_and_logs(self, state_view):
         raise NotImplementedError()
 
     def handle_turn(self, state_view):
@@ -45,7 +45,7 @@ class LiveDummy(DummyAvatar):
     def __init__(self, player_id=1, initial_location=(0, 0)):
         super(LiveDummy, self).__init__(player_id, initial_location)
 
-    def decide_action(self, state_view):
+    def decide_action_and_logs(self, state_view):
         self._action = self.handle_turn(state_view)
         return True
 
@@ -58,7 +58,7 @@ class DeadDummy(DummyAvatar):
     def __init__(self, player_id=1, initial_location=(0, 0)):
         super(DeadDummy, self).__init__(player_id, initial_location)
 
-    def decide_action(self, state_view):
+    def decide_action_and_logs(self, state_view):
         self._action = self.handle_turn(state_view)
         return False
 
