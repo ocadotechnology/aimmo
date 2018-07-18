@@ -1,22 +1,40 @@
 import logging
+import traceback
+import sys
+
+from six import StringIO
+
 from simulation.action import WaitAction
+
 
 LOGGER = logging.getLogger(__name__)
 
 
 class AvatarRunner(object):
     def __init__(self, avatar=None):
-        if avatar is None:
-            from avatar import Avatar
-            self.avatar = Avatar()
-        else:
-            self.avatar = avatar
+        self.avatar = avatar
 
-    def handle_turn(self, world_map, avatar_state):
+    def process_avatar_turn(self, world_map, avatar_state):
+        output_log = StringIO()
+
         try:
-            return self.avatar.handle_turn(avatar_state, world_map)
+            sys.stdout = output_log
+            sys.stderr = output_log
+            if self.avatar is None:
+                from avatar import Avatar
+                self.avatar = Avatar()
+
+            action = self.avatar.handle_turn(world_map, avatar_state)
+
         except Exception as e:
+            traceback.print_exc()
             LOGGER.error("Code failed to run")
             LOGGER.error(e)
             action = WaitAction()
-        return action
+
+        finally:
+            sys.stdout = sys.__stdout__
+            sys.stderr = sys.__stderr__
+
+        logs = output_log.getvalue()
+        return action, logs
