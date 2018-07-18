@@ -10,6 +10,7 @@ setup(
         'eventlet',
         'flask',
         'flask-socketio',
+        'python-socketio==2.0.0'
         'requests',
         'six',
         'pykube',

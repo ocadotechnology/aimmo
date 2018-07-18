@@ -6,7 +6,7 @@ import os
 import sys
 import eventlet
 import flask
-
+import socketio
 
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
@@ -17,12 +17,13 @@ from simulation.worker_managers import WORKER_MANAGERS
 from simulation.pickups import pickups_update
 from simulation.communicator import Communicator
 
+
 eventlet.sleep()
 eventlet.monkey_patch()
 
 app = flask.Flask(__name__)
 CORS(app, supports_credentials=True)
-socketio = SocketIO()
+sio = socketio.Server()
 
 worker_manager = None
 
@@ -68,16 +69,16 @@ def get_game_state():
         }
 
 
-@socketio.on('connect')
-def world_update_on_connect():
-    emit(
+@sio.on('connect')
+def world_update_on_connect(sid, environ):
+    sio.emit(
         'game-state',
         get_game_state(),
     )
 
 
 def send_world_update():
-    socketio.emit(
+    sio.emit(
         'game-state',
         get_game_state(),
         broadcast=True,
@@ -121,13 +122,8 @@ def run_game(port):
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
+    host, port = sys.argv[1], int(sys.argv[2])
+    app = socketio.Middleware(sio, app, socketio_path='game-1')
 
-    socketio.init_app(app, resource=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
-    run_game(int(sys.argv[2]))
-    socketio.run(
-        app,
-        debug=False,
-        host=sys.argv[1],
-        port=int(sys.argv[2]),
-        use_reloader=False,
-    )
+    run_game(port)
+    eventlet.wsgi.server(eventlet.listen((host, port)), app, debug=True)
