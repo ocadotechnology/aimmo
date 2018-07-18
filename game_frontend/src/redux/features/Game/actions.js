@@ -135,6 +135,15 @@ const establishGameConnectionFail = error => (
   }
 )
 
+const socketGameStateReceived = gameState => (
+  {
+    type: types.GAME_STATE_EVENT_RECEIVED,
+    payload: {
+      gameState
+    }
+  }
+)
+
 const unityEvent = (unityEvent, unityData, successAction, failAction) => (
   {
     type: types.UNITY_EVENT,
@@ -165,5 +174,6 @@ export default {
   establishGameConnection,
   establishGameConnectionSuccess,
   establishGameConnectionFail,
+  socketGameStateReceived,
   unityEvent
 }
