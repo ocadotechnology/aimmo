@@ -11,7 +11,15 @@ class MockCommunicator(object):
                                 "    def handle_turn(self, world_view, events):\n"
                                 "        from simulation.action import WaitAction\n"
                                 "        return WaitAction()\n"
-                    }
+                    },
+
+                    {
+                        "id": 2,
+                        "code": "class Avatar(object):\n"
+                                "    def handle_turn(self, world_view, events):\n"
+                                "        from simulation.action import WaitAction\n"
+                                "        return WaitAction()\n"
+                    },
                 ]
             }
         }
