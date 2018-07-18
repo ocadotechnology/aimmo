@@ -1,14 +1,14 @@
 class Avatar(object):
-    def handle_turn(self, avatar_state, world_state):
+    def handle_turn(self, world_map, avatar_state):
         from simulation.action import MoveAction
         from simulation import direction
         import random
         from simulation.action import WaitAction
 
-        self.world_state = world_state
+        self.world_state = world_map
         self.avatar_state = avatar_state
 
-        if world_state.get_cell(avatar_state.location).generates_score:
+        if world_map.get_cell(avatar_state.location).generates_score:
             return WaitAction()
 
         possible_directions = self.get_possible_directions()
