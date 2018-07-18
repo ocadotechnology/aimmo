@@ -102,7 +102,8 @@ class AvatarWrapper(object):
 
         except (KeyError, ValueError) as err:
             LOGGER.info('Bad action data supplied: %s', err)
-
+        except TypeError as err:
+            LOGGER.info('Worker data not received: %s', err)
         else:
             self._action = action
             return True
