@@ -28,6 +28,7 @@ class AvatarWrapper(object):
         self.attack_strength = 1
         self.fog_of_war_modifier = 0
         self._action = None
+        self._logs = None
 
     def update_effects(self):
         effects_to_remove = set()
@@ -43,6 +44,10 @@ class AvatarWrapper(object):
         return self._action
 
     @property
+    def logs(self):
+        return self._logs
+
+    @property
     def is_moving(self):
         return isinstance(self.action, MoveAction)
 
@@ -51,12 +56,19 @@ class AvatarWrapper(object):
         response.raise_for_status()
         return response.json()
 
-    def _construct_action(self, data):
-        action_data = data['action']
+    def _construct_action(self, action_data):
         action_type = action_data['action_type']
         action_args = action_data.get('options', {})
         action_args['avatar'] = self
         return ACTIONS[action_type](**action_args)
+
+    def _save_logs(self, log_data):
+        """
+        Checks if there are any new logs received over the POST request and updates when
+        required.
+        :param log_data: A dict element containing a string of the log output of the program.
+        """
+        self._logs = log_data
 
     def calculate_orientation(self):
         """
@@ -75,10 +87,11 @@ class AvatarWrapper(object):
 
         return direction_of_orientation.cardinal
 
-    def decide_action(self, state_view):
+    def decide_action_and_logs(self, state_view):
         try:
-            data = self._fetch_action(state_view)
-            action = self._construct_action(data)
+            response_json = self._fetch_action(state_view)
+            action = self._construct_action(response_json['action'])
+            self._save_logs(response_json['logs'])
 
         except (KeyError, ValueError) as err:
             LOGGER.info('Bad action data supplied: %s', err)

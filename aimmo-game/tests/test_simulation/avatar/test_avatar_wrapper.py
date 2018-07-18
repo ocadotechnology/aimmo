@@ -67,7 +67,7 @@ class TestAvatarWrapper(TestCase):
         if request_mock is None:
             request_mock = ActionRequest()
         with HTTMock(request_mock):
-            self.avatar.decide_action(None)
+            self.avatar.decide_action_and_logs(None)
 
     def test_action_has_created_correctly(self):
         self.take_turn()
