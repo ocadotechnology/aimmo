@@ -12,5 +12,5 @@ class TestAvatarRunner(TestCase):
                 return None
 
         runner = AvatarRunner(Avatar())
-        action = runner.process_avatar_turn({}, {})
+        action = runner.process_avatar_turn(world_map={}, avatar_state={})
         self.assertIsInstance(action, WaitAction)
