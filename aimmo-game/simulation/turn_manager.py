@@ -63,9 +63,10 @@ class TurnManager(Thread):
         worker_data = avatar.fetch_data(state_view)
 
         if avatar.decide_action(worker_data):
-                with state_provider as game_state:
-                    avatar.action.register(game_state.world_map)
-                    avatar.save_logs(worker_data['logs'])
+            with state_provider as game_state:
+                avatar.action.register(game_state.world_map)
+        if 'logs' in worker_data.keys():
+            avatar.save_logs(worker_data['logs'])
 
     def _update_environment(self, game_state):
         num_avatars = len(game_state.avatar_manager.active_avatars)
