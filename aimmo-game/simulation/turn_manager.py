@@ -57,15 +57,18 @@ class TurnManager(Thread):
         Send an avatar its view of the game state and register its
         chosen action & logs.
         """
+        print "INSIDE REGISTER ACTION"
         with state_provider as game_state:
             state_view = game_state.get_state_for(avatar)
 
         worker_data = avatar.fetch_data(state_view)
 
+        print worker_data
+
         if avatar.decide_action(worker_data):
                 with state_provider as game_state:
                     avatar.action.register(game_state.world_map)
-                    avatar.save_logs(worker_data['logs'])
+        avatar.save_logs(worker_data['logs'])
 
     def _update_environment(self, game_state):
         num_avatars = len(game_state.avatar_manager.active_avatars)
