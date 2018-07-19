@@ -7,6 +7,11 @@ const gameReducer = (state = {}, action) => {
         ...state,
         connectionParameters: action.payload.connectionParameters
       }
+    case types.GAME_STATE_EVENT_RECEIVED:
+      return {
+        ...state,
+        gameState: action.payload.gameState
+      }
     default:
       return state
   }

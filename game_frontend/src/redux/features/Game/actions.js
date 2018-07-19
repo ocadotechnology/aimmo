@@ -42,6 +42,18 @@ const setGameURLFail = error => (
   }
 )
 
+const sendGameUpdateSuccess = () => (
+  {
+    type: types.SEND_GAME_UPDATE_SUCCESS
+  }
+)
+
+const sendGameUpdateFail = error => (
+  {
+    type: types.SEND_GAME_UPDATE_FAIL
+  }
+)
+
 const setGamePath = gamePath => (
   {
     type: types.SET_GAME_PATH,
@@ -159,6 +171,8 @@ const unityEvent = (unityEvent, unityData, successAction, failAction) => (
 export default {
   getConnectionParametersRequest,
   getConnectionParametersSuccess,
+  sendGameUpdateFail,
+  sendGameUpdateSuccess,
   setGameURL,
   setGameURLSuccess,
   setGameURLFail,
