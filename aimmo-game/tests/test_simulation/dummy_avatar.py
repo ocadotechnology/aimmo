@@ -33,7 +33,7 @@ class DummyAvatar(AvatarWrapper):
         return 'Dummy'
 
     def fetch_data(self, state_view):
-        return {'action': '', 'logs': ''}
+        return {'action': '', 'logs': 'Testing'}
 
     def damage(self, amount):
         self.health -= amount
@@ -75,6 +75,7 @@ class WaitDummy(LiveDummy):
     """
     def handle_turn(self):
         return WaitAction(self)
+
 
 
 class MoveDummy(LiveDummy):

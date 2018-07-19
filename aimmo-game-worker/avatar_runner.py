@@ -37,6 +37,4 @@ class AvatarRunner(object):
             sys.stderr = sys.__stderr__
 
         logs = output_log.getvalue()
-        print "INSIDE PROCESS AVATAR TURN, printing logs"
-        print logs
         return action, logs
