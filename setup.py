@@ -24,14 +24,13 @@ setup(
         'psutil >= 5.4, < 5.5',
     ],
     tests_require=[
-        'django-setuptest==0.2.1',
         'httmock',
         'mock == 2.0.0',
         'docker == 2.7.0',
         'kubernetes == 5.0.0',
         'PyYAML == 3.12',
     ],
-    test_suite='setuptest.setuptest.SetupTestSuite',
+
     version=versioneer.get_version(),
     zip_safe=False,
 )
