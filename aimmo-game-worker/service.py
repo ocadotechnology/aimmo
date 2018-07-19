@@ -23,6 +23,9 @@ def process_turn():
 
     action, logs = avatar_runner.process_avatar_turn(world_map, avatar_state)
 
+    print "INSIDE PROCESS TURN"
+    print logs
+
     return flask.jsonify(action=action.serialise(), logs=logs)
 
 

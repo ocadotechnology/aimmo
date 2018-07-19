@@ -77,6 +77,7 @@ class AvatarWrapper(object):
         required.
         :param log_data: A dict element containing a string of the log output of the program.
         """
+
         self._logs = log_data
 
     def calculate_orientation(self):
