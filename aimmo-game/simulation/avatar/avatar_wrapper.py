@@ -55,15 +55,13 @@ class AvatarWrapper(object):
         try:
             response = requests.post(self.worker_url, json=state_view)
             response.raise_for_status()
-
+            return response.json()
         except requests.exceptions.ConnectionError:
             LOGGER.info('Could not connect to worker, probably not ready yet')
         except Exception:
             LOGGER.exception("Unknown error while fetching turn data")
-        else:
-            return response.json()
 
-        return {'action': None}
+        return {'action': None, 'logs': ''}
 
     def _construct_action(self, action_data):
         action_type = action_data['action_type']
