@@ -122,7 +122,7 @@ def run_game(port):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     host, port = sys.argv[1], int(sys.argv[2])
-    app = SocketIO.Middleware(socketio, app, socketio_path='/game-1')
+    app = SocketIO.Middleware(socketio, app, socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
 
     run_game(port)
     eventlet.wsgi.server(eventlet.listen((host, port)), app, debug=True)
