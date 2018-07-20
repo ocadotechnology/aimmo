@@ -99,7 +99,7 @@ LOGIN_URL = '/aimmo/accounts/login/'
 
 LOGIN_REDIRECT_URL = '/aimmo/'
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
    'django.contrib.sessions.middleware.SessionMiddleware',
    'django.middleware.locale.LocaleMiddleware',
    'django.middleware.common.CommonMiddleware',
