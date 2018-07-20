@@ -6,7 +6,7 @@ import os
 import sys
 import eventlet
 import flask
-import socketio
+import socketio as SocketIO
 
 from flask_cors import CORS
 from simulation import map_generator
@@ -22,7 +22,7 @@ eventlet.monkey_patch()
 
 app = flask.Flask(__name__)
 CORS(app, supports_credentials=True)
-sio = socketio.Server()
+socketio = SocketIO.Server()
 
 worker_manager = None
 
@@ -68,16 +68,16 @@ def get_game_state():
         }
 
 
-@sio.on('connect')
+@socketio.on('connect')
 def world_update_on_connect(sid, environ):
-    sio.emit(
+    socketio.emit(
         'game-state',
         get_game_state(),
     )
 
 
 def send_world_update():
-    sio.emit(
+    socketio.emit(
         'game-state',
         get_game_state(),
         broadcast=True,
@@ -122,7 +122,7 @@ def run_game(port):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     host, port = sys.argv[1], int(sys.argv[2])
-    app = socketio.Middleware(sio, app, socketio_path='/game-1')
+    app = SocketIO.Middleware(socketio, app, socketio_path='/game-1')
 
     run_game(port)
     eventlet.wsgi.server(eventlet.listen((host, port)), app, debug=True)
