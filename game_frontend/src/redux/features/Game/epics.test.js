@@ -151,37 +151,3 @@ describe('ReceiveGameUpdate', () => {
     testScheduler.flush()
   })
 })
-
-describe('establishGameConnection', () => {
-  it('establishes the connection with the game', () => {
-    const marbles1 = '-a--'
-    const marbles2 = '-b--'
-    const values = {
-      a: actions.establishGameConnection(),
-      b: actions.establishGameConnectionSuccess()
-    }
-
-    const testScheduler = createTestScheduler()
-    const source$ = ActionsObservable.from(
-      testScheduler.createColdObservable(marbles1, values)
-    )
-
-    const mockEmitToUnity = () => {
-      return Observable.of(values.b)
-    }
-
-    const mockAPI = {
-      api: {
-        unity: {
-          ...api.unity,
-          emitToUnity: mockEmitToUnity
-        }
-      }
-    }
-
-    const actual = epics.establishGameConnectionEpic(source$, mockStore({}), mockAPI)
-
-    testScheduler.expectObservable(actual).toBe(marbles2, values)
-    testScheduler.flush()
-  })
-})

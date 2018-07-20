@@ -46,22 +46,8 @@ const sendGameStateEpic = (action$, store, { api }) => {
   )
 }
 
-const establishGameConnectionEpic = (action$, store, { api }) => {
-  return action$.pipe(
-    ofType(types.ESTABLISH_GAME_CONNECTION),
-    map(action => actions.unityEvent(
-      'EstablishConnection',
-      '',
-      actions.establishGameConnectionSuccess(),
-      actions.establishGameConnectionFail
-    )),
-    api.unity.sendExternalEvent(api.unity.emitToUnity)
-  )
-}
-
 export default {
   getConnectionParametersEpic,
-  establishGameConnectionEpic,
   sendGameStateEpic,
   receiveConnectionParametersEpic,
 }

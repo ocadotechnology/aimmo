@@ -7,7 +7,6 @@ describe('<GameView />', () => {
   it('matches snapshot', () => {
     const props = {
       getConnectionParameters: jest.fn(),
-      establishGameConnection: jest.fn()
     }
 
     const component = shallow(<GameView {...props} />)
@@ -22,21 +21,6 @@ describe('<GameView />', () => {
 
     const flagReturned = shallow(<GameView {...props} />).instance().serialisedSSLFlag()
     expect(flagReturned).toBe('False')
-  })
-
-  it('sendAllConnect function calls all action dispatchers', () => {
-    const establishGameConnection = jest.fn()
-
-    const props = {
-      getConnectionParameters: jest.fn(),
-      establishGameConnection
-    }
-
-    const wrapper = shallow(<GameView {...props} />)
-
-    wrapper.instance().sendAllConnect()
-
-    expect(establishGameConnection.mock.calls.length).toBe(1)
   })
 })
 

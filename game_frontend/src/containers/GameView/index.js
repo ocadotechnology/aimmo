@@ -14,14 +14,8 @@ export class GameView extends Component {
     super(props)
 
     this.props.getConnectionParameters()
-
-    RegisterExternalListener('SendAllConnect', this.sendAllConnect.bind(this))
-    // RegisterExternalListener('ClientReady', this.clientReady.bind(this))
   }
 
-  sendAllConnect () {
-    this.props.establishGameConnection()
-  }
 
   serialisedSSLFlag () {
     let boolString = this.props.gameSSL.toString()
@@ -43,7 +37,6 @@ export class GameView extends Component {
 
 GameView.propTypes = {
   getConnectionParameters: PropTypes.func,
-  establishGameConnection: PropTypes.func
 }
 
 const mapStateToProps = state => ({
@@ -51,7 +44,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   getConnectionParameters: actions.getConnectionParametersRequest,
-  establishGameConnection: actions.establishGameConnection
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(GameView)
