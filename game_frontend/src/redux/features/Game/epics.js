@@ -32,10 +32,10 @@ const getConnectionParametersEpic = (action$, store, { api }) => {
 const receiveGameState = (action$, store, { api }) => {
   return action$.pipe(
     ofType(types.GAME_STATE_EVENT_RECEIVED),
-    tap((action) => console.log(action.payload)),
+    tap((action) => console.log(action.payload.gameState)),
     map(action => actions.unityEvent(
       'ReceiveGameUpdate',
-      JSON.stringify(action.payload),
+      JSON.stringify(action.payload.gameState),
       actions.sendGameUpdateSuccess(),
       actions.sendGameUpdateFail
     )),
