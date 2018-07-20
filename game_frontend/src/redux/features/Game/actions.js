@@ -18,30 +18,6 @@ const getConnectionParametersSuccess = connectionParameters => (
   }
 )
 
-const setGameURL = gameURL => (
-  {
-    type: types.SET_GAME_URL,
-    payload: {
-      gameURL
-    }
-  }
-)
-
-const setGameURLSuccess = () => (
-  {
-    type: types.SET_GAME_URL_SUCCESS
-  }
-)
-
-const setGameURLFail = error => (
-  {
-    type: types.SET_GAME_URL_FAIL,
-    payload: {
-      error
-    }
-  }
-)
-
 const sendGameUpdateSuccess = () => (
   {
     type: types.SEND_GAME_UPDATE_SUCCESS
@@ -51,78 +27,6 @@ const sendGameUpdateSuccess = () => (
 const sendGameUpdateFail = error => (
   {
     type: types.SEND_GAME_UPDATE_FAIL
-  }
-)
-
-const setGamePath = gamePath => (
-  {
-    type: types.SET_GAME_PATH,
-    payload: {
-      gamePath
-    }
-  }
-)
-
-const setGamePathSuccess = () => (
-  {
-    type: types.SET_GAME_PATH_SUCCESS
-  }
-)
-
-const setGamePathFail = error => (
-  {
-    type: types.SET_GAME_PATH_FAIL,
-    payload: {
-      error
-    }
-  }
-)
-
-const setGamePort = gamePort => (
-  {
-    type: types.SET_GAME_PORT,
-    payload: {
-      gamePort
-    }
-  }
-)
-
-const setGamePortSuccess = () => (
-  {
-    type: types.SET_GAME_PORT_SUCCESS
-  }
-)
-
-const setGamePortFail = error => (
-  {
-    type: types.SET_GAME_PORT_FAIL,
-    payload: {
-      error
-    }
-  }
-)
-
-const setGameSSL = gameSSLFlag => (
-  {
-    type: types.SET_GAME_SSL,
-    payload: {
-      gameSSLFlag
-    }
-  }
-)
-
-const setGameSSLSuccess = () => (
-  {
-    type: types.SET_GAME_SSL_SUCCESS
-  }
-)
-
-const setGameSSLFail = error => (
-  {
-    type: types.SET_GAME_SSL_FAIL,
-    payload: {
-      error
-    }
   }
 )
 
@@ -173,18 +77,6 @@ export default {
   getConnectionParametersSuccess,
   sendGameUpdateFail,
   sendGameUpdateSuccess,
-  setGameURL,
-  setGameURLSuccess,
-  setGameURLFail,
-  setGamePath,
-  setGamePathSuccess,
-  setGamePathFail,
-  setGamePort,
-  setGamePortSuccess,
-  setGamePortFail,
-  setGameSSL,
-  setGameSSLSuccess,
-  setGameSSLFail,
   establishGameConnection,
   establishGameConnectionSuccess,
   establishGameConnectionFail,

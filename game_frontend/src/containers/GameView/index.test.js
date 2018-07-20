@@ -6,15 +6,7 @@ import { shallow } from 'enzyme/build/index'
 describe('<GameView />', () => {
   it('matches snapshot', () => {
     const props = {
-      gameURL: 'test',
-      gamePath: '/test',
-      gamePort: 8000,
-      gameSSL: false,
       getConnectionParameters: jest.fn(),
-      setGameURL: jest.fn(),
-      setGamePath: jest.fn(),
-      setGamePort: jest.fn(),
-      setGameSSL: jest.fn(),
       establishGameConnection: jest.fn()
     }
 
@@ -33,22 +25,10 @@ describe('<GameView />', () => {
   })
 
   it('sendAllConnect function calls all action dispatchers', () => {
-    const setGameURL = jest.fn()
-    const setGamePath = jest.fn()
-    const setGamePort = jest.fn()
-    const setGameSSL = jest.fn()
     const establishGameConnection = jest.fn()
 
     const props = {
-      gameURL: 'test',
-      gamePath: '/test',
-      gamePort: 8000,
-      gameSSL: false,
       getConnectionParameters: jest.fn(),
-      setGameURL,
-      setGamePath,
-      setGamePort,
-      setGameSSL,
       establishGameConnection
     }
 
@@ -56,10 +36,6 @@ describe('<GameView />', () => {
 
     wrapper.instance().sendAllConnect()
 
-    expect(setGameURL.mock.calls.length).toBe(1)
-    expect(setGamePath.mock.calls.length).toBe(1)
-    expect(setGamePort.mock.calls.length).toBe(1)
-    expect(setGameSSL.mock.calls.length).toBe(1)
     expect(establishGameConnection.mock.calls.length).toBe(1)
   })
 })
