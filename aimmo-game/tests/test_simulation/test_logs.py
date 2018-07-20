@@ -1,6 +1,8 @@
 from unittest import TestCase
 from .fake_game_runner import FakeGameRunner
 from .dummy_avatar import DummyAvatarManager
+
+
 class TestLogs(TestCase):
 
     def test_individual_avatar_successfully_receives_logs(self):

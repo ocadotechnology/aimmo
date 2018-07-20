@@ -77,7 +77,6 @@ class WaitDummy(LiveDummy):
         return WaitAction(self)
 
 
-
 class MoveDummy(LiveDummy):
     """
     Avatar that always moves in one direction.
