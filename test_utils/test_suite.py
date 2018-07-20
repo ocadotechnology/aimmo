@@ -16,14 +16,13 @@ class DjangoAutoTestSuite(unittest.TestSuite):
     """
 
     def __init__(self, *args, **kwargs):
-        print('Name: ' + __name__)
         self._configure()
         self.test_runner = DiscoverRunner()
         tests = self.test_runner.build_suite()
         super(DjangoAutoTestSuite, self).__init__(tests=tests, *args, **kwargs)
         self.test_runner.setup_test_environment()
 
-        self.old_config = self.test_runner.setup_databases()
+        self.test_dbs = self.test_runner.setup_databases()
 
     def _configure(self):
         test_settings = importlib.import_module('test_settings')
@@ -36,7 +35,7 @@ class DjangoAutoTestSuite(unittest.TestSuite):
 
     def run(self, result_obj, *args, **kwargs):
         result = super(DjangoAutoTestSuite, self).run(result_obj, *args, **kwargs)
-        self.test_runner.teardown_databases(self.old_config)
+        self.test_runner.teardown_databases(self.test_dbs)
         self.test_runner.teardown_test_environment()
 
         return result
