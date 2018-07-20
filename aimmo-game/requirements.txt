@@ -1,6 +1,6 @@
 eventlet
 flask
-flask-socketio
+python-socketio
 pykube
 requests
 six

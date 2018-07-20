@@ -8,7 +8,6 @@ import eventlet
 import flask
 import socketio
 
-from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 from simulation import map_generator
 from simulation.turn_manager import state_provider, ConcurrentTurnManager
@@ -123,7 +122,7 @@ def run_game(port):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     host, port = sys.argv[1], int(sys.argv[2])
-    app = socketio.Middleware(sio, app, socketio_path='game-1')
+    app = socketio.Middleware(sio, app, socketio_path='/game-1')
 
     run_game(port)
     eventlet.wsgi.server(eventlet.listen((host, port)), app, debug=True)
