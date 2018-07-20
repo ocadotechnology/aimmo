@@ -35,7 +35,7 @@ const receiveGameState = (action$, store, { api }) => {
     tap((action) => console.log(action.payload)),
     map(action => actions.unityEvent(
       'ReceiveGameUpdate',
-      action.payload,
+      JSON.stringify(action.payload),
       actions.sendGameUpdateSuccess(),
       actions.sendGameUpdateFail
     )),
