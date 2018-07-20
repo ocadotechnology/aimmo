@@ -1,7 +1,6 @@
 from unittest import TestCase
 from .fake_game_runner import FakeGameRunner
-from .dummy_avatar import DummyAvatarManager, WaitDummy
-
+from .dummy_avatar import DummyAvatarManager
 class TestLogs(TestCase):
 
     def test_individual_avatar_successfully_receives_logs(self):
@@ -22,4 +21,3 @@ class TestLogs(TestCase):
         second_avatar_logs = game_runner.get_avatar(2).logs
         self.assertEqual(first_avatar_logs, "Testing")
         self.assertEqual(second_avatar_logs, "Testing")
-
