@@ -27,7 +27,7 @@ const receiveConnectionParametersEpic = (action$, store, { api }) => {
       const { game_url_base, game_id } = action.payload.connectionParameters;
       const socket$ = Observable.of(api.socket.connectToGame(game_url_base, game_id));
       return socket$.switchMap(socket => {
-        return Observable.fromEvent(socket, 'game-state').map((s) => actions.socketGameStateReceived(s));
+        return Observable.fromEvent(socket, 'game-state').map((s) => actions.gameStateEventReceived(s));
       })
     })
   )

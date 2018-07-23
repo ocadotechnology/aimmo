@@ -123,7 +123,7 @@ describe('ReceiveGameUpdate', () => {
     const marbles1 = '-a--'
     const marbles2 = '-b--'
     const values = {
-      a: actions.socketGameStateReceived(gameState),
+      a: actions.gameStateEventReceived(gameState),
       b: actions.sendGameUpdateSuccess()
     }
 
