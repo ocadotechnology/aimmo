@@ -125,4 +125,4 @@ if __name__ == '__main__':
     app = SocketIO.Middleware(socketio, app, socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
 
     run_game(port)
-    eventlet.wsgi.server(eventlet.listen((host, port)), app, debug=True)
+    eventlet.wsgi.server(eventlet.listen((host, port)), app, debug=False)

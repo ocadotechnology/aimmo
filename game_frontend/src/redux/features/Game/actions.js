@@ -30,9 +30,9 @@ const sendGameUpdateFail = error => (
   }
 )
 
-const gameStateEventReceived = gameState => (
+const socketGameStateReceived = gameState => (
   {
-    type: types.GAME_STATE_EVENT_RECEIVED,
+    type: types.SOCKET_GAME_STATE_RECEIVED,
     payload: {
       gameState
     }
@@ -56,6 +56,6 @@ export default {
   getConnectionParametersSuccess,
   sendGameUpdateFail,
   sendGameUpdateSuccess,
-  gameStateEventReceived,
+  socketGameStateReceived,
   unityEvent
 }
