@@ -9,15 +9,6 @@ const getConnectionParametersRequest = gameID => (
   }
 )
 
-const getConnectionParametersSuccess = connectionParameters => (
-  {
-    type: types.GET_CONNECTION_PARAMETERS_SUCCESS,
-    payload: {
-      connectionParameters
-    }
-  }
-)
-
 const sendGameUpdateSuccess = () => (
   {
     type: types.SEND_GAME_UPDATE_SUCCESS
@@ -53,7 +44,6 @@ const unityEvent = (unityEvent, unityData, successAction, failAction) => (
 
 export default {
   getConnectionParametersRequest,
-  getConnectionParametersSuccess,
   sendGameUpdateFail,
   sendGameUpdateSuccess,
   socketGameStateReceived,

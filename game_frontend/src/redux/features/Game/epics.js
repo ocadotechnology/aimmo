@@ -1,7 +1,7 @@
 import actions from './actions'
 import types from './types'
 import { Observable } from 'rxjs'
-import { map, mergeMap, catchError } from 'rxjs/operators'
+import { map, mergeMap, catchError, tap } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
 const getConnectionParametersEpic = (action$, store, { api }) => {
@@ -9,20 +9,13 @@ const getConnectionParametersEpic = (action$, store, { api }) => {
     ofType(types.GET_CONNECTION_PARAMETERS_REQUEST),
     mergeMap(action =>
       api.get(`games/${store.getState().game.connectionParameters.id}/connection_parameters/`).pipe(
-        map(response => actions.getConnectionParametersSuccess(response)),
+        api.socket.connectToGame(),
+        api.socket.startListeners(),
         catchError(error => Observable.of({
           type: types.GET_CONNECTION_PARAMETERS_FAIL,
           payload: error,
           error: true
         })),
-        ofType(types.GET_CONNECTION_PARAMETERS_SUCCESS),
-        mergeMap(action => {
-          const { game_url_base, game_id } = action.payload.connectionParameters;
-          const socket$ = Observable.of(api.socket.connectToGame(game_url_base, game_id));
-          return socket$.switchMap(socket => {
-            return Observable.fromEvent(socket, 'game-state').map((s) => actions.socketGameStateReceived(s));
-          })
-        })
       )
     )
   )

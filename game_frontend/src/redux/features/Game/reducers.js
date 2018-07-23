@@ -7,7 +7,7 @@ const gameReducer = (state = {}, action) => {
         ...state,
         connectionParameters: action.payload.connectionParameters
       }
-    case types.GAME_STATE_EVENT_RECEIVED:
+    case types.SOCKET_GAME_STATE_RECEIVED:
       return {
         ...state,
         gameState: action.payload.gameState
