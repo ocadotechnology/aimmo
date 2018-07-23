@@ -84,9 +84,9 @@ class TurnManager(Thread):
         :param avatar: Avatar object to which logs will be saved.
         :param worker_data: Dict containing (among others) the 'logs' key.
         """
-        if 'logs' in worker_data.keys():
+        try:
             avatar.save_logs(worker_data['logs'])
-        else:
+        except KeyError:
             LOGGER.error("Logs not found in worker_data when registering!")
 
     def _update_environment(self, game_state):
