@@ -19,7 +19,7 @@ class DummyAvatar(AvatarWrapper):
     def decide_action(self, worker_data):
         raise NotImplementedError()
 
-    def handle_turn(self):
+    def handle_turn(self, world_map=None, avatar_state=None):
         raise NotImplementedError()
 
     def add_event(self, event):
@@ -65,7 +65,7 @@ class DeadDummy(DummyAvatar):
         self._action = self.handle_turn()
         return False
 
-    def handle_turn(self):
+    def handle_turn(self, world_map=None, avatar_state=None):
         return WaitAction(self)
 
 
@@ -73,7 +73,7 @@ class WaitDummy(LiveDummy):
     """
     Avatar that always waits.
     """
-    def handle_turn(self):
+    def handle_turn(self, world_map=None, avatar_state=None):
         return WaitAction(self)
 
 
@@ -85,7 +85,7 @@ class MoveDummy(LiveDummy):
         super(MoveDummy, self).__init__(player_id, initial_location)
         self._direction = direction
 
-    def handle_turn(self):
+    def handle_turn(self, world_map=None, avatar_state=None):
         return MoveAction(self, self._direction.dict)
 
 
