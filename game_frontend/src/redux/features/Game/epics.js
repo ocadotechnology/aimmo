@@ -14,22 +14,17 @@ const getConnectionParametersEpic = (action$, store, { api }) => {
           type: types.GET_CONNECTION_PARAMETERS_FAIL,
           payload: error,
           error: true
-        }))
+        })),
+        ofType(types.GET_CONNECTION_PARAMETERS_SUCCESS),
+        mergeMap(action => {
+          const { game_url_base, game_id } = action.payload.connectionParameters;
+          const socket$ = Observable.of(api.socket.connectToGame(game_url_base, game_id));
+          return socket$.switchMap(socket => {
+            return Observable.fromEvent(socket, 'game-state').map((s) => actions.socketGameStateReceived(s));
+          })
+        })
       )
     )
-  )
-}
-
-const receiveConnectionParametersEpic = (action$, store, { api }) => {
-  return action$.pipe(
-    ofType(types.GET_CONNECTION_PARAMETERS_SUCCESS),
-    mergeMap(action => {
-      const { game_url_base, game_id } = action.payload.connectionParameters;
-      const socket$ = Observable.of(api.socket.connectToGame(game_url_base, game_id));
-      return socket$.switchMap(socket => {
-        return Observable.fromEvent(socket, 'game-state').map((s) => actions.socketGameStateReceived(s));
-      })
-    })
   )
 }
 
@@ -49,5 +44,4 @@ const sendGameStateEpic = (action$, store, { api }) => {
 export default {
   getConnectionParametersEpic,
   sendGameStateEpic,
-  receiveConnectionParametersEpic,
 }
