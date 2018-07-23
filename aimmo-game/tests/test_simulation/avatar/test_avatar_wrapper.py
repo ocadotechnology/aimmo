@@ -8,7 +8,6 @@ from simulation.avatar import avatar_wrapper
 from simulation.location import Location
 
 
-
 class MockEffect(object):
     def __init__(self, avatar):
         self.turns = 0
