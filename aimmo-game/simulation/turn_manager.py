@@ -52,7 +52,7 @@ class TurnManager(Thread):
     def run_turn(self):
         raise NotImplementedError("Abstract method.")
 
-    def _manage_avatar_data(self, avatar):
+    def _run_turn_for_avatar(self, avatar):
         """
         Send an avatar its view of the game state and register its
         chosen action & logs.
@@ -127,7 +127,7 @@ class SequentialTurnManager(TurnManager):
             avatars = game_state.avatar_manager.active_avatars
 
         for avatar in avatars:
-            self._manage_avatar_data(avatar)
+            self._run_turn_for_avatar(avatar)
             with state_provider as game_state:
                 location_to_clear = avatar.action.target_location
                 avatar.action.process(game_state.world_map)
@@ -143,7 +143,7 @@ class ConcurrentTurnManager(TurnManager):
         with state_provider as game_state:
             avatars = game_state.avatar_manager.active_avatars
 
-        threads = [Thread(target=self._manage_avatar_data,
+        threads = [Thread(target=self._run_turn_for_avatar,
                           args=(avatar,)) for avatar in avatars]
 
         [thread.start() for thread in threads]
