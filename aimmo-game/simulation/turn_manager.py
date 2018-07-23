@@ -52,7 +52,7 @@ class TurnManager(Thread):
     def run_turn(self):
         raise NotImplementedError("Abstract method.")
 
-    def _register_action_and_logs(self, avatar):
+    def _manage_avatar_data(self, avatar):
         """
         Send an avatar its view of the game state and register its
         chosen action & logs.
@@ -62,10 +62,28 @@ class TurnManager(Thread):
 
         worker_data = avatar.fetch_data(state_view)
 
+        self._register_actions(avatar, worker_data)
+        self._register_logs(avatar, worker_data)
+
+    def _register_actions(self, avatar, worker_data):
+        """
+        Calls a function that constructs the action object, does error handling,
+        and finally registers it onto the avatar.
+
+        :param avatar: Avatar object to which logs will be saved.
+        :param worker_data: Dict containing (among others) the 'action' key.
+        """
         if avatar.decide_action(worker_data):
             with state_provider as game_state:
                 avatar.action.register(game_state.world_map)
 
+    def _register_logs(self, avatar, worker_data):
+        """
+        Gathers the logs from the data received. It handles error catching.
+
+        :param avatar: Avatar object to which logs will be saved.
+        :param worker_data: Dict containing (among others) the 'logs' key.
+        """
         if 'logs' in worker_data.keys():
             avatar.save_logs(worker_data['logs'])
         else:
@@ -109,7 +127,7 @@ class SequentialTurnManager(TurnManager):
             avatars = game_state.avatar_manager.active_avatars
 
         for avatar in avatars:
-            self._register_action_and_logs(avatar)
+            self._manage_avatar_data(avatar)
             with state_provider as game_state:
                 location_to_clear = avatar.action.target_location
                 avatar.action.process(game_state.world_map)
@@ -125,7 +143,7 @@ class ConcurrentTurnManager(TurnManager):
         with state_provider as game_state:
             avatars = game_state.avatar_manager.active_avatars
 
-        threads = [Thread(target=self._register_action_and_logs,
+        threads = [Thread(target=self._manage_avatar_data,
                           args=(avatar,)) for avatar in avatars]
 
         [thread.start() for thread in threads]
