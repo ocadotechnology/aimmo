@@ -101,9 +101,9 @@ class AvatarWrapper(object):
             action = self._construct_action(worker_data['action'])
 
         except (KeyError, ValueError) as err:
-            LOGGER.info('Bad action data supplied: %s', err)
+            LOGGER.error('Bad action data supplied: %s', err)
         except TypeError as err:
-            LOGGER.info('Worker data not received: %s', err)
+            LOGGER.error('Worker data not received: %s', err)
         else:
             self._action = action
             return True
