@@ -85,7 +85,7 @@ class TurnManager(Thread):
         :param worker_data: Dict containing (among others) the 'logs' key.
         """
         try:
-            avatar.save_logs(worker_data['logs'])
+            avatar.logs = worker_data['logs']
         except KeyError:
             LOGGER.error("Logs not found in worker_data when registering!")
 

@@ -47,6 +47,16 @@ class AvatarWrapper(object):
     def logs(self):
         return self._logs
 
+    @logs.setter
+    def logs(self, log_data):
+        """
+        Checks if there are any new logs received over the POST request and updates when
+        required.
+        :param log_data: A dict element containing a string of the log output of the program.
+        """
+
+        self._logs = log_data
+
     @property
     def is_moving(self):
         return isinstance(self.action, MoveAction)
@@ -70,14 +80,6 @@ class AvatarWrapper(object):
         action_args['avatar'] = self
         return ACTIONS[action_type](**action_args)
 
-    def save_logs(self, log_data):
-        """
-        Checks if there are any new logs received over the POST request and updates when
-        required.
-        :param log_data: A dict element containing a string of the log output of the program.
-        """
-
-        self._logs = log_data
 
     def calculate_orientation(self):
         """
