@@ -5,14 +5,7 @@ import { merge } from 'rxjs/observable/merge';
 import { fromEvent } from 'rxjs/observable/fromEvent';
 import { pipe } from 'rxjs/Rx' 
 
-const connectToGame = () =>
-    map(response => {
-        console.log(response);
-        const { game_url_base, game_id } = response;
-        return io(game_url_base, {
-            path: `/game-${game_id}`
-        });
-    });
+let socketConnection = null
 
 const listenFor = (eventName, socket, action) => 
     fromEvent(socket, eventName).pipe(
@@ -29,3 +22,5 @@ const startListeners = () =>
 
 
 export default { connectToGame, startListeners }
+
+

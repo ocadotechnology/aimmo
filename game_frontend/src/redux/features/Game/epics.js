@@ -4,12 +4,12 @@ import { Observable } from 'rxjs'
 import { map, mergeMap, catchError, tap } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
-const getConnectionParametersEpic = (action$, store, { api }) => {
-  return action$.pipe(
+const getConnectionParametersEpic = (action$, store, { api }) =>
+  action$.pipe(
     ofType(types.GET_CONNECTION_PARAMETERS_REQUEST),
     mergeMap(action =>
       api.get(`games/${store.getState().game.connectionParameters.id}/connection_parameters/`).pipe(
-        api.socket.connectToGame(),
+        api.socket.connectToGame,
         api.socket.startListeners(),
         catchError(error => Observable.of({
           type: types.GET_CONNECTION_PARAMETERS_FAIL,
@@ -19,10 +19,9 @@ const getConnectionParametersEpic = (action$, store, { api }) => {
       )
     )
   )
-}
 
-const sendGameStateEpic = (action$, store, { api }) => {
-  return action$.pipe(
+const sendGameStateEpic = (action$, store, { api }) =>
+  action$.pipe(
     ofType(types.SOCKET_GAME_STATE_RECEIVED),
     map(action => actions.unityEvent(
       'ReceiveGameUpdate',
@@ -32,7 +31,6 @@ const sendGameStateEpic = (action$, store, { api }) => {
     )),
     api.unity.sendExternalEvent(api.unity.emitToUnity)
   )
-}
 
 export default {
   getConnectionParametersEpic,
