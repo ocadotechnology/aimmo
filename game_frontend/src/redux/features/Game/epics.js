@@ -1,25 +1,25 @@
 import actions from './actions'
 import types from './types'
 import { Observable } from 'rxjs'
-import { map, mergeMap, catchError, tap } from 'rxjs/operators'
+import { map, mergeMap, catchError } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
-const connectToGameEpic = (action$, store, { api }) => action$.pipe(
-  ofType(types.GET_CONNECTION_PARAMETERS_REQUEST),
+const connectToGameEpic = (action$, store, { api: { get, socket } }) => action$.pipe(
+  ofType(types.SOCKET_CONNECT_TO_GAME_REQUEST),
   mergeMap(action =>
-    api.get(`games/${store.getState().game.connectionParameters.id}/connection_parameters/`).pipe(
-      api.socket.connectToGame(),
-      api.socket.startListeners(),
+    get(`games/${store.getState().game.connectionParameters.id}/connection_parameters/`).pipe(
+      socket.connectToGame(),
+      socket.startListeners(),
       catchError(error => Observable.of({
-        type: types.GET_CONNECTION_PARAMETERS_FAIL,
+        type: types.SOCKET_CONNECT_TO_GAME_FAIL,
         payload: error,
         error: true
-      })),
+      }))
     )
   )
 )
 
-const sendGameStateEpic = (action$, store, { api }) => action$.pipe(
+const sendGameStateEpic = (action$, store, { api: { unity } }) => action$.pipe(
   ofType(types.SOCKET_GAME_STATE_RECEIVED),
   map(action => actions.unityEvent(
     'ReceiveGameUpdate',
@@ -27,10 +27,10 @@ const sendGameStateEpic = (action$, store, { api }) => action$.pipe(
     actions.sendGameUpdateSuccess(),
     actions.sendGameUpdateFail
   )),
-  api.unity.sendExternalEvent(api.unity.emitToUnity)
+  unity.sendExternalEvent(unity.emitToUnity)
 )
 
 export default {
   connectToGameEpic,
-  sendGameStateEpic,
+  sendGameStateEpic
 }

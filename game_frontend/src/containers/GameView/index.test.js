@@ -6,7 +6,7 @@ import { shallow } from 'enzyme/build/index'
 describe('<GameView />', () => {
   it('matches snapshot', () => {
     const props = {
-      getConnectionParameters: jest.fn(),
+      connectToGame: jest.fn()
     }
 
     const component = shallow(<GameView {...props} />)
@@ -15,7 +15,7 @@ describe('<GameView />', () => {
 
   it('serialisedSSLFlag function returns correctly', () => {
     const props = {
-      getConnectionParameters: jest.fn(),
+      connectToGame: jest.fn(),
       gameSSL: false
     }
 

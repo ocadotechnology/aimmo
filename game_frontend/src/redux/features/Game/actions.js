@@ -1,11 +1,8 @@
 import types from './types'
 
-const getConnectionParametersRequest = gameID => (
+const socketConnectToGameRequest = () => (
   {
-    type: types.GET_CONNECTION_PARAMETERS_REQUEST,
-    payload: {
-      gameID
-    }
+    type: types.SOCKET_CONNECT_TO_GAME_REQUEST
   }
 )
 
@@ -43,9 +40,9 @@ const unityEvent = (unityEvent, unityData, successAction, failAction) => (
 )
 
 export default {
-  getConnectionParametersRequest,
+  socketConnectToGameRequest,
   sendGameUpdateFail,
   sendGameUpdateSuccess,
   socketGameStateReceived,
-  unityEvent,
+  unityEvent
 }

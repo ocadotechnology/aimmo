@@ -5,6 +5,8 @@ import epics from './epics'
 import actions from './actions'
 import configureStore from 'redux-mock-store'
 import api from '../../api'
+import { delay, mapTo, tap } from 'rxjs/operators'
+import { pipe } from 'rxjs/Rx'
 
 const middlewares = []
 const mockStore = configureStore(middlewares)
@@ -18,35 +20,56 @@ const createTestScheduler = (frameTimeFactor = 10) => {
 }
 
 describe('connectToGameEpic', () => {
-  it('gets an ID connection param', () => {
-    const gameIDRequested = 1
-    const connectionParameters = {
-      id: 1
+  it('connects to the aimmo-game', () => {
+    const gameState = {
+      players: {
+        id: 1,
+        location: {
+          x: 10,
+          y: 10
+        }
+      }
     }
 
-    const marbles1 = '-a-'
-    const marbles2 = '-b-'
+    const marbles1 = '-a---'
+    const marbles2 = '--b--'
     const values = {
-      a: actions.getConnectionParametersRequest(gameIDRequested),
-      b: actions.getConnectionParametersSuccess(connectionParameters)
+      a: actions.socketConnectToGameRequest(),
+      b: actions.socketGameStateReceived(gameState)
     }
 
     const testScheduler = createTestScheduler()
     const source$ = ActionsObservable.from(
       testScheduler.createColdObservable(marbles1, values)
     )
-    const mockGetJSON = () => {
-      return Observable.of({id: connectionParameters.id})
-    }
+    const mockGetJSON = () =>
+      Observable.of({ id: 1 })
 
-    const mockAPI = { api: { get: mockGetJSON } }
+    const mockConnectToGame = () =>
+      mapTo({type: 'socket'})
+
+    const mockStartListeners = () =>
+      pipe(
+        delay(10, testScheduler),
+        mapTo(actions.socketGameStateReceived(gameState))
+      )
+
+    const mockAPI = {
+      api: {
+        get: mockGetJSON,
+        socket: {
+          connectToGame: mockConnectToGame,
+          startListeners: mockStartListeners
+        }
+      }
+    }
 
     const actual = epics.connectToGameEpic(source$, mockStore({
       game: {
         connectionParameters:
-            {
-              id: 1
-            }
+        {
+          id: 1
+        }
       }
     }), mockAPI)
 
@@ -58,65 +81,65 @@ describe('connectToGameEpic', () => {
 describe('ReceiveGameUpdate', () => {
   it('sends game update', () => {
     const gameState = {
-      "pickups": [
+      'pickups': [
         {
-          "type": "invulnerability",
-          "location": {
-            "y": -6,
-            "x": -6
+          'type': 'invulnerability',
+          'location': {
+            'y': -6,
+            'x': -6
           }
-        },
+        }
       ],
-      "obstacles": [
+      'obstacles': [
         {
-          "orientation": "north",
-          "width": 1,
-          "type": "wall",
-          "location": {
-            "y": 9,
-            "x": -7
+          'orientation': 'north',
+          'width': 1,
+          'type': 'wall',
+          'location': {
+            'y': 9,
+            'x': -7
           },
-          "height": 1
+          'height': 1
         },
         {
-          "orientation": "north",
-          "width": 1,
-          "type": "wall",
-          "location": {
-            "y": 4,
-            "x": 9
+          'orientation': 'north',
+          'width': 1,
+          'type': 'wall',
+          'location': {
+            'y': 4,
+            'x': 9
           },
-          "height": 1
+          'height': 1
         }
       ],
-      "scoreLocations": [
+      'scoreLocations': [
         {
-          "location": {
-            "y": 10,
-            "x": -15
+          'location': {
+            'y': 10,
+            'x': -15
           }
         }
       ],
-      "players": [
+      'players': [
         {
-          "orientation": "north",
-          "score": 0,
-          "health": 5,
-          "id": 1,
-          "location": {
-            "y": -1,
-            "x": 14
+          'orientation': 'north',
+          'score': 0,
+          'health': 5,
+          'id': 1,
+          'location': {
+            'y': -1,
+            'x': 14
           }
         }
       ],
-      "northEastCorner": {
-        "y": 15,
-        "x": 15
+      'northEastCorner': {
+        'y': 15,
+        'x': 15
       },
-      "era": "less_flat",
-      "southWestCorner": {
-        "y": -15,
-        "x": -15
+      'era': 'less_flat',
+      'southWestCorner': {
+        'y': -15,
+        'x': -15
       }
     }
 

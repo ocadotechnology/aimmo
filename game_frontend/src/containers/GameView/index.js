@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import React, { Component } from 'react'
-import Unity, { RegisterExternalListener } from 'react-unity-webgl'
+import Unity from 'react-unity-webgl'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { actions } from 'features/Game'
@@ -13,9 +13,8 @@ export class GameView extends Component {
   constructor (props) {
     super(props)
 
-    this.props.getConnectionParameters()
+    this.props.connectToGame()
   }
-
 
   serialisedSSLFlag () {
     let boolString = this.props.gameSSL.toString()
@@ -36,14 +35,13 @@ export class GameView extends Component {
 }
 
 GameView.propTypes = {
-  getConnectionParameters: PropTypes.func,
+  getConnectionParameters: PropTypes.func
 }
 
-const mapStateToProps = state => ({
-})
+const mapStateToProps = state => ({})
 
 const mapDispatchToProps = {
-  getConnectionParameters: actions.getConnectionParametersRequest,
+  connectToGame: actions.socketConnectToGameRequest
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(GameView)
