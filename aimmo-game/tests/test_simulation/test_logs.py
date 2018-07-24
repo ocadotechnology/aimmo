@@ -6,9 +6,7 @@ from .dummy_avatar import DummyAvatarManager
 class TestLogs(TestCase):
 
     def test_individual_avatar_successfully_receives_logs(self):
-        # This does not use data from MockCommunicator, should dummy avatars be used?
-        player_manager = DummyAvatarManager()
-        game_runner = FakeGameRunner(player_manager=player_manager)
+        game_runner = FakeGameRunner()
         game_runner.run_single_turn()
         logs = game_runner.get_avatar(1).logs
         self.assertEqual(logs, "Testing")
