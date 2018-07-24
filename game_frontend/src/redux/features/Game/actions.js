@@ -47,5 +47,5 @@ export default {
   sendGameUpdateFail,
   sendGameUpdateSuccess,
   socketGameStateReceived,
-  unityEvent
+  unityEvent,
 }
