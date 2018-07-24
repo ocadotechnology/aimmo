@@ -6,7 +6,8 @@ from .dummy_avatar import DummyAvatarManager
 class TestLogs(TestCase):
 
     def test_individual_avatar_successfully_receives_logs(self):
-        game_runner = FakeGameRunner()
+        player_manager = DummyAvatarManager()
+        game_runner = FakeGameRunner(player_manager=player_manager)
         game_runner.run_single_turn()
         logs = game_runner.get_avatar(1).logs
         self.assertEqual(logs, "Testing")
