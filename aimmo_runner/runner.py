@@ -42,10 +42,12 @@ def run(use_minikube, server_wait=True, capture_output=False, test_env=False):
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
 
     run_command(['pip', 'install', '-e', ROOT_DIR_LOCATION], capture_output=capture_output)
+
     if not test_env:
         run_command(['python', _MANAGE_PY, 'migrate', '--noinput'], capture_output=capture_output)
         run_command(['python', _MANAGE_PY, 'collectstatic', '--noinput'], capture_output=capture_output)
 
+    django.setup()
     create_superuser_if_missing(username='admin', password='admin')
 
     server_args = []
