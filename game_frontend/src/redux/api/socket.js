@@ -1,39 +1,31 @@
 import io from 'socket.io-client'
 import actions from '../features/Game/actions'
-import { map, merge, tap, mapTo, of } from 'rxjs/operators'
-import { pipe } from 'rxjs/Rx'
-import { fromEvent } from 'rxjs/observable/fromEvent'
+import { map, tap, mergeMap } from 'rxjs/operators';
+import { merge } from 'rxjs/observable/merge';
+import { fromEvent } from 'rxjs/observable/fromEvent';
+import { pipe } from 'rxjs/Rx' 
 
-let socketConnection = null
+const connectToGame = () =>
+    map(response => {
+        console.log(response);
+        const { game_url_base, game_id } = response;
+        return io(game_url_base, {
+            path: `/game-${game_id}`
+        });
+    });
 
-const connectToGame = response$ =>
-  response$.map(({ game_url_base, game_id }) =>
-    io(game_url_base, {
-      path: `/game-${game_id}`
-    })
-  )
+const listenFor = (eventName, socket, action) => 
+    fromEvent(socket, eventName).pipe(
+        map(event => action(event))
+    )
 
-const listenFor = (eventName, socket, action) => {
-  of({type: 'yo'})
-  // return fromEvent(socket, eventName).pipe(
-  //   tap(console.log),
-  //   mapTo({ type: 'yo' })
-  //   // map(event => action(event))
-  // )
-}
 
 const startListeners = () =>
-  pipe(
-    tap(console.log),
-    // mapTo({ type: 'yo' })
-    map(socket =>
-      merge(
-        listenFor('game-state', socket, actions.socketGameStateReceived)
-      )),
-    tap(console.log)
-  )
+    pipe(
+        mergeMap(socket => merge(
+            listenFor('game-state', socket, actions.socketGameStateReceived),
+        ))
+    )
 
 
 export default { connectToGame, startListeners }
-
-
