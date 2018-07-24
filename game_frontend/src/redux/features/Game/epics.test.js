@@ -17,8 +17,8 @@ const createTestScheduler = (frameTimeFactor = 10) => {
   return new TestScheduler(deepEquals)
 }
 
-describe('getConnectionParametersEpic', () => {
-  it('gets a ID connection param', () => {
+describe('connectToGameEpic', () => {
+  it('gets an ID connection param', () => {
     const gameIDRequested = 1
     const connectionParameters = {
       id: 1
@@ -41,7 +41,7 @@ describe('getConnectionParametersEpic', () => {
 
     const mockAPI = { api: { get: mockGetJSON } }
 
-    const actual = epics.getConnectionParametersEpic(source$, mockStore({
+    const actual = epics.connectToGameEpic(source$, mockStore({
       game: {
         connectionParameters:
             {
