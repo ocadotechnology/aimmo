@@ -80,7 +80,6 @@ class AvatarWrapper(object):
         action_args['avatar'] = self
         return ACTIONS[action_type](**action_args)
 
-
     def calculate_orientation(self):
         """
         Calculates the orientation of the avatar (ie. what direction the avatar is pointed
