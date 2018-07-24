@@ -42,4 +42,4 @@ tls:
     - [env]-aimmo.codeforlife.education
     secretName: ssl-cert-secret
 ```
-* In your terminal, go to the directory that contains the above mentioned files and use the following to generate the secret: `kubectl create secret tls foo-secret --key /tmp/tls.key --cert /tmp/tls.crt`. This will require correct authentication which is described above.
+* In your terminal, go to the directory that contains the above mentioned files and use the following to generate the secret: `kubectl create secret tls foo-secret --key=/tmp/tls.key --cert=/tmp/tls.crt`. This will require correct authentication which is described above.
