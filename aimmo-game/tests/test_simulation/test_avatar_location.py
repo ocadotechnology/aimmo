@@ -12,7 +12,6 @@ class TestAvatarLocation(unittest.TestCase):
                    "        print(\"New Code\")\n" \
                    "        return WaitAction()\n"
 
-
         game_runner.run_single_turn()
         avatar_location_before_code_change = game_runner.get_avatar(1).location
 
