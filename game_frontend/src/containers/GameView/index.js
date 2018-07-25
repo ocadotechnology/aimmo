@@ -10,16 +10,10 @@ export const GameViewLayout = styled.div`
 `
 
 export class GameView extends Component {
-  constructor (props) {
-    super(props)
-
-    this.props.connectToGame()
-  }
-
-  serialisedSSLFlag () {
-    let boolString = this.props.gameSSL.toString()
-
-    return boolString.charAt(0).toUpperCase() + boolString.slice(1)
+  onProgress (progression) {
+    if (progression === 1) {
+      this.props.connectToGame()
+    }
   }
 
   render () {
@@ -28,6 +22,7 @@ export class GameView extends Component {
         <Unity
           src='/static/unity/Build/unity.json'
           loader='/static/unity/Build/UnityLoader.js'
+          onProgress={this.onProgress.bind(this)}
         />
       </GameViewLayout>
     )
@@ -35,7 +30,7 @@ export class GameView extends Component {
 }
 
 GameView.propTypes = {
-  getConnectionParameters: PropTypes.func
+  connectToGame: PropTypes.func
 }
 
 const mapStateToProps = state => ({})
