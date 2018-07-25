@@ -39,6 +39,3 @@ class DjangoAutoTestSuite(unittest.TestSuite):
         self.test_runner.teardown_test_environment()
 
         return result
-
-
-
