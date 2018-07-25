@@ -12,16 +12,6 @@ describe('<GameView />', () => {
     const component = shallow(<GameView {...props} />)
     expect(component).toMatchSnapshot()
   })
-
-  it('serialisedSSLFlag function returns correctly', () => {
-    const props = {
-      connectToGame: jest.fn(),
-      gameSSL: false
-    }
-
-    const flagReturned = shallow(<GameView {...props} />).instance().serialisedSSLFlag()
-    expect(flagReturned).toBe('False')
-  })
 })
 
 describe('<GameViewLayout />', () => {
