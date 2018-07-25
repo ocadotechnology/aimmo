@@ -244,6 +244,16 @@ class KubernetesGameManager(GameManager):
                                             "memory": "64Mi",
                                         },
                                     },
+                                    "securityContext": {
+                                        "capabilities": {
+                                            "drop": [
+                                                "all"
+                                            ],
+                                            "add": [
+                                                "NET_BIND_SERVICE"
+                                            ]
+                                        }
+                                    }
                                 },
                             ],
                         },

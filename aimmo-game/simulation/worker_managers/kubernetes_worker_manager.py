@@ -58,6 +58,16 @@ class KubernetesWorkerManager(WorkerManager):
                                     'memory': '32Mi',
                                 },
                             },
+                            'securityContext': {
+                                'capabilities': {
+                                    'drop': [
+                                        'all'
+                                    ],
+                                    'add': [
+                                        'NET_BIND_SERVICE'
+                                    ]
+                                }
+                            }
                         },
                     ],
                 },
