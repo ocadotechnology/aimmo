@@ -4,6 +4,7 @@ exports[`<GameView /> matches snapshot 1`] = `
 <styled.div>
   <Unity
     loader="/static/unity/Build/UnityLoader.js"
+    onProgress={[Function]}
     src="/static/unity/Build/unity.json"
   />
 </styled.div>

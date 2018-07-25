@@ -8,7 +8,6 @@ setup(
     install_requires=[
         'eventlet',
         'flask',
-        'flask-socketio',
         'requests',
         'six',
         'pykube',

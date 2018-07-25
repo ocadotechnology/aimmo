@@ -22,7 +22,8 @@
     "jest": "^22.4.0",
     "jest-styled-components": "^5.0.1",
     "react-test-renderer": "^16.2.0",
-    "redux-mock-store": "^1.5.1"
+    "redux-mock-store": "^1.5.1",
+    "standard": "^11.0.1"
   },
   "dependencies": {
     "@material-ui/core": "^1.2.0",
@@ -37,10 +38,11 @@
     "react-redux": "^5.0.7",
     "react-unity-webgl": "^6.5.0",
     "redux": "^3.7.2",
-    "redux-observable": "^0.18.0",
     "redux-devtools-extension": "^2.13.2",
+    "redux-observable": "^0.18.0",
     "rxjs": "^5.5.10",
     "shelljs": "^0.8.1",
+    "socket.io-client": "^2.1.1",
     "styled-components": "^3.2.5",
     "webfontloader": "^1.6.28"
   },

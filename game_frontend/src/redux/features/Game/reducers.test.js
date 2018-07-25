@@ -7,14 +7,14 @@ describe('gameReducer', () => {
     expect(gameReducer(undefined, {})).toEqual({})
   })
 
-  it('should handle GET_CONNECTION_PARAMETERS_SUCCESS', () => {
+  it('should handle SOCKET_GAME_STATE_RECEIVED', () => {
     const expectedState = {
-      connectionParameters: {
+      gameState: {
         id: 1
       },
       initialState: 'someValue'
     }
-    const action = actions.getConnectionParametersSuccess({ id: 1 })
+    const action = actions.socketGameStateReceived({ id: 1 })
     expect(gameReducer({initialState: 'someValue'}, action)).toEqual(expectedState)
   })
 })

@@ -6,9 +6,8 @@ import os
 import sys
 import eventlet
 import flask
+import socketio as SocketIO
 
-
-from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 from simulation import map_generator
 from simulation.turn_manager import state_provider, ConcurrentTurnManager
@@ -22,7 +21,7 @@ eventlet.monkey_patch()
 
 app = flask.Flask(__name__)
 CORS(app, supports_credentials=True)
-socketio = SocketIO()
+socketio = SocketIO.Server()
 
 worker_manager = None
 
@@ -69,8 +68,8 @@ def get_game_state():
 
 
 @socketio.on('connect')
-def world_update_on_connect():
-    emit(
+def world_update_on_connect(sid, environ):
+    socketio.emit(
         'game-state',
         get_game_state(),
     )
@@ -122,12 +121,8 @@ def run_game(port):
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    socketio.init_app(app, resource=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
-    run_game(int(sys.argv[2]))
-    socketio.run(
-        app,
-        debug=False,
-        host=sys.argv[1],
-        port=int(sys.argv[2]),
-        use_reloader=False,
-    )
+    host, port = sys.argv[1], int(sys.argv[2])
+    app = SocketIO.Middleware(socketio, app, socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
+
+    run_game(port)
+    eventlet.wsgi.server(eventlet.listen((host, port)), app, debug=False)
