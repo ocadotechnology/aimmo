@@ -16,7 +16,6 @@ from simulation.worker_managers import WORKER_MANAGERS
 from simulation.pickups import pickups_update
 from simulation.communicator import Communicator
 
-
 eventlet.sleep()
 eventlet.monkey_patch()
 
@@ -87,6 +86,7 @@ def send_world_update():
 @app.route('/game-<game_id>')
 def healthcheck(game_id):
     return 'HEALTHY'
+
 
 @app.route('/player/<player_id>')
 def player_data(player_id):
