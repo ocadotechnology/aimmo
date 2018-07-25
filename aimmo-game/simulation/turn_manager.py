@@ -2,7 +2,6 @@ import logging
 import time
 from threading import RLock
 from threading import Thread
-import requests
 
 from simulation.action import PRIORITIES
 
@@ -53,16 +52,42 @@ class TurnManager(Thread):
     def run_turn(self):
         raise NotImplementedError("Abstract method.")
 
-    def _register_action(self, avatar):
+    def _run_turn_for_avatar(self, avatar):
         """
-        Send an avatar its view of the game state and register its chosen action.
+        Send an avatar its view of the game state and register its
+        chosen action & logs.
         """
         with state_provider as game_state:
             state_view = game_state.get_state_for(avatar)
 
-        if avatar.decide_action(state_view):
-                with state_provider as game_state:
-                    avatar.action.register(game_state.world_map)
+        worker_data = avatar.fetch_data(state_view)
+
+        self._register_actions(avatar, worker_data)
+        self._register_logs(avatar, worker_data)
+
+    def _register_actions(self, avatar, worker_data):
+        """
+        Calls a function that constructs the action object, does error handling,
+        and finally registers it onto the avatar.
+
+        :param avatar: Avatar object to which logs will be saved.
+        :param worker_data: Dict containing (among others) the 'action' key.
+        """
+        if avatar.decide_action(worker_data):
+            with state_provider as game_state:
+                avatar.action.register(game_state.world_map)
+
+    def _register_logs(self, avatar, worker_data):
+        """
+        Gathers the logs from the data received. It handles error catching.
+
+        :param avatar: Avatar object to which logs will be saved.
+        :param worker_data: Dict containing (among others) the 'logs' key.
+        """
+        try:
+            avatar.logs = worker_data['logs']
+        except KeyError:
+            LOGGER.error("Logs not found in worker_data when registering!")
 
     def _update_environment(self, game_state):
         num_avatars = len(game_state.avatar_manager.active_avatars)
@@ -102,7 +127,7 @@ class SequentialTurnManager(TurnManager):
             avatars = game_state.avatar_manager.active_avatars
 
         for avatar in avatars:
-            self._register_action(avatar)
+            self._run_turn_for_avatar(avatar)
             with state_provider as game_state:
                 location_to_clear = avatar.action.target_location
                 avatar.action.process(game_state.world_map)
@@ -112,13 +137,13 @@ class SequentialTurnManager(TurnManager):
 class ConcurrentTurnManager(TurnManager):
     def run_turn(self):
         """
-        Concurrently get the intended actions from all avatars and register
+        Concurrently get the intended actions from all avatars and regioster
         them on the world map. Then apply actions in order of priority.
         """
         with state_provider as game_state:
             avatars = game_state.avatar_manager.active_avatars
 
-        threads = [Thread(target=self._register_action,
+        threads = [Thread(target=self._run_turn_for_avatar,
                           args=(avatar,)) for avatar in avatars]
 
         [thread.start() for thread in threads]

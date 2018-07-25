@@ -8,14 +8,17 @@ from .mock_communicator import MockCommunicator
 
 class FakeGameRunner(object):
 
-    def __init__(self, settings=None):
+    def __init__(self, settings=None, player_manager=None):
         # Default argument is now immutable
         if settings is None:
             settings = {'START_WIDTH': 3, 'START_HEIGHT': 3, 'OBSTACLE_RATIO': 0}
 
         self.settings = settings
         self.map_generator = Main(settings)
-        self.player_manager = AvatarManager()
+        if not player_manager:
+            self.player_manager = AvatarManager()
+        else:
+            self.player_manager = player_manager
         self.mock_communicator = MockCommunicator()
         self.game_state = self.map_generator.get_game_state(self.player_manager)
         self.worker_manager = ConcreteWorkerManager(game_state=self.game_state, communicator=self.mock_communicator)

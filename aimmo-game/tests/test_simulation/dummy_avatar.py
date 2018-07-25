@@ -16,10 +16,10 @@ class DummyAvatar(AvatarWrapper):
         self.effects = set()
         self.resistance = 0
 
-    def decide_action(self, state_view):
+    def decide_action(self, worker_data):
         raise NotImplementedError()
 
-    def handle_turn(self, state_view):
+    def handle_turn(self, world_map=None, avatar_state=None):
         raise NotImplementedError()
 
     def add_event(self, event):
@@ -31,6 +31,9 @@ class DummyAvatar(AvatarWrapper):
 
     def serialise(self):
         return 'Dummy'
+
+    def fetch_data(self, state_view):
+        return {'action': '', 'logs': 'Testing'}
 
     def damage(self, amount):
         self.health -= amount
@@ -45,8 +48,8 @@ class LiveDummy(DummyAvatar):
     def __init__(self, player_id=1, initial_location=(0, 0)):
         super(LiveDummy, self).__init__(player_id, initial_location)
 
-    def decide_action(self, state_view):
-        self._action = self.handle_turn(state_view)
+    def decide_action(self, worker_data):
+        self._action = self.handle_turn()
         return True
 
 
@@ -58,11 +61,11 @@ class DeadDummy(DummyAvatar):
     def __init__(self, player_id=1, initial_location=(0, 0)):
         super(DeadDummy, self).__init__(player_id, initial_location)
 
-    def decide_action(self, state_view):
-        self._action = self.handle_turn(state_view)
+    def decide_action(self, worker_data):
+        self._action = self.handle_turn()
         return False
 
-    def handle_turn(self, state_view):
+    def handle_turn(self, world_map=None, avatar_state=None):
         return WaitAction(self)
 
 
@@ -70,7 +73,7 @@ class WaitDummy(LiveDummy):
     """
     Avatar that always waits.
     """
-    def handle_turn(self, state_view):
+    def handle_turn(self, world_map=None, avatar_state=None):
         return WaitAction(self)
 
 
@@ -82,7 +85,7 @@ class MoveDummy(LiveDummy):
         super(MoveDummy, self).__init__(player_id, initial_location)
         self._direction = direction
 
-    def handle_turn(self, state_view):
+    def handle_turn(self, world_map=None, avatar_state=None):
         return MoveAction(self, self._direction.dict)
 
 

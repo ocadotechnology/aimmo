@@ -88,6 +88,7 @@ def send_world_update():
 def healthcheck(game_id):
     return 'HEALTHY'
 
+
 @app.route('/player/<player_id>')
 def player_data(player_id):
     player_id = int(player_id)
@@ -121,7 +122,6 @@ def run_game(port):
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-
     socketio.init_app(app, resource=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
     run_game(int(sys.argv[2]))
     socketio.run(
