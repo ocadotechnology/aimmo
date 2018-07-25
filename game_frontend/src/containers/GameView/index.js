@@ -9,9 +9,11 @@ export const GameViewLayout = styled.div`
   grid-area: game-view
 `
 
+const UNITY_LOADED = 1
+
 export class GameView extends Component {
   onProgress (progression) {
-    if (progression === 1) {
+    if (progression === UNITY_LOADED) {
       this.props.connectToGame()
     }
   }
