@@ -147,7 +147,7 @@ describe('ReceiveGameUpdate', () => {
     const marbles2 = '-b--'
     const values = {
       a: actions.socketGameStateReceived(gameState),
-      b: actions.sendGameUpdateSuccess()
+      b: actions.sendGameStateSuccess()
     }
 
     const testScheduler = createTestScheduler()

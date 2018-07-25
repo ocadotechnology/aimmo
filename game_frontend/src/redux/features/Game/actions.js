@@ -6,15 +6,15 @@ const socketConnectToGameRequest = () => (
   }
 )
 
-const sendGameUpdateSuccess = () => (
+const sendGameStateSuccess = () => (
   {
-    type: types.SEND_GAME_UPDATE_SUCCESS
+    type: types.SEND_GAME_STATE_SUCCESS
   }
 )
 
-const sendGameUpdateFail = error => (
+const sendGameStateFail = error => (
   {
-    type: types.SEND_GAME_UPDATE_FAIL
+    type: types.SEND_GAME_STATE_FAIL
   }
 )
 
@@ -41,8 +41,8 @@ const unityEvent = (unityEvent, unityData, successAction, failAction) => (
 
 export default {
   socketConnectToGameRequest,
-  sendGameUpdateFail,
-  sendGameUpdateSuccess,
+  sendGameStateFail,
+  sendGameStateSuccess,
   socketGameStateReceived,
   unityEvent
 }

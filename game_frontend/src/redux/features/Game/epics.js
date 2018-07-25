@@ -24,8 +24,8 @@ const sendGameStateEpic = (action$, store, { api: { unity } }) => action$.pipe(
   map(action => actions.unityEvent(
     'ReceiveGameUpdate',
     JSON.stringify(action.payload.gameState),
-    actions.sendGameUpdateSuccess(),
-    actions.sendGameUpdateFail
+    actions.sendGameStateSuccess(),
+    actions.sendGameStateFail
   )),
   unity.sendExternalEvent(unity.emitToUnity)
 )
