@@ -42,5 +42,5 @@ tls:
     - [env]-aimmo.codeforlife.education
     secretName: ssl-cert-secret
 ```
-* In your terminal, go to the directory that contains the above mentioned files and use the following to generate the secret: `kubectl create secret tls foo-secret --key /tmp/tls.key --cert /tmp/tls.crt`. This will require correct authentication which is described above.
+* In your terminal, go to the directory that contains the above mentioned files and use the following to generate the secret: `kubectl create secret tls foo-secret --key=/tmp/tls.key --cert=/tmp/tls.crt`. This will require correct authentication which is described above.
 * The downtime between deleting the old `ssl-cert-secret` on a cluster and creating a new one will hang the game creator as it will not receive information since a certificate authority issue will occur. The solution for this is to delete the game creator **pod** which will reinstantiate all the games and workers from scratch.
