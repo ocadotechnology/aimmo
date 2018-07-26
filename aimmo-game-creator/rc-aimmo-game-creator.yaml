@@ -29,3 +29,7 @@ spec:
           value: REPLACE_ME
         - name: GAME_MANAGER
           value: kubernetes
+        securityContext:
+          capabilities:
+            drop:
+              - all
