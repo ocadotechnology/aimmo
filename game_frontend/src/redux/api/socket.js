@@ -7,9 +7,9 @@ import { pipe } from 'rxjs/Rx'
 
 const connectToGame = () =>
   map(response => {
-    const { game_url_base: gameUrlBase, game_id: gameId } = response
+    const { game_url_base: gameUrlBase, game_url_path: gameUrlPath } = response
     return io(gameUrlBase, {
-      path: `/game-${gameId}`
+      path: gameUrlPath
     })
   })
 
