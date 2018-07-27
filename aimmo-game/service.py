@@ -28,7 +28,7 @@ LOGGER = logging.getLogger(__name__)
 
 worker_manager = None
 
-socket_id_to_avatar_id = {}
+session_id_to_avatar_id = {}
 USER_WATCHING_GAME = 0
 
 
@@ -77,7 +77,7 @@ def get_game_state():
 def world_update_on_connect(sid, environ):
     socket_data = get_game_state()
     socket_data['logs'] = ''
-    socket_id_to_avatar_id[sid] = None
+    session_id_to_avatar_id[sid] = None
 
     query = environ['QUERY_STRING']
     match = re.match(r'.*avatar_id=(\d*).*', query)
@@ -89,7 +89,7 @@ def world_update_on_connect(sid, environ):
             LOGGER.info(groups[0])
             avatar_id = int(groups[0])
             if avatar_id != USER_WATCHING_GAME:
-                socket_id_to_avatar_id[sid] = avatar_id
+                session_id_to_avatar_id[sid] = avatar_id
 
     socketio.emit(
         'game-state',
@@ -101,7 +101,7 @@ def world_update_on_connect(sid, environ):
 def send_world_update():
     socket_data = get_game_state()
 
-    for sid, avatar_id in socket_id_to_avatar_id.iteritems():
+    for sid, avatar_id in session_id_to_avatar_id.iteritems():
         avatar_logs = logs_provider.get(avatar_id, '')
         socket_data['logs'] = avatar_logs
 
@@ -110,6 +110,15 @@ def send_world_update():
             socket_data,
             room=sid,
         )
+
+
+@socketio.on('disconnect')
+def remove_session_id_from_mappings(sid):
+    LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
+    try:
+        del session_id_to_avatar_id[sid]
+    except KeyError:
+        pass
 
 
 @app.route('/game-<game_id>')
