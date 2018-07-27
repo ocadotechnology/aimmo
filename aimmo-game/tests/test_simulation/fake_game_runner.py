@@ -1,5 +1,5 @@
 import random
-from simulation.turn_manager import ConcurrentTurnManager
+from simulation.turn_manager import ConcurrentTurnManager, logs_provider
 from simulation.map_generator import Main
 from simulation.avatar.avatar_manager import AvatarManager
 from .concrete_worker_manager import ConcreteWorkerManager
@@ -29,6 +29,9 @@ class FakeGameRunner(object):
     def run_single_turn(self):
         self.worker_manager.update()
         self.turn_manager._run_single_turn()
+
+    def get_logs(self, avatar_id):
+        return logs_provider[avatar_id]
 
     def get_avatar(self, avatar_id):
         return self.game_state.avatar_manager.get_avatar(avatar_id)

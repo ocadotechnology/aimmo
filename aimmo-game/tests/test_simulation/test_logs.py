@@ -9,7 +9,7 @@ class TestLogs(TestCase):
         player_manager = DummyAvatarManager()
         game_runner = FakeGameRunner(player_manager=player_manager)
         game_runner.run_single_turn()
-        logs = game_runner.get_avatar(1).logs
+        logs = game_runner.get_logs(1)
         self.assertEqual(logs, "Testing")
 
     def test_several_avatars_successfully_receive_logs(self):
@@ -18,7 +18,7 @@ class TestLogs(TestCase):
         player_manager.add_avatar(2, "", None)
         game_runner = FakeGameRunner(player_manager=player_manager)
         game_runner.run_single_turn()
-        first_avatar_logs = game_runner.get_avatar(1).logs
-        second_avatar_logs = game_runner.get_avatar(2).logs
+        first_avatar_logs = game_runner.get_logs(1)
+        second_avatar_logs = game_runner.get_logs(2)
         self.assertEqual(first_avatar_logs, "Testing")
         self.assertEqual(second_avatar_logs, "Testing")
