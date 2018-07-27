@@ -77,20 +77,22 @@ def world_update_on_connect(sid, environ):
         avatar_id = query[start+10:end]
         print("avatar id: " + avatar_id)
     
-    Log log = LogGuesser.GuessLog(avatar_id);
-
     socketio.emit(
         'game-state',
         get_game_state(),
+        room=avatar_id or None,
     )
 
 
 def send_world_update():
-    socketio.emit(
-        'game-state',
-        get_game_state(),
-        broadcast=True,
-    )
+    # assuming avatarSIDs dictionary
+    for avatar_id, sid in avatarSIDs.iteritems():
+        socketio.emit(
+            'game-state',
+            get_game_state(),
+            room=sid,
+        )
+
 
 
 @app.route('/game-<game_id>')

@@ -96,7 +96,7 @@ def connection_parameters(request, game_id):
     :param id: Integer with the ID of the game.
     :return: JsonResponse object with the contents.
     """
-    env_connection_settings = game_renderer.get_environment_connection_settings(id)
+    env_connection_settings = game_renderer.get_environment_connection_settings(game_id)
     avatar_id = 0
 
     # TODO: add logging
@@ -113,7 +113,8 @@ def connection_parameters(request, game_id):
         return HttpResponse('Unknown error occurred when getting the current avatar',
                             status=500)
 
-    return JsonResponse(env_connection_settings.update({'avatar_id': avatar_id}))
+    env_connection_settings.update({'avatar_id': avatar_id})
+    return JsonResponse(env_connection_settings)
 
 
 @csrf_exempt
