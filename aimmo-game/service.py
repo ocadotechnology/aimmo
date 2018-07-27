@@ -25,6 +25,9 @@ socketio = SocketIO.Server()
 
 worker_manager = None
 
+socket_id_to_avatar_id = {}
+USER_WATCHING_GAME = 0
+
 
 def to_cell_type(cell):
     if not cell.habitable:
@@ -69,30 +72,40 @@ def get_game_state():
 
 @socketio.on('connect')
 def world_update_on_connect(sid, environ):
+    socket_data = get_game_state()
+    socket_data['logs'] = ''
+
     query = environ['QUERY_STRING']
 
     start = query.find('avatar_id=')
     end = query.find('&')
     if start != -1 and end != -1:
         avatar_id = query[start+10:end]
-        print("avatar id: " + avatar_id)
-    
+        if avatar_id == USER_WATCHING_GAME:
+            socket_id_to_avatar_id[sid] = None
+        else:
+            socket_id_to_avatar_id[sid] = avatar_id
+
     socketio.emit(
         'game-state',
         get_game_state(),
-        room=avatar_id or None,
+        room=sid,
     )
 
 
 def send_world_update():
-    # assuming avatarSIDs dictionary
-    for avatar_id, sid in avatarSIDs.iteritems():
+    socket_data = get_game_state()
+
+    for sid, avatar_id in socket_id_to_avatar_id.iteritems():
+
+        avatar_logs = logs_provider.get(avatar_id, default='')
+        socket_data['logs'] = avatar_logs
+
         socketio.emit(
             'game-state',
-            get_game_state(),
+            socket_data,
             room=sid,
         )
-
 
 
 @app.route('/game-<game_id>')
