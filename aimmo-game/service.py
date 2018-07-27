@@ -69,6 +69,16 @@ def get_game_state():
 
 @socketio.on('connect')
 def world_update_on_connect(sid, environ):
+    query = environ['QUERY_STRING']
+
+    start = query.find('avatar_id=')
+    end = query.find('&')
+    if start != -1 and end != -1:
+        avatar_id = query[start+10:end]
+        print("avatar id: " + avatar_id)
+    
+    Log log = LogGuesser.GuessLog(avatar_id);
+
     socketio.emit(
         'game-state',
         get_game_state(),
