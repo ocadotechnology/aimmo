@@ -4,6 +4,7 @@ import cPickle as pickle
 import logging
 import os
 import sys
+import re
 import eventlet
 import flask
 import socketio as SocketIO
@@ -22,6 +23,8 @@ eventlet.monkey_patch()
 app = flask.Flask(__name__)
 CORS(app, supports_credentials=True)
 socketio = SocketIO.Server()
+
+LOGGER = logging.getLogger(__name__)
 
 worker_manager = None
 
@@ -74,17 +77,19 @@ def get_game_state():
 def world_update_on_connect(sid, environ):
     socket_data = get_game_state()
     socket_data['logs'] = ''
+    socket_id_to_avatar_id[sid] = None
 
     query = environ['QUERY_STRING']
+    match = re.match(r'.*avatar_id=(\d*).*', query)
 
-    start = query.find('avatar_id=')
-    end = query.find('&')
-    if start != -1 and end != -1:
-        avatar_id = query[start+10:end]
-        if avatar_id == USER_WATCHING_GAME:
-            socket_id_to_avatar_id[sid] = None
-        else:
-            socket_id_to_avatar_id[sid] = avatar_id
+    if match:
+        groups = match.groups()
+        if len(groups) > 0:
+            LOGGER.info(groups)
+            LOGGER.info(groups[0])
+            avatar_id = groups[0]
+            if avatar_id != USER_WATCHING_GAME:
+                socket_id_to_avatar_id[sid] = int(avatar_id)
 
     socketio.emit(
         'game-state',
@@ -97,8 +102,7 @@ def send_world_update():
     socket_data = get_game_state()
 
     for sid, avatar_id in socket_id_to_avatar_id.iteritems():
-
-        avatar_logs = logs_provider.get(avatar_id, default='')
+        avatar_logs = logs_provider.get(avatar_id, '')
         socket_data['logs'] = avatar_logs
 
         socketio.emit(
