@@ -35,6 +35,7 @@ class GameStateProvider:
 
 
 state_provider = GameStateProvider()
+logs_provider = {}  # A mapping from avatar.player_id to their most recent logs. Is thread safe.
 
 
 class TurnManager(Thread):
@@ -85,9 +86,10 @@ class TurnManager(Thread):
         :param worker_data: Dict containing (among others) the 'logs' key.
         """
         try:
-            avatar.logs = worker_data['logs']
+            logs_provider[avatar.player_id] = worker_data['logs']
         except KeyError:
             LOGGER.error("Logs not found in worker_data when registering!")
+            logs_provider[avatar.player_id] = ''
 
     def _update_environment(self, game_state):
         num_avatars = len(game_state.avatar_manager.active_avatars)
