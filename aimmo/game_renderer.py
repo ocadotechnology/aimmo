@@ -52,22 +52,3 @@ def _add_game_port_to_game_base(game_id):
 
 def _connection_on_k8s_mode(game_port):
     return game_port == 0
-
-
-def get_avatar_id_from_user_id(django_user_id, game_id):
-    """
-    A helper function which will return an avatar ID that is assigned to a
-    particular django user owner in a game.
-
-    :param django_user_id: A django user ID taken from the request.
-    :param game_id: The game ID in which the avatar is being requested from.
-    :return: An integer containing the avatar_ID.
-    """
-    game = get_object_or_404(Game, id=game_id)
-
-    if not game.can_user_play(django_user_id):
-        raise exceptions.UserCannotPlayGameException
-
-    avatar = game.avatar_set.get(owner=django_user_id)
-
-    return avatar.id
