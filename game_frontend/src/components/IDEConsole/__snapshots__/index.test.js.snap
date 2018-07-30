@@ -1,12 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<IDEConsole /> renders correctly 1`] = `
-.c0 {
-  background-color: #303030;
-  grid-area: ide-console;
-}
+exports[`<IDEConsole /> renders correctly with logs 1`] = `
+<styled.div>
+  <p>
+    test logs
+  </p>
+</styled.div>
+`;
 
-<div
-  className="c0"
-/>
+exports[`<IDEConsole /> renders correctly without logs 1`] = `
+<styled.div>
+  <p />
+</styled.div>
 `;

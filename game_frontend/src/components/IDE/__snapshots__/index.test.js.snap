@@ -4,6 +4,6 @@ exports[`<IDE /> renders correctly 1`] = `
 <React.Fragment>
   <Connect(IDEMenu) />
   <Connect(WithTheme(IDEEditor)) />
-  <styled.div />
+  <IDEConsole />
 </React.Fragment>
 `;
