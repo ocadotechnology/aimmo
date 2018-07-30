@@ -34,8 +34,40 @@ def get_environment_connection_settings(game_id):
     """
 
     return {
-        'game_url_base': app_settings.GAME_SERVER_URL_FUNCTION(game_id)[0],
+        'game_url_base': _add_game_port_to_game_base(game_id),
         'game_url_path': app_settings.GAME_SERVER_URL_FUNCTION(game_id)[1],
-        'game_url_port': app_settings.GAME_SERVER_PORT_FUNCTION(game_id),
         'game_ssl_flag': app_settings.GAME_SERVER_SSL_FLAG, 'game_id': game_id
     }
+
+
+def _add_game_port_to_game_base(game_id):
+    game_base = app_settings.GAME_SERVER_URL_FUNCTION(game_id)[0]
+    game_port = app_settings.GAME_SERVER_PORT_FUNCTION(game_id)
+
+    if _connection_on_k8s_mode(game_port):
+        return game_base
+
+    return "{0}:{1}".format(game_base, game_port)
+
+
+def _connection_on_k8s_mode(game_port):
+    return game_port == 0
+
+
+def get_avatar_id_from_user_id(django_user_id, game_id):
+    """
+    A helper function which will return an avatar ID that is assigned to a
+    particular django user owner in a game.
+
+    :param django_user_id: A django user ID taken from the request.
+    :param game_id: The game ID in which the avatar is being requested from.
+    :return: An integer containing the avatar_ID.
+    """
+    game = get_object_or_404(Game, id=game_id)
+
+    if not game.can_user_play(django_user_id):
+        raise exceptions.UserCannotPlayGameException
+
+    avatar = game.avatar_set.get(owner=django_user_id)
+
+    return avatar.id
