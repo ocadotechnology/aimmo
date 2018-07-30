@@ -22,9 +22,10 @@ eventlet.monkey_patch()
 
 app = flask.Flask(__name__)
 CORS(app, supports_credentials=True)
-socketio = SocketIO.Server()
+socketioserver = SocketIO.Server()
 
 LOGGER = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 worker_manager = None
 
@@ -73,7 +74,7 @@ def get_game_state():
         }
 
 
-@socketio.on('connect')
+@socketioserver.on('connect')
 def world_update_on_connect(sid, environ):
     socket_data = get_game_state()
     socket_data['logs'] = ''
@@ -85,13 +86,11 @@ def world_update_on_connect(sid, environ):
     if match:
         groups = match.groups()
         if len(groups) > 0:
-            LOGGER.info(groups)
-            LOGGER.info(groups[0])
             avatar_id = int(groups[0])
             if avatar_id != USER_WATCHING_GAME:
                 session_id_to_avatar_id[sid] = avatar_id
 
-    socketio.emit(
+    socketioserver.emit(
         'game-state',
         get_game_state(),
         room=sid,
@@ -105,14 +104,14 @@ def send_world_update():
         avatar_logs = logs_provider.get(avatar_id, '')
         socket_data['logs'] = avatar_logs
 
-        socketio.emit(
+        socketioserver.emit(
             'game-state',
             socket_data,
             room=sid,
         )
 
 
-@socketio.on('disconnect')
+@socketioserver.on('disconnect')
 def remove_session_id_from_mappings(sid):
     LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
     try:
@@ -160,7 +159,7 @@ def run_game(port):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     host, port = sys.argv[1], int(sys.argv[2])
-    app = SocketIO.Middleware(socketio, app, socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
+    app = SocketIO.Middleware(socketioserver, app, socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
 
     run_game(port)
-    eventlet.wsgi.server(eventlet.listen((host, port)), app, debug=False)
+    eventlet.wsgi.server(eventlet.listen((host, port)), app, debug=True)
