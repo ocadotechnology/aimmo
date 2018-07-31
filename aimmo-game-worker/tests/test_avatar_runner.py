@@ -13,4 +13,4 @@ class TestAvatarRunner(TestCase):
 
         runner = AvatarRunner(Avatar())
         action, logs = runner.process_avatar_turn(world_map={}, avatar_state={})
-        self.assertIsInstance(action, WaitAction)
+        self.assertEqual(action, {'action_type': 'wait'})
