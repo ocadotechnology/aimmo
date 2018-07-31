@@ -4,9 +4,6 @@ import string
 import logging
 import mock
 
-LOGGER = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
-
 
 @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
 @mock.patch('service.socketioserver')
