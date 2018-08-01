@@ -13,7 +13,7 @@ class TestSocketio(TestCase):
         self.environ['QUERY_STRING'] = '?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb'
 
         self.sid = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)
-                           for _ in range(16))
+                           for _ in range(19))
 
     def tearDown(self):
         service.session_id_to_avatar_id = {}
