@@ -10,7 +10,7 @@ import socketio as SocketIO
 
 from flask_cors import CORS
 from simulation import map_generator
-from simulation.turn_manager import state_provider, ConcurrentTurnManager
+from simulation.turn_manager import global_state_provider, ConcurrentTurnManager
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.worker_managers import WORKER_MANAGERS
 from simulation.pickups import pickups_update
@@ -51,7 +51,7 @@ def player_dict(avatar):
     }
 
 
-def get_game_state():
+def get_game_state(state_provider=global_state_provider):
     with state_provider as game_state:
         world_map = game_state.world_map
 

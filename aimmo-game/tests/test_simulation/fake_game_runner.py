@@ -1,5 +1,5 @@
 import random
-from simulation.turn_manager import ConcurrentTurnManager
+from simulation.turn_manager import ConcurrentTurnManager, GameStateProvider
 from simulation.map_generator import Main
 from simulation.avatar.avatar_manager import AvatarManager
 from .concrete_worker_manager import ConcreteWorkerManager
@@ -23,7 +23,8 @@ class FakeGameRunner(object):
         self.game_state = self.map_generator.get_game_state(self.player_manager)
         self.worker_manager = ConcreteWorkerManager(game_state=self.game_state, communicator=self.mock_communicator)
         self.turn_manager = ConcurrentTurnManager(game_state=self.game_state, end_turn_callback=lambda: None,
-                                                  communicator=self.mock_communicator)
+                                                  communicator=self.mock_communicator,
+                                                  state_provider=GameStateProvider())
         random.seed(0)
 
     def run_single_turn(self):
