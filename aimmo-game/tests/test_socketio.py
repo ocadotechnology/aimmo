@@ -1,12 +1,11 @@
 from unittest import TestCase
 import random
 import string
-import logging
 import mock
 
+import service
 
-@mock.patch('service.get_game_state', return_value={'foo': 'bar'})
-@mock.patch('service.socketioserver')
+
 class TestService(TestCase):
 
     def setUp(self):
@@ -17,20 +16,21 @@ class TestService(TestCase):
                            for _ in range(16))
 
     def tearDown(self):
-        import service
         service.session_id_to_avatar_id = {}
 
+    @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
+    @mock.patch('service.socketioserver')
     def test_socketio_emit_called(self, mocked_socketio,
                                   mocked_game_state):
-        import service
 
         service.world_update_on_connect(self.sid, self.environ)
 
         self.assertTrue(mocked_socketio.return_value.emit.assert_called_once)
 
+    @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
+    @mock.patch('service.socketioserver')
     def test_socketio_adds_logs_and_makes_correct_call(self, mocked_socketio,
                                                        mocked_game_state):
-        import service
 
         service.world_update_on_connect(self.sid, self.environ)
 
@@ -38,9 +38,10 @@ class TestService(TestCase):
                                                 {'foo': 'bar', 'logs': ''},
                                                 room=self.sid)
 
+    @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
+    @mock.patch('service.socketioserver')
     def test_matched_session_id_to_avatar_id_mapping(self, mocked_socketio,
                                                      mocked_game_state):
-        import service
         mappings = service.session_id_to_avatar_id
 
         self.assertEqual(len(mappings), 0)
@@ -51,9 +52,10 @@ class TestService(TestCase):
         self.assertTrue(self.sid in mappings)
         self.assertEqual(mappings[self.sid], 1)
 
+    @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
+    @mock.patch('service.socketioserver')
     def test_no_match_session_id_to_avatar_id_mapping(self, mocked_socketio,
                                                       mocked_game_state):
-        import service
         mappings = service.session_id_to_avatar_id
         self.environ['QUERY_STRING'] = 'corrupted!@$%string123'
 
@@ -65,9 +67,10 @@ class TestService(TestCase):
         self.assertTrue(self.sid in mappings)
         self.assertIsNone(mappings[self.sid])
 
+    @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
+    @mock.patch('service.socketioserver')
     def test_send_world_update_for_one_user(self, mocked_socketio,
                                             mocked_game_state):
-        import service
         mappings = service.session_id_to_avatar_id
         mappings[self.sid] = 1
 
@@ -78,9 +81,10 @@ class TestService(TestCase):
                                                 {'foo': 'bar', 'logs': ''},
                                                 room=self.sid)
 
+    @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
+    @mock.patch('service.socketioserver')
     def test_send_world_update_for_multiple_users(self, mocked_socketio,
                                                   mocked_game_state):
-        import service
         mappings = service.session_id_to_avatar_id
         mappings[self.sid] = 1
         mappings['differentsid'] = 2
@@ -89,11 +93,11 @@ class TestService(TestCase):
 
         expected_call_one = mock.call('game-state',
                                       {'foo': 'bar', 'logs': ''},
-                                      room=self.sid)
+                                      room='differentsid')
 
         expected_call_two = mock.call('game-state',
                                       {'foo': 'bar', 'logs': ''},
-                                      room='differentsid')
+                                      room=self.sid)
 
         mocked_socketio.emit.assert_has_calls([expected_call_one,
                                                expected_call_two])
