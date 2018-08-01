@@ -9,7 +9,7 @@ import service
 class TestService(TestCase):
 
     def setUp(self):
-        self.environ = dict()
+        self.environ = {}
         self.environ['QUERY_STRING'] = '?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb'
 
         self.sid = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)
