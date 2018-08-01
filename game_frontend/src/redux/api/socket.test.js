@@ -3,12 +3,7 @@ import { of } from 'rxjs/observable/of'
 import actions from '../features/Game/actions'
 import { tap } from 'rxjs/operators'
 import socket from './socket'
-import { Server } from 'mock-socket'
-
-jest.mock('socket.io-client', () => {
-  const { SocketIO } = require('mock-socket')
-  return SocketIO
-})
+import EventEmitter from 'events'
 
 jest.mock('../features/Game/actions', () => ({
   socketGameStateReceived: jest.fn()
@@ -16,20 +11,14 @@ jest.mock('../features/Game/actions', () => ({
 
 describe('socket listens correctly', () => {
   it('socket listens for events', (done) => {
-    const fakeURL = 'ws://localhost:8080'
-    const mockServer = new Server(fakeURL)
-
     const gameState = JSON.stringify({ hello: 'world' })
-    const connectionParams = { game_url_base: fakeURL, game_url_path: '', avatar_id: 1 }
+    const emitter = new EventEmitter()
 
-    mockServer.on('connect', socket => {
-      socket.emit('game-state', gameState)
-    })
-
-    of(connectionParams).pipe(
-      socket.connectToGame(),
+    of(emitter).pipe(
       socket.startListeners(),
       tap(() => expect(actions.socketGameStateReceived).toHaveBeenCalledWith(gameState))
     ).subscribe(done)
+
+    emitter.emit('game-state', gameState)
   })
 })
