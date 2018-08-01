@@ -44,6 +44,10 @@ export default class LogEntries extends Component {
 }
 
 LogEntries.propTypes = {
-  logs: PropTypes.arrayOf(PropTypes.object),
+  logs: PropTypes.arrayOf(
+    PropTypes.shape({
+      timestamp: PropTypes.int,
+      log: PropTypes.string
+    })),
   lastLogRef: PropTypes.func
 }
