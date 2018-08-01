@@ -20,10 +20,9 @@ describe('socket listens correctly', () => {
     const mockServer = new Server(fakeURL)
 
     const gameState = JSON.stringify({ hello: 'world' })
-    const connectionParams = { game_url_base: fakeURL, game_url_path: 'socket.io', avatar_id: 1 }
+    const connectionParams = { game_url_base: fakeURL, game_url_path: '', avatar_id: 1 }
 
     mockServer.on('connect', socket => {
-      console.log('connected!')
       socket.emit('game-state', gameState)
     })
 
