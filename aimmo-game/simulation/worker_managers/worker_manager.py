@@ -124,12 +124,15 @@ class WorkerManager(threading.Thread):
         """
         user_id = user['id']
 
-        worker_url = self.recreate_worker(user)
+        self._data.set_code(user)
+
+        """worker_url = self.recreate_worker(user)
 
         # Update the worker_url of the avatar.
         avatar = self._data.get_avatar_from_user_id(user_id)
         LOGGER.info("worker_url " + "%s/turn/" % worker_url)
-        avatar.worker_url = "%s/turn/" % worker_url
+        avatar.worker_url = "%s/turn/" % worker_url"""
+
 
     def add_new_user(self, user):
         """

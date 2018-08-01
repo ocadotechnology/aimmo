@@ -21,9 +21,9 @@ def main(args, url):
     with open('{}/options.json'.format(data_dir), 'w') as options_file:
         json.dump(options, options_file)
 
-    code = data['code']
+    """code = data['code']
     with open('{}/avatar.py'.format(data_dir), 'w') as avatar_file:
-        avatar_file.write(code)
+        avatar_file.write(code)"""
 
 
 if __name__ == '__main__':

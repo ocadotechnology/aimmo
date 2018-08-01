@@ -1,11 +1,11 @@
 import logging
 import traceback
 import sys
+import inspect
 
 from six import StringIO
 
 from simulation.action import WaitAction
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -15,14 +15,22 @@ class AvatarRunner(object):
         self.avatar = avatar
 
     def process_avatar_turn(self, world_map, avatar_state):
+        import avatar
+
         output_log = StringIO()
 
         try:
             sys.stdout = output_log
             sys.stderr = output_log
+
             if self.avatar is None:
-                from avatar import Avatar
-                self.avatar = Avatar()
+                self.avatar = avatar.Avatar()
+            else:
+                reload(avatar)
+                self.avatar = avatar.Avatar()
+
+            LOGGER.info('Source code: ')
+            LOGGER.info(inspect.getsource(avatar.Avatar))
 
             action = self.avatar.handle_turn(world_map, avatar_state)
             action = action.serialise()

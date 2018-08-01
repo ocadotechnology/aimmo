@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 import logging
 import sys
+import os
+import json
+
 import flask
+import requests
 
 from simulation.avatar_state import AvatarState
 from simulation.world_map import WorldMap
@@ -13,9 +17,32 @@ LOGGER = logging.getLogger(__name__)
 avatar_runner = None
 
 
+def get_code_and_options():
+    LOGGER.info('Data url: ' + os.environ['DATA_URL'])
+    url = os.environ['DATA_URL']
+    return requests.get(url).json()
+
+
+def write_code_to_file(code):
+    with open('avatar.py', 'w') as avatar_file:
+        avatar_file.write(code)
+
+
+def write_options_to_file(options):
+    with open('options.json', 'w') as options_file:
+        json.dump(options, options_file)
+
+
+def update_code_and_options():
+    data = get_code_and_options()
+    LOGGER.info('New code is: ' + data['code'])
+    write_code_to_file(data['code'])
+    write_options_to_file(data['options'])
+
+
 @app.route('/turn/', methods=['POST'])
 def process_turn():
-    LOGGER.info('Calculating action')
+    update_code_and_options()
     data = flask.request.get_json()
 
     world_map = WorldMap(**data['world_map'])
