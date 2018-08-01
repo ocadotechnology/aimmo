@@ -85,8 +85,6 @@ def world_update_on_connect(sid, environ):
     if match:
         groups = match.groups()
         if len(groups) > 0:
-            LOGGER.info(groups)
-            LOGGER.info(groups[0])
             avatar_id = int(groups[0])
             if avatar_id != USER_WATCHING_GAME:
                 session_id_to_avatar_id[sid] = avatar_id
