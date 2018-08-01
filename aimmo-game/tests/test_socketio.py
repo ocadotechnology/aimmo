@@ -100,5 +100,5 @@ class TestSocketio(TestCase):
                                       room=self.sid)
 
         mocked_socketio.emit.assert_has_calls([expected_call_one,
-                                               expected_call_two])
+                                               expected_call_two], any_order=True)
 
