@@ -6,7 +6,7 @@ import mock
 import service
 
 
-class TestService(TestCase):
+class TestSocketio(TestCase):
 
     def setUp(self):
         self.environ = {}
