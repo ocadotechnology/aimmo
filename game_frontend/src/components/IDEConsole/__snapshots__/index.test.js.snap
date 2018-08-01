@@ -1,6 +1,28 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[` 1`] = `
+exports[`<IDEConsole /> renders correctly 1`] = `
+<styled.div
+  innerRef={[Function]}
+>
+  <LogEntries
+    lastLogRef={[Function]}
+    logs={
+      Array [
+        Object {
+          "log": "hello",
+          "timestamp": "1",
+        },
+        Object {
+          "log": "bye",
+          "timestamp": 2,
+        },
+      ]
+    }
+  />
+</styled.div>
+`;
+
+exports[`<StyledConsole /> renders correctly 1`] = `
 .c0 {
   grid-area: ide-console;
   color: #fff;
@@ -29,37 +51,4 @@ exports[` 1`] = `
 <div
   className="c0"
 />
-`;
-
-exports[`<IDEConsole /> renders correctly with logs 1`] = `
-<styled.div
-  innerRef={[Function]}
->
-  <LogEntries
-    lastLogRef={[Function]}
-    logs={
-      Array [
-        Object {
-          "log": "hello",
-          "timestamp": "1",
-        },
-        Object {
-          "log": "bye",
-          "timestamp": 2,
-        },
-      ]
-    }
-  />
-</styled.div>
-`;
-
-exports[`<IDEConsole /> renders correctly without logs 1`] = `
-<styled.div
-  innerRef={[Function]}
->
-  <LogEntries
-    lastLogRef={[Function]}
-    logs={Array []}
-  />
-</styled.div>
 `;
