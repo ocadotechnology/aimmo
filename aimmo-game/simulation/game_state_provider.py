@@ -1,7 +1,7 @@
 from threading import RLock
 
 
-class GameStateProvider:
+class GameStateProvider(object):
     """
     Thread-safe container for the world state.
 

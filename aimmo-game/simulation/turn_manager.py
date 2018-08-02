@@ -3,17 +3,10 @@ import time
 from threading import Thread
 
 from simulation.action import PRIORITIES
-from simulation.game_state_provider import GameStateProvider
 
 LOGGER = logging.getLogger(__name__)
 
 TURN_INTERVAL = 2
-
-
-global_state_provider = GameStateProvider()
-
-# A mapping from avatar.player_id to their most recent logs. Is thread safe.
-logs_provider = {}
 
 
 class TurnManager(Thread):
@@ -23,9 +16,10 @@ class TurnManager(Thread):
     daemon = True
 
     def __init__(self, game_state, end_turn_callback, communicator,
-                 state_provider=global_state_provider):
+                 state_provider, logs_provider):
 
         self.state_provider = state_provider
+        self.logs_provider = logs_provider
         self.state_provider.set_world(game_state)
         self.end_turn_callback = end_turn_callback
         self.communicator = communicator
@@ -67,10 +61,12 @@ class TurnManager(Thread):
         :param worker_data: Dict containing (among others) the 'logs' key.
         """
         try:
-            logs_provider[avatar.player_id] = worker_data['logs']
+            self.logs_provider.set_user_logs(user_id=avatar.player_id,
+                                             logs=worker_data['logs'])
         except KeyError:
             LOGGER.error("Logs not found in worker_data when registering!")
-            logs_provider[avatar.player_id] = ''
+            self.logs_provider.set_user_logs(user_id=avatar.player_id,
+                                             logs='')
 
     def _update_environment(self, game_state):
         num_avatars = len(game_state.avatar_manager.active_avatars)

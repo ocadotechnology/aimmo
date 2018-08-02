@@ -11,7 +11,9 @@ import socketio as SocketIO
 
 from flask_cors import CORS
 from simulation import map_generator
-from simulation.turn_manager import global_state_provider, logs_provider, ConcurrentTurnManager
+from simulation.turn_manager import ConcurrentTurnManager
+from simulation.logs_provider import LogsProvider
+from simulation.game_state_provider import GameStateProvider
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.worker_managers import WORKER_MANAGERS
 from simulation.pickups import pickups_update
@@ -27,6 +29,8 @@ socketio = SocketIO.Server()
 LOGGER = logging.getLogger(__name__)
 
 worker_manager = None
+global_state_provider = None
+global_logs_provider = None
 
 session_id_to_avatar_id = {}
 USER_WATCHING_GAME = 0
@@ -100,7 +104,7 @@ def send_world_update():
     socket_data = get_game_state()
 
     for sid, avatar_id in session_id_to_avatar_id.iteritems():
-        avatar_logs = logs_provider.get(avatar_id, '')
+        avatar_logs = global_logs_provider.get(avatar_id, '')
         socket_data['logs'] = avatar_logs
 
         socketio.emit(
@@ -135,18 +139,22 @@ def player_data(player_id):
 
 
 def run_game(port):
-    global worker_manager
+    global worker_manager, global_state_provider, global_logs_provider
 
     print("Running game...")
     settings = pickle.loads(os.environ['settings'])
     api_url = os.environ.get('GAME_API_URL', 'http://localhost:8000/aimmo/api/games/')
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
     player_manager = AvatarManager()
+    global_logs_provider = LogsProvider()
+    global_state_provider = GameStateProvider()
     communicator = Communicator(api_url=api_url, completion_url=api_url+'complete/')
     game_state = generator.get_game_state(player_manager)
     turn_manager = ConcurrentTurnManager(game_state=game_state,
                                          end_turn_callback=send_world_update,
-                                         communicator=communicator)
+                                         communicator=communicator,
+                                         state_provider=global_state_provider,
+                                         logs_provider=global_logs_provider)
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
     worker_manager = WorkerManagerClass(game_state=game_state,
                                         communicator=communicator,
