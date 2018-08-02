@@ -35,7 +35,7 @@ class FakeGameRunner(object):
         self.worker_manager.update()
         self.turn_manager._run_single_turn()
 
-    def get_logs(avatar_id):
+    def get_logs(self, avatar_id):
         return self.logs_provider._logs[avatar_id]
 
     def get_avatar(self, avatar_id):
