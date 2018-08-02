@@ -10,7 +10,6 @@ import flask
 import socketio as SocketIO
 
 from flask_cors import CORS
-from typing import Dict, Any
 
 from simulation import map_generator
 from simulation.turn_manager import ConcurrentTurnManager
@@ -33,7 +32,7 @@ LOGGER = logging.getLogger(__name__)
 worker_manager = None
 global_state_provider = None
 global_logs_provider = None
-global_session_to_avatar_mappings = {}  # type: Dict[int, int]
+global_session_to_avatar_mappings = {}
 
 USER_WATCHING_GAME = 0
 
