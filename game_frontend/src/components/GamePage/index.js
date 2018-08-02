@@ -5,7 +5,7 @@ import Game from 'components/Game'
 
 export const GamePageLayout = styled.div`
   display: grid
-  grid-template: 80px 1fr 150px / 1fr 1fr
+  grid-template: 80px 1fr 250px / 1fr 1fr
   grid-template-areas: "ide-menu game-menu"
                        "ide-editor game-view"
                        "ide-console game-view";
