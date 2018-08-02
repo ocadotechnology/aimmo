@@ -11,7 +11,7 @@ import socketio as SocketIO
 
 from flask_cors import CORS
 from simulation import map_generator
-from simulation.turn_manager import state_provider, logs_provider, ConcurrentTurnManager
+from simulation.turn_manager import global_state_provider, logs_provider, ConcurrentTurnManager
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.worker_managers import WORKER_MANAGERS
 from simulation.pickups import pickups_update
