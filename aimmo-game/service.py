@@ -4,13 +4,14 @@ import cPickle as pickle
 import logging
 import os
 import sys
+import re
 import eventlet
 import flask
 import socketio as SocketIO
 
 from flask_cors import CORS
 from simulation import map_generator
-from simulation.turn_manager import global_state_provider, ConcurrentTurnManager
+from simulation.turn_manager import state_provider, logs_provider, ConcurrentTurnManager
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.worker_managers import WORKER_MANAGERS
 from simulation.pickups import pickups_update
@@ -23,7 +24,12 @@ app = flask.Flask(__name__)
 CORS(app, supports_credentials=True)
 socketio = SocketIO.Server()
 
+LOGGER = logging.getLogger(__name__)
+
 worker_manager = None
+
+session_id_to_avatar_id = {}
+USER_WATCHING_GAME = 0
 
 
 def to_cell_type(cell):
@@ -69,18 +75,48 @@ def get_game_state(state_provider=global_state_provider):
 
 @socketio.on('connect')
 def world_update_on_connect(sid, environ):
+    socket_data = get_game_state()
+    socket_data['logs'] = ''
+    session_id_to_avatar_id[sid] = None
+
+    query = environ['QUERY_STRING']
+    match = re.match(r'.*avatar_id=(\d*).*', query)
+
+    if match:
+        groups = match.groups()
+        if len(groups) > 0:
+            avatar_id = int(groups[0])
+            if avatar_id != USER_WATCHING_GAME:
+                session_id_to_avatar_id[sid] = avatar_id
+
     socketio.emit(
         'game-state',
         get_game_state(),
+        room=sid,
     )
 
 
 def send_world_update():
-    socketio.emit(
-        'game-state',
-        get_game_state(),
-        broadcast=True,
-    )
+    socket_data = get_game_state()
+
+    for sid, avatar_id in session_id_to_avatar_id.iteritems():
+        avatar_logs = logs_provider.get(avatar_id, '')
+        socket_data['logs'] = avatar_logs
+
+        socketio.emit(
+            'game-state',
+            socket_data,
+            room=sid,
+        )
+
+
+@socketio.on('disconnect')
+def remove_session_id_from_mappings(sid):
+    LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
+    try:
+        del session_id_to_avatar_id[sid]
+    except KeyError:
+        pass
 
 
 @app.route('/game-<game_id>')

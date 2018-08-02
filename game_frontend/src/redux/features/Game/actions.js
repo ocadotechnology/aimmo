@@ -14,7 +14,10 @@ const sendGameStateSuccess = () => (
 
 const sendGameStateFail = error => (
   {
-    type: types.SEND_GAME_STATE_FAIL
+    type: types.SEND_GAME_STATE_FAIL,
+    payload: {
+      error
+    }
   }
 )
 

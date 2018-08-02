@@ -1,0 +1,2 @@
+class UserCannotPlayGameException(Exception):
+    pass

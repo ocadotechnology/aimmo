@@ -14,6 +14,7 @@ from django.middleware.csrf import get_token
 from models import Avatar, Game, LevelAttempt
 from aimmo import forms, game_renderer
 from app_settings import get_users_for_new_game, preview_user_required
+from exceptions import UserCannotPlayGameException
 
 LOGGER = logging.getLogger(__name__)
 
@@ -87,7 +88,7 @@ def get_game(request, id):
     return JsonResponse(response)
 
 
-def connection_parameters(request, id):
+def connection_parameters(request, game_id):
     """
     An API view which returns the correct connection settings required
     to run the game in different environments. These values will change
@@ -95,9 +96,25 @@ def connection_parameters(request, id):
     :param id: Integer with the ID of the game.
     :return: JsonResponse object with the contents.
     """
-    return JsonResponse(
-        game_renderer.get_environment_connection_settings(id)
-    )
+    env_connection_settings = game_renderer.get_environment_connection_settings(game_id)
+    avatar_id = 0
+
+    # TODO: add logging
+    try:
+        avatar_id = game_renderer.get_avatar_id_from_user_id(django_user_id=request.user.id,
+                                                             game_id=game_id)
+    except UserCannotPlayGameException:
+        return HttpResponse('User unauthorized to play',
+                            status=401)
+    except Avatar.DoesNotExist:
+        return HttpResponse('Avatar does not exist for this user',
+                            status=404)
+    except Exception:
+        return HttpResponse('Unknown error occurred when getting the current avatar',
+                            status=500)
+
+    env_connection_settings.update({'avatar_id': avatar_id})
+    return JsonResponse(env_connection_settings)
 
 
 @csrf_exempt
@@ -174,17 +191,23 @@ def add_game(request):
 
 
 def current_avatar_in_game(request, game_id):
-    game = get_object_or_404(Game, id=game_id)
+    avatar_id = 0
 
-    if not game.can_user_play(request.user.id):
-        return HttpResponse('User unauthorized to play', status=401)
-
+    # TODO: add logging
     try:
-        avatar = game.avatar_set.get(owner=request.user.id)
+        avatar_id = game_renderer.get_avatar_id_from_user_id(django_user_id=request.user.id,
+                                                             game_id=game_id)
+    except UserCannotPlayGameException:
+        return HttpResponse('User unauthorized to play',
+                            status=401)
     except Avatar.DoesNotExist:
-        return HttpResponse('Avatar does not exist for this user', status=404)
+        return HttpResponse('Avatar does not exist for this user',
+                            status=404)
+    except Exception:
+        return HttpResponse('Unknown error occurred when getting the current avatar',
+                            status=500)
 
-    return JsonResponse({'current_avatar_id': avatar.id})
+    return JsonResponse({'current_avatar_id': avatar_id})
 
 
 def csrfToken(request):
