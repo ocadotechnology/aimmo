@@ -1,5 +1,6 @@
 import random
-from simulation.turn_manager import ConcurrentTurnManager, GameStateProvider
+from simulation.turn_manager import ConcurrentTurnManager
+from simulation.game_state_provider import GameStateProvider
 from simulation.map_generator import Main
 from simulation.avatar.avatar_manager import AvatarManager
 from .concrete_worker_manager import ConcreteWorkerManager

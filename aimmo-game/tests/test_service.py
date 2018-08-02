@@ -5,7 +5,7 @@ from simulation.avatar.avatar_manager import AvatarManager
 from .test_simulation.maps import MockPickup, MockCell
 from .test_simulation.dummy_avatar import MoveEastDummy
 from simulation.location import Location
-from simulation.turn_manager import GameStateProvider
+from simulation.game_state_provider import GameStateProvider
 from simulation.game_state import GameState
 from simulation.world_map import WorldMap
 

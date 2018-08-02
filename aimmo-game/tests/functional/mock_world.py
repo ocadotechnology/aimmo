@@ -2,7 +2,8 @@ import random
 
 
 from simulation import map_generator
-from simulation.turn_manager import SequentialTurnManager, GameStateProvider
+from simulation.turn_manager import SequentialTurnManager
+from simulation.game_state_provider import GameStateProvider
 from tests.test_simulation.mock_communicator import MockCommunicator
 from tests.test_simulation.dummy_avatar import DummyAvatarManager, MoveEastDummy
 

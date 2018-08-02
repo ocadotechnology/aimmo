@@ -1,41 +1,20 @@
 import logging
 import time
-from threading import RLock
 from threading import Thread
 
 from simulation.action import PRIORITIES
+from game_state_provider import GameStateProvider
 
 LOGGER = logging.getLogger(__name__)
 
 TURN_INTERVAL = 2
 
 
-class GameStateProvider:
-    """
-    Thread-safe container for the world state.
-
-    TODO: think about changing to snapshot rather than lock?
-    """
-
-    def __init__(self):
-        self._game_state = None
-        self._lock = RLock()
-
-    def __enter__(self):
-        self._lock.acquire()
-        return self._game_state
-
-    def __exit__(self, type, value, traceback):
-        self._lock.release()
-
-    def set_world(self, new_game_state):
-        self._lock.acquire()
-        self._game_state = new_game_state
-        self._lock.release()
-
-
 global_state_provider = GameStateProvider()
-logs_provider = {}  # A mapping from avatar.player_id to their most recent logs. Is thread safe.
+
+# A mapping from avatar.player_id to their most recent logs. Is thread safe.
+logs_provider = {}
+
 
 class TurnManager(Thread):
     """
