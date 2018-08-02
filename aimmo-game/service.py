@@ -10,6 +10,8 @@ import flask
 import socketio as SocketIO
 
 from flask_cors import CORS
+from typing import Dict, Any
+
 from simulation import map_generator
 from simulation.turn_manager import ConcurrentTurnManager
 from simulation.logs_provider import LogsProvider
@@ -31,8 +33,8 @@ LOGGER = logging.getLogger(__name__)
 worker_manager = None
 global_state_provider = None
 global_logs_provider = None
+global_session_to_avatar_mappings = {}  # type: Dict[int, int]
 
-session_id_to_avatar_id = {}
 USER_WATCHING_GAME = 0
 
 
@@ -78,7 +80,8 @@ def get_game_state(state_provider=global_state_provider):
 
 
 @socketio.on('connect')
-def world_update_on_connect(sid, environ):
+def world_update_on_connect(sid, environ,
+                            session_id_to_avatar_id=global_session_to_avatar_mappings):
     socket_data = get_game_state()
     socket_data['logs'] = ''
     session_id_to_avatar_id[sid] = None
@@ -100,7 +103,7 @@ def world_update_on_connect(sid, environ):
     )
 
 
-def send_world_update():
+def send_world_update(session_id_to_avatar_id=global_session_to_avatar_mappings):
     socket_data = get_game_state()
 
     for sid, avatar_id in session_id_to_avatar_id.iteritems():
@@ -115,7 +118,8 @@ def send_world_update():
 
 
 @socketio.on('disconnect')
-def remove_session_id_from_mappings(sid):
+def remove_session_id_from_mappings(sid,
+                                    session_id_to_avatar_id=global_session_to_avatar_mappings):
     LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
     try:
         del session_id_to_avatar_id[sid]
