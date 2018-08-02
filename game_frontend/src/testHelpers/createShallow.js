@@ -12,7 +12,7 @@ const muiTheme = createMuiTheme(theme)
  *
  * @example
  * const tree = createShallowWithTheme(component)
- * expect(component).toMatchSnapshot()
+ * expect(tree).toMatchSnapshot()
  *
  * @param {React.Component} component The component you want to test
  *
