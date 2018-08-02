@@ -104,7 +104,7 @@ def send_world_update():
     socket_data = get_game_state()
 
     for sid, avatar_id in session_id_to_avatar_id.iteritems():
-        avatar_logs = global_logs_provider.get(avatar_id, '')
+        avatar_logs = global_logs_provider.get_user_logs(avatar_id)
         socket_data['logs'] = avatar_logs
 
         socketio.emit(
