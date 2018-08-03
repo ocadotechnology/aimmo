@@ -30,9 +30,9 @@ socketio = SocketIO.Server()
 LOGGER = logging.getLogger(__name__)
 
 worker_manager = None
-global_state_provider = None
-global_logs_provider = None
-global_session_to_avatar_mappings = {}
+state_provider = None
+logs_provider = None
+session_id_to_avatar_id_mappings = {}
 
 USER_WATCHING_GAME = 0
 
@@ -62,7 +62,7 @@ def player_dict(avatar):
     }
 
 
-def get_game_state(state_provider=global_state_provider):
+def get_game_state(state_provider=state_provider):
     with state_provider as game_state:
         world_map = game_state.world_map
 
@@ -80,7 +80,7 @@ def get_game_state(state_provider=global_state_provider):
 
 @socketio.on('connect')
 def world_update_on_connect(sid, environ,
-                            session_id_to_avatar_id=global_session_to_avatar_mappings):
+                            session_id_to_avatar_id=session_id_to_avatar_id_mappings):
     socket_data = get_game_state()
     socket_data['logs'] = ''
     session_id_to_avatar_id[sid] = None
@@ -102,11 +102,11 @@ def world_update_on_connect(sid, environ,
     )
 
 
-def send_world_update(session_id_to_avatar_id=global_session_to_avatar_mappings):
+def send_world_update(session_id_to_avatar_id=session_id_to_avatar_id_mappings):
     socket_data = get_game_state()
 
     for sid, avatar_id in session_id_to_avatar_id.iteritems():
-        avatar_logs = global_logs_provider.get_user_logs(avatar_id)
+        avatar_logs = logs_provider.get_user_logs(avatar_id)
         socket_data['logs'] = avatar_logs
 
         socketio.emit(
@@ -118,7 +118,7 @@ def send_world_update(session_id_to_avatar_id=global_session_to_avatar_mappings)
 
 @socketio.on('disconnect')
 def remove_session_id_from_mappings(sid,
-                                    session_id_to_avatar_id=global_session_to_avatar_mappings):
+                                    session_id_to_avatar_id=session_id_to_avatar_id_mappings):
     LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
     try:
         del session_id_to_avatar_id[sid]
@@ -142,22 +142,22 @@ def player_data(player_id):
 
 
 def run_game(port):
-    global worker_manager, global_state_provider, global_logs_provider
+    global worker_manager, state_provider, logs_provider
 
     print("Running game...")
     settings = pickle.loads(os.environ['settings'])
     api_url = os.environ.get('GAME_API_URL', 'http://localhost:8000/aimmo/api/games/')
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
     player_manager = AvatarManager()
-    global_logs_provider = LogsProvider()
-    global_state_provider = GameStateProvider()
+    logs_provider = LogsProvider()
+    state_provider = GameStateProvider()
     communicator = Communicator(api_url=api_url, completion_url=api_url+'complete/')
     game_state = generator.get_game_state(player_manager)
     turn_manager = ConcurrentTurnManager(game_state=game_state,
                                          end_turn_callback=send_world_update,
                                          communicator=communicator,
-                                         state_provider=global_state_provider,
-                                         logs_provider=global_logs_provider)
+                                         state_provider=state_provider,
+                                         logs_provider=logs_provider)
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
     worker_manager = WorkerManagerClass(game_state=game_state,
                                         communicator=communicator,
