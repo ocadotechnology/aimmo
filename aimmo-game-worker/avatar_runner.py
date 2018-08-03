@@ -25,12 +25,13 @@ class AvatarRunner(object):
                 self.avatar = Avatar()
 
             action = self.avatar.handle_turn(world_map, avatar_state)
+            action = action.serialise()
 
         except Exception as e:
             traceback.print_exc()
             LOGGER.error("Code failed to run")
             LOGGER.error(e)
-            action = WaitAction()
+            action = WaitAction().serialise()
 
         finally:
             sys.stdout = sys.__stdout__

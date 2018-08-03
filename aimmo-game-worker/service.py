@@ -23,7 +23,7 @@ def process_turn():
 
     action, logs = avatar_runner.process_avatar_turn(world_map, avatar_state)
 
-    return flask.jsonify(action=action.serialise(), logs=logs)
+    return flask.jsonify(action=action, logs=logs)
 
 
 def run(host, port):
