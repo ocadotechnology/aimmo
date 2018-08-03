@@ -30,7 +30,7 @@ socketio = SocketIO.Server()
 LOGGER = logging.getLogger(__name__)
 
 worker_manager = None
-state_provider = None
+default_state_provider = GameStateProvider()
 logs_provider = None
 session_id_to_avatar_id_mappings = {}
 
@@ -62,7 +62,9 @@ def player_dict(avatar):
     }
 
 
-def get_game_state(state_provider=state_provider):
+def get_game_state(state_provider=default_state_provider):
+    LOGGER.info(default_state_provider)
+    LOGGER.info(state_provider)
     with state_provider as game_state:
         world_map = game_state.world_map
 
@@ -142,7 +144,7 @@ def player_data(player_id):
 
 
 def run_game(port):
-    global worker_manager, state_provider, logs_provider
+    global worker_manager, default_state_provider, logs_provider
 
     print("Running game...")
     settings = pickle.loads(os.environ['settings'])
@@ -150,13 +152,13 @@ def run_game(port):
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
     player_manager = AvatarManager()
     logs_provider = LogsProvider()
-    state_provider = GameStateProvider()
+
     communicator = Communicator(api_url=api_url, completion_url=api_url+'complete/')
     game_state = generator.get_game_state(player_manager)
     turn_manager = ConcurrentTurnManager(game_state=game_state,
                                          end_turn_callback=send_world_update,
                                          communicator=communicator,
-                                         state_provider=state_provider,
+                                         state_provider=default_state_provider,
                                          logs_provider=logs_provider)
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
     worker_manager = WorkerManagerClass(game_state=game_state,
