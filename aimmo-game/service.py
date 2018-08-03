@@ -31,7 +31,7 @@ LOGGER = logging.getLogger(__name__)
 
 worker_manager = None
 default_state_provider = GameStateProvider()
-logs_provider = None
+default_logs_provider = None
 session_id_to_avatar_id_mappings = {}
 
 USER_WATCHING_GAME = 0
@@ -106,7 +106,7 @@ def send_world_update(session_id_to_avatar_id=session_id_to_avatar_id_mappings):
     socket_data = get_game_state()
 
     for sid, avatar_id in session_id_to_avatar_id.iteritems():
-        avatar_logs = logs_provider.get_user_logs(avatar_id)
+        avatar_logs = default_logs_provider.get_user_logs(avatar_id)
         socket_data['logs'] = avatar_logs
 
         socketio.emit(
@@ -142,14 +142,14 @@ def player_data(player_id):
 
 
 def run_game(port):
-    global worker_manager, default_state_provider, logs_provider
+    global worker_manager, default_state_provider, default_logs_provider
 
     print("Running game...")
     settings = pickle.loads(os.environ['settings'])
     api_url = os.environ.get('GAME_API_URL', 'http://localhost:8000/aimmo/api/games/')
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
     player_manager = AvatarManager()
-    logs_provider = LogsProvider()
+    default_logs_provider = LogsProvider()
 
     communicator = Communicator(api_url=api_url, completion_url=api_url+'complete/')
     game_state = generator.get_game_state(player_manager)
@@ -157,7 +157,7 @@ def run_game(port):
                                          end_turn_callback=send_world_update,
                                          communicator=communicator,
                                          state_provider=default_state_provider,
-                                         logs_provider=logs_provider)
+                                         logs_provider=default_logs_provider)
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
     worker_manager = WorkerManagerClass(game_state=game_state,
                                         communicator=communicator,
