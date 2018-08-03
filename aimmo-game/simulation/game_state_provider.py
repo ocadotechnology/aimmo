@@ -5,7 +5,6 @@ class GameStateProvider(object):
     """
     Thread-safe container for the world state.
 
-    TODO: think about changing to snapshot rather than lock?
     """
 
     def __init__(self):
