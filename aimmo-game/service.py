@@ -63,8 +63,6 @@ def player_dict(avatar):
 
 
 def get_game_state(state_provider=default_state_provider):
-    LOGGER.info(default_state_provider)
-    LOGGER.info(state_provider)
     with state_provider as game_state:
         world_map = game_state.world_map
 
