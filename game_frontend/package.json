@@ -36,7 +36,7 @@
     "react-ace": "^6.1.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.7",
-    "react-unity-webgl": "^6.5.0",
+    "react-unity-webgl": "^7.0.0",
     "redux": "^3.7.2",
     "redux-devtools-extension": "^2.13.2",
     "redux-observable": "^0.18.0",
