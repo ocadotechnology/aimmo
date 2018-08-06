@@ -9,9 +9,6 @@ import eventlet
 import flask
 import socketio as SocketIO
 from flask_cors import CORS
-
-from flask_cors import CORS
-
 from simulation import map_generator
 from simulation.turn_manager import ConcurrentTurnManager
 from simulation.logs_provider import LogsProvider
@@ -26,7 +23,7 @@ eventlet.monkey_patch()
 
 app = flask.Flask(__name__)
 CORS(app, supports_credentials=True)
-socketioserver = SocketIO.Server()
+socketio_server = SocketIO.Server()
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -80,7 +77,7 @@ def get_game_state(state_provider=state_provider):
         }
 
 
-@socketio.on('connect')
+@socketio_server.on('connect')
 def world_update_on_connect(sid, environ,
                             session_id_to_avatar_id=session_id_to_avatar_id_mappings):
     socket_data = get_game_state()
@@ -90,11 +87,32 @@ def world_update_on_connect(sid, environ,
     query = environ['QUERY_STRING']
     _find_avatar_id_from_query(sid, query)
 
-    socketioserver.emit(
+    socketio_server.emit(
         'game-state',
         socket_data,
         room=sid,
     )
+
+
+def _find_avatar_id_from_query(session_id, query_string):
+    """
+    :param session_id: Int with the session id
+    :param query_string: String from the environment settings,
+    usually located as the key 'QUERY_STRING'.
+    """
+    match = re.match(r'.*avatar_id=(\d*).*', query_string)
+
+    if match:
+        groups = match.groups()
+        if len(groups) == 1:
+            avatar_id = int(groups[0])
+            if avatar_id != USER_WATCHING_GAME:
+                session_id_to_avatar_id_mappings[session_id] = avatar_id
+        elif len(groups) > 1:
+            LOGGER.error("Regex match found more than one avatar ID!")
+        else:
+            LOGGER.info("User has no avatar ID." +
+                        "Presuming they are watching the game...")
 
 
 def send_world_update(session_id_to_avatar_id=session_id_to_avatar_id_mappings):
@@ -104,14 +122,14 @@ def send_world_update(session_id_to_avatar_id=session_id_to_avatar_id_mappings):
         avatar_logs = logs_provider.get_user_logs(avatar_id)
         socket_data['logs'] = avatar_logs
 
-        socketioserver.emit(
+        socketio_server.emit(
             'game-state',
             socket_data,
             room=sid,
         )
 
 
-@socketio.on('disconnect')
+@socketio_server.on('disconnect')
 def remove_session_id_from_mappings(sid,
                                     session_id_to_avatar_id=session_id_to_avatar_id_mappings):
     LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
@@ -164,7 +182,7 @@ def run_game(port):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     host, port = sys.argv[1], int(sys.argv[2])
-    app = SocketIO.Middleware(socketioserver, app, socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
+    app = SocketIO.Middleware(socketio_server, app, socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
 
     run_game(port)
     eventlet.wsgi.server(eventlet.listen((host, port)), app, debug=False)
