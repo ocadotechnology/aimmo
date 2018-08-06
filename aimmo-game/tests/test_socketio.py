@@ -22,7 +22,6 @@ class TestSocketio(TestCase):
     @mock.patch('service.socketio_server')
     def test_socketio_emit_called(self, mocked_socketio,
                                   mocked_game_state):
-
         service.world_update_on_connect(self.sid, self.environ,
                                         session_id_to_avatar_id=self.mocked_mappings)
 
@@ -32,7 +31,6 @@ class TestSocketio(TestCase):
     @mock.patch('service.socketio_server')
     def test_socketio_adds_logs_and_makes_correct_call(self, mocked_socketio,
                                                        mocked_game_state):
-
         service.world_update_on_connect(self.sid, self.environ,
                                         session_id_to_avatar_id=self.mocked_mappings)
 
@@ -103,3 +101,14 @@ class TestSocketio(TestCase):
         mocked_socketio.emit.assert_has_calls([expected_call_one,
                                                expected_call_two], any_order=True)
 
+    def test_remove_session_id_on_disconnect(self):
+        self.mocked_mappings[self.sid] = 1
+        self.assertEqual(len(self.mocked_mappings), 1)
+        self.assertTrue(self.sid in self.mocked_mappings)
+        self.assertEqual(self.mocked_mappings[self.sid], 1)
+
+        service.remove_session_id_from_mappings(sid=self.sid,
+                                                session_id_to_avatar_id=self.mocked_mappings)
+
+        self.assertFalse(self.sid in self.mocked_mappings)
+        self.assertEqual(len(self.mocked_mappings), 0)

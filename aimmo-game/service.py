@@ -35,16 +35,6 @@ _default_logs_provider = LogsProvider()
 _default_session_id_to_avatar_id_mappings = {}
 
 
-@socketio_server.on('disconnect')
-def remove_session_id_from_mappings(sid,
-                                    session_id_to_avatar_id=_default_session_id_to_avatar_id_mappings):
-    LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
-    try:
-        del session_id_to_avatar_id[sid]
-    except KeyError:
-        pass
-
-
 @app.route('/game-<game_id>')
 def healthcheck(game_id):
     return 'HEALTHY'
@@ -78,6 +68,16 @@ def world_update_on_connect(sid, environ,
     )
 
 
+@socketio_server.on('disconnect')
+def remove_session_id_from_mappings(sid,
+                                    session_id_to_avatar_id=_default_session_id_to_avatar_id_mappings):
+    LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
+    try:
+        del session_id_to_avatar_id[sid]
+    except KeyError:
+        pass
+
+
 def send_world_update(session_id_to_avatar_id=_default_session_id_to_avatar_id_mappings,
                       logs_provider=_default_logs_provider):
     socket_data = get_game_state()
@@ -107,6 +107,7 @@ def get_game_state(state_provider=_default_state_provider):
                 score_location_update()['scoreLocations']),
             'obstacles': world_map.obstacles_update()['obstacles']
         }
+
 
 
 def to_cell_type(cell):
