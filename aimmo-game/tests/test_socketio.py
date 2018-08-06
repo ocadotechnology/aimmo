@@ -19,7 +19,7 @@ class TestSocketio(TestCase):
         service.session_id_to_avatar_id = {}
 
     @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
-    @mock.patch('service.socketioserver')
+    @mock.patch('service.socketio_server')
     def test_socketio_emit_called(self, mocked_socketio,
                                   mocked_game_state):
 
@@ -28,7 +28,7 @@ class TestSocketio(TestCase):
         self.assertTrue(mocked_socketio.return_value.emit.assert_called_once)
 
     @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
-    @mock.patch('service.socketioserver')
+    @mock.patch('service.socketio_server')
     def test_socketio_adds_logs_and_makes_correct_call(self, mocked_socketio,
                                                        mocked_game_state):
 
@@ -39,10 +39,10 @@ class TestSocketio(TestCase):
                                                 room=self.sid)
 
     @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
-    @mock.patch('service.socketioserver')
+    @mock.patch('service.socketio_server')
     def test_matched_session_id_to_avatar_id_mapping(self, mocked_socketio,
                                                      mocked_game_state):
-        mappings = service.session_id_to_avatar_id
+        mappings = service._session_id_to_avatar_id_mappings
 
         self.assertEqual(len(mappings), 0)
 
@@ -53,10 +53,10 @@ class TestSocketio(TestCase):
         self.assertEqual(mappings[self.sid], 1)
 
     @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
-    @mock.patch('service.socketioserver')
+    @mock.patch('service.socketio_server')
     def test_no_match_session_id_to_avatar_id_mapping(self, mocked_socketio,
                                                       mocked_game_state):
-        mappings = service.session_id_to_avatar_id
+        mappings = service._session_id_to_avatar_id_mappings
         self.environ['QUERY_STRING'] = 'corrupted!@$%string123'
 
         self.assertEqual(len(mappings), 0)
@@ -68,10 +68,10 @@ class TestSocketio(TestCase):
         self.assertIsNone(mappings[self.sid])
 
     @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
-    @mock.patch('service.socketioserver')
+    @mock.patch('service.socketio_server')
     def test_send_world_update_for_one_user(self, mocked_socketio,
                                             mocked_game_state):
-        mappings = service.session_id_to_avatar_id
+        mappings = service._session_id_to_avatar_id_mappings
         mappings[self.sid] = 1
 
         service.send_world_update()
@@ -82,10 +82,10 @@ class TestSocketio(TestCase):
                                                 room=self.sid)
 
     @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
-    @mock.patch('service.socketioserver')
+    @mock.patch('service.socketio_server')
     def test_send_world_update_for_multiple_users(self, mocked_socketio,
                                                   mocked_game_state):
-        mappings = service.session_id_to_avatar_id
+        mappings = service._session_id_to_avatar_id_mappings
         mappings[self.sid] = 1
         mappings['differentsid'] = 2
 

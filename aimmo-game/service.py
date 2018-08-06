@@ -116,7 +116,6 @@ def _find_avatar_id_from_query(session_id, query_string):
                         "Presuming they are watching the game...")
 
 
-
 def send_world_update(session_id_to_avatar_id=_session_id_to_avatar_id_mappings,
                       logs_provider=_default_logs_provider):
     socket_data = get_game_state()
