@@ -29,15 +29,15 @@ socketio_server = SocketIO.Server()
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-_worker_manager = None
+_default_worker_manager = None
 _default_state_provider = GameStateProvider()
 _default_logs_provider = LogsProvider()
-_session_id_to_avatar_id_mappings = {}
+_default_session_id_to_avatar_id_mappings = {}
 
 
 @socketio_server.on('disconnect')
 def remove_session_id_from_mappings(sid,
-                                    session_id_to_avatar_id=_session_id_to_avatar_id_mappings):
+                                    session_id_to_avatar_id=_default_session_id_to_avatar_id_mappings):
     LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
     try:
         del session_id_to_avatar_id[sid]
@@ -54,7 +54,7 @@ def healthcheck(game_id):
 def player_data(player_id):
     player_id = int(player_id)
     return flask.jsonify({
-        'code': _worker_manager.get_code(player_id),
+        'code': _default_worker_manager.get_code(player_id),
         'options': {},       # Game options
         'state': None,
     })
@@ -62,7 +62,7 @@ def player_data(player_id):
 
 @socketio_server.on('connect')
 def world_update_on_connect(sid, environ,
-                            session_id_to_avatar_id=_session_id_to_avatar_id_mappings):
+                            session_id_to_avatar_id=_default_session_id_to_avatar_id_mappings):
     socket_data = get_game_state()
     socket_data['logs'] = ''
     session_id_to_avatar_id[sid] = None
@@ -78,7 +78,7 @@ def world_update_on_connect(sid, environ,
     )
 
 
-def send_world_update(session_id_to_avatar_id=_session_id_to_avatar_id_mappings,
+def send_world_update(session_id_to_avatar_id=_default_session_id_to_avatar_id_mappings,
                       logs_provider=_default_logs_provider):
     socket_data = get_game_state()
 
@@ -151,7 +151,7 @@ def _find_avatar_id_from_query(session_id, query_string,
 
 
 def run_game(port):
-    global _worker_manager, _default_state_provider, _default_logs_provider
+    global _default_worker_manager, _default_state_provider, _default_logs_provider
 
     print("Running game...")
     settings = pickle.loads(os.environ['settings'])
@@ -167,10 +167,10 @@ def run_game(port):
                                          state_provider=_default_state_provider,
                                          logs_provider=_default_logs_provider)
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
-    _worker_manager = WorkerManagerClass(game_state=game_state,
-                                         communicator=communicator,
-                                         port=port)
-    _worker_manager.start()
+    _default_worker_manager = WorkerManagerClass(game_state=game_state,
+                                                 communicator=communicator,
+                                                 port=port)
+    _default_worker_manager.start()
     turn_manager.start()
 
 
