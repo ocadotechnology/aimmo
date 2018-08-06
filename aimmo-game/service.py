@@ -4,7 +4,6 @@ import cPickle as pickle
 import logging
 import os
 import sys
-import re
 import eventlet
 import flask
 import socketio as SocketIO
@@ -34,6 +33,7 @@ _worker_manager = None
 _default_state_provider = GameStateProvider()
 _default_logs_provider = LogsProvider()
 _session_id_to_avatar_id_mappings = {}
+
 
 @socketio_server.on('disconnect')
 def remove_session_id_from_mappings(sid,
