@@ -8,6 +8,7 @@ import re
 import eventlet
 import flask
 import socketio as SocketIO
+from urlparse import parse_qs
 from flask_cors import CORS
 
 from simulation import map_generator
@@ -33,8 +34,6 @@ _worker_manager = None
 _default_state_provider = GameStateProvider()
 _default_logs_provider = LogsProvider()
 _session_id_to_avatar_id_mappings = {}
-
-USER_WATCHING_GAME = 0
 
 
 def to_cell_type(cell):
@@ -101,19 +100,13 @@ def _find_avatar_id_from_query(session_id, query_string):
     :param query_string: String from the environment settings,
     usually located as the key 'QUERY_STRING'.
     """
-    match = re.match(r'.*avatar_id=(\d*).*', query_string)
+    parsed_qs = parse_qs(query_string)
 
-    if match:
-        groups = match.groups()
-        if len(groups) == 1:
-            avatar_id = int(groups[0])
-            if avatar_id != USER_WATCHING_GAME:
-                _session_id_to_avatar_id_mappings[session_id] = avatar_id
-        elif len(groups) > 1:
-            LOGGER.error("Regex match found more than one avatar ID!")
-        else:
-            LOGGER.info("User has no avatar ID." +
-                        "Presuming they are watching the game...")
+    try:
+        avatar_id = parsed_qs['avatar_id'][0]
+        _session_id_to_avatar_id_mappings[session_id] = avatar_id
+    except KeyError:
+        LOGGER.error("No avatar ID found. User not authorised maybe?")
 
 
 def send_world_update(session_id_to_avatar_id=_session_id_to_avatar_id_mappings,
