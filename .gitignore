@@ -86,7 +86,3 @@ aimmo/templates/players/game_ide.html
 
 # Game Frontend
 node_modules
-
-# Ignore vscode files except run configs
-.vscode/
-!.vscode/launch.json
