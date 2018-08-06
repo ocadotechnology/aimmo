@@ -68,7 +68,8 @@ def world_update_on_connect(sid, environ,
     session_id_to_avatar_id[sid] = None
 
     query = environ['QUERY_STRING']
-    _find_avatar_id_from_query(sid, query)
+    _find_avatar_id_from_query(sid, query,
+                               session_id_to_avatar_id=session_id_to_avatar_id)
 
     socketio_server.emit(
         'game-state',
@@ -133,7 +134,8 @@ def player_dict(avatar):
     }
 
 
-def _find_avatar_id_from_query(session_id, query_string):
+def _find_avatar_id_from_query(session_id, query_string,
+                               session_id_to_avatar_id):
     """
     :param session_id: Int with the session id
     :param query_string: String from the environment settings,
@@ -143,7 +145,7 @@ def _find_avatar_id_from_query(session_id, query_string):
 
     try:
         avatar_id = parsed_qs['avatar_id'][0]
-        _session_id_to_avatar_id_mappings[session_id] = avatar_id
+        session_id_to_avatar_id[session_id] = avatar_id
     except KeyError:
         LOGGER.error("No avatar ID found. User not authorised maybe?")
 
