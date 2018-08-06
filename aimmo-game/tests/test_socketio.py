@@ -13,7 +13,7 @@ class TestSocketio(TestCase):
         self.environ = {}
         self.mocked_mappings = {}
         self.mocked_logs_provider = LogsProvider()
-        self.environ['QUERY_STRING'] = '?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb'
+        self.environ['QUERY_STRING'] = 'avatar_id=1&EIO=3&transport=polling&t=MJhoMgb'
 
         self.sid = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)
                            for _ in range(19))
@@ -44,7 +44,6 @@ class TestSocketio(TestCase):
     @mock.patch('service.socketio_server')
     def test_matched_session_id_to_avatar_id_mapping(self, mocked_socketio,
                                                      mocked_game_state):
-
         self.assertEqual(len(self.mocked_mappings), 0)
 
         service.world_update_on_connect(self.sid, self.environ,
@@ -52,7 +51,7 @@ class TestSocketio(TestCase):
 
         self.assertEqual(len(self.mocked_mappings), 1)
         self.assertTrue(self.sid in self.mocked_mappings)
-        self.assertEqual(self.mocked_mappings[self.sid], 1)
+        self.assertEqual(int(self.mocked_mappings[self.sid]), 1)
 
     @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
     @mock.patch('service.socketio_server')
