@@ -108,7 +108,7 @@ def _find_avatar_id_from_query(session_id, query_string):
         if len(groups) == 1:
             avatar_id = int(groups[0])
             if avatar_id != USER_WATCHING_GAME:
-                session_id_to_avatar_id_mappings[session_id] = avatar_id
+                _session_id_to_avatar_id_mappings[session_id] = avatar_id
         elif len(groups) > 1:
             LOGGER.error("Regex match found more than one avatar ID!")
         else:
