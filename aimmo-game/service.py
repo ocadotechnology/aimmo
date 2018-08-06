@@ -9,6 +9,7 @@ import eventlet
 import flask
 import socketio as SocketIO
 from flask_cors import CORS
+
 from simulation import map_generator
 from simulation.turn_manager import ConcurrentTurnManager
 from simulation.logs_provider import LogsProvider
@@ -28,10 +29,10 @@ socketio_server = SocketIO.Server()
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-worker_manager = None
-state_provider = None
-logs_provider = None
-session_id_to_avatar_id_mappings = {}
+_worker_manager = None
+_default_state_provider = GameStateProvider()
+_default_logs_provider = LogsProvider()
+_session_id_to_avatar_id_mappings = {}
 
 USER_WATCHING_GAME = 0
 
@@ -61,7 +62,7 @@ def player_dict(avatar):
     }
 
 
-def get_game_state(state_provider=state_provider):
+def get_game_state(state_provider=_default_state_provider):
     with state_provider as game_state:
         world_map = game_state.world_map
 
@@ -79,7 +80,7 @@ def get_game_state(state_provider=state_provider):
 
 @socketio_server.on('connect')
 def world_update_on_connect(sid, environ,
-                            session_id_to_avatar_id=session_id_to_avatar_id_mappings):
+                            session_id_to_avatar_id=_session_id_to_avatar_id_mappings):
     socket_data = get_game_state()
     socket_data['logs'] = ''
     session_id_to_avatar_id[sid] = None
@@ -115,7 +116,9 @@ def _find_avatar_id_from_query(session_id, query_string):
                         "Presuming they are watching the game...")
 
 
-def send_world_update(session_id_to_avatar_id=session_id_to_avatar_id_mappings):
+
+def send_world_update(session_id_to_avatar_id=_session_id_to_avatar_id_mappings,
+                      logs_provider=_default_logs_provider):
     socket_data = get_game_state()
 
     for sid, avatar_id in session_id_to_avatar_id.iteritems():
@@ -131,7 +134,7 @@ def send_world_update(session_id_to_avatar_id=session_id_to_avatar_id_mappings):
 
 @socketio_server.on('disconnect')
 def remove_session_id_from_mappings(sid,
-                                    session_id_to_avatar_id=session_id_to_avatar_id_mappings):
+                                    session_id_to_avatar_id=_session_id_to_avatar_id_mappings):
     LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
     try:
         del session_id_to_avatar_id[sid]
@@ -148,34 +151,33 @@ def healthcheck(game_id):
 def player_data(player_id):
     player_id = int(player_id)
     return flask.jsonify({
-        'code': worker_manager.get_code(player_id),
+        'code': _worker_manager.get_code(player_id),
         'options': {},       # Game options
         'state': None,
     })
 
 
 def run_game(port):
-    global worker_manager, state_provider, logs_provider
+    global _worker_manager, _default_state_provider, _default_logs_provider
 
     print("Running game...")
     settings = pickle.loads(os.environ['settings'])
     api_url = os.environ.get('GAME_API_URL', 'http://localhost:8000/aimmo/api/games/')
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
     player_manager = AvatarManager()
-    logs_provider = LogsProvider()
-    state_provider = GameStateProvider()
+
     communicator = Communicator(api_url=api_url, completion_url=api_url+'complete/')
     game_state = generator.get_game_state(player_manager)
     turn_manager = ConcurrentTurnManager(game_state=game_state,
                                          end_turn_callback=send_world_update,
                                          communicator=communicator,
-                                         state_provider=state_provider,
-                                         logs_provider=logs_provider)
+                                         state_provider=_default_state_provider,
+                                         logs_provider=_default_logs_provider)
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
-    worker_manager = WorkerManagerClass(game_state=game_state,
-                                        communicator=communicator,
-                                        port=port)
-    worker_manager.start()
+    _worker_manager = WorkerManagerClass(game_state=game_state,
+                                         communicator=communicator,
+                                         port=port)
+    _worker_manager.start()
     turn_manager.start()
 
 
