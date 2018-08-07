@@ -9,4 +9,4 @@ class LogsProvider(object):
         self._logs[user_id] = logs
 
     def get_user_logs(self, user_id):
-        return self._logs.get(user_id, '')
+        return self._logs.get(user_id, None)
