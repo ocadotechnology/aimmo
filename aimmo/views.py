@@ -97,19 +97,22 @@ def connection_parameters(request, game_id):
     :return: JsonResponse object with the contents.
     """
     env_connection_settings = game_renderer.get_environment_connection_settings(game_id)
-    avatar_id = 0
 
-    # TODO: add logging
     try:
         avatar_id = game_renderer.get_avatar_id_from_user_id(user_id=request.user.id,
                                                              game_id=game_id)
     except UserCannotPlayGameException:
+        LOGGER.warning('HTTP 401 returned. User {} unauthorised to play.'.format(request.user.id))
         return HttpResponse('User unauthorized to play',
                             status=401)
     except Avatar.DoesNotExist:
+        LOGGER.warning('Avatar does not exist for user {} in game {}'.format(request.user.id,
+                                                                             game_id))
         return HttpResponse('Avatar does not exist for this user',
                             status=404)
-    except Exception:
+    except Exception as e:
+        LOGGER.error('Unknown error occurred while getting connection parameters!')
+        LOGGER.error(e)
         return HttpResponse('Unknown error occurred when getting the current avatar',
                             status=500)
 
