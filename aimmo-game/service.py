@@ -79,15 +79,18 @@ def remove_session_id_from_mappings(sid,
 
 def send_world_update(session_id_to_avatar_id=_default_session_id_to_avatar_id_mappings,
                       logs_provider=_default_logs_provider):
-    socket_data = get_game_state()
+    game_state = get_game_state()
 
     for sid, avatar_id in session_id_to_avatar_id.iteritems():
         avatar_logs = logs_provider.get_user_logs(avatar_id)
-        socket_data['logs'] = avatar_logs
-
+        socketio_server.emit(
+            'log',
+            avatar_logs,
+            room=sid,
+        )
         socketio_server.emit(
             'game-state',
-            socket_data,
+            game_state,
             room=sid,
         )
 
