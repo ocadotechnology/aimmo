@@ -1,6 +1,6 @@
 from unittest import TestCase
-import service
 
+import service
 from simulation.avatar.avatar_manager import AvatarManager
 from .test_simulation.maps import MockPickup, MockCell
 from .test_simulation.dummy_avatar import MoveEastDummy
