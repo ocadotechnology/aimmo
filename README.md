@@ -1,4 +1,5 @@
-![AIMMO](docs/images/AIMMO-Logo-vertical-RGB.svg)
+<img src="/ocadotechnology/aimmo/raw/make_readme_prettier/docs/images/AIMMO-Logo-vertical-RGB.svg?sanitize=true" height="10vh" align="center">
+</img>
 
 
 A **M**assively **M**ultiplayer **O**nline game, where players create **A**rtificially **I**ntelligent programs to play on their behalf.
