@@ -59,8 +59,7 @@ def world_update_on_connect(sid, environ,
     query = environ['QUERY_STRING']
     _find_avatar_id_from_query(sid, query,
                                session_id_to_avatar_id=session_id_to_avatar_id)
-    avatar_logs = _default_logs_provider.get_user_logs(session_id_to_avatar_id[sid])
-    send_events(game_state, avatar_logs, sid)
+    send_world_update()
 
 
 @socketio_server.on('disconnect')
@@ -73,27 +72,32 @@ def remove_session_id_from_mappings(sid,
         pass
 
 
-def send_events(game_state, avatar_logs, room):
-    socketio_server.emit(
-        'log',
-        avatar_logs,
-        room=room,
-    )
-    socketio_server.emit(
-        'game-state',
-        game_state,
-        room=room,
-    )
+def send_logs(session_id_to_avatar_id, logs_provider):
+    for sid, avatar_id in session_id_to_avatar_id.iteritems():
+        avatar_logs = logs_provider.get_user_logs(avatar_id)
+        socketio_server.emit(
+            'log',
+            avatar_logs,
+            room=sid,
+        )
+
+
+def send_game_state(session_id_to_avatar_id):
+    game_state = get_game_state()
+    for sid, avatar_id in session_id_to_avatar_id.iteritems():
+        socketio_server.emit(
+            'game-state',
+            game_state,
+            room=sid,
+        )
 
 
 def send_world_update(session_id_to_avatar_id=_default_session_id_to_avatar_id_mappings,
                       logs_provider=_default_logs_provider):
-    game_state = get_game_state()
+    send_game_state(session_id_to_avatar_id)
+    send_logs(session_id_to_avatar_id, logs_provider)
 
-    for sid, avatar_id in session_id_to_avatar_id.iteritems():
-        avatar_logs = logs_provider.get_user_logs(avatar_id)
-        send_events(game_state, avatar_logs, sid)
-
+    logs_provider.clear_logs()
 
 def get_game_state(state_provider=_default_state_provider):
     with state_provider as game_state:
