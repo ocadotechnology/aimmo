@@ -35,7 +35,7 @@ class TestSocketio(TestCase):
                                         session_id_to_avatar_id=self.mocked_mappings)
 
         mocked_socketio.emit.assert_called_with('game-state',
-                                                {'foo': 'bar', 'logs': ''},
+                                                {'foo': 'bar'},
                                                 room=self.sid)
 
     @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
