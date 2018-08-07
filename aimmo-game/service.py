@@ -59,7 +59,7 @@ def world_update_on_connect(sid, environ,
     query = environ['QUERY_STRING']
     _find_avatar_id_from_query(sid, query,
                                session_id_to_avatar_id=session_id_to_avatar_id)
-    send_world_update()
+    send_updates()
 
 
 @socketio_server.on('disconnect')
@@ -92,7 +92,7 @@ def send_game_state(session_id_to_avatar_id):
         )
 
 
-def send_world_update(session_id_to_avatar_id=_default_session_id_to_avatar_id_mappings,
+def send_updates(session_id_to_avatar_id=_default_session_id_to_avatar_id_mappings,
                       logs_provider=_default_logs_provider):
     send_game_state(session_id_to_avatar_id)
     send_logs(session_id_to_avatar_id, logs_provider)
@@ -168,7 +168,7 @@ def run_game(port):
     communicator = Communicator(api_url=api_url, completion_url=api_url+'complete/')
     game_state = generator.get_game_state(player_manager)
     turn_manager = ConcurrentTurnManager(game_state=game_state,
-                                         end_turn_callback=send_world_update,
+                                         end_turn_callback=send_updates,
                                          communicator=communicator,
                                          state_provider=_default_state_provider,
                                          logs_provider=_default_logs_provider)

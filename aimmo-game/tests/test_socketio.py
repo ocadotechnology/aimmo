@@ -57,12 +57,12 @@ class TestSocketio(TestCase):
 
     @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
     @mock.patch('service.socketio_server')
-    def test_send_world_update_for_one_user(self, mocked_socketio,
-                                            mocked_game_state):
+    def test_send_updates_for_one_user(self, mocked_socketio,
+                                       mocked_game_state):
         self.mocked_mappings[self.sid] = 1
 
-        service.send_world_update(session_id_to_avatar_id=self.mocked_mappings,
-                                  logs_provider=self.mocked_logs_provider)
+        service.send_updates(session_id_to_avatar_id=self.mocked_mappings,
+                             logs_provider=self.mocked_logs_provider)
 
         self.assertTrue(mocked_socketio.emit.assert_called_once)
         mocked_socketio.emit.assert_called_with('game-state',
@@ -71,13 +71,13 @@ class TestSocketio(TestCase):
 
     @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
     @mock.patch('service.socketio_server')
-    def test_send_world_update_for_multiple_users(self, mocked_socketio,
-                                                  mocked_game_state):
+    def test_send_updates_for_multiple_users(self, mocked_socketio,
+                                             mocked_game_state):
         self.mocked_mappings[self.sid] = 1
         self.mocked_mappings['differentsid'] = 2
 
-        service.send_world_update(session_id_to_avatar_id=self.mocked_mappings,
-                                  logs_provider=self.mocked_logs_provider)
+        service.send_updates(session_id_to_avatar_id=self.mocked_mappings,
+                             logs_provider=self.mocked_logs_provider)
 
         expected_call_one = mock.call('game-state',
                                       {'foo': 'bar', 'logs': None},
