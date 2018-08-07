@@ -66,7 +66,7 @@ class TestSocketio(TestCase):
 
         self.assertTrue(mocked_socketio.emit.assert_called_once)
         mocked_socketio.emit.assert_called_with('game-state',
-                                                {'foo': 'bar', 'logs': ''},
+                                                {'foo': 'bar', 'logs': None},
                                                 room=self.sid)
 
     @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
@@ -80,11 +80,11 @@ class TestSocketio(TestCase):
                                   logs_provider=self.mocked_logs_provider)
 
         expected_call_one = mock.call('game-state',
-                                      {'foo': 'bar', 'logs': ''},
+                                      {'foo': 'bar', 'logs': None},
                                       room='differentsid')
 
         expected_call_two = mock.call('game-state',
-                                      {'foo': 'bar', 'logs': ''},
+                                      {'foo': 'bar', 'logs': None},
                                       room=self.sid)
 
         mocked_socketio.emit.assert_has_calls([expected_call_one,
