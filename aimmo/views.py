@@ -93,7 +93,8 @@ def connection_parameters(request, game_id):
     An API view which returns the correct connection settings required
     to run the game in different environments. These values will change
     depending on where the project is started (ie. local, etc).
-    :param id: Integer with the ID of the game.
+    :param request: Django request object.
+    :param game_id: Integer with the ID of the game.
     :return: JsonResponse object with the contents.
     """
     env_connection_settings = game_renderer.get_environment_connection_settings(game_id)

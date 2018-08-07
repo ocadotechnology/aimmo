@@ -3,8 +3,6 @@ import time
 from threading import Thread
 
 from simulation.action import PRIORITIES
-from simulation.game_state_provider import GameStateProvider
-from simulation.logs_provider import LogsProvider
 
 LOGGER = logging.getLogger(__name__)
 
