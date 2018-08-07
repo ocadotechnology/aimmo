@@ -85,6 +85,7 @@ def send_events(game_state, avatar_logs, room):
         room=room,
     )
 
+
 def send_world_update(session_id_to_avatar_id=_default_session_id_to_avatar_id_mappings,
                       logs_provider=_default_logs_provider):
     game_state = get_game_state()
