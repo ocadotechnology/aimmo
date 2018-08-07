@@ -53,18 +53,14 @@ def player_data(player_id):
 @socketio_server.on('connect')
 def world_update_on_connect(sid, environ,
                             session_id_to_avatar_id=_default_session_id_to_avatar_id_mappings):
-    socket_data = get_game_state()
+    game_state = get_game_state()
     session_id_to_avatar_id[sid] = None
 
     query = environ['QUERY_STRING']
     _find_avatar_id_from_query(sid, query,
                                session_id_to_avatar_id=session_id_to_avatar_id)
-
-    socketio_server.emit(
-        'game-state',
-        socket_data,
-        room=sid,
-    )
+    avatar_logs = _default_logs_provider.get_user_logs(session_id_to_avatar_id[sid])
+    send_events(game_state, avatar_logs, sid)
 
 
 @socketio_server.on('disconnect')
@@ -77,22 +73,25 @@ def remove_session_id_from_mappings(sid,
         pass
 
 
+def send_events(game_state, avatar_logs, room):
+    socketio_server.emit(
+        'log',
+        avatar_logs,
+        room=room,
+    )
+    socketio_server.emit(
+        'game-state',
+        game_state,
+        room=room,
+    )
+
 def send_world_update(session_id_to_avatar_id=_default_session_id_to_avatar_id_mappings,
                       logs_provider=_default_logs_provider):
     game_state = get_game_state()
 
     for sid, avatar_id in session_id_to_avatar_id.iteritems():
         avatar_logs = logs_provider.get_user_logs(avatar_id)
-        socketio_server.emit(
-            'log',
-            avatar_logs,
-            room=sid,
-        )
-        socketio_server.emit(
-            'game-state',
-            game_state,
-            room=sid,
-        )
+        send_events(game_state, avatar_logs, sid)
 
     logs_provider.clear_logs()
 
@@ -151,7 +150,7 @@ def _find_avatar_id_from_query(session_id, query_string,
         avatar_id = parsed_qs['avatar_id'][0]
         session_id_to_avatar_id[session_id] = avatar_id
     except KeyError:
-        LOGGER.error("No avatar ID found. User not authorised maybe?")
+        LOGGER.error("No avatar ID found. User may not be authorised ")
 
 
 def run_game(port):
