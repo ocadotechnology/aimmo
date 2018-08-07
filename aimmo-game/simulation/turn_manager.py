@@ -82,6 +82,8 @@ class TurnManager(Thread):
 
         self.end_turn_callback()
 
+        self.logs_provider.clear_logs()
+
     def run(self):
         while True:
             try:

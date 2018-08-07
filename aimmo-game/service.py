@@ -93,8 +93,6 @@ def send_world_update(session_id_to_avatar_id=_default_session_id_to_avatar_id_m
         avatar_logs = logs_provider.get_user_logs(avatar_id)
         send_events(game_state, avatar_logs, sid)
 
-    logs_provider.clear_logs()
-
 
 def get_game_state(state_provider=_default_state_provider):
     with state_provider as game_state:
