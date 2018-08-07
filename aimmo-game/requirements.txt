@@ -5,3 +5,4 @@ pykube
 requests
 six
 flask-cors
+kubernetes
