@@ -1,8 +1,12 @@
-<img src="/ocadotechnology/aimmo/raw/make_readme_prettier/docs/images/AIMMO-Logo-vertical-RGB.svg?sanitize=true" height="10vh" align="center">
-</img>
+<p align="center">
+  <a href="https://www.codeforlife.education/play/aimmo/" target="_blank">
+    <img src="/docs/images/AIMMO-Logo-vertical-RGB.svg" height="200px" alt="AI:MMO Logo" />
+  </a>
+</p>
 
 
-A **M**assively **M**ultiplayer **O**nline game, where players create **A**rtificially **I**ntelligent programs to play on their behalf.
+<h3 align="center">
+  A Massively Multiplayer Online game, where players create Artificially Intelligent programs to play on their behalf. </h3>
 
 [![Code Climate](https://codeclimate.com/github/ocadotechnology/aimmo/badges/gpa.svg)](https://codeclimate.com/github/ocadotechnology/aimmo)
 
