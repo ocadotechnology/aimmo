@@ -1,4 +1,6 @@
-# AI:MMO
+![AIMMO](docs/images/AIMMO-Logo-vertical-RGB.svg)
+
+
 A **M**assively **M**ultiplayer **O**nline game, where players create **A**rtificially **I**ntelligent programs to play on their behalf.
 
 [![Code Climate](https://codeclimate.com/github/ocadotechnology/aimmo/badges/gpa.svg)](https://codeclimate.com/github/ocadotechnology/aimmo)
