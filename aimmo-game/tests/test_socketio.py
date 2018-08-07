@@ -29,17 +29,6 @@ class TestSocketio(TestCase):
 
     @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
     @mock.patch('service.socketio_server')
-    def test_socketio_adds_logs_and_makes_correct_call(self, mocked_socketio,
-                                                       mocked_game_state):
-        service.world_update_on_connect(self.sid, self.environ,
-                                        session_id_to_avatar_id=self.mocked_mappings)
-
-        mocked_socketio.emit.assert_called_with('game-state',
-                                                {'foo': 'bar'},
-                                                room=self.sid)
-
-    @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
-    @mock.patch('service.socketio_server')
     def test_matched_session_id_to_avatar_id_mapping(self, mocked_socketio,
                                                      mocked_game_state):
         self.assertEqual(len(self.mocked_mappings), 0)
