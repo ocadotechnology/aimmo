@@ -101,7 +101,7 @@ def connection_parameters(request, game_id):
 
     # TODO: add logging
     try:
-        avatar_id = game_renderer.get_avatar_id_from_user_id(django_user_id=request.user.id,
+        avatar_id = game_renderer.get_avatar_id_from_user_id(user_id=request.user.id,
                                                              game_id=game_id)
     except UserCannotPlayGameException:
         return HttpResponse('User unauthorized to play',
@@ -195,7 +195,7 @@ def current_avatar_in_game(request, game_id):
 
     # TODO: add logging
     try:
-        avatar_id = game_renderer.get_avatar_id_from_user_id(django_user_id=request.user.id,
+        avatar_id = game_renderer.get_avatar_id_from_user_id(user_id=request.user.id,
                                                              game_id=game_id)
     except UserCannotPlayGameException:
         return HttpResponse('User unauthorized to play',
