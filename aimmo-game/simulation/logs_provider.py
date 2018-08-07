@@ -10,3 +10,6 @@ class LogsProvider(object):
 
     def get_user_logs(self, user_id):
         return self._logs.get(user_id, None)
+
+    def clear_logs(self):
+        self._logs.clear()

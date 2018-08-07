@@ -65,8 +65,6 @@ class TurnManager(Thread):
                                              logs=worker_data['logs'])
         except KeyError:
             LOGGER.error("Logs not found in worker_data when registering!")
-            self.logs_provider.set_user_logs(user_id=avatar.player_id,
-                                             logs='')
 
     def _update_environment(self, game_state):
         num_avatars = len(game_state.avatar_manager.active_avatars)

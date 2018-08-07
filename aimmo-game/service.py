@@ -91,6 +91,8 @@ def send_world_update(session_id_to_avatar_id=_default_session_id_to_avatar_id_m
             room=sid,
         )
 
+    logs_provider.clear_logs()
+
 
 def get_game_state(state_provider=_default_state_provider):
     with state_provider as game_state:
