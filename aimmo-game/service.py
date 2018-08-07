@@ -45,7 +45,7 @@ def player_data(player_id):
     player_id = int(player_id)
     return flask.jsonify({
         'code': _default_worker_manager.get_code(player_id),
-        'options': {},       # Game options
+        'options': {},
         'state': None,
     })
 
