@@ -54,7 +54,6 @@ def player_data(player_id):
 def world_update_on_connect(sid, environ,
                             session_id_to_avatar_id=_default_session_id_to_avatar_id_mappings):
     socket_data = get_game_state()
-    socket_data['logs'] = ''
     session_id_to_avatar_id[sid] = None
 
     query = environ['QUERY_STRING']
@@ -107,7 +106,6 @@ def get_game_state(state_provider=_default_state_provider):
                 score_location_update()['scoreLocations']),
             'obstacles': world_map.obstacles_update()['obstacles']
         }
-
 
 
 def to_cell_type(cell):
