@@ -15,7 +15,9 @@ class TestSocketio(TestCase):
         self.mocked_logs_provider = LogsProvider()
         self.environ['QUERY_STRING'] = 'avatar_id=1&EIO=3&transport=polling&t=MJhoMgb'
 
-        self.sid = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)
+        self.sid = ''.join(random.choice(string.ascii_uppercase +
+                                         string.ascii_lowercase +
+                                         string.digits)
                            for _ in range(19))
 
     @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
@@ -64,10 +66,10 @@ class TestSocketio(TestCase):
         service.send_updates(session_id_to_avatar_id=self.mocked_mappings,
                              logs_provider=self.mocked_logs_provider)
 
-        self.assertTrue(mocked_socketio.emit.assert_called_once)
-        mocked_socketio.emit.assert_called_with('game-state',
-                                                {'foo': 'bar', 'logs': None},
-                                                room=self.sid)
+        game_state_call = mock.call('game-state', {'foo': 'bar'}, room=self.sid)
+        log_call = mock.call('log', None, room=self.sid)
+
+        mocked_socketio.emit.assert_has_calls([game_state_call, log_call], any_order=True)
 
     @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
     @mock.patch('service.socketio_server')
@@ -79,16 +81,26 @@ class TestSocketio(TestCase):
         service.send_updates(session_id_to_avatar_id=self.mocked_mappings,
                              logs_provider=self.mocked_logs_provider)
 
-        expected_call_one = mock.call('game-state',
-                                      {'foo': 'bar', 'logs': None},
-                                      room='differentsid')
+        user_one_game_state_call = mock.call('game-state',
+                                             {'foo': 'bar'},
+                                             room=self.sid)
 
-        expected_call_two = mock.call('game-state',
-                                      {'foo': 'bar', 'logs': None},
+        user_two_game_state_call = mock.call('game-state',
+                                             {'foo': 'bar'},
+                                             room='differentsid')
+
+        user_one_log_call = mock.call('log',
+                                      None,
                                       room=self.sid)
 
-        mocked_socketio.emit.assert_has_calls([expected_call_one,
-                                               expected_call_two], any_order=True)
+        user_two_log_call = mock.call('log',
+                                      None,
+                                      room='differentsid')
+
+        mocked_socketio.emit.assert_has_calls([user_one_game_state_call,
+                                               user_two_game_state_call,
+                                               user_one_log_call,
+                                               user_two_log_call], any_order=True)
 
     def test_remove_session_id_on_disconnect(self):
         self.mocked_mappings[self.sid] = 1

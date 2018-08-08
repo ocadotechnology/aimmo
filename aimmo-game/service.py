@@ -98,6 +98,7 @@ def send_updates(session_id_to_avatar_id=_default_session_id_to_avatar_id_mappin
     send_logs(session_id_to_avatar_id, logs_provider)
 
 
+
 def get_game_state(state_provider=_default_state_provider):
     with state_provider as game_state:
         world_map = game_state.world_map

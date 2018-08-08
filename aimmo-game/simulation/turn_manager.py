@@ -62,7 +62,7 @@ class TurnManager(Thread):
         """
         try:
             self.logs_provider.set_user_logs(user_id=avatar.player_id,
-                                             logs=worker_data['logs'])
+                                             logs=worker_data['log'])
         except KeyError:
             LOGGER.error("Logs not found in worker_data when registering!")
 
@@ -122,6 +122,7 @@ class ConcurrentTurnManager(TurnManager):
         with self.state_provider as game_state:
             avatars = game_state.avatar_manager.active_avatars
 
+        LOGGER.info("avatars: " + str(avatars))
         threads = [Thread(target=self._run_turn_for_avatar,
                           args=(avatar,)) for avatar in avatars]
 

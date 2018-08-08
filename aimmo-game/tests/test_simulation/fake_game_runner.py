@@ -1,4 +1,5 @@
 import random
+import logging
 from simulation.turn_manager import ConcurrentTurnManager
 from simulation.game_state_provider import GameStateProvider
 from simulation.logs_provider import LogsProvider
@@ -6,6 +7,8 @@ from simulation.map_generator import Main
 from simulation.avatar.avatar_manager import AvatarManager
 from .concrete_worker_manager import ConcreteWorkerManager
 from .mock_communicator import MockCommunicator
+
+LOGGER = logging.getLogger(__name__)
 
 
 class FakeGameRunner(object):
@@ -17,6 +20,7 @@ class FakeGameRunner(object):
 
         self.settings = settings
         self.logs_provider = LogsProvider()
+        self.state_provider = GameStateProvider()
         self.map_generator = Main(settings)
         if not player_manager:
             self.player_manager = AvatarManager()
@@ -24,10 +28,13 @@ class FakeGameRunner(object):
             self.player_manager = player_manager
         self.mock_communicator = MockCommunicator()
         self.game_state = self.map_generator.get_game_state(self.player_manager)
-        self.worker_manager = ConcreteWorkerManager(game_state=self.game_state, communicator=self.mock_communicator)
-        self.turn_manager = ConcurrentTurnManager(game_state=self.game_state, end_turn_callback=lambda: None,
+        self.state_provider.set_world(self.game_state)
+        self.worker_manager = ConcreteWorkerManager(game_state=self.game_state,
+                                                    communicator=self.mock_communicator)
+        self.turn_manager = ConcurrentTurnManager(game_state=self.game_state,
+                                                  end_turn_callback=lambda: None,
                                                   communicator=self.mock_communicator,
-                                                  state_provider=GameStateProvider(),
+                                                  state_provider=self.state_provider,
                                                   logs_provider=self.logs_provider)
         random.seed(0)
 

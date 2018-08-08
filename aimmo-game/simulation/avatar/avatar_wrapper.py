@@ -57,7 +57,7 @@ class AvatarWrapper(object):
             LOGGER.exception("Unknown error while fetching turn data.")
             LOGGER.exception(e)
 
-        return {'action': None, 'logs': ''}
+        return {'action': None, 'log': ''}
 
     def _construct_action(self, action_data):
         action_type = action_data['action_type']
