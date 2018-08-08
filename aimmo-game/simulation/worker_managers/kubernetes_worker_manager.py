@@ -16,7 +16,6 @@ class KubernetesWorkerManager(WorkerManager):
     """Kubernetes worker manager."""
 
     def __init__(self, *args, **kwargs):
-        #self.api = HTTPClient(KubeConfig.from_service_account())
         kubernetes.config.load_incluster_config()
         self.api = kubernetes.client.CoreV1Api()
         self.game_id = os.environ['GAME_ID']
@@ -52,26 +51,33 @@ class KubernetesWorkerManager(WorkerManager):
         return kubernetes.client.V1Pod(metadata=metadata, spec=pod_spec)
 
     def create_worker(self, player_id):
-        pod = self.api.create_namespaced_pod(namespace=K8S_NAMESPACE, body=self.make_pod(player_id))
+        pod_obj = self.make_pod(player_id)
+        LOGGER.error('Making new worker pod: {}'.format(pod_obj.metadata.name))
+        pod = self.api.create_namespaced_pod(namespace=K8S_NAMESPACE, body=pod_obj)
 
         iterations = 0
         while pod.status.phase == 'Pending':
             if iterations > 30:
-                raise EnvironmentError('Could not start worker %s, details %s' % (player_id, pod))
+                LOGGER.error('Could not start worker %s  details %s' % (player_id, pod.status.message))
             LOGGER.debug('Waiting for worker %s', player_id)
-            time.sleep(5)
+            time.sleep(3)
             iterations += 1
-        worker_url = "http://%s:5000" % pod.status.pod_ip
-        LOGGER.info("Worker started for %s, listening at %s", player_id, worker_url)
+        worker_url = 'http://%s:5000' % pod.status.pod_ip
+        LOGGER.info('Worker ip: {}'.format(pod.status.pod_ip))
+        LOGGER.info('Worker started for %s, listening at %s', player_id, worker_url)
         return worker_url
 
     def remove_worker(self, player_id):
+        time.sleep(10)
+        app_label = 'app=aimmo-game-worker'
+        game_label = 'game={}'.format(self.game_id)
+        player_label = 'player={}'.format(player_id)
+
         pods = self.api.list_namespaced_pod(namespace=K8S_NAMESPACE,
-                                            label_selector='''
-                                                     app=aimmo-game-worker,
-                                                     game=self.game_id,
-                                                     player={}'''.format(player_id))
+                                            label_selector=','.join([app_label, game_label, player_label]))
+
+        LOGGER.error('Removing pods {}'.format([pod.metadata.name for pod in pods.items]))
 
         for pod in pods.items:
-            LOGGER.error('Removing pod %s', pod.spec)
-            self.api.delete_namespaced_pod(pod.spec.name, K8S_NAMESPACE, kubernetes.client.V1DeleteOptions())
+            LOGGER.error('Pod name: {}'.format(pod.metadata.name))
+            self.api.delete_namespaced_pod(pod.metadata.name, K8S_NAMESPACE, kubernetes.client.V1DeleteOptions())
