@@ -17,9 +17,14 @@ const additionalVariables = {
   }
 }
 
+const shape = {
+  borderRadius: '24px'
+}
+
 const theme = {
   palette,
   additionalVariables,
+  shape,
   text: {
     secondary: '#FFFFFF'
   },
