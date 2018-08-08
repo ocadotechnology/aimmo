@@ -122,7 +122,6 @@ class ConcurrentTurnManager(TurnManager):
         with self.state_provider as game_state:
             avatars = game_state.avatar_manager.active_avatars
 
-        LOGGER.info("avatars: " + str(avatars))
         threads = [Thread(target=self._run_turn_for_avatar,
                           args=(avatar,)) for avatar in avatars]
 
