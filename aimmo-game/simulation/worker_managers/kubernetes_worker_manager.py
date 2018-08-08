@@ -2,7 +2,6 @@ import logging
 import os
 import time
 
-from pykube import HTTPClient, KubeConfig, Pod
 import kubernetes.client
 import kubernetes.config
 
@@ -39,7 +38,7 @@ class KubernetesWorkerManager(WorkerManager):
                                                 capabilities=kubernetes.client.V1Capabilities(
                                                     drop=['all'],
                                                     add=['NET_BIND_SERVICE'])))
-        pod_spec = kubernetes.client.V1PodSpec(containers=[container])
+        pod_manifest = kubernetes.client.V1PodSpec(containers=[container])
 
         metadata = kubernetes.client.V1ObjectMeta(
                         labels={
@@ -48,27 +47,33 @@ class KubernetesWorkerManager(WorkerManager):
                             'player': str(player_id)},
                         generate_name="aimmo-%s-worker-%s-" % (self.game_id, player_id))
 
-        return kubernetes.client.V1Pod(metadata=metadata, spec=pod_spec)
+        return kubernetes.client.V1Pod(metadata=metadata, spec=pod_manifest)
+
+    def _wait_for_pod_creation(self, pod_name, player_id):
+
+        for _ in range(90):
+            pod = self.api.read_namespaced_pod(pod_name, K8S_NAMESPACE)
+            LOGGER.info('Pod status: {}'.format(pod.status))
+            if pod.status.phase == 'Running':
+                return pod
+
+            time.sleep(1)
+
+        raise EnvironmentError('Could not start worker %s.' % player_id)
 
     def create_worker(self, player_id):
         pod_obj = self.make_pod(player_id)
-        LOGGER.error('Making new worker pod: {}'.format(pod_obj.metadata.name))
+        LOGGER.info('Making new worker pod: {}'.format(pod_obj.metadata.name))
         pod = self.api.create_namespaced_pod(namespace=K8S_NAMESPACE, body=pod_obj)
+        pod_name = pod.metadata.name
+        pod = self._wait_for_pod_creation(pod_name, player_id)
 
-        iterations = 0
-        while pod.status.phase == 'Pending':
-            if iterations > 30:
-                LOGGER.error('Could not start worker %s  details %s' % (player_id, pod.status.message))
-            LOGGER.debug('Waiting for worker %s', player_id)
-            time.sleep(3)
-            iterations += 1
         worker_url = 'http://%s:5000' % pod.status.pod_ip
         LOGGER.info('Worker ip: {}'.format(pod.status.pod_ip))
         LOGGER.info('Worker started for %s, listening at %s', player_id, worker_url)
         return worker_url
 
     def remove_worker(self, player_id):
-        time.sleep(10)
         app_label = 'app=aimmo-game-worker'
         game_label = 'game={}'.format(self.game_id)
         player_label = 'player={}'.format(player_id)
