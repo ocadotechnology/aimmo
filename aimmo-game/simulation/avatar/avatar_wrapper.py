@@ -28,7 +28,6 @@ class AvatarWrapper(object):
         self.attack_strength = 1
         self.fog_of_war_modifier = 0
         self._action = None
-        self._logs = None
 
     def update_effects(self):
         effects_to_remove = set()
@@ -42,20 +41,6 @@ class AvatarWrapper(object):
     @property
     def action(self):
         return self._action
-
-    @property
-    def logs(self):
-        return self._logs
-
-    @logs.setter
-    def logs(self, log_data):
-        """
-        Checks if there are any new logs received over the POST request and updates when
-        required.
-        :param log_data: A dict element containing a string of the log output of the program.
-        """
-
-        self._logs = log_data
 
     @property
     def is_moving(self):
@@ -72,7 +57,7 @@ class AvatarWrapper(object):
             LOGGER.exception("Unknown error while fetching turn data.")
             LOGGER.exception(e)
 
-        return {'action': None, 'logs': ''}
+        return {'action': None, 'log': ''}
 
     def _construct_action(self, action_data):
         action_type = action_data['action_type']

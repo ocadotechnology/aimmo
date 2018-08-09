@@ -1,7 +1,16 @@
-# AI:MMO
-A **M**assively **M**ultiplayer **O**nline game, where players create **A**rtificially **I**ntelligent programs to play on their behalf.
+<p align="center">
+  <a href="https://www.codeforlife.education/play/aimmo/" target="_blank">
+    <img src="/docs/images/AIMMO-Logo-vertical-RGB.svg" height="200px" alt="AI:MMO Logo" />
+  </a>
+</p>
+
+
+<h3 align="center">
+  A Massively Multiplayer Online (MMO) time travelling adventure, which will take them to the next level on their coding journey: Artificial Intelligence and Python. 
+</h3>
 
 [![Code Climate](https://codeclimate.com/github/ocadotechnology/aimmo/badges/gpa.svg)](https://codeclimate.com/github/ocadotechnology/aimmo)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
 ## Objective
 People program Avatars. Avatars play the game. A player's aim is to create a better Avatar than other people's Avatars. A "better" Avatar is one that scores points faster than other people's Avatars.

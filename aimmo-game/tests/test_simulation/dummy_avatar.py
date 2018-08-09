@@ -1,9 +1,11 @@
 from __future__ import absolute_import
 
+import logging
 from simulation.action import MoveAction, WaitAction
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.avatar.avatar_wrapper import AvatarWrapper
 from simulation.direction import NORTH, EAST, SOUTH, WEST
+LOGGER = logging.getLogger(__name__)
 
 
 class DummyAvatar(AvatarWrapper):
@@ -33,7 +35,7 @@ class DummyAvatar(AvatarWrapper):
         return 'Dummy'
 
     def fetch_data(self, state_view):
-        return {'action': '', 'logs': 'Testing'}
+        return {'action': '', 'log': 'Testing'}
 
     def damage(self, amount):
         self.health -= amount
