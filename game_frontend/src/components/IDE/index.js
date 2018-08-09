@@ -9,7 +9,7 @@ export default class IDE extends Component {
       <Fragment>
         <IDEMenu />
         <IDEEditor />
-        <IDEConsole />
+        <IDEConsole logs={[]} />
       </Fragment>
     )
   }
