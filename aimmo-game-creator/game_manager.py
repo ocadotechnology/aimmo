@@ -2,16 +2,16 @@ import logging
 import os
 import subprocess
 import time
-import kubernetes
 from abc import ABCMeta, abstractmethod
 
 import requests
 from eventlet.greenpool import GreenPool
 from eventlet.semaphore import Semaphore
+import kubernetes
+
 
 LOGGER = logging.getLogger(__name__)
 
-# TODO: Refactor this into an environment variable
 K8S_NAMESPACE = 'default'
 
 
@@ -227,6 +227,7 @@ class KubernetesGameManager(GameManager):
         environment_variables['GAME_ID'] = game_id
         environment_variables['GAME_URL'] = 'http://game-{}'.format(game_id)
         environment_variables['IMAGE_SUFFIX'] = os.environ.get('IMAGE_SUFFIX', 'latest')
+        environment_variables['K8S_NAMESPACE'] = K8S_NAMESPACE
 
         rc = self._make_rc(environment_variables, game_id)
         self.api.create_namespaced_replication_controller(K8S_NAMESPACE, rc)
