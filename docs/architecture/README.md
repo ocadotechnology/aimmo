@@ -3,6 +3,7 @@
 This section describes the whole game architecture and how things are structured. AI:MMO consists of four main components, split into their own directories.
 
 ---
+The following UML diagram is intended as a rough overview of the project:
 ![](uml.png?raw=true)
 
 ## Components

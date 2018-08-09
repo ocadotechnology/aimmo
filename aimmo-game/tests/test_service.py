@@ -1,11 +1,11 @@
 from unittest import TestCase
-import service
 
+import service
 from simulation.avatar.avatar_manager import AvatarManager
 from .test_simulation.maps import MockPickup, MockCell
 from .test_simulation.dummy_avatar import MoveEastDummy
 from simulation.location import Location
-from simulation.turn_manager import state_provider
+from simulation.game_state_provider import GameStateProvider
 from simulation.game_state import GameState
 from simulation.world_map import WorldMap
 
@@ -37,9 +37,10 @@ class TestService(TestCase):
         grid = {Location(x, y-1): MockCell(Location(x, y-1), **CELLS[x][y])
                 for y in range(3) for x in range(2)}
 
-        state_provider.set_world(GameState(WorldMap(grid, {}), self.avatar_manager))
+        test_state_provider = GameStateProvider()
+        test_state_provider.set_world(GameState(WorldMap(grid, {}), self.avatar_manager))
 
-        self.world_state_json = service.get_game_state()
+        self.world_state_json = service.get_game_state(test_state_provider)
 
     def test_healthy_flask(self):
         """
