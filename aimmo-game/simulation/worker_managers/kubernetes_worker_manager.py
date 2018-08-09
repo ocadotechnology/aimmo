@@ -8,7 +8,8 @@ import kubernetes.config
 from .worker_manager import WorkerManager
 
 LOGGER = logging.getLogger(__name__)
-K8S_NAMESPACE = os.environ['K8S_NAMESPACE']
+# Default here to stop import errors if imported when running locally
+K8S_NAMESPACE = os.environ.get('K8S_NAMESPACE', '')
 
 
 class KubernetesWorkerManager(WorkerManager):
