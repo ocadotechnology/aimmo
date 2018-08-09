@@ -1,7 +1,6 @@
 eventlet
 flask
 python-socketio==2.0.0
-pykube
 requests
 six
 flask-cors

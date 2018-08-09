@@ -81,8 +81,6 @@ class KubernetesWorkerManager(WorkerManager):
         pods = self.api.list_namespaced_pod(namespace=K8S_NAMESPACE,
                                             label_selector=','.join([app_label, game_label, player_label]))
 
-        LOGGER.error('Removing pods {}'.format([pod.metadata.name for pod in pods.items]))
-
         for pod in pods.items:
-            LOGGER.error('Pod name: {}'.format(pod.metadata.name))
+            LOGGER.info('Deleting pod: {}'.format(pod.metadata.name))
             self.api.delete_namespaced_pod(pod.metadata.name, K8S_NAMESPACE, kubernetes.client.V1DeleteOptions())

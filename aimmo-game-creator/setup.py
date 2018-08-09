@@ -8,7 +8,6 @@ setup(
     include_package_data=True,
     install_requires=[
         'eventlet',
-        'pykube',
         'kubernetes == 5.0.0'
     ],
     tests_require=[
