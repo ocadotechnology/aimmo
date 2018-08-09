@@ -12,7 +12,7 @@ setup(
         'python-socketio==2.0.0',
         'requests',
         'six',
-        'pykube',
+        'kubernetes'
     ],
     tests_require=[
         'httmock',

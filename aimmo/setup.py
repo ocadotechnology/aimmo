@@ -10,7 +10,6 @@ setup(
         'flask',
         'requests',
         'six',
-        'pykube',
     ],
     tests_require=[
         'httmock',
