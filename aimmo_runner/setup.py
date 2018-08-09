@@ -16,7 +16,6 @@ setup(
         'flask-socketio',
         'requests',
         'six',
-        'pykube',
         'hypothesis',
         'flask-cors',
         'psutil',

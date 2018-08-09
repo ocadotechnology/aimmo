@@ -135,15 +135,15 @@
                 "sha256:6bd0f6ad48ec2aa117d3d141940d484deccda84d4fcd884f5c3d93c23ecd8c79",
                 "sha256:8ad8c4783bf61ded74527bffb48ed9b54166685e4230386a9ed9b1279e2df5b1"
             ],
-            "markers": "python_version == '2.7'",
+            "markers": "python_version < '3.4'",
             "version": "==1.1.6"
         },
         "eventlet": {
             "hashes": [
-                "sha256:4c247db031ea374128e8c75a40fe5402c611e9a4798b9f90f095001192f22364",
-                "sha256:8469811e6b49a8de6de11329de4b76e961e687fc24201546b85de69056535add"
+                "sha256:c584163e006e613707e224552fafc63e4e0aa31d7de0ab18b481ac0b385254c8",
+                "sha256:d9d31a3c8dbcedbcce5859a919956d934685b17323fc80e1077cb344a2ffa68d"
             ],
-            "version": "==0.24.0"
+            "version": "==0.24.1"
         },
         "flask": {
             "hashes": [
@@ -197,19 +197,13 @@
             ],
             "version": "==0.4.14"
         },
-        "httplib2": {
-            "hashes": [
-                "sha256:e71daed9a0e6373642db61166fa70beecc9bf04383477f84671348c02a04cbdf"
-            ],
-            "version": "==0.11.3"
-        },
         "hypothesis": {
             "hashes": [
-                "sha256:0de12a2454fee5e9875a96d9a842e2ab75f06fe1b62020a1f8284d618eabbdda",
-                "sha256:3a52bb9ec365bb92e6e8843377fd39583cf9a133a3502de6ecb05cc7dca5b9ef",
-                "sha256:fbeed752678ef4b2069fa0cd8d087f0f32aff8c5da37bfa0e11a27e3971428c3"
+                "sha256:022830d543bab47cb78ebff8759d98631f97df8f5485f1fc2e3b4cddef2a648e",
+                "sha256:3e821fb6efb12c9f398f51472168ea52078f0676d300d658b2ca7dc3e04f68ff",
+                "sha256:52e64f07707e7a82bf737baa62b5323e0cb7851ce6c63e146b5f57cc378f2422"
             ],
-            "version": "==3.66.22"
+            "version": "==3.66.31"
         },
         "idna": {
             "hashes": [
@@ -259,13 +253,6 @@
             ],
             "version": "==1.5"
         },
-        "oauth2client": {
-            "hashes": [
-                "sha256:bd3062c06f8b10c6ef7a890b22c2740e5f87d61b6e1f4b1c90d069cdfc9dadb5",
-                "sha256:cf061f52f75e91d489bf5c276498f8af2655fe331b454f10022441513cf445a6"
-            ],
-            "version": "==4.1.2"
-        },
         "oauthlib": {
             "hashes": [
                 "sha256:ac35665a61c1685c56336bda97d5eefa246f1202618a1d6f34fccb1bdd404162",
@@ -303,13 +290,6 @@
                 "sha256:a38a8811ea784c0136abfdba73963876328f66172db21a05a82f9515909bfb4e"
             ],
             "version": "==0.2.2"
-        },
-        "pykube": {
-            "hashes": [
-                "sha256:8d50b09b63d5e754f3379032be58bed035692e2e308a0b35e57b0074b3f90bb9",
-                "sha256:e53800d0d45f13911aa4ebca8463ae5cc82afad461f6575a0a217d2fce5f088b"
-            ],
-            "version": "==0.15.0"
         },
         "python-dateutil": {
             "hashes": [
@@ -382,12 +362,6 @@
                 "sha256:832dc0e10feb1aa2c68dcc57dbb658f1c7e65b9b61af69048abc87a2db00a0eb"
             ],
             "version": "==1.11.0"
-        },
-        "tzlocal": {
-            "hashes": [
-                "sha256:4ebeb848845ac898da6519b9b31879cf13b6626f7184c496037b818e238f2c4e"
-            ],
-            "version": "==1.5.1"
         },
         "urllib3": {
             "hashes": [
