@@ -58,7 +58,7 @@ class KubernetesWorkerManager(WorkerManager):
                 'game': self.game_id,
                 'player': str(player_id)},
             generate_name="aimmo-%s-worker-%s-" % (self.game_id, player_id),
-            owner_references=owner_reference
+            owner_references=[owner_reference]
         )
 
         return kubernetes.client.V1Pod(metadata=metadata, spec=pod_manifest)
