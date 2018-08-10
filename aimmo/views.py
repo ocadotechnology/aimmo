@@ -116,8 +116,9 @@ def connection_parameters(request, game_id):
         LOGGER.error(e)
         return HttpResponse('Unknown error occurred when getting the current avatar',
                             status=500)
-
     env_connection_settings.update({'avatar_id': avatar_id})
+    print "INSIDE CONNECTION PARAMETERS"
+    print env_connection_settings
     return JsonResponse(env_connection_settings)
 
 

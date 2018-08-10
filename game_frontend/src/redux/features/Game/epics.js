@@ -1,20 +1,14 @@
 import actions from './actions'
 import types from './types'
 import { Observable } from 'rxjs'
-import { map, mergeMap, catchError } from 'rxjs/operators'
+import { map, mergeMap, catchError, delay, tap } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
-const connectToGameEpic = (action$, store, { api: { get, socket } }) => action$.pipe(
+const getConnectionParametersEpic = (action$, store, { api: { get } }) => action$.pipe(
   ofType(types.SOCKET_CONNECT_TO_GAME_REQUEST),
   mergeMap(action =>
     get(`games/${store.getState().game.connectionParameters.id}/connection_parameters/`).pipe(
-      socket.connectToGame(),
-      socket.startListeners(),
-      catchError(error => Observable.of({
-        type: types.SOCKET_CONNECT_TO_GAME_FAIL,
-        payload: error,
-        error: true
-      }))
+      map(response => actions.connectionParametersReceived(response))
     )
   )
 )
@@ -30,7 +24,31 @@ const sendGameStateEpic = (action$, store, { api: { unity } }) => action$.pipe(
   unity.sendExternalEvent(unity.emitToUnity)
 )
 
+const connectToGameEpic = (action$, store, { api: { socket, unity } }) => action$.pipe(
+  ofType(types.CONNECTION_PARAMETERS_RECEIVED),
+  socket.connectToGame(),
+  socket.startListeners(),
+  catchError(error => Observable.of({
+    type: types.SOCKET_CONNECT_TO_GAME_FAIL,
+    payload: error,
+    error: true
+  }))
+)
+
+const sendAvatarIDEpic = (action$, store, { api: { unity } }) => action$.pipe(
+  ofType(types.CONNECTION_PARAMETERS_RECEIVED),
+  map(action => actions.unityEvent(
+    'SetCurrentAvatarID',
+    parseInt(action.payload.parameters['avatar_id']),
+    actions.avatarIdSet(),
+    actions.avatarIdFailed
+  )),
+  unity.sendExternalEvent(unity.emitToUnity)
+)
+
 export default {
+  getConnectionParametersEpic,
   connectToGameEpic,
-  sendGameStateEpic
+  sendGameStateEpic,
+  sendAvatarIDEpic
 }

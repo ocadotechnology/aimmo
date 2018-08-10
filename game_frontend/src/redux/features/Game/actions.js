@@ -42,10 +42,34 @@ const unityEvent = (unityEvent, unityData, successAction, failAction) => (
   }
 )
 
+const connectionParametersReceived = parameters => (
+  {
+    type: types.CONNECTION_PARAMETERS_RECEIVED,
+    payload: {
+      parameters
+    }
+  }
+)
+
+const avatarIdSet = () => (
+  {
+    type: types.AVATAR_ID_SET
+  }
+)
+
+const avatarIdFailed = () => (
+  {
+    type: types.AVATAR_ID_FAILED
+  }
+)
+
 export default {
   socketConnectToGameRequest,
   sendGameStateFail,
   sendGameStateSuccess,
   socketGameStateReceived,
-  unityEvent
+  unityEvent,
+  connectionParametersReceived,
+  avatarIdSet,
+  avatarIdFailed
 }
