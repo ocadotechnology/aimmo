@@ -76,7 +76,7 @@ class KubernetesWorkerManager(WorkerManager):
         pod_list = self.api.list_namespaced_pod(namespace=K8S_NAMESPACE,
                                                 label_selector=label_selector)
         current_game_metadata = pod_list.items[0].metadata
-        return current_game_metadata['name'], current_game_metadata['uid']
+        return current_game_metadata.name, current_game_metadata.uid
 
     def _wait_for_pod_creation(self, pod_name, player_id):
 
