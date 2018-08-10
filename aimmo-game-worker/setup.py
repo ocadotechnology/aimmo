@@ -9,6 +9,7 @@ setup(
     install_requires=[
         'flask',
         'requests',
+        'six'
     ],
     tests_require=[
         'httmock',

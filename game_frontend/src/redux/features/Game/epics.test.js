@@ -5,7 +5,7 @@ import epics from './epics'
 import actions from './actions'
 import configureStore from 'redux-mock-store'
 import api from '../../api'
-import { delay, mapTo, tap } from 'rxjs/operators'
+import { delay, mapTo } from 'rxjs/operators'
 import { pipe } from 'rxjs/Rx'
 
 const middlewares = []
