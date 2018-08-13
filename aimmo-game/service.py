@@ -53,7 +53,6 @@ def player_data(player_id):
 @socketio_server.on('connect')
 def world_update_on_connect(sid, environ,
                             session_id_to_avatar_id=_default_session_id_to_avatar_id_mappings):
-    game_state = get_game_state()
     session_id_to_avatar_id[sid] = None
 
     query = environ['QUERY_STRING']
@@ -150,7 +149,7 @@ def _find_avatar_id_from_query(session_id, query_string,
     parsed_qs = parse_qs(query_string)
 
     try:
-        avatar_id = parsed_qs['avatar_id'][0]
+        avatar_id = int(parsed_qs['avatar_id'][0])
         session_id_to_avatar_id[session_id] = avatar_id
     except KeyError:
         LOGGER.error("No avatar ID found. User may not be authorised ")
