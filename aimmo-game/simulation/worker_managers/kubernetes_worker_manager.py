@@ -21,7 +21,6 @@ class KubernetesWorkerManager(WorkerManager):
         self.game_id = os.environ['GAME_ID']
         self.game_url = os.environ['GAME_URL']
         self.pod_name = os.environ['POD_NAME']
-        LOGGER.error('Pod name: {}'.format(self.pod_name))
         super(KubernetesWorkerManager, self).__init__(*args, **kwargs)
 
     @staticmethod
