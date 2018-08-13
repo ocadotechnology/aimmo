@@ -7,7 +7,7 @@ import { ofType } from 'redux-observable'
 const getConnectionParametersEpic = (action$, store, { api: { get } }) => action$.pipe(
   ofType(types.SOCKET_CONNECT_TO_GAME_REQUEST),
   mergeMap(action =>
-    get(`games/${store.getState().game.connectionParameters.id}/connection_parameters/`).pipe(
+    get(`games/${store.getState().game.connectionParameters.game_id}/connection_parameters/`).pipe(
       map(response => actions.connectionParametersReceived(response))
     )
   )
