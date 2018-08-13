@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import IDE from 'components/IDE'
+import IDE from 'containers/IDE'
 import Game from 'components/Game'
 
 export const GamePageLayout = styled.div`
