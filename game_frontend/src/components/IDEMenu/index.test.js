@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import React from 'react'
-import IDEMenu, { IDEMenuLayout } from 'containers/IDEMenu'
+import IDEMenu, { IDEMenuLayout } from 'components/IDEMenu'
 import { shallow } from 'enzyme'
 import createShallowWithTheme from 'testHelpers/createShallow'
 

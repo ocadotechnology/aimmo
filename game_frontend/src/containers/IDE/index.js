@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
-import IDEMenu from 'containers/IDEMenu'
-import IDEEditor from 'containers/IDEEditor'
+import IDEMenu from 'components/IDEMenu'
+import IDEEditor from 'components/IDEEditor'
 import IDEConsole from 'components/IDEConsole'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
