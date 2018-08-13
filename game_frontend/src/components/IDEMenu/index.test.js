@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import React from 'react'
-import { IDEMenu, IDEMenuLayout } from 'containers/IDEMenu'
+import IDEMenu, { IDEMenuLayout } from 'components/IDEMenu'
 import { shallow } from 'enzyme'
 import createShallowWithTheme from 'testHelpers/createShallow'
 
@@ -19,7 +19,7 @@ describe('<IDEMenu />', () => {
     const component = shallow(<IDEMenu {...props} />)
 
     component.find('#post-code-button').simulate('click')
-    expect(postCode.mock.calls.length).toBe(1)
+    expect(postCode).toBeCalled()
   })
 })
 

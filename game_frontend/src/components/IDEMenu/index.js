@@ -5,11 +5,11 @@ import { connect } from 'react-redux'
 import { actions } from 'features/Editor'
 
 export const IDEMenuLayout = styled.nav`
-  background-color: ${props => props.theme.palette.background.default}
-  grid-area: ide-menu
+  background-color: ${props => props.theme.palette.background.default};
+  grid-area: ide-menu;
 `
 
-export class IDEMenu extends Component {
+export default class IDEMenu extends Component {
   render () {
     return (
       <IDEMenuLayout>
@@ -24,11 +24,3 @@ export class IDEMenu extends Component {
 IDEMenu.propTypes = {
   postCode: PropTypes.func
 }
-
-const mapStateToProps = () => ({})
-
-const mapDispatchToProps = {
-  postCode: actions.postCodeRequest
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(IDEMenu)

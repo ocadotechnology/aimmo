@@ -14,7 +14,7 @@ exports[`<IDEConsole /> renders correctly 1`] = `
         },
         Object {
           "log": "bye",
-          "timestamp": 2,
+          "timestamp": "2",
         },
       ]
     }
