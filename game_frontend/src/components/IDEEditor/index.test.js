@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import React from 'react'
-import { IDEEditor, IDEEditorLayout } from 'containers/IDEEditor'
+import { IDEEditor, IDEEditorLayout } from 'components/IDEEditor'
 import createShallowWithTheme from 'testHelpers/createShallow'
 
 describe('<IDEEditor />', () => {

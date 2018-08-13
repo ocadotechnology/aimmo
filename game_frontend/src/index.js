@@ -33,6 +33,9 @@ const initialState = {
       game_url_port: 0,
       game_ssl_flag: false
     }
+  },
+  consoleLog: {
+    logs: []
   }
 }
 
