@@ -14,7 +14,12 @@ export const IDEEditorLayout = styled.div`
   grid-area: ide-editor;
 `
 export class IDEEditor extends Component {
-  render () {
+  shouldComponentUpdate(nextProps) {
+    const differentCode = this.props.code !== nextProps.code
+    return differentCode
+  }
+
+  render() {
     return (
       <IDEEditorLayout>
         <AceEditor
