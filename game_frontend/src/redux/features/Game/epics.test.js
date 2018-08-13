@@ -154,8 +154,6 @@ describe('sendAvatarIDEpic', () => {
   })
 })
 
-// rewriting connect to game epic test
-
 describe('connectToGameEpic', () => {
   it('connects to the aimmo game', () => {
     const gameState = {
@@ -239,7 +237,6 @@ describe('getConnectionParametersEpic', () => {
     const actual = epics.getConnectionParametersEpic(source$, mockStore({
       game: {
         connectionParameters: {
-        // game_id
           game_id: 1
         }
       }
