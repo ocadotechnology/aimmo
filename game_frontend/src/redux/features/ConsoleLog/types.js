@@ -1,0 +1,5 @@
+const SOCKET_CONSOLE_LOG_RECEIVED = 'features/ConsoleLog/SOCKET_CONSOLE_LOG_RECEIVED'
+
+export default {
+    SOCKET_CONSOLE_LOG_RECEIVED
+}

@@ -29,6 +29,9 @@ const initialState = {
     connectionParameters: {
       game_id: getGameIDFromURL() || 1
     }
+  },
+  consoleLog: {
+    logs: []
   }
 }
 

@@ -2,10 +2,8 @@
 
 exports[`<IDE /> renders correctly 1`] = `
 <React.Fragment>
-  <Connect(IDEMenu) />
-  <Connect(WithTheme(IDEEditor)) />
-  <IDEConsole
-    logs={Array []}
-  />
+  <IDEMenu />
+  <WithTheme(IDEEditor) />
+  <IDEConsole />
 </React.Fragment>
 `;

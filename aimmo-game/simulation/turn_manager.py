@@ -58,7 +58,7 @@ class TurnManager(Thread):
         Gathers the logs from the data received. It handles error catching.
 
         :param avatar: Avatar object to which logs will be saved.
-        :param worker_data: Dict containing (among others) the 'logs' key.
+        :param worker_data: Dict containing (among others) the 'log' key.
         """
         try:
             self.logs_provider.set_user_logs(user_id=avatar.player_id,
