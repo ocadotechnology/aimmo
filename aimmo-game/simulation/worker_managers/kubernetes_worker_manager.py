@@ -41,7 +41,7 @@ class KubernetesWorkerManager(WorkerManager):
             # Couldn't find the current pod
             return []
 
-    def _make_container(self, _player_id):
+    def _make_container(self, player_id):
         return kubernetes.client.V1Container(
             env=[kubernetes.client.V1EnvVar(
                 name='DATA_URL',
