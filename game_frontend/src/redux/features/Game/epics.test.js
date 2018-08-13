@@ -125,7 +125,7 @@ describe('sendAvatarIDEpic', () => {
     const marbles2 = '-b--'
     const values = {
       a: actions.connectionParametersReceived(parameters),
-      b: actions.avatarIdSet()
+      b: actions.unitySendAvatarIDSuccess()
     }
 
     const testScheduler = createTestScheduler()

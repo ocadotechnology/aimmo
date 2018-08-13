@@ -51,15 +51,15 @@ const connectionParametersReceived = parameters => (
   }
 )
 
-const avatarIdSet = () => (
+const unitySendAvatarIDSuccess = () => (
   {
-    type: types.AVATAR_ID_SET
+    type: types.UNITY_SEND_AVATAR_ID_SUCCESS
   }
 )
 
-const avatarIdFailed = () => (
+const unitySendAvatarIDFail = () => (
   {
-    type: types.AVATAR_ID_FAILED
+    type: types.UNITY_SEND_AVATAR_ID_FAIL
   }
 )
 
@@ -70,6 +70,6 @@ export default {
   socketGameStateReceived,
   unityEvent,
   connectionParametersReceived,
-  avatarIdSet,
-  avatarIdFailed
+  unitySendAvatarIDSuccess,
+  unitySendAvatarIDFail
 }

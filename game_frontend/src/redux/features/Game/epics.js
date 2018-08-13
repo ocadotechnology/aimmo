@@ -40,8 +40,8 @@ const sendAvatarIDEpic = (action$, store, { api: { unity } }) => action$.pipe(
   map(action => actions.unityEvent(
     'SetCurrentAvatarID',
     parseInt(action.payload.parameters['avatar_id']),
-    actions.avatarIdSet(),
-    actions.avatarIdFailed
+    actions.unitySendAvatarIDSuccess(),
+    actions.unitySendAvatarIDFail
   )),
   unity.sendExternalEvent(unity.emitToUnity)
 )
