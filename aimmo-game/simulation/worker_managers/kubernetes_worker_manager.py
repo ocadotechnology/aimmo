@@ -20,7 +20,13 @@ class KubernetesWorkerManager(WorkerManager):
         self.api = kubernetes.client.CoreV1Api()
         self.game_id = os.environ['GAME_ID']
         self.game_url = os.environ['GAME_URL']
+        self.pod_name = os.environ['POD_NAME']
+        LOGGER.error('Pod name: {}'.format(self.pod_name))
         super(KubernetesWorkerManager, self).__init__(*args, **kwargs)
+
+    @staticmethod
+    def _create_a_label_selector_from_labels(label_list):
+        return ','.join(label_list)
 
     def make_pod(self, player_id):
         container = kubernetes.client.V1Container(
@@ -38,19 +44,23 @@ class KubernetesWorkerManager(WorkerManager):
             security_context=kubernetes.client.V1SecurityContext(
                 capabilities=kubernetes.client.V1Capabilities(
                     drop=['all'],
-                    add=['NET_BIND_SERVICE'])))
+                    add=['NET_BIND_SERVICE']))
+        )
+
         pod_manifest = kubernetes.client.V1PodSpec(containers=[container])
 
-        current_game_name, current_game_uid = self._get_game_pod_name_and_uid()
-
-        owner_reference = kubernetes.client.V1OwnerReference(
-            api_version="v1",
-            block_owner_deletion=True,
-            controller=True,
-            kind="Pod",
-            name=current_game_name,
-            uid=current_game_uid
-        )
+        try:
+            owner_references = [kubernetes.client.V1OwnerReference(
+                api_version="v1",
+                block_owner_deletion=True,
+                controller=True,
+                kind="Pod",
+                name=self.pod_name,
+                uid=self._get_game_uid()
+            )]
+        except IndexError:
+            # Couldn't find the current pod
+            owner_references = []
 
         metadata = kubernetes.client.V1ObjectMeta(
             labels={
@@ -58,25 +68,16 @@ class KubernetesWorkerManager(WorkerManager):
                 'game': self.game_id,
                 'player': str(player_id)},
             generate_name="aimmo-%s-worker-%s-" % (self.game_id, player_id),
-            owner_references=[owner_reference]
+            owner_references=owner_references
         )
 
         return kubernetes.client.V1Pod(metadata=metadata, spec=pod_manifest)
 
-    def _create_a_label_selector_from_labels(self, label_list):
-        return ','.join(label_list)
-
-    def _get_game_pod_name_and_uid(self):
-        app_label = 'app=aimmo-game'
-        game_id_label = 'game_id=' + self.game_id
-        label_selector = self._create_a_label_selector_from_labels([app_label,
-                                                                    game_id_label])
-
-        # TODO: write a test to ensure pod_list length is 1
+    def _get_game_uid(self):
         pod_list = self.api.list_namespaced_pod(namespace=K8S_NAMESPACE,
-                                                label_selector=label_selector)
+                                                field_selector='metadata.name={}'.format(self.pod_name))
         current_game_metadata = pod_list.items[0].metadata
-        return current_game_metadata.name, current_game_metadata.uid
+        return current_game_metadata.uid
 
     def _wait_for_pod_creation(self, pod_name, player_id):
 
