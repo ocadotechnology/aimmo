@@ -27,8 +27,22 @@ class KubernetesWorkerManager(WorkerManager):
     def _create_a_label_selector_from_labels(label_list):
         return ','.join(label_list)
 
-    def make_pod(self, player_id):
-        container = kubernetes.client.V1Container(
+    def _make_owner_references(self):
+        try:
+            return [kubernetes.client.V1OwnerReference(
+                api_version="v1",
+                block_owner_deletion=True,
+                controller=True,
+                kind="Pod",
+                name=self.pod_name,
+                uid=self._get_game_uid()
+            )]
+        except IndexError:
+            # Couldn't find the current pod
+            return []
+
+    def _make_container(self, _player_id):
+        return kubernetes.client.V1Container(
             env=[kubernetes.client.V1EnvVar(
                 name='DATA_URL',
                 value='%s/player/%d' % (self.game_url, player_id))],
@@ -46,28 +60,15 @@ class KubernetesWorkerManager(WorkerManager):
                     add=['NET_BIND_SERVICE']))
         )
 
-        pod_manifest = kubernetes.client.V1PodSpec(containers=[container])
-
-        try:
-            owner_references = [kubernetes.client.V1OwnerReference(
-                api_version="v1",
-                block_owner_deletion=True,
-                controller=True,
-                kind="Pod",
-                name=self.pod_name,
-                uid=self._get_game_uid()
-            )]
-        except IndexError:
-            # Couldn't find the current pod
-            owner_references = []
-
+    def make_pod(self, player_id):
+        pod_manifest = kubernetes.client.V1PodSpec(containers=[self._make_container(player_id)])
         metadata = kubernetes.client.V1ObjectMeta(
             labels={
                 'app': 'aimmo-game-worker',
                 'game': self.game_id,
                 'player': str(player_id)},
             generate_name="aimmo-%s-worker-%s-" % (self.game_id, player_id),
-            owner_references=owner_references
+            owner_references=self._make_owner_references()
         )
 
         return kubernetes.client.V1Pod(metadata=metadata, spec=pod_manifest)
