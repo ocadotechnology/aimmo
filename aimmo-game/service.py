@@ -151,6 +151,8 @@ def _find_avatar_id_from_query(session_id, query_string,
     try:
         avatar_id = int(parsed_qs['avatar_id'][0])
         session_id_to_avatar_id[session_id] = avatar_id
+    except ValueError:
+        LOGGER.error("Avatar ID could not be casted into an integer")
     except KeyError:
         LOGGER.error("No avatar ID found. User may not be authorised ")
 
