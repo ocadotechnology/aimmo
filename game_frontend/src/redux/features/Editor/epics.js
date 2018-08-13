@@ -10,7 +10,7 @@ const getCodeEpic = (action$, store, { api }) =>
   action$.pipe(
     ofType(types.GET_CODE_REQUEST),
     mergeMap(action =>
-      api.get(`code/${store.getState().game.connectionParameters.id}/`).pipe(
+      api.get(`code/${store.getState().game.connectionParameters.game_id}/`).pipe(
         map(response => actions.getCodeReceived(response.code)),
         catchError(error => Observable.of({
           type: types.GET_CODE_FAILURE,
@@ -26,7 +26,7 @@ const postCodeEpic = (action$, store, { api }) =>
     .pipe(
       ofType(types.POST_CODE_REQUEST),
       api.post(
-        `/aimmo/api/code/${store.getState().game.connectionParameters.id}/`,
+        `/aimmo/api/code/${store.getState().game.connectionParameters.game_id}/`,
         () => ({ code: store.getState().editor.code })
       ),
       map(response => actions.postCodeReceived()),
