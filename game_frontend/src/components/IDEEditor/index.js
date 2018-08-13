@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import AceEditor from 'react-ace'
 import 'brace/theme/idle_fingers'
 import 'brace/mode/python'
@@ -13,12 +13,7 @@ export const IDEEditorLayout = styled.div`
   background-color: #2F4F4F;
   grid-area: ide-editor;
 `
-export class IDEEditor extends Component {
-  shouldComponentUpdate(nextProps) {
-    const differentCode = this.props.code !== nextProps.code
-    return differentCode
-  }
-
+export class IDEEditor extends PureComponent {
   render() {
     return (
       <IDEEditorLayout>
