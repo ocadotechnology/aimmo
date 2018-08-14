@@ -7,8 +7,8 @@ import { fromEvent } from 'rxjs/observable/fromEvent'
 import { pipe } from 'rxjs/Rx'
 
 const connectToGame = () =>
-  map(response => {
-    const { game_url_base: gameUrlBase, game_url_path: gameUrlPath, avatar_id: avatarId } = response
+  map(action => {
+    const { game_url_base: gameUrlBase, game_url_path: gameUrlPath, avatar_id: avatarId } = action.payload.parameters
     return io(gameUrlBase, {
       path: gameUrlPath,
       query: {

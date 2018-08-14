@@ -193,7 +193,11 @@ class KubernetesGameManager(GameManager):
         container = kubernetes.client.V1Container(
             env=[kubernetes.client.V1EnvVar(
                         name=env_name,
-                        value=env_value) for env_name, env_value in environment_variables.items()],
+                        value=env_value) for env_name, env_value in environment_variables.items()] +
+                [kubernetes.client.V1EnvVar(
+                    name='POD_NAME',
+                    value_from=kubernetes.client.V1EnvVarSource(
+                        field_ref=kubernetes.client.V1ObjectFieldSelector(field_path='metadata.name')))],
             image='ocadotechnology/aimmo-game:{}'.format(os.environ.get('IMAGE_SUFFIX', 'latest')),
             ports=[kubernetes.client.V1ContainerPort(container_port=5000)],
             name='aimmo-game',

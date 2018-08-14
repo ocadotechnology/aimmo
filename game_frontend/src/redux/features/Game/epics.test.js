@@ -19,65 +19,6 @@ const createTestScheduler = (frameTimeFactor = 10) => {
   return new TestScheduler(deepEquals)
 }
 
-describe('connectToGameEpic', () => {
-  it('connects to the aimmo-game', () => {
-    const gameState = {
-      players: {
-        id: 1,
-        location: {
-          x: 10,
-          y: 10
-        }
-      }
-    }
-
-    const marbles1 = '-a---'
-    const marbles2 = '--b--'
-    const values = {
-      a: actions.socketConnectToGameRequest(),
-      b: actions.socketGameStateReceived(gameState)
-    }
-
-    const testScheduler = createTestScheduler()
-    const source$ = ActionsObservable.from(
-      testScheduler.createColdObservable(marbles1, values)
-    )
-    const mockGetJSON = () =>
-      Observable.of({ id: 1 })
-
-    const mockConnectToGame = () =>
-      mapTo({type: 'socket'})
-
-    const mockStartListeners = () =>
-      pipe(
-        delay(10, testScheduler),
-        mapTo(actions.socketGameStateReceived(gameState))
-      )
-
-    const mockAPI = {
-      api: {
-        get: mockGetJSON,
-        socket: {
-          connectToGame: mockConnectToGame,
-          startListeners: mockStartListeners
-        }
-      }
-    }
-
-    const actual = epics.connectToGameEpic(source$, mockStore({
-      game: {
-        connectionParameters:
-        {
-          id: 1
-        }
-      }
-    }), mockAPI)
-
-    testScheduler.expectObservable(actual).toBe(marbles2, values)
-    testScheduler.flush()
-  })
-})
-
 describe('ReceiveGameUpdate', () => {
   it('sends game update', () => {
     const gameState = {
@@ -169,6 +110,137 @@ describe('ReceiveGameUpdate', () => {
     }
 
     const actual = epics.sendGameStateEpic(source$, mockStore({}), mockAPI)
+
+    testScheduler.expectObservable(actual).toBe(marbles2, values)
+    testScheduler.flush()
+  })
+})
+
+describe('sendAvatarIDEpic', () => {
+  it('sends avatar id', () => {
+    const parameters = {
+      avatar_id: 1
+    }
+    const marbles1 = '-a--'
+    const marbles2 = '-b--'
+    const values = {
+      a: actions.connectionParametersReceived(parameters),
+      b: actions.unitySendAvatarIDSuccess()
+    }
+
+    const testScheduler = createTestScheduler()
+    const source$ = ActionsObservable.from(
+      testScheduler.createColdObservable(marbles1, values)
+    )
+
+    const mockEmitToUnity = () => {
+      return Observable.of(values.b)
+    }
+
+    const mockAPI = {
+      api: {
+        unity: {
+          ...api.unity,
+          emitToUnity: mockEmitToUnity
+
+        }
+      }
+    }
+
+    const actual = epics.sendAvatarIDEpic(source$, mockStore({}), mockAPI)
+
+    testScheduler.expectObservable(actual).toBe(marbles2, values)
+    testScheduler.flush()
+  })
+})
+
+describe('connectToGameEpic', () => {
+  it('connects to the aimmo game', () => {
+    const gameState = {
+      players: {
+        id: 1,
+        location: {
+          x: 10,
+          y: 10
+        }
+      }
+    }
+
+    const parameters = {
+      avatar_id: 1
+    }
+
+    const marbles1 = '-a---'
+    const marbles2 = '--b--'
+    const values = {
+      a: actions.connectionParametersReceived(parameters),
+      b: actions.socketGameStateReceived(gameState)
+    }
+
+    const testScheduler = createTestScheduler()
+    const source$ = ActionsObservable.from(
+      testScheduler.createColdObservable(marbles1, values)
+    )
+
+    const mockConnectToGame = () =>
+      mapTo({type: 'socket'})
+
+    const mockStartListeners = () =>
+      pipe(
+        delay(10, testScheduler),
+        mapTo(actions.socketGameStateReceived(gameState))
+      )
+
+    const mockAPI = {
+      api: {
+        socket: {
+          connectToGame: mockConnectToGame,
+          startListeners: mockStartListeners
+        }
+      }
+    }
+
+    const actual = epics.connectToGameEpic(source$, mockStore({}), mockAPI)
+
+    testScheduler.expectObservable(actual).toBe(marbles2, values)
+    testScheduler.flush()
+  })
+})
+
+describe('getConnectionParametersEpic', () => {
+  it('gets all the connection parameters', () => {
+    const parameters = {
+      avatar_id: 1
+    }
+
+    const marbles1 = '-a--'
+    const marbles2 = '-b--'
+    const values = {
+      a: actions.socketConnectToGameRequest(),
+      b: actions.connectionParametersReceived(parameters)
+    }
+
+    const testScheduler = createTestScheduler()
+    const source$ = ActionsObservable.from(
+      testScheduler.createColdObservable(marbles1, values)
+    )
+
+    const mockGetJSON = () =>
+      Observable.of({ avatar_id: 1 })
+
+    const mockAPI = {
+      api: {
+        get: mockGetJSON
+      }
+    }
+
+    const actual = epics.getConnectionParametersEpic(source$, mockStore({
+      game: {
+        connectionParameters: {
+          game_id: 1
+        }
+      }
+    }), mockAPI)
 
     testScheduler.expectObservable(actual).toBe(marbles2, values)
     testScheduler.flush()
