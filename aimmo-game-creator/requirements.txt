@@ -1,3 +1,2 @@
-pykube
 eventlet
-kubernetes == 5.0.0
+kubernetes == 6.0.0

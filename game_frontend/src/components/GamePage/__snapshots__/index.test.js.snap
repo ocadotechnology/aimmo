@@ -2,7 +2,7 @@
 
 exports[`<GamePage /> matches snapshot 1`] = `
 <styled.div>
-  <IDE />
+  <Connect(IDE) />
   <Game />
 </styled.div>
 `;
@@ -10,7 +10,7 @@ exports[`<GamePage /> matches snapshot 1`] = `
 exports[`<GamePageLayout /> matches snapshot 1`] = `
 .c0 {
   display: grid;
-  grid-template: 80px 1fr 150px / 1fr 1fr;
+  grid-template: 80px 1fr 250px / 1fr 1fr;
   grid-template-areas: "ide-menu game-menu" "ide-editor game-view" "ide-console game-view";
   width: 100vw;
   height: 100vh;

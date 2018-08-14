@@ -27,12 +27,11 @@ const initialState = {
   },
   game: {
     connectionParameters: {
-      id: getGameIDFromURL() || 1,
-      game_url_base: '',
-      game_url_path: '',
-      game_url_port: 0,
-      game_ssl_flag: false
+      game_id: getGameIDFromURL() || 1
     }
+  },
+  consoleLog: {
+    logs: []
   }
 }
 

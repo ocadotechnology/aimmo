@@ -1,15 +1,19 @@
 import io from 'socket.io-client'
-import actions from '../features/Game/actions'
+import { actions as gameActions } from '../features/Game'
+import { actions as consoleLogActions } from '../features/ConsoleLog'
 import { map, mergeMap } from 'rxjs/operators'
 import { merge } from 'rxjs/observable/merge'
 import { fromEvent } from 'rxjs/observable/fromEvent'
 import { pipe } from 'rxjs/Rx'
 
 const connectToGame = () =>
-  map(response => {
-    const { game_url_base: gameUrlBase, game_url_path: gameUrlPath } = response
+  map(action => {
+    const { game_url_base: gameUrlBase, game_url_path: gameUrlPath, avatar_id: avatarId } = action.payload.parameters
     return io(gameUrlBase, {
-      path: gameUrlPath
+      path: gameUrlPath,
+      query: {
+        avatar_id: avatarId
+      }
     })
   })
 
@@ -21,7 +25,8 @@ const listenFor = (eventName, socket, action) =>
 const startListeners = () =>
   pipe(
     mergeMap(socket => merge(
-      listenFor('game-state', socket, actions.socketGameStateReceived)
+      listenFor('game-state', socket, gameActions.socketGameStateReceived),
+      listenFor('log', socket, consoleLogActions.socketConsoleLogReceived)
     ))
   )
 

@@ -1,21 +1,20 @@
 import styled from 'styled-components'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import AceEditor from 'react-ace'
 import 'brace/theme/idle_fingers'
 import 'brace/mode/python'
 import 'brace/snippets/python'
 import 'brace/ext/language_tools'
-import { connect } from 'react-redux'
 import { actions } from 'features/Editor'
 import PropTypes from 'prop-types'
 import { withTheme } from '@material-ui/core/styles'
 
 export const IDEEditorLayout = styled.div`
-  background-color: #2F4F4F
-  grid-area: ide-editor
+  background-color: #2F4F4F;
+  grid-area: ide-editor;
 `
-export class IDEEditor extends Component {
-  render () {
+export class IDEEditor extends PureComponent {
+  render() {
     return (
       <IDEEditorLayout>
         <AceEditor
@@ -51,13 +50,4 @@ IDEEditor.propTypes = {
   theme: PropTypes.object
 }
 
-const mapStateToProps = state => ({
-  code: state.editor.code
-})
-
-const mapDispatchToProps = {
-  getCode: actions.getCodeRequest,
-  editorChanged: actions.keyPressed
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTheme()(IDEEditor))
+export default withTheme()(IDEEditor)

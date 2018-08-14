@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<LogEntries /> renders correctly with logs 1`] = `
+<styled.ul>
+  <styled.li
+    innerRef={[Function]}
+    key="1"
+  >
+    hello
+  </styled.li>
+  <styled.li
+    innerRef={[Function]}
+    key="2"
+  >
+    bye
+  </styled.li>
+</styled.ul>
+`;
+
+exports[`<LogEntries /> renders correctly without logs 1`] = `<styled.ul />`;
+
+exports[`<LogEntry /> renders correctly 1`] = `
+.c0 {
+  list-style: none;
+  padding: 8px;
+}
+
+<li
+  className="c0"
+>
+  hello
+</li>
+`;
+
+exports[`<StyledLogEntries /> renders correctly 1`] = `
+.c0 {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+<ul
+  className="c0"
+/>
+`;

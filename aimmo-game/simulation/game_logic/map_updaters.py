@@ -52,7 +52,6 @@ class PickupUpdater(_MapUpdater):
 
 class MapExpander(_MapUpdater):
     def update(self, world_map, context):
-        LOGGER.info('Expanding map')
         start_size = world_map.num_cells
         target_num_cells = int(math.ceil(
             context.num_avatars * world_map.settings['TARGET_NUM_CELLS_PER_AVATAR']
