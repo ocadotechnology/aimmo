@@ -1,7 +1,6 @@
 import logging
 import traceback
 import sys
-import inspect
 
 from six import StringIO
 
@@ -16,24 +15,30 @@ class AvatarRunner(object):
         self.auto_update = True
         self.avatar_source_code = None
 
+    @staticmethod
+    def _get_avatar_src_code():
+        with open('avatar.py', 'r') as avatar_file:
+            return avatar_file.read()
+
     def _avatar_src_changed(self):
-        import avatar  # We import avatar here because the module isn't ready at class definition time
-        reload(avatar)
-        LOGGER.info('Reloaded avatar source: {}'.format(inspect.getsource(avatar.Avatar)))
-        return inspect.getsource(avatar.Avatar) != self.avatar_source_code
+        new_avatar_code = self._get_avatar_src_code()
+        return new_avatar_code != self.avatar_source_code
+
+    def _update_avatar_source_code(self):
+        self.avatar_source_code = self._get_avatar_src_code()
 
     def _update_avatar(self):
+        # We import avatar module here because it is not ready at class definition time
         import avatar
 
         if self.avatar is None:
-            # Load and create avatar for the first time
+            # create avatar for the first time
             self.avatar = avatar.Avatar()
-            self.avatar_source_code = inspect.getsource(avatar.Avatar)
+            self._update_avatar_source_code()
         elif self.auto_update and self._avatar_src_changed():
-            reload(avatar)
+            avatar = reload(avatar)
             self.avatar = avatar.Avatar()
-            LOGGER.info('Making new avatar')
-            self.avatar_source_code = inspect.getsource(avatar.Avatar)
+            self._update_avatar_source_code()
 
     def process_avatar_turn(self, world_map, avatar_state):
         output_log = StringIO()
