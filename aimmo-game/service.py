@@ -72,9 +72,12 @@ def remove_session_id_from_mappings(sid,
 
 
 def send_logs(session_id_to_avatar_id, logs_provider):
+    def should_send_logs(logs):
+        return logs is not None and logs != ''
+
     for sid, avatar_id in session_id_to_avatar_id.iteritems():
         avatar_logs = logs_provider.get_user_logs(avatar_id)
-        if avatar_logs is not None and avatar_logs != '':
+        if should_send_logs(avatar_logs):
             socketio_server.emit(
                 'log',
                 avatar_logs,
