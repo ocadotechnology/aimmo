@@ -1,5 +1,5 @@
-import { ajax } from 'rxjs/observable/dom/ajax'
-import { pipe } from 'rxjs/Rx'
+import { ajax } from 'rxjs/ajax'
+import { pipe } from 'rxjs'
 import api from '../api'
 
 const getCSRFToken = action$ =>

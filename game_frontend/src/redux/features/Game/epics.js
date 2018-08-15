@@ -1,7 +1,7 @@
 import actions from './actions'
 import types from './types'
 import { Observable } from 'rxjs'
-import { map, mergeMap, catchError, delay, tap } from 'rxjs/operators'
+import { map, mergeMap, catchError } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
 const getConnectionParametersEpic = (action$, store, { api: { get } }) => action$.pipe(

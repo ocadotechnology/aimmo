@@ -1,5 +1,6 @@
 /* eslint-env jest */
-import { Observable, TestScheduler } from 'rxjs'
+import { Observable } from 'rxjs'
+import { TestScheduler } from 'rxjs/testing'
 import { ActionsObservable } from 'redux-observable'
 import fetchMoviesEpic from './epics'
 import actions from './actions'

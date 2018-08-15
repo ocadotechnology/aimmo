@@ -2,9 +2,7 @@ import io from 'socket.io-client'
 import { actions as gameActions } from '../features/Game'
 import { actions as consoleLogActions } from '../features/ConsoleLog'
 import { map, mergeMap } from 'rxjs/operators'
-import { merge } from 'rxjs/observable/merge'
-import { fromEvent } from 'rxjs/observable/fromEvent'
-import { pipe } from 'rxjs/Rx'
+import { fromEvent, pipe, merge } from 'rxjs'
 
 const connectToGame = () =>
   map(action => {

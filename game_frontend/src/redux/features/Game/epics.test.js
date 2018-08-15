@@ -1,12 +1,12 @@
 /* eslint-env jest */
-import { Observable, TestScheduler } from 'rxjs'
+import { Observable, pipe } from 'rxjs'
+import { TestScheduler } from 'rxjs/testing'
 import { ActionsObservable } from 'redux-observable'
 import epics from './epics'
 import actions from './actions'
 import configureStore from 'redux-mock-store'
 import api from '../../api'
 import { delay, mapTo } from 'rxjs/operators'
-import { pipe } from 'rxjs/Rx'
 
 const middlewares = []
 const mockStore = configureStore(middlewares)

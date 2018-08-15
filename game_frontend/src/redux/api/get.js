@@ -1,4 +1,4 @@
-import { ajax } from 'rxjs/observable/dom/ajax'
+import { ajax } from 'rxjs/ajax'
 import { API_PATH } from './constants'
 
 const get = endpoint => {
