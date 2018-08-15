@@ -22,8 +22,7 @@ class TestSocketio(TestCase):
 
     @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
     @mock.patch('service.socketio_server')
-    def test_socketio_emit_called(self, mocked_socketio,
-                                  mocked_game_state):
+    def test_socketio_emit_called(self, mocked_socketio, mocked_game_state):
         service.world_update_on_connect(self.sid, self.environ,
                                         session_id_to_avatar_id=self.mocked_mappings)
 
@@ -31,8 +30,7 @@ class TestSocketio(TestCase):
 
     @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
     @mock.patch('service.socketio_server')
-    def test_matched_session_id_to_avatar_id_mapping(self, mocked_socketio,
-                                                     mocked_game_state):
+    def test_matched_session_id_to_avatar_id_mapping(self, mocked_socketio, mocked_game_state):
         self.assertEqual(len(self.mocked_mappings), 0)
 
         service.world_update_on_connect(self.sid, self.environ,
@@ -44,8 +42,7 @@ class TestSocketio(TestCase):
 
     @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
     @mock.patch('service.socketio_server')
-    def test_no_match_session_id_to_avatar_id_mapping(self, mocked_socketio,
-                                                      mocked_game_state):
+    def test_no_match_session_id_to_avatar_id_mapping(self, mocked_socketio, mocked_game_state):
         self.environ['QUERY_STRING'] = 'corrupted!@$%string123'
 
         self.assertEqual(len(self.mocked_mappings), 0)
@@ -59,24 +56,47 @@ class TestSocketio(TestCase):
 
     @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
     @mock.patch('service.socketio_server')
-    def test_send_updates_for_one_user(self, mocked_socketio,
-                                       mocked_game_state):
+    def test_send_updates_for_one_user(self, mocked_socketio, mocked_game_state):
         self.mocked_mappings[self.sid] = 1
+        self.mocked_logs_provider.set_user_logs(self.mocked_mappings[self.sid], 'Logs one')
 
         service.send_updates(session_id_to_avatar_id=self.mocked_mappings,
                              logs_provider=self.mocked_logs_provider)
 
         game_state_call = mock.call('game-state', {'foo': 'bar'}, room=self.sid)
-        log_call = mock.call('log', None, room=self.sid)
+        log_call = mock.call('log', 'Logs one', room=self.sid)
 
         mocked_socketio.emit.assert_has_calls([game_state_call, log_call], any_order=True)
 
     @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
     @mock.patch('service.socketio_server')
-    def test_send_updates_for_multiple_users(self, mocked_socketio,
-                                             mocked_game_state):
+    def test_no_logs_not_emitted(self, mocked_socketio, mocked_game_state):
+        """ If there are no logs for an avatar, no logs should be emitted. """
+        self.mocked_mappings[self.sid] = 1
+        service.send_updates(session_id_to_avatar_id=self.mocked_mappings,
+                             logs_provider=self.mocked_logs_provider)
+
+        mocked_socketio.emit.assert_called_once_with('game-state', {'foo': 'bar'}, room=self.sid)
+
+    @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
+    @mock.patch('service.socketio_server')
+    def test_empty_logs_not_emitted(self, mocked_socketio, mocked_game_state):
+        """ If the logs are an empty sting, no logs should be emitted. """
+        self.mocked_mappings[self.sid] = 1
+        self.mocked_logs_provider.set_user_logs(self.mocked_mappings[self.sid], '')
+        service.send_updates(session_id_to_avatar_id=self.mocked_mappings,
+                             logs_provider=self.mocked_logs_provider)
+
+        mocked_socketio.emit.assert_called_once_with('game-state', {'foo': 'bar'}, room=self.sid)
+
+    @mock.patch('service.get_game_state', return_value={'foo': 'bar'})
+    @mock.patch('service.socketio_server')
+    def test_send_updates_for_multiple_users(self, mocked_socketio, mocked_game_state):
         self.mocked_mappings[self.sid] = 1
         self.mocked_mappings['differentsid'] = 2
+
+        self.mocked_logs_provider.set_user_logs(self.mocked_mappings[self.sid], 'Logs one')
+        self.mocked_logs_provider.set_user_logs(self.mocked_mappings['differentsid'], 'Logs two')
 
         service.send_updates(session_id_to_avatar_id=self.mocked_mappings,
                              logs_provider=self.mocked_logs_provider)
@@ -90,11 +110,11 @@ class TestSocketio(TestCase):
                                              room='differentsid')
 
         user_one_log_call = mock.call('log',
-                                      None,
+                                      'Logs one',
                                       room=self.sid)
 
         user_two_log_call = mock.call('log',
-                                      None,
+                                      'Logs two',
                                       room='differentsid')
 
         mocked_socketio.emit.assert_has_calls([user_one_game_state_call,
