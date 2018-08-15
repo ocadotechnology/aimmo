@@ -72,13 +72,17 @@ def remove_session_id_from_mappings(sid,
 
 
 def send_logs(session_id_to_avatar_id, logs_provider):
+    def should_send_logs(logs):
+        return logs is not None and logs != ''
+
     for sid, avatar_id in session_id_to_avatar_id.iteritems():
         avatar_logs = logs_provider.get_user_logs(avatar_id)
-        socketio_server.emit(
-            'log',
-            avatar_logs,
-            room=sid,
-        )
+        if should_send_logs(avatar_logs):
+            socketio_server.emit(
+                'log',
+                avatar_logs,
+                room=sid,
+            )
 
 
 def send_game_state(session_id_to_avatar_id):
@@ -95,7 +99,6 @@ def send_updates(session_id_to_avatar_id=_default_session_id_to_avatar_id_mappin
                       logs_provider=_default_logs_provider):
     send_game_state(session_id_to_avatar_id)
     send_logs(session_id_to_avatar_id, logs_provider)
-
 
 
 def get_game_state(state_provider=_default_state_provider):
