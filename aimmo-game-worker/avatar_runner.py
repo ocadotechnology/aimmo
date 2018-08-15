@@ -13,24 +13,35 @@ LOGGER = logging.getLogger(__name__)
 class AvatarRunner(object):
     def __init__(self, avatar=None):
         self.avatar = avatar
+        self.auto_update = True
+        self.avatar_source_code = None
 
-    def process_avatar_turn(self, world_map, avatar_state):
+    def _avatar_src_changed(self):
+        import avatar  # We import avatar here because the module isn't ready at class definition time
+        reload(avatar)
+        LOGGER.info('Reloaded avatar source: {}'.format(inspect.getsource(avatar.Avatar)))
+        return inspect.getsource(avatar.Avatar) != self.avatar_source_code
+
+    def _update_avatar(self):
         import avatar
 
+        if self.avatar is None:
+            # Load and create avatar for the first time
+            self.avatar = avatar.Avatar()
+            self.avatar_source_code = inspect.getsource(avatar.Avatar)
+        elif self.auto_update and self._avatar_src_changed():
+            reload(avatar)
+            self.avatar = avatar.Avatar()
+            LOGGER.info('Making new avatar')
+            self.avatar_source_code = inspect.getsource(avatar.Avatar)
+
+    def process_avatar_turn(self, world_map, avatar_state):
         output_log = StringIO()
 
         try:
             sys.stdout = output_log
             sys.stderr = output_log
-
-            if self.avatar is None:
-                self.avatar = avatar.Avatar()
-            else:
-                reload(avatar)
-                self.avatar = avatar.Avatar()
-
-            LOGGER.info('Source code: ')
-            LOGGER.info(inspect.getsource(avatar.Avatar))
+            self._update_avatar()
 
             action = self.avatar.handle_turn(world_map, avatar_state)
             action = action.serialise()
