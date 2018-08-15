@@ -133,7 +133,6 @@ class WorkerManager(threading.Thread):
         LOGGER.info("worker_url " + "%s/turn/" % worker_url)
         avatar.worker_url = "%s/turn/" % worker_url"""
 
-
     def add_new_user(self, user):
         """
         Adds a new avatar to the game state so we keep track of it in each turn.
