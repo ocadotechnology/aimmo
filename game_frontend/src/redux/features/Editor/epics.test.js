@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { Observable } from 'rxjs'
+import { of, throwError } from 'rxjs'
 import { TestScheduler } from 'rxjs/testing'
 import { ActionsObservable } from 'redux-observable'
 import epics from './epics'
@@ -34,7 +34,7 @@ describe('getCodeEpic', () => {
       testScheduler.createColdObservable(marbles1, values)
     )
     const mockGetJSON = () => {
-      return Observable.of({ code })
+      return of({ code })
     }
 
     const mockAPI = { api: { get: mockGetJSON } }
@@ -107,7 +107,7 @@ describe('postCodeEpic', () => {
     )
 
     const error = { xhr: { response: 'oh no!' } }
-    const mockPost = (url, body) => action$ => action$.mergeMapTo(Observable.throw(error))
+    const mockPost = (url, body) => action$ => action$.mergeMapTo(throwError(error))
     const mockAPI = { api: { post: mockPost } }
 
     const state = {

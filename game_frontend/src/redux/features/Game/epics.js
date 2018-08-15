@@ -1,6 +1,6 @@
 import actions from './actions'
 import types from './types'
-import { Observable } from 'rxjs'
+import { of } from 'rxjs'
 import { map, mergeMap, catchError } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
@@ -28,7 +28,7 @@ const connectToGameEpic = (action$, store, { api: { socket, unity } }) => action
   ofType(types.CONNECTION_PARAMETERS_RECEIVED),
   socket.connectToGame(),
   socket.startListeners(),
-  catchError(error => Observable.of({
+  catchError(error => of({
     type: types.SOCKET_CONNECT_TO_GAME_FAIL,
     payload: error,
     error: true

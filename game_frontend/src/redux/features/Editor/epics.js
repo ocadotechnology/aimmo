@@ -1,6 +1,6 @@
 import actions from './actions'
 import types from './types'
-import { Observable, Scheduler } from 'rxjs'
+import { Scheduler, of } from 'rxjs'
 import { map, mergeMap, catchError, debounceTime } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
@@ -12,7 +12,7 @@ const getCodeEpic = (action$, store, { api }) =>
     mergeMap(action =>
       api.get(`code/${store.getState().game.connectionParameters.game_id}/`).pipe(
         map(response => actions.getCodeReceived(response.code)),
-        catchError(error => Observable.of({
+        catchError(error => of({
           type: types.GET_CODE_FAILURE,
           payload: error.xhr.response,
           error: true
@@ -30,7 +30,7 @@ const postCodeEpic = (action$, store, { api }) =>
         () => ({ code: store.getState().editor.code })
       ),
       map(response => actions.postCodeReceived()),
-      catchError(error => Observable.of({
+      catchError(error => of({
         type: types.POST_CODE_FAILURE,
         payload: error.xhr.response,
         error: true

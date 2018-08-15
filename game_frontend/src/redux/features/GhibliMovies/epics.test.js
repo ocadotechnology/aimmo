@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { Observable } from 'rxjs'
+import { of } from 'rxjs'
 import { TestScheduler } from 'rxjs/testing'
 import { ActionsObservable } from 'redux-observable'
 import fetchMoviesEpic from './epics'
@@ -32,7 +32,7 @@ describe('fetchMoviesEpic', () => {
       testScheduler.createColdObservable(marbles1, values)
     )
     const mockGetJSON = () => {
-      return Observable.of(movies)
+      return of(movies)
     }
 
     const actual = fetchMoviesEpic(source, null, { getJSON: mockGetJSON })

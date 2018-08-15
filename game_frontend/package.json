@@ -41,7 +41,7 @@
     "react-unity-webgl": "^6.5.0",
     "redux": "^3.7.2",
     "redux-devtools-extension": "^2.13.2",
-    "redux-observable": "^0.18.0",
+    "redux-observable": "^1.0.0",
     "rxjs": "^6.2.2",
     "shelljs": "^0.8.1",
     "socket.io-client": "^2.1.1",

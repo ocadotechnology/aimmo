@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { Observable, pipe } from 'rxjs'
+import { pipe, of } from 'rxjs'
 import { TestScheduler } from 'rxjs/testing'
 import { ActionsObservable } from 'redux-observable'
 import epics from './epics'
@@ -97,7 +97,7 @@ describe('ReceiveGameUpdate', () => {
     )
 
     const mockEmitToUnity = () => {
-      return Observable.of(values.b)
+      return of(values.b)
     }
 
     const mockAPI = {
@@ -134,7 +134,7 @@ describe('sendAvatarIDEpic', () => {
     )
 
     const mockEmitToUnity = () => {
-      return Observable.of(values.b)
+      return of(values.b)
     }
 
     const mockAPI = {
@@ -226,7 +226,7 @@ describe('getConnectionParametersEpic', () => {
     )
 
     const mockGetJSON = () =>
-      Observable.of({ avatar_id: 1 })
+      of({ avatar_id: 1 })
 
     const mockAPI = {
       api: {
