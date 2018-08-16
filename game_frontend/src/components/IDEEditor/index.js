@@ -26,7 +26,6 @@ const MarginedPlayIcon = styled(PlayIcon)`
 `
 export class IDEEditor extends PureComponent {
   render() {
-    console.log(this.props.postCode)
     return (
       <IDEEditorLayout>
         <AceEditor

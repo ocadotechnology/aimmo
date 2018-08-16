@@ -47,12 +47,21 @@ exports[`<IDEEditor /> matches snapshot 1`] = `
     width="100%"
     wrapEnabled={false}
   />
+  <Styled(WithStyles(Button))
+    id="post-code-button"
+    onClick={[MockFunction]}
+    variant="extendedFab"
+  >
+    <Styled(PlayIcon) />
+    Post Code
+  </Styled(WithStyles(Button))>
 </styled.div>
 `;
 
 exports[`<IDEEditorLayout /> renders correctly 1`] = `
 .c0 {
   background-color: #2F4F4F;
+  position: relative;
   grid-area: ide-editor;
 }
 

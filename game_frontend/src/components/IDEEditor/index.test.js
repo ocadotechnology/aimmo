@@ -15,6 +15,18 @@ describe('<IDEEditor />', () => {
 
     expect(component).toMatchSnapshot()
   })
+
+  it('calls the postCode function in props when Post code button is pressed', () => {
+    const postCode = jest.fn()
+    const props = {
+      postCode
+    }
+
+    const component = createShallowWithTheme(<IDEEditor {...props} />)
+
+    component.find('#post-code-button').simulate('click')
+    expect(postCode).toBeCalled()
+  })
 })
 
 describe('<IDEEditorLayout />', () => {
