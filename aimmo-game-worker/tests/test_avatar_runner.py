@@ -1,6 +1,11 @@
 from unittest import TestCase
 from avatar_runner import AvatarRunner
 
+NORTH = {'x': 0, 'y': 1}
+SOUTH = {'x': 0, 'y': -1}
+EAST = {'x': 1, 'y': 0}
+WEST = {'x': -1, 'y': 0}
+
 
 class TestAvatarRunner(TestCase):
     def test_runner_does_not_crash_on_code_errors(self):
@@ -20,8 +25,7 @@ class TestAvatarRunner(TestCase):
                             
                             return MoveAction(EAST)
                   '''
-        avatar2 = '''
-                    class Avatar(object):
+        avatar2 = '''class Avatar(object):
                         def handle_turn(self, world_map, avatar_state):
                             from simulation.action import MoveAction
                             from simulation.direction import WEST
@@ -30,11 +34,12 @@ class TestAvatarRunner(TestCase):
                   '''
 
         runner = AvatarRunner()
-        action, _ = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar1)
-        self.assertEqual(action, {'action_type': 'move', 'options': {'direction': 'EAST'}})
+        action, logs = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar1)
+        self.assertEqual(action, {'action_type': 'move', 'options': {'direction': EAST}})
 
-        action, _ = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar2)
-        self.assertEqual(action, {'action_type': 'move', 'options': {'direction': 'WEST'}})
+        action, logs = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar2)
+
+        self.assertEqual(action, {'action_type': 'move', 'options': {'direction': WEST}})
 
     def test_runner_can_maintain_state(self):
         """ This test ensures that if the code is the same, we do not recreate the avatar object in the runner.
@@ -45,7 +50,7 @@ class TestAvatarRunner(TestCase):
                             from simulation.action import MoveAction
                             from simulation.direction import NORTH, SOUTH, EAST, WEST
                             
-                            moves = [MoveAction(NORTH), MoveAction(EAST), MoveAction(SOUTH), MoveAction(WEST)]
+                            self.moves = [MoveAction(NORTH), MoveAction(EAST), MoveAction(SOUTH), MoveAction(WEST)]
                             self.x = 0
                             
                         def handle_turn(self, world_map, avatar_state):
@@ -55,7 +60,7 @@ class TestAvatarRunner(TestCase):
                  '''
         runner = AvatarRunner()
 
-        directions = ['NORTH', 'EAST', 'SOUTH', 'WEST']
+        directions = [NORTH, EAST, SOUTH, WEST]
         for direction in directions:
-            action, _ = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+            action, logs = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
             self.assertEqual(action, {'action_type': 'move', 'options': {'direction': direction}})
