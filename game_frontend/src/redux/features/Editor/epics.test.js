@@ -6,10 +6,6 @@ import { ActionsObservable, StateObservable } from 'redux-observable'
 import epics from './epics'
 import actions from './actions'
 import types from './types'
-import configureStore from 'redux-mock-store'
-
-const middlewares = []
-const mockStore = configureStore(middlewares)
 
 const deepEquals = (actual, expected) =>
   expect(actual).toEqual(expected)
@@ -40,10 +36,12 @@ describe('getCodeEpic', () => {
 
     const mockAPI = { api: { get: mockGetJSON } }
 
-    const initialState = { game:
-        { connectionParameters:
-          { id: 1 }
+    const initialState = {
+      game: {
+        connectionParameters: {
+          id: 1
         }
+      }
     }
     const state$ = new StateObservable(new Subject(), initialState)
 

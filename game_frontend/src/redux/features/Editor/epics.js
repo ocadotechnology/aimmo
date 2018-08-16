@@ -6,11 +6,11 @@ import { ofType } from 'redux-observable'
 
 const backgroundScheduler = Scheduler.async
 
-const getCodeEpic = (action$, store$, { api }) =>
+const getCodeEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.GET_CODE_REQUEST),
     mergeMap(action =>
-      api.get(`code/${store$.value.game.connectionParameters.game_id}/`).pipe(
+      api.get(`code/${state$.value.game.connectionParameters.game_id}/`).pipe(
         map(response => actions.getCodeReceived(response.code)),
         catchError(error => of({
           type: types.GET_CODE_FAILURE,
@@ -21,13 +21,13 @@ const getCodeEpic = (action$, store$, { api }) =>
     )
   )
 
-const postCodeEpic = (action$, store$, { api }) =>
+const postCodeEpic = (action$, state$, { api }) =>
   action$
     .pipe(
       ofType(types.POST_CODE_REQUEST),
       api.post(
-        `/aimmo/api/code/${store$.value.game.connectionParameters.game_id}/`,
-        () => ({ code: store$.value.editor.code })
+        `/aimmo/api/code/${state$.value.game.connectionParameters.game_id}/`,
+        () => ({ code: state$.value.editor.code })
       ),
       map(response => actions.postCodeReceived()),
       catchError(error => of({
@@ -37,7 +37,7 @@ const postCodeEpic = (action$, store$, { api }) =>
       }))
     )
 
-const changeCodeEpic = (action$, store$, dependencies, scheduler = backgroundScheduler) =>
+const changeCodeEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
   action$.pipe(
     ofType(types.KEY_PRESSED),
     debounceTime(300, scheduler),

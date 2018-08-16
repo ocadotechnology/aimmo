@@ -1,16 +1,12 @@
 /* eslint-env jest */
-import { pipe, of, BehaviorSubject, Subject } from 'rxjs'
+import { pipe, of, Subject } from 'rxjs'
 import { TestScheduler } from 'rxjs/testing'
 import { ActionsObservable, StateObservable } from 'redux-observable'
 import epics from './epics'
 import actions from './actions'
-import configureStore from 'redux-mock-store'
 import api from '../../api'
 import { delay, mapTo } from 'rxjs/operators'
 
-// const middlewares = []
-// const mockStore = configureStore(middlewares)
-// const mockState = BehaviorSubject({})
 const deepEquals = (actual, expected) =>
   expect(actual).toEqual(expected)
 

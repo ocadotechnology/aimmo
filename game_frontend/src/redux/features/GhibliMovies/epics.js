@@ -2,7 +2,7 @@ import actions from './actions'
 import types from './types'
 import { ofType } from 'redux-observable'
 import { map, mergeMap } from 'rxjs/operators'
-const fetchMoviesEpic = (action$, store$, { getJSON }) =>
+const fetchMoviesEpic = (action$, state$, { getJSON }) =>
   action$.pipe(
     ofType(types.FETCH_MOVIES),
     mergeMap(action =>
