@@ -11,9 +11,9 @@ LOGGER = logging.getLogger(__name__)
 
 
 class AvatarRunner(object):
-    def __init__(self, avatar=None):
+    def __init__(self, avatar=None, auto_update=True):
         self.avatar = avatar
-        self.auto_update = True
+        self.auto_update = auto_update
         self.avatar_source_code = None
 
     def _avatar_src_changed(self, new_avatar_code):
