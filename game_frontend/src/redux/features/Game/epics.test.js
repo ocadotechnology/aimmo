@@ -1,16 +1,16 @@
 /* eslint-env jest */
-import { pipe, of } from 'rxjs'
+import { pipe, of, BehaviorSubject, Subject } from 'rxjs'
 import { TestScheduler } from 'rxjs/testing'
-import { ActionsObservable } from 'redux-observable'
+import { ActionsObservable, StateObservable } from 'redux-observable'
 import epics from './epics'
 import actions from './actions'
 import configureStore from 'redux-mock-store'
 import api from '../../api'
 import { delay, mapTo } from 'rxjs/operators'
 
-const middlewares = []
-const mockStore = configureStore(middlewares)
-
+// const middlewares = []
+// const mockStore = configureStore(middlewares)
+// const mockState = BehaviorSubject({})
 const deepEquals = (actual, expected) =>
   expect(actual).toEqual(expected)
 
@@ -109,7 +109,8 @@ describe('ReceiveGameUpdate', () => {
       }
     }
 
-    const actual = epics.sendGameStateEpic(source$, mockStore({}), mockAPI)
+    const state$ = new StateObservable(new Subject(), {})
+    const actual = epics.sendGameStateEpic(source$, state$, mockAPI)
 
     testScheduler.expectObservable(actual).toBe(marbles2, values)
     testScheduler.flush()
@@ -147,7 +148,8 @@ describe('sendAvatarIDEpic', () => {
       }
     }
 
-    const actual = epics.sendAvatarIDEpic(source$, mockStore({}), mockAPI)
+    const state$ = new StateObservable(new Subject(), {})
+    const actual = epics.sendAvatarIDEpic(source$, state$, mockAPI)
 
     testScheduler.expectObservable(actual).toBe(marbles2, values)
     testScheduler.flush()
@@ -200,7 +202,8 @@ describe('connectToGameEpic', () => {
       }
     }
 
-    const actual = epics.connectToGameEpic(source$, mockStore({}), mockAPI)
+    const state$ = new StateObservable(new Subject(), {})
+    const actual = epics.connectToGameEpic(source$, state$, mockAPI)
 
     testScheduler.expectObservable(actual).toBe(marbles2, values)
     testScheduler.flush()
@@ -233,14 +236,15 @@ describe('getConnectionParametersEpic', () => {
         get: mockGetJSON
       }
     }
-
-    const actual = epics.getConnectionParametersEpic(source$, mockStore({
+    const initialState = {
       game: {
         connectionParameters: {
           game_id: 1
         }
       }
-    }), mockAPI)
+    }
+    const state$ = new StateObservable(new Subject(), initialState)
+    const actual = epics.getConnectionParametersEpic(source$, state$, mockAPI)
 
     testScheduler.expectObservable(actual).toBe(marbles2, values)
     testScheduler.flush()
