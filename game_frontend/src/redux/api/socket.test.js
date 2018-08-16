@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { of } from 'rxjs/observable/of'
+import { of } from 'rxjs'
 import actions from '../features/Game/actions'
 import { tap } from 'rxjs/operators'
 import socket from './socket'
