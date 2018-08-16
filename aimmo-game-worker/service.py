@@ -47,5 +47,4 @@ def run(host, port, data_url):
 
 
 if __name__ == '__main__':
-    LOGGER.error('The data url is: ' + sys.argv[3])
     run(host=sys.argv[1], port=int(sys.argv[2]), data_url=sys.argv[3])
