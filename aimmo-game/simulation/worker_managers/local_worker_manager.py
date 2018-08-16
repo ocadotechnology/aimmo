@@ -1,11 +1,8 @@
 import atexit
 import itertools
-import json
 import logging
 import os
 import subprocess
-import tempfile
-import requests
 
 from .worker_manager import WorkerManager
 

@@ -96,42 +96,11 @@ class WorkerManager(threading.Thread):
 
         raise NotImplementedError
 
-    def recreate_worker(self, user):
+    def update_code(self, user):
         """
-        Helper function to kill the worker, set new code in the WorkerManagerData
-        and spawn a new worker.
-        :param user: Dict containing the user code, id etc.
-        :return: A string representing a full URL to the turn API of the worker.
+        Updates the code for a user.
         """
-        user_id = user['id']
-
-        LOGGER.info("Removing worker for user %s" % user_id)
-        self.remove_worker(user_id)
-
         self._data.set_code(user)
-
-        # Spawn worker
-        LOGGER.info("Spawning worker for user %s" % user_id)
-        worker_url = self.create_worker(user_id)
-
-        return worker_url
-
-    def recreate_user(self, user):
-        """
-        Removes and creates new worker pods. Sets the new user code in between
-        to the user_codes of _WorkerManagerData.
-        :param user: Dict containing the user code, id etc.
-        """
-        user_id = user['id']
-
-        self._data.set_code(user)
-
-        """worker_url = self.recreate_worker(user)
-
-        # Update the worker_url of the avatar.
-        avatar = self._data.get_avatar_from_user_id(user_id)
-        LOGGER.info("worker_url " + "%s/turn/" % worker_url)
-        avatar.worker_url = "%s/turn/" % worker_url"""
 
     def add_new_user(self, user):
         """
@@ -139,8 +108,8 @@ class WorkerManager(threading.Thread):
         :param user: Dict containing the user code, id etc.
         """
         user_id = user['id']
-
-        worker_url = self.recreate_worker(user)
+        self._data.set_code(user)
+        worker_url = self.create_worker(user_id)
 
         # Add avatar into game
         self._data.add_avatar(user, worker_url)
@@ -158,22 +127,22 @@ class WorkerManager(threading.Thread):
         else:
             game = game_data['main']
 
-            # Remove users with different code
-            users_to_recreate = []
+            # Update users with different code
+            users_to_update = []
             new_users_to_add = []
 
             for user in game['users']:
                 if self._data.is_new_avatar(user):
                     new_users_to_add.append(user)
                 if self._data.is_new_code_different_than_existing(user):
-                    users_to_recreate.append(user)
+                    users_to_update.append(user)
             LOGGER.debug("Need to add users: %s" % [x['id'] for x in new_users_to_add])
 
             # Add new worker pods
             self._parallel_map(self.add_new_user, new_users_to_add)
 
-            # Recreate worker pods
-            self._parallel_map(self.recreate_user, users_to_recreate)
+            # Update code
+            self._parallel_map(self.update_code, users_to_update)
 
             # Delete extra users
             known_avatars = set(user['id'] for user in game['users'])
