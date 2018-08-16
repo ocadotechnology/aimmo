@@ -13,14 +13,7 @@ export default class IDEMenu extends Component {
   render () {
     return (
       <IDEMenuLayout>
-        <button
-          id='post-code-button'
-          onClick={this.props.postCode} >Post Code</button>
       </IDEMenuLayout>
     )
   }
-}
-
-IDEMenu.propTypes = {
-  postCode: PropTypes.func
 }

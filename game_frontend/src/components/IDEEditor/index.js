@@ -8,13 +8,25 @@ import 'brace/ext/language_tools'
 import { actions } from 'features/Editor'
 import PropTypes from 'prop-types'
 import { withTheme } from '@material-ui/core/styles'
-
+import Button from '@material-ui/core/Button'
+import PlayIcon from '../icons/Play.js'
 export const IDEEditorLayout = styled.div`
   background-color: #2F4F4F;
+  position: relative;
   grid-area: ide-editor;
+`
+const FAB = styled(Button)`
+  position: absolute !important;
+  right: 20px;
+  bottom: 15px;
+  z-index: 5;
+`
+const MarginedPlayIcon = styled(PlayIcon)`
+  margin-right: ${props => props.theme.spacing.unit}px;
 `
 export class IDEEditor extends PureComponent {
   render() {
+    console.log(this.props.postCode)
     return (
       <IDEEditorLayout>
         <AceEditor
@@ -38,6 +50,12 @@ export class IDEEditor extends PureComponent {
             tabSize: 2,
             fontFamily: this.props.theme.additionalVariables.typography.code.fontFamily
           }} />
+        <FAB
+            variant='extendedFab'
+            id='post-code-button'
+            onClick={this.props.postCode}>
+            <MarginedPlayIcon />Post Code
+        </FAB>
       </IDEEditorLayout>
     )
   }
@@ -47,7 +65,8 @@ IDEEditor.propTypes = {
   code: PropTypes.string,
   getCode: PropTypes.func,
   editorChanged: PropTypes.func,
-  theme: PropTypes.object
+  theme: PropTypes.object,
+  postCode: PropTypes.func
 }
 
 export default withTheme()(IDEEditor)
