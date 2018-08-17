@@ -108,7 +108,7 @@ class TestSocketio(TestCase):
         self.assertTrue(self.sid in self.mocked_mappings)
         self.assertEqual(self.mocked_mappings[self.sid], 1)
 
-        self.game_api.make_disconnect_fun()(sid=self.sid)
+        self.game_api.make_remove_session_id_from_mappings()(sid=self.sid)
 
         self.assertFalse(self.sid in self.mocked_mappings)
         self.assertEqual(len(self.mocked_mappings), 0)

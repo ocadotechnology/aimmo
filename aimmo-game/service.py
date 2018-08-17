@@ -62,7 +62,7 @@ class GameAPI(object):
 
         return world_update_on_connect
 
-    def make_disconnect_fun(self):
+    def make_remove_session_id_from_mappings(self):
         """This method will get registered for disconnect on socketio_server"""
         def remove_session_id_from_mappings(sid):
             LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
@@ -132,7 +132,7 @@ def run_game(port):
 
     flask_app.add_url_rule('/player/<player_id>', 'player_data', game_api.make_player_data_view())
     socketio_server.on('connect', game_api.make_world_update_on_connect())
-    socketio_server.on('disconnect', game_api.make_disconnect_fun())
+    socketio_server.on('disconnect', game_api.make_remove_session_id_from_mappings())
 
     worker_manager.start()
     turn_manager.start()
