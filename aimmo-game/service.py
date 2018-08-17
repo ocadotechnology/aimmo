@@ -12,8 +12,7 @@ from flask_cors import CORS
 
 from simulation import map_generator
 from simulation.turn_manager import ConcurrentTurnManager
-from simulation.logs_provider import LogsProvider
-from simulation.game_state_provider import GameStateProvider
+from simulation.logs import Logs
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.worker_managers import WORKER_MANAGERS
 from simulation.pickups import pickups_update
@@ -36,10 +35,10 @@ def healthcheck(game_id):
 
 
 class GameAPI(object):
-    def __init__(self, worker_manager, game_state_provider, logs_provider):
+    def __init__(self, worker_manager, game_state, logs):
         self.worker_manager = worker_manager
-        self._logs_provider = logs_provider
-        self.state_provider = game_state_provider
+        self.logs = logs
+        self.game_state = game_state
         self._sid_to_avatar_id = {}
 
     def make_player_data_view(self):
@@ -78,7 +77,7 @@ class GameAPI(object):
             return logs is not None and logs != ''
 
         for sid, avatar_id in self._sid_to_avatar_id.iteritems():
-            avatar_logs = self._logs_provider.get_user_logs(avatar_id)
+            avatar_logs = self.logs.get_user_logs(avatar_id)
             if should_send_logs(avatar_logs):
                 socketio_server.emit('log', avatar_logs, room=sid)
 
@@ -108,22 +107,19 @@ class GameAPI(object):
         return remove_session_id_from_mappings
 
     def _get_game_state(self):
-        with self.state_provider as game_state:
-            world_map = game_state.world_map
-
-            return {
-                'era': "less_flat",
-                'southWestCorner': world_map.get_serialised_south_west_corner(),
-                'northEastCorner': world_map.get_serialised_north_east_corner(),
-                'players': game_state.avatar_manager.players_update()['players'],
-                'pickups': pickups_update(world_map)['pickups'],
-                'scoreLocations': (game_state.world_map.score_location_update()['scoreLocations']),
-                'obstacles': world_map.obstacles_update()['obstacles']
-            }
+        world_map = self.game_state.world_map
+        return {
+            'era': "less_flat",
+            'southWestCorner': world_map.get_serialised_south_west_corner(),
+            'northEastCorner': world_map.get_serialised_north_east_corner(),
+            'players': self.game_state.avatar_manager.players_update()['players'],
+            'pickups': pickups_update(world_map)['pickups'],
+            'scoreLocations': (self.game_state.world_map.score_location_update()['scoreLocations']),
+            'obstacles': world_map.obstacles_update()['obstacles']
+        }
 
 
 def run_game(port):
-
     print("Running game...")
     settings = pickle.loads(os.environ['settings'])
     api_url = os.environ.get('GAME_API_URL', 'http://localhost:8000/aimmo/api/games/')
@@ -132,21 +128,18 @@ def run_game(port):
 
     communicator = Communicator(api_url=api_url, completion_url=api_url + 'complete/')
     game_state = generator.get_game_state(player_manager)
-    state_provider = GameStateProvider()
-    state_provider.set_world(game_state)
 
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
-    worker_manager = WorkerManagerClass(game_state=game_state,
-                                        communicator=communicator,
-                                        port=port)
-    logs_provider = LogsProvider()
+    worker_manager = WorkerManagerClass(game_state=game_state, communicator=communicator, port=port)
+    
+    logs = Logs()
 
-    game_api = GameAPI(worker_manager, state_provider, logs_provider)
+    game_api = GameAPI(worker_manager, game_state, logs)
 
     turn_manager = ConcurrentTurnManager(end_turn_callback=game_api.send_updates,
                                          communicator=communicator,
-                                         state_provider=state_provider,
-                                         logs_provider=logs_provider)
+                                         game_state=game_state,
+                                         logs_provider=logs)
 
     flask_app.add_url_rule('/player/<player_id>', 'player_data', game_api.make_player_data_view())
     socketio_server.on('connect', game_api.make_world_update_on_connect())

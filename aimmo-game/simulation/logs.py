@@ -3,7 +3,7 @@ import logging
 LOGGER = logging.getLogger(__name__)
 
 
-class LogsProvider(object):
+class Logs(object):
     """
     A mapping from avatar.player_id to their most recent logs. Is thread safe.
     """
