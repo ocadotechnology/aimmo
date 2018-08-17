@@ -19,7 +19,10 @@ def process_turn():
     data = flask.request.get_json()
 
     world_map = WorldMap(**data['world_map'])
-    avatar_state = AvatarState(**data['avatar_state'])
+
+    avatar_state = AvatarState(location=data['avatar_state']['location'],
+                               score=data['avatar_state']['score'],
+                               health=data['avatar_state']['health'])
 
     action, log = avatar_runner.process_avatar_turn(world_map, avatar_state)
 

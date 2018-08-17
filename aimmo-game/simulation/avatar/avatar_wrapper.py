@@ -118,15 +118,11 @@ class AvatarWrapper(object):
 
     def serialise(self):
         return {
-            'events': [
-                #    {
-                #        'event_name': event.__class__.__name__.lower(),
-                #        'event_options': event.__dict__,
-                #    } for event in self.events
-            ],
             'health': self.health,
             'location': self.location.serialise(),
             'score': self.score,
+            'id': self.player_id,
+            'orientation': self.orientation
         }
 
     def __repr__(self):

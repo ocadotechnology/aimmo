@@ -128,7 +128,7 @@ def run_game(port):
     turn_manager = ConcurrentTurnManager(end_turn_callback=game_api.send_updates,
                                          communicator=communicator,
                                          game_state=game_state,
-                                         logs_provider=logs)
+                                         logs=logs)
 
     flask_app.add_url_rule('/player/<player_id>', 'player_data', game_api.make_player_data_view())
     socketio_server.on('connect', game_api.make_world_update_on_connect())
