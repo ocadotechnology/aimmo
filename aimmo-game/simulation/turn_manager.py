@@ -15,12 +15,11 @@ class TurnManager(Thread):
     """
     daemon = True
 
-    def __init__(self, game_state, end_turn_callback, communicator,
+    def __init__(self, end_turn_callback, communicator,
                  state_provider, logs_provider):
 
         self.state_provider = state_provider
         self.logs_provider = logs_provider
-        self.state_provider.set_world(game_state)
         self.end_turn_callback = end_turn_callback
         self.communicator = communicator
         super(TurnManager, self).__init__()

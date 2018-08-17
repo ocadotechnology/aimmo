@@ -6,7 +6,7 @@ import os
 import sys
 import eventlet
 import flask
-import socketio as SocketIO
+import socketio
 from urlparse import parse_qs
 from flask_cors import CORS
 
@@ -22,146 +22,107 @@ from simulation.communicator import Communicator
 eventlet.sleep()
 eventlet.monkey_patch()
 
-app = flask.Flask(__name__)
-CORS(app, supports_credentials=True)
-socketio_server = SocketIO.Server()
+flask_app = flask.Flask(__name__)
+CORS(flask_app, supports_credentials=True)
+socketio_server = socketio.Server()
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-_default_worker_manager = None
-_default_state_provider = GameStateProvider()
-_default_logs_provider = LogsProvider()
-_default_session_id_to_avatar_id_mappings = {}
 
-
-@app.route('/game-<game_id>')
+@flask_app.route('/game-<game_id>')
 def healthcheck(game_id):
     return 'HEALTHY'
 
 
-@app.route('/player/<player_id>')
-def player_data(player_id):
-    player_id = int(player_id)
-    return flask.jsonify({
-        'code': _default_worker_manager.get_code(player_id),
-        'options': {},
-        'state': None,
-    })
+class GameAPI(object):
+    def __init__(self, worker_manager, game_state_provider, logs_provider):
+        self.worker_manager = worker_manager
+        self._logs_provider = logs_provider
+        self.state_provider = game_state_provider
+        self._sid_to_avatar_id = {}
 
+    def make_player_data_view(self):
+        # TODO: Look into partial application of self.
+        def player_data(player_id):
+            player_id = int(player_id)
+            return flask.jsonify({
+                'code': self.worker_manager.get_code(player_id),
+                'options': {},
+                'state': None,
+            })
+        return player_data
 
-@socketio_server.on('connect')
-def world_update_on_connect(sid, environ,
-                            session_id_to_avatar_id=_default_session_id_to_avatar_id_mappings):
-    session_id_to_avatar_id[sid] = None
+    def _find_avatar_id_from_query(self, session_id, query_string):
+        """
+        :param session_id: Int with the session id
+        :param query_string: String from the environment settings,
+        usually located as the key 'QUERY_STRING'.
+        """
+        parsed_qs = parse_qs(query_string)
 
-    query = environ['QUERY_STRING']
-    _find_avatar_id_from_query(sid, query,
-                               session_id_to_avatar_id=session_id_to_avatar_id)
-    send_updates()
+        try:
+            avatar_id = int(parsed_qs['avatar_id'][0])
+            self._sid_to_avatar_id[session_id] = avatar_id
+        except ValueError:
+            LOGGER.error("Avatar ID could not be casted into an integer")
+        except KeyError:
+            LOGGER.error("No avatar ID found. User may not be authorised ")
 
+    def send_updates(self):
+        self._send_game_state()
+        self._send_logs()
 
-@socketio_server.on('disconnect')
-def remove_session_id_from_mappings(sid,
-                                    session_id_to_avatar_id=_default_session_id_to_avatar_id_mappings):
-    LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
-    try:
-        del session_id_to_avatar_id[sid]
-    except KeyError:
-        pass
+    def _send_logs(self):
+        def should_send_logs(logs):
+            return logs is not None and logs != ''
 
+        for sid, avatar_id in self._sid_to_avatar_id.iteritems():
+            avatar_logs = self._logs_provider.get_user_logs(avatar_id)
+            if should_send_logs(avatar_logs):
+                socketio_server.emit('log', avatar_logs, room=sid)
 
-def send_logs(session_id_to_avatar_id, logs_provider):
-    def should_send_logs(logs):
-        return logs is not None and logs != ''
+    def _send_game_state(self):
+        game_state = self._get_game_state()
+        for sid, avatar_id in self._sid_to_avatar_id.iteritems():
+            socketio_server.emit('game-state', game_state, room=sid)
 
-    for sid, avatar_id in session_id_to_avatar_id.iteritems():
-        avatar_logs = logs_provider.get_user_logs(avatar_id)
-        if should_send_logs(avatar_logs):
-            socketio_server.emit(
-                'log',
-                avatar_logs,
-                room=sid,
-            )
+    def make_world_update_on_connect(self):
+        def world_update_on_connect(sid, environ):
+            self._sid_to_avatar_id[sid] = None
 
+            query = environ['QUERY_STRING']
+            self._find_avatar_id_from_query(sid, query)
+            self.send_updates()
 
-def send_game_state(session_id_to_avatar_id):
-    game_state = get_game_state()
-    for sid, avatar_id in session_id_to_avatar_id.iteritems():
-        socketio_server.emit(
-            'game-state',
-            game_state,
-            room=sid,
-        )
+        return world_update_on_connect
 
+    def make_disconnect_fun(self):
+        def remove_session_id_from_mappings(sid):
+            LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
+            try:
+                del self._sid_to_avatar_id[sid]
+            except KeyError:
+                pass
 
-def send_updates(session_id_to_avatar_id=_default_session_id_to_avatar_id_mappings,
-                      logs_provider=_default_logs_provider):
-    send_game_state(session_id_to_avatar_id)
-    send_logs(session_id_to_avatar_id, logs_provider)
+        return remove_session_id_from_mappings
 
+    def _get_game_state(self):
+        with self.state_provider as game_state:
+            world_map = game_state.world_map
 
-def get_game_state(state_provider=_default_state_provider):
-    with state_provider as game_state:
-        world_map = game_state.world_map
-
-        return {
-            'era': "less_flat",
-            'southWestCorner': world_map.get_serialised_south_west_corner(),
-            'northEastCorner': world_map.get_serialised_north_east_corner(),
-            'players': game_state.avatar_manager.players_update()['players'],
-            'pickups': pickups_update(world_map)['pickups'],
-            'scoreLocations': (game_state.world_map.
-                score_location_update()['scoreLocations']),
-            'obstacles': world_map.obstacles_update()['obstacles']
-        }
-
-
-def to_cell_type(cell):
-    if not cell.habitable:
-        return 1
-    if cell.generates_score:
-        return 2
-    return 0
-
-
-def player_dict(avatar):
-    return {
-        'id': avatar.player_id,
-        'x': avatar.location.x,
-        'y': avatar.location.y,
-        'health': avatar.health,
-        'score': avatar.score,
-        'rotation': 0,
-        "colours": {
-            "bodyStroke": "#0ff",
-            "bodyFill": "#%06x" % (avatar.player_id * 4999),
-            "eyeStroke": "#aff",
-            "eyeFill": "#eff",
-        }
-    }
-
-
-def _find_avatar_id_from_query(session_id, query_string,
-                               session_id_to_avatar_id):
-    """
-    :param session_id: Int with the session id
-    :param query_string: String from the environment settings,
-    usually located as the key 'QUERY_STRING'.
-    """
-    parsed_qs = parse_qs(query_string)
-
-    try:
-        avatar_id = int(parsed_qs['avatar_id'][0])
-        session_id_to_avatar_id[session_id] = avatar_id
-    except ValueError:
-        LOGGER.error("Avatar ID could not be casted into an integer")
-    except KeyError:
-        LOGGER.error("No avatar ID found. User may not be authorised ")
+            return {
+                'era': "less_flat",
+                'southWestCorner': world_map.get_serialised_south_west_corner(),
+                'northEastCorner': world_map.get_serialised_north_east_corner(),
+                'players': game_state.avatar_manager.players_update()['players'],
+                'pickups': pickups_update(world_map)['pickups'],
+                'scoreLocations': (game_state.world_map.score_location_update()['scoreLocations']),
+                'obstacles': world_map.obstacles_update()['obstacles']
+            }
 
 
 def run_game(port):
-    global _default_worker_manager, _default_state_provider, _default_logs_provider
 
     print("Running game...")
     settings = pickle.loads(os.environ['settings'])
@@ -169,25 +130,36 @@ def run_game(port):
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
     player_manager = AvatarManager()
 
-    communicator = Communicator(api_url=api_url, completion_url=api_url+'complete/')
+    communicator = Communicator(api_url=api_url, completion_url=api_url + 'complete/')
     game_state = generator.get_game_state(player_manager)
-    turn_manager = ConcurrentTurnManager(game_state=game_state,
-                                         end_turn_callback=send_updates,
-                                         communicator=communicator,
-                                         state_provider=_default_state_provider,
-                                         logs_provider=_default_logs_provider)
+    state_provider = GameStateProvider()
+    state_provider.set_world(game_state)
+
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
-    _default_worker_manager = WorkerManagerClass(game_state=game_state,
-                                                 communicator=communicator,
-                                                 port=port)
-    _default_worker_manager.start()
+    worker_manager = WorkerManagerClass(game_state=game_state,
+                                        communicator=communicator,
+                                        port=port)
+    logs_provider = LogsProvider()
+
+    game_api = GameAPI(worker_manager, state_provider, logs_provider)
+
+    turn_manager = ConcurrentTurnManager(end_turn_callback=game_api.send_updates,
+                                         communicator=communicator,
+                                         state_provider=state_provider,
+                                         logs_provider=logs_provider)
+
+    flask_app.add_url_rule('/player/<player_id>', 'player_data', game_api.make_player_data_view())
+    socketio_server.on('connect', game_api.make_world_update_on_connect())
+    socketio_server.on('disconnect', game_api.make_disconnect_fun())
+
+    worker_manager.start()
     turn_manager.start()
 
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     host, port = sys.argv[1], int(sys.argv[2])
-    app = SocketIO.Middleware(socketio_server, app, socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
+    socket_app = socketio.Middleware(socketio_server, flask_app, socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
 
     run_game(port)
-    eventlet.wsgi.server(eventlet.listen((host, port)), app, debug=False)
+    eventlet.wsgi.server(eventlet.listen((host, port)), socket_app, debug=False)
