@@ -1,19 +1,19 @@
 import actions from './actions'
 import types from './types'
-import { Observable } from 'rxjs'
-import { map, mergeMap, catchError, delay, tap } from 'rxjs/operators'
+import { of } from 'rxjs'
+import { map, mergeMap, catchError } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
-const getConnectionParametersEpic = (action$, store, { api: { get } }) => action$.pipe(
+const getConnectionParametersEpic = (action$, state$, { api: { get } }) => action$.pipe(
   ofType(types.SOCKET_CONNECT_TO_GAME_REQUEST),
   mergeMap(action =>
-    get(`games/${store.getState().game.connectionParameters.game_id}/connection_parameters/`).pipe(
+    get(`games/${state$.value.game.connectionParameters.game_id}/connection_parameters/`).pipe(
       map(response => actions.connectionParametersReceived(response))
     )
   )
 )
 
-const sendGameStateEpic = (action$, store, { api: { unity } }) => action$.pipe(
+const sendGameStateEpic = (action$, state$, { api: { unity } }) => action$.pipe(
   ofType(types.SOCKET_GAME_STATE_RECEIVED),
   map(action => actions.unityEvent(
     'ReceiveGameUpdate',
@@ -24,18 +24,18 @@ const sendGameStateEpic = (action$, store, { api: { unity } }) => action$.pipe(
   unity.sendExternalEvent(unity.emitToUnity)
 )
 
-const connectToGameEpic = (action$, store, { api: { socket, unity } }) => action$.pipe(
+const connectToGameEpic = (action$, state$, { api: { socket, unity } }) => action$.pipe(
   ofType(types.CONNECTION_PARAMETERS_RECEIVED),
   socket.connectToGame(),
   socket.startListeners(),
-  catchError(error => Observable.of({
+  catchError(error => of({
     type: types.SOCKET_CONNECT_TO_GAME_FAIL,
     payload: error,
     error: true
   }))
 )
 
-const sendAvatarIDEpic = (action$, store, { api: { unity } }) => action$.pipe(
+const sendAvatarIDEpic = (action$, state$, { api: { unity } }) => action$.pipe(
   ofType(types.CONNECTION_PARAMETERS_RECEIVED),
   map(action => actions.unityEvent(
     'SetCurrentAvatarID',

@@ -1,13 +1,11 @@
 /* eslint-env jest */
-import { Observable, TestScheduler } from 'rxjs'
-import { ActionsObservable } from 'redux-observable'
+import { of, throwError, Subject } from 'rxjs'
+import { mapTo, mergeMapTo } from 'rxjs/operators'
+import { TestScheduler } from 'rxjs/testing'
+import { ActionsObservable, StateObservable } from 'redux-observable'
 import epics from './epics'
 import actions from './actions'
 import types from './types'
-import configureStore from 'redux-mock-store'
-
-const middlewares = []
-const mockStore = configureStore(middlewares)
 
 const deepEquals = (actual, expected) =>
   expect(actual).toEqual(expected)
@@ -33,17 +31,21 @@ describe('getCodeEpic', () => {
       testScheduler.createColdObservable(marbles1, values)
     )
     const mockGetJSON = () => {
-      return Observable.of({ code })
+      return of({ code })
     }
 
     const mockAPI = { api: { get: mockGetJSON } }
 
-    const actual = epics.getCodeEpic(source$, mockStore(
-      { game:
-        { connectionParameters:
-          { id: 1 }
+    const initialState = {
+      game: {
+        connectionParameters: {
+          id: 1
         }
-      }), mockAPI)
+      }
+    }
+    const state$ = new StateObservable(new Subject(), initialState)
+
+    const actual = epics.getCodeEpic(source$, state$, mockAPI)
 
     testScheduler.expectObservable(actual).toBe(marbles2, values)
     testScheduler.flush()
@@ -66,10 +68,12 @@ describe('postCodeEpic', () => {
       testScheduler.createColdObservable(marbles1, values)
     )
 
-    const mockPost = (url, body) => action$ => action$.mapTo({})
+    const mockPost = (url, body) => action$ => action$.pipe(
+      mapTo({})
+    )
     const mockAPI = { api: { post: mockPost } }
 
-    const state = {
+    const initialState = {
       game: {
         connectionParameters: {
           id: 1
@@ -80,7 +84,9 @@ describe('postCodeEpic', () => {
       }
     }
 
-    const actual = epics.postCodeEpic(source$, mockStore(state), mockAPI)
+    const state$ = new StateObservable(new Subject(), initialState)
+
+    const actual = epics.postCodeEpic(source$, state$, mockAPI)
 
     testScheduler.expectObservable(actual).toBe(marbles2, values)
     testScheduler.flush()
@@ -106,10 +112,12 @@ describe('postCodeEpic', () => {
     )
 
     const error = { xhr: { response: 'oh no!' } }
-    const mockPost = (url, body) => action$ => action$.mergeMapTo(Observable.throw(error))
+    const mockPost = (url, body) => action$ => action$.pipe(
+      mergeMapTo(throwError(error))
+    )
     const mockAPI = { api: { post: mockPost } }
 
-    const state = {
+    const initialState = {
       game: {
         connectionParameters: {
           id: 1
@@ -119,8 +127,9 @@ describe('postCodeEpic', () => {
         code: code
       }
     }
+    const state$ = new StateObservable(new Subject(), initialState)
 
-    const actual = epics.postCodeEpic(source$, mockStore(state), mockAPI)
+    const actual = epics.postCodeEpic(source$, state$, mockAPI)
 
     testScheduler.expectObservable(actual).toBe(marbles2, values)
     testScheduler.flush()
@@ -142,7 +151,8 @@ describe('changeCodeEpic', () => {
       testScheduler.createColdObservable(sourceMarbles, values)
     )
 
-    const actual = epics.changeCodeEpic(source$, mockStore({}), {}, testScheduler)
+    const state$ = new StateObservable(new Subject(), {})
+    const actual = epics.changeCodeEpic(source$, state$, {}, testScheduler)
 
     testScheduler.expectObservable(actual).toBe(expectMarbles, values)
     testScheduler.flush()
