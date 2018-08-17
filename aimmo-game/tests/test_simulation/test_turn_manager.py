@@ -23,7 +23,6 @@ FIVE_RIGHT_OF_ORIGIN_AND_ONE_ABOVE = Location(5, 1)
 
 
 class MockGameState(GameState):
-    # TODO: Rename
     def get_state_for(self, avatar):
         return self
 

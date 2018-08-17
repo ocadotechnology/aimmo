@@ -10,7 +10,6 @@ from simulation.world_map import WorldMap
 
 
 class TestService(TestCase):
-
     class DummyAvatarManager(AvatarManager):
         avatars = [MoveEastDummy(1, Location(0, -1))]
 

@@ -12,7 +12,6 @@ LOGGER = logging.getLogger(__name__)
 
 
 class FakeGameRunner(object):
-
     def __init__(self, settings=None, player_manager=None):
         # Default argument is now immutable
         if settings is None:
@@ -27,8 +26,7 @@ class FakeGameRunner(object):
             self.player_manager = player_manager
         self.mock_communicator = MockCommunicator()
         self.game_state = self.map_generator.get_game_state(self.player_manager)
-        self.worker_manager = ConcreteWorkerManager(game_state=self.game_state,
-                                                    communicator=self.mock_communicator)
+        self.worker_manager = ConcreteWorkerManager(game_state=self.game_state, communicator=self.mock_communicator)
         self.turn_manager = ConcurrentTurnManager(game_state=self.game_state,
                                                   end_turn_callback=lambda: None,
                                                   communicator=self.mock_communicator,

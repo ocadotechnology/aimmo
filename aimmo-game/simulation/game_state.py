@@ -15,7 +15,6 @@ class GameState(object):
         self._lock = RLock()
 
     def get_state_for(self, avatar_wrapper):
-        # TODO: Should this be the same as serialise?
         with self._lock:
             return {
                 'avatar_state': avatar_wrapper.serialise(),
