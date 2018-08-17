@@ -15,9 +15,9 @@ class TurnManager(Thread):
     """
     daemon = True
 
-    def __init__(self, end_turn_callback, communicator, game_state, logs_provider):
+    def __init__(self, end_turn_callback, communicator, game_state, logs):
         self.game_state = game_state
-        self.logs_provider = logs_provider
+        self.logs = logs
         self.end_turn_callback = end_turn_callback
         self.communicator = communicator
         super(TurnManager, self).__init__()
@@ -55,8 +55,8 @@ class TurnManager(Thread):
         :param worker_data: Dict containing (among others) the 'log' key.
         """
         try:
-            self.logs_provider.set_user_logs(user_id=avatar.player_id,
-                                             logs=worker_data['log'])
+            self.logs.set_user_logs(user_id=avatar.player_id,
+                                    logs=worker_data['log'])
         except KeyError:
             LOGGER.error("Logs not found in worker_data when registering!")
 
@@ -71,7 +71,7 @@ class TurnManager(Thread):
         self.run_turn()
         self.game_state.update_environment()
         self.end_turn_callback()
-        self.logs_provider.clear_logs()
+        self.logs.clear_logs()
 
     def run(self):
         while True:

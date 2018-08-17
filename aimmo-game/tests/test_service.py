@@ -5,7 +5,6 @@ from simulation.avatar.avatar_manager import AvatarManager
 from .test_simulation.maps import MockPickup, MockCell
 from .test_simulation.dummy_avatar import MoveEastDummy
 from simulation.location import Location
-from simulation.game_state_provider import GameStateProvider
 from simulation.game_state import GameState
 from simulation.world_map import WorldMap
 
@@ -37,17 +36,16 @@ class TestService(TestCase):
         grid = {Location(x, y-1): MockCell(Location(x, y-1), **CELLS[x][y])
                 for y in range(3) for x in range(2)}
 
-        test_state_provider = GameStateProvider()
-        test_state_provider.set_world(GameState(WorldMap(grid, {}), self.avatar_manager))
+        test_game_state = GameState(WorldMap(grid, {}), self.avatar_manager)
 
-        self.world_state_json = service.get_game_state(test_state_provider)
+        self.world_state_json = test_game_state.serialise()
 
     def test_healthy_flask(self):
         """
         Tests the flask service. HEALTHY is returned if the app can be routed to root.
         """
-        service.app.config['TESTING'] = True
-        self.app = service.app.test_client()
+        service.flask_app.config['TESTING'] = True
+        self.app = service.flask_app.test_client()
         response = self.app.get('/game-1')
         self.assertEqual(response.data, 'HEALTHY')
 

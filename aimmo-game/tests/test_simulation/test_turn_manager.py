@@ -6,8 +6,7 @@ from simulation.avatar.avatar_appearance import AvatarAppearance
 from simulation.game_state import GameState
 from simulation.location import Location
 from simulation.turn_manager import ConcurrentTurnManager
-from simulation.game_state_provider import GameStateProvider
-from simulation.logs_provider import LogsProvider
+from simulation.logs import Logs
 
 from .dummy_avatar import (DummyAvatarManager, MoveEastDummy, MoveNorthDummy,
                            MoveSouthDummy, MoveWestDummy, WaitDummy, DeadDummy)
@@ -24,6 +23,7 @@ FIVE_RIGHT_OF_ORIGIN_AND_ONE_ABOVE = Location(5, 1)
 
 
 class MockGameState(GameState):
+    # TODO: Rename
     def get_state_for(self, avatar):
         return self
 
@@ -47,8 +47,7 @@ class TestTurnManager(unittest.TestCase):
         self.turn_manager = ConcurrentTurnManager(game_state=self.game_state,
                                                   end_turn_callback=lambda: None,
                                                   communicator=MockCommunicator(),
-                                                  state_provider=GameStateProvider(),
-                                                  logs_provider=LogsProvider())
+                                                  logs=Logs())
         for index, location in enumerate(locations):
             self.game_state.add_avatar(index, "", location)
         return self.turn_manager
