@@ -4,10 +4,11 @@ import cPickle as pickle
 import logging
 import os
 import sys
+from urlparse import parse_qs
+
 import eventlet
 import flask
 import socketio
-from urlparse import parse_qs
 from flask_cors import CORS
 
 from simulation import map_generator

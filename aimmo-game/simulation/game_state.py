@@ -67,4 +67,3 @@ class GameState(object):
             'scoreLocations': (self.world_map.serialise_score_location()),
             'obstacles': self.world_map.serialise_obstacles()
         }
-
