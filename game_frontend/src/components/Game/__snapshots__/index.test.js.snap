@@ -2,7 +2,7 @@
 
 exports[`<Game /> renders correctly 1`] = `
 <React.Fragment>
-  <styled.nav />
+  <GameMenu />
   <Connect(GameView) />
 </React.Fragment>
 `;

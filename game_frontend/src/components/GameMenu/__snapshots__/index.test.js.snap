@@ -1,12 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<GameMenu /> renders correctly 1`] = `
-.c0 {
-  background-color: #303030;
-  grid-area: game-menu;
-}
-
-<nav
-  className="c0"
-/>
+<styled.nav>
+  <Styled(WithStyles(Button))
+    onClick={[Function]}
+  >
+     
+    <CloseIcon />
+     
+  </Styled(WithStyles(Button))>
+</styled.nav>
 `;
