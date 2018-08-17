@@ -1,14 +1,3 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<IDEMenu /> renders correctly 1`] = `<styled.nav />`;
-
-exports[`<IDEMenuLayout /> renders correctly 1`] = `
-.c0 {
-  background-color: #303030;
-  grid-area: ide-menu;
-}
-
-<nav
-  className="c0"
-/>
-`;
+exports[`<IDEMenuLayout /> renders correctly 1`] = `<styled.nav />`;

@@ -9,16 +9,17 @@ import { actions } from 'features/Editor'
 import PropTypes from 'prop-types'
 import { withTheme } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
-import PlayIcon from '../icons/Play.js'
+import PlayIcon from 'components/icons/Play'
+
 export const IDEEditorLayout = styled.div`
   background-color: #2F4F4F;
   position: relative;
   grid-area: ide-editor;
 `
-const FAB = styled(Button)`
+const RunCodeButton = styled(Button)`
   position: absolute !important;
-  right: 20px;
-  bottom: 15px;
+  right: ${props => props.theme.spacing.unit * 3}px;
+  bottom: ${props => props.theme.spacing.unit * 2}px;
   z-index: 5;
 `
 const MarginedPlayIcon = styled(PlayIcon)`
@@ -49,12 +50,13 @@ export class IDEEditor extends PureComponent {
             tabSize: 2,
             fontFamily: this.props.theme.additionalVariables.typography.code.fontFamily
           }} />
-        <FAB
+        <RunCodeButton
+            aria-label='Post code'
             variant='extendedFab'
             id='post-code-button'
             onClick={this.props.postCode}>
             <MarginedPlayIcon />Post Code
-        </FAB>
+        </RunCodeButton>
       </IDEEditorLayout>
     )
   }

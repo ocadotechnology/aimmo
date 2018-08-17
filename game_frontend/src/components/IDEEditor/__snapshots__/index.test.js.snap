@@ -48,6 +48,7 @@ exports[`<IDEEditor /> matches snapshot 1`] = `
     wrapEnabled={false}
   />
   <Styled(WithStyles(Button))
+    aria-label="Post code"
     id="post-code-button"
     onClick={[MockFunction]}
     variant="extendedFab"
