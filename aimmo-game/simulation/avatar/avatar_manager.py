@@ -30,7 +30,7 @@ class AvatarManager(object):
     def active_avatars(self):
         return self.avatars[:]
 
-    def players_update(self):
+    def serialise_players(self):
         """
         To be called on a required update of players in the front-end of the game. This
         is a wrapper for player_list.
@@ -51,4 +51,4 @@ class AvatarManager(object):
                     'orientation': player.orientation
                 }
 
-        return {'players': [serialise(player) for player in self.avatars]}
+        return [serialise(player) for player in self.avatars]

@@ -15,7 +15,6 @@ from simulation.turn_manager import ConcurrentTurnManager
 from simulation.logs import Logs
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.worker_managers import WORKER_MANAGERS
-from simulation.pickups import pickups_update
 from simulation.communicator import Communicator
 
 eventlet.sleep()
@@ -42,7 +41,7 @@ class GameAPI(object):
         self._sid_to_avatar_id = {}
 
     def make_player_data_view(self):
-        # TODO: Look into partial application of self.
+        """This method will get registered at /player/<player_id>"""
         def player_data(player_id):
             player_id = int(player_id)
             return flask.jsonify({
@@ -51,6 +50,32 @@ class GameAPI(object):
                 'state': None,
             })
         return player_data
+
+    def make_world_update_on_connect(self):
+        """This method will get registered for connect on socketio_server"""
+        def world_update_on_connect(sid, environ):
+            self._sid_to_avatar_id[sid] = None
+
+            query = environ['QUERY_STRING']
+            self._find_avatar_id_from_query(sid, query)
+            self.send_updates()
+
+        return world_update_on_connect
+
+    def make_disconnect_fun(self):
+        """This method will get registered for disconnect on socketio_server"""
+        def remove_session_id_from_mappings(sid):
+            LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
+            try:
+                del self._sid_to_avatar_id[sid]
+            except KeyError:
+                pass
+
+        return remove_session_id_from_mappings
+
+    def send_updates(self):
+        self._send_game_state()
+        self._send_logs()
 
     def _find_avatar_id_from_query(self, session_id, query_string):
         """
@@ -68,10 +93,6 @@ class GameAPI(object):
         except KeyError:
             LOGGER.error("No avatar ID found. User may not be authorised ")
 
-    def send_updates(self):
-        self._send_game_state()
-        self._send_logs()
-
     def _send_logs(self):
         def should_send_logs(logs):
             return logs is not None and logs != ''
@@ -82,41 +103,9 @@ class GameAPI(object):
                 socketio_server.emit('log', avatar_logs, room=sid)
 
     def _send_game_state(self):
-        game_state = self._get_game_state()
+        serialised_game_state = self.game_state.serialise()
         for sid, avatar_id in self._sid_to_avatar_id.iteritems():
-            socketio_server.emit('game-state', game_state, room=sid)
-
-    def make_world_update_on_connect(self):
-        def world_update_on_connect(sid, environ):
-            self._sid_to_avatar_id[sid] = None
-
-            query = environ['QUERY_STRING']
-            self._find_avatar_id_from_query(sid, query)
-            self.send_updates()
-
-        return world_update_on_connect
-
-    def make_disconnect_fun(self):
-        def remove_session_id_from_mappings(sid):
-            LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
-            try:
-                del self._sid_to_avatar_id[sid]
-            except KeyError:
-                pass
-
-        return remove_session_id_from_mappings
-
-    def _get_game_state(self):
-        world_map = self.game_state.world_map
-        return {
-            'era': "less_flat",
-            'southWestCorner': world_map.get_serialised_south_west_corner(),
-            'northEastCorner': world_map.get_serialised_north_east_corner(),
-            'players': self.game_state.avatar_manager.players_update()['players'],
-            'pickups': pickups_update(world_map)['pickups'],
-            'scoreLocations': (self.game_state.world_map.score_location_update()['scoreLocations']),
-            'obstacles': world_map.obstacles_update()['obstacles']
-        }
+            socketio_server.emit('game-state', serialised_game_state, room=sid)
 
 
 def run_game(port):
@@ -131,7 +120,7 @@ def run_game(port):
 
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
     worker_manager = WorkerManagerClass(game_state=game_state, communicator=communicator, port=port)
-    
+
     logs = Logs()
 
     game_api = GameAPI(worker_manager, game_state, logs)
@@ -152,7 +141,8 @@ def run_game(port):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     host, port = sys.argv[1], int(sys.argv[2])
-    socket_app = socketio.Middleware(socketio_server, flask_app, socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
+    socket_app = socketio.Middleware(socketio_server, flask_app,
+                                     socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
 
     run_game(port)
     eventlet.wsgi.server(eventlet.listen((host, port)), socket_app, debug=False)

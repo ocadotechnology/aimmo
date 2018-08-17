@@ -65,9 +65,7 @@ class TurnManager(Thread):
         game_state.world_map.reconstruct_interactive_state(num_avatars)
 
     def _mark_complete(self):
-        # TODO: Delete?
-        from service import get_world_state
-        self.communicator.mark_game_complete(data=get_world_state())
+        self.communicator.mark_game_complete(data=self.game_state.serialise())
 
     def _run_single_turn(self):
         self.run_turn()

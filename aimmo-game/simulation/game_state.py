@@ -1,4 +1,5 @@
 from threading import RLock
+from pickups import serialise_pickups
 
 
 class GameState(object):
@@ -55,3 +56,15 @@ class GameState(object):
     def get_main_avatar(self):
         with self._lock:
             return self.avatar_manager.avatars_by_id[self.main_avatar_id]
+
+    def serialise(self):
+        return {
+            'era': "less_flat",
+            'southWestCorner': self.world_map.get_serialised_south_west_corner(),
+            'northEastCorner': self.world_map.get_serialised_north_east_corner(),
+            'players': self.avatar_manager.serialise_players(),
+            'pickups': serialise_pickups(self.world_map),
+            'scoreLocations': (self.world_map.serialise_score_location()),
+            'obstacles': self.world_map.serialise_obstacles()
+        }
+
