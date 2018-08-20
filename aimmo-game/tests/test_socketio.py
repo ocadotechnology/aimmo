@@ -25,7 +25,7 @@ class TestSocketio(TestCase):
     def setUp(self):
         self.environ = {}
         self.mocked_logs = Logs()
-        self.code_changed_flags = {}
+        self.src_changed_flags = {}
         self.environ['QUERY_STRING'] = 'avatar_id=1&EIO=3&transport=polling&t=MJhoMgb'
         self.game_api = self.create_game_api()
         self.mocked_mappings = self.game_api._sid_to_avatar_id
@@ -36,7 +36,10 @@ class TestSocketio(TestCase):
 
     @mock.patch('service.flask_app')
     def create_game_api(self, flask_app):
-        return service.GameAPI(game_state=MockGameState(), worker_manager=None, logs=self.mocked_logs)
+        return service.GameAPI(game_state=MockGameState(),
+                               worker_manager=None,
+                               logs=self.mocked_logs,
+                               src_changed_flags=self.src_changed_flags)
 
     @mock.patch('service.flask_app')
     @mock.patch('service.socketio_server', new_callable=MockedSocketIOServer)
@@ -95,7 +98,7 @@ class TestSocketio(TestCase):
     def test_empty_logs_not_emitted(self, mocked_socketio, flask_app):
         """ If the logs are an empty sting, no logs should be emitted. """
         self.mocked_mappings[self.sid] = 1
-        self.code_changed_flags[self.mocked_mappings[self.sid]] = False
+        self.src_changed_flags[self.mocked_mappings[self.sid]] = False
 
         self.mocked_logs.set_user_logs(self.mocked_mappings[self.sid], '')
         self.game_api.send_updates()
@@ -123,10 +126,11 @@ class TestSocketio(TestCase):
                                                user_one_log_call,
                                                user_two_log_call], any_order=True)
 
-    @mock.patch('service.socketio_server')
-    def test_send_code_changed_flag(self, mocked_socketio):
+    @mock.patch('service.flask_app')
+    @mock.patch('service.socketio_server', new_callable=MockedSocketIOServer)
+    def test_send_code_changed_flag(self, mocked_socketio, flask_app):
         self.mocked_mappings[self.sid] = 1
-        self.code_changed_flags[self.mocked_mappings[self.sid]] = True
+        self.src_changed_flags[self.mocked_mappings[self.sid]] = True
         self.game_api.send_updates()
 
         user_game_state_call = mock.call('game-state', {'foo': 'bar'}, room=self.sid)
@@ -134,10 +138,11 @@ class TestSocketio(TestCase):
 
         mocked_socketio.emit.assert_has_calls([user_game_state_call, user_game_code_changed_call], any_order=True)
 
-    @mock.patch('service.socketio_server')
-    def test_send_false_flag_not_sent(self, mocked_socketio):
+    @mock.patch('service.flask_app')
+    @mock.patch('service.socketio_server', new_callable=MockedSocketIOServer)
+    def test_send_false_flag_not_sent(self, mocked_socketio, flask_app):
         self.mocked_mappings[self.sid] = 1
-        self.code_changed_flags[self.mocked_mappings[self.sid]] = False
+        self.src_changed_flags[self.mocked_mappings[self.sid]] = False
         self.game_api.send_updates()
 
         mocked_socketio.emit.assert_called_once_with('game-state', {'foo': 'bar'}, room=self.sid)
