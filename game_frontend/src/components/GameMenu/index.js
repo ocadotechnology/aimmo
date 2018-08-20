@@ -11,7 +11,7 @@ const GameMenuLayout = styled.nav`
 const ExitButton = styled(IconButton)`
   position: relative;
   float: right;
-  right: ${props => props.theme.spacing.unit * 2}px; 
+  right: ${props => props.theme.spacing.unit * 2}px;
   top: ${props => props.theme.spacing.unit * 2}px; 
 `
 
