@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react'
-import GameMenu from 'components/GameMenu'
 import GameView from 'components/GameView'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -9,7 +8,6 @@ export class Game extends Component {
   render () {
     return (
       <Fragment>
-        <GameMenu />
         <GameView connectToGame={this.props.connectToGame} />
       </Fragment>
     )

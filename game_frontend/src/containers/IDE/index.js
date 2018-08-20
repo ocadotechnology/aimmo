@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react'
-import IDEMenu from 'components/IDEMenu'
 import IDEEditor from 'components/IDEEditor'
 import IDEConsole from 'components/IDEConsole'
 import { connect } from 'react-redux'
@@ -10,7 +9,6 @@ export class IDE extends Component {
   render () {
     return (
       <Fragment>
-        <IDEMenu />
         <IDEEditor
           code={this.props.code}
           postCode={this.props.postCode}
