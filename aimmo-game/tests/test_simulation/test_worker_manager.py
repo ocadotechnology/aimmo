@@ -73,8 +73,7 @@ class TestWorkerManager(unittest.TestCase):
         for i in (1, 3):
             self.assertEqual(self.worker_manager.get_code(i), 'code for %s' % i)
         for i in (0, 2):
-            self.assertIn(i, self.worker_manager.added_workers)
-            self.assertIn(i, self.worker_manager.removed_workers)
+            self.assertIn(i, self.worker_manager.updated_workers)
             self.assertEqual(self.worker_manager.get_code(i), 'changed %s' % i)
 
     def test_remove_avatars(self):
