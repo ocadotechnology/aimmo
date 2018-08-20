@@ -3,6 +3,6 @@
 exports[`<Game /> renders correctly 1`] = `
 <React.Fragment>
   <GameMenu />
-  <Connect(GameView) />
+  <GameView />
 </React.Fragment>
 `;

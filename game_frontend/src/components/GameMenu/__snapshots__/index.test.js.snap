@@ -2,12 +2,15 @@
 
 exports[`<GameMenu /> renders correctly 1`] = `
 <styled.nav>
-  <Styled(WithStyles(Button))
-    onClick={[Function]}
+  <a
+    href="/aimmo"
   >
-     
-    <CloseIcon />
-     
-  </Styled(WithStyles(Button))>
+    <Styled(WithStyles(IconButton))
+      aria-label="Close"
+    >
+      <CloseIcon />
+       
+    </Styled(WithStyles(IconButton))>
+  </a>
 </styled.nav>
 `;

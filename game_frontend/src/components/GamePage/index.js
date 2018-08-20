@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import IDE from 'containers/IDE'
-import Game from 'components/Game'
+import Game from 'containers/Game'
 
 export const GamePageLayout = styled.div`
   display: grid;
