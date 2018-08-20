@@ -3,6 +3,8 @@
 exports[`<Game /> renders correctly 1`] = `
 <React.Fragment>
   <GameMenu />
-  <GameView />
+  <GameView
+    connectToGame={[MockFunction]}
+  />
 </React.Fragment>
 `;

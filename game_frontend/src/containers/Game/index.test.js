@@ -6,7 +6,10 @@ import toJson from 'enzyme-to-json'
 
 describe('<Game />', () => {
   it('renders correctly', () => {
-    const tree = shallow(<Game />)
+    const props = {
+      connectToGame: jest.fn()
+    }
+    const tree = shallow(<Game {...props} />)
     expect(toJson(tree)).toMatchSnapshot()
   })
 })

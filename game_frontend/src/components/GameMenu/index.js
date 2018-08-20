@@ -11,19 +11,17 @@ const GameMenuLayout = styled.nav`
 const ExitButton = styled(IconButton)`
   position: relative;
   float: right;
-  right: 40px;
-  top: 20px;
+  right: ${props => props.theme.spacing.unit * 2}px; 
+  top: ${props => props.theme.spacing.unit * 2}px; 
 `
 
 export default class GameMenu extends Component {
   render () {
     return (
       <GameMenuLayout>
-        <a href='/aimmo'>
-          <ExitButton aria-label='Close'>
-            <CloseIcon />
-          </ExitButton>
-        </a>
+        <ExitButton href='/aimmo' aria-label='Close'>
+          <CloseIcon />
+        </ExitButton>
       </GameMenuLayout>
     )
   }

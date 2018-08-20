@@ -9,8 +9,8 @@ export const GameViewLayout = styled.div`
 
 const UNITY_LOADED = 1
 
-export class GameView extends Component {
-  onProgress (progression) {
+export default class GameView extends Component {
+  onProgress = progression => {
     if (progression === UNITY_LOADED) {
       this.props.connectToGame()
     }
@@ -21,7 +21,7 @@ export class GameView extends Component {
       <GameViewLayout>
         <Unity src='/static/unity/Build/unity.json'
           loader='/static/unity/Build/UnityLoader.js'
-          onProgress={this.onProgress.bind(this)} />
+          onProgress={this.onProgress} />
       </GameViewLayout>
     )
   }

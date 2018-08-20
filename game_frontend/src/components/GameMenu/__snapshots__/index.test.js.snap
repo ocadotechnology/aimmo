@@ -1,16 +1,34 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<GameMenu /> renders correctly 1`] = `
+exports[`<ExitButton /> renders correctly 1`] = `
 <styled.nav>
-  <a
+  <Styled(WithStyles(IconButton))
+    aria-label="Close"
     href="/aimmo"
   >
-    <Styled(WithStyles(IconButton))
-      aria-label="Close"
-    >
-      <CloseIcon />
-       
-    </Styled(WithStyles(IconButton))>
-  </a>
+    <CloseIcon />
+  </Styled(WithStyles(IconButton))>
+</styled.nav>
+`;
+
+exports[`<GameMenu /> renders correctly 1`] = `
+<styled.nav>
+  <Styled(WithStyles(IconButton))
+    aria-label="Close"
+    href="/aimmo"
+  >
+    <CloseIcon />
+  </Styled(WithStyles(IconButton))>
+</styled.nav>
+`;
+
+exports[`<GameMenuLayout /> renders correctly 1`] = `
+<styled.nav>
+  <Styled(WithStyles(IconButton))
+    aria-label="Close"
+    href="/aimmo"
+  >
+    <CloseIcon />
+  </Styled(WithStyles(IconButton))>
 </styled.nav>
 `;

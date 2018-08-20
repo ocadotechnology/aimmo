@@ -11,11 +11,11 @@ exports[`<GameView /> matches snapshot 1`] = `
 `;
 
 exports[`<GameViewLayout /> matches snapshot 1`] = `
-.c0 {
-  grid-area: game-view;
-}
-
-<div
-  className="c0"
-/>
+<styled.div>
+  <Unity
+    loader="/static/unity/Build/UnityLoader.js"
+    onProgress={[Function]}
+    src="/static/unity/Build/unity.json"
+  />
+</styled.div>
 `;
