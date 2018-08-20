@@ -17,10 +17,12 @@ export const IDEEditorLayout = styled.div`
   grid-area: ide-editor;
 `
 const RunCodeButton = styled(Button)`
-  position: absolute !important;
-  right: ${props => props.theme.spacing.unit * 3}px;
-  bottom: ${props => props.theme.spacing.unit * 2}px;
-  z-index: 5;
+  && {
+    position: absolute;
+    right: ${props => props.theme.spacing.unit * 3}px;
+    bottom: ${props => props.theme.spacing.unit * 2}px;
+    z-index: 5;
+  }
 `
 const MarginedPlayIcon = styled(PlayIcon)`
   margin-right: ${props => props.theme.spacing.unit}px;
@@ -51,7 +53,7 @@ export class IDEEditor extends PureComponent {
             fontFamily: this.props.theme.additionalVariables.typography.code.fontFamily
           }} />
         <RunCodeButton
-            aria-label='Post code'
+            aria-label='Run Code'
             variant='extendedFab'
             id='post-code-button'
             onClick={this.props.postCode}>
