@@ -1,15 +1,11 @@
 /* eslint-env jest */
 import React from 'react'
-import { GameView, GameViewLayout } from 'containers/GameView'
+import GameView, { GameViewLayout } from 'components/GameView'
 import { shallow } from 'enzyme/build/index'
 
 describe('<GameView />', () => {
   it('matches snapshot', () => {
-    const props = {
-      connectToGame: jest.fn()
-    }
-
-    const component = shallow(<GameView {...props} />)
+    const component = shallow(<GameView />)
     expect(component).toMatchSnapshot()
   })
 })
