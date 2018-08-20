@@ -5,15 +5,14 @@ import api from './api'
 import { composeWithDevTools } from 'redux-devtools-extension/logOnlyInProduction'
 
 export default function configureStore (initialState) {
-  return createStore(
-    rootReducer,
-    initialState,
-    composeWithDevTools(applyMiddleware(
-      createEpicMiddleware(rootEpic, {
-        dependencies: {
-          api
-        }
-      })
-    ))
+  const epicMiddleware = createEpicMiddleware({
+    dependencies: {
+      api
+    }
+  })
+  const store = createStore(rootReducer, initialState,
+    composeWithDevTools(applyMiddleware(epicMiddleware))
   )
+  epicMiddleware.run(rootEpic)
+  return store
 }
