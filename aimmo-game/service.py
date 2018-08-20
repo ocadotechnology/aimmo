@@ -127,14 +127,11 @@ def run_game(port):
 
     communicator = Communicator(api_url=api_url, completion_url=api_url + 'complete/')
     game_state = generator.get_game_state(player_manager)
+    logs = Logs()
 
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
     worker_manager = WorkerManagerClass(game_state=game_state, communicator=communicator, port=port)
-
-    logs = Logs()
-
     game_api = GameAPI(worker_manager, game_state, logs)
-
     turn_manager = ConcurrentTurnManager(end_turn_callback=game_api.send_updates,
                                          communicator=communicator,
                                          game_state=game_state,
