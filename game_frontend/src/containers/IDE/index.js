@@ -10,9 +10,10 @@ export class IDE extends Component {
   render () {
     return (
       <Fragment>
-        <IDEMenu postCode={this.props.postCode} />
+        <IDEMenu />
         <IDEEditor
           code={this.props.code}
+          postCode={this.props.postCode}
           getCode={this.props.getCode}
           editorChanged={this.props.editorChanged}
         />
