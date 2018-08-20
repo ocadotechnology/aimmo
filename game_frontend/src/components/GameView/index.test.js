@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import React from 'react'
-import { GameView, GameViewLayout } from 'components/GameView'
+import GameView, { GameViewLayout } from 'components/GameView'
 import { shallow } from 'enzyme/build/index'
 
 describe('<GameView />', () => {

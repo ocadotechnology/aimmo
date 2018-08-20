@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import React from 'react'
-import { GameMenu, GameMenuLayout, ExitButton } from 'components/GameMenu'
+import GameMenu, {GameMenuLayout, ExitButton } from 'components/GameMenu'
 import createShallowWithTheme from 'testHelpers/createShallow'
 
 describe('<GameMenu />', () => {
