@@ -35,4 +35,5 @@ class MockWorld(object):
         self.turn_manager = SequentialTurnManager(game_state=self.game_state,
                                                   end_turn_callback=lambda: None,
                                                   communicator=MockCommunicator(),
-                                                  logs=logs)
+                                                  logs=logs,
+                                                  src_changed_flags={})

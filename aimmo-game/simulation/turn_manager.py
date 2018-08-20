@@ -52,7 +52,6 @@ class TurnManager(Thread):
     def _register_src_changed_flag(self, avatar, worker_data):
         try:
             self.src_changed_flags[avatar.player_id] = worker_data['src_changed']
-            LOGGER.info('Register src_change for: {}'.format(avatar.player_id))
         except KeyError:
             LOGGER.error('src_changed not found in worker_data when registering')
 

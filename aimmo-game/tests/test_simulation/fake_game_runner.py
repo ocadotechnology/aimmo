@@ -30,7 +30,8 @@ class FakeGameRunner(object):
         self.turn_manager = ConcurrentTurnManager(game_state=self.game_state,
                                                   end_turn_callback=lambda: None,
                                                   communicator=self.mock_communicator,
-                                                  logs=self.logs)
+                                                  logs=self.logs,
+                                                  src_changed_flags={})
         random.seed(0)
 
     def run_single_turn(self):

@@ -32,7 +32,7 @@ class DummyAvatar(AvatarWrapper):
         self.times_died += 1
 
     def fetch_data(self, state_view):
-        return {'action': '', 'log': 'Testing'}
+        return {'action': '', 'log': 'Testing', 'src_changed': False}
 
     def damage(self, amount):
         self.health -= amount
