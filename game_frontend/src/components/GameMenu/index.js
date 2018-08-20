@@ -21,7 +21,8 @@ export default class GameMenu extends Component {
       <GameMenuLayout>
         <a href='/aimmo'>
           <ExitButton aria-label='Close'>
-            <CloseIcon /> </ExitButton>
+            <CloseIcon />
+          </ExitButton>
         </a>
       </GameMenuLayout>
     )
