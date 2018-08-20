@@ -86,3 +86,4 @@ aimmo/templates/players/game_ide.html
 
 # Game Frontend
 node_modules
+game_frontend/package-lock.json
