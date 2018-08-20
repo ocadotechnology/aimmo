@@ -29,11 +29,6 @@ LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 
-@flask_app.route('/game-<game_id>')
-def healthcheck(game_id):
-    return 'HEALTHY'
-
-
 class GameAPI(object):
     def __init__(self, worker_manager, game_state, logs):
         self.worker_manager = worker_manager
@@ -47,6 +42,12 @@ class GameAPI(object):
         self.register_player_data_view()
         self.register_world_update_on_connect()
         self.register_remove_session_id_from_mappings()
+        self.register_healthcheck()
+
+    def register_healthcheck(self):
+        @flask_app.route('/game-<game_id>')
+        def healthcheck(game_id):
+            return 'HEALTHY'
 
     def register_player_data_view(self):
         @flask_app.route('/player/<player_id>')
