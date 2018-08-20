@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 import logging
 import sys
-import os
-import json
 
 import flask
 import requests
@@ -35,9 +33,9 @@ def process_turn():
                                score=data['avatar_state']['score'],
                                health=data['avatar_state']['health'])
 
-    action, log = avatar_runner.process_avatar_turn(world_map, avatar_state, code)
+    response = avatar_runner.process_avatar_turn(world_map, avatar_state, code)
 
-    return flask.jsonify(action=action, log=log)
+    return flask.jsonify(**response)
 
 
 def run(host, port, data_url):

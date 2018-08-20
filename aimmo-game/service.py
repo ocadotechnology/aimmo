@@ -35,11 +35,12 @@ def healthcheck(game_id):
 
 
 class GameAPI(object):
-    def __init__(self, worker_manager, game_state, logs):
+    def __init__(self, worker_manager, game_state, logs, src_changed_flags):
         self.worker_manager = worker_manager
         self.logs = logs
         self.game_state = game_state
         self._sid_to_avatar_id = {}
+        self.src_changed_flags = src_changed_flags
 
     def make_player_data_view(self):
         """This method will get registered at /player/<player_id>"""
@@ -77,6 +78,7 @@ class GameAPI(object):
     def send_updates(self):
         self._send_game_state()
         self._send_logs()
+        self._send_src_changed_flags()
 
     def _find_avatar_id_from_query(self, session_id, query_string):
         """
@@ -108,6 +110,10 @@ class GameAPI(object):
         for sid, avatar_id in self._sid_to_avatar_id.iteritems():
             socketio_server.emit('game-state', serialised_game_state, room=sid)
 
+    def _send_src_changed_flags(self):
+        for sid, avatar_id in self._sid_to_avatar_id.iteritems():
+            socketio_server.emit('src-changed', self.src_changed_flags[avatar_id], room=sid)
+
 
 def run_game(port):
     print("Running game...")
@@ -123,13 +129,15 @@ def run_game(port):
     worker_manager = WorkerManagerClass(game_state=game_state, communicator=communicator, port=port)
 
     logs = Logs()
+    src_changed_flags = {}
 
-    game_api = GameAPI(worker_manager, game_state, logs)
+    game_api = GameAPI(worker_manager, game_state, logs, src_changed_flags)
 
     turn_manager = ConcurrentTurnManager(end_turn_callback=game_api.send_updates,
                                          communicator=communicator,
                                          game_state=game_state,
-                                         logs=logs)
+                                         logs=logs,
+                                         src_changed_flags=src_changed_flags)
 
     flask_app.add_url_rule('/player/<player_id>', 'player_data', game_api.make_player_data_view())
     socketio_server.on('connect', game_api.make_world_update_on_connect())
