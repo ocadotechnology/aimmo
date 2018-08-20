@@ -29,11 +29,6 @@ LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 
-@flask_app.route('/game-<game_id>')
-def healthcheck(game_id):
-    return 'HEALTHY'
-
-
 class GameAPI(object):
     def __init__(self, worker_manager, game_state, logs, src_changed_flags):
         self.worker_manager = worker_manager
@@ -42,8 +37,21 @@ class GameAPI(object):
         self._sid_to_avatar_id = {}
         self.src_changed_flags = src_changed_flags
 
-    def make_player_data_view(self):
-        """This method will get registered at /player/<player_id>"""
+        self.register_endpoints()
+
+    def register_endpoints(self):
+        self.register_player_data_view()
+        self.register_world_update_on_connect()
+        self.register_remove_session_id_from_mappings()
+        self.register_healthcheck()
+
+    def register_healthcheck(self):
+        @flask_app.route('/game-<game_id>')
+        def healthcheck(game_id):
+            return 'HEALTHY'
+
+    def register_player_data_view(self):
+        @flask_app.route('/player/<player_id>')
         def player_data(player_id):
             player_id = int(player_id)
             return flask.jsonify({
@@ -51,10 +59,11 @@ class GameAPI(object):
                 'options': {},
                 'state': None,
             })
+
         return player_data
 
-    def make_world_update_on_connect(self):
-        """This method will get registered for connect on socketio_server"""
+    def register_world_update_on_connect(self):
+        @socketio_server.on('connect')
         def world_update_on_connect(sid, environ):
             self._sid_to_avatar_id[sid] = None
 
@@ -64,8 +73,8 @@ class GameAPI(object):
 
         return world_update_on_connect
 
-    def make_remove_session_id_from_mappings(self):
-        """This method will get registered for disconnect on socketio_server"""
+    def register_remove_session_id_from_mappings(self):
+        @socketio_server.on('disconnect')
         def remove_session_id_from_mappings(sid):
             LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
             try:
@@ -125,6 +134,7 @@ def run_game(port):
 
     communicator = Communicator(api_url=api_url, completion_url=api_url + 'complete/')
     game_state = generator.get_game_state(player_manager)
+    logs = Logs()
 
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
     worker_manager = WorkerManagerClass(game_state=game_state, communicator=communicator, port=port)
@@ -139,10 +149,6 @@ def run_game(port):
                                          game_state=game_state,
                                          logs=logs,
                                          src_changed_flags=src_changed_flags)
-
-    flask_app.add_url_rule('/player/<player_id>', 'player_data', game_api.make_player_data_view())
-    socketio_server.on('connect', game_api.make_world_update_on_connect())
-    socketio_server.on('disconnect', game_api.make_remove_session_id_from_mappings())
 
     worker_manager.start()
     turn_manager.start()

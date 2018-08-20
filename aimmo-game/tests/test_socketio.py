@@ -12,53 +12,65 @@ class MockGameState():
         return {'foo': 'bar'}
 
 
+class MockedSocketIOServer(mock.MagicMock):
+    def on(self, event):
+        def decorator(func):
+            def wrapper(*args, **kwargs):
+                func(*args, **kwargs)
+            return wrapper
+        return decorator
+
+
 class TestSocketio(TestCase):
     def setUp(self):
         self.environ = {}
         self.mocked_logs = Logs()
         self.code_changed_flags = {}
         self.environ['QUERY_STRING'] = 'avatar_id=1&EIO=3&transport=polling&t=MJhoMgb'
-
-        self.game_api = service.GameAPI(game_state=MockGameState(),
-                                        worker_manager=None,
-                                        logs=self.mocked_logs,
-                                        src_changed_flags=self.code_changed_flags)
+        self.game_api = self.create_game_api()
         self.mocked_mappings = self.game_api._sid_to_avatar_id
-
         self.sid = ''.join(random.choice(string.ascii_uppercase +
                                          string.ascii_lowercase +
                                          string.digits)
                            for _ in range(19))
 
-    @mock.patch('service.socketio_server')
-    def test_socketio_emit_called(self, mocked_socketio):
-        self.game_api.make_world_update_on_connect()(self.sid, self.environ)
+    @mock.patch('service.flask_app')
+    def create_game_api(self, flask_app):
+        return service.GameAPI(game_state=MockGameState(), worker_manager=None, logs=self.mocked_logs)
+
+    @mock.patch('service.flask_app')
+    @mock.patch('service.socketio_server', new_callable=MockedSocketIOServer)
+    def test_socketio_emit_called(self, mocked_socketio, flask_app):
+        self.game_api.register_world_update_on_connect()(self.sid, self.environ)
         self.assertTrue(mocked_socketio.return_value.emit.assert_called_once)
 
-    @mock.patch('service.socketio_server')
-    def test_matched_session_id_to_avatar_id_mapping(self, mocked_socketio):
+    @mock.patch('service.flask_app')
+    @mock.patch('service.socketio_server', new_callable=MockedSocketIOServer)
+    def test_matched_session_id_to_avatar_id_mapping(self, mocked_socketio, flask_app):
         self.assertEqual(len(self.mocked_mappings), 0)
 
-        self.game_api.make_world_update_on_connect()(self.sid, self.environ)
+        self.game_api.register_world_update_on_connect()(self.sid, self.environ)
 
         self.assertEqual(len(self.mocked_mappings), 1)
         self.assertTrue(self.sid in self.mocked_mappings)
         self.assertEqual(int(self.mocked_mappings[self.sid]), 1)
 
-    @mock.patch('service.socketio_server')
-    def test_no_match_session_id_to_avatar_id_mapping(self, mocked_socketio):
+    @mock.patch('service.flask_app')
+    @mock.patch('service.socketio_server', new_callable=MockedSocketIOServer)
+    def test_no_match_session_id_to_avatar_id_mapping(self, mocked_socketio, flask_app):
         self.environ['QUERY_STRING'] = 'corrupted!@$%string123'
 
         self.assertEqual(len(self.mocked_mappings), 0)
 
-        self.game_api.make_world_update_on_connect()(self.sid, self.environ)
+        self.game_api.register_world_update_on_connect()(self.sid, self.environ)
 
         self.assertEqual(len(self.mocked_mappings), 1)
         self.assertTrue(self.sid in self.mocked_mappings)
         self.assertIsNone(self.mocked_mappings[self.sid])
 
-    @mock.patch('service.socketio_server')
-    def test_send_updates_for_one_user(self, mocked_socketio):
+    @mock.patch('service.flask_app')
+    @mock.patch('service.socketio_server', new_callable=MockedSocketIOServer)
+    def test_send_updates_for_one_user(self, mocked_socketio, flask_app):
         self.mocked_mappings[self.sid] = 1
         self.mocked_logs.set_user_logs(self.mocked_mappings[self.sid], 'Logs one')
 
@@ -69,16 +81,18 @@ class TestSocketio(TestCase):
 
         mocked_socketio.emit.assert_has_calls([game_state_call, log_call], any_order=True)
 
-    @mock.patch('service.socketio_server')
-    def test_no_logs_not_emitted(self, mocked_socketio):
+    @mock.patch('service.flask_app')
+    @mock.patch('service.socketio_server', new_callable=MockedSocketIOServer)
+    def test_no_logs_not_emitted(self, mocked_socketio, flask_app):
         """ If there are no logs for an avatar, no logs should be emitted. """
         self.mocked_mappings[self.sid] = 1
         self.game_api.send_updates()
 
         mocked_socketio.emit.assert_called_once_with('game-state', {'foo': 'bar'}, room=self.sid)
 
-    @mock.patch('service.socketio_server')
-    def test_empty_logs_not_emitted(self, mocked_socketio):
+    @mock.patch('service.flask_app')
+    @mock.patch('service.socketio_server', new_callable=MockedSocketIOServer)
+    def test_empty_logs_not_emitted(self, mocked_socketio, flask_app):
         """ If the logs are an empty sting, no logs should be emitted. """
         self.mocked_mappings[self.sid] = 1
         self.code_changed_flags[self.mocked_mappings[self.sid]] = False
@@ -88,8 +102,9 @@ class TestSocketio(TestCase):
 
         mocked_socketio.emit.assert_called_once_with('game-state', {'foo': 'bar'}, room=self.sid)
 
-    @mock.patch('service.socketio_server')
-    def test_send_updates_for_multiple_users(self, mocked_socketio):
+    @mock.patch('service.flask_app')
+    @mock.patch('service.socketio_server', new_callable=MockedSocketIOServer)
+    def test_send_updates_for_multiple_users(self, mocked_socketio, flask_app):
         self.mocked_mappings[self.sid] = 1
         self.mocked_mappings['differentsid'] = 2
 
@@ -133,7 +148,7 @@ class TestSocketio(TestCase):
         self.assertTrue(self.sid in self.mocked_mappings)
         self.assertEqual(self.mocked_mappings[self.sid], 1)
 
-        self.game_api.make_remove_session_id_from_mappings()(sid=self.sid)
+        self.game_api.register_remove_session_id_from_mappings()(sid=self.sid)
 
         self.assertFalse(self.sid in self.mocked_mappings)
         self.assertEqual(len(self.mocked_mappings), 0)
