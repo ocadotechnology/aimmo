@@ -5,7 +5,6 @@ import 'brace/theme/idle_fingers'
 import 'brace/mode/python'
 import 'brace/snippets/python'
 import 'brace/ext/language_tools'
-import { actions } from 'features/Editor'
 import PropTypes from 'prop-types'
 import { withTheme } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
@@ -16,7 +15,8 @@ export const IDEEditorLayout = styled.div`
   position: relative;
   grid-area: ide-editor;
 `
-const RunCodeButton = styled(Button)`
+
+export const RunCodeButton = styled(Button)`
   && {
     position: absolute;
     right: ${props => props.theme.spacing.unit * 3}px;
@@ -24,11 +24,13 @@ const RunCodeButton = styled(Button)`
     z-index: 5;
   }
 `
-const MarginedPlayIcon = styled(PlayIcon)`
+
+export const MarginedPlayIcon = styled(PlayIcon)`
   margin-right: ${props => props.theme.spacing.unit}px;
 `
+
 export class IDEEditor extends PureComponent {
-  render() {
+  render () {
     return (
       <IDEEditorLayout>
         <AceEditor
