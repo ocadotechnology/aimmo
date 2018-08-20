@@ -20,7 +20,7 @@ const RunCodeButton = styled(Button)`
   && {
     position: absolute;
     right: ${props => props.theme.spacing.unit * 3}px;
-    bottom: ${props => props.theme.spacing.unit * 2}px;
+    bottom: ${props => props.theme.spacing.unit * 3}px;
     z-index: 5;
   }
 `
@@ -57,7 +57,7 @@ export class IDEEditor extends PureComponent {
             variant='extendedFab'
             id='post-code-button'
             onClick={this.props.postCode}>
-            <MarginedPlayIcon />Post Code
+            <MarginedPlayIcon />Run Code
         </RunCodeButton>
       </IDEEditorLayout>
     )
