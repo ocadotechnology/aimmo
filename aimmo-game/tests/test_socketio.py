@@ -28,14 +28,14 @@ class TestSocketio(TestCase):
 
     @mock.patch('service.socketio_server')
     def test_socketio_emit_called(self, mocked_socketio):
-        self.game_api.make_world_update_on_connect()(self.sid, self.environ)
+        self.game_api.register_world_update_on_connect()(self.sid, self.environ)
         self.assertTrue(mocked_socketio.return_value.emit.assert_called_once)
 
     @mock.patch('service.socketio_server')
     def test_matched_session_id_to_avatar_id_mapping(self, mocked_socketio):
         self.assertEqual(len(self.mocked_mappings), 0)
 
-        self.game_api.make_world_update_on_connect()(self.sid, self.environ)
+        self.game_api.register_world_update_on_connect()(self.sid, self.environ)
 
         self.assertEqual(len(self.mocked_mappings), 1)
         self.assertTrue(self.sid in self.mocked_mappings)
@@ -47,7 +47,7 @@ class TestSocketio(TestCase):
 
         self.assertEqual(len(self.mocked_mappings), 0)
 
-        self.game_api.make_world_update_on_connect()(self.sid, self.environ)
+        self.game_api.register_world_update_on_connect()(self.sid, self.environ)
 
         self.assertEqual(len(self.mocked_mappings), 1)
         self.assertTrue(self.sid in self.mocked_mappings)
@@ -108,7 +108,7 @@ class TestSocketio(TestCase):
         self.assertTrue(self.sid in self.mocked_mappings)
         self.assertEqual(self.mocked_mappings[self.sid], 1)
 
-        self.game_api.make_remove_session_id_from_mappings()(sid=self.sid)
+        self.game_api.register_remove_session_id_from_mappings()(sid=self.sid)
 
         self.assertFalse(self.sid in self.mocked_mappings)
         self.assertEqual(len(self.mocked_mappings), 0)

@@ -41,8 +41,15 @@ class GameAPI(object):
         self.game_state = game_state
         self._sid_to_avatar_id = {}
 
-    def make_player_data_view(self):
-        """This method will get registered at /player/<player_id>"""
+        self.register_endpoints()
+
+    def register_endpoints(self):
+        self.register_player_data_view()
+        self.register_world_update_on_connect()
+        self.register_remove_session_id_from_mappings()
+
+    def register_player_data_view(self):
+        @flask_app.route('/player/<player_id>')
         def player_data(player_id):
             player_id = int(player_id)
             return flask.jsonify({
@@ -50,10 +57,11 @@ class GameAPI(object):
                 'options': {},
                 'state': None,
             })
+
         return player_data
 
-    def make_world_update_on_connect(self):
-        """This method will get registered for connect on socketio_server"""
+    def register_world_update_on_connect(self):
+        @socketio_server.on('connect')
         def world_update_on_connect(sid, environ):
             self._sid_to_avatar_id[sid] = None
 
@@ -63,8 +71,8 @@ class GameAPI(object):
 
         return world_update_on_connect
 
-    def make_remove_session_id_from_mappings(self):
-        """This method will get registered for disconnect on socketio_server"""
+    def register_remove_session_id_from_mappings(self):
+        @socketio_server.on('disconnect')
         def remove_session_id_from_mappings(sid):
             LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
             try:
@@ -130,10 +138,6 @@ def run_game(port):
                                          communicator=communicator,
                                          game_state=game_state,
                                          logs=logs)
-
-    flask_app.add_url_rule('/player/<player_id>', 'player_data', game_api.make_player_data_view())
-    socketio_server.on('connect', game_api.make_world_update_on_connect())
-    socketio_server.on('disconnect', game_api.make_remove_session_id_from_mappings())
 
     worker_manager.start()
     turn_manager.start()
