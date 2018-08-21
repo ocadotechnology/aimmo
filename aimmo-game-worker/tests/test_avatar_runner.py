@@ -90,9 +90,3 @@ class TestAvatarRunner(TestCase):
         self.assertTrue(response['src_changed'])
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar2)
         self.assertFalse(response['src_changed'])
-
-
-
-
-
-
