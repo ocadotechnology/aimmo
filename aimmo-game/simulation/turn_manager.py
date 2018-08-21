@@ -15,12 +15,12 @@ class TurnManager(Thread):
     """
     daemon = True
 
-    def __init__(self, end_turn_callback, communicator, game_state, logs, avatar_updated_flags):
+    def __init__(self, end_turn_callback, communicator, game_state, logs, have_avatars_updated):
         self.game_state = game_state
         self.logs = logs
         self.end_turn_callback = end_turn_callback
         self.communicator = communicator
-        self.avatar_updated_flags = avatar_updated_flags
+        self.have_avatars_updated = have_avatars_updated
         super(TurnManager, self).__init__()
 
     def run_turn(self):
@@ -36,7 +36,7 @@ class TurnManager(Thread):
 
         self._register_actions(avatar, worker_data)
         self._register_logs(avatar, worker_data)
-        self._register_avatar_updated_flag(avatar, worker_data)
+        self._register_avatar_updated(avatar, worker_data)
 
     def _register_actions(self, avatar, worker_data):
         """
@@ -49,9 +49,9 @@ class TurnManager(Thread):
         if avatar.decide_action(worker_data):
             avatar.action.register(self.game_state.world_map)
 
-    def _register_avatar_updated_flag(self, avatar, worker_data):
+    def _register_avatar_updated(self, avatar, worker_data):
         try:
-            self.avatar_updated_flags[avatar.player_id] = worker_data['avatar_updated']
+            self.have_avatars_updated[avatar.player_id] = worker_data['avatar_updated']
         except KeyError:
             LOGGER.error('avatar_updated not found in worker_data when registering')
 
