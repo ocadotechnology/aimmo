@@ -36,4 +36,4 @@ class MockWorld(object):
                                                   end_turn_callback=lambda: None,
                                                   communicator=MockCommunicator(),
                                                   logs=logs,
-                                                  src_changed_flags={})
+                                                  avatar_updated_flags={})

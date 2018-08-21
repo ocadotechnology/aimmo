@@ -30,12 +30,12 @@ logging.basicConfig(level=logging.INFO)
 
 
 class GameAPI(object):
-    def __init__(self, worker_manager, game_state, logs, src_changed_flags):
+    def __init__(self, worker_manager, game_state, logs, avatar_updated_flags):
         self.worker_manager = worker_manager
         self.logs = logs
         self.game_state = game_state
         self._sid_to_avatar_id = {}
-        self.src_changed_flags = src_changed_flags
+        self.avatar_updated_flags = avatar_updated_flags
 
         self.register_endpoints()
 
@@ -87,7 +87,7 @@ class GameAPI(object):
     def send_updates(self):
         self._send_game_state()
         self._send_logs()
-        self._send_src_changed_flags()
+        self._send_avatar_updated_flags()
 
     def _find_avatar_id_from_query(self, session_id, query_string):
         """
@@ -119,9 +119,9 @@ class GameAPI(object):
         for sid, avatar_id in self._sid_to_avatar_id.iteritems():
             socketio_server.emit('game-state', serialised_game_state, room=sid)
 
-    def _send_src_changed_flags(self):
+    def _send_avatar_updated_flags(self):
         for sid, avatar_id in self._sid_to_avatar_id.iteritems():
-            if self.src_changed_flags.get(avatar_id, False):
+            if self.avatar_updated_flags.get(avatar_id, False):
                 socketio_server.emit('feedback-avatar-updated', room=sid)
 
 
@@ -134,21 +134,20 @@ def run_game(port):
 
     communicator = Communicator(api_url=api_url, completion_url=api_url + 'complete/')
     game_state = generator.get_game_state(player_manager)
-    logs = Logs()
 
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
     worker_manager = WorkerManagerClass(game_state=game_state, communicator=communicator, port=port)
 
     logs = Logs()
-    src_changed_flags = {}
+    avatar_updated_flags = {}
 
-    game_api = GameAPI(worker_manager, game_state, logs, src_changed_flags)
+    game_api = GameAPI(worker_manager, game_state, logs, avatar_updated_flags)
 
     turn_manager = ConcurrentTurnManager(end_turn_callback=game_api.send_updates,
                                          communicator=communicator,
                                          game_state=game_state,
                                          logs=logs,
-                                         src_changed_flags=src_changed_flags)
+                                         avatar_updated_flags=avatar_updated_flags)
 
     worker_manager.start()
     turn_manager.start()
