@@ -122,7 +122,7 @@ class GameAPI(object):
     def _send_src_changed_flags(self):
         for sid, avatar_id in self._sid_to_avatar_id.iteritems():
             if self.src_changed_flags.get(avatar_id, False):
-                socketio_server.emit('src-changed', self.src_changed_flags[avatar_id], room=sid)
+                socketio_server.emit('feedback-avatar-updated', room=sid)
 
 
 def run_game(port):
