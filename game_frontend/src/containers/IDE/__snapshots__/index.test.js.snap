@@ -2,7 +2,7 @@
 
 exports[`<IDE /> renders correctly 1`] = `
 <React.Fragment>
-  <IDEMenu />
+  <styled.nav />
   <WithTheme(IDEEditor) />
   <IDEConsole />
 </React.Fragment>
