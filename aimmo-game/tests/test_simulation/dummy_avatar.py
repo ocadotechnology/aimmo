@@ -31,9 +31,6 @@ class DummyAvatar(AvatarWrapper):
         self.location = respawn_loc
         self.times_died += 1
 
-    def serialise(self):
-        return 'Dummy'
-
     def fetch_data(self, state_view):
         return {'action': '', 'log': 'Testing'}
 

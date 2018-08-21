@@ -11,7 +11,9 @@ class Cell(object):
     def __init__(self, location, avatar=None, **kwargs):
         self.location = Location(**location)
         if avatar:
-            self.avatar = AvatarState(**avatar)
+            self.avatar = AvatarState(location=avatar['location'],
+                                      score=avatar['score'],
+                                      health=avatar['health'])
         for (key, value) in kwargs.items():
             setattr(self, key, value)
 

@@ -117,30 +117,8 @@ class DamageBoostPickup(_PickupEffect):
         }
 
 
-def pickups_update(world_map):
-    """
-    A serialise function used to update the pickups in the front end representation of the
-    game.
-    """
-
-    def _generate_pickup_list(world_map):
-        """
-        Inner scope function only to be used by pickups_update().
-        :return: A list containing all serialised pickups in the world_map.
-        """
-
-        pickups = []
-
-        for cell in world_map.pickup_cells():
-            pickups.append(cell.pickup.serialise())
-
-        return pickups
-
-    generated_pickups = _generate_pickup_list(world_map)
-
-    return {
-        'pickups': generated_pickups,
-    }
+def serialise_pickups(world_map):
+    return [cell.pickup.serialise() for cell in world_map.pickup_cells()]
 
 
 ALL_PICKUPS = (
