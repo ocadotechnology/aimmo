@@ -34,7 +34,7 @@ export default class IDEConsole extends Component {
   }
 
   handleScroll = event => {
-    let target = event.srcElement || event.target
+    let target = event.target || event.srcElement
     this.setState({...this.state, scrolledToBottom: target.offsetHeight + target.scrollTop === target.scrollHeight})
   }
 
