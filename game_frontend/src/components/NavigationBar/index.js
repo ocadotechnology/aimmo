@@ -9,7 +9,7 @@ export const NavigationBarLayout = styled.nav`
     grid-area: navigation-bar;
 `
 
-export const RightToolbar = styled(Toolbar)`
+export const CloseToolbar = styled(Toolbar)`
   justify-content: flex-end;
 `
 
@@ -20,14 +20,14 @@ export default class NavigationBar extends Component {
         <AppBar
           color='secondary'
           position='sticky'>
-          <RightToolbar>
+          <CloseToolbar>
             <IconButton
               href='/aimmo'
               aria-label='Close'
               color='inherit'>
               <CloseIcon />
             </IconButton>
-          </RightToolbar>
+          </CloseToolbar>
         </AppBar>
       </NavigationBarLayout>
     )
