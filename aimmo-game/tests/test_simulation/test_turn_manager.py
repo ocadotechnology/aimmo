@@ -47,7 +47,7 @@ class TestTurnManager(unittest.TestCase):
                                                   end_turn_callback=lambda: None,
                                                   communicator=MockCommunicator(),
                                                   logs=Logs(),
-                                                  have_avatars_updated={})
+                                                  have_avatars_code_updated={})
         for index, location in enumerate(locations):
             self.game_state.add_avatar(index, "", location)
         return self.turn_manager

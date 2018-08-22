@@ -31,7 +31,7 @@ class FakeGameRunner(object):
                                                   end_turn_callback=lambda: None,
                                                   communicator=self.mock_communicator,
                                                   logs=self.logs,
-                                                  have_avatars_updated={})
+                                                  have_avatars_code_updated={})
         random.seed(0)
 
     def run_single_turn(self):

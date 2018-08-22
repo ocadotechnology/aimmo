@@ -30,12 +30,12 @@ logging.basicConfig(level=logging.INFO)
 
 
 class GameAPI(object):
-    def __init__(self, worker_manager, game_state, logs, have_avatars_updated):
+    def __init__(self, worker_manager, game_state, logs, have_avatars_code_updated):
         self.worker_manager = worker_manager
         self.logs = logs
         self.game_state = game_state
         self._sid_to_avatar_id = {}
-        self.have_avatars_updated = have_avatars_updated
+        self.have_avatars_code_updated = have_avatars_code_updated
 
         self.register_endpoints()
 
@@ -87,7 +87,7 @@ class GameAPI(object):
     def send_updates(self):
         self._send_game_state()
         self._send_logs()
-        self._send_have_avatars_updated()
+        self._send_have_avatars_code_updated()
 
     def _find_avatar_id_from_query(self, session_id, query_string):
         """
@@ -119,9 +119,9 @@ class GameAPI(object):
         for sid, avatar_id in self._sid_to_avatar_id.iteritems():
             socketio_server.emit('game-state', serialised_game_state, room=sid)
 
-    def _send_have_avatars_updated(self):
+    def _send_have_avatars_code_updated(self):
         for sid, avatar_id in self._sid_to_avatar_id.iteritems():
-            if self.have_avatars_updated.get(avatar_id, False):
+            if self.have_avatars_code_updated.get(avatar_id, False):
                 socketio_server.emit('feedback-avatar-updated', room=sid)
 
 
@@ -139,15 +139,15 @@ def run_game(port):
     worker_manager = WorkerManagerClass(game_state=game_state, communicator=communicator, port=port)
 
     logs = Logs()
-    have_avatars_updated = {}
+    have_avatars_code_updated = {}
 
-    game_api = GameAPI(worker_manager, game_state, logs, have_avatars_updated)
+    game_api = GameAPI(worker_manager, game_state, logs, have_avatars_code_updated)
 
     turn_manager = ConcurrentTurnManager(end_turn_callback=game_api.send_updates,
                                          communicator=communicator,
                                          game_state=game_state,
                                          logs=logs,
-                                         have_avatars_updated=have_avatars_updated)
+                                         have_avatars_code_updated=have_avatars_code_updated)
 
     worker_manager.start()
     turn_manager.start()
