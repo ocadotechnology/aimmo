@@ -4,7 +4,7 @@ import Unity from 'react-unity-webgl'
 import PropTypes from 'prop-types'
 
 export const GameViewLayout = styled.div`
-  grid-area: game-view
+  grid-area: game-view;
 `
 
 const UNITY_LOADED = 1

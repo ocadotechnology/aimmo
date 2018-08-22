@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<NavigationBar /> renders correctly 1`] = `
+<styled.nav>
+  <WithStyles(AppBar)
+    color="secondary"
+    position="sticky"
+  >
+    <Styled(WithStyles(Toolbar))>
+      <WithStyles(IconButton)
+        aria-label="Close"
+        color="inherit"
+        href="/aimmo"
+      >
+        <CloseIcon />
+      </WithStyles(IconButton)>
+    </Styled(WithStyles(Toolbar))>
+  </WithStyles(AppBar)>
+</styled.nav>
+`;
+
+exports[`<NavigationBarLayout /> renders correctly 1`] = `
+.c0 {
+  grid-area: navigation-bar;
+}
+
+<nav
+  className="c0"
+/>
+`;
