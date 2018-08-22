@@ -33,6 +33,4 @@ urlpatterns = [
     url(r'^watch/(?P<id>[0-9]+)/(?P<resource>.[0-9A-Za-z/.]+)$',
         RedirectView.as_view(url='/static/unity/%(resource)s', permanent=False)),
 
-    url(r'^socket.io/socket.io.js',
-        RedirectView.as_view(url='https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.4/socket.io.min.js', permanent=False)),
 ]
