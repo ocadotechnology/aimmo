@@ -35,4 +35,5 @@ class MockWorld(object):
         self.turn_manager = SequentialTurnManager(game_state=self.game_state,
                                                   end_turn_callback=lambda: None,
                                                   communicator=MockCommunicator(),
-                                                  logs=logs)
+                                                  logs=logs,
+                                                  have_avatars_code_updated={})

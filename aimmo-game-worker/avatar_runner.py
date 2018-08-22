@@ -35,6 +35,7 @@ class AvatarRunner(object):
 
     def process_avatar_turn(self, world_map, avatar_state, src_code):
         output_log = StringIO()
+        avatar_updated = self._avatar_src_changed(src_code)
 
         try:
             sys.stdout = output_log
@@ -55,4 +56,4 @@ class AvatarRunner(object):
             sys.stderr = sys.__stderr__
 
         logs = output_log.getvalue()
-        return action, logs
+        return {'action': action, 'log': logs, 'avatar_updated': avatar_updated}

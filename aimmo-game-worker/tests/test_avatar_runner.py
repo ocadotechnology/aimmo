@@ -14,7 +14,7 @@ class TestAvatarRunner(TestCase):
                 assert False
 
         runner = AvatarRunner(avatar=Avatar(), auto_update=False)
-        action, _ = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code='')
+        action = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code='')['action']
         self.assertEqual(action, {'action_type': 'wait'})
 
     def test_runner_updates_code_on_change(self):
@@ -34,12 +34,12 @@ class TestAvatarRunner(TestCase):
                   '''
 
         runner = AvatarRunner()
-        action, logs = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar1)
-        self.assertEqual(action, {'action_type': 'move', 'options': {'direction': EAST}})
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar1)
+        self.assertEqual(response['action'], {'action_type': 'move', 'options': {'direction': EAST}})
 
-        action, logs = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar2)
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar2)
 
-        self.assertEqual(action, {'action_type': 'move', 'options': {'direction': WEST}})
+        self.assertEqual(response['action'], {'action_type': 'move', 'options': {'direction': WEST}})
 
     def test_runner_can_maintain_state(self):
         """ This test ensures that if the code is the same, we do not recreate the avatar object in the runner.
@@ -62,5 +62,31 @@ class TestAvatarRunner(TestCase):
 
         directions = [NORTH, EAST, SOUTH, WEST]
         for direction in directions:
-            action, logs = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
-            self.assertEqual(action, {'action_type': 'move', 'options': {'direction': direction}})
+            response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+            self.assertEqual(response['action'], {'action_type': 'move', 'options': {'direction': direction}})
+
+    def test_update_code_flag(self):
+        avatar1 = '''class Avatar(object):
+                        def handle_turn(self, world_map, avatar_state):
+                            from simulation.action import MoveAction
+                            from simulation.direction import NORTH
+                            
+                            return MoveAction(NORTH)
+                  '''
+        avatar2 = '''class Avatar(object):
+                                def handle_turn(self, world_map, avatar_state):
+                                    from simulation.action import MoveAction
+                                    from simulation.direction import SOUTH
+
+                                    return MoveAction(SOUTH)
+                  '''
+
+        runner = AvatarRunner()
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar1)
+        self.assertTrue(response['avatar_updated'])
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar1)
+        self.assertFalse(response['avatar_updated'])
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar2)
+        self.assertTrue(response['avatar_updated'])
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar2)
+        self.assertFalse(response['avatar_updated'])
