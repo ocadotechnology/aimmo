@@ -17,6 +17,7 @@ from simulation.logs import Logs
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.worker_managers import WORKER_MANAGERS
 from simulation.communicator import Communicator
+from simulation.game_runner import GameRunner
 
 eventlet.sleep()
 eventlet.monkey_patch()
@@ -136,7 +137,7 @@ def run_game(port):
     game_state = generator.get_game_state(player_manager)
 
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
-    worker_manager = WorkerManagerClass(game_state=game_state, communicator=communicator, port=port)
+    worker_manager = WorkerManagerClass(port=port)
 
     logs = Logs()
     have_avatars_code_updated = {}
@@ -149,7 +150,12 @@ def run_game(port):
                                          logs=logs,
                                          have_avatars_code_updated=have_avatars_code_updated)
 
-    worker_manager.start()
+    game_runner = GameRunner(worker_manager=worker_manager,
+                             turn_manager=turn_manager,
+                             game_state=game_state,
+                             communicator=communicator)
+
+    game_runner.start()
     turn_manager.start()
 
 

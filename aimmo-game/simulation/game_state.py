@@ -29,6 +29,14 @@ class GameState(object):
             avatar = self.avatar_manager.add_avatar(user_id, worker_url, location)
             self.world_map.get_cell(location).avatar = avatar
 
+    def add_avatars(self, user_ids, worker_urls):
+        for user_id in user_ids:
+            self.add_avatar(user_id, worker_urls[user_id])
+
+    def delete_avatars(self, user_ids):
+        for user_id in user_ids:
+            self.remove_avatar(user_id)
+
     def remove_avatar(self, user_id):
         with self._lock:
             try:
