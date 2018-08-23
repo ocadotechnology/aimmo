@@ -15,7 +15,7 @@ class SimulationRunner(object):
     """
     daemon = True
 
-    def __init__(self, communicator, game_state,):
+    def __init__(self, game_state, communicator):
         self.game_state = game_state
         self.communicator = communicator
 

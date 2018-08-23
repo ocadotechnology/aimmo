@@ -5,7 +5,7 @@ import unittest
 from simulation.avatar.avatar_appearance import AvatarAppearance
 from simulation.game_state import GameState
 from simulation.location import Location
-from simulation.turn_manager import ConcurrentTurnManager
+from simulation.simulation_runner import ConcurrentSimulationRunner
 
 from .dummy_avatar import (DummyAvatarManager, MoveEastDummy, MoveNorthDummy,
                            MoveSouthDummy, MoveWestDummy, WaitDummy, DeadDummy)
@@ -39,16 +39,14 @@ class TestTurnManager(unittest.TestCase):
     def construct_default_avatar_appearance(self):
         return AvatarAppearance("#000", "#ddd", "#777", "#fff")
 
-    def construct_turn_manager(self, avatars, locations):
+    def construct_simulation_runner(self, avatars, locations):
         self.avatar_manager = DummyAvatarManager(avatars)
+        self.avatar_manager.avatars_by_id = dict(enumerate(avatars))
         self.game_state = MockGameState(InfiniteMap(), self.avatar_manager)
-        self.turn_manager = ConcurrentTurnManager(game_state=self.game_state,
-                                                  end_turn_callback=lambda: None,
-                                                  communicator=MockCommunicator(),
-                                                  have_avatars_code_updated={})
+        self.simulation_runner = ConcurrentSimulationRunner(game_state=self.game_state,
+                                                            communicator=MockCommunicator())
         for index, location in enumerate(locations):
-            self.game_state.add_avatar(index, "", location)
-        return self.turn_manager
+            self.game_state.add_avatar(index, location)
 
     def assert_at(self, avatar, location):
         self.assertEqual(avatar.location, location)
@@ -59,7 +57,7 @@ class TestTurnManager(unittest.TestCase):
         return self.avatar_manager.get_avatar(player_id)
 
     def run_turn(self):
-        self.turn_manager.run_turn()
+        self.simulation_runner.run_turn(self.avatar_manager.avatars_by_id)
 
     def test_run_turn(self):
         """
@@ -67,7 +65,7 @@ class TestTurnManager(unittest.TestCase):
         (1)
         Expect: _ o
         """
-        self.construct_turn_manager([MoveEastDummy], [ORIGIN])
+        self.construct_simulation_runner([MoveEastDummy], [ORIGIN])
         avatar = self.get_avatar(0)
 
         self.assert_at(avatar, ORIGIN)
@@ -80,7 +78,7 @@ class TestTurnManager(unittest.TestCase):
         (5)
         Expect: _ _ _ _ _ o
         """
-        self.construct_turn_manager([MoveEastDummy], [ORIGIN])
+        self.construct_simulation_runner([MoveEastDummy], [ORIGIN])
         avatar = self.get_avatar(0)
 
         self.assertEqual(avatar.location, ORIGIN)
@@ -95,7 +93,7 @@ class TestTurnManager(unittest.TestCase):
         Expect: _ _ _ _ _ o
                 _ _ _ _ _ o
         """
-        self.construct_turn_manager([MoveEastDummy, MoveEastDummy],
+        self.construct_simulation_runner([MoveEastDummy, MoveEastDummy],
                                     [ORIGIN,        ABOVE_ORIGIN])
         avatar0 = self.get_avatar(0)
         avatar1 = self.get_avatar(1)
@@ -112,7 +110,7 @@ class TestTurnManager(unittest.TestCase):
 
         Expect: _ o o o o o
         """
-        self.construct_turn_manager([MoveEastDummy for _ in range(5)],
+        self.construct_simulation_runner([MoveEastDummy for _ in range(5)],
                                     [Location(x, 0) for x in range(5)])
         avatars = [self.get_avatar(i) for i in range(5)]
 
@@ -126,7 +124,7 @@ class TestTurnManager(unittest.TestCase):
 
         Expect: x x x _
         """
-        self.construct_turn_manager([MoveEastDummy, MoveEastDummy, WaitDummy],
+        self.construct_simulation_runner([MoveEastDummy, MoveEastDummy, WaitDummy],
                                     [Location(x, 0) for x in range(3)])
         avatars = [self.get_avatar(i) for i in range(3)]
 
@@ -141,7 +139,7 @@ class TestTurnManager(unittest.TestCase):
         Expect: x x ! _
         """
 
-        self.construct_turn_manager([MoveEastDummy, MoveEastDummy, DeadDummy], [Location(x, 0) for x in range(3)])
+        self.construct_simulation_runner([MoveEastDummy, MoveEastDummy, DeadDummy], [Location(x, 0) for x in range(3)])
         avatars = [self.get_avatar(i) for i in range(3)]
 
         [self.assert_at(avatars[x], Location(x, 0)) for x in range(3)]
@@ -154,7 +152,7 @@ class TestTurnManager(unittest.TestCase):
         Expect: x _ x
         """
 
-        self.construct_turn_manager([MoveEastDummy, MoveWestDummy], [Location(0, 0), Location(2, 0)])
+        self.construct_simulation_runner([MoveEastDummy, MoveWestDummy], [Location(0, 0), Location(2, 0)])
         avatars = [self.get_avatar(i) for i in range(2)]
 
         self.assert_at(avatars[0], Location(0, 0))
@@ -172,7 +170,7 @@ class TestTurnManager(unittest.TestCase):
         Expect: x x x _ x
         """
         locations = [Location(0, 0), Location(1, 0), Location(2, 0), Location(4, 0)]
-        self.construct_turn_manager(
+        self.construct_simulation_runner(
             [MoveEastDummy, MoveEastDummy, MoveEastDummy, MoveWestDummy],
             locations)
         avatars = [self.get_avatar(i) for i in range(4)]
@@ -190,7 +188,7 @@ class TestTurnManager(unittest.TestCase):
                 x x
         """
         locations = [Location(0, 1), Location(1, 1), Location(1, 0), Location(0, 0)]
-        self.construct_turn_manager(
+        self.construct_simulation_runner(
             [MoveEastDummy, MoveSouthDummy, MoveWestDummy, MoveNorthDummy],
             locations)
         avatars = [self.get_avatar(i) for i in range(4)]
@@ -212,7 +210,7 @@ class TestTurnManager(unittest.TestCase):
                      Location(2, 1),
                      Location(2, 0),
                      Location(1, 0)]
-        self.construct_turn_manager(
+        self.construct_simulation_runner(
             [MoveEastDummy, MoveEastDummy, MoveSouthDummy, MoveWestDummy, MoveNorthDummy],
             locations)
         avatars = [self.get_avatar(i) for i in range(5)]

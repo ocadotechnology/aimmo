@@ -14,7 +14,6 @@ from flask_cors import CORS
 from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.worker_managers import WORKER_MANAGERS
-from simulation.communicator import Communicator
 from simulation.game_runner import GameRunner
 
 eventlet.sleep()

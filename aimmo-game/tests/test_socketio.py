@@ -5,6 +5,7 @@ import mock
 
 import service
 from simulation.logs import Logs
+from simulation.worker_managers.worker_manager import WorkerManager
 
 
 class MockGameState():
@@ -36,10 +37,8 @@ class TestSocketio(TestCase):
 
     @mock.patch('service.flask_app')
     def create_game_api(self, flask_app):
-        return service.GameAPI(game_state=MockGameState(),
-                               worker_manager=None,
-                               logs=self.mocked_logs,
-                               have_avatars_code_updated=self.have_avatars_code_updated)
+        return service.GameAPI(worker_manager=WorkerManager(),
+                               game_state=MockGameState())
 
     @mock.patch('service.flask_app')
     @mock.patch('service.socketio_server', new_callable=MockedSocketIOServer)
