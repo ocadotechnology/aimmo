@@ -2,12 +2,12 @@
 
 ---
 
-The worker has the following responsibilities:
+The worker manager has the following responsibilities:
 * Creating new workers
 * Deleting old workers
 * Updating worker code
 
-By worker, we are referring to the thread (in local mode) or pod (in k8s mode) that actually runs the player's code. Note that there is a difference between avatars (represented in the game as `AvatarWrapper`) and a worker.
+Note that there is a difference between avatars (represented in the game as `AvatarWrapper`) and a worker.
 The first is a representation in the simulation only, while the latter represents the thread / pod. It is important that `WorkerManager` has no interaction with simulation logic. 
 
 
