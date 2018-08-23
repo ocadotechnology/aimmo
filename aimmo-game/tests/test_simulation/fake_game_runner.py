@@ -5,6 +5,7 @@ from simulation.turn_manager import ConcurrentTurnManager
 from simulation.map_generator import Main
 from simulation.logs import Logs
 from simulation.avatar.avatar_manager import AvatarManager
+from simulation.game_runner import GameRunner
 from .concrete_worker_manager import ConcreteWorkerManager
 from .mock_communicator import MockCommunicator
 
@@ -12,6 +13,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class FakeGameRunner(object):
+    """ TODO: This class probably will want to be deleted once GameRunner is complete. """
     def __init__(self, settings=None, player_manager=None):
         # Default argument is now immutable
         if settings is None:
@@ -25,9 +27,13 @@ class FakeGameRunner(object):
         else:
             self.player_manager = player_manager
         self.mock_communicator = MockCommunicator()
-        self.game_state = self.map_generator.get_game_state(self.player_manager)
-        self.worker_manager = ConcreteWorkerManager(game_state=self.game_state, communicator=self.mock_communicator)
-        self.turn_manager = ConcurrentTurnManager(game_state=self.game_state,
+
+        game_state = self.map_generator.get_game_state(self.player_manager)
+        worker_manager = ConcreteWorkerManager()
+        self.game_runner = GameRunner(worker_manager=worker_manager,
+                                      game_state=game_state,
+                                      communicator=self.mock_communicator)
+        self.turn_manager = ConcurrentTurnManager(game_state=self.game_runner.game_state,
                                                   end_turn_callback=lambda: None,
                                                   communicator=self.mock_communicator,
                                                   logs=self.logs,
@@ -35,14 +41,14 @@ class FakeGameRunner(object):
         random.seed(0)
 
     def run_single_turn(self):
-        self.worker_manager.update()
+        self.game_runner.update()
         self.turn_manager._run_single_turn()
 
     def get_logs(self, avatar_id):
         return self.logs.get_user_logs(avatar_id)
 
     def get_avatar(self, avatar_id):
-        return self.game_state.avatar_manager.get_avatar(avatar_id)
+        return self.game_runner.game_state.avatar_manager.get_avatar(avatar_id)
 
     def change_avatar_code(self, avatar_id, code):
         avatar = (user for user in self.mock_communicator.data["main"]["users"] if user["id"] == avatar_id).next()

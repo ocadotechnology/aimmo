@@ -151,7 +151,6 @@ def run_game(port):
                                          have_avatars_code_updated=have_avatars_code_updated)
 
     game_runner = GameRunner(worker_manager=worker_manager,
-                             turn_manager=turn_manager,
                              game_state=game_state,
                              communicator=communicator)
 
