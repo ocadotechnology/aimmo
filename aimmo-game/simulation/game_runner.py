@@ -1,7 +1,7 @@
 import time
 import threading
 
-WORKER_UPDATE_SLEEP_TIME = 5
+WORKER_UPDATE_SLEEP_TIME = 10
 
 
 class GameRunner(threading.Thread):

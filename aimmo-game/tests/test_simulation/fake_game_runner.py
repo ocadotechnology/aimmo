@@ -13,7 +13,6 @@ LOGGER = logging.getLogger(__name__)
 
 
 class FakeGameRunner(object):
-    """ TODO: This class probably will want to be deleted once GameRunner is complete. """
     def __init__(self, settings=None, player_manager=None):
         # Default argument is now immutable
         if settings is None:

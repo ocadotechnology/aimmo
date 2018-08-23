@@ -84,8 +84,6 @@ class TestGameRunner(TestCase):
         self.mock_communicator.data = RequestMock(3).value
         self.game_runner.update()
         del self.mock_communicator.data['main']['users'][1]
-        print('Modified data: {}'.format(self.mock_communicator.data['main']['users']))
-        print('Workers: {}'.format(self.game_runner.worker_manager.avatar_id_to_worker.keys()))
         self.game_runner.update()
 
         for i in range(3):
