@@ -67,7 +67,7 @@ class KubernetesWorkerManager(WorkerManager):
                 'app': 'aimmo-game-worker',
                 'game': self.game_id,
                 'player': str(player_id)},
-            generate_name="aimmo-%s-worker-%s-" % (self.game_id, player_id),
+            generate_name='aimmo-%s-worker-%s-' % (self.game_id, player_id),
             owner_references=self._make_owner_references()
         )
 

@@ -23,20 +23,28 @@ class GameState(object):
                 }
             }
 
-    def add_avatar(self, user_id, worker_url, location=None):
+    def add_avatar(self, player_id, worker_url, location=None):
         with self._lock:
             location = self.world_map.get_random_spawn_location() if location is None else location
-            avatar = self.avatar_manager.add_avatar(user_id, worker_url, location)
+            avatar = self.avatar_manager.add_avatar(player_id, worker_url, location)
             self.world_map.get_cell(location).avatar = avatar
 
-    def remove_avatar(self, user_id):
+    def add_avatars(self, player_ids, worker_url_bases):
+        for player_id in player_ids:
+            self.add_avatar(player_id, '{}/turn/'.format(worker_url_bases[player_id]))
+
+    def delete_avatars(self, player_ids):
+        for player_id in player_ids:
+            self.remove_avatar(player_id)
+
+    def remove_avatar(self, player_id):
         with self._lock:
             try:
-                avatar = self.avatar_manager.get_avatar(user_id)
+                avatar = self.avatar_manager.get_avatar(player_id)
             except KeyError:
                 return
             self.world_map.get_cell(avatar.location).avatar = None
-            self.avatar_manager.remove_avatar(user_id)
+            self.avatar_manager.remove_avatar(player_id)
 
     def _update_effects(self):
         with self._lock:
