@@ -3,7 +3,6 @@ import logging
 
 from simulation.turn_manager import ConcurrentTurnManager
 from simulation.map_generator import Main
-from simulation.logs import Logs
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.game_runner import GameRunner
 from .concrete_worker_manager import ConcreteWorkerManager
@@ -19,7 +18,6 @@ class FakeGameRunner(object):
             settings = {'START_WIDTH': 3, 'START_HEIGHT': 3, 'OBSTACLE_RATIO': 0}
 
         self.settings = settings
-        self.logs = Logs()
         self.map_generator = Main(settings)
         if not player_manager:
             self.player_manager = AvatarManager()
