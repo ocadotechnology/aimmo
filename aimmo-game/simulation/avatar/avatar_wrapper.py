@@ -13,7 +13,7 @@ class AvatarWrapper(object):
     the player-supplied code.
     """
 
-    def __init__(self, player_id, initial_location, worker_url, avatar_appearance):
+    def __init__(self, player_id, initial_location, avatar_appearance):
         self.player_id = player_id
         self.location = initial_location
         self.previous_location = initial_location
@@ -22,7 +22,6 @@ class AvatarWrapper(object):
         self.score = 0
         self.events = []
         self.avatar_appearance = avatar_appearance
-        self.worker_url = worker_url
         self.effects = set()
         self.resistance = 0
         self.attack_strength = 1
@@ -45,19 +44,6 @@ class AvatarWrapper(object):
     @property
     def is_moving(self):
         return isinstance(self.action, MoveAction)
-
-    def fetch_data(self, state_view):
-        try:
-            response = requests.post(self.worker_url, json=state_view)
-            response.raise_for_status()
-            return response.json()
-        except requests.exceptions.ConnectionError:
-            LOGGER.info('Could not connect to worker, probably not ready yet')
-        except Exception as e:
-            LOGGER.exception("Unknown error while fetching turn data.")
-            LOGGER.exception(e)
-
-        return {'action': None, 'log': '', 'avatar_updated': False}
 
     def _construct_action(self, action_data):
         action_type = action_data['action_type']
@@ -82,9 +68,9 @@ class AvatarWrapper(object):
 
         return direction_of_orientation.cardinal
 
-    def decide_action(self, worker_data):
+    def decide_action(self, serialised_action):
         try:
-            action = self._construct_action(worker_data['action'])
+            action = self._construct_action(serialised_action)
 
         except (KeyError, ValueError) as err:
             LOGGER.error('Bad action data supplied: %s', err)

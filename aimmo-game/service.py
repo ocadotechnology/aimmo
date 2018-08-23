@@ -12,8 +12,6 @@ import socketio
 from flask_cors import CORS
 
 from simulation import map_generator
-from simulation.turn_manager import ConcurrentTurnManager
-from simulation.logs import Logs
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.worker_managers import WORKER_MANAGERS
 from simulation.communicator import Communicator
@@ -31,14 +29,11 @@ logging.basicConfig(level=logging.INFO)
 
 
 class GameAPI(object):
-    def __init__(self, worker_manager, game_state, logs, have_avatars_code_updated):
-        self.worker_manager = worker_manager
-        self.logs = logs
-        self.game_state = game_state
+    def __init__(self, worker_manager, game_state):
         self._sid_to_avatar_id = {}
-        self.have_avatars_code_updated = have_avatars_code_updated
-
         self.register_endpoints()
+        self.worker_manager = worker_manager
+        self.game_state = game_state
 
     def register_endpoints(self):
         self.register_player_data_view()
@@ -87,8 +82,9 @@ class GameAPI(object):
 
     def send_updates(self):
         self._send_game_state()
-        self._send_logs()
-        self._send_have_avatars_code_updated()
+        player_id_to_worker = self.worker_manager.player_id_to_worker
+        self._send_logs(player_id_to_worker)
+        self._send_have_avatars_code_updated(player_id_to_worker)
 
     def _find_avatar_id_from_query(self, session_id, query_string):
         """
@@ -106,56 +102,44 @@ class GameAPI(object):
         except KeyError:
             LOGGER.error("No avatar ID found. User may not be authorised ")
 
-    def _send_logs(self):
+    def _send_logs(self, player_id_to_workers):
         def should_send_logs(logs):
             return logs is not None and logs != ''
 
-        for sid, avatar_id in self._sid_to_avatar_id.iteritems():
-            avatar_logs = self.logs.get_user_logs(avatar_id)
+        for sid, player_id in self._sid_to_avatar_id.iteritems():
+            avatar_logs = player_id_to_workers[player_id].log
             if should_send_logs(avatar_logs):
                 socketio_server.emit('log', avatar_logs, room=sid)
 
     def _send_game_state(self):
         serialised_game_state = self.game_state.serialise()
-        for sid, avatar_id in self._sid_to_avatar_id.iteritems():
+        for sid, player_id in self._sid_to_avatar_id.iteritems():
             socketio_server.emit('game-state', serialised_game_state, room=sid)
 
-    def _send_have_avatars_code_updated(self):
-        for sid, avatar_id in self._sid_to_avatar_id.iteritems():
-            if self.have_avatars_code_updated.get(avatar_id, False):
+    def _send_have_avatars_code_updated(self, player_id_to_workers):
+        for sid, player_id in self._sid_to_avatar_id.iteritems():
+            if player_id_to_workers[player_id].has_code_updated:
                 socketio_server.emit('feedback-avatar-updated', room=sid)
 
 
 def run_game(port):
     print("Running game...")
     settings = pickle.loads(os.environ['settings'])
-    api_url = os.environ.get('GAME_API_URL', 'http://localhost:8000/aimmo/api/games/')
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
-    player_manager = AvatarManager()
-
-    communicator = Communicator(api_url=api_url, completion_url=api_url + 'complete/')
-    game_state = generator.get_game_state(player_manager)
+    game_state = generator.get_game_state(AvatarManager())
 
     WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
     worker_manager = WorkerManagerClass(port=port)
 
-    logs = Logs()
-    have_avatars_code_updated = {}
-
-    game_api = GameAPI(worker_manager, game_state, logs, have_avatars_code_updated)
-
-    turn_manager = ConcurrentTurnManager(end_turn_callback=game_api.send_updates,
-                                         communicator=communicator,
-                                         game_state=game_state,
-                                         logs=logs,
-                                         have_avatars_code_updated=have_avatars_code_updated)
+    game_api = GameAPI(worker_manager=worker_manager, game_state=game_state)
 
     game_runner = GameRunner(worker_manager=worker_manager,
                              game_state=game_state,
-                             communicator=communicator)
+                             django_api_url=os.environ.get('GAME_API_URL',
+                                                           'http://localhost:8000/aimmo/api/games/'),
+                             end_turn_callback=game_api.send_updates)
 
     game_runner.start()
-    turn_manager.start()
 
 
 if __name__ == '__main__':
