@@ -60,8 +60,6 @@ class GameAPI(object):
     def register_world_update_on_connect(self):
         @socketio_server.on('connect')
         def world_update_on_connect(sid, environ):
-            self._sid_to_avatar_id[sid] = None
-
             query = environ['QUERY_STRING']
             self._find_avatar_id_from_query(sid, query)
             self.send_updates()
