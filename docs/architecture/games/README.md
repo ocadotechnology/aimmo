@@ -7,9 +7,11 @@
 - [Actions](actions.md) 
 - [Map Generator](generators.md) 
 - [Pickups](pickups.md) 
-- [Turn Manager](turn-manager.md) 
+- [Turn Manager](simulation-runner.md) 
 - [Worker Manager](worker-manager.md) 
 - [World Map](world-map.md)
+- [Worker](worker.md)
+- [Game Runner](game-runner.md)
 
 ## In Short
 - Maintains game state
@@ -18,11 +20,11 @@
 
 ## General Overview
 Each game has its own instance of a game container. The game container is responsible for maintaining the game state, 
-the worker avatars for the game, fetching the actions from each worker, and applying the worker.
+the worker avatars for the game, fetching the actions from each worker, and applying those actions, as well as fetching game metadata from the Django API.
 
 The game interacts with the rest of the components as follows:
 - It is created by the game creator.
-- It creates workers and restarts them when a user changes their avatar's code.
+- It creates workers and deletes them as dictated by the game state
 - It exposes an API to provide the workers with the code.
 - It fetches the game settings from the UI.
 

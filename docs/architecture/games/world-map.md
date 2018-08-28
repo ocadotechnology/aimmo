@@ -35,7 +35,7 @@ Map dimension functionality:
 
 ### The Update Cycle 
 
-The most important responsibility of the world map class is the self update after the intended character moves have been recored by the turn manager. The function `udpate` is called by the [Turn Manager](turn-manager). 
+The most important responsibility of the world map class is the `self.update` after the intended character moves have been recorded by the turn manager. The function `udpate` is called by the [Turn Manager](turn-manager). 
 
 _This functionality is quite broad and could be considered for refactoring in a different class._
 
@@ -55,7 +55,7 @@ All the map updates are regulated using the settings of a map. Some useful setti
 * TARGET_NUM_PICKUPS_PER_AVATAR - regulate the number of pickups similarly to how the number of score locations are regulated
 * PICKUP_SPAWN_CHANCE - a regulation parameter similar to SCORE_DESPAWN_CHANCE
 
-All of this settings should be overrided in a level to fit the needs of the level design. More documentation on levels can be found [here](levels). 
+All of these settings should be overridden in a level to fit the needs of the level design. More documentation on levels can be found [here](levels). 
 
 ## Dependencies and other functionality
 

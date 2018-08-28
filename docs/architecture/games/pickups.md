@@ -2,7 +2,7 @@
 
 ---
 
-A pickup is an object that is automatically grabbed by avatars in the same cell as the pickup. The pickup gets destroyed and generates an effect it is grabbed. An effect is an object that encapsulates a function that gets applied to an avatar on each turn. (see [Turn Manager](turn-manager.md))
+A pickup is an object that is automatically grabbed by avatars in the same cell as the pickup. The pickup gets destroyed and generates an effect it is grabbed. An effect is an object that encapsulates a function that gets applied to an avatar on each turn. (see [Turn Manager](simulation-runner.md))
 
 ### Pickups 
 
