@@ -42,7 +42,7 @@ class TestViews(TestCase):
         cls.user = User.objects.create_user('test', 'test@example.com', 'password')
         cls.user.is_staff = True
         cls.user.save()
-        cls.game = models.Game(id=1, name='test')
+        cls.game = models.Game(id=1, name='test', public=True)
         cls.game.save()
 
     def setUp(self):
@@ -265,7 +265,7 @@ class TestModels(TestCase):
         cls.user1.save()
         cls.user2 = User.objects.create_user('test2', 'test2@example.com', 'password')
         cls.user2.save()
-        cls.game = models.Game(id=1, name='test', public=False)
+        cls.game = models.Game(id=1, name='test')
         cls.game.save()
 
     def setUp(self):
