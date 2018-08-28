@@ -57,7 +57,7 @@ class AvatarWrapper(object):
             LOGGER.exception("Unknown error while fetching turn data.")
             LOGGER.exception(e)
 
-        return {'action': None, 'log': ''}
+        return {'action': None, 'log': '', 'avatar_updated': False}
 
     def _construct_action(self, action_data):
         action_type = action_data['action_type']
@@ -118,15 +118,11 @@ class AvatarWrapper(object):
 
     def serialise(self):
         return {
-            'events': [
-                #    {
-                #        'event_name': event.__class__.__name__.lower(),
-                #        'event_options': event.__dict__,
-                #    } for event in self.events
-            ],
             'health': self.health,
             'location': self.location.serialise(),
             'score': self.score,
+            'id': self.player_id,
+            'orientation': self.orientation
         }
 
     def __repr__(self):

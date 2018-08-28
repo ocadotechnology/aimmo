@@ -1,3 +1,7 @@
+from threading import RLock
+from pickups import serialise_pickups
+
+
 class GameState(object):
     """
     Encapsulates the entire game state, including avatars, their code, and the world.
@@ -8,39 +12,66 @@ class GameState(object):
         self.avatar_manager = avatar_manager
         self._completion_callback = completion_check_callback
         self.main_avatar_id = None
+        self._lock = RLock()
 
     def get_state_for(self, avatar_wrapper):
-        return {
-            'avatar_state': avatar_wrapper.serialise(),
-            'world_map': {
-                'cells': [cell.serialise() for cell in self.world_map.all_cells()]
+        with self._lock:
+            return {
+                'avatar_state': avatar_wrapper.serialise(),
+                'world_map': {
+                    'cells': [cell.serialise() for cell in self.world_map.all_cells()]
+                }
             }
-        }
 
-    def add_avatar(self, user_id, worker_url, location=None):
-        location = self.world_map.get_random_spawn_location() if location is None else location
-        avatar = self.avatar_manager.add_avatar(user_id, worker_url, location)
-        self.world_map.get_cell(location).avatar = avatar
+    def add_avatar(self, player_id, worker_url, location=None):
+        with self._lock:
+            location = self.world_map.get_random_spawn_location() if location is None else location
+            avatar = self.avatar_manager.add_avatar(player_id, worker_url, location)
+            self.world_map.get_cell(location).avatar = avatar
 
-    def remove_avatar(self, user_id):
-        try:
-            avatar = self.avatar_manager.get_avatar(user_id)
-        except KeyError:
-            return
-        self.world_map.get_cell(avatar.location).avatar = None
-        self.avatar_manager.remove_avatar(user_id)
+    def add_avatars(self, player_ids, worker_url_bases):
+        for player_id in player_ids:
+            self.add_avatar(player_id, '{}/turn/'.format(worker_url_bases[player_id]))
+
+    def delete_avatars(self, player_ids):
+        for player_id in player_ids:
+            self.remove_avatar(player_id)
+
+    def remove_avatar(self, player_id):
+        with self._lock:
+            try:
+                avatar = self.avatar_manager.get_avatar(player_id)
+            except KeyError:
+                return
+            self.world_map.get_cell(avatar.location).avatar = None
+            self.avatar_manager.remove_avatar(player_id)
 
     def _update_effects(self):
-        for avatar in self.avatar_manager.active_avatars:
-            avatar.update_effects()
+        with self._lock:
+            for avatar in self.avatar_manager.active_avatars:
+                avatar.update_effects()
 
     def update_environment(self):
-        self._update_effects()
-        num_avatars = len(self.avatar_manager.active_avatars)
-        self.world_map.update(num_avatars)
+        with self._lock:
+            self._update_effects()
+            num_avatars = len(self.avatar_manager.active_avatars)
+            self.world_map.update(num_avatars)
 
     def is_complete(self):
-        return self._completion_callback(self)
+        with self._lock:
+            return self._completion_callback(self)
 
     def get_main_avatar(self):
-        return self.avatar_manager.avatars_by_id[self.main_avatar_id]
+        with self._lock:
+            return self.avatar_manager.avatars_by_id[self.main_avatar_id]
+
+    def serialise(self):
+        return {
+            'era': "less_flat",
+            'southWestCorner': self.world_map.get_serialised_south_west_corner(),
+            'northEastCorner': self.world_map.get_serialised_north_east_corner(),
+            'players': self.avatar_manager.serialise_players(),
+            'pickups': serialise_pickups(self.world_map),
+            'scoreLocations': (self.world_map.serialise_score_location()),
+            'obstacles': self.world_map.serialise_obstacles()
+        }

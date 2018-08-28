@@ -1,11 +1,8 @@
 import atexit
 import itertools
-import json
 import logging
 import os
 import subprocess
-import tempfile
-import requests
 
 from .worker_manager import WorkerManager
 
@@ -29,24 +26,11 @@ class LocalWorkerManager(WorkerManager):
     def create_worker(self, player_id):
         assert(player_id not in self.workers)
         port = self.port_counter.next()
-        env = os.environ.copy()
-        data_dir = tempfile.mkdtemp()
 
-        LOGGER.debug('Data dir is %s', data_dir)
-        data = requests.get("http://127.0.0.1:{}/player/{}".format(self.port, player_id)).json()
+        data_url = 'http://{}:{}/player/{}'.format(self.host, self.port, player_id)
 
-        options = data['options']
-        with open('{}/options.json'.format(data_dir), 'w') as options_file:
-            json.dump(options, options_file)
-
-        code = data['code']
-        with open('{}/avatar.py'.format(data_dir), 'w') as avatar_file:
-            avatar_file.write(code)
-
-        env['PYTHONPATH'] = data_dir
-
-        process = subprocess.Popen(['python', 'service.py', self.host, str(port), str(data_dir)],
-                                   cwd=self.worker_directory, env=env)
+        process = subprocess.Popen(['python', 'service.py', self.host, str(port), data_url],
+                                   cwd=self.worker_directory)
         atexit.register(process.kill)
         self.workers[player_id] = process
         worker_url = 'http://%s:%d' % (
