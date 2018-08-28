@@ -26,7 +26,7 @@ class MockGameState(GameState):
         return self
 
 
-class TestTurnManager(unittest.TestCase):
+class TestSimulationRunner(unittest.TestCase):
     """
         Key:
             > : Avatar moving eastward

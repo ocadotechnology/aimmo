@@ -62,9 +62,9 @@ class GameRunner(threading.Thread):
         self.end_turn_callback()
 
     def update(self):
-            self.update_workers()
-            self.update_simulation(self.worker_manager.get_player_id_to_serialised_actions())
-            self.worker_manager.clear_logs()
+        self.update_workers()
+        self.update_simulation(self.worker_manager.get_player_id_to_serialised_actions())
+        self.worker_manager.clear_logs()
 
     def run(self):
         while True:

@@ -98,9 +98,12 @@ class GameAPI(object):
             LOGGER.error("Avatar ID could not be casted into an integer")
         except KeyError:
             LOGGER.error("No avatar ID found. User may not be authorised ")
+            LOGGER.error("query_string: " + query_string)
 
     def _send_logs(self, player_id_to_workers):
         def should_send_logs(logs):
+            LOGGER.info("should_send_logs: " + str(logs))
+
             return logs is not None and logs != ''
 
         for sid, player_id in self._sid_to_avatar_id.iteritems():

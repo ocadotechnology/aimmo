@@ -127,3 +127,9 @@ class DummyAvatarManager(AvatarManager):
 
     def add_avatar_directly(self, avatar):
         self.avatars_by_id[avatar.player_id] = avatar
+
+    def get_player_id_to_serialised_action(self):
+        for dummy in self.avatars_by_id.values():
+            dummy.decide_action(None)
+
+        return {player_id: self.avatars_by_id[player_id]._action for player_id in self.avatars_by_id}

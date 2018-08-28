@@ -72,12 +72,6 @@ class TestAvatarWrapper(TestCase):
             worker_data = self.worker.fetch_data(None)
             self.avatar.decide_action(worker_data)
 
-    def test_action_has_created_correctly(self):
-        self.take_turn()
-        self.assertGreater(len(actions_created), 0, 'No action applied')
-        self.assertEqual(len(actions_created), 1, 'Too many actions applied')
-        self.assertEqual(actions_created[0].avatar, self.avatar, 'Action applied on wrong avatar')
-
     def test_bad_action_data_given(self):
         request_mock = InvalidJSONRequest
         self.take_turn(request_mock)
