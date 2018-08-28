@@ -6,7 +6,7 @@ from httmock import HTTMock
 
 from simulation.avatar import avatar_wrapper
 from simulation.location import Location
-
+from simulation.worker import Worker
 
 class MockEffect(object):
     def __init__(self, avatar):
@@ -60,20 +60,17 @@ class TestAvatarWrapper(TestCase):
     def setUp(self):
         global actions_created
         actions_created = []
-        self.avatar = avatar_wrapper.AvatarWrapper(None, None, 'http://test', None)
+        self.worker = Worker(worker_url='http://test')
+        self.avatar = avatar_wrapper.AvatarWrapper(player_id=None,
+                                                   initial_location=None,
+                                                   avatar_appearance=None)
 
     def take_turn(self, request_mock=None):
         if request_mock is None:
             request_mock = ActionRequest()
         with HTTMock(request_mock):
-            worker_data = self.avatar.fetch_data(None)
+            worker_data = self.worker.fetch_data(None)
             self.avatar.decide_action(worker_data)
-
-    def test_action_has_created_correctly(self):
-        self.take_turn()
-        self.assertGreater(len(actions_created), 0, 'No action applied')
-        self.assertEqual(len(actions_created), 1, 'Too many actions applied')
-        self.assertEqual(actions_created[0].avatar, self.avatar, 'Action applied on wrong avatar')
 
     def test_bad_action_data_given(self):
         request_mock = InvalidJSONRequest

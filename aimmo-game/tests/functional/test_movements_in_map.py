@@ -3,6 +3,7 @@ from unittest import TestCase
 from mock_world import MockWorld
 from simulation.location import Location
 from simulation import map_generator
+from simulation.simulation_runner import ConcurrentSimulationRunner
 from tests.test_simulation.dummy_avatar import (
     MoveEastDummy, MoveWestDummy, MoveNorthDummy, MoveSouthDummy, WaitDummy, DeadDummy
 )
@@ -22,8 +23,8 @@ class TestMovementsInMap(TestCase):
         Utility method for testing.
         """
         self.game = MockWorld(TestMovementsInMap.SETTINGS, dummy_list,
-                              map_generator_class)
-        self.game.game_state.add_avatar(1, None, location)
+                              map_generator_class, ConcurrentSimulationRunner)
+        self.game.game_state.add_avatar(player_id=1, location=location)
         self.avatar = self.game.avatar_manager.get_avatar(1)
 
     def set_up_and_make_movements_in_a_single_direction(self, dummy_list,
@@ -36,7 +37,7 @@ class TestMovementsInMap(TestCase):
         self.assertEqual(self.avatar.location, spawn)
 
         for i in range(number_of_movements):
-            self.game.turn_manager._run_single_turn()
+            self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
 
     def test_movement_five_times_in_all_directions(self):
         """
@@ -105,7 +106,7 @@ class TestMovementsInMap(TestCase):
         self.assertTrue(self.avatar.location, Location(0, 0))
 
         for i in range(2):
-            self.game.turn_manager._run_single_turn()
+            self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
 
         self.assertTrue(self.avatar.location, Location(1, 0))
 
@@ -115,14 +116,16 @@ class TestMovementsInMap(TestCase):
         """
         # Even number of cells between two avatars.
         self.set_up_environment([MoveEastDummy, MoveWestDummy])
-        self.game.game_state.add_avatar(2, None, Location(3, 0))
+        self.game.game_state.add_avatar(2, Location(3, 0))
         avatar_two = self.game.avatar_manager.get_avatar(2)
 
         self.assertEqual(self.avatar.location, Location(0, 0))
         self.assertEqual(avatar_two.location, Location(3, 0))
 
         for i in range(2):
-            self.game.turn_manager._run_single_turn()
+            self.game.simulation_runner.run_single_turn(
+                self.game.avatar_manager.get_player_id_to_serialised_action()
+            )
 
         # Avatar 1 & Avatar 2 only managed to move once.
         self.assertEqual(self.avatar.location, Location(1, 0))
@@ -130,67 +133,32 @@ class TestMovementsInMap(TestCase):
 
         # Odd number of cells between two avatars.
         self.set_up_environment([MoveEastDummy, MoveWestDummy])
-        self.game.game_state.add_avatar(2, None, Location(4, 0))
+        self.game.game_state.add_avatar(2, Location(4, 0))
         avatar_two = self.game.avatar_manager.get_avatar(2)
 
         self.assertEqual(self.avatar.location, Location(0, 0))
         self.assertEqual(avatar_two.location, Location(4, 0))
 
         for i in range(2):
-            self.game.turn_manager._run_single_turn()
+            self.game.simulation_runner.run_single_turn(
+                self.game.avatar_manager.get_player_id_to_serialised_action()
+            )
 
-        # Avatar 1 managed to move twice, while Avatar 2 managed to only move once.
-        self.assertEqual(self.avatar.location, Location(2, 0))
+        # Avatar 1 & Avatar 2 managed to only move only once.
+        self.assertEqual(self.avatar.location, Location(1, 0))
         self.assertEqual(avatar_two.location, Location(3, 0))
 
         # Live avatar can't move into a square occupied by a 'dead' (no worker) avatar
         self.set_up_environment([DeadDummy, MoveWestDummy])
-        self.game.game_state.add_avatar(2, None, Location(1, 0))
+        self.game.game_state.add_avatar(2, Location(1, 0))
         avatar_two = self.game.avatar_manager.get_avatar(2)
 
         self.assertEqual(self.avatar.location, Location(0, 0))
         self.assertEqual(avatar_two.location, Location(1, 0))
-        self.game.turn_manager._run_single_turn()
+        self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
 
         self.assertEqual(self.avatar.location, Location(0, 0))
         self.assertEqual(avatar_two.location, Location(1, 0))
-
-    def test_sequential_avatars_tailing_each_other(self):
-        """
-        Two avatars placed beside each other horizontally. They want to move east, but
-        SequentialTurnManager gives priority to ID1. It gets blocked by ID2 so only two
-        moves.
-        """
-        self.set_up_environment([MoveEastDummy, MoveEastDummy])
-        self.game.game_state.add_avatar(2, None, Location(1, 0))
-        avatar_two = self.game.avatar_manager.get_avatar(2)
-
-        self.assertEqual(self.avatar.location, Location(0, 0))
-        self.assertEqual(avatar_two.location, Location(1, 0))
-
-        for i in range(1):
-            self.game.turn_manager._run_single_turn()
-
-        self.assertEqual(self.avatar.location, Location(0, 0))
-        self.assertEqual(avatar_two.location, Location(2, 0))
-
-    def test_level_one_appropriate_behaviour(self):
-        """
-        Tests the appropriate behaviour of Level 1. The test should reflect everything
-        that is written in the manual
-        test plan.
-        """
-        self.set_up_environment(dummy_list=[MoveEastDummy], location=Location(-2, 0),
-                                map_generator_class=map_generator.Level1)
-        score_cell = self.game.game_state.world_map.get_cell(Location(2, 0))
-        self.assertTrue(score_cell.generates_score)
-        self.game.game_state.main_avatar_id = 1
-
-        for i in range(5):
-            self.game.turn_manager._run_single_turn()
-
-        self.assertEqual(self.avatar.location, Location(2, 0))
-        self.assertTrue(self.game.generator.check_complete(self.game.game_state))
 
     def test_wait_action_on_a_single_avatar(self):
         """
@@ -200,6 +168,6 @@ class TestMovementsInMap(TestCase):
         self.assertEqual(self.avatar.location, Location(0, 0))
 
         for i in range(5):
-            self.game.turn_manager._run_single_turn()
+            self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
 
         self.assertEqual(self.avatar.location, Location(0, 0))

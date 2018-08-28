@@ -61,9 +61,12 @@ class GameRunner(threading.Thread):
         self.simulation_runner.run_single_turn(player_id_to_serialised_actions)
         self.end_turn_callback()
 
+    def update(self):
+        self.update_workers()
+        self.update_simulation(self.worker_manager.get_player_id_to_serialised_actions())
+        self.worker_manager.clear_logs()
+
     def run(self):
         while True:
-            self.update_workers()
-            self.update_simulation(self.worker_manager.get_player_id_to_serialised_actions())
-            self.worker_manager.clear_logs()
+            self.update()
             time.sleep(TURN_TIME)

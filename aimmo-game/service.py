@@ -14,7 +14,6 @@ from flask_cors import CORS
 from simulation import map_generator
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.worker_managers import WORKER_MANAGERS
-from simulation.communicator import Communicator
 from simulation.game_runner import GameRunner
 
 eventlet.sleep()
@@ -61,8 +60,6 @@ class GameAPI(object):
     def register_world_update_on_connect(self):
         @socketio_server.on('connect')
         def world_update_on_connect(sid, environ):
-            self._sid_to_avatar_id[sid] = None
-
             query = environ['QUERY_STRING']
             self._find_avatar_id_from_query(sid, query)
             self.send_updates()
@@ -101,9 +98,12 @@ class GameAPI(object):
             LOGGER.error("Avatar ID could not be casted into an integer")
         except KeyError:
             LOGGER.error("No avatar ID found. User may not be authorised ")
+            LOGGER.error("query_string: " + query_string)
 
     def _send_logs(self, player_id_to_workers):
         def should_send_logs(logs):
+            LOGGER.info("should_send_logs: " + str(logs))
+
             return logs is not None and logs != ''
 
         for sid, player_id in self._sid_to_avatar_id.iteritems():

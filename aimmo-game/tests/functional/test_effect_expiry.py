@@ -25,7 +25,7 @@ class TestEffectExpiry(TestCase):
         }
 
         self.game = MockWorld(SETTINGS)
-        self.game.game_state.add_avatar(1, None, Location(0, 0))
+        self.game.game_state.add_avatar(1, Location(0, 0))
         self.avatar = self.game.avatar_manager.get_avatar(1)
         self.cell = self.game.game_state.world_map.get_cell(Location(1, 0))
 
@@ -40,7 +40,9 @@ class TestEffectExpiry(TestCase):
 
         # Avatar moves EAST to (1,0) where pickup is located, then repeats it 5 times.
         for i in range(6):
-            self.game.turn_manager._run_single_turn()
+            self.game.simulation_runner.run_single_turn(
+                self.game.avatar_manager.get_player_id_to_serialised_action()
+            )
 
         self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created.EFFECT))
         self.assertEqual(list(self.avatar.effects)[0]._time_remaining, 5)
@@ -48,7 +50,9 @@ class TestEffectExpiry(TestCase):
 
         # Run 5 more turns and expect the effect to expire.
         for i in range(5):
-            self.game.turn_manager._run_single_turn()
+            self.game.simulation_runner.run_single_turn(
+                self.game.avatar_manager.get_player_id_to_serialised_action()
+            )
 
         self.assertEqual(len(self.avatar.effects), 0)
         self.assertEqual(self.avatar.attack_strength, 1)
@@ -64,7 +68,7 @@ class TestEffectExpiry(TestCase):
 
         # Avatar moves EAST to (1,0) where pickup is located, then repeats it 5 times.
         for i in range(6):
-            self.game.turn_manager._run_single_turn()
+            self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
 
         self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created.EFFECT))
         self.assertEqual(list(self.avatar.effects)[0]._time_remaining, 5)
@@ -72,7 +76,7 @@ class TestEffectExpiry(TestCase):
 
         # Run 5 more turns and expect the effect to expire.
         for i in range(5):
-            self.game.turn_manager._run_single_turn()
+            self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
 
         self.assertEqual(len(self.avatar.effects), 0)
         self.assertEqual(self.avatar.resistance, 0)
@@ -93,7 +97,9 @@ class TestEffectExpiry(TestCase):
         self.assertEqual(self.avatar.attack_strength, 1)
 
         # Avatar moves EAST to (1,0) where pickup one is located.
-        self.game.turn_manager._run_single_turn()
+        self.game.simulation_runner.run_single_turn(
+            self.game.avatar_manager.get_player_id_to_serialised_action()
+        )
 
         self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created_one.EFFECT))
         self.assertEqual(len(self.avatar.effects), 1)
@@ -102,7 +108,9 @@ class TestEffectExpiry(TestCase):
 
         # Move twice to the second pickup.
         for i in range(2):
-            self.game.turn_manager._run_single_turn()
+            self.game.simulation_runner.run_single_turn(
+                self.game.avatar_manager.get_player_id_to_serialised_action()
+            )
 
         self.assertTrue(isinstance(list(self.avatar.effects)[1], pickup_created_two.EFFECT))
         self.assertEqual(len(self.avatar.effects), 2)
@@ -110,7 +118,9 @@ class TestEffectExpiry(TestCase):
 
         # Eight turns later, we expect the first effect to expire.
         for i in range(8):
-            self.game.turn_manager._run_single_turn()
+            self.game.simulation_runner.run_single_turn(
+                self.game.avatar_manager.get_player_id_to_serialised_action()
+            )
 
         self.assertEqual(len(self.avatar.effects), 1)
         self.assertEqual(list(self.avatar.effects)[0]._time_remaining, 2)
@@ -118,7 +128,9 @@ class TestEffectExpiry(TestCase):
 
         # Two turns later, the second pickup expires too.
         for i in range(2):
-            self.game.turn_manager._run_single_turn()
+            self.game.simulation_runner.run_single_turn(
+                self.game.avatar_manager.get_player_id_to_serialised_action()
+            )
 
         self.assertEqual(len(self.avatar.effects), 0)
         self.assertEqual(self.avatar.attack_strength, 1)
@@ -139,7 +151,9 @@ class TestEffectExpiry(TestCase):
         self.assertEqual(self.avatar.resistance, 0)
 
         # Avatar moves EAST to (1,0) where pickup one is located.
-        self.game.turn_manager._run_single_turn()
+        self.game.simulation_runner.run_single_turn(
+            self.game.avatar_manager.get_player_id_to_serialised_action()
+        )
 
         self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created_one.EFFECT))
         self.assertEqual(len(self.avatar.effects), 1)
@@ -148,7 +162,9 @@ class TestEffectExpiry(TestCase):
 
         # Move twice to the second pickup.
         for i in range(2):
-            self.game.turn_manager._run_single_turn()
+            self.game.simulation_runner.run_single_turn(
+                self.game.avatar_manager.get_player_id_to_serialised_action()
+            )
 
         self.assertTrue(isinstance(list(self.avatar.effects)[1], pickup_created_two.EFFECT))
         self.assertEqual(len(self.avatar.effects), 2)
@@ -156,7 +172,9 @@ class TestEffectExpiry(TestCase):
 
         # Eight turns later, we expect the first effect to expire.
         for i in range(8):
-            self.game.turn_manager._run_single_turn()
+            self.game.simulation_runner.run_single_turn(
+                self.game.avatar_manager.get_player_id_to_serialised_action()
+            )
 
         self.assertEqual(len(self.avatar.effects), 1)
         self.assertEqual(list(self.avatar.effects)[0]._time_remaining, 2)
@@ -164,7 +182,9 @@ class TestEffectExpiry(TestCase):
 
         # Two turns later, the second pickup expires too.
         for i in range(2):
-            self.game.turn_manager._run_single_turn()
+            self.game.simulation_runner.run_single_turn(
+                self.game.avatar_manager.get_player_id_to_serialised_action()
+            )
 
         self.assertEqual(len(self.avatar.effects), 0)
         self.assertEqual(self.avatar.resistance, 0)

@@ -15,7 +15,7 @@ class SimulationRunner(object):
     """
     daemon = True
 
-    def __init__(self, communicator, game_state,):
+    def __init__(self, game_state, communicator):
         self.game_state = game_state
         self.communicator = communicator
 
@@ -60,7 +60,7 @@ class SequentialSimulationRunner(SimulationRunner):
         avatars = self.game_state.avatar_manager.active_avatars
 
         for avatar in avatars:
-            self._run_turn_for_avatar(avatar, player_id_to_serialised_actions[avatar.id])
+            self._run_turn_for_avatar(avatar, player_id_to_serialised_actions[avatar.player_id])
             location_to_clear = avatar.action.target_location
             avatar.action.process(self.game_state.world_map)
             self.game_state.world_map.clear_cell_actions(location_to_clear)
