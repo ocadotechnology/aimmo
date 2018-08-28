@@ -63,7 +63,6 @@ class TestGameRunner(TestCase):
             self.assertIn(i, self.game_runner.worker_manager.final_workers)
             self.assertEqual(self.game_runner.worker_manager.get_code(i), 'code for %s' % i)
 
-    # TODO: Is this still a game runner test?
     def test_changed_code(self):
         self.game_runner.communicator.data = RequestMock(4).value
         self.game_runner.update()
@@ -81,6 +80,16 @@ class TestGameRunner(TestCase):
         for i in (0, 2):
             self.assertIn(i, self.game_runner.worker_manager.updated_workers)
             self.assertEqual(self.game_runner.worker_manager.get_code(i), 'changed %s' % i)
+
+    def test_logs_cleared_at_each_update(self):
+        self.game_runner.communicator.data = RequestMock(3).value
+        self.game_runner.update_workers()
+        first_worker = self.game_runner.worker_manager.player_id_to_worker[0]
+        first_worker.log = 'test logs'
+
+        self.game_runner.worker_manager.clear_logs()
+
+        self.assertIsNone(first_worker.log)
 
     def test_remove_avatars(self):
         self.game_runner.communicator.data = RequestMock(3).value

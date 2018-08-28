@@ -4,16 +4,17 @@ import string
 import mock
 
 import service
-from simulation.logs import Logs
 from simulation.worker_managers.local_worker_manager import LocalWorkerManager
 
 
-class MockGameState():
+class MockGameState(object):
     def serialise(self):
         return {'foo': 'bar'}
 
 
 class MockedSocketIOServer(mock.MagicMock):
+    """ Decorator function that just returns the function. Needed because we decorate
+        functions in the GameAPI."""
     def on(self, event):
         def decorator(func):
             def wrapper(*args, **kwargs):
@@ -22,7 +23,7 @@ class MockedSocketIOServer(mock.MagicMock):
         return decorator
 
 
-class TestSocketio(TestCase):
+class TestSocketIO(TestCase):
     def setUp(self):
         self.environ = {'QUERY_STRING': 'avatar_id=1&EIO=3&transport=polling&t=MJhoMgb'}
         self.game_api = self.create_game_api()
