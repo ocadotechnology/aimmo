@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=100)),
                 ('auth_token', models.CharField(default=aimmo.models.generate_auth_token, max_length=24)),
-                ('public', models.BooleanField(default=False)),
+                ('public', models.BooleanField(default=True)),
                 ('can_play', models.ManyToManyField(related_name='playable_games', to=settings.AUTH_USER_MODEL)),
                 ('owner', models.ForeignKey(related_name='owned_games', to=settings.AUTH_USER_MODEL, null=True)),
             ],
