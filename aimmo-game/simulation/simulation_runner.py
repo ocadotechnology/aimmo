@@ -1,5 +1,5 @@
 import logging
-import time
+from abc import ABCMeta, abstractmethod
 from threading import Thread
 
 from simulation.action import PRIORITIES
@@ -14,13 +14,15 @@ class SimulationRunner(object):
     Game loop
     """
     daemon = True
+    __metaclass__ = ABCMeta
 
     def __init__(self, game_state, communicator):
         self.game_state = game_state
         self.communicator = communicator
 
+    @abstractmethod
     def run_turn(self, player_id_to_serialised_actions):
-        raise NotImplementedError("Abstract method.")
+        pass
 
     def _run_turn_for_avatar(self, avatar, serialised_action):
         """

@@ -1,7 +1,7 @@
 import time
 import threading
 
-from communicator import Communicator
+from django_communicator import DjangoCommunicator
 from simulation_runner import ConcurrentSimulationRunner
 
 TURN_TIME = 2
@@ -12,8 +12,8 @@ class GameRunner(threading.Thread):
         super(GameRunner, self).__init__()
         self.worker_manager = worker_manager
         self.game_state = game_state
-        self.communicator = Communicator(django_api_url=django_api_url,
-                                         completion_url=django_api_url + 'complete/')
+        self.communicator = DjangoCommunicator(django_api_url=django_api_url,
+                                               completion_url=django_api_url + 'complete/')
         self.end_turn_callback = end_turn_callback
         self.simulation_runner = ConcurrentSimulationRunner(communicator=self.communicator,
                                                             game_state=game_state)
@@ -34,13 +34,6 @@ class GameRunner(threading.Thread):
     def update_main_user(self, game_metadata):
         self.game_state.main_avatar_id = game_metadata['main_avatar']
 
-    def get_game_state_for_workers(self):
-        player_id_to_game_state = {}
-        for player_id, avatar_wrapper in self.game_state.avatar_manager.avatars_by_id.iteritems():
-            player_id_to_game_state[player_id] = self.game_state.serialise_for_worker(avatar_wrapper)
-
-        return player_id_to_game_state
-
     def update_workers(self):
         game_metadata = self.communicator.get_game_metadata()['main']
 
@@ -54,8 +47,7 @@ class GameRunner(threading.Thread):
         self.worker_manager.update_worker_codes(game_metadata['users'])
 
         self.update_main_user(game_metadata)
-        player_id_to_game_state = self.get_game_state_for_workers()
-        self.worker_manager.fetch_all_worker_data(player_id_to_game_state)
+        self.worker_manager.fetch_all_worker_data(self.game_state.get_serialised_game_states_for_workers())
 
     def update_simulation(self, player_id_to_serialised_actions):
         self.simulation_runner.run_single_turn(player_id_to_serialised_actions)

@@ -36,3 +36,4 @@ class AvatarManager(object):
         """
 
         return [player.serialise() for player in self.avatars]
+

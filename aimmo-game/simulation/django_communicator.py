@@ -1,7 +1,7 @@
 import requests
 
 
-class Communicator(object):
+class DjangoCommunicator(object):
     """
     This class encapsulates the communication between aimmo-game
     and the django server
