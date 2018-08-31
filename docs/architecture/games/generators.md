@@ -2,25 +2,40 @@
 
 ---
 
-The generators are map creation services. The Django application is exposed to different map creation service classes. There is a map generation service as part of the Django application which uses the default map generator: the class Main in the map_generator file.
+The generators are map creation services. The Django application is exposed 
+to different map creation service classes. There is a map generation service
+as part of the Django application which uses the default map generator: the
+class Main in the map_generator file.
 
-A map generator is a class that inherits from BaseGenerator and has to implement the `get_map` method. 
+A map generator is a class that inherits from BaseGenerator and has to 
+implement the `get_map` method. 
 
 #### The Main Map Generator
 
-The main map is supposed to be used for the generation of big worlds. The whole map is randomly generated, but the generation is regulated by the [World Map](world-map) settings.
+The main map is supposed to be used for the generation of big worlds. This
+should be the only generator used at this time. The `Level1` generator and
+`BaseLevelGenerator` are legacy classes which eventually will be removed.
+The whole map is randomly generated, but the generation is regulated by the 
+[World Map](world-map.md) settings.
 
-Obstacles are filled according to the obstacle ratio. Once an obstacle is added we ensure that each habitable cell can reach each other, thus the map will be connected and each generated avatar can reach others. 
+Obstacles are filled according to the obstacle ratio. Once an obstacle is 
+added we ensure that each habitable cell can reach each other, thus the 
+map will be connected and each generated avatar can reach others. 
 
 #### Implementation details
 
-The `get_map` method builds the map gradually adding random obstacles until the obstacle ratio is reached.(see [World Map](world-map) settings) 
+The `get_map` method builds the map gradually adding random obstacles 
+until the obstacle ratio is reached.(see [World Map](world-map.md) settings) 
 
-To ensure that the map is connected, we check that all the adjacent habitable cells can reach all the other cells. To
-To check that neighbours reach each other efficiently we use A* for path finding. 
+To ensure that the map is connected, we check that all the adjacent 
+habitable cells can reach all the other cells. To check that neighbours 
+reach each other efficiently we use A* for path 
+finding. 
 
-#### Levels JSON
-We store our levels in `JSON` for the backend and `*.unity` scene files for the frontend. The below is a _**proposed**_ format that we think will cover all the situations we need for the level 1 milestone.
+#### Serialisation to JSON
+We store our game information in `JSON` for the backend to be able to 
+deserialize it. The below is a _**proposed**_ format which we are working
+towards.
 
 ```Javascript
 {
