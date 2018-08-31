@@ -27,11 +27,11 @@ logging.basicConfig(level=logging.INFO)
 
 
 class GameAPI(object):
-    def __init__(self, game_runner):
+    def __init__(self, game_state, worker_manager):
         self._socket_session_id_to_player_id = {}
         self.register_endpoints()
-        self.worker_manager = game_runner.worker_manager
-        self.game_state = game_runner.game_state
+        self.worker_manager = worker_manager
+        self.game_state = game_state
 
     def register_endpoints(self):
         self.register_player_data_view()
@@ -134,7 +134,8 @@ def create_runner(port):
 
 def run_game(port):
     game_runner = create_runner(port)
-    game_api = GameAPI(game_runner=game_runner)
+    game_api = GameAPI(game_state=game_runner.game_state,
+                       worker_manager=game_runner.worker_manager)
     game_runner.register_game_api(game_api)
     game_runner.start()
 
