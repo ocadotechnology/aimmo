@@ -3,20 +3,27 @@ import threading
 
 from django_communicator import DjangoCommunicator
 from simulation_runner import ConcurrentSimulationRunner
+from avatar.avatar_manager import AvatarManager
 
 TURN_TIME = 2
 
 
 class GameRunner(threading.Thread):
-    def __init__(self, worker_manager, game_state, end_turn_callback, django_api_url):
+    def __init__(self, worker_manager_class, game_state_generator, django_api_url, port):
         super(GameRunner, self).__init__()
-        self.worker_manager = worker_manager
-        self.game_state = game_state
+        self.worker_manager = worker_manager_class(port=port)
+        self.game_state = game_state_generator(AvatarManager())
         self.communicator = DjangoCommunicator(django_api_url=django_api_url,
                                                completion_url=django_api_url + 'complete/')
-        self.end_turn_callback = end_turn_callback
+        self.subscriber = None
         self.simulation_runner = ConcurrentSimulationRunner(communicator=self.communicator,
-                                                            game_state=game_state)
+                                                            game_state=self.game_state)
+
+    def register_game_api(self, subscriber):
+        self.subscriber = subscriber
+
+    def notify_game_api(self):
+        self.subscriber.send_updates()
 
     def get_users_to_add(self, game_metadata):
         def player_is_new(_player):
@@ -51,7 +58,7 @@ class GameRunner(threading.Thread):
 
     def update_simulation(self, player_id_to_serialised_actions):
         self.simulation_runner.run_single_turn(player_id_to_serialised_actions)
-        self.end_turn_callback()
+        self.notify_game_api()
 
     def update(self):
         self.update_workers()

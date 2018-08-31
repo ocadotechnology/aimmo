@@ -5,6 +5,7 @@ import mock
 
 import service
 from simulation.worker_managers.local_worker_manager import LocalWorkerManager
+from simulation.game_runner import GameRunner
 
 
 class MockGameState(object):
@@ -35,8 +36,11 @@ class TestSocketIO(TestCase):
 
     @mock.patch('service.flask_app')
     def create_game_api(self, flask_app):
-        return service.GameAPI(worker_manager=LocalWorkerManager(),
-                               game_state=MockGameState())
+        game_runner = GameRunner(worker_manager_class=LocalWorkerManager,
+                                 game_state_generator=lambda avatar_manager: MockGameState(),
+                                 django_api_url='http://test',
+                                 port='0000')
+        return service.GameAPI(game_runner)
 
     @mock.patch('service.flask_app')
     @mock.patch('service.socketio_server', new_callable=MockedSocketIOServer)

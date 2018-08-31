@@ -7,6 +7,8 @@ from .test_simulation.dummy_avatar import MoveEastDummy
 from simulation.location import Location
 from simulation.game_state import GameState
 from simulation.world_map import WorldMap
+from simulation.worker_managers.local_worker_manager import LocalWorkerManager
+from simulation.game_runner import GameRunner
 
 
 class TestService(TestCase):
@@ -16,7 +18,11 @@ class TestService(TestCase):
     @classmethod
     def setUpClass(cls):
         """ Register the api endpoints """
-        cls.game_api = service.GameAPI(worker_manager=None, game_state=None)
+        game_runner = GameRunner(worker_manager_class=LocalWorkerManager,
+                                 game_state_generator=lambda avatar_manager: None,
+                                 django_api_url='http:test',
+                                 port=None)
+        cls.game_api = service.GameAPI(game_runner=game_runner)
 
     def setUp(self):
         """

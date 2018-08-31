@@ -12,7 +12,6 @@ import socketio
 from flask_cors import CORS
 
 from simulation import map_generator
-from simulation.avatar.avatar_manager import AvatarManager
 from simulation.worker_managers import WORKER_MANAGERS
 from simulation.game_runner import GameRunner
 
@@ -28,11 +27,11 @@ logging.basicConfig(level=logging.INFO)
 
 
 class GameAPI(object):
-    def __init__(self, worker_manager, game_state):
+    def __init__(self, game_runner):
         self._socket_session_id_to_player_id = {}
         self.register_endpoints()
-        self.worker_manager = worker_manager
-        self.game_state = game_state
+        self.worker_manager = game_runner.worker_manager
+        self.game_state = game_runner.game_state
 
     def register_endpoints(self):
         self.register_player_data_view()
@@ -122,22 +121,21 @@ class GameAPI(object):
                 socketio_server.emit('feedback-avatar-updated', room=sid)
 
 
-def run_game(port):
-    print("Running game...")
+def create_runner(port):
     settings = pickle.loads(os.environ['settings'])
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
-    game_state = generator.get_game_state(AvatarManager())
-    WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
-    worker_manager = WorkerManagerClass(port=port)
+    worker_manager_class = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
 
-    game_api = GameAPI(worker_manager=worker_manager, game_state=game_state)
+    return GameRunner(worker_manager_class=worker_manager_class,
+                      game_state_generator=generator.get_game_state,
+                      django_api_url=os.environ.get('GAME_API_URL', 'http://localhost:8000/aimmo/api/games/'),
+                      port=port)
 
-    game_runner = GameRunner(worker_manager=worker_manager,
-                             game_state=game_state,
-                             django_api_url=os.environ.get('GAME_API_URL',
-                                                           'http://localhost:8000/aimmo/api/games/'),
-                             end_turn_callback=game_api.send_updates)
 
+def run_game(port):
+    game_runner = create_runner(port)
+    game_api = GameAPI(game_runner=game_runner)
+    game_runner.register_game_api(game_api)
     game_runner.start()
 
 
