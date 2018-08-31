@@ -48,19 +48,15 @@ class TestGameRunner(TestCase):
                                       django_api_url='http://test')
         self.game_runner.communicator = MockCommunicator()
 
-    @mock.patch.object(target=GameRunner, attribute='notify_game_api')
-    def test_correct_url(self, mocked_notify_subscriber):
+    def test_correct_url(self):
         self.game_runner.communicator.get_game_metadata = mock.MagicMock()
         self.game_runner.update()
-        mocked_notify_subscriber.assert_called_once()
         # noinspection PyUnresolvedReferences
         self.game_runner.communicator.get_game_metadata.assert_called_once()
 
-    @mock.patch.object(target=GameRunner, attribute='notify_game_api')
-    def test_workers_and_avatars_added(self, mocked_notify_subscriber):
+    def test_workers_and_avatars_added(self):
         self.game_runner.communicator.data = RequestMock(3).value
         self.game_runner.update()
-        mocked_notify_subscriber.assert_called_once()
 
         self.assertEqual(len(self.game_runner.worker_manager.final_workers), 3)
         for i in range(3):
@@ -68,8 +64,7 @@ class TestGameRunner(TestCase):
             self.assertIn(i, self.game_runner.worker_manager.final_workers)
             self.assertEqual(self.game_runner.worker_manager.get_code(i), 'code for %s' % i)
 
-    @mock.patch.object(target=GameRunner, attribute='notify_game_api')
-    def test_changed_code(self, mocked_notify_subscriber):
+    def test_changed_code(self):
         self.game_runner.communicator.data = RequestMock(4).value
         self.game_runner.update()
         self.game_runner.communicator.change_code(0, 'changed 0')
@@ -97,8 +92,7 @@ class TestGameRunner(TestCase):
 
         self.assertIsNone(first_worker.log)
 
-    @mock.patch.object(target=GameRunner, attribute='notify_game_api')
-    def test_remove_avatars(self, mocked_notify_subscriber):
+    def test_remove_avatars(self):
         self.game_runner.communicator.data = RequestMock(3).value
         self.game_runner.update()
         del self.game_runner.communicator.data['main']['users'][1]

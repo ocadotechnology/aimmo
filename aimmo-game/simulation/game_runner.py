@@ -18,12 +18,10 @@ class GameRunner(threading.Thread):
         self.subscriber = None
         self.simulation_runner = ConcurrentSimulationRunner(communicator=self.communicator,
                                                             game_state=self.game_state)
+        self._end_turn_callback = lambda: None
 
-    def register_game_api(self, subscriber):
-        self.subscriber = subscriber
-
-    def notify_game_api(self):
-        self.subscriber.send_updates()
+    def set_end_turn_callback(self, callback_method):
+        self._end_turn_callback = callback_method
 
     def get_users_to_add(self, game_metadata):
         def player_is_new(_player):
@@ -58,7 +56,7 @@ class GameRunner(threading.Thread):
 
     def update_simulation(self, player_id_to_serialised_actions):
         self.simulation_runner.run_single_turn(player_id_to_serialised_actions)
-        self.notify_game_api()
+        self._end_turn_callback()
 
     def update(self):
         self.update_workers()

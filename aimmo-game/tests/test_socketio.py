@@ -40,7 +40,8 @@ class TestSocketIO(TestCase):
                                  game_state_generator=lambda avatar_manager: MockGameState(),
                                  django_api_url='http://test',
                                  port='0000')
-        return service.GameAPI(game_runner)
+        return service.GameAPI(game_state=game_runner.game_state,
+                               worker_manager=game_runner.worker_manager)
 
     @mock.patch('service.flask_app')
     @mock.patch('service.socketio_server', new_callable=MockedSocketIOServer)

@@ -136,7 +136,7 @@ def run_game(port):
     game_runner = create_runner(port)
     game_api = GameAPI(game_state=game_runner.game_state,
                        worker_manager=game_runner.worker_manager)
-    game_runner.register_game_api(game_api)
+    game_runner.set_end_turn_callback(game_api.send_updates)
     game_runner.start()
 
 
