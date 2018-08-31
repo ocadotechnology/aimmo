@@ -27,7 +27,7 @@ class TestSocketIO(TestCase):
     def setUp(self):
         self.environ = {'QUERY_STRING': 'avatar_id=1&EIO=3&transport=polling&t=MJhoMgb'}
         self.game_api = self.create_game_api()
-        self.mocked_mappings = self.game_api._socket_session_id_to_avatar_id
+        self.mocked_mappings = self.game_api._socket_session_id_to_player_id
         self.sid = ''.join(random.choice(string.ascii_uppercase +
                                          string.ascii_lowercase +
                                          string.digits)
