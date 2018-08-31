@@ -16,7 +16,7 @@ The main map is supposed to be used for the generation of big worlds. This
 should be the only generator used at this time. The `Level1` generator and
 `BaseLevelGenerator` are legacy classes which eventually will be removed.
 The whole map is randomly generated, but the generation is regulated by the 
-[World Map](world-map) settings.
+[World Map](world-map.md) settings.
 
 Obstacles are filled according to the obstacle ratio. Once an obstacle is 
 added we ensure that each habitable cell can reach each other, thus the 
@@ -25,7 +25,7 @@ map will be connected and each generated avatar can reach others.
 #### Implementation details
 
 The `get_map` method builds the map gradually adding random obstacles 
-until the obstacle ratio is reached.(see [World Map](world-map) settings) 
+until the obstacle ratio is reached.(see [World Map](world-map.md) settings) 
 
 To ensure that the map is connected, we check that all the adjacent 
 habitable cells can reach all the other cells. To check that neighbours 
