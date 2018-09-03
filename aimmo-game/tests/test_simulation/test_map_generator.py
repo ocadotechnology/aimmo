@@ -135,13 +135,13 @@ class TestLevel1Generator(_BaseGeneratorTestCase):
 
     def test_incomplete_at_score_0(self):
         game_state = self.get_game_state()
-        game_state.avatar_manager.add_avatar(1, '', None)
+        game_state.avatar_manager.add_avatar(1)
         game_state.main_avatar_id = 1
         self.assertFalse(game_state.is_complete())
 
     def test_completes_at_score_1(self):
         game_state = self.get_game_state()
-        game_state.avatar_manager.add_avatar(1, '', None)
+        game_state.avatar_manager.add_avatar(1)
         game_state.avatar_manager.avatars_by_id[1].score = 1
         game_state.main_avatar_id = 1
         self.assertTrue(game_state.is_complete())
@@ -149,5 +149,5 @@ class TestLevel1Generator(_BaseGeneratorTestCase):
     def test_static_spawn(self):
         game_state = self.get_game_state()
         for i in range(5):
-            game_state.add_avatar(i, '')
+            game_state.add_avatar(i)
             self.assertEqual(game_state.avatar_manager.avatars_by_id[i].location, Location(-2, 0))

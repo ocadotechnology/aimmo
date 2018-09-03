@@ -53,7 +53,7 @@ class TestGameState(TestCase):
 
     def test_add_avatar(self):
         state = GameState(AvatarMap(None), DummyAvatarManager())
-        state.add_avatar(7, "")
+        state.add_avatar(7)
         self.assertIn(7, state.avatar_manager.avatars_by_id)
         avatar = state.avatar_manager.avatars_by_id[7]
         self.assertEqual(avatar.location.x, 10)
@@ -68,12 +68,12 @@ class TestGameState(TestCase):
     def test_updates_map_with_correct_num_avatars(self):
         map = InfiniteMap()
         manager = DummyAvatarManager()
-        manager.add_avatar(1, '', None)
+        manager.add_avatar(1)
         state = GameState(map, manager)
         state.update_environment()
         self.assertEqual(map.num_avatars, 1)
-        manager.add_avatar(2, '', None)
-        manager.add_avatar(3, '', None)
+        manager.add_avatar(2)
+        manager.add_avatar(3)
         state.update_environment()
         self.assertEqual(map.num_avatars, 3)
 

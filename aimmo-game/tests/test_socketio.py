@@ -4,15 +4,18 @@ import string
 import mock
 
 import service
-from simulation.logs import Logs
+from simulation.worker_managers.local_worker_manager import LocalWorkerManager
+from simulation.game_runner import GameRunner
 
 
-class MockGameState():
+class MockGameState(object):
     def serialise(self):
         return {'foo': 'bar'}
 
 
 class MockedSocketIOServer(mock.MagicMock):
+    """ Decorator function that just returns the function. Needed because we decorate
+        functions in the GameAPI."""
     def on(self, event):
         def decorator(func):
             def wrapper(*args, **kwargs):
@@ -21,14 +24,11 @@ class MockedSocketIOServer(mock.MagicMock):
         return decorator
 
 
-class TestSocketio(TestCase):
+class TestSocketIO(TestCase):
     def setUp(self):
-        self.environ = {}
-        self.mocked_logs = Logs()
-        self.have_avatars_code_updated = {}
-        self.environ['QUERY_STRING'] = 'avatar_id=1&EIO=3&transport=polling&t=MJhoMgb'
+        self.environ = {'QUERY_STRING': 'avatar_id=1&EIO=3&transport=polling&t=MJhoMgb'}
         self.game_api = self.create_game_api()
-        self.mocked_mappings = self.game_api._sid_to_avatar_id
+        self.mocked_mappings = self.game_api._socket_session_id_to_player_id
         self.sid = ''.join(random.choice(string.ascii_uppercase +
                                          string.ascii_lowercase +
                                          string.digits)
@@ -36,15 +36,19 @@ class TestSocketio(TestCase):
 
     @mock.patch('service.flask_app')
     def create_game_api(self, flask_app):
-        return service.GameAPI(game_state=MockGameState(),
-                               worker_manager=None,
-                               logs=self.mocked_logs,
-                               have_avatars_code_updated=self.have_avatars_code_updated)
+        game_runner = GameRunner(worker_manager_class=LocalWorkerManager,
+                                 game_state_generator=lambda avatar_manager: MockGameState(),
+                                 django_api_url='http://test',
+                                 port='0000')
+        return service.GameAPI(game_state=game_runner.game_state,
+                               worker_manager=game_runner.worker_manager)
 
     @mock.patch('service.flask_app')
     @mock.patch('service.socketio_server', new_callable=MockedSocketIOServer)
     def test_socketio_emit_called(self, mocked_socketio, flask_app):
+        self.game_api.worker_manager.add_new_worker(1)
         self.game_api.register_world_update_on_connect()(self.sid, self.environ)
+
         self.assertTrue(mocked_socketio.return_value.emit.assert_called_once)
 
     @mock.patch('service.flask_app')
@@ -52,6 +56,7 @@ class TestSocketio(TestCase):
     def test_matched_session_id_to_avatar_id_mapping(self, mocked_socketio, flask_app):
         self.assertEqual(len(self.mocked_mappings), 0)
 
+        self.game_api.worker_manager.add_new_worker(1)
         self.game_api.register_world_update_on_connect()(self.sid, self.environ)
 
         self.assertEqual(len(self.mocked_mappings), 1)
@@ -65,17 +70,19 @@ class TestSocketio(TestCase):
 
         self.assertEqual(len(self.mocked_mappings), 0)
 
+        self.game_api.worker_manager.add_new_worker(1)
         self.game_api.register_world_update_on_connect()(self.sid, self.environ)
 
-        self.assertEqual(len(self.mocked_mappings), 1)
-        self.assertTrue(self.sid in self.mocked_mappings)
-        self.assertIsNone(self.mocked_mappings[self.sid])
+        self.assertEqual(len(self.mocked_mappings), 0)
+        self.assertFalse(self.sid in self.mocked_mappings)
 
     @mock.patch('service.flask_app')
     @mock.patch('service.socketio_server', new_callable=MockedSocketIOServer)
     def test_send_updates_for_one_user(self, mocked_socketio, flask_app):
         self.mocked_mappings[self.sid] = 1
-        self.mocked_logs.set_user_logs(self.mocked_mappings[self.sid], 'Logs one')
+        self.game_api.worker_manager.add_new_worker(self.mocked_mappings[self.sid])
+        worker = self.game_api.worker_manager.player_id_to_worker[self.mocked_mappings[self.sid]]
+        worker.log = 'Logs one'
 
         self.game_api.send_updates()
 
@@ -89,6 +96,7 @@ class TestSocketio(TestCase):
     def test_no_logs_not_emitted(self, mocked_socketio, flask_app):
         """ If there are no logs for an avatar, no logs should be emitted. """
         self.mocked_mappings[self.sid] = 1
+        self.game_api.worker_manager.add_new_worker(self.mocked_mappings[self.sid])
         self.game_api.send_updates()
 
         mocked_socketio.emit.assert_called_once_with('game-state', {'foo': 'bar'}, room=self.sid)
@@ -98,9 +106,10 @@ class TestSocketio(TestCase):
     def test_empty_logs_not_emitted(self, mocked_socketio, flask_app):
         """ If the logs are an empty sting, no logs should be emitted. """
         self.mocked_mappings[self.sid] = 1
-        self.have_avatars_code_updated[self.mocked_mappings[self.sid]] = False
 
-        self.mocked_logs.set_user_logs(self.mocked_mappings[self.sid], '')
+        self.game_api.worker_manager.add_new_worker(self.mocked_mappings[self.sid])
+        worker = self.game_api.worker_manager.player_id_to_worker[self.mocked_mappings[self.sid]]
+        worker.logs = ''
         self.game_api.send_updates()
 
         mocked_socketio.emit.assert_called_once_with('game-state', {'foo': 'bar'}, room=self.sid)
@@ -111,8 +120,12 @@ class TestSocketio(TestCase):
         self.mocked_mappings[self.sid] = 1
         self.mocked_mappings['differentsid'] = 2
 
-        self.mocked_logs.set_user_logs(self.mocked_mappings[self.sid], 'Logs one')
-        self.mocked_logs.set_user_logs(self.mocked_mappings['differentsid'], 'Logs two')
+        self.game_api.worker_manager.add_new_worker(self.mocked_mappings[self.sid])
+        self.game_api.worker_manager.add_new_worker(self.mocked_mappings['differentsid'])
+        worker_one = self.game_api.worker_manager.player_id_to_worker[self.mocked_mappings[self.sid]]
+        worker_two = self.game_api.worker_manager.player_id_to_worker[self.mocked_mappings['differentsid']]
+        worker_one.log = 'Logs one'
+        worker_two.log = 'Logs two'
 
         self.game_api.send_updates()
 
@@ -130,7 +143,9 @@ class TestSocketio(TestCase):
     @mock.patch('service.socketio_server', new_callable=MockedSocketIOServer)
     def test_send_code_changed_flag(self, mocked_socketio, flask_app):
         self.mocked_mappings[self.sid] = 1
-        self.have_avatars_code_updated[self.mocked_mappings[self.sid]] = True
+        self.game_api.worker_manager.add_new_worker(self.mocked_mappings[self.sid])
+        worker = self.game_api.worker_manager.player_id_to_worker[self.mocked_mappings[self.sid]]
+        worker.has_code_updated = True
         self.game_api.send_updates()
 
         user_game_state_call = mock.call('game-state', {'foo': 'bar'}, room=self.sid)
@@ -142,7 +157,9 @@ class TestSocketio(TestCase):
     @mock.patch('service.socketio_server', new_callable=MockedSocketIOServer)
     def test_send_false_flag_not_sent(self, mocked_socketio, flask_app):
         self.mocked_mappings[self.sid] = 1
-        self.have_avatars_code_updated[self.mocked_mappings[self.sid]] = False
+        self.game_api.worker_manager.add_new_worker(self.mocked_mappings[self.sid])
+        worker = self.game_api.worker_manager.player_id_to_worker[self.mocked_mappings[self.sid]]
+        worker.has_code_updated = False
         self.game_api.send_updates()
 
         mocked_socketio.emit.assert_called_once_with('game-state', {'foo': 'bar'}, room=self.sid)

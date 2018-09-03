@@ -12,7 +12,9 @@ class DummyAvatar(AvatarWrapper):
     def __init__(self, player_id=1, initial_location=(0, 0)):
         # TODO: extract avatar state and state-altering methods into a new class.
         #       The new class is to be shared between DummyAvatarRunner and AvatarRunner
-        super(DummyAvatar, self).__init__(player_id, initial_location, None, None)
+        super(DummyAvatar, self).__init__(player_id,
+                                          initial_location,
+                                          avatar_appearance=None)
         self.times_died = 0
         self.attack_strength = 1
         self.effects = set()
@@ -115,7 +117,7 @@ class DummyAvatarManager(AvatarManager):
             dummy_list = []
         self.dummy_list = dummy_list
 
-    def add_avatar(self, player_id, worker_url, location):
+    def add_avatar(self, player_id, location=(0, 0)):
         try:
             dummy = self.dummy_list.pop(0)
         except IndexError:
@@ -125,3 +127,9 @@ class DummyAvatarManager(AvatarManager):
 
     def add_avatar_directly(self, avatar):
         self.avatars_by_id[avatar.player_id] = avatar
+
+    def get_player_id_to_serialised_action(self):
+        for dummy in self.avatars_by_id.values():
+            dummy.decide_action(None)
+
+        return {player_id: self.avatars_by_id[player_id]._action for player_id in self.avatars_by_id}

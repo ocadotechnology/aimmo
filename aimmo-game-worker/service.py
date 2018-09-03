@@ -26,7 +26,6 @@ def get_code_and_options():
 def process_turn():
     code, options = get_code_and_options()
     data = flask.request.get_json()
-
     world_map = WorldMap(**data['world_map'])
 
     avatar_state = AvatarState(location=data['avatar_state']['location'],

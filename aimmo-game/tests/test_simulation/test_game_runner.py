@@ -41,21 +41,23 @@ class RequestMock(object):
 
 class TestGameRunner(TestCase):
     def setUp(self):
-        self.mock_communicator = MockCommunicator()
         game_state = GameState(InfiniteMap(), AvatarManager())
-        self.game_runner = GameRunner(communicator=self.mock_communicator,
-                                      worker_manager=ConcreteWorkerManager(),
-                                      game_state=game_state)
+        self.game_runner = GameRunner(worker_manager_class=ConcreteWorkerManager,
+                                      game_state_generator=lambda avatar_manager: game_state,
+                                      port='0000',
+                                      django_api_url='http://test')
+        self.game_runner.communicator = MockCommunicator()
 
     def test_correct_url(self):
-        self.mock_communicator.get_game_metadata = mock.MagicMock()
+        self.game_runner.communicator.get_game_metadata = mock.MagicMock()
         self.game_runner.update()
         # noinspection PyUnresolvedReferences
-        self.mock_communicator.get_game_metadata.assert_called_once()
+        self.game_runner.communicator.get_game_metadata.assert_called_once()
 
     def test_workers_and_avatars_added(self):
-        self.mock_communicator.data = RequestMock(3).value
+        self.game_runner.communicator.data = RequestMock(3).value
         self.game_runner.update()
+
         self.assertEqual(len(self.game_runner.worker_manager.final_workers), 3)
         for i in range(3):
             self.assertIn(i, self.game_runner.game_state.avatar_manager.avatars_by_id)
@@ -63,10 +65,10 @@ class TestGameRunner(TestCase):
             self.assertEqual(self.game_runner.worker_manager.get_code(i), 'code for %s' % i)
 
     def test_changed_code(self):
-        self.mock_communicator.data = RequestMock(4).value
+        self.game_runner.communicator.data = RequestMock(4).value
         self.game_runner.update()
-        self.mock_communicator.change_code(0, 'changed 0')
-        self.mock_communicator.change_code(2, 'changed 2')
+        self.game_runner.communicator.change_code(0, 'changed 0')
+        self.game_runner.communicator.change_code(2, 'changed 2')
         self.game_runner.update()
 
         for i in range(4):
@@ -80,10 +82,20 @@ class TestGameRunner(TestCase):
             self.assertIn(i, self.game_runner.worker_manager.updated_workers)
             self.assertEqual(self.game_runner.worker_manager.get_code(i), 'changed %s' % i)
 
+    def test_logs_cleared_at_each_update(self):
+        self.game_runner.communicator.data = RequestMock(3).value
+        self.game_runner.update_workers()
+        first_worker = self.game_runner.worker_manager.player_id_to_worker[0]
+        first_worker.log = 'test logs'
+
+        self.game_runner.worker_manager.clear_logs()
+
+        self.assertIsNone(first_worker.log)
+
     def test_remove_avatars(self):
-        self.mock_communicator.data = RequestMock(3).value
+        self.game_runner.communicator.data = RequestMock(3).value
         self.game_runner.update()
-        del self.mock_communicator.data['main']['users'][1]
+        del self.game_runner.communicator.data['main']['users'][1]
         self.game_runner.update()
 
         for i in range(3):
