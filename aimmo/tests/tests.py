@@ -184,7 +184,6 @@ class TestViews(TestCase):
 
     def test_current_avatar_api_for_unauthorised_games(self):
         self.game.public = False
-        self.game.can_play = [self.user]
         self.game.save()
         c = self.login()
         response = c.get(reverse('aimmo/current_avatar_in_game', kwargs={'game_id': 1}))
