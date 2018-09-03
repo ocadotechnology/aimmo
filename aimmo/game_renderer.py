@@ -3,6 +3,7 @@ Any helper functions used for the unity game.
 """
 
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.models import User
 from aimmo import app_settings, exceptions
 from models import Game
 
@@ -64,8 +65,8 @@ def get_avatar_id_from_user_id(user_id, game_id):
     :return: An integer containing the avatar_ID.
     """
     game = get_object_or_404(Game, id=game_id)
-
-    if not game.can_user_play(user_id):
+    user = get_object_or_404(User, id=user_id)
+    if not game.can_user_play(user):
         raise exceptions.UserCannotPlayGameException
 
     avatar = game.avatar_set.get(owner=user_id)
