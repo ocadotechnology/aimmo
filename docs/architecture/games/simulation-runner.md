@@ -4,7 +4,7 @@
 
 
 
-The [`SimulationRunner`](simulation-runner-file)is responsible 
+The [`SimulationRunner`](simulation-runner-file) is responsible 
 for running a turn in the simulation. 
 
 The `run_turn` method is called from `GameRunner`, and it 

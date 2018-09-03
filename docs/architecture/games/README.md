@@ -5,7 +5,7 @@
 ## Game Components
 - [Game Runner](game-runner.md)
 - [Worker Manager](worker-manager.md) 
-- [Turn Manager](simulation-runner.md) 
+- [Simulation Runner](simulation-runner.md) 
 - [Worker](worker.md)
 - [Map Generator](generators.md) 
 - [World Map](world-map.md)

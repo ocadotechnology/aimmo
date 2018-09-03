@@ -15,7 +15,6 @@ class GameRunner(threading.Thread):
         self.game_state = game_state_generator(AvatarManager())
         self.communicator = DjangoCommunicator(django_api_url=django_api_url,
                                                completion_url=django_api_url + 'complete/')
-        self.subscriber = None
         self.simulation_runner = ConcurrentSimulationRunner(communicator=self.communicator,
                                                             game_state=self.game_state)
         self._end_turn_callback = lambda: None
