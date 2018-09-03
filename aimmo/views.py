@@ -100,8 +100,7 @@ def connection_parameters(request, game_id):
     env_connection_settings = game_renderer.get_environment_connection_settings(game_id)
 
     try:
-        avatar_id = game_renderer.get_avatar_id_from_user_id(user_id=request.user.id,
-                                                             game_id=game_id)
+        avatar_id = game_renderer.get_avatar_id_from_user(user=request.user, game_id=game_id)
     except UserCannotPlayGameException:
         LOGGER.warning('HTTP 401 returned. User {} unauthorised to play.'.format(request.user.id))
         return HttpResponse('User unauthorized to play',
@@ -196,8 +195,7 @@ def add_game(request):
 def current_avatar_in_game(request, game_id):
 
     try:
-        avatar_id = game_renderer.get_avatar_id_from_user_id(user_id=request.user.id,
-                                                             game_id=game_id)
+        avatar_id = game_renderer.get_avatar_id_from_user(user=request.user, game_id=game_id)
     except UserCannotPlayGameException:
         LOGGER.warning('HTTP 401 returned. User {} unauthorised to play.'.format(request.user.id))
         return HttpResponse('User unauthorized to play',
