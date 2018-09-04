@@ -1,5 +1,5 @@
 {
-  "presets": ["react-app"],
+  "presets": ["@babel/preset-react"],
   "plugins": [
     ["module-resolver", {
       "cwd": "babelrc",
@@ -8,6 +8,6 @@
         "features": "./src/redux/features"
       }
     }],
-    "transform-class-properties"
+    "@babel/proposal-class-properties"
   ]
 }
