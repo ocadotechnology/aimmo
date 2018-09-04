@@ -10,8 +10,5 @@ class Game_DataAdmin(admin.ModelAdmin):
     def players(self, obj):
         return "\n ".join([u.first_name for u in obj.can_play.all()])
 
-
-
-
 admin.site.register(Avatar)
 admin.site.register(Game, Game_DataAdmin)
