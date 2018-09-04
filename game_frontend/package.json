@@ -15,6 +15,7 @@
     "jest-styled-components": "^5.0.1",
     "react-test-renderer": "^16.2.0",
     "redux-mock-store": "^1.5.1",
+    "babel-eslint": "^9.0.0",
     "standard": "^12.0.1"
   },
   "dependencies": {
@@ -23,6 +24,7 @@
     "@material-ui/lab": "^1.0.0-alpha.9",
     "babel-core": "^6.26.0",
     "babel-plugin-module-resolver": "^3.1.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-polyfill": "^6.26.0",
     "babel-preset-react-app": "^3.1.1",
     "babel-runtime": "^6.23.0",
@@ -46,5 +48,8 @@
   },
   "jest": {
     "testEnvironment": "node"
+  },
+  "standard": {
+    "parser": "babel-eslint"
   }
 }
