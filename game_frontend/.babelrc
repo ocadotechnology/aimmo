@@ -8,6 +8,6 @@
         "features": "./src/redux/features"
       }
     }],
-    "@babel/proposal-class-properties"
+    "@babel/plugin-proposal-class-properties"
   ]
 }
