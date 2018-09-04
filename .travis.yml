@@ -44,8 +44,6 @@ jobs:
         after_success:
           - coveralls
       - # Frontend tests
-        install:
-          - cd game_frontend && yarn
         script:
           - yarn test
       - stage: deploy
