@@ -1,13 +1,20 @@
 {
-  "presets": ["@babel/preset-react"],
+  "presets": [
+    "@babel/preset-react"
+  ],
   "plugins": [
-    ["module-resolver", {
-      "cwd": "babelrc",
-      "root": ["./src"],
-      "alias": {
-        "features": "./src/redux/features"
+    [
+      "module-resolver",
+      {
+        "cwd": "babelrc",
+        "root": [
+          "./src"
+        ],
+        "alias": {
+          "features": "./src/redux/features"
+        }
       }
-    }],
+    ],
     "@babel/plugin-proposal-class-properties"
   ]
 }

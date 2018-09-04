@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.0.0",
+    "babel-core": "^7.0.0-bridge.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
     "@babel/polyfill": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
@@ -29,7 +30,7 @@
     "@material-ui/icons": "^2.0.1",
     "@material-ui/lab": "^1.0.0-alpha.9",
     "babel-plugin-module-resolver": "^3.1.1",
-    "parcel-bundler": "^1.9.2",
+    "parcel-bundler": "^1.9.7",
     "react": "^16.3.0",
     "react-ace": "^6.1.0",
     "react-dom": "^16.3.0",
@@ -52,5 +53,8 @@
   },
   "standard": {
     "parser": "babel-eslint"
+  },
+  "resolutions": {
+    "babel-core": "7.0.0-bridge.0"
   }
 }
