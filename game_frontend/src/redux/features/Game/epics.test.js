@@ -181,7 +181,7 @@ describe('connectToGameEpic', () => {
     )
 
     const mockConnectToGame = () =>
-      mapTo({type: 'socket'})
+      mapTo({ type: 'socket' })
 
     const mockStartListeners = () =>
       pipe(
