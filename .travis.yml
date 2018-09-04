@@ -16,6 +16,7 @@ stages:
 jobs:
     include:
       - stage: test
+        name: "Python tests"
         env:
           - NODE_ENV=production
         before_script:
@@ -43,7 +44,12 @@ jobs:
           - python all_tests.py --coverage
         after_success:
           - coveralls
-      - # Frontend tests
+      - name: "Javascript Tests"
+        before_install:
+          - nvm install node
+          - nvm use node
+        install:
+          - cd game_frontend && yarn
         script:
           - yarn test
       - stage: deploy
