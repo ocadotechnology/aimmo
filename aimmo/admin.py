@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from models import Avatar, Game
 
+
 class Game_DataAdmin(admin.ModelAdmin):
     list_display = ['id', 'name']
 
