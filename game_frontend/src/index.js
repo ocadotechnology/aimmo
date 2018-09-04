@@ -1,6 +1,6 @@
 import 'babel-polyfill'
 import React from 'react'
-import {render} from 'react-dom'
+import { render } from 'react-dom'
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
 import { ThemeProvider } from 'styled-components'
 
