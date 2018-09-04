@@ -16,7 +16,7 @@ stages:
 jobs:
     include:
       - stage: test
-        name: "Python tests"
+        name: "Python Tests"
         env:
           - NODE_ENV=production
         before_script:
