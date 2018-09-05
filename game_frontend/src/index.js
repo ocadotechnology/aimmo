@@ -25,7 +25,8 @@ const initialState = {
   game: {
     connectionParameters: {
       game_id: getGameIDFromURL() || 1
-    }
+    },
+    showSnackbarForAvatarUpdated: false
   },
   consoleLog: {
     logs: []
