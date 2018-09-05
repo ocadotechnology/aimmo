@@ -60,7 +60,6 @@ class AvatarRunner(object):
 
     def decide_action(self, world_map, avatar_state):
         action = self.avatar.handle_turn(world_map, avatar_state)
-        LOGGER.error(action)
         if not isinstance(action, Action):
             raise InvalidActionException(action)
         return action.serialise()
