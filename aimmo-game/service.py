@@ -113,12 +113,12 @@ class GameAPI(object):
 
     def _send_game_state(self):
         serialised_game_state = self.game_state.serialise()
-        socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id
+        socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id.copy()
         for sid, player_id in socket_session_id_to_player_id_copy.iteritems():
             socketio_server.emit('game-state', serialised_game_state, room=sid)
 
     def _send_have_avatars_code_updated(self, player_id_to_workers):
-        socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id
+        socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id.copy()
         for sid, player_id in socket_session_id_to_player_id_copy.iteritems():
             if player_id_to_workers[player_id].has_code_updated:
                 socketio_server.emit('feedback-avatar-updated', room=sid)
