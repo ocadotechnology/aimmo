@@ -4,11 +4,10 @@ MAINTAINER code@ocado.com
 
 ENV WORKER_MANAGER=kubernetes
 
-ONBUILD COPY Pipfile Pipfile
-ONBUILD COPY Pipfile.lock Pipfile.lock
+COPY . .
 
-ONBUILD RUN pip install pipenv
+RUN pip install pipenv
 
-ONBUILD RUN pipenv install --system
+RUN pipenv install --system --deploy
 
 CMD ["python", "./service.py", "0.0.0.0", "5000"]
