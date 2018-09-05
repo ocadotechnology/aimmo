@@ -7,6 +7,11 @@ import Snackbar from 'components/Snackbar'
 import { withTheme } from '@material-ui/core/styles'
 
 export class Game extends Component {
+  static propTypes = {
+    connectToGame: PropTypes.func,
+    theme: PropTypes.object
+  }
+
   state = {
     showSnackbar: this.props.showSnackbarForAvatarUpdated
   }
@@ -22,11 +27,6 @@ export class Game extends Component {
   handleClose = () => {
     this.setState({ showSnackbar: false })
     this.props.snackbarForAvatarUpdatedShown()
-  }
-
-  static propTypes = {
-    connectToGame: PropTypes.func,
-    theme: PropTypes.object
   }
 
   render () {
