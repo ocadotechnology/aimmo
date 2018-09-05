@@ -105,18 +105,21 @@ class GameAPI(object):
 
             return logs is not None and logs != ''
 
-        for sid, player_id in self._socket_session_id_to_player_id.iteritems():
+        socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id
+        for sid, player_id in socket_session_id_to_player_id_copy.iteritems():
             avatar_logs = player_id_to_workers[player_id].log
             if should_send_logs(avatar_logs):
                 socketio_server.emit('log', avatar_logs, room=sid)
 
     def _send_game_state(self):
         serialised_game_state = self.game_state.serialise()
-        for sid, player_id in self._socket_session_id_to_player_id.iteritems():
+        socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id
+        for sid, player_id in socket_session_id_to_player_id_copy.iteritems():
             socketio_server.emit('game-state', serialised_game_state, room=sid)
 
     def _send_have_avatars_code_updated(self, player_id_to_workers):
-        for sid, player_id in self._socket_session_id_to_player_id.iteritems():
+        socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id
+        for sid, player_id in socket_session_id_to_player_id_copy.iteritems():
             if player_id_to_workers[player_id].has_code_updated:
                 socketio_server.emit('feedback-avatar-updated', room=sid)
 
