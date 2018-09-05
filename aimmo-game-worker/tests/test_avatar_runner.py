@@ -106,6 +106,3 @@ class TestAvatarRunner(TestCase):
         runner._update_avatar(src_code=avatar)
         with self.assertRaises(InvalidActionException):
             runner.decide_action(world_map={}, avatar_state={})
-
-
-

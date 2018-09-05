@@ -62,6 +62,5 @@ class AvatarRunner(object):
         action = self.avatar.handle_turn(world_map, avatar_state)
         LOGGER.error(action)
         if not isinstance(action, Action):
-            raise InvalidActionException(action)  
+            raise InvalidActionException(action)
         return action.serialise()
-
