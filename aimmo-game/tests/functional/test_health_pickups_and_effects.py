@@ -19,7 +19,7 @@ class TestHealthPickupAndEffects(TestCase):
         avatar manager, game state, turn manager and a map generator.
         """
         self.game = MockWorld()
-        self.game.game_state.add_avatar(1, None, Location(0, 0))
+        self.game.game_state.add_avatar(1, Location(0, 0))
         self.cell = self.game.game_state.world_map.get_cell(Location(1, 0))
         self.initial_health = self.game.avatar_manager.get_avatar(1).health
 
@@ -29,7 +29,7 @@ class TestHealthPickupAndEffects(TestCase):
         """
         self.cell.pickup = HealthPickup(self.cell)
 
-        self.game.turn_manager._run_single_turn()
+        self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
 
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
         self.assertEqual(self.cell.avatar.health, self.initial_health +
@@ -43,7 +43,7 @@ class TestHealthPickupAndEffects(TestCase):
         self.setUp()
         self.cell.pickup = HealthPickup(self.cell, restore_value)
 
-        self.game.turn_manager._run_single_turn()
+        self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
 
         if self.initial_health + restore_value > HEALTH_RESTORE_MAX:
@@ -61,7 +61,7 @@ class TestHealthPickupAndEffects(TestCase):
         self.setUp()
         self.cell.pickup = HealthPickup(self.cell, restore_value)
 
-        self.game.turn_manager._run_single_turn()
+        self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
 
         if self.initial_health + restore_value > HEALTH_RESTORE_MAX:
@@ -81,7 +81,7 @@ class TestHealthPickupAndEffects(TestCase):
         self.setUp()
         self.cell.pickup = HealthPickup(self.cell, restore_value)
 
-        self.game.turn_manager._run_single_turn()
+        self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
 
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
         self.assertEqual(self.cell.avatar.health, AVATAR_HEALTH_MAX)

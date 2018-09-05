@@ -12,11 +12,7 @@ import socketio
 from flask_cors import CORS
 
 from simulation import map_generator
-from simulation.turn_manager import ConcurrentTurnManager
-from simulation.logs import Logs
-from simulation.avatar.avatar_manager import AvatarManager
 from simulation.worker_managers import WORKER_MANAGERS
-from simulation.communicator import Communicator
 from simulation.game_runner import GameRunner
 
 eventlet.sleep()
@@ -31,14 +27,11 @@ logging.basicConfig(level=logging.INFO)
 
 
 class GameAPI(object):
-    def __init__(self, worker_manager, game_state, logs, have_avatars_code_updated):
-        self.worker_manager = worker_manager
-        self.logs = logs
-        self.game_state = game_state
-        self._sid_to_avatar_id = {}
-        self.have_avatars_code_updated = have_avatars_code_updated
-
+    def __init__(self, game_state, worker_manager):
+        self._socket_session_id_to_player_id = {}
         self.register_endpoints()
+        self.worker_manager = worker_manager
+        self.game_state = game_state
 
     def register_endpoints(self):
         self.register_player_data_view()
@@ -66,8 +59,6 @@ class GameAPI(object):
     def register_world_update_on_connect(self):
         @socketio_server.on('connect')
         def world_update_on_connect(sid, environ):
-            self._sid_to_avatar_id[sid] = None
-
             query = environ['QUERY_STRING']
             self._find_avatar_id_from_query(sid, query)
             self.send_updates()
@@ -79,7 +70,7 @@ class GameAPI(object):
         def remove_session_id_from_mappings(sid):
             LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
             try:
-                del self._sid_to_avatar_id[sid]
+                del self._socket_session_id_to_player_id[sid]
             except KeyError:
                 pass
 
@@ -87,8 +78,9 @@ class GameAPI(object):
 
     def send_updates(self):
         self._send_game_state()
-        self._send_logs()
-        self._send_have_avatars_code_updated()
+        player_id_to_worker = self.worker_manager.player_id_to_worker
+        self._send_logs(player_id_to_worker)
+        self._send_have_avatars_code_updated(player_id_to_worker)
 
     def _find_avatar_id_from_query(self, session_id, query_string):
         """
@@ -100,62 +92,55 @@ class GameAPI(object):
 
         try:
             avatar_id = int(parsed_qs['avatar_id'][0])
-            self._sid_to_avatar_id[session_id] = avatar_id
+            self._socket_session_id_to_player_id[session_id] = avatar_id
         except ValueError:
             LOGGER.error("Avatar ID could not be casted into an integer")
         except KeyError:
             LOGGER.error("No avatar ID found. User may not be authorised ")
+            LOGGER.error("query_string: " + query_string)
 
-    def _send_logs(self):
+    def _send_logs(self, player_id_to_workers):
         def should_send_logs(logs):
+            LOGGER.info("should_send_logs: " + str(logs))
+
             return logs is not None and logs != ''
 
-        for sid, avatar_id in self._sid_to_avatar_id.iteritems():
-            avatar_logs = self.logs.get_user_logs(avatar_id)
+        socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id.copy()
+        for sid, player_id in socket_session_id_to_player_id_copy.iteritems():
+            avatar_logs = player_id_to_workers[player_id].log
             if should_send_logs(avatar_logs):
                 socketio_server.emit('log', avatar_logs, room=sid)
 
     def _send_game_state(self):
         serialised_game_state = self.game_state.serialise()
-        for sid, avatar_id in self._sid_to_avatar_id.iteritems():
+        socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id.copy()
+        for sid, player_id in socket_session_id_to_player_id_copy.iteritems():
             socketio_server.emit('game-state', serialised_game_state, room=sid)
 
-    def _send_have_avatars_code_updated(self):
-        for sid, avatar_id in self._sid_to_avatar_id.iteritems():
-            if self.have_avatars_code_updated.get(avatar_id, False):
+    def _send_have_avatars_code_updated(self, player_id_to_workers):
+        socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id.copy()
+        for sid, player_id in socket_session_id_to_player_id_copy.iteritems():
+            if player_id_to_workers[player_id].has_code_updated:
                 socketio_server.emit('feedback-avatar-updated', room=sid)
 
 
-def run_game(port):
-    print("Running game...")
+def create_runner(port):
     settings = pickle.loads(os.environ['settings'])
-    api_url = os.environ.get('GAME_API_URL', 'http://localhost:8000/aimmo/api/games/')
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
-    player_manager = AvatarManager()
+    worker_manager_class = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
 
-    communicator = Communicator(api_url=api_url, completion_url=api_url + 'complete/')
-    game_state = generator.get_game_state(player_manager)
+    return GameRunner(worker_manager_class=worker_manager_class,
+                      game_state_generator=generator.get_game_state,
+                      django_api_url=os.environ.get('GAME_API_URL', 'http://localhost:8000/aimmo/api/games/'),
+                      port=port)
 
-    WorkerManagerClass = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
-    worker_manager = WorkerManagerClass(port=port)
 
-    logs = Logs()
-    have_avatars_code_updated = {}
-
-    game_api = GameAPI(worker_manager, game_state, logs, have_avatars_code_updated)
-
-    turn_manager = ConcurrentTurnManager(end_turn_callback=game_api.send_updates,
-                                         communicator=communicator,
-                                         game_state=game_state,
-                                         logs=logs,
-                                         have_avatars_code_updated=have_avatars_code_updated)
-
-    game_runner = GameRunner(worker_manager=worker_manager,
-                             game_state=game_state,
-                             communicator=communicator)
-
+def run_game(port):
+    game_runner = create_runner(port)
+    game_api = GameAPI(game_state=game_runner.game_state,
+                       worker_manager=game_runner.worker_manager)
+    game_runner.set_end_turn_callback(game_api.send_updates)
     game_runner.start()
-    turn_manager.start()
 
 
 if __name__ == '__main__':

@@ -3,6 +3,8 @@ import logging
 from eventlet.greenpool import GreenPool
 from eventlet.semaphore import Semaphore
 
+from ..worker import Worker
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -28,11 +30,22 @@ class WorkerManager(object):
     def __init__(self, port=5000):
         self._data = _WorkerManagerData({})
         self._pool = GreenPool(size=3)
-        self.avatar_id_to_worker = {}
+        self.player_id_to_worker = {}
         self.port = port
 
     def get_code(self, player_id):
         return self._data.get_code(player_id)
+
+    def fetch_all_worker_data(self, player_id_to_game_state):
+        for player_id, worker in self.player_id_to_worker.iteritems():
+            worker.fetch_data(player_id_to_game_state[player_id])
+
+    def get_player_id_to_serialised_actions(self):
+        return {player_id: self.player_id_to_worker[player_id].serialised_action for player_id in self.player_id_to_worker}
+
+    def clear_logs(self):
+        for worker in self.player_id_to_worker.values():
+            worker.log = None
 
     def create_worker(self, player_id):
         raise NotImplementedError
@@ -44,23 +57,20 @@ class WorkerManager(object):
         self._data.set_code(player)
 
     def add_new_worker(self, player_id):
-        worker_url = self.create_worker(player_id)
-        self.avatar_id_to_worker[player_id] = 'WorkerDummyObject'
-        print('Worker url: {}'.format(worker_url))
-        return player_id, worker_url
+        worker_url_base = self.create_worker(player_id)
+        self.player_id_to_worker[player_id] = Worker('{}/turn/'.format(worker_url_base))
 
     def _parallel_map(self, func, iterable_args):
         return list(self._pool.imap(func, iterable_args))
 
     def add_workers(self, users_to_add):
-        return dict(self._parallel_map(self.add_new_worker, users_to_add))
+        self._parallel_map(self.add_new_worker, users_to_add)
 
     def delete_workers(self, players_to_delete):
-        print('Users to delete: {}'.format(players_to_delete))
         self._parallel_map(self.delete_worker, players_to_delete)
 
     def delete_worker(self, player):
-        del self.avatar_id_to_worker[player]
+        del self.player_id_to_worker[player]
         self.remove_worker(player)
 
     def update_worker_codes(self, players):

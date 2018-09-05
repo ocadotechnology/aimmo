@@ -3,7 +3,7 @@ import React from 'react'
 
 const ArrowLeftIcon = props => (
   <SvgIcon {...props}>
-    <polygon id="path-1" points="14 7 9 12 14 17"></polygon>
+    <polygon id='path-1' points='14 7 9 12 14 17' />
   </SvgIcon>
 )
 

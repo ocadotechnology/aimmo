@@ -14,24 +14,15 @@ class GameState(object):
         self.main_avatar_id = None
         self._lock = RLock()
 
-    def get_state_for(self, avatar_wrapper):
-        with self._lock:
-            return {
-                'avatar_state': avatar_wrapper.serialise(),
-                'world_map': {
-                    'cells': [cell.serialise() for cell in self.world_map.all_cells()]
-                }
-            }
-
-    def add_avatar(self, player_id, worker_url, location=None):
+    def add_avatar(self, player_id, location=None):
         with self._lock:
             location = self.world_map.get_random_spawn_location() if location is None else location
-            avatar = self.avatar_manager.add_avatar(player_id, worker_url, location)
+            avatar = self.avatar_manager.add_avatar(player_id, location)
             self.world_map.get_cell(location).avatar = avatar
 
-    def add_avatars(self, player_ids, worker_url_bases):
+    def add_avatars(self, player_ids):
         for player_id in player_ids:
-            self.add_avatar(player_id, '{}/turn/'.format(worker_url_bases[player_id]))
+            self.add_avatar(player_id)
 
     def delete_avatars(self, player_ids):
         for player_id in player_ids:
@@ -75,3 +66,17 @@ class GameState(object):
             'scoreLocations': (self.world_map.serialise_score_location()),
             'obstacles': self.world_map.serialise_obstacles()
         }
+
+    def serialise_for_worker(self, avatar_wrapper):
+        with self._lock:
+            return {
+                'avatar_state': avatar_wrapper.serialise(),
+                'world_map': {
+                    'cells': [cell.serialise() for cell in self.world_map.all_cells()]
+                }
+            }
+
+    def get_serialised_game_states_for_workers(self):
+        with self._lock:
+            return {player_id: self.serialise_for_worker(avatar_wrapper) for player_id, avatar_wrapper
+                    in self.avatar_manager.avatars_by_id.iteritems()}

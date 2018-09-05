@@ -3,6 +3,7 @@ Any helper functions used for the unity game.
 """
 
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.models import User
 from aimmo import app_settings, exceptions
 from models import Game
 
@@ -55,19 +56,18 @@ def _connection_on_k8s_mode(game_port):
     return game_port == 0
 
 
-def get_avatar_id_from_user_id(user_id, game_id):
+def get_avatar_id_from_user(user, game_id):
     """
     A helper function which will return an avatar ID that is assigned to a
     particular django user owner in a game.
-    :param user_id: A django user ID taken from the request.
+    :param user: A django user object taken from the request.
     :param game_id: The game ID in which the avatar is being requested from.
     :return: An integer containing the avatar_ID.
     """
     game = get_object_or_404(Game, id=game_id)
-
-    if not game.can_user_play(user_id):
+    if not game.can_user_play(user):
         raise exceptions.UserCannotPlayGameException
 
-    avatar = game.avatar_set.get(owner=user_id)
+    avatar = game.avatar_set.get(owner=user.id)
 
     return avatar.id
