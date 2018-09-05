@@ -69,7 +69,7 @@ class TestAvatarRunner(TestCase):
             response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
             self.assertEqual(response['action'], {'action_type': 'move', 'options': {'direction': direction}})
 
-    def test_update_code_flag(self):
+    def test_update_code_flag_simple(self):
         avatar1 = '''class Avatar(object):
                         def handle_turn(self, world_map, avatar_state):
                             from simulation.action import MoveAction
@@ -93,6 +93,16 @@ class TestAvatarRunner(TestCase):
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar2)
         self.assertTrue(response['avatar_updated'])
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar2)
+        self.assertFalse(response['avatar_updated'])
+
+    def test_update_code_flag_with_syntax_errors(self):
+        avatar = '''class Avatar(object:
+                        pass
+                 '''
+        runner = AvatarRunner()
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        self.assertTrue(response['avatar_updated'])
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
         self.assertFalse(response['avatar_updated'])
 
     def test_invalid_action_exception(self):

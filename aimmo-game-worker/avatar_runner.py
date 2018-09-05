@@ -20,8 +20,8 @@ class AvatarRunner(object):
     def _avatar_src_changed(self, new_avatar_code):
         return new_avatar_code != self.avatar_source_code
 
-    @staticmethod
-    def _get_new_avatar(src_code):
+    def _get_new_avatar(self, src_code):
+        self.avatar_source_code = src_code
         module = imp.new_module('avatar')  # Create a temporary module to execute the src_code in
         exec src_code in module.__dict__
         return module.Avatar()
@@ -32,7 +32,6 @@ class AvatarRunner(object):
 
         if self.avatar is None or self.auto_update and self._avatar_src_changed(src_code):
             self.avatar = self._get_new_avatar(src_code)
-            self.avatar_source_code = src_code
 
     def process_avatar_turn(self, world_map, avatar_state, src_code):
         output_log = StringIO()
