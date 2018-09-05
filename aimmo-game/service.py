@@ -105,7 +105,7 @@ class GameAPI(object):
 
             return logs is not None and logs != ''
 
-        socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id
+        socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id.copy()
         for sid, player_id in socket_session_id_to_player_id_copy.iteritems():
             avatar_logs = player_id_to_workers[player_id].log
             if should_send_logs(avatar_logs):
