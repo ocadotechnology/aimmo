@@ -1,5 +1,9 @@
 from unittest import TestCase
+
+import mock
+
 from avatar_runner import AvatarRunner
+from user_exceptions import InvalidActionException
 
 NORTH = {'x': 0, 'y': 1}
 SOUTH = {'x': 0, 'y': -1}
@@ -90,3 +94,18 @@ class TestAvatarRunner(TestCase):
         self.assertTrue(response['avatar_updated'])
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar2)
         self.assertFalse(response['avatar_updated'])
+
+    def test_invalid_action_exception(self):
+        avatar = '''class Avatar(object):
+                        def handle_turn(self, world_map, avatar_state):
+                            from simulation.action import MoveAction
+                            from simulation.direction import NORTH
+                            
+                  '''
+        runner = AvatarRunner()
+        runner._update_avatar(src_code=avatar)
+        with self.assertRaises(InvalidActionException):
+            runner.decide_action(world_map={}, avatar_state={})
+
+
+
