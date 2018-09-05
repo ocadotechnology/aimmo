@@ -4,12 +4,12 @@ import actions from './actions'
 
 describe('consoleLogReducer', () => {
   it('should return the initial state', () => {
-    expect(consoleLogReducer(undefined, {})).toEqual({logs: []})
+    expect(consoleLogReducer(undefined, {})).toEqual({ logs: [] })
   })
 
   it('should handle SOCKET_LOG_RECEIVED', () => {
     const expectedStateLog = 'Hello, good morning, I got here in my code'
-    
+
     const action = actions.socketConsoleLogReceived(expectedStateLog)
     const actualState = consoleLogReducer(undefined, action)
 
@@ -22,7 +22,7 @@ describe('consoleLogReducer', () => {
     const newLogMessage = 'I\'m a new log!'
     const ancientLogMessage = 'I\'m a new log!'
     initialLogs.unshift({ timestamp: '0', log: ancientLogMessage })
-    
+
     const initialState = { logs: initialLogs }
     const action = actions.socketConsoleLogReceived(newLogMessage)
     const actualState = consoleLogReducer(initialState, action)
