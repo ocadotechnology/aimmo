@@ -55,11 +55,11 @@ export class IDEEditor extends PureComponent {
             fontFamily: this.props.theme.additionalVariables.typography.code.fontFamily
           }} />
         <RunCodeButton
-            aria-label='Run Code'
-            variant='extendedFab'
-            id='post-code-button'
-            onClick={this.props.postCode}>
-            <MarginedPlayIcon />Run Code
+          aria-label='Run Code'
+          variant='extendedFab'
+          id='post-code-button'
+          onClick={this.props.postCode}>
+          <MarginedPlayIcon />Run Code
         </RunCodeButton>
       </IDEEditorLayout>
     )
