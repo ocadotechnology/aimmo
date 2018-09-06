@@ -5,7 +5,8 @@ import imp
 
 from six import StringIO
 
-from simulation.action import WaitAction
+from simulation.action import WaitAction, Action
+from user_exceptions import InvalidActionException
 
 LOGGER = logging.getLogger(__name__)
 
@@ -41,8 +42,7 @@ class AvatarRunner(object):
             sys.stderr = output_log
             self._update_avatar(src_code)
 
-            action = self.avatar.handle_turn(world_map, avatar_state)
-            action = action.serialise()
+            action = self.decide_action(world_map, avatar_state)
 
         except Exception as e:
             traceback.print_exc()
@@ -56,3 +56,9 @@ class AvatarRunner(object):
 
         logs = output_log.getvalue()
         return {'action': action, 'log': logs, 'avatar_updated': avatar_updated}
+
+    def decide_action(self, world_map, avatar_state):
+        action = self.avatar.handle_turn(world_map, avatar_state)
+        if not isinstance(action, Action):
+            raise InvalidActionException(action)
+        return action.serialise()
