@@ -48,6 +48,7 @@ class AvatarRunner(object):
             traceback_list = traceback.format_exc().split('\n')
             user_traceback = []
             start_of_user_traceback = 0
+            
             for i in range(len(traceback_list)):
                 if traceback_list[i].__contains__('<string>'):
                     start_of_user_traceback = i

@@ -100,3 +100,30 @@ class TestAvatarRunner(TestCase):
         self.assertTrue(response['avatar_updated'])
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
         self.assertFalse(response['avatar_updated'])
+
+    def test_runtime_error_contains_only_user_traceback(self):
+        avatar = '''class Avatar(object):
+                        def handle_turn(self, world_map, avatar_state):
+                            from simulation.action import MoveAction
+                            from simulation.direction import NORTH
+                            
+                            1 + 'foo'
+
+                            return MoveAction(NORTH)
+                 '''
+        runner = AvatarRunner()
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        self.assertFalse(response['log'].__contains__('/usr/src/app/'))
+
+    def test_syntax_error_contains_only_user_traceback(self):
+        avatar = '''class Avatar(object):
+                        def handle_turn(self, world_map, avatar_state):
+                            from simulation.action import MoveAction
+                            from simulation.direction import NORTH
+
+                            return MoveAction(NORTH))))
+                            
+                 '''
+        runner = AvatarRunner()
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        self.assertFalse(response['log'].__contains__('/usr/src/app/'))
