@@ -44,18 +44,13 @@ class AvatarRunner(object):
 
             action = self.decide_action(world_map, avatar_state)
 
+        except InvalidActionException as e:
+            print(str(e))
+            action = WaitAction().serialise()
+
         except Exception as e:
             traceback_list = traceback.format_exc().split('\n')
-            user_traceback = []
-            start_of_user_traceback = 0
-            
-            for i in range(len(traceback_list)):
-                if traceback_list[i].__contains__('<string>'):
-                    start_of_user_traceback = i
-                    break
-
-            user_traceback = traceback_list[start_of_user_traceback:]
-
+            user_traceback = self.format_user_traceback(traceback_list)
             for trace in user_traceback:
                 print(trace)
 
@@ -76,3 +71,11 @@ class AvatarRunner(object):
         if not isinstance(action, Action):
             raise InvalidActionException(action)
         return action.serialise()
+
+    def format_user_traceback(self, tb_list):
+        start_of_user_traceback = 0
+        for i in range(len(tb_list)):
+            if tb_list[i].__contains__('<string>'):
+                start_of_user_traceback = i
+                break
+        return tb_list[start_of_user_traceback:]
