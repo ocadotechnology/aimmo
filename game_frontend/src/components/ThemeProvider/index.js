@@ -9,13 +9,13 @@ export default class ThemeProvider extends Component {
     variant: PropTypes.oneOf(['light', 'dark']).isRequired
   }
 
-  createTheme = type => {
+  static createTheme = type => {
     const palette = { ...theme.palette, type }
     return createMuiTheme({ ...theme, palette })
   }
 
   render () {
-    const muiTheme = this.createTheme(this.props.variant)
+    const muiTheme = ThemeProvider.createTheme(this.props.variant)
     return (
       <StyledComponentsThemeProvider theme={muiTheme}>
         <MuiThemeProvider theme={muiTheme} >

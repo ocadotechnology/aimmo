@@ -11,7 +11,7 @@ describe('<IDEEditor />', () => {
       postCode: jest.fn()
     }
 
-    const component = createShallowWithTheme(<IDEEditor {...props} />)
+    const component = createShallowWithTheme(<IDEEditor {...props} />, 'dark')
 
     expect(component).toMatchSnapshot()
   })
@@ -22,7 +22,7 @@ describe('<IDEEditor />', () => {
       postCode
     }
 
-    const component = createShallowWithTheme(<IDEEditor {...props} />)
+    const component = createShallowWithTheme(<IDEEditor {...props} />, 'dark')
 
     component.find('#post-code-button').simulate('click')
     expect(postCode).toBeCalled()
@@ -31,14 +31,14 @@ describe('<IDEEditor />', () => {
 
 describe('<IDEEditorLayout />', () => {
   it('renders correctly', () => {
-    const tree = createShallowWithTheme(<IDEEditorLayout />)
+    const tree = createShallowWithTheme(<IDEEditorLayout />, 'dark')
     expect(tree).toMatchSnapshot()
   })
 })
 
 describe('<RunCodeButton />', () => {
   it('matches snapshot', () => {
-    const component = createShallowWithTheme(<RunCodeButton />)
+    const component = createShallowWithTheme(<RunCodeButton />, 'dark')
 
     expect(component).toMatchSnapshot()
   })
@@ -46,7 +46,7 @@ describe('<RunCodeButton />', () => {
 
 describe('<MarginedPlayIcon />', () => {
   it('matches snapshot', () => {
-    const component = createShallowWithTheme(<MarginedPlayIcon />)
+    const component = createShallowWithTheme(<MarginedPlayIcon />, 'dark')
 
     expect(component).toMatchSnapshot()
   })

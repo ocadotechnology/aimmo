@@ -61,7 +61,6 @@ exports[`<IDEEditor /> matches snapshot 1`] = `
 
 exports[`<IDEEditorLayout /> renders correctly 1`] = `
 .c0 {
-  background-color: #2F4F4F;
   position: relative;
   grid-area: ide-editor;
 }
@@ -81,6 +80,9 @@ exports[`<MarginedPlayIcon /> matches snapshot 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
+        "snackbar": Object {
+          "borderRadius": "8px",
+        },
         "typography": Object {
           "code": Object {
             "fontFamily": "'Source Code Pro', monospace",
@@ -362,6 +364,9 @@ exports[`<RunCodeButton /> matches snapshot 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
+        "snackbar": Object {
+          "borderRadius": "8px",
+        },
         "typography": Object {
           "code": Object {
             "fontFamily": "'Source Code Pro', monospace",

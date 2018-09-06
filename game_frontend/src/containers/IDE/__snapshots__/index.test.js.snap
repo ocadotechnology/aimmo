@@ -1,8 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<IDE /> renders correctly 1`] = `
-<Fragment>
+<ThemeProvider
+  variant="dark"
+>
   <WithTheme(IDEEditor) />
   <IDEConsole />
-</Fragment>
+</ThemeProvider>
 `;

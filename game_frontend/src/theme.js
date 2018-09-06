@@ -13,6 +13,9 @@ const additionalVariables = {
       fontFamily: '\'Source Code Pro\', monospace',
       fontSize: '1rem'
     }
+  },
+  snackbar: {
+    borderRadius: '8px'
   }
 }
 
