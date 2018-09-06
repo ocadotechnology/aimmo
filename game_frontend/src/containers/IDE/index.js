@@ -17,7 +17,7 @@ export class IDE extends Component {
 
   render () {
     return (
-      <ThemeProvider variant='light'>
+      <ThemeProvider variant='dark'>
         <IDEEditor
           code={this.props.code}
           postCode={this.props.postCode}
