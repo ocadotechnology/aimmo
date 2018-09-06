@@ -4,6 +4,7 @@ from unittest import TestCase
 
 from simulation.worker_managers.local_worker_manager import LocalWorkerManager
 
+
 class TestLocalWorkerManager(TestCase):
     def test_local_worker_ports_do_not_conflict(self):
         os.environ['GAME_ID'] = '1'
