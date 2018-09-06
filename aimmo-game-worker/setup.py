@@ -13,6 +13,7 @@ setup(
     ],
     tests_require=[
         'httmock',
+        'mock'
     ],
     test_suite='tests',
     zip_safe=False,
