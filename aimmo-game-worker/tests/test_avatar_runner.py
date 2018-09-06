@@ -143,7 +143,7 @@ class TestAvatarRunner(TestCase):
                                                 from simulation.action import MoveAction
                                                 from simulation.direction import NORTH
 
-                                                return MoveAction(NORTH
+                                                return MoveAction(NORTH)
                                   '''
 
         runner = AvatarRunner()
