@@ -58,7 +58,6 @@ class AvatarRunner(object):
             LOGGER.info(e)
             action = WaitAction().serialise()
 
-
         finally:
             sys.stdout = sys.__stdout__
             sys.stderr = sys.__stderr__
