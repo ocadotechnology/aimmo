@@ -16,6 +16,7 @@ class AvatarRunner(object):
         self.avatar = avatar
         self.auto_update = auto_update
         self.avatar_source_code = None
+        self.update_successful = False
 
     def _avatar_src_changed(self, new_avatar_code):
         return new_avatar_code != self.avatar_source_code
@@ -27,11 +28,27 @@ class AvatarRunner(object):
         return module.Avatar()
 
     def _update_avatar(self, src_code):
-        """ If the avatar source code has changed or we have not created an avatar yet,
-            we 'import' src_code, and assign self.avatar to a fresh avatar object. """
+        def should_update():
+            """
+            We update the avatar object if any of the following are true:
+            1. We don't have an avatar object yet, so self.avatar is None
+            2. The new source code we have been given is different
+            3. If the previous attempt to create an avatar object failed (i.e. _get_new_avatar threw an exception)
+            The last condition is necessary because if _get_new_avatar fails the avatar object will not have
+            been updated, meaning that self.avatar will actually be for the last correct code
+            """
+            return (self.avatar is None
+                    or self.auto_update and self._avatar_src_changed(src_code)
+                    or not self.update_successful)
 
-        if self.avatar is None or self.auto_update and self._avatar_src_changed(src_code):
-            self.avatar = self._get_new_avatar(src_code)
+        if should_update():
+            try:
+                self.avatar = self._get_new_avatar(src_code)
+            except Exception as e:
+                self.update_successful = False
+                raise e
+            else:
+                self.update_successful = True
 
     def process_avatar_turn(self, world_map, avatar_state, src_code):
         output_log = StringIO()
@@ -41,7 +58,6 @@ class AvatarRunner(object):
             sys.stdout = output_log
             sys.stderr = output_log
             self._update_avatar(src_code)
-
             action = self.decide_action(world_map, avatar_state)
 
         except Exception as e:
