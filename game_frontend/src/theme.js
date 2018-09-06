@@ -15,7 +15,7 @@ const additionalVariables = {
     }
   },
   snackbar: {
-    borderRadius: '8px'
+    borderRadius: '6px'
   }
 }
 
@@ -23,10 +23,20 @@ const shape = {
   borderRadius: '24px'
 }
 
+const overrides = {
+  MuiSnackbarContent: {
+    root: {
+      paddingRight: '14px',
+      paddingLeft: '14px'
+    }
+  }
+}
+
 const theme = {
   palette,
   additionalVariables,
   shape,
+  overrides,
   text: {
     secondary: '#FFFFFF'
   },
