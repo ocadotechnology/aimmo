@@ -59,8 +59,18 @@ class AvatarRunner(object):
             self._update_avatar(src_code)
             action = self.decide_action(world_map, avatar_state)
 
+        # When an InvalidActionException is raised, the traceback might not contain
+        # reference to the user's code as it can still technically be correct. so we
+        # handle this case explicitly to avoid printing out unwanted parts of the traceback
+        except InvalidActionException as e:
+            print(e)
+            action = WaitAction().serialise()
+
         except Exception as e:
-            traceback.print_exc()
+            user_traceback = self.get_only_user_traceback()
+            for trace in user_traceback:
+                print(trace)
+
             LOGGER.info("Code failed to run")
             LOGGER.info(e)
             action = WaitAction().serialise()
@@ -77,3 +87,15 @@ class AvatarRunner(object):
         if not isinstance(action, Action):
             raise InvalidActionException(action)
         return action.serialise()
+
+    @staticmethod
+    def get_only_user_traceback():
+        """ If the traceback does not contain any reference to the user code, found by '<string>',
+            then this method will just return the full traceback. """
+        traceback_list = traceback.format_exc().split('\n')
+        start_of_user_traceback = 0
+        for i in range(len(traceback_list)):
+            if '<string>' in traceback_list[i]:
+                start_of_user_traceback = i
+                break
+        return traceback_list[start_of_user_traceback:]
