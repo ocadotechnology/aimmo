@@ -52,7 +52,7 @@ class AvatarRunner(object):
             action = WaitAction().serialise()
 
         except Exception as e:
-            user_traceback = self.get_only_user_traceback(e)
+            user_traceback = self.get_only_user_traceback()
             for trace in user_traceback:
                 print(trace)
 
@@ -74,7 +74,7 @@ class AvatarRunner(object):
         return action.serialise()
 
     @staticmethod
-    def get_only_user_traceback(e):
+    def get_only_user_traceback():
         """ If the traceback does not contain any reference to the user code, found by '<string>',
             then this method will just return the full traceback. """
         traceback_list = traceback.format_exc().split('\n')
