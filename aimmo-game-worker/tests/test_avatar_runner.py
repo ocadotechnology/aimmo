@@ -129,7 +129,7 @@ class TestAvatarRunner(TestCase):
                  '''
         runner = AvatarRunner()
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
-        self.assertFalse(response['log'].__contains__('/usr/src/app/'))
+        self.assertFalse('/usr/src/app/' in response['log'])
 
     def test_syntax_error_contains_only_user_traceback(self):
         avatar = '''class Avatar(object):
@@ -142,7 +142,7 @@ class TestAvatarRunner(TestCase):
                  '''
         runner = AvatarRunner()
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
-        self.assertFalse(response['log'].__contains__('/usr/src/app/'))
+        self.assertFalse('/usr/src/app/' in response['log'])
 
     def test_invalid_action_exception_contains_only_user_traceback(self):
         avatar1 = '''class Avatar(object):
@@ -163,6 +163,6 @@ class TestAvatarRunner(TestCase):
                  '''
         runner = AvatarRunner()
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar1)
-        self.assertFalse(response['log'].__contains__('/usr/src/app/'))
+        self.assertFalse('/usr/src/app/' in response['log'])
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar2)
-        self.assertFalse(response['log'].__contains__('/usr/src/app/'))
+        self.assertFalse('/usr/src/app/' in response['log'])

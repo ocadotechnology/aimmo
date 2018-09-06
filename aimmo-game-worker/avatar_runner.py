@@ -53,7 +53,7 @@ class AvatarRunner(object):
 
         except Exception as e:
             traceback_list = traceback.format_exc().split('\n')
-            user_traceback = self.format_user_traceback(traceback_list)
+            user_traceback = self.get_only_user_traceback(traceback_list)
             for trace in user_traceback:
                 print(trace)
 
@@ -74,10 +74,10 @@ class AvatarRunner(object):
             raise InvalidActionException(action)
         return action.serialise()
 
-    # If the traceback does not contain any reference to the user code, found by '<string>',
-    # then this method will just return the full traceback.
     @staticmethod
-    def get_only_user_traceback(self, tb_list):
+    def get_only_user_traceback(tb_list):
+        """ If the traceback does not contain any reference to the user code, found by '<string>',
+            then this method will just return the full traceback. """
         start_of_user_traceback = 0
         for i in range(len(tb_list)):
             if '<string>' in tb_list[i]:
