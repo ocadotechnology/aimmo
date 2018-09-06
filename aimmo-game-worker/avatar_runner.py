@@ -28,20 +28,19 @@ class AvatarRunner(object):
         return module.Avatar()
 
     def _update_avatar(self, src_code):
-        def should_update():
-            """
-            We update the avatar object if any of the following are true:
-            1. We don't have an avatar object yet, so self.avatar is None
-            2. The new source code we have been given is different
-            3. If the previous attempt to create an avatar object failed (i.e. _get_new_avatar threw an exception)
-            The last condition is necessary because if _get_new_avatar fails the avatar object will not have
-            been updated, meaning that self.avatar will actually be for the last correct code
-            """
-            return (self.avatar is None
-                    or self.auto_update and self._avatar_src_changed(src_code)
-                    or not self.update_successful)
+        """
+        We update the avatar object if any of the following are true:
+        1. We don't have an avatar object yet, so self.avatar is None
+        2. The new source code we have been given is different
+        3. If the previous attempt to create an avatar object failed (i.e. _get_new_avatar threw an exception)
+        The last condition is necessary because if _get_new_avatar fails the avatar object will not have
+        been updated, meaning that self.avatar will actually be for the last correct code
+        """
+        should_update = (self.avatar is None
+                         or self.auto_update and self._avatar_src_changed(src_code)
+                         or not self.update_successful)
 
-        if should_update():
+        if should_update:
             try:
                 self.avatar = self._get_new_avatar(src_code)
             except Exception as e:
