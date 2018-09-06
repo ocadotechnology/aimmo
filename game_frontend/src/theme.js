@@ -1,5 +1,4 @@
 const palette = {
-  type: 'dark',
   primary: {
     main: '#FFFFFF'
   },

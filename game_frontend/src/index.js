@@ -1,11 +1,9 @@
 import 'babel-polyfill'
 import React from 'react'
 import { render } from 'react-dom'
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
-import { ThemeProvider } from 'styled-components'
 
+import ThemeProvider from './components/ThemeProvider'
 import { Provider } from 'react-redux'
-import theme from './theme'
 
 import GamePage from './components/GamePage'
 import configureStore from './redux/store'
@@ -40,15 +38,12 @@ function getGameIDFromURL () {
 }
 
 const reduxStore = configureStore(initialState)
-const muiTheme = createMuiTheme(theme)
 
 const RootJSX = () => (
-  <ThemeProvider theme={muiTheme}>
-    <MuiThemeProvider theme={muiTheme}>
-      <Provider store={reduxStore}>
-        <GamePage />
-      </Provider>
-    </MuiThemeProvider>
+  <ThemeProvider variant='light'>
+    <Provider store={reduxStore}>
+      <GamePage />
+    </Provider>
   </ThemeProvider>
 )
 
