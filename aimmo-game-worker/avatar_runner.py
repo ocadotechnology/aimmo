@@ -44,6 +44,9 @@ class AvatarRunner(object):
 
             action = self.decide_action(world_map, avatar_state)
 
+        # When an InvalidActionException is raised, the traceback might not contain
+        # reference to the user's code as it can still technically be correct. so we
+        # handle this case explicitly to avoid printing out unwanted parts of the traceback
         except InvalidActionException as e:
             print(e)
             action = WaitAction().serialise()
@@ -71,6 +74,8 @@ class AvatarRunner(object):
             raise InvalidActionException(action)
         return action.serialise()
 
+    # If the traceback does not contain any reference to the user code, found by '<string>',
+    # then this method will just return the full traceback.
     @staticmethod
     def get_only_user_traceback(self, tb_list):
         start_of_user_traceback = 0
