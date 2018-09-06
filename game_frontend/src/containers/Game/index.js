@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { actions } from 'redux/features/Game'
 import Snackbar from 'components/Snackbar'
-import { withTheme } from '@material-ui/core/styles'
 
 export class Game extends Component {
   static propTypes = {
@@ -30,15 +29,14 @@ export class Game extends Component {
   }
 
   render () {
-    const { theme } = this.props
     return (
       <Fragment>
         <GameView connectToGame={this.props.connectToGame} />
         <Snackbar
+          type='success'
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           open={this.state.showSnackbar}
           direction='up'
-          autoHideDuration={theme.transitions.duration.enteringScreen + 2000 + theme.transitions.duration.leavingScreen}
           onClose={this.handleClose}
           message='Your Avatar has been updated with your new code!'
         />
@@ -56,4 +54,4 @@ const mapStateToProps = state => ({
   showSnackbarForAvatarUpdated: state.game.showSnackbarForAvatarUpdated
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTheme()(Game))
+export default connect(mapStateToProps, mapDispatchToProps)(Game)
