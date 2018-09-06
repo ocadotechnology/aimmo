@@ -47,27 +47,16 @@ class AvatarRunner(object):
         except Exception as e:
             traceback_list = traceback.format_exc().split('\n')
             user_traceback = []
-            to_append = False
-            for trace in traceback_list:
-                if trace.__contains__('<string>'):
-                    to_append = True
-                if to_append:
-                    user_traceback.append(trace)
+            start_of_user_traceback = 0
+            for i in range(len(traceback_list)):
+                if traceback_list[i].__contains__('<string>'):
+                    start_of_user_traceback = i
+                    break
+
+            user_traceback = traceback_list[start_of_user_traceback:]
 
             for trace in user_traceback:
                 print(trace)
-
-            """
-            ex_type, ex, tb = sys.exc_info()
-            user_traceback = []
-
-            while tb is not None:
-                if tb.tb_filename == '<string>':
-                    user_traceback.append(tb[i])
-                tb = tb.tb_next
-
-            traceback.print_tb(user_traceback)
-            """
 
             LOGGER.info("Code failed to run")
             LOGGER.info(e)
