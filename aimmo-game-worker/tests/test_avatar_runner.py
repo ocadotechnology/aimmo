@@ -143,3 +143,26 @@ class TestAvatarRunner(TestCase):
         runner = AvatarRunner()
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
         self.assertFalse(response['log'].__contains__('/usr/src/app/'))
+
+    def test_invalid_action_exception_contains_only_user_traceback(self):
+        avatar1 = '''class Avatar(object):
+                        def handle_turn(self, world_map, avatar_state):
+                            from simulation.action import MoveAction
+                            from simulation.direction import NORTH
+
+                            return None
+                            
+                 '''
+        avatar2 = '''class Avatar(object):
+                        def handle_turn(self, world_map, avatar_state):
+                            from simulation.action import MoveAction
+                            from simulation.direction import NORTH
+
+                            return 1
+                            
+                 '''
+        runner = AvatarRunner()
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar1)
+        self.assertFalse(response['log'].__contains__('/usr/src/app/'))
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar2)
+        self.assertFalse(response['log'].__contains__('/usr/src/app/'))
