@@ -45,10 +45,34 @@ class AvatarRunner(object):
             action = action.serialise()
 
         except Exception as e:
-            traceback.print_exc()
+            traceback_list = traceback.format_exc().split('\n')
+            user_traceback = []
+            to_append = False
+            for trace in traceback_list:
+                if trace.__contains__('<string>'):
+                    to_append = True
+                if to_append:
+                    user_traceback.append(trace)
+
+            for trace in user_traceback:
+                print(trace)
+
+            """
+            ex_type, ex, tb = sys.exc_info()
+            user_traceback = []
+
+            while tb is not None:
+                if tb.tb_filename == '<string>':
+                    user_traceback.append(tb[i])
+                tb = tb.tb_next
+
+            traceback.print_tb(user_traceback)
+            """
+
             LOGGER.info("Code failed to run")
             LOGGER.info(e)
             action = WaitAction().serialise()
+
 
         finally:
             sys.stdout = sys.__stdout__
