@@ -20,7 +20,8 @@ class LocalWorkerManager(WorkerManager):
 
     def __init__(self, *args, **kwargs):
         self.workers = {}
-        self.port_counter = itertools.count(1989)
+        game_id = os.environ['GAME_ID']
+        self.port_counter = itertools.count(1989 + int(game_id) * 10000)
         super(LocalWorkerManager, self).__init__(*args, **kwargs)
 
     def create_worker(self, player_id):
