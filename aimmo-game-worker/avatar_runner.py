@@ -36,9 +36,9 @@ class AvatarRunner(object):
         The last condition is necessary because if _get_new_avatar fails the avatar object will not have
         been updated, meaning that self.avatar will actually be for the last correct code
         """
-        should_update = (self.avatar is None
-                         or self.auto_update and self._avatar_src_changed(src_code)
-                         or not self.update_successful)
+        should_update = (self.avatar is None or
+                         self.auto_update and self._avatar_src_changed(src_code) or
+                         not self.update_successful)
 
         if should_update:
             try:

@@ -155,5 +155,3 @@ class TestAvatarRunner(TestCase):
         self.assertFalse(runner.update_successful)
         runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar_ok)
         self.assertTrue(runner.update_successful)
-
-
