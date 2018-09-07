@@ -154,6 +154,7 @@ class LocalGameManager(GameManager):
         env = os.environ.copy()
         game_data = {str(k): str(v) for k, v in game_data.items()}
         env.update(game_data)
+        env['GAME_ID'] = game_id
         self.games[game_id] = subprocess.Popen(process_args, cwd=self.game_directory, env=env)
         game_url = "http://{}:{}".format(self.host, port)
         LOGGER.info("Game started - {}, listening at {}".format(game_id, game_url))
