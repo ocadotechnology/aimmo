@@ -8,7 +8,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'eventlet',
-        'kubernetes == 5.0.0'
+        'kubernetes >= 6.0.0'
     ],
     tests_require=[
         'httmock',

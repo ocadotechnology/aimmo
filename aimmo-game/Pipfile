@@ -1,0 +1,11 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+kubernetes = "*"
+aimmo-game = {editable = true, path = "."}
+
+[requires]
+python_version = "2.7"
