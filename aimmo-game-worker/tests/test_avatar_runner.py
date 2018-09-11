@@ -1,5 +1,9 @@
 from unittest import TestCase
+
+import mock
+
 from avatar_runner import AvatarRunner
+from user_exceptions import InvalidActionException
 
 NORTH = {'x': 0, 'y': 1}
 SOUTH = {'x': 0, 'y': -1}
@@ -65,7 +69,7 @@ class TestAvatarRunner(TestCase):
             response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
             self.assertEqual(response['action'], {'action_type': 'move', 'options': {'direction': direction}})
 
-    def test_update_code_flag(self):
+    def test_update_code_flag_simple(self):
         avatar1 = '''class Avatar(object):
                         def handle_turn(self, world_map, avatar_state):
                             from simulation.action import MoveAction
@@ -90,3 +94,114 @@ class TestAvatarRunner(TestCase):
         self.assertTrue(response['avatar_updated'])
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar2)
         self.assertFalse(response['avatar_updated'])
+
+    def test_update_code_flag_with_syntax_errors(self):
+        avatar = '''class Avatar(object:
+                        pass
+                 '''
+        runner = AvatarRunner()
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        self.assertTrue(response['avatar_updated'])
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        self.assertFalse(response['avatar_updated'])
+
+    def test_invalid_action_exception(self):
+        avatar = '''class Avatar(object):
+                        def handle_turn(self, world_map, avatar_state):
+                            from simulation.action import MoveAction
+                            from simulation.direction import NORTH
+                            
+                  '''
+        runner = AvatarRunner()
+        runner._update_avatar(src_code=avatar)
+        with self.assertRaises(InvalidActionException):
+            runner.decide_action(world_map={}, avatar_state={})
+
+    def test_updated_successful(self):
+        avatar_ok = '''class Avatar(object):
+                        def handle_turn(self, world_map, avatar_state):
+                            from simulation.action import MoveAction
+                            from simulation.direction import NORTH
+                            
+                            return MoveAction(NORTH)
+
+                    '''
+
+        avatar_syntax_error = '''class Avatar(object):
+                                    def handle_turn(self, world_map, avatar_state):
+                                        from simulation.action import MoveAction
+                                        from simulation.direction import NORTH
+                                        
+                                        return MoveAction(NORTH
+
+                              '''
+
+        avatar_bad_constructor = '''class Avatar(object):
+                                            def __init__(self):
+                                                return 1 + 'foo'
+                                            def handle_turn(self, world_map, avatar_state):
+                                                from simulation.action import MoveAction
+                                                from simulation.direction import NORTH
+
+                                                return MoveAction(NORTH)
+                                  '''
+
+        runner = AvatarRunner()
+        runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar_ok)
+        self.assertTrue(runner.update_successful)
+        runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar_syntax_error)
+        self.assertFalse(runner.update_successful)
+        runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar_bad_constructor)
+        self.assertFalse(runner.update_successful)
+        runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar_ok)
+        self.assertTrue(runner.update_successful)
+
+    def test_runtime_error_contains_only_user_traceback(self):
+        avatar = '''class Avatar(object):
+                        def handle_turn(self, world_map, avatar_state):
+                            from simulation.action import MoveAction
+                            from simulation.direction import NORTH
+                            
+                            1 + 'foo'
+
+                            return MoveAction(NORTH)
+                 '''
+        runner = AvatarRunner()
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        self.assertFalse('/usr/src/app/' in response['log'])
+
+    def test_syntax_error_contains_only_user_traceback(self):
+        avatar = '''class Avatar(object):
+                        def handle_turn(self, world_map, avatar_state):
+                            from simulation.action import MoveAction
+                            from simulation.direction import NORTH
+
+                            return MoveAction(NORTH))))
+                            
+                 '''
+        runner = AvatarRunner()
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        self.assertFalse('/usr/src/app/' in response['log'])
+
+    def test_invalid_action_exception_contains_only_user_traceback(self):
+        avatar1 = '''class Avatar(object):
+                        def handle_turn(self, world_map, avatar_state):
+                            from simulation.action import MoveAction
+                            from simulation.direction import NORTH
+
+                            return None
+                            
+                 '''
+        avatar2 = '''class Avatar(object):
+                        def handle_turn(self, world_map, avatar_state):
+                            from simulation.action import MoveAction
+                            from simulation.direction import NORTH
+
+                            return 1
+                            
+                 '''
+        runner = AvatarRunner()
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar1)
+        self.assertFalse('/usr/src/app/' in response['log'])
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar2)
+        self.assertFalse('/usr/src/app/' in response['log'])
