@@ -16,7 +16,7 @@ exports[`<Snackbar /> renders correctly with type=error 1`] = `
     Object {
       "additionalVariables": Object {
         "snackbar": Object {
-          "borderRadius": "8px",
+          "borderRadius": "6px",
         },
         "typography": Object {
           "code": Object {
@@ -59,7 +59,14 @@ exports[`<Snackbar /> renders correctly with type=error 1`] = `
           "minHeight": 56,
         },
       },
-      "overrides": Object {},
+      "overrides": Object {
+        "MuiSnackbarContent": Object {
+          "root": Object {
+            "paddingLeft": "14px",
+            "paddingRight": "14px",
+          },
+        },
+      },
       "palette": Object {
         "action": Object {
           "active": "rgba(0, 0, 0, 0.54)",
@@ -311,7 +318,7 @@ exports[`<Snackbar /> renders correctly with type=info 1`] = `
     Object {
       "additionalVariables": Object {
         "snackbar": Object {
-          "borderRadius": "8px",
+          "borderRadius": "6px",
         },
         "typography": Object {
           "code": Object {
@@ -354,7 +361,14 @@ exports[`<Snackbar /> renders correctly with type=info 1`] = `
           "minHeight": 56,
         },
       },
-      "overrides": Object {},
+      "overrides": Object {
+        "MuiSnackbarContent": Object {
+          "root": Object {
+            "paddingLeft": "14px",
+            "paddingRight": "14px",
+          },
+        },
+      },
       "palette": Object {
         "action": Object {
           "active": "rgba(0, 0, 0, 0.54)",
@@ -606,7 +620,7 @@ exports[`<Snackbar /> renders correctly with type=success 1`] = `
     Object {
       "additionalVariables": Object {
         "snackbar": Object {
-          "borderRadius": "8px",
+          "borderRadius": "6px",
         },
         "typography": Object {
           "code": Object {
@@ -649,7 +663,14 @@ exports[`<Snackbar /> renders correctly with type=success 1`] = `
           "minHeight": 56,
         },
       },
-      "overrides": Object {},
+      "overrides": Object {
+        "MuiSnackbarContent": Object {
+          "root": Object {
+            "paddingLeft": "14px",
+            "paddingRight": "14px",
+          },
+        },
+      },
       "palette": Object {
         "action": Object {
           "active": "rgba(0, 0, 0, 0.54)",
@@ -896,7 +917,7 @@ exports[`<Snackbar /> renders correctly with type=warning 1`] = `
     Object {
       "additionalVariables": Object {
         "snackbar": Object {
-          "borderRadius": "8px",
+          "borderRadius": "6px",
         },
         "typography": Object {
           "code": Object {
@@ -939,7 +960,14 @@ exports[`<Snackbar /> renders correctly with type=warning 1`] = `
           "minHeight": 56,
         },
       },
-      "overrides": Object {},
+      "overrides": Object {
+        "MuiSnackbarContent": Object {
+          "root": Object {
+            "paddingLeft": "14px",
+            "paddingRight": "14px",
+          },
+        },
+      },
       "palette": Object {
         "action": Object {
           "active": "rgba(0, 0, 0, 0.54)",
@@ -1196,7 +1224,7 @@ exports[`<SnackbarContentLayout /> renders correctly 1`] = `
 
 exports[`<StyledSnackbarContent /> renders correctly 1`] = `
 .c0.c0 {
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 <WithStyles(SnackbarContent)
@@ -1206,7 +1234,7 @@ exports[`<StyledSnackbarContent /> renders correctly 1`] = `
     Object {
       "additionalVariables": Object {
         "snackbar": Object {
-          "borderRadius": "8px",
+          "borderRadius": "6px",
         },
         "typography": Object {
           "code": Object {
@@ -1249,7 +1277,14 @@ exports[`<StyledSnackbarContent /> renders correctly 1`] = `
           "minHeight": 56,
         },
       },
-      "overrides": Object {},
+      "overrides": Object {
+        "MuiSnackbarContent": Object {
+          "root": Object {
+            "paddingLeft": "14px",
+            "paddingRight": "14px",
+          },
+        },
+      },
       "palette": Object {
         "action": Object {
           "active": "rgba(0, 0, 0, 0.54)",

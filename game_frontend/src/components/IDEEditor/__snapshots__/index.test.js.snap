@@ -81,7 +81,7 @@ exports[`<MarginedPlayIcon /> matches snapshot 1`] = `
     Object {
       "additionalVariables": Object {
         "snackbar": Object {
-          "borderRadius": "8px",
+          "borderRadius": "6px",
         },
         "typography": Object {
           "code": Object {
@@ -124,7 +124,14 @@ exports[`<MarginedPlayIcon /> matches snapshot 1`] = `
           "minHeight": 56,
         },
       },
-      "overrides": Object {},
+      "overrides": Object {
+        "MuiSnackbarContent": Object {
+          "root": Object {
+            "paddingLeft": "14px",
+            "paddingRight": "14px",
+          },
+        },
+      },
       "palette": Object {
         "action": Object {
           "active": "#fff",
@@ -365,7 +372,7 @@ exports[`<RunCodeButton /> matches snapshot 1`] = `
     Object {
       "additionalVariables": Object {
         "snackbar": Object {
-          "borderRadius": "8px",
+          "borderRadius": "6px",
         },
         "typography": Object {
           "code": Object {
@@ -408,7 +415,14 @@ exports[`<RunCodeButton /> matches snapshot 1`] = `
           "minHeight": 56,
         },
       },
-      "overrides": Object {},
+      "overrides": Object {
+        "MuiSnackbarContent": Object {
+          "root": Object {
+            "paddingLeft": "14px",
+            "paddingRight": "14px",
+          },
+        },
+      },
       "palette": Object {
         "action": Object {
           "active": "#fff",

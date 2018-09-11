@@ -6,7 +6,7 @@ exports[`<IDEConsole /> provides a theme 1`] = `
     Object {
       "additionalVariables": Object {
         "snackbar": Object {
-          "borderRadius": "8px",
+          "borderRadius": "6px",
         },
         "typography": Object {
           "code": Object {
@@ -49,7 +49,14 @@ exports[`<IDEConsole /> provides a theme 1`] = `
           "minHeight": 56,
         },
       },
-      "overrides": Object {},
+      "overrides": Object {
+        "MuiSnackbarContent": Object {
+          "root": Object {
+            "paddingLeft": "14px",
+            "paddingRight": "14px",
+          },
+        },
+      },
       "palette": Object {
         "action": Object {
           "active": "rgba(0, 0, 0, 0.54)",
@@ -278,7 +285,7 @@ exports[`<IDEConsole /> provides a theme 1`] = `
       Object {
         "additionalVariables": Object {
           "snackbar": Object {
-            "borderRadius": "8px",
+            "borderRadius": "6px",
           },
           "typography": Object {
             "code": Object {
@@ -321,7 +328,14 @@ exports[`<IDEConsole /> provides a theme 1`] = `
             "minHeight": 56,
           },
         },
-        "overrides": Object {},
+        "overrides": Object {
+          "MuiSnackbarContent": Object {
+            "root": Object {
+              "paddingLeft": "14px",
+              "paddingRight": "14px",
+            },
+          },
+        },
         "palette": Object {
           "action": Object {
             "active": "rgba(0, 0, 0, 0.54)",
