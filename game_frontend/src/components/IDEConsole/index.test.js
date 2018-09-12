@@ -5,14 +5,17 @@ import createShallowWithTheme from 'testHelpers/createShallow'
 
 describe('<IDEConsole />', () => {
   it('renders correctly', () => {
-    const tree = createShallowWithTheme(<IDEConsole logs={[{ timestamp: '1', log: 'hello' }, { timestamp: '2', log: 'bye' }]} />)
+    const tree = createShallowWithTheme(
+      <IDEConsole logs={[{ timestamp: '1', log: 'hello' }, { timestamp: '2', log: 'bye' }]} />,
+      'dark'
+    )
     expect(tree).toMatchSnapshot()
   })
 })
 
 describe('<StyledConsole />', () => {
   it('renders correctly', () => {
-    const tree = createShallowWithTheme(<StyledConsole />)
+    const tree = createShallowWithTheme(<StyledConsole />, 'dark')
     expect(tree).toMatchSnapshot()
   })
 })

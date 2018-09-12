@@ -1,5 +1,6 @@
+import { createMuiTheme } from '@material-ui/core/styles'
+
 const palette = {
-  type: 'dark',
   primary: {
     main: '#FFFFFF'
   },
@@ -14,6 +15,9 @@ const additionalVariables = {
       fontFamily: '\'Source Code Pro\', monospace',
       fontSize: '1rem'
     }
+  },
+  snackbar: {
+    borderRadius: '6px'
   }
 }
 
@@ -21,10 +25,20 @@ const shape = {
   borderRadius: '24px'
 }
 
+const overrides = {
+  MuiSnackbarContent: {
+    root: {
+      paddingRight: '14px',
+      paddingLeft: '14px'
+    }
+  }
+}
+
 const theme = {
   palette,
   additionalVariables,
   shape,
+  overrides,
   text: {
     secondary: '#FFFFFF'
   },
@@ -62,4 +76,15 @@ const theme = {
   }
 }
 
-export default theme
+const createTheme = type => {
+  const palette = { ...theme.palette, type }
+  return createMuiTheme({ ...theme, palette })
+}
+
+export const lightTheme = createTheme('light')
+export const darkTheme = createTheme('dark')
+
+export default {
+  light: lightTheme,
+  dark: darkTheme
+}

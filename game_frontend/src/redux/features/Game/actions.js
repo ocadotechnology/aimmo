@@ -63,6 +63,18 @@ const unitySendAvatarIDFail = () => (
   }
 )
 
+const socketFeedbackAvatarUpdated = () => (
+  {
+    type: types.SOCKET_FEEDBACK_AVATAR_UPDATED
+  }
+)
+
+const snackbarForAvatarUpdatedShown = () => (
+  {
+    type: types.SNACKBAR_FOR_AVATAR_FEEDBACK_SHOWN
+  }
+)
+
 export default {
   socketConnectToGameRequest,
   sendGameStateFail,
@@ -71,5 +83,7 @@ export default {
   unityEvent,
   connectionParametersReceived,
   unitySendAvatarIDSuccess,
-  unitySendAvatarIDFail
+  unitySendAvatarIDFail,
+  socketFeedbackAvatarUpdated,
+  snackbarForAvatarUpdatedShown
 }

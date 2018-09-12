@@ -7,6 +7,16 @@ const gameReducer = (state = {}, action) => {
         ...state,
         gameState: action.payload.gameState
       }
+    case types.SOCKET_FEEDBACK_AVATAR_UPDATED:
+      return {
+        ...state,
+        showSnackbarForAvatarUpdated: true
+      }
+    case types.SNACKBAR_FOR_AVATAR_FEEDBACK_SHOWN:
+      return {
+        ...state,
+        showSnackbarForAvatarUpdated: false
+      }
     default:
       return state
   }
