@@ -1,32 +1,37 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import IDEEditor from 'components/IDEEditor'
 import IDEConsole from 'components/IDEConsole'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { actions as editorActions } from 'features/Editor'
+import { darkTheme } from 'theme'
+import { MuiThemeProvider } from '@material-ui/core/styles'
+import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components'
 
 export class IDE extends Component {
+  static propTypes = {
+    code: PropTypes.string,
+    postCode: PropTypes.func,
+    getCode: PropTypes.func,
+    editorChanged: PropTypes.func,
+    logs: PropTypes.arrayOf(PropTypes.object)
+  }
+
   render () {
     return (
-      <Fragment>
-        <IDEEditor
-          code={this.props.code}
-          postCode={this.props.postCode}
-          getCode={this.props.getCode}
-          editorChanged={this.props.editorChanged}
-        />
-        <IDEConsole logs={this.props.logs} />
-      </Fragment>
+      <StyledComponentsThemeProvider theme={darkTheme}>
+        <MuiThemeProvider theme={darkTheme}>
+          <IDEEditor
+            code={this.props.code}
+            postCode={this.props.postCode}
+            getCode={this.props.getCode}
+            editorChanged={this.props.editorChanged}
+          />
+          <IDEConsole logs={this.props.logs} />
+        </MuiThemeProvider>
+      </StyledComponentsThemeProvider>
     )
   }
-}
-
-IDE.propTypes = {
-  code: PropTypes.string,
-  postCode: PropTypes.func,
-  getCode: PropTypes.func,
-  editorChanged: PropTypes.func,
-  logs: PropTypes.arrayOf(PropTypes.object)
 }
 
 const mapStateToProps = state => ({
