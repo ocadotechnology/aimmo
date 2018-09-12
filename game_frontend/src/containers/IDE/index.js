@@ -4,7 +4,9 @@ import IDEConsole from 'components/IDEConsole'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { actions as editorActions } from 'features/Editor'
-import ThemeProvider from 'components/ThemeProvider'
+import { darkTheme } from 'theme'
+import { MuiThemeProvider } from '@material-ui/core/styles'
+import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components'
 
 export class IDE extends Component {
   static propTypes = {
@@ -17,15 +19,17 @@ export class IDE extends Component {
 
   render () {
     return (
-      <ThemeProvider variant='dark'>
-        <IDEEditor
-          code={this.props.code}
-          postCode={this.props.postCode}
-          getCode={this.props.getCode}
-          editorChanged={this.props.editorChanged}
-        />
-        <IDEConsole logs={this.props.logs} />
-      </ThemeProvider>
+      <StyledComponentsThemeProvider theme={darkTheme}>
+        <MuiThemeProvider theme={darkTheme}>
+          <IDEEditor
+            code={this.props.code}
+            postCode={this.props.postCode}
+            getCode={this.props.getCode}
+            editorChanged={this.props.editorChanged}
+          />
+          <IDEConsole logs={this.props.logs} />
+        </MuiThemeProvider>
+      </StyledComponentsThemeProvider>
     )
   }
 }

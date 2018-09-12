@@ -2,7 +2,9 @@ import 'babel-polyfill'
 import React from 'react'
 import { render } from 'react-dom'
 
-import ThemeProvider from './components/ThemeProvider'
+import { MuiThemeProvider } from '@material-ui/core/styles'
+import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components'
+import { lightTheme } from 'theme'
 import { Provider } from 'react-redux'
 
 import GamePage from './components/GamePage'
@@ -40,11 +42,13 @@ function getGameIDFromURL () {
 const reduxStore = configureStore(initialState)
 
 const RootJSX = () => (
-  <ThemeProvider variant='light'>
-    <Provider store={reduxStore}>
-      <GamePage />
-    </Provider>
-  </ThemeProvider>
+  <StyledComponentsThemeProvider theme={lightTheme}>
+    <MuiThemeProvider theme={lightTheme}>
+      <Provider store={reduxStore}>
+        <GamePage />
+      </Provider>
+    </MuiThemeProvider>
+  </StyledComponentsThemeProvider>
 )
 
 const root = document.getElementById('root')

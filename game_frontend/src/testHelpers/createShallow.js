@@ -1,10 +1,6 @@
 import React from 'react'
 import { createShallow } from '@material-ui/core/test-utils'
-import ThemeProvider from 'components/ThemeProvider'
-
-const light = ThemeProvider.createTheme('light')
-const dark = ThemeProvider.createTheme('dark')
-const themeVariants = { light, dark }
+import themeVariants from 'theme'
 
 /**
  * Shallow renders the given component with the theme context for material-ui
