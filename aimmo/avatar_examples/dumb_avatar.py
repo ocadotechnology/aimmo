@@ -1,7 +1,8 @@
 class Avatar(object):
-    def handle_turn(self, world_map, avatar_state):
+    def handle_turn(self, world_state, avatar_state):
         from simulation.action import MoveAction
-        from simulation.direction import ALL_DIRECTIONS
+        import simulation.direction as direction
         import random
 
-        return MoveAction(random.choice(ALL_DIRECTIONS))
+        new_dir = random.choice(direction.ALL_DIRECTIONS)
+        return new_dir
