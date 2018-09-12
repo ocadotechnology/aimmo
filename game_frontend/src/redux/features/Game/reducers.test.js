@@ -17,4 +17,22 @@ describe('gameReducer', () => {
     const action = actions.socketGameStateReceived({ id: 1 })
     expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
   })
+
+  it('should handle SOCKET_FEEDBACK_AVATAR_UPDATED', () => {
+    const expectedState = {
+      showSnackbarForAvatarUpdated: true,
+      initialState: 'someValue'
+    }
+    const action = actions.socketFeedbackAvatarUpdated()
+    expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
+  })
+
+  it('should handle SNACKBAR_FOR_AVATAR_FEEDBACK_SHOWN', () => {
+    const expectedState = {
+      showSnackbarForAvatarUpdated: false,
+      initialState: 'someValue'
+    }
+    const action = actions.snackbarForAvatarUpdatedShown()
+    expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
+  })
 })

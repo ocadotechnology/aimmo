@@ -11,7 +11,6 @@ import Button from '@material-ui/core/Button'
 import PlayIcon from 'components/icons/Play'
 
 export const IDEEditorLayout = styled.div`
-  background-color: #2F4F4F;
   position: relative;
   grid-area: ide-editor;
 `
