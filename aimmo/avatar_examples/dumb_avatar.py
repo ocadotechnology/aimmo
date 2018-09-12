@@ -5,4 +5,4 @@ class Avatar(object):
         import random
 
         new_dir = random.choice(direction.ALL_DIRECTIONS)
-        return new_dir
+        return MoveAction(new_dir)
