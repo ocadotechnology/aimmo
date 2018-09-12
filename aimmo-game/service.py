@@ -101,8 +101,6 @@ class GameAPI(object):
 
     def _send_logs(self, player_id_to_workers):
         def should_send_logs(logs):
-            LOGGER.info("should_send_logs: " + str(logs))
-
             return logs is not None and logs != ''
 
         socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id.copy()
