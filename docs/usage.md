@@ -6,7 +6,7 @@
 ---
 
 ## Running Locally with no containers
-* Make sure you have [Yarn](https://yarnpkg.com/en/docs/install#mac-stable) installed, then run `yarn` from inside the game_frontend folder. Then move back to the aimmo root directory.
+* Follow the instructions at [game frontend documentation](https://github.com/ocadotechnology/aimmo/blob/master/game_frontend/README.md) in order to install all the frontend requirements. You should be in the `game_frontend` folder for this step.
 * Make and activate a virtualenv (We recommend [pipenv](https://docs.pipenv.org/)).
     * On **Mac**, run `brew install pipenv` using the `brew` package manager. Then run `pipenv install` followed by `pipenv shell`.
     * On **Ubuntu**, run `sudo bash ubuntu_setup.sh`. This will install nodejs, yarn, as well as pipenv. Now run the following: `pipenv shell`.
@@ -28,7 +28,7 @@
 
 ## Running with Kubernetes with containers
 **64bit environment is required for this mode!**
-* Make sure you have [Yarn](https://yarnpkg.com/en/docs/install#mac-stable) installed, then run `yarn` from inside the game_frontend folder. Then move back to the aimmo root directory.
+* Follow the instructions at [game frontend documentation](https://github.com/ocadotechnology/aimmo/blob/master/game_frontend/README.md) in order to install all the frontend requirements. You should be in the `game_frontend` folder for this step.
 * By default, the local environment runs each worker in a Python thread. This is the closest mode that reflects the environment in production. However, this will require much more resources.
 * Linux, Windows, and OSX.
 * Prerequisites:
