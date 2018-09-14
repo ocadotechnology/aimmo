@@ -15,7 +15,7 @@ def cmd(command):
     '''
     result = Result()
 
-    p = subprocess.Popen(shlex.split(command), stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    p = subprocess.Popen(command, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
     (stdout, stderr) = p.communicate()
 
     result.exit_code = p.returncode
@@ -86,7 +86,7 @@ if hostOS == OStypes["mac"]:
             result = cmd('brew cask install docker')
 
             print 'Installing Virtualbox...'
-            result = cmd('brew cask install docker')
+            result = cmd('brew cask install virtualbox')
         
             print 'Setting up frontend dependencies...'
             result = cmd('cd ./game_frontend')
@@ -104,11 +104,11 @@ if hostOS == OStypes["mac"]:
             result = cmd('sudo mv kubectl /usr/local/bin/')
 
             print 'adding aimmo to /etc/hosts...'
-            result = cmd('sudo echo "192.168.99.100 local.aimmo.codeforlife.education" >> /etc/hosts')
+            result = cmd("sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'")
 
             print '---------------------------------------------------------------------------------------------------'
             print '| You now need to get the unity package from the aimmo-unity repo, place it in aimmo/static/unity |' 
-            print '| Follow the rest of the instructions on the readme to start up aimmo!                            |'        
+            print '| Also, just open up docker to finalize the install for it, then you can run aimmo.               |'        
             print '---------------------------------------------------------------------------------------------------'
             
         except CalledProcessError as e:
@@ -121,8 +121,9 @@ if hostOS == OStypes["mac"]:
             print result.stderr
 
     except Exception as e:
-        print 'Something went wrong when checking homebrew, has it been'
-        print 'installed properly?'
+        print 'Something went wrong :s, check if Homebrew is installed correctly.'
+        print "If it's not that then something went wrong during the script unexpectedly,"
+        print "don't be alarmed, you may have to just try the manual setup. Sorry :("
         print result.stderr
 
     
