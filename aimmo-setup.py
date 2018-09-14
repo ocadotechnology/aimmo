@@ -98,9 +98,7 @@ if hostOS == OStypes["mac"]:
             result = _cmd('brew cask install virtualbox')
 
             print('Setting up frontend dependencies...')
-            result = _cmd('cd ./game_frontend')
-            result = _cmd('yarn')
-            result = _cmd('cd ..')
+            result = _cmd('cd ./game_frontend | yarn')
 
             print('Installing minikube...')
             result = _cmd('curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-darwin-amd64')
