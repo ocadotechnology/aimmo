@@ -5,6 +5,7 @@ import shlex
 
 from subprocess import PIPE, CalledProcessError
 
+
 class Result:
     '''
     Blank object used to store the result of a command run by Popen, do not use this
@@ -19,7 +20,7 @@ def _cmd(command):
     Takes in a command/subprocess, runs it, then returns an object containing all
     output from the process. DO NOT USE outside of the aimmo-setup script, and DO NOT INCLUDE
     in any release build, as this function is able to run bash scripts, will sudo access if
-    specified. 
+    specified.
     '''
     result = Result()
 
@@ -60,7 +61,7 @@ elif platform.system() == 'Linux':
     print('LINUX found!')
 
 print('---------------------------------------------------------------------------------------------------')
-print('| Welcome to aimmo! This script should make your life alil easier, just be kind if it doesnt work |') 
+print('| Welcome to aimmo! This script should make your life alil easier, just be kind if it doesnt work |')
 print('| You may be asked to enter your password during this setup                                       |')
 print('---------------------------------------------------------------------------------------------------')
 
@@ -121,10 +122,10 @@ if hostOS == OStypes["mac"]:
             print('A command has return an exit code != 0, so something has gone wrong.')
         except OSError as e:
             print("Tried to execute a command that didn't exist.")
-            print result.stderr
+            print(result.stderr)
         except ValueError as e:
             print('Tried to execute a command with invalid arguments')
-            print result.stderr
+            print(result.stderr)
 
     except Exception as e:
         print('Something went wrong :s, check if Homebrew is installed correctly.')
