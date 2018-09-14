@@ -6,12 +6,19 @@ import shlex
 from subprocess import PIPE, CalledProcessError
 
 class Result:
+    '''
+    Blank object used to store the result of a command run by Popen, do not use this
+    outside of the setup script. 
+    '''
     pass
 
-def cmd(command):
+def _cmd(command):
     '''
-    This takes in a command you wish to run, as a string, and excecutes it for you. This will work for commands run
-    on Linux, Mac, and Windows. 
+    :param command: command/subprocess to be run, as a string
+    Takes in a command/subprocess, runs it, then returns an object containing all
+    output from the process. DO NOT USE outside of the aimmo-setup script, and DO NOT INCLUDE
+    in any release build, as this function is able to run bash scripts, will sudo access if
+    specified. 
     '''
     result = Result()
 
@@ -68,43 +75,43 @@ if hostOS == OStypes["mac"]:
     Note needs homebrew pre-installed in order to run, will let the user know if they don't have it.
     """
     try:
-        result = cmd('brew -v')
+        result = _cmd('brew -v')
         print 'Homebrew Found...'
         print result.stdout
 
         try:
             print 'Installing Yarn...'
-            result = cmd('brew install yarn')
+            result = _cmd('brew install yarn')
 
             print 'Installing pipenv...'
-            result = cmd('brew install pipenv')
+            result = _cmd('brew install pipenv')
 
             print 'Running "pipenv install"...'
-            result = cmd('pipenv install')
+            result = _cmd('pipenv install')
             
             print 'Installing Docker...'
-            result = cmd('brew cask install docker')
+            result = _cmd('brew cask install docker')
 
             print 'Installing Virtualbox...'
-            result = cmd('brew cask install virtualbox')
+            result = _cmd('brew cask install virtualbox')
         
             print 'Setting up frontend dependencies...'
-            result = cmd('cd ./game_frontend')
-            result = cmd('yarn')
-            result = cmd('cd ..')
+            result = _cmd('cd ./game_frontend')
+            result = _cmd('yarn')
+            result = _cmd('cd ..')
             
             print 'Installing minikube...'
-            result = cmd('curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-darwin-amd64')
-            result = cmd('chmod +x minikube')
-            result = cmd('sudo mv minikube /usr/local/bin/')
+            result = _cmd('curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-darwin-amd64')
+            result = _cmd('chmod +x minikube')
+            result = _cmd('sudo mv minikube /usr/local/bin/')
 
             print 'Installing Kubernetes...'
-            result = cmd('curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.9.4/bin/darwin/amd64/kubectl')
-            result = cmd('chmod +x kubectl')
-            result = cmd('sudo mv kubectl /usr/local/bin/')
+            result = _cmd('curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.9.4/bin/darwin/amd64/kubectl')
+            result = _cmd('chmod +x kubectl')
+            result = _cmd('sudo mv kubectl /usr/local/bin/')
 
             print 'adding aimmo to /etc/hosts...'
-            result = cmd("sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'")
+            result = _cmd("sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'")
 
             print '---------------------------------------------------------------------------------------------------'
             print '| You now need to get the unity package from the aimmo-unity repo, place it in aimmo/static/unity |' 
@@ -122,7 +129,7 @@ if hostOS == OStypes["mac"]:
 
     except Exception as e:
         print 'Something went wrong :s, check if Homebrew is installed correctly.'
-        print "If it's not that then something went wrong during the script unexpectedly,"
+        print "If it's not that, then something went wrong during the script unexpectedly,"
         print "don't be alarmed, you may have to just try the manual setup. Sorry :("
         print result.stderr
 
