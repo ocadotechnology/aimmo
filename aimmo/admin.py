@@ -10,8 +10,9 @@ class GameDataAdmin(admin.ModelAdmin):
     def players(self, obj):
         return "\n".join([u.first_name for u in obj.can_play.all()])
 
+
 class AvatarDataAdmin(admin.ModelAdmin):
-    list_display = ['id','game_identifier', 'game_name', 'owner_name']
+    list_display = ['id', 'game_identifier', 'game_name', 'owner_name']
 
     def owner_name(self, obj):
         return obj.owner.first_name
