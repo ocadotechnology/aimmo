@@ -59,11 +59,10 @@ elif platform.system() == 'Linux':
     hostOS = OStypes["linux"]
     print('LINUX found!')
 
-print '---------------------------------------------------------------------------------------------------'
-print '| Welcome to aimmo! This script should make your life alil easier, just be kind if it doesnt work |'  
-print '---------------------------------------------------------------------------------------------------'
-print '| You may be asked to enter your password during this setup                                       |'
-print '---------------------------------------------------------------------------------------------------'
+print('---------------------------------------------------------------------------------------------------')
+print('| Welcome to aimmo! This script should make your life alil easier, just be kind if it doesnt work |') 
+print('| You may be asked to enter your password during this setup                                       |')
+print('---------------------------------------------------------------------------------------------------')
 
 if hostOS == OStypes["mac"]:
     """
