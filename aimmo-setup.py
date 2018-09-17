@@ -16,11 +16,12 @@ class Result:
 
 def _cmd(command):
     '''
-    :param command: command/subprocess to be run, as a string
+    :param command: command/subprocess to be run, as a string.
+
     Takes in a command/subprocess, runs it, then returns an object containing all
     output from the process. DO NOT USE outside of the aimmo-setup script, and DO NOT INCLUDE
-    in any release build, as this function is able to run bash scripts, will sudo access if
-    specified.
+    in any release build, as this function is able to run bash scripts, and can run commands
+    with sudo if specified.
     '''
     result = Result()
 
@@ -33,7 +34,6 @@ def _cmd(command):
     result.command = command
 
     if p.returncode != 0:
-        print('Error executing command [%s]' % command)
         print('stderr: [%s]' % stderr)
         print('stdout: [%s]' % stdout)
         raise CalledProcessError
@@ -49,6 +49,12 @@ OStypes = {
     "windows": 2,
     "linux": 3
 }
+valid = {"yes": True, "y": True, "ye": True, "no": False, "n": False} 
+
+print('---------------------------------------------------------------------------------------------------')
+print('| Welcome to aimmo! This script should make your life alil easier, just be kind if it doesnt work |')
+print('| You may be asked to enter your password during this setup                                       |')
+print('---------------------------------------------------------------------------------------------------')
 
 if platform.system() == 'Darwin':
     hostOS = OStypes["mac"]
@@ -56,14 +62,9 @@ if platform.system() == 'Darwin':
 elif platform.system() == 'Windows':
     hostOS = OStypes["windows"]
     print('WINDOWS found!')
-elif platform.system() == 'Linux':
+elif platform.system() == 'linux':
     hostOS = OStypes["linux"]
     print('LINUX found!')
-
-print('---------------------------------------------------------------------------------------------------')
-print('| Welcome to aimmo! This script should make your life alil easier, just be kind if it doesnt work |')
-print('| You may be asked to enter your password during this setup                                       |')
-print('---------------------------------------------------------------------------------------------------')
 
 if hostOS == OStypes["mac"]:
     """
@@ -85,6 +86,9 @@ if hostOS == OStypes["mac"]:
             print('Installing Yarn...')
             result = _cmd('brew install yarn')
 
+            print('Adding parcel-bundler globally...')
+            result = _cmd('yarn global add parcel-bundler')
+
             print('Installing pipenv...')
             result = _cmd('brew install pipenv')
 
@@ -100,18 +104,23 @@ if hostOS == OStypes["mac"]:
             print('Setting up frontend dependencies...')
             result = _cmd('cd ./game_frontend | yarn')
 
-            print('Installing minikube...')
+            print('Installing minikube...') # If minikube version changes this will need updating
             result = _cmd('curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-darwin-amd64')
             result = _cmd('chmod +x minikube')
             result = _cmd('sudo mv minikube /usr/local/bin/')
 
-            print('Installing Kubernetes...')
+            print('Installing Kubernetes...') # If kubernetes version changes this will need updating
             result = _cmd('curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.9.4/bin/darwin/amd64/kubectl')
             result = _cmd('chmod +x kubectl')
             result = _cmd('sudo mv kubectl /usr/local/bin/')
 
-            print('adding aimmo to /etc/hosts...')
-            result = _cmd("sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'")
+            with open("/etc/hosts", "r") as hostfile:
+                data = hostfile.read().replace('\n', '')
+            if "192.168.99.100 local.aimmo.codeforlife.education" not in data:
+                print('adding aimmo to /etc/hosts...')
+                result = _cmd("sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'")
+            else:
+                print('aimmo already present in /etc/hosts...')
 
             print('---------------------------------------------------------------------------------------------------')
             print('| You now need to get the unity package from the aimmo-unity repo, place it in aimmo/static/unity |')
@@ -132,12 +141,98 @@ if hostOS == OStypes["mac"]:
         print("If it's not that, then something went wrong during the script unexpectedly,")
         print("don't be alarmed, you may have to just try the manual setup. Sorry :(")
         print(result.stderr)
-
-
 elif hostOS == OStypes["windows"]:
     pass
 elif hostOS == OStypes["linux"]:
-    pass
+    try:
+        print('Updating apt-get...')
+        result = _cmd('sudo apt-get update')
+
+        try:
+            print('Getting Nodejs...')
+            result = _cmd('curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -')
+
+            print('Installing Nodejs...')
+            result = _cmd('sudo apt-get install -y nodejs')
+
+            # Here we check if cmd test is installed, if it is we ask the user if it's okay to remove it if we find it.
+            # If ok, we remove it, if not, we attempt to continue the process without removing.
+            result = _cmd("dpkg-query -w -f='${status}' cmdtest")
+            if 'ok' in result.stdout:
+                print('Looks like cmdtest is installed on your machine, this can cause issues when installing Yarn.')
+
+                answer = False
+                answered = False
+                while not answered:
+                    choice = raw_input('Is it okay if i remove cmdtest? [y/n]').lower()
+                    if choice in valid:
+                        answer = valid[choice]
+                        answered = True
+                    else:
+                        print("Please answer 'yes' or 'no' ('y' or 'n').")
+                if answer:
+                    print('Removing cmdtest...')
+                    result = _cmd('apt-get remove cmdtest')
+                else:
+                    print('Continuing without removing cmdtest...')
+            
+            print('Configuring Yarn repository...')
+            result = _cmd('curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -')
+            result = _cmd('echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list')
+
+            print('Installing Yarn...')
+            result = _cmd('sudo apt-get install yarn')
+
+            print('Installing pip...')
+            result = _cmd('sudo apt-get install python-pip')
+
+            print('Installing pipenv...')
+            result = _cmd('pip install pipenv')
+
+            print('Adding parcel-bundler globally...')
+            result = _cmd('yarn global add parcel-bundler')
+
+            print('Installing snap...')
+            result = _cmd('sudo apt install snapd')
+
+            print('Installing kubernetes...')
+            result = _cmd('sudo snap install kubectl --classic')
+            
+            print('Installing additional packages in order to get docker...')
+            result = _cmd('sudo apt-get install apt-transport-https ca-certificates curl software-properties-common')
+
+            print('Getting docker GPG key...')
+            result = _cmd('curl -fsSL https://download.docker.com/linux/linux/gpg | sudo apt-key add -')
+
+            print('checking fingerprint...')
+            result = _cmd('sudo apt-key fingerprint 0EBFCD88')
+            print(result.stdout)
+            print('If this does not say docker anywhere, something went wrong...')
+
+            print('Getting docker...') # Need to add a check here just to make sure 'arch=' is correct, they might not have intel or amd cpu
+            result = _cmd('sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/linux $(lsb_release -cs) stable"')
+
+            with open("/etc/hosts", "r") as hostfile:
+                data = hostfile.read().replace('\n', '')
+            if "192.168.99.100 local.aimmo.codeforlife.education" not in data:
+                print('adding aimmo to /etc/hosts...')
+                result = _cmd("sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'")
+            else:
+                print('aimmo already present in /etc/hosts...')
+
+            
+        except CalledProcessError as e:
+            print('Command returned an exit code != 0, so something has gone wrong.')
+            print(result.stderr)
+        except OSError as e:
+            print("Tried to execute a command that didn't exist.")
+            print(result.stderr)
+        except ValueError as e:
+            print('Tried to execute a command with invalid arguments')
+            print(result.stderr) 
+    except Exception as e:
+        print("Something went really wrong here, either i can't update apt-get, or")
+        print("something else has gone very wrong and i don't what. Sorry D:")
 else:
     print("Could not detect operating system/ it looks like you're using")
     print('something other then windows, mac, or linux. Y u do dis?')
