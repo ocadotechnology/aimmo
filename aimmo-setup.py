@@ -34,6 +34,7 @@ def _cmd(command):
     result.command = command
 
     if p.returncode != 0:
+        print('extcde: [%s]' % p.returncode)
         print('stderr: [%s]' % stderr)
         print('stdout: [%s]' % stdout)
         raise CalledProcessError
@@ -62,7 +63,7 @@ if platform.system() == 'Darwin':
 elif platform.system() == 'Windows':
     hostOS = OStypes["windows"]
     print('WINDOWS found!')
-elif platform.system() == 'linux':
+elif platform.system() == 'Linux':
     hostOS = OStypes["linux"]
     print('LINUX found!')
 
@@ -144,95 +145,97 @@ if hostOS == OStypes["mac"]:
 elif hostOS == OStypes["windows"]:
     pass
 elif hostOS == OStypes["linux"]:
+
     try:
         print('Updating apt-get...')
         result = _cmd('sudo apt-get update')
 
-        try:
-            print('Getting Nodejs...')
-            result = _cmd('curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -')
+        print('Getting Nodejs...')
+        result = _cmd('curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -')
 
-            print('Installing Nodejs...')
-            result = _cmd('sudo apt-get install -y nodejs')
+        print('Installing Nodejs...')
+        result = _cmd('sudo apt-get install -y nodejs')
 
-            # Here we check if cmd test is installed, if it is we ask the user if it's okay to remove it if we find it.
-            # If ok, we remove it, if not, we attempt to continue the process without removing.
-            result = _cmd("dpkg-query -w -f='${status}' cmdtest")
-            if 'ok' in result.stdout:
-                print('Looks like cmdtest is installed on your machine, this can cause issues when installing Yarn.')
+        # Here we check if cmd test is installed, if it is we ask the user if it's okay to remove it if we find it.
+        # If ok, we remove it, if not, we attempt to continue the process without removing.
+        result = _cmd("dpkg-query -W -f='${status}' cmdtest")
+        if 'ok' in result.stdout:
+            print('Looks like cmdtest is installed on your machine, this can cause issues when installing Yarn.')
 
-                answer = False
-                answered = False
-                while not answered:
-                    choice = raw_input('Is it okay if i remove cmdtest? [y/n]').lower()
-                    if choice in valid:
-                        answer = valid[choice]
-                        answered = True
-                    else:
-                        print("Please answer 'yes' or 'no' ('y' or 'n').")
-                if answer:
-                    print('Removing cmdtest...')
-                    result = _cmd('apt-get remove cmdtest')
+            answer = False
+            answered = False
+            while not answered:
+                choice = raw_input('Is it okay if i remove cmdtest? [y/n]').lower()
+                if choice in valid:
+                    answer = valid[choice]
+                    answered = True
                 else:
-                    print('Continuing without removing cmdtest...')
-            
-            print('Configuring Yarn repository...')
-            result = _cmd('curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -')
-            result = _cmd('echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list')
-
-            print('Installing Yarn...')
-            result = _cmd('sudo apt-get install yarn')
-
-            print('Installing pip...')
-            result = _cmd('sudo apt-get install python-pip')
-
-            print('Installing pipenv...')
-            result = _cmd('pip install pipenv')
-
-            print('Adding parcel-bundler globally...')
-            result = _cmd('yarn global add parcel-bundler')
-
-            print('Installing snap...')
-            result = _cmd('sudo apt install snapd')
-
-            print('Installing kubernetes...')
-            result = _cmd('sudo snap install kubectl --classic')
-            
-            print('Installing additional packages in order to get docker...')
-            result = _cmd('sudo apt-get install apt-transport-https ca-certificates curl software-properties-common')
-
-            print('Getting docker GPG key...')
-            result = _cmd('curl -fsSL https://download.docker.com/linux/linux/gpg | sudo apt-key add -')
-
-            print('checking fingerprint...')
-            result = _cmd('sudo apt-key fingerprint 0EBFCD88')
-            print(result.stdout)
-            print('If this does not say docker anywhere, something went wrong...')
-
-            print('Getting docker...') # Need to add a check here just to make sure 'arch=' is correct, they might not have intel or amd cpu
-            result = _cmd('sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/linux $(lsb_release -cs) stable"')
-
-            with open("/etc/hosts", "r") as hostfile:
-                data = hostfile.read().replace('\n', '')
-            if "192.168.99.100 local.aimmo.codeforlife.education" not in data:
-                print('adding aimmo to /etc/hosts...')
-                result = _cmd("sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'")
+                    print("Please answer 'yes' or 'no' ('y' or 'n').")
+            if answer:
+                print('Removing cmdtest...')
+                result = _cmd('apt-get remove cmdtest')
             else:
-                print('aimmo already present in /etc/hosts...')
+                print('Continuing without removing cmdtest...')
 
-            
-        except CalledProcessError as e:
-            print('Command returned an exit code != 0, so something has gone wrong.')
-            print(result.stderr)
-        except OSError as e:
-            print("Tried to execute a command that didn't exist.")
-            print(result.stderr)
-        except ValueError as e:
-            print('Tried to execute a command with invalid arguments')
-            print(result.stderr) 
-    except Exception as e:
-        print("Something went really wrong here, either i can't update apt-get, or")
-        print("something else has gone very wrong and i don't what. Sorry D:")
+        print('Configuring Yarn repository...')
+        result = _cmd('curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -')
+        result = _cmd('echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list')
+
+        print('Installing Yarn...')
+        result = _cmd('sudo apt-get install yarn')
+
+        print('Installing pip...')
+        result = _cmd('sudo apt-get install python-pip')
+
+        print('Installing pipenv...')
+        result = _cmd('pip install pipenv')
+
+        print('Adding parcel-bundler globally...')
+        result = _cmd('yarn global add parcel-bundler')
+
+        print('Installing snap...')
+        result = _cmd('sudo apt install snapd')
+
+        print('Installing kubernetes...')
+        result = _cmd('sudo snap install kubectl --classic')
+
+        # print('Installing additional packages in order to get docker...')
+        # result = _cmd('sudo apt-get install apt-transport-https ca-certificates curl software-properties-common')
+        #
+        # print('Getting docker GPG key...')
+        # result = _cmd('curl -fsSL https://download.docker.com/linux/linux/gpg | sudo apt-key add -')
+        #
+        # print('checking fingerprint...')
+        # result = _cmd('sudo apt-key fingerprint 0EBFCD88')
+        # print(result.stdout)
+        # print('If this does not say docker anywhere, something went wrong...')
+        #
+        # print('Getting docker...') # Need to add a check here just to make sure 'arch=' is correct, they might not have intel or amd cpu
+        # result = _cmd('sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/linux $(lsb_release -cs) stable"')
+
+        print('Installing Docker...')
+        result = _cmd('sudo apt-get install docker-ce')
+
+        with open("/etc/hosts", "r") as hostfile:
+            data = hostfile.read().replace('\n', '')
+        if "192.168.99.100 local.aimmo.codeforlife.education" not in data:
+            print('adding aimmo to /etc/hosts...')
+            result = _cmd("sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'")
+        else:
+            print('aimmo already present in /etc/hosts...')
+
+    except CalledProcessError as e:
+        print('Command returned an exit code != 0, so something has gone wrong.')
+        print(result.stderr)
+    except OSError as e:
+        print("Tried to execute a command that didn't exist.")
+        print(result.stderr)
+    except ValueError as e:
+        print('Tried to execute a command with invalid arguments')
+        print(result.stderr)
+    # except Exception as e:
+    #     print("Something went really wrong here, either i can't update apt-get, or")
+    #     print("something else has gone very wrong and i don't what. Sorry D:")
 else:
     print("Could not detect operating system/ it looks like you're using")
     print('something other then windows, mac, or linux. Y u do dis?')
