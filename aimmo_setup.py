@@ -6,8 +6,7 @@ import shlex
 from subprocess import PIPE, CalledProcessError
 
 
-# First we find and store the OS we are currently on, 0 if we didn't figure it out
-# Although if you're not using one the options above for development what are you doing with your life.
+# First we find and store the OS we are currently on, 0 if we didn't figure out which one
 hostOS = 0
 OStypes = {
     "mac": 1,
@@ -50,150 +49,145 @@ def _cmd(command):
     return result
 
 
-def install_yarn(os):
+def install_yarn(operatingSystem):
     '''
-    :param os: values from the OStypes dict. (Should be updated to enum once python 3 is availible)
+    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is availible)
 
     OS dependant, so it must be passed to this function in order to run correctly.
     '''
     print('Installing Yarn...')
-    if os == OStypes['mac']:
+    if operatingSystem == OStypes['mac']:
         result = _cmd('brew install yarn')
-    elif os == OStypes['linux']:
+    elif operatingSystem == OStypes['linux']:
         result = _cmd('sudo apt-get install yarn')
-    elif os == OStypes['windows']:
+    elif operatingSystem == OStypes['windows']:
         pass
     else:
         raise Exception
 
 
-def install_pipenv(os):
+def install_pipenv(operatingSystem):
     '''
-    :param os: values from the OStypes dict. (Should be updated to enum once python 3 is availible)
+    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is availible)
 
     OS dependant, so it must be passed to this function in order to run correctly.
     '''
     print('Installing pipenv...')
-    if os == OStypes['mac']:
+    if operatingSystem == OStypes['mac']:
         result = _cmd('brew install pipenv')
-    elif os == OStypes['linux']:
+    elif operatingSystem == OStypes['linux']:
         result = _cmd('pip install pipenv')
-    elif os == OStypes['windows']:
+    elif operatingSystem == OStypes['windows']:
         pass
     else:
         raise Exception
 
 
-def install_docker(os):
+def install_docker(operatingSystem):
     '''
-    :param os: values from the OStypes dict. (Should be updated to enum once python 3 is availible)
+    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is availible)
 
     OS dependant, so it must be passed to this function in order to run correctly.
     '''
     print('Installing Docker...')
-    if os == OStypes['mac']:
+    if operatingSystem == OStypes['mac']:
         result = _cmd('brew cask install docker')
-    elif os == OStypes['linux']:
+    elif operatingSystem == OStypes['linux']:
         result = _cmd('sudo apt-get install docker-ce')
-    elif os == OStypes['windows']:
+    elif operatingSystem == OStypes['windows']:
         pass
     else:
         raise Exception
 
 
-def install_virtualbox(os):
+def install_virtualbox(operatingSystem):
     '''
-    :param os: values from the OStypes dict. (Should be updated to enum once python 3 is availible)
+    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is availible)
 
     OS dependant, so it must be passed to this function in order to run correctly.
     '''
     print('Installing Virtualbox...')
-    if os == OStypes['mac']:
+    if operatingSystem == OStypes['mac']:
         result = _cmd('brew cask install virtualbox')
-    elif os == OStypes['linux']:
+    elif operatingSystem == OStypes['linux']:
         result = _cmd('sudo apt-get install docker-ce')
-    elif os == OStypes['windows']:
+    elif operatingSystem == OStypes['windows']:
         pass
     else:
         raise Exception
 
 
-def install_minikube(os):
+def install_minikube(operatingSystem):
     '''
-    :param os: values from the OStypes dict. (Should be updated to enum once python 3 is availible)
+    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is availible)
 
     OS dependant, so it must be passed to this function in order to run correctly.
     '''
     print('Installing minikube...')  # If minikube version changes this will need updating
-    if os == OStypes['mac']:
+    if operatingSystem == OStypes['mac']:
         result = _cmd('curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-darwin-amd64')
         result = _cmd('chmod +x minikube')
         result = _cmd('sudo mv minikube /usr/local/bin/')
-    elif os == OStypes['linux']:
+    elif operatingSystem == OStypes['linux']:
         result = _cmd('curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-linux-amd64')
         result = _cmd('chmod +x minikube')
         result = _cmd('sudo mv minikube /usr/local/bin/')
-    elif os == OStypes['windows']:
+    elif operatingSystem == OStypes['windows']:
         pass
     else:
         raise Exception
 
 
-def install_kurbernetes(os):
+def install_kurbernetes(operatingSystem):
     '''
-    :param os: values from the OStypes dict. (Should be updated to enum once python 3 is availible)
+    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is availible)
 
     OS dependant, so it must be passed to this function in order to run correctly.
     '''
     print('Installing Kubernetes...')  # If kubernetes version changes this will need updating
-    if os == OStypes['mac']:
+    if operatingSystem == OStypes['mac']:
         result = _cmd('curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.9.4/bin/darwin/amd64/kubectl')
         result = _cmd('chmod +x kubectl')
         result = _cmd('sudo mv kubectl /usr/local/bin/')
-    elif os == OStypes['linux']:
+    elif operatingSystem == OStypes['linux']:
         result = _cmd('sudo snap install kubectl --classic')
-    elif os == OStypes['windows']:
+    elif operatingSystem == OStypes['windows']:
         pass
     else:
         raise Exception
 
 
-def install_yarn():
-    print('Installing Yarn...')
-    result = _cmd('sudo apt-get install yarn')
-
-
-def install_pip():
+def install_pip():  # Linux only
     print('Installing pip...')
     result = _cmd('sudo apt-get install python-pip')
 
 
-def install_snap():
+def install_snap():  # Linux only
     print('Installing snap...')
     result = _cmd('sudo apt install snapd')
 
 
-def install_nodejs():
+def install_nodejs():  # Linux only
     print('Installing Nodejs...')
     result = _cmd('sudo apt-get install -y nodejs')
 
 
-def run_pipenv_install():
+def run_pipenv_install():  # OS inderpendant
     print('Running "pipenv install"...')
     result = _cmd('pipenv install')
 
 
-def set_up_frontend_dependencies():
+def set_up_frontend_dependencies():  # Mac & Linux only
     print('Setting up frontend dependencies...')
     result = _cmd('cd ./game_frontend | yarn')
 
 
-def check_homebrew():
+def check_homebrew():  # Mac only
     result = _cmd('brew -v')
     print('Homebrew Found...')
 
 
-def check_for_cmdtest():
+def check_for_cmdtest():  # Linux/Ubuntu only
     '''
     This function is for use within the linux setup section of the script. It checks if 
     the cmdtest package is installed, if it is we ask the user if we can remove it, if yes
@@ -220,17 +214,17 @@ def check_for_cmdtest():
             print('Continuing without removing cmdtest...')
 
 
-def update_apt_get():
+def update_apt_get():  # Linux only
     print('Updating apt-get...')
     result = _cmd('sudo apt-get update')
 
 
-def get_nodejs():
+def get_nodejs():  # Linux only
     print('Getting Nodejs...')
     result = _cmd('curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -')
 
 
-def add_aimmo_to_hosts_file():
+def add_aimmo_to_hosts_file():  # OS inderpendant
     with open("/etc/hosts", "r") as hostfile:
         data = hostfile.read().replace('\n', '')
     if "192.168.99.100 local.AI:MMO.codeforlife.education" not in data:
@@ -240,12 +234,12 @@ def add_aimmo_to_hosts_file():
         print('AI:MMO already present in /etc/hosts...')
 
 
-def add_parcel_bundler():
+def add_parcel_bundler():  # Mac & Linux only
     print('Adding parcel-bundler globally...')
     result = _cmd('yarn global add parcel-bundler')
 
 
-def configure_yarn_repo():
+def configure_yarn_repo():  # Linux only
     print('Configuring Yarn repository...')
     result = _cmd('curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -')
     result = _cmd('echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list')
@@ -279,12 +273,16 @@ def mac_setup(hostOS):
 
     except CalledProcessError as e:
         print('A command has return an exit code != 0, so something has gone wrong.')
+        print(e)
     except OSError as e:
         print("Tried to execute a command that didn't exist.")
+        print(e)
     except ValueError as e:
         print('Tried to execute a command with invalid arguments')
+        print(e)
     except Exception as e:
         print('Something went very wrong and i have no idea what it was D:')
+        print(e)
 
 
 def windows_setup(hostOS):
@@ -316,16 +314,16 @@ def linux_setup(hostOS):
 
     except CalledProcessError as e:
         print('Command returned an exit code != 0, so something has gone wrong.')
-        print(result.stderr)
+        print(e)
     except OSError as e:
         print("Tried to execute a command that didn't exist.")
-        print(result.stderr)
+        print(e)
     except ValueError as e:
         print('Tried to execute a command with invalid arguments')
-        print(result.stderr)
+        print(e)
     except Exception as e:
         print('Something went very wrong and I have no idea what it was D:')
-        print(result.stderr)
+        print(e)
 
 
 print('---------------------------------------------------------------------------------------------------')
