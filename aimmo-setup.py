@@ -19,7 +19,7 @@ def _cmd(command):
     :param command: command/subprocess to be run, as a string.
 
     Takes in a command/subprocess, runs it, then returns an object containing all
-    output from the process. DO NOT USE outside of the aimmo-setup script, and DO NOT INCLUDE
+    output from the process. DO NOT USE outside of the AI:MMO-setup script, and DO NOT INCLUDE
     in any release build, as this function is able to run bash scripts, and can run commands
     with sudo if specified.
     '''
@@ -41,43 +41,12 @@ def _cmd(command):
 
     return result
 
-
-# First we find and store the OS we are currently on, 0 if we didn't figure it out
-# Although if you're not using one the options above for development what are you doing with your life.
-hostOS = 0
-OStypes = {
-    "mac": 1,
-    "windows": 2,
-    "linux": 3
-}
-valid = {"yes": True, "y": True, "ye": True, "no": False, "n": False}
-
-print('---------------------------------------------------------------------------------------------------')
-print('| Welcome to aimmo! This script should make your life alil easier, just be kind if it doesnt work |')
-print('| You may be asked to enter your password during this setup                                       |')
-print('---------------------------------------------------------------------------------------------------')
-
-if platform.system() == 'Darwin':
-    hostOS = OStypes["mac"]
-    print('MAC found!')
-elif platform.system() == 'Windows':
-    hostOS = OStypes["windows"]
-    print('WINDOWS found!')
-elif platform.system() == 'Linux':
-    hostOS = OStypes["linux"]
-    print('LINUX found!')
-
-if hostOS == OStypes["mac"]:
-    """
-    This executes the sequence of shell commands needed in order to set up aimmo. At present if changes are made
-    to the setup process or versions (such as minikube version) changes, then it will need to be updated manually.
-    In future it would be nice to have it automatically find the version we need at the time.
-
-    It would also be nice to implement the ability to automate getting the unity package, however this will require
-    selenium and a good amount of thought put into it.
-
-    Note needs homebrew pre-installed in order to run, will let the user know if they don't have it.
-    """
+def mac_setup():
+    '''
+    Runs the list of commands, sequencially, needed in order to set up AI:MMO for a mac.
+    After this has been run the user needs to open docker to finalize it's install,
+    and get the unity package for AI:MMO from AI:MMO-unity.
+    '''
     try:
         result = _cmd('brew -v')
         print('Homebrew Found...')
@@ -115,15 +84,15 @@ if hostOS == OStypes["mac"]:
 
         with open("/etc/hosts", "r") as hostfile:
             data = hostfile.read().replace('\n', '')
-        if "192.168.99.100 local.aimmo.codeforlife.education" not in data:
-            print('Adding aimmo to /etc/hosts...')
+        if "192.168.99.100 local.AI:MMO.codeforlife.education" not in data:
+            print('Adding AI:MMO to /etc/hosts...')
             result = _cmd("sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'")
         else:
-            print('Aimmo already present in /etc/hosts...')
+            print('AI:MMO already present in /etc/hosts...')
 
         print('---------------------------------------------------------------------------------------------------')
-        print('| You now need to get the unity package from the aimmo-unity repo, place it in aimmo/static/unity |')
-        print('| Also, just open up docker to finalize the install for it, then you can run aimmo.               |')
+        print('| You now need to get the unity package from the AI:MMO-unity repo, place it in AI:MMO/static/unity |')
+        print('| Also, just open up docker to finalize the install for it, then you can run AI:MMO.               |')
         print('---------------------------------------------------------------------------------------------------')
 
     except CalledProcessError as e:
@@ -137,9 +106,37 @@ if hostOS == OStypes["mac"]:
     except Exception as e:
         print('Something went very wrong and i have no idea what it was D:')
         print(result.stderr)
-elif hostOS == OStypes["windows"]:
+
+def windows_setup():
     pass
-elif hostOS == OStypes["linux"]:
+
+def check_for_cmdtest():
+    '''
+    This function is for use within the linux setup section of the script. It checks if 
+    the cmdtest package is installed, if it is we ask the user if we can remove it, if yes
+    we remove the package, if not the process continues without removing it. 
+    '''
+    p = subprocess.Popen("dpkg-query -W -f='${status}' cmdtest")
+    (stdout, stderr) = p.communicate()
+    if 'unknown' not in stdout:
+        print('Looks like cmdtest is installed on your machine, this can cause issues when installing Yarn.')
+
+        answer = False
+        answered = False
+        while not answered:
+            choice = raw_input('Is it okay if I remove cmdtest? [y/n]').lower()
+            if choice in valid:
+                answer = valid[choice]
+                answered = True
+            else:
+                print("Please answer 'yes' or 'no' ('y' or 'n').")
+        if answer:
+            print('Removing cmdtest...')
+            result = _cmd('apt-get remove cmdtest')
+        else:
+            print('Continuing without removing cmdtest...')
+
+def linux_setup():
     try:
         print('Updating apt-get...')
         result = _cmd('sudo apt-get update')
@@ -150,29 +147,7 @@ elif hostOS == OStypes["linux"]:
         print('Installing Nodejs...')
         result = _cmd('sudo apt-get install -y nodejs')
 
-        # Here we check if cmd test is installed, if it is we ask the user if it's okay to remove it if we find it.
-        # If ok, we remove it, if not, we attempt to continue the process without removing.
-        # This step has to be done manually as dpkq-query returns a none 0 exit code if it can't find the package.
-        # This means within our cmd function it would raise a CalledProcessError causing the code to fail.
-        p = subprocess.Popen("dpkg-query -W -f='${status}' cmdtest")
-        (stdout, stderr) = p.communicate()
-        if 'unknown' not in stdout:
-            print('Looks like cmdtest is installed on your machine, this can cause issues when installing Yarn.')
-
-            answer = False
-            answered = False
-            while not answered:
-                choice = raw_input('Is it okay if I remove cmdtest? [y/n]').lower()
-                if choice in valid:
-                    answer = valid[choice]
-                    answered = True
-                else:
-                    print("Please answer 'yes' or 'no' ('y' or 'n').")
-            if answer:
-                print('Removing cmdtest...')
-                result = _cmd('apt-get remove cmdtest')
-            else:
-                print('Continuing without removing cmdtest...')
+        check_for_cmdtest()
 
         print('Configuring Yarn repository...')
         result = _cmd('curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -')
@@ -202,11 +177,11 @@ elif hostOS == OStypes["linux"]:
 
         with open("/etc/hosts", "r") as hostfile:
             data = hostfile.read().replace('\n', '')
-        if "192.168.99.100 local.aimmo.codeforlife.education" not in data:
-            print('adding aimmo to /etc/hosts...')
-            result = _cmd("sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'")
+        if "192.168.99.100 local.AI:MMO.codeforlife.education" not in data:
+            print('adding AI:MMO to /etc/hosts...')
+            result = _cmd("sudo sh -c 'echo 192.168.99.100 local.aimmmo.codeforlife.education >> /etc/hosts'")
         else:
-            print('Aimmo already present in /etc/hosts...')
+            print('AI:MMO already present in /etc/hosts...')
 
     except CalledProcessError as e:
         print('Command returned an exit code != 0, so something has gone wrong.')
@@ -220,6 +195,38 @@ elif hostOS == OStypes["linux"]:
     except Exception as e:
         print('Something went very wrong and I have no idea what it was D:')
         print(result.stderr)
+
+# First we find and store the OS we are currently on, 0 if we didn't figure it out
+# Although if you're not using one the options above for development what are you doing with your life.
+hostOS = 0
+OStypes = {
+    "mac": 1,
+    "windows": 2,
+    "linux": 3
+}
+valid = {"yes": True, "y": True, "ye": True, "no": False, "n": False}
+
+print('---------------------------------------------------------------------------------------------------')
+print('| Welcome to AI:MMO! This script should make your life alil easier, just be kind if it doesnt work |')
+print('| You may be asked to enter your password during this setup                                       |')
+print('---------------------------------------------------------------------------------------------------')
+
+if platform.system() == 'Darwin':
+    hostOS = OStypes["mac"]
+    print('MAC found!')
+elif platform.system() == 'Windows':
+    hostOS = OStypes["windows"]
+    print('WINDOWS found!')
+elif platform.system() == 'Linux':
+    hostOS = OStypes["linux"]
+    print('LINUX found!')
+
+if hostOS == OStypes["mac"]:
+    mac_setup()
+elif hostOS == OStypes["windows"]:
+    windows_setup()
+elif hostOS == OStypes["linux"]:
+    linux_setup()
 else:
     print("Could not detect operating system/ it looks like you're using")
-    print('Something other then windows, mac, or linux. Y u do dis?')
+    print('Something other than windows, mac, or linux.')
