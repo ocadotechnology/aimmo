@@ -281,7 +281,7 @@ def mac_setup(hostOS):
         print('Tried to execute a command with invalid arguments')
         print(e)
     except Exception as e:
-        print('Something went very wrong and i have no idea what it was D:')
+        print("Something went very wrong, maybe i couldn't read hosts? otherwise I have no idea what it was D:")
         print(e)
 
 
@@ -322,7 +322,7 @@ def linux_setup(hostOS):
         print('Tried to execute a command with invalid arguments')
         print(e)
     except Exception as e:
-        print('Something went very wrong and I have no idea what it was D:')
+        print("Something went very wrong, maybe i couldn't read hosts? otherwise I have no idea what it was D:")
         print(e)
 
 
