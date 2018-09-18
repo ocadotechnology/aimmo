@@ -229,4 +229,4 @@ elif hostOS == OStypes["linux"]:
     linux_setup()
 else:
     print("Could not detect operating system/ it looks like you're using")
-    print('Something other than windows, mac, or linux.')
+    print('something other than windows, mac, or linux.')
