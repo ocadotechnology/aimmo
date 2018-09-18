@@ -189,9 +189,9 @@ def check_homebrew():  # Mac only
 
 def check_for_cmdtest():  # Linux/Ubuntu only
     '''
-    This function is for use within the linux setup section of the script. It checks if 
+    This function is for use within the linux setup section of the script. It checks if
     the cmdtest package is installed, if it is we ask the user if we can remove it, if yes
-    we remove the package, if not the process continues without removing it. 
+    we remove the package, if not the process continues without removing it.
     '''
     p = subprocess.Popen("dpkg-query -W -f='${status}' cmdtest")
     (stdout, _) = p.communicate()
@@ -224,7 +224,7 @@ def get_nodejs():  # Linux only
     result = _cmd('curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -')
 
 
-def add_aimmo_to_hosts_file():  # OS inderpendant
+def add_aimmo_to_hosts_file():  # Mac & Linux only
     with open("/etc/hosts", "r") as hostfile:
         data = hostfile.read().replace('\n', '')
     if "192.168.99.100 local.AI:MMO.codeforlife.education" not in data:
