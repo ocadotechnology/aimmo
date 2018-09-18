@@ -140,7 +140,6 @@ if hostOS == OStypes["mac"]:
 elif hostOS == OStypes["windows"]:
     pass
 elif hostOS == OStypes["linux"]:
-
     try:
         print('Updating apt-get...')
         result = _cmd('sudo apt-get update')
