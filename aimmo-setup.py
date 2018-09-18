@@ -50,7 +50,7 @@ OStypes = {
     "windows": 2,
     "linux": 3
 }
-valid = {"yes": True, "y": True, "ye": True, "no": False, "n": False} 
+valid = {"yes": True, "y": True, "ye": True, "no": False, "n": False}
 
 print('---------------------------------------------------------------------------------------------------')
 print('| Welcome to aimmo! This script should make your life alil easier, just be kind if it doesnt work |')
@@ -103,12 +103,12 @@ if hostOS == OStypes["mac"]:
         print('Setting up frontend dependencies...')
         result = _cmd('cd ./game_frontend | yarn')
 
-        print('Installing minikube...') # If minikube version changes this will need updating
+        print('Installing minikube...')  # If minikube version changes this will need updating
         result = _cmd('curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-darwin-amd64')
         result = _cmd('chmod +x minikube')
         result = _cmd('sudo mv minikube /usr/local/bin/')
 
-        print('Installing Kubernetes...') # If kubernetes version changes this will need updating
+        print('Installing Kubernetes...')  # If kubernetes version changes this will need updating
         result = _cmd('curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.9.4/bin/darwin/amd64/kubectl')
         result = _cmd('chmod +x kubectl')
         result = _cmd('sudo mv kubectl /usr/local/bin/')
@@ -116,10 +116,10 @@ if hostOS == OStypes["mac"]:
         with open("/etc/hosts", "r") as hostfile:
             data = hostfile.read().replace('\n', '')
         if "192.168.99.100 local.aimmo.codeforlife.education" not in data:
-            print('adding aimmo to /etc/hosts...')
+            print('Adding aimmo to /etc/hosts...')
             result = _cmd("sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'")
         else:
-            print('aimmo already present in /etc/hosts...')
+            print('Aimmo already present in /etc/hosts...')
 
         print('---------------------------------------------------------------------------------------------------')
         print('| You now need to get the unity package from the aimmo-unity repo, place it in aimmo/static/unity |')
@@ -162,7 +162,7 @@ elif hostOS == OStypes["linux"]:
             answer = False
             answered = False
             while not answered:
-                choice = raw_input('Is it okay if i remove cmdtest? [y/n]').lower()
+                choice = raw_input('Is it okay if I remove cmdtest? [y/n]').lower()
                 if choice in valid:
                     answer = valid[choice]
                     answered = True
@@ -206,7 +206,7 @@ elif hostOS == OStypes["linux"]:
             print('adding aimmo to /etc/hosts...')
             result = _cmd("sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'")
         else:
-            print('aimmo already present in /etc/hosts...')
+            print('Aimmo already present in /etc/hosts...')
 
     except CalledProcessError as e:
         print('Command returned an exit code != 0, so something has gone wrong.')
@@ -218,8 +218,8 @@ elif hostOS == OStypes["linux"]:
         print('Tried to execute a command with invalid arguments')
         print(result.stderr)
     except Exception as e:
-        print('Something went very wrong and i have no idea what it was D:')
+        print('Something went very wrong and I have no idea what it was D:')
         print(result.stderr)
 else:
     print("Could not detect operating system/ it looks like you're using")
-    print('something other then windows, mac, or linux. Y u do dis?')
+    print('Something other then windows, mac, or linux. Y u do dis?')
