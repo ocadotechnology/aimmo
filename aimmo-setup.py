@@ -81,66 +81,61 @@ if hostOS == OStypes["mac"]:
     try:
         result = _cmd('brew -v')
         print('Homebrew Found...')
-        print(result.stdout)
 
-        try:
-            print('Installing Yarn...')
-            result = _cmd('brew install yarn')
+        print('Installing Yarn...')
+        result = _cmd('brew install yarn')
 
-            print('Adding parcel-bundler globally...')
-            result = _cmd('yarn global add parcel-bundler')
+        print('Adding parcel-bundler globally...')
+        result = _cmd('yarn global add parcel-bundler')
 
-            print('Installing pipenv...')
-            result = _cmd('brew install pipenv')
+        print('Installing pipenv...')
+        result = _cmd('brew install pipenv')
 
-            print('Running "pipenv install"...')
-            result = _cmd('pipenv install')
+        print('Running "pipenv install"...')
+        result = _cmd('pipenv install')
 
-            print('Installing Docker...')
-            result = _cmd('brew cask install docker')
+        print('Installing Docker...')
+        result = _cmd('brew cask install docker')
 
-            print('Installing Virtualbox...')
-            result = _cmd('brew cask install virtualbox')
+        print('Installing Virtualbox...')
+        result = _cmd('brew cask install virtualbox')
 
-            print('Setting up frontend dependencies...')
-            result = _cmd('cd ./game_frontend | yarn')
+        print('Setting up frontend dependencies...')
+        result = _cmd('cd ./game_frontend | yarn')
 
-            print('Installing minikube...') # If minikube version changes this will need updating
-            result = _cmd('curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-darwin-amd64')
-            result = _cmd('chmod +x minikube')
-            result = _cmd('sudo mv minikube /usr/local/bin/')
+        print('Installing minikube...') # If minikube version changes this will need updating
+        result = _cmd('curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-darwin-amd64')
+        result = _cmd('chmod +x minikube')
+        result = _cmd('sudo mv minikube /usr/local/bin/')
 
-            print('Installing Kubernetes...') # If kubernetes version changes this will need updating
-            result = _cmd('curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.9.4/bin/darwin/amd64/kubectl')
-            result = _cmd('chmod +x kubectl')
-            result = _cmd('sudo mv kubectl /usr/local/bin/')
+        print('Installing Kubernetes...') # If kubernetes version changes this will need updating
+        result = _cmd('curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.9.4/bin/darwin/amd64/kubectl')
+        result = _cmd('chmod +x kubectl')
+        result = _cmd('sudo mv kubectl /usr/local/bin/')
 
-            with open("/etc/hosts", "r") as hostfile:
-                data = hostfile.read().replace('\n', '')
-            if "192.168.99.100 local.aimmo.codeforlife.education" not in data:
-                print('adding aimmo to /etc/hosts...')
-                result = _cmd("sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'")
-            else:
-                print('aimmo already present in /etc/hosts...')
+        with open("/etc/hosts", "r") as hostfile:
+            data = hostfile.read().replace('\n', '')
+        if "192.168.99.100 local.aimmo.codeforlife.education" not in data:
+            print('adding aimmo to /etc/hosts...')
+            result = _cmd("sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'")
+        else:
+            print('aimmo already present in /etc/hosts...')
 
-            print('---------------------------------------------------------------------------------------------------')
-            print('| You now need to get the unity package from the aimmo-unity repo, place it in aimmo/static/unity |')
-            print('| Also, just open up docker to finalize the install for it, then you can run aimmo.               |')
-            print('---------------------------------------------------------------------------------------------------')
+        print('---------------------------------------------------------------------------------------------------')
+        print('| You now need to get the unity package from the aimmo-unity repo, place it in aimmo/static/unity |')
+        print('| Also, just open up docker to finalize the install for it, then you can run aimmo.               |')
+        print('---------------------------------------------------------------------------------------------------')
 
-        except CalledProcessError as e:
-            print('A command has return an exit code != 0, so something has gone wrong.')
-        except OSError as e:
-            print("Tried to execute a command that didn't exist.")
-            print(result.stderr)
-        except ValueError as e:
-            print('Tried to execute a command with invalid arguments')
-            print(result.stderr)
-
+    except CalledProcessError as e:
+        print('A command has return an exit code != 0, so something has gone wrong.')
+    except OSError as e:
+        print("Tried to execute a command that didn't exist.")
+        print(result.stderr)
+    except ValueError as e:
+        print('Tried to execute a command with invalid arguments')
+        print(result.stderr)
     except Exception as e:
-        print('Something went wrong :s, check if Homebrew is installed correctly.')
-        print("If it's not that, then something went wrong during the script unexpectedly,")
-        print("don't be alarmed, you may have to just try the manual setup. Sorry :(")
+        print('Something went very wrong and i have no idea what it was D:')
         print(result.stderr)
 elif hostOS == OStypes["windows"]:
     pass
@@ -158,8 +153,11 @@ elif hostOS == OStypes["linux"]:
 
         # Here we check if cmd test is installed, if it is we ask the user if it's okay to remove it if we find it.
         # If ok, we remove it, if not, we attempt to continue the process without removing.
-        result = _cmd("dpkg-query -W -f='${status}' cmdtest")
-        if 'ok' in result.stdout:
+        # This step has to be done manually as dpkq-query returns a none 0 exit code if it can't find the package.
+        # This means within our cmd function it would raise a CalledProcessError causing the code to fail.
+        p = subprocess.Popen("dpkg-query -W -f='${status}' cmdtest")
+        (stdout, stderr) = p.communicate()
+        if 'unknown' not in stdout:
             print('Looks like cmdtest is installed on your machine, this can cause issues when installing Yarn.')
 
             answer = False
@@ -184,14 +182,14 @@ elif hostOS == OStypes["linux"]:
         print('Installing Yarn...')
         result = _cmd('sudo apt-get install yarn')
 
+        print('Adding parcel-bundler globally...')
+        result = _cmd('yarn global add parcel-bundler')
+
         print('Installing pip...')
         result = _cmd('sudo apt-get install python-pip')
 
         print('Installing pipenv...')
         result = _cmd('pip install pipenv')
-
-        print('Adding parcel-bundler globally...')
-        result = _cmd('yarn global add parcel-bundler')
 
         print('Installing snap...')
         result = _cmd('sudo apt install snapd')
@@ -199,20 +197,7 @@ elif hostOS == OStypes["linux"]:
         print('Installing kubernetes...')
         result = _cmd('sudo snap install kubectl --classic')
 
-        # print('Installing additional packages in order to get docker...')
-        # result = _cmd('sudo apt-get install apt-transport-https ca-certificates curl software-properties-common')
-        #
-        # print('Getting docker GPG key...')
-        # result = _cmd('curl -fsSL https://download.docker.com/linux/linux/gpg | sudo apt-key add -')
-        #
-        # print('checking fingerprint...')
-        # result = _cmd('sudo apt-key fingerprint 0EBFCD88')
-        # print(result.stdout)
-        # print('If this does not say docker anywhere, something went wrong...')
-        #
-        # print('Getting docker...') # Need to add a check here just to make sure 'arch=' is correct, they might not have intel or amd cpu
-        # result = _cmd('sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/linux $(lsb_release -cs) stable"')
-
+        # Installs the latest version of docker, this is a fixed version though.
         print('Installing Docker...')
         result = _cmd('sudo apt-get install docker-ce')
 
@@ -233,9 +218,9 @@ elif hostOS == OStypes["linux"]:
     except ValueError as e:
         print('Tried to execute a command with invalid arguments')
         print(result.stderr)
-    # except Exception as e:
-    #     print("Something went really wrong here, either i can't update apt-get, or")
-    #     print("something else has gone very wrong and i don't what. Sorry D:")
+    except Exception as e:
+        print('Something went very wrong and i have no idea what it was D:')
+        print(result.stderr)
 else:
     print("Could not detect operating system/ it looks like you're using")
     print('something other then windows, mac, or linux. Y u do dis?')
