@@ -1,7 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<Game /> renders correctly 1`] = `
-<GameView
-  connectToGame={[MockFunction]}
-/>
+<Fragment>
+  <GameView
+    connectToGame={[MockFunction]}
+  />
+  <WithTheme(Snackbar)
+    anchorOrigin={
+      Object {
+        "horizontal": "right",
+        "vertical": "bottom",
+      }
+    }
+    direction="up"
+    message="Your Avatar has been updated with your new code!"
+    onClose={[Function]}
+    type="success"
+  />
+</Fragment>
 `;

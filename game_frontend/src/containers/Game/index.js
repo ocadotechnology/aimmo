@@ -1,23 +1,57 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import GameView from 'components/GameView'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { actions } from 'redux/features/Game'
+import Snackbar from 'components/Snackbar'
 
 export class Game extends Component {
+  static propTypes = {
+    connectToGame: PropTypes.func,
+    theme: PropTypes.object
+  }
+
+  state = {
+    showSnackbar: this.props.showSnackbarForAvatarUpdated
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.showSnackbarForAvatarUpdated !== this.props.showSnackbarForAvatarUpdated) {
+      this.setState({
+        showSnackbar: nextProps.showSnackbarForAvatarUpdated
+      })
+    }
+  }
+
+  handleClose = () => {
+    this.setState({ showSnackbar: false })
+    this.props.snackbarForAvatarUpdatedShown()
+  }
+
   render () {
     return (
-      <GameView connectToGame={this.props.connectToGame} />
+      <Fragment>
+        <GameView connectToGame={this.props.connectToGame} />
+        <Snackbar
+          type='success'
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          open={this.state.showSnackbar}
+          direction='up'
+          onClose={this.handleClose}
+          message='Your Avatar has been updated with your new code!'
+        />
+      </Fragment>
     )
   }
 }
 
-Game.propTypes = {
-  connectToGame: PropTypes.func
-}
-
 const mapDispatchToProps = {
-  connectToGame: actions.socketConnectToGameRequest
+  connectToGame: actions.socketConnectToGameRequest,
+  snackbarForAvatarUpdatedShown: actions.snackbarForAvatarUpdatedShown
 }
 
-export default connect(null, mapDispatchToProps)(Game)
+const mapStateToProps = state => ({
+  showSnackbarForAvatarUpdated: state.game.showSnackbarForAvatarUpdated
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Game)

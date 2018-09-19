@@ -5,7 +5,7 @@ import createShallowWithTheme from 'testHelpers/createShallow'
 
 describe('<Code />', () => {
   it('renders correctly', () => {
-    const tree = createShallowWithTheme(<Code>Code</Code>)
+    const tree = createShallowWithTheme(<Code>Code</Code>, 'dark')
     expect(tree).toMatchSnapshot()
   })
 })

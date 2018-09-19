@@ -61,7 +61,6 @@ exports[`<IDEEditor /> matches snapshot 1`] = `
 
 exports[`<IDEEditorLayout /> renders correctly 1`] = `
 .c0 {
-  background-color: #2F4F4F;
   position: relative;
   grid-area: ide-editor;
 }
@@ -81,6 +80,9 @@ exports[`<MarginedPlayIcon /> matches snapshot 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
+        "snackbar": Object {
+          "borderRadius": "6px",
+        },
         "typography": Object {
           "code": Object {
             "fontFamily": "'Source Code Pro', monospace",
@@ -122,7 +124,14 @@ exports[`<MarginedPlayIcon /> matches snapshot 1`] = `
           "minHeight": 56,
         },
       },
-      "overrides": Object {},
+      "overrides": Object {
+        "MuiSnackbarContent": Object {
+          "root": Object {
+            "paddingLeft": "14px",
+            "paddingRight": "14px",
+          },
+        },
+      },
       "palette": Object {
         "action": Object {
           "active": "#fff",
@@ -362,6 +371,9 @@ exports[`<RunCodeButton /> matches snapshot 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
+        "snackbar": Object {
+          "borderRadius": "6px",
+        },
         "typography": Object {
           "code": Object {
             "fontFamily": "'Source Code Pro', monospace",
@@ -403,7 +415,14 @@ exports[`<RunCodeButton /> matches snapshot 1`] = `
           "minHeight": 56,
         },
       },
-      "overrides": Object {},
+      "overrides": Object {
+        "MuiSnackbarContent": Object {
+          "root": Object {
+            "paddingLeft": "14px",
+            "paddingRight": "14px",
+          },
+        },
+      },
       "palette": Object {
         "action": Object {
           "active": "#fff",
