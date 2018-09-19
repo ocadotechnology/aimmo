@@ -53,7 +53,6 @@ jobs:
         script:
           - yarn test
       - stage: deploy
-        if: branch = versions
         env:
           - NODE_ENV=production
         before_install:
