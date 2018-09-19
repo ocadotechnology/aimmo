@@ -221,6 +221,7 @@ def update_apt_get():  # Linux only
 
 def get_nodejs():  # Linux only
     print('Getting Nodejs...')
+    result = _cmd('sudo apt-get install curl python-software-properties')
     result = _cmd('curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -')
 
 
