@@ -16,37 +16,21 @@ OStypes = {
 valid = {"yes": True, "y": True, "ye": True, "no": False, "n": False}
 
 
-class Result:
-    '''
-    Blank object used to store the result of a command run by Popen, do not use this
-    outside of the setup script.
-    '''
-    pass
-
-
 def _cmd(command):
     '''
     :param command: command/subprocess to be run, as a string.
 
-    Takes in a command/subprocess, runs it, then returns an object containing all
-    output from the process. DO NOT USE outside of the AI:MMO-setup script, and DO NOT INCLUDE
+    Takes in a command/subprocess, and runs it as it you would 
+    inside a terminal. DO NOT USE outside of the AI:MMO-setup script, and DO NOT INCLUDE
     in any release build, as this function is able to run bash scripts, and can run commands
     with sudo if specified.
     '''
-    result = Result()
 
     p = subprocess.Popen(command, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
-    (stdout, stderr) = p.communicate()
-
-    result.exit_code = p.returncode
-    result.stdout = stdout
-    result.stderr = stderr
-    result.command = command
+    (_, _) = p.communicate()
 
     if p.returncode != 0:
         raise CalledProcessError
-
-    return result
 
 
 def install_yarn(operatingSystem):
@@ -57,9 +41,9 @@ def install_yarn(operatingSystem):
     '''
     print('Installing Yarn...')
     if operatingSystem == OStypes['mac']:
-        result = _cmd('brew install yarn')
+        _cmd('brew install yarn')
     elif operatingSystem == OStypes['linux']:
-        result = _cmd('sudo apt-get install yarn')
+        _cmd('sudo apt-get install yarn')
     elif operatingSystem == OStypes['windows']:
         pass
     else:
@@ -74,9 +58,9 @@ def install_pipenv(operatingSystem):
     '''
     print('Installing pipenv...')
     if operatingSystem == OStypes['mac']:
-        result = _cmd('brew install pipenv')
+        _cmd('brew install pipenv')
     elif operatingSystem == OStypes['linux']:
-        result = _cmd('pip install pipenv')
+        _cmd('pip install pipenv')
     elif operatingSystem == OStypes['windows']:
         pass
     else:
@@ -91,9 +75,9 @@ def install_docker(operatingSystem):
     '''
     print('Installing Docker...')
     if operatingSystem == OStypes['mac']:
-        result = _cmd('brew cask install docker')
+        _cmd('brew cask install docker')
     elif operatingSystem == OStypes['linux']:
-        result = _cmd('sudo apt-get install docker-ce')
+        _cmd('sudo apt-get install docker-ce')
     elif operatingSystem == OStypes['windows']:
         pass
     else:
@@ -108,9 +92,9 @@ def install_virtualbox(operatingSystem):
     '''
     print('Installing Virtualbox...')
     if operatingSystem == OStypes['mac']:
-        result = _cmd('brew cask install virtualbox')
+        _cmd('brew cask install virtualbox')
     elif operatingSystem == OStypes['linux']:
-        result = _cmd('sudo apt-get install docker-ce')
+        _cmd('sudo apt-get install virtualbox')
     elif operatingSystem == OStypes['windows']:
         pass
     else:
@@ -125,13 +109,13 @@ def install_minikube(operatingSystem):
     '''
     print('Installing minikube...')  # If minikube version changes this will need updating
     if operatingSystem == OStypes['mac']:
-        result = _cmd('curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-darwin-amd64')
-        result = _cmd('chmod +x minikube')
-        result = _cmd('sudo mv minikube /usr/local/bin/')
+        _cmd('curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-darwin-amd64')
+        _cmd('chmod +x minikube')
+        _cmd('sudo mv minikube /usr/local/bin/')
     elif operatingSystem == OStypes['linux']:
-        result = _cmd('curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-linux-amd64')
-        result = _cmd('chmod +x minikube')
-        result = _cmd('sudo mv minikube /usr/local/bin/')
+        _cmd('curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-linux-amd64')
+        _cmd('chmod +x minikube')
+        _cmd('sudo mv minikube /usr/local/bin/')
     elif operatingSystem == OStypes['windows']:
         pass
     else:
@@ -146,11 +130,11 @@ def install_kurbernetes(operatingSystem):
     '''
     print('Installing Kubernetes...')  # If kubernetes version changes this will need updating
     if operatingSystem == OStypes['mac']:
-        result = _cmd('curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.9.4/bin/darwin/amd64/kubectl')
-        result = _cmd('chmod +x kubectl')
-        result = _cmd('sudo mv kubectl /usr/local/bin/')
+        _cmd('curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.9.4/bin/darwin/amd64/kubectl')
+        _cmd('chmod +x kubectl')
+        _cmd('sudo mv kubectl /usr/local/bin/')
     elif operatingSystem == OStypes['linux']:
-        result = _cmd('sudo snap install kubectl --classic')
+        _cmd('sudo snap install kubectl --classic')
     elif operatingSystem == OStypes['windows']:
         pass
     else:
@@ -159,31 +143,31 @@ def install_kurbernetes(operatingSystem):
 
 def install_pip():  # Linux only
     print('Installing pip...')
-    result = _cmd('sudo apt-get install python-pip')
+    _cmd('sudo apt-get install python-pip')
 
 
 def install_snap():  # Linux only
     print('Installing snap...')
-    result = _cmd('sudo apt install snapd')
+    _cmd('sudo apt install snapd')
 
 
 def install_nodejs():  # Linux only
     print('Installing Nodejs...')
-    result = _cmd('sudo apt-get install -y nodejs')
+    _cmd('sudo apt-get install -y nodejs')
 
 
 def run_pipenv_install():  # OS inderpendant
     print('Running "pipenv install"...')
-    result = _cmd('pipenv install')
+    _cmd('pipenv install')
 
 
 def set_up_frontend_dependencies():  # Mac & Linux only
     print('Setting up frontend dependencies...')
-    result = _cmd('cd ./game_frontend | yarn')
+    _cmd('cd ./game_frontend | yarn')
 
 
 def check_homebrew():  # Mac only
-    result = _cmd('brew -v')
+    _cmd('brew -v')
     print('Homebrew Found...')
 
 
@@ -209,20 +193,20 @@ def check_for_cmdtest():  # Linux/Ubuntu only
                 print("Please answer 'yes' or 'no' ('y' or 'n').")
         if answer:
             print('Removing cmdtest...')
-            result = _cmd('apt-get remove cmdtest')
+            _cmd('apt-get remove cmdtest')
         else:
             print('Continuing without removing cmdtest...')
 
 
 def update_apt_get():  # Linux only
     print('Updating apt-get...')
-    result = _cmd('sudo apt-get update')
+    _cmd('sudo apt-get update')
 
 
 def get_nodejs():  # Linux only
     print('Getting Nodejs...')
-    result = _cmd('curl python-software-properties | sudo apt-get install')
-    result = _cmd('curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -')
+    _cmd('curl python-software-properties | sudo apt-get install')
+    _cmd('curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -')
 
 
 def add_aimmo_to_hosts_file():  # Mac & Linux only
@@ -230,20 +214,20 @@ def add_aimmo_to_hosts_file():  # Mac & Linux only
         data = hostfile.read().replace('\n', '')
     if "192.168.99.100 local.AI:MMO.codeforlife.education" not in data:
         print('Adding AI:MMO to /etc/hosts...')
-        result = _cmd("sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'")
+        _cmd("sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'")
     else:
         print('AI:MMO already present in /etc/hosts...')
 
 
 def add_parcel_bundler():  # Mac & Linux only
     print('Adding parcel-bundler globally...')
-    result = _cmd('yarn global add parcel-bundler')
+    _cmd('yarn global add parcel-bundler')
 
 
 def configure_yarn_repo():  # Linux only
     print('Configuring Yarn repository...')
-    result = _cmd('curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -')
-    result = _cmd('echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list')
+    _cmd('curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -')
+    _cmd('echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list')
 
 
 def mac_setup(hostOS):
