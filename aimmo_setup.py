@@ -193,7 +193,7 @@ def check_for_cmdtest():  # Linux/Ubuntu only
     the cmdtest package is installed, if it is we ask the user if we can remove it, if yes
     we remove the package, if not the process continues without removing it.
     '''
-    p = subprocess.Popen("dpkg-query -W -f='${status}' cmdtest")
+    p = subprocess.Popen("dpkg-query -W -f='${status}' cmdtest", shell=True)
     (stdout, _) = p.communicate()
     if 'unknown' not in stdout:
         print('Looks like cmdtest is installed on your machine, this can cause issues when installing Yarn.')
@@ -297,7 +297,7 @@ def linux_setup(hostOS):
         install_nodejs()
         check_for_cmdtest()
         configure_yarn_repo()
-        install_yarn()
+        install_yarn(hostOS)
         add_parcel_bundler()
         install_pip()
         install_pipenv(hostOS)
