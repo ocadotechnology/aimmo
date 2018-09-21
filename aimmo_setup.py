@@ -2,6 +2,7 @@ import os
 import platform
 import subprocess
 import shlex
+import traceback
 
 from subprocess import PIPE, CalledProcessError
 
@@ -177,7 +178,7 @@ def check_for_cmdtest():  # Linux/Ubuntu only
     the cmdtest package is installed, if it is we ask the user if we can remove it, if yes
     we remove the package, if not the process continues without removing it.
     '''
-    p = subprocess.Popen("dpkg-query -W -f='${status}' cmdtest", shell=True)
+    p = subprocess.Popen("dpkg-query -W -f='${status}' cmdtest", shell=True, stdout=PIPE)
     (stdout, _) = p.communicate()
     if 'unknown' not in stdout:
         print('Looks like cmdtest is installed on your machine, this can cause issues when installing Yarn.')
@@ -299,16 +300,16 @@ def linux_setup(hostOS):
 
     except CalledProcessError as e:
         print('Command returned an exit code != 0, so something has gone wrong.')
-        print(e)
+        traceback.print_exc()
     except OSError as e:
         print("Tried to execute a command that didn't exist.")
-        print(e)
+        traceback.print_exc()
     except ValueError as e:
         print('Tried to execute a command with invalid arguments')
-        print(e)
+        traceback.print_exc()
     except Exception as e:
         print("Something went very wrong, maybe i couldn't read hosts? otherwise I have no idea what it was D:")
-        print(e)
+        traceback.print_exc()
 
 
 print('---------------------------------------------------------------------------------------------------')
