@@ -1,7 +1,5 @@
-import os
 import platform
 import subprocess
-import shlex
 import traceback
 
 from subprocess import PIPE, CalledProcessError
@@ -36,7 +34,7 @@ def _cmd(command):
 
 def install_yarn(operatingSystem):
     '''
-    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is availible)
+    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is available)
 
     OS dependant, so it must be passed to this function in order to run correctly.
     '''
@@ -53,7 +51,7 @@ def install_yarn(operatingSystem):
 
 def install_pipenv(operatingSystem):
     '''
-    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is availible)
+    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is available)
 
     OS dependant, so it must be passed to this function in order to run correctly.
     '''
@@ -70,7 +68,7 @@ def install_pipenv(operatingSystem):
 
 def install_docker(operatingSystem):
     '''
-    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is availible)
+    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is available)
 
     OS dependant, so it must be passed to this function in order to run correctly.
     '''
@@ -87,7 +85,7 @@ def install_docker(operatingSystem):
 
 def install_virtualbox(operatingSystem):
     '''
-    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is availible)
+    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is available)
 
     OS dependant, so it must be passed to this function in order to run correctly.
     '''
@@ -104,7 +102,7 @@ def install_virtualbox(operatingSystem):
 
 def install_minikube(operatingSystem):
     '''
-    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is availible)
+    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is available)
 
     OS dependant, so it must be passed to this function in order to run correctly.
     '''
@@ -125,7 +123,7 @@ def install_minikube(operatingSystem):
 
 def install_kurbernetes(operatingSystem):
     '''
-    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is availible)
+    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is available)
 
     OS dependant, so it must be passed to this function in order to run correctly.
     '''
@@ -157,14 +155,14 @@ def install_nodejs():  # Linux only
     _cmd('sudo apt-get install -y nodejs')
 
 
-def run_pipenv_install():  # OS inderpendant
+def run_pipenv_install():  # OS independent
     print('Running "pipenv install"...')
     _cmd('pipenv install')
 
 
 def set_up_frontend_dependencies():  # Mac & Linux only
     print('Setting up frontend dependencies...')
-    _cmd('cd ./game_frontend | yarn')
+    _cmd('cd ./game_frontend | sudo yarn')
 
 
 def check_homebrew():  # Mac only
@@ -174,7 +172,7 @@ def check_homebrew():  # Mac only
 
 def check_for_cmdtest():  # Linux/Ubuntu only
     '''
-    This function is for use within the linux setup section of the script. It checks if
+    This function is for use within the Linux setup section of the script. It checks if
     the cmdtest package is installed, if it is we ask the user if we can remove it, if yes
     we remove the package, if not the process continues without removing it.
     '''
@@ -233,8 +231,8 @@ def configure_yarn_repo():  # Linux only
 
 def mac_setup(hostOS):
     '''
-    Runs the list of commands, sequencially, needed in order to set up AI:MMO for a mac.
-    After this has been run the user needs to open docker to finalize it's install,
+    Runs the list of commands, sequentially, needed in order to set up AI:MMO for a Mac.
+    After this has been run the user needs to open Docker to finalise its install,
     and get the unity package for AI:MMO from AI:MMO-unity.
     '''
     try:
@@ -250,25 +248,25 @@ def mac_setup(hostOS):
         install_kurbernetes(hostOS)
 
         print('---------------------------------------------------------------------------------------------------')
-        print("| You now need to get the unity package from the AI:MMO-unity repo, place it's contents           |")
+        print("| You now need to get the unity package from the AI:MMO-unity repo, place its contents            |")
         print('| in aimmo/aimmo/static/unity.  (folder may not exist yet)                                        |')
-        print('| You may also need to open docker, just to finalize the install                                  |')
+        print('| You may also need to open docker, just to finalise the install.                                 |')
         print('---------------------------------------------------------------------------------------------------')
-        print('| Everything should now be ready for you to use aimmo! :D                                         |')
+        print('| Everything should now be ready for you to use AI:MMO! :D                                        |')
         print('---------------------------------------------------------------------------------------------------')
 
     except CalledProcessError as e:
         print('A command has return an exit code != 0, so something has gone wrong.')
-        print(e)
+        traceback.print_exc()
     except OSError as e:
         print("Tried to execute a command that didn't exist.")
-        print(e)
+        traceback.print_exc()
     except ValueError as e:
-        print('Tried to execute a command with invalid arguments')
-        print(e)
+        print('Tried to execute a command with invalid arguments.')
+        traceback.print_exc()
     except Exception as e:
-        print("Something went very wrong, maybe i couldn't read hosts? otherwise I have no idea what it was D:")
-        print(e)
+        print("Something went very wrong, maybe I couldn't read hosts? otherwise I have no idea what it was D:")
+        traceback.print_exc()
 
 
 def windows_setup(hostOS):
@@ -292,10 +290,10 @@ def linux_setup(hostOS):
         add_aimmo_to_hosts_file()
 
         print('---------------------------------------------------------------------------------------------------')
-        print("| You now need to get the unity package from the AI:MMO-unity repo, place it's contents           |")
+        print("| You now need to get the unity package from the AI:MMO-unity repo, place its contents            |")
         print('| in aimmo/aimmo/static/unity  (folder may not exist yet)                                         |')
         print('---------------------------------------------------------------------------------------------------')
-        print('| Everything should now be ready for you to use aimmo! :D                                         |')
+        print('| Everything should now be ready for you to use AI:MMO! :D                                        |')
         print('---------------------------------------------------------------------------------------------------')
 
     except CalledProcessError as e:
@@ -313,8 +311,9 @@ def linux_setup(hostOS):
 
 
 print('---------------------------------------------------------------------------------------------------')
-print('| Welcome to AI:MMO! This script should make your life alil easier, just be kind if it doesnt work|')
-print('| You may be asked to enter your password during this setup                                       |')
+print('| Welcome to AI:MMO! This script should make your life a little easier,                           |')
+print("| just be kind if it doesn't work.                                                                |")
+print('| You may be asked to enter your password during this setup.                                      |')
 print('---------------------------------------------------------------------------------------------------')
 
 if platform.system() == 'Darwin':
@@ -331,4 +330,4 @@ elif platform.system() == 'Linux':
     linux_setup(hostOS)
 else:
     print("Could not detect operating system. Maybe you're using")
-    print('something other than windows, mac, or linux?')
+    print('something other than Windows, Mac, or Linux?')
