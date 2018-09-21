@@ -19,7 +19,7 @@ def _cmd(command):
     '''
     :param command: command/subprocess to be run, as a string.
 
-    Takes in a command/subprocess, and runs it as it you would 
+    Takes in a command/subprocess, and runs it as if you would
     inside a terminal. DO NOT USE outside of the AI:MMO-setup script, and DO NOT INCLUDE
     in any release build, as this function is able to run bash scripts, and can run commands
     with sudo if specified.
@@ -306,7 +306,7 @@ def linux_setup(hostOS):
         print('Tried to execute a command with invalid arguments')
         traceback.print_exc()
     except Exception as e:
-        print("Something went very wrong, maybe i couldn't read hosts? otherwise I have no idea what it was D:")
+        print("Something went very wrong, maybe I couldn't read hosts? otherwise I have no idea what it was D:")
         traceback.print_exc()
 
 
