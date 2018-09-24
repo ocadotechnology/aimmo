@@ -53,6 +53,7 @@ jobs:
         script:
           - yarn test
       - stage: deploy
+        name: "Deploy"
         env:
           - NODE_ENV=production
         before_install:
