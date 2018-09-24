@@ -79,13 +79,13 @@ jobs:
               repo: ocadotechnology/aimmo
               branch: versions
             skip_cleanup: true
-        #   - provider: pypi
-        #     skip_cleanup: true
-        #     user: ocadotechnology
-        #     password:
-        #       secure: "dX2M4PpyGwa1bjpJN/Wk3EORWRXuTS14ZQEQ7Ndqk/WnOZlNqD5t/WiITTdqBWoR/ScvQiGBzR/VdRLZllkGrhupoMrtkfCldaxEI3/wbbwW9CiLuwyR/V5xgVj9TA+PtXErjgAqG9KRtyaBEOaC20t13Uc6vuIc9e6aXkzhQ9hf3vVMlnABOZP3f/2R3+sJQMLylGPCz/6BAs2U+nyxGJCpfq0aJK7H2aVPUKtM1/nscuhvsrl8yU+RWYS3idgfXDuPlwqKvRL9xbEm1DC3ByCFwwzAGCPlUtzYlx6Ttrg8Jv6S1cgsjxijzV5QqU+k1JhmY3jDqqmMROFAaY3wJ6038xUbn4zlgvXgtCayiebJukSMR7tJoVrs6ao26QPsbLNZdReDzSXJR05pgB4I8gGTlIKeZE8zOS75hkv0CdMjmIsQhTeMKqQcATuN8QszYRP4uO7vG+3I7hNSK8HcqxHtNLEDq2/QKDAVBve0R5CeEvLMnSxj7UydO+HuJUgickjHuJUmLZ+7iR9i1p6G0MUpKq/n8izSponvShu0lDshrNWJ9PYuhRD4Yvnp4/FCSxdY0+u7pHJsbluGcIvaAlwoa5O01Seu2pVpox8hVTIhn9LuR0wP7Ed4Nxper7cMNgugqb8J9BybSlMjRlBYmI7FQePCdsu1ETNI9JDHAug="
-        #     distributions: "bdist_wheel sdist"
-        #     on:
-        #       repo: ocadotechnology/aimmo
+          - provider: pypi
+            skip_cleanup: true
+            user: ocadotechnology
+            password:
+              secure: "dX2M4PpyGwa1bjpJN/Wk3EORWRXuTS14ZQEQ7Ndqk/WnOZlNqD5t/WiITTdqBWoR/ScvQiGBzR/VdRLZllkGrhupoMrtkfCldaxEI3/wbbwW9CiLuwyR/V5xgVj9TA+PtXErjgAqG9KRtyaBEOaC20t13Uc6vuIc9e6aXkzhQ9hf3vVMlnABOZP3f/2R3+sJQMLylGPCz/6BAs2U+nyxGJCpfq0aJK7H2aVPUKtM1/nscuhvsrl8yU+RWYS3idgfXDuPlwqKvRL9xbEm1DC3ByCFwwzAGCPlUtzYlx6Ttrg8Jv6S1cgsjxijzV5QqU+k1JhmY3jDqqmMROFAaY3wJ6038xUbn4zlgvXgtCayiebJukSMR7tJoVrs6ao26QPsbLNZdReDzSXJR05pgB4I8gGTlIKeZE8zOS75hkv0CdMjmIsQhTeMKqQcATuN8QszYRP4uO7vG+3I7hNSK8HcqxHtNLEDq2/QKDAVBve0R5CeEvLMnSxj7UydO+HuJUgickjHuJUmLZ+7iR9i1p6G0MUpKq/n8izSponvShu0lDshrNWJ9PYuhRD4Yvnp4/FCSxdY0+u7pHJsbluGcIvaAlwoa5O01Seu2pVpox8hVTIhn9LuR0wP7Ed4Nxper7cMNgugqb8J9BybSlMjRlBYmI7FQePCdsu1ETNI9JDHAug="
+            distributions: "bdist_wheel sdist"
+            on:
+              repo: ocadotechnology/aimmo
         # after_deploy:
         #   - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}"
