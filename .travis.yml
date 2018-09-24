@@ -74,7 +74,6 @@ jobs:
           - provider: releases
             api_key:
               secure: "dZxjTMW1+eAIw4gv71PKpaaL62BNcb2uWRf4ft1mVRRwsdNy5M1Vxv3YvOQGEYUO3TAo2xuvj/ifc1Yp6F1nCU7fLQaHllUljzU/Wa7gebv434TXMKfCbYLCFAylALF1Up0xhdaJaIEpEK9V4VqGeqhWcvAxi+fuFeK7CNgkvgxMINGAF96m3uU5CRKk4oU45ETifvFoWE8Kea73H32uisShqiECIsririOWZLKnm2YeGn3z26kKNjkn8wK4upWESCZUfP46FjFzV3EtT8RE51g6LFToaIls7fs99yLCwkX4xWBRdI0b6c5JvuaP4mukaXc6Ud9nREVmuOVsJ8mJbtnfl9hvfCdnzSpWR4x1ep6EinmPEX4Z1eBoeYXMkU31eOgdzXn+VpyT48W1rcrZxNCGe9Ln09OLlgNx5aYMDNAKrXiYkD55aMLFM7JLmX40DSez7EP8FFM5xALtNQnwun4ziGomf8Hl8GroYC+xNYIDMSpXVQBEc8s04dw3267tIPbA1p63CAHL/edAzn6bTtmvjLOI49o1fMLHls9ECW4/dKhalsPuZ4GUwqwIbf0WvTzNyvKjx65O+stDkxisDbVWVbXXNzGmbvvKJBo8SRymTM/THpavi+keps3kjUfmfmhImayG5fj5Z9G4r3KM77K+siQTvjjjg0t2hbLvyWI="
-            file: ''
             on:
               repo: ocadotechnology/aimmo
               branch: versions
