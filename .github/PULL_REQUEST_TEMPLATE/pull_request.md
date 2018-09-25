@@ -14,3 +14,4 @@
 <!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
 - [ ] My change requires a change to the documentation.
 - [ ] I have updated the documentation accordingly.
+- [ ] I have updated the version.txt file
