@@ -77,7 +77,7 @@ The game should now be set up to run locally (If you ran the setup script, it wi
 
 #### Install Manually:
 	
-* Contact a member of the code for life team via the [Code for Life contact form](https://www.codeforlife.education/help/#contact).
+* Contact a member of the Code for Life team via the [Code for Life contact form](https://www.codeforlife.education/help/#contact).
 
 The game should now be set up to run locally. If you wish to be able to run the project with [Kubernetes](https://kubernetes.io/) and containers, follow these next steps:
 
