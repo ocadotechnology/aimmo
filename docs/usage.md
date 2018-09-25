@@ -7,13 +7,13 @@
 
 ## Mac setup
 
-This can be done using either manually or using the setup script.
+This can be done either manually or using the setup script.
 
 #### Install using the setup script:
 
-* run `python aimmo_setup.py` in the aimmo root directory. Then:
-* Open docker to finalise the install process. (This will install the [latest release](https://www.docker.com/get-started))
-* Get the latest unity bundle release from the [aimmo-unity](https://github.com/ocadotechnology/aimmo-unity) repo.
+* Run `python aimmo_setup.py` in the AI:MMO root directory. Then:
+* Open Docker to finalise the install process. (This will install the [latest release](https://www.docker.com/get-started))
+* Get the latest Unity bundle release from the [aimmo-unity](https://github.com/ocadotechnology/aimmo-unity) repo.
 * See [Useful information](#useful-information) for additional details about the script.
 
 #### Install manually:
@@ -24,31 +24,30 @@ This can be done using either manually or using the setup script.
 
 The game should now be set up to run locally (If you ran the setup script, it will have done these next steps for you). If you wish to be able to run the project with [Kubernetes](https://kubernetes.io/) and containers, follow these next steps:
 
-* Ensure you have VT-x/AMD-v virtualisation available and enabled.
 * Install both [Docker](https://www.docker.com/) and [Virtualbox](https://www.virtualbox.org/wiki/Downloads), using: 
 	* `brew update && brew cask install docker virtualbox`
-* Install a fixed version of Minikube, (current fixed version being used is 0.25.2, this can be confirmed [here](https://github.com/ocadotechnology/aimmo/blob/b0fd1bf852b1b2630a8546d173798ec9a670c480/.travis.yml#L23)). To get this, run:
+* Install a fixed version of Minikube, (current version is 0.25.2, this can be confirmed [here](https://github.com/ocadotechnology/aimmo/blob/b0fd1bf852b1b2630a8546d173798ec9a670c480/.travis.yml#L23)). To get this, run:
 	* `curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-darwin-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/`
 * To install kubectl (Kubernetes), use:
 	* `curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.9.4/bin/darwin/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/`
 * Alter your `/etc/hosts` file by adding the following line to the end of the file: `192.168.99.100 local.aimmo.codeforlife.education`. You may need to use sudo for this step as the file is protected.
+* Get the latest Unity bundle release from the [aimmo-unity](https://github.com/ocadotechnology/aimmo-unity) repo.
 
 #### To run AI:MMO:
 
 * Ensure you are inside the python virtualenv, `pipenv shell`.
-* To run **locally**, use: `python run.py`
+* To run **locally**, use: `python run.py`.
 * If you want to run the project with [Kubernetes](https://kubernetes.io/), first run: `minikube start`.
 * Now use `python run.py -k` to run the project using the Kubernetes cluster.
 
 ## Ubuntu setup
 
-This can be done using either manually or using the setup script.
+This can be done either manually or using the setup script.
 
 #### Install using the setup script:
 
-* run `python aimmo_setup.py` in the aimmo root directory. Then:
-* Open docker to finalise the install process. (This will install the [latest release](https://www.docker.com/get-started))
-* Get the latest unity bundle release from the [aimmo-unity](https://github.com/ocadotechnology/aimmo-unity) repo.
+* Run `python aimmo_setup.py` in the AI:MMO root directory. Then:
+* Get the latest Unity bundle release from the [aimmo-unity](https://github.com/ocadotechnology/aimmo-unity) repo.
 * See [Useful information](#useful-information) for additional details about the script.
 
 #### Install manually:
@@ -60,16 +59,17 @@ This can be done using either manually or using the setup script.
 
 The game should now be set up to run locally (If you ran the setup script, it will have done these next steps for you). If you wish to be able to run the project with [Kubernetes](https://kubernetes.io/) and containers, follow these next steps:
 
-* Ensure you have VT-x/AMD-v virtualisation available and enabled. If not already installed follow the [Virtualbox installation instructions](https://www.virtualbox.org/wiki/Downloads).
+* If not already installed follow the [Virtualbox installation instructions](https://www.virtualbox.org/wiki/Downloads).
 * Install [Snap](https://snapcraft.io/)) using `sudo apt install snapd`.
-*  Now run `sudo snap install kubectl --classic` to install kubectl ([Kubernetes](https://kubernetes.io/)).
-* To install [Docker](https://www.docker.com/), either use `sudo apt-get install docker-ce` to install a fixed version of the latest release, or follow the Ubuntu install instructions on the [Docker website](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository)
+* Now run `sudo snap install kubectl --classic` to install kubectl ([Kubernetes](https://kubernetes.io/)).
+* To install [Docker](https://www.docker.com/), either use `sudo apt-get install docker-ce` to install a fixed version of the latest release, or follow the Ubuntu install instructions on the [Docker website](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository).
 * Alter your `/etc/hosts` file by adding the following line to the end of the file: `192.168.99.100 local.aimmo.codeforlife.education`. You may need to use sudo for this step as the file is protected.
+* Get the latest Unity bundle release from the [aimmo-unity](https://github.com/ocadotechnology/aimmo-unity) repo.
 
 #### To run AI:MMO:
 
 * Ensure you are inside the python virtualenv, `pipenv shell`.
-* To run **locally**, use: `python run.py`
+* To run **locally**, use: `python run.py`.
 * If you want to run the project with [Kubernetes](https://kubernetes.io/), first run: `minikube start`.
 * Now use `python run.py -k` to run the project using the Kubernetes cluster.
 
@@ -77,19 +77,19 @@ The game should now be set up to run locally (If you ran the setup script, it wi
 
 #### Install Manually:
 	
-* Contact a member of the code for life team via the [CodeForLife contact form](https://www.codeforlife.education/help/#contact).
+* Contact a member of the code for life team via the [Code for Life contact form](https://www.codeforlife.education/help/#contact).
 
 The game should now be set up to run locally. If you wish to be able to run the project with [Kubernetes](https://kubernetes.io/) and containers, follow these next steps:
 
-* Ensure you have VT-x/AMD-v virtualisation available and enabled. If not already installed follow the [Virtualbox installation instructions](https://www.virtualbox.org/wiki/Downloads).
-* Next, [download chocolatey](https://chocolatey.org/) and run `choco install kubernetes-cli`
+* If not already installed follow the [Virtualbox installation instructions](https://www.virtualbox.org/wiki/Downloads).
+* Next, [download chocolatey](https://chocolatey.org/) and run `choco install kubernetes-cli`.
 * Then follow the [docker installation instructions for Windows](https://docs.docker.com/docker-for-windows/).
 * Alter your `/etc/hosts` file by adding the following line to the end of the file: `192.168.99.100 local.aimmo.codeforlife.education`. You may need admin privileges for this step as the file is protected.
 
 #### To run AI:MMO:
 
 * Ensure you are inside the python virtualenv, `pipenv shell`.
-* To run **locally**, use: `python run.py`
+* To run **locally**, use: `python run.py`.
 * If you want to run the project with [Kubernetes](https://kubernetes.io/), first run: `minikube start`.
 * Now use `python run.py -k` to run the project using the Kubernetes cluster.
 
@@ -97,10 +97,11 @@ The game should now be set up to run locally. If you wish to be able to run the 
 
 Here you can find some other useful information regarding the setup or usage of various aspects of the project.
 
-#### Setup script information.
+#### Setup script & other setup information.
 
-* It may be the case that the frontend does not load properly upon starting aimmo. If this is the case then you may need to follow the [game frontend documentation](https://github.com/ocadotechnology/aimmo/blob/master/game_frontend/README.md) in order to resolve this (usually all the packages are there, it just requires you to set them up manually).
-* If the script fails when attempting to install docker, it may be because you have an old version of docker currently installed. To fix this, run: `sudo apt-get remove docker docker-engine docker.io`, then re-run the script.
+* It may be the case that the frontend does not load properly upon starting aimmo (when running the script). If this is the case then you may need to follow the [game frontend documentation](https://github.com/ocadotechnology/aimmo/blob/master/game_frontend/README.md) in order to resolve this (usually all the packages are there, it just requires you to set them up manually).
+* If the script fails when attempting to install Docker, it may be because you have an old version of docker currently installed. To fix this, run: `sudo apt-get remove docker docker-engine docker.io`, then re-run the script.
+* If there is an issue when using containers or the virtual enviroment. Then there small chance that VT-x/AMD-x virtualization has not been enabled on your machine. If this is the case the main way to solve this is to enable it through the BIOS settings.
 
 #### Testing locally
 
@@ -111,7 +112,7 @@ Here you can find some other useful information regarding the setup or usage of 
 
 *  `kubectl`  and  `minikube`  can be used to interact with the cluster.
 * Running either command without any options will give the most useful commands.
-* Use `miniubedashboard` to open the [Kubernetes](https://kubernetes.io/) dashboard in your browser.
+* Use `minikube dashboard` to open the [Kubernetes](https://kubernetes.io/) dashboard in your browser.
 
 #### Useful commands
 
