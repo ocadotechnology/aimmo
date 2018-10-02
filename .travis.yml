@@ -67,9 +67,13 @@ jobs:
           - node djangoBundler.js
           - popd
         before_deploy:
-          - git config --local user.name "Travis CI"
-          - git config --local user.email "code-for-life-full-time-xd@ocado.com"
-          - git tag "$(cat version.txt).b$TRAVIS_BUILD_NUMBER"
+          - >
+            if ! [ "$BEFORE_DEPLOY_RUN" ]; then
+              export BEFORE_DEPLOY_RUN=1;
+              git config --local user.name "Travis CI";
+              git config --local user.email "code-for-life-full-time-xd@ocado.com";
+              git tag "$(cat version.txt).b$TRAVIS_BUILD_NUMBER";
+            fi
         deploy:
           - provider: releases
             api_key:
