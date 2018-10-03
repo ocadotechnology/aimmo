@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: nginx
-  namespace: default
+  namespace: nginx-ingress
 data:
   body-size: 64m
   proxy-connect-timeout: "15"

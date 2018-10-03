@@ -2,7 +2,7 @@ apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: default-http-backend
-  namespace: default
+  namespace: nginx-ingress
 spec:
   replicas: 1
   selector:

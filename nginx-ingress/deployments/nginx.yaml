@@ -2,7 +2,7 @@ apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: nginx
-  namespace: default
+  namespace: nginx-ingress
 spec:
   replicas: 1
   selector:
@@ -16,8 +16,8 @@ spec:
       containers:
       - args:
         - /nginx-ingress-controller
-        - --default-backend-service=default/default-http-backend
-        - --configmap=default/nginx
+        - --default-backend-service=nginx-ingress/default-http-backend
+        - --configmap=nginx-ingress/nginx
         env:
         - name: POD_NAME
           valueFrom:
