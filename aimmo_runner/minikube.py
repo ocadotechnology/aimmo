@@ -118,9 +118,10 @@ def build_docker_images(minikube):
     :param minikube: Executable command to run in terminal.
     """
     print('Building docker images')
-    raw_env_settings = run_command([minikube, 'docker-env', '--shell="bash"'], True)
+    # raw_env_settings = run_command([minikube, 'docker-env', '--shell="bash"'], True)
 
-    client = create_docker_client(raw_env_settings)
+    # client = create_docker_client(raw_env_settings)
+    client = docker.from_env()
 
     directories = ('aimmo-game', 'aimmo-game-creator', 'aimmo-game-worker')
     for dir in directories:
@@ -164,16 +165,17 @@ def restart_pods(game_creator_yaml, ingress_yaml):
     :param ingress_yaml: Ingress yaml settings file.
     """
     print('Restarting pods')
-    kubernetes.config.load_kube_config(context='minikube')
+    kubernetes.config.load_kube_config(context='docker-for-desktop')
     api_instance = kubernetes.client.CoreV1Api()
     extensions_api_instance = kubernetes.client.ExtensionsV1beta1Api()
 
     delete_components(api_instance, extensions_api_instance)
 
     extensions_api_instance.create_namespaced_ingress("default", ingress_yaml)
+
     api_instance.create_namespaced_replication_controller(
         body=game_creator_yaml,
-        namespace='default',
+        namespace='nginx-ingress',
     )
 
 
@@ -186,9 +188,7 @@ def start():
         raise ValueError('Requires 64-bit')
     create_test_bin()
     os.environ['MINIKUBE_PATH'] = MINIKUBE_EXECUTABLE
-    start_cluster(MINIKUBE_EXECUTABLE)
     build_docker_images(MINIKUBE_EXECUTABLE)
-    restart_ingress_addon(MINIKUBE_EXECUTABLE)
     ingress = create_ingress_yaml()
     game_creator = create_creator_yaml()
     restart_pods(game_creator, ingress)
