@@ -61,7 +61,7 @@ class KubernetesWorkerManager(WorkerManager):
         )
 
     def make_pod(self, player_id):
-        pod_manifest = kubernetes.client.V1PodSpec(containers=[self._make_container(player_id)])
+        pod_manifest = kubernetes.client.V1PodSpec(containers=[self._make_container(player_id)], service_account_name='worker')
         metadata = kubernetes.client.V1ObjectMeta(
             labels={
                 'app': 'aimmo-game-worker',
