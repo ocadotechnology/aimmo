@@ -210,7 +210,7 @@ class KubernetesGameManager(GameManager):
                     drop=['all'],
                     add=['NET_BIND_SERVICE'])))
 
-        pod_manifest = kubernetes.client.V1PodSpec(containers=[container])
+        pod_manifest = kubernetes.client.V1PodSpec(containers=[container], service_account_name='worker-manager')
         pod_metadata = kubernetes.client.V1ObjectMeta(labels={'app': 'aimmo-game', 'game_id': game_id})
         pod_template_manifest = kubernetes.client.V1PodTemplateSpec(spec=pod_manifest, metadata=pod_metadata)
 

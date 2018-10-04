@@ -173,10 +173,10 @@ def restart_pods(game_creator_yaml, ingress_yaml):
 
     extensions_api_instance.create_namespaced_ingress("default", ingress_yaml)
 
-    api_instance.create_namespaced_replication_controller(
+    '''api_instance.create_namespaced_replication_controller(
         body=game_creator_yaml,
         namespace='nginx-ingress',
-    )
+    )'''
 
 
 def start():
