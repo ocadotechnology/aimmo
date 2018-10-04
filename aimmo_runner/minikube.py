@@ -1,6 +1,8 @@
 #!/user/bin/env python
 from __future__ import print_function
 
+from subprocess import CalledProcessError
+
 import docker
 import kubernetes
 import os
@@ -77,7 +79,7 @@ def start_cluster(minikube):
     try:
         run_command([minikube, 'status'], True)
         print('Cluster already running')
-    except:
+    except CalledProcessError:
         run_command([minikube, 'start', '--memory=2048', '--cpus=2'])
 
 
