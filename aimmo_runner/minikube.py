@@ -3,6 +3,7 @@ from __future__ import print_function
 
 import docker
 import kubernetes
+from kubernetes.client.rest import ApiException
 import os
 import re
 import platform
@@ -173,10 +174,19 @@ def restart_pods(game_creator_yaml, ingress_yaml):
 
     extensions_api_instance.create_namespaced_ingress("default", ingress_yaml)
 
-    '''api_instance.create_namespaced_replication_controller(
-        body=game_creator_yaml,
-        namespace='nginx-ingress',
-    )'''
+    # It is probably more appropriate to apply this approach for retarting pods if we can.
+    # We can patch pods in order to update them without needing to constantly delete and re-create them.
+    try:
+        api_instance.create_namespaced_replication_controller(
+            body=game_creator_yaml,
+            namespace='nginx-ingress',
+        )
+    except ApiException as e:
+        api_instance.patch_namespaced_replication_controller(
+            body=game_creator_yaml,
+            namespace='nginx-ingress',
+            name='aimmo-game-creator',
+        )
 
 
 def start():
