@@ -211,7 +211,10 @@ this gives you a dashboard
 port forward the pod using:
 kubectl port-forward [DASHBOARD POD NAME] 8443:[DESIRED PORT] --namespace=kube-system
 dashboard can then be found on localhost:[DESIRED PORT] make sure you don't pick 8000 or any other port already in use
-by aimmo.
+by aimmo. Note it may give you a warning, just go past them to get to the dashboard
 
 now you can run aimmo as normal ('python run.py -k') and it will all work
+
+here's a reference if needed:
+https://rominirani.com/tutorial-getting-started-with-kubernetes-with-docker-on-mac-7f58467203fd
 '''
