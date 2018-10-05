@@ -3,30 +3,5 @@ kind: ServiceAccount
 metadata:
   name: worker
 
----
-
-kind: Role
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  namespace: default
-  name: worker
-rules:
-- apiGroups: [""] # "" indicates the core API group
-  resources: [""]
-  verbs: [""]
-
----
-
-kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: workers
-  namespace: default
-subjects:
-- kind: ServiceAccount
-  name: worker # Name is case sensitive
-  apiGroup: ""
-roleRef:
-  kind: Role #this must be Role or ClusterRole
-  name: worker # this must match the name of the Role or ClusterRole you wish to bind to
-  apiGroup: ""
+# By default service accounts start with no rights, 
+# So we do not need to Rolebind anything here.
