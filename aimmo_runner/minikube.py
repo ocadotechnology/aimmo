@@ -193,3 +193,25 @@ def start():
     game_creator = create_creator_yaml()
     restart_pods(game_creator, ingress)
     print('Cluster ready')
+
+
+'''
+Get docker-for-desktop (windows/mac only)
+enable it.
+
+apply ingress.yaml
+apply everything in the nginx-ingress folder
+
+apply everything in the rbac folder
+
+create pod using:
+kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+this gives you a dashboard
+
+port forward the pod using:
+kubectl port-forward [DASHBOARD POD NAME] 8443:[DESIRED PORT] --namespace=kube-system
+dashboard can then be found on localhost:[DESIRED PORT] make sure you don't pick 8000 or any other port already in use
+by aimmo.
+
+now you can run aimmo as normal ('python run.py -k') and it will all work
+'''
