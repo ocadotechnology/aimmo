@@ -15,7 +15,7 @@ class AvatarDataAdmin(admin.ModelAdmin):
     list_display = ['id', 'game_identifier', 'game_name', 'owner_name']
 
     def owner_name(self, obj):
-        return obj.owner.first_name
+        return obj.owner
 
     def game_name(self, obj):
         return obj.game.name
