@@ -11,8 +11,10 @@ git:
   depth: 9999999 # Building untagged builds needs enough depth to get the latest tag
 stages:
   - name: test
+  - name: release
+    if: branch = master OR branch = versions
   - name: deploy
-    # if: branch = master
+    if: branch = master OR branch = versions
 jobs:
     include:
       - stage: test
@@ -52,6 +54,28 @@ jobs:
           - cd game_frontend && yarn
         script:
           - yarn test
+      - stage: release
+        before_deploy:
+          - >
+              if [ $TRAVIS_PULL_REQUEST_BRANCH -ne "" ]
+              then
+                BRANCH=$TRAVIS_PULL_REQUEST_BRANCH
+              else
+                BRANCH=$TRAVIS_BRANCH
+              fi
+              if [ $BRANCH -eq "versions" ]
+              then
+                git tag "$(cat version.txt).b$TRAVIS_BUILD_NUMBER";
+              else
+                git tag "$(cat version.txt)"
+        deploy:
+          - provider: releases
+            api_key:
+              secure: "dZxjTMW1+eAIw4gv71PKpaaL62BNcb2uWRf4ft1mVRRwsdNy5M1Vxv3YvOQGEYUO3TAo2xuvj/ifc1Yp6F1nCU7fLQaHllUljzU/Wa7gebv434TXMKfCbYLCFAylALF1Up0xhdaJaIEpEK9V4VqGeqhWcvAxi+fuFeK7CNgkvgxMINGAF96m3uU5CRKk4oU45ETifvFoWE8Kea73H32uisShqiECIsririOWZLKnm2YeGn3z26kKNjkn8wK4upWESCZUfP46FjFzV3EtT8RE51g6LFToaIls7fs99yLCwkX4xWBRdI0b6c5JvuaP4mukaXc6Ud9nREVmuOVsJ8mJbtnfl9hvfCdnzSpWR4x1ep6EinmPEX4Z1eBoeYXMkU31eOgdzXn+VpyT48W1rcrZxNCGe9Ln09OLlgNx5aYMDNAKrXiYkD55aMLFM7JLmX40DSez7EP8FFM5xALtNQnwun4ziGomf8Hl8GroYC+xNYIDMSpXVQBEc8s04dw3267tIPbA1p63CAHL/edAzn6bTtmvjLOI49o1fMLHls9ECW4/dKhalsPuZ4GUwqwIbf0WvTzNyvKjx65O+stDkxisDbVWVbXXNzGmbvvKJBo8SRymTM/THpavi+keps3kjUfmfmhImayG5fj5Z9G4r3KM77K+siQTvjjjg0t2hbLvyWI="
+            prerelease: branch = versions
+            skip_cleanup: true
+            on:
+              repo: ocadotechnology/aimmo
       - stage: deploy
         env:
           - NODE_ENV=production
@@ -66,23 +90,7 @@ jobs:
           - pushd game_frontend
           - node djangoBundler.js
           - popd
-        before_deploy:
-          - >
-            if ! [ "$BEFORE_DEPLOY_RUN" ]; then
-              export BEFORE_DEPLOY_RUN=1;
-              git config --local user.name "Travis CI";
-              git config --local user.email "code-for-life-full-time-xd@ocado.com";
-              git tag "$(cat version.txt).b$TRAVIS_BUILD_NUMBER";
-            fi
         deploy:
-          - provider: releases
-            api_key:
-              secure: "dZxjTMW1+eAIw4gv71PKpaaL62BNcb2uWRf4ft1mVRRwsdNy5M1Vxv3YvOQGEYUO3TAo2xuvj/ifc1Yp6F1nCU7fLQaHllUljzU/Wa7gebv434TXMKfCbYLCFAylALF1Up0xhdaJaIEpEK9V4VqGeqhWcvAxi+fuFeK7CNgkvgxMINGAF96m3uU5CRKk4oU45ETifvFoWE8Kea73H32uisShqiECIsririOWZLKnm2YeGn3z26kKNjkn8wK4upWESCZUfP46FjFzV3EtT8RE51g6LFToaIls7fs99yLCwkX4xWBRdI0b6c5JvuaP4mukaXc6Ud9nREVmuOVsJ8mJbtnfl9hvfCdnzSpWR4x1ep6EinmPEX4Z1eBoeYXMkU31eOgdzXn+VpyT48W1rcrZxNCGe9Ln09OLlgNx5aYMDNAKrXiYkD55aMLFM7JLmX40DSez7EP8FFM5xALtNQnwun4ziGomf8Hl8GroYC+xNYIDMSpXVQBEc8s04dw3267tIPbA1p63CAHL/edAzn6bTtmvjLOI49o1fMLHls9ECW4/dKhalsPuZ4GUwqwIbf0WvTzNyvKjx65O+stDkxisDbVWVbXXNzGmbvvKJBo8SRymTM/THpavi+keps3kjUfmfmhImayG5fj5Z9G4r3KM77K+siQTvjjjg0t2hbLvyWI="
-            prerelease: true
-            skip_cleanup: true
-            on:
-              repo: ocadotechnology/aimmo
-              branch: versions
           - provider: pypi
             skip_cleanup: true
             user: ocadotechnology
@@ -91,6 +99,5 @@ jobs:
             distributions: "bdist_wheel sdist"
             on:
               repo: ocadotechnology/aimmo
-              branch: versions
         # after_deploy:
         #   - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}"
