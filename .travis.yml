@@ -55,7 +55,7 @@ jobs:
         script:
           - yarn test
       - stage: release
-        before_deploy:
+        script:
           - >
               if [ $TRAVIS_PULL_REQUEST_BRANCH -ne "" ]
               then
