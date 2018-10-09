@@ -177,6 +177,15 @@ def restart_pods(game_creator_yaml, ingress_yaml):
     )
 
 
+def create_roles():
+    """
+    Applys the service accounts, roles, and bindings for restricting
+    the rights of certain pods.
+    """
+    role_path = os.path.join(BASE_DIR, 'rbac')
+
+    run_command(['kubectl', 'apply', '-Rf', role_path])
+
 def start():
     """
     The entry point to the minikube class. Sends calls appropriately to set
@@ -187,6 +196,7 @@ def start():
     create_test_bin()
     os.environ['MINIKUBE_PATH'] = MINIKUBE_EXECUTABLE
     start_cluster(MINIKUBE_EXECUTABLE)
+    create_roles()
     build_docker_images(MINIKUBE_EXECUTABLE)
     restart_ingress_addon(MINIKUBE_EXECUTABLE)
     ingress = create_ingress_yaml()
