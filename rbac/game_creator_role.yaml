@@ -26,7 +26,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: game-creator # Name is case sensitive
-  namespace: nginx-ingress
+  namespace: default
   apiGroup: ""
 roleRef:
   kind: ClusterRole #this must be Role or ClusterRole
