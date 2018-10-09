@@ -57,17 +57,18 @@ jobs:
       - stage: release
         script:
           - >
-              if [ $TRAVIS_PULL_REQUEST_BRANCH -ne "" ]
-              then
-                BRANCH=$TRAVIS_PULL_REQUEST_BRANCH
-              else
-                BRANCH=$TRAVIS_BRANCH
-              fi
-              if [ $BRANCH -eq "versions" ]
-              then
-                git tag "$(cat version.txt).b$TRAVIS_BUILD_NUMBER";
-              else
-                git tag "$(cat version.txt)"
+            if [ $TRAVIS_PULL_REQUEST_BRANCH -ne "" ]
+            then
+              BRANCH=$TRAVIS_PULL_REQUEST_BRANCH
+            else
+              BRANCH=$TRAVIS_BRANCH
+            fi
+            
+            if [ $BRANCH -eq "versions" ]
+            then
+              git tag "$(cat version.txt).b$TRAVIS_BUILD_NUMBER";
+            else
+              git tag "$(cat version.txt)"
         deploy:
           - provider: releases
             api_key:
