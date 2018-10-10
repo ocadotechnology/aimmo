@@ -4,7 +4,6 @@ from models import Avatar, Game
 
 class GameDataAdmin(admin.ModelAdmin):
     list_display = ['id', 'name']
-
     readonly_fields = ['players']
 
     def players(self, obj):
@@ -12,16 +11,11 @@ class GameDataAdmin(admin.ModelAdmin):
 
 
 class AvatarDataAdmin(admin.ModelAdmin):
-    list_display = ['id', 'game_identifier', 'game_name', 'owner_name']
+    list_display = ['id', 'owner_name']
+
 
     def owner_name(self, obj):
         return obj.owner
-
-    def game_name(self, obj):
-        return obj.game.name
-
-    def game_identifier(self, obj):
-        return obj.game.id
 
 
 admin.site.register(Game, GameDataAdmin)
