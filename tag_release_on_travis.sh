@@ -7,10 +7,7 @@ fi
 
 if [ "$BRANCH" = "versions" ]
 then
-    export TAG_NAME="$(cat version.txt).b$TRAVIS_BUILD_NUMBER"
+    git tag "$(cat version.txt).b$TRAVIS_BUILD_NUMBER"
 else
-    export TAG_NAME="$(cat version.txt)"
+    git tag "$(cat version.txt)"
 fi
-
-git tag "$TAG_NAME"
-git push origin "$TAG_NAME"
