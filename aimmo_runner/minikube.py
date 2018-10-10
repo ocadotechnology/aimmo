@@ -183,7 +183,7 @@ def create_roles():
     the rights of certain pods.
     """
     role_path = os.path.join(BASE_DIR, 'rbac')
-    run_command(['kubectl get roles'])
+    run_command(['ls'])
     #run_command(['kubectl', 'apply', '-Rf', role_path])
 
 def start():
