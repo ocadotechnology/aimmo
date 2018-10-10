@@ -12,9 +12,9 @@ git:
 stages:
   # - name: test
   - name: release
-    if: tag IS blank AND (branch = master OR branch = versions)
+    if: branch = master OR branch = versions
   - name: deploy
-    if: tag IS present
+    # if: branch = master OR branch = versions
 jobs:
     include:
       # - stage: test
