@@ -18,34 +18,34 @@ stages:
 jobs:
     include:
       - stage: test
-        name: "Python Tests"
+        # name: "Python Tests"
         env:
           - NODE_ENV=production
-        before_script:
-          # Download kubectl, which is a requirement for using minikube.
-          - curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.9.0/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
-          # Download minikube.
-          - curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
-          - sudo minikube start --vm-driver=none --kubernetes-version=v1.7.0
-          # Fix the kubectl context, as it's often stale.
-          - minikube update-context
-          # Wait for Kubernetes to be up and ready.
-          - JSONPATH='{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}{@.type}={@.status};{end}{end}'; until kubectl get nodes -o jsonpath="$JSONPATH" 2>&1 | grep -q "Ready=True"; do sleep 1; done
-        before_install:
-          - nvm install node
-          - nvm use node
-          - gem install sass --version 3.3.4
-        install:
-          - pip install .
-          - pip install coveralls
-          - pushd game_frontend
-          - yarn
-          - node djangoBundler.js
-          - popd
-        script:
-          - python all_tests.py --coverage
-        after_success:
-          - coveralls
+        # before_script:
+        #   # Download kubectl, which is a requirement for using minikube.
+        #   - curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.9.0/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
+        #   # Download minikube.
+        #   - curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
+        #   - sudo minikube start --vm-driver=none --kubernetes-version=v1.7.0
+        #   # Fix the kubectl context, as it's often stale.
+        #   - minikube update-context
+        #   # Wait for Kubernetes to be up and ready.
+        #   - JSONPATH='{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}{@.type}={@.status};{end}{end}'; until kubectl get nodes -o jsonpath="$JSONPATH" 2>&1 | grep -q "Ready=True"; do sleep 1; done
+        # before_install:
+        #   - nvm install node
+        #   - nvm use node
+        #   - gem install sass --version 3.3.4
+        # install:
+        #   - pip install .
+        #   - pip install coveralls
+        #   - pushd game_frontend
+        #   - yarn
+        #   - node djangoBundler.js
+        #   - popd
+        # script:
+        #   - python all_tests.py --coverage
+        # after_success:
+        #   - coveralls
       - name: "Javascript Tests"
         before_install:
           - nvm install node
@@ -59,9 +59,9 @@ jobs:
           - >
             if [ "$TRAVIS_PULL_REQUEST_BRANCH" != "" ]
             then
-              BRANCH=$TRAVIS_PULL_REQUEST_BRANCH
+              export BRANCH=$TRAVIS_PULL_REQUEST_BRANCH
             else
-              BRANCH="$TRAVIS_BRANCH"
+              export BRANCH="$TRAVIS_BRANCH"
             fi
 
             if [ "$BRANCH" = "versions" ]
