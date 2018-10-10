@@ -4,7 +4,6 @@
     * Clone your repo using HTTPS
     * Work on a new git branch.
     * Need help with [git](https://git-scm.com/docs/gittutorial)?
-    Anyway you can't use Ocado Technology's master.
 * The [issues are listed on ocadotechnology/aimmo](https://github.com/ocadotechnology/aimmo/issues). 
 It's even better if you're using [ZenHub](https://www.zenhub.com/) because it will allow you to look at a [Kanban-ish board](https://github.com/ocadotechnology/aimmo/issues#boards) for the project.
 The new starter / up-for-grabs issues are listed with the [help wanted label](https://github.com/ocadotechnology/aimmo/labels/help%20wanted)
@@ -18,13 +17,14 @@ The new starter / up-for-grabs issues are listed with the [help wanted label](ht
 * To manually test things and run the project, `./run` in the root.
 
 ## Great, you can **commit**, open a **Pull Request**, and we'll **review** it...
-* Then you can commit! On a new branch for a new Pull Request please.
-* If your commit resolves a GitHub issue, please include “fixes #123” in the commit message.
-* Then you can push to your forked repo, and create a pull request from your branch to ocadotechnology's master branch.
-* Some tests will run automatically: Travis will run the automated tests, coverage will test the test coverage. Please fix found issues, then repush on your branch - it will rerun the tests.
+
+Before you merge:
+- Your PR should be connected to a corresponing ZenHub issue.
+- All required status checks must pass.
+- Add documentation if necessary
+
 * Do not accept a PR yourself - at least someone else should review your code and approve it first.
-* Some old PRs will need to see the branch rebased on the current master
-* When a PR is accepted, **congrats!** It will be merged on master.
+* When a PR is accepted, **congrats! 🎉** It will be merged on development.
 
 ## Some conventions to keep in mind...
 We follow PEP8 convention quite strictly however we do make a few exceptions to this rule. They are as follows:
