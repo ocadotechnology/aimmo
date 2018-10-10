@@ -12,9 +12,9 @@ git:
 stages:
   # - name: test
   - name: release
-    if: branch = master OR branch = versions
+    if: tag IS blank AND (branch = master OR branch = versions)
   - name: deploy
-    if: branch = master OR branch = versions
+    if: tag IS present
 jobs:
     include:
       # - stage: test
@@ -97,7 +97,8 @@ jobs:
             distributions: "bdist_wheel sdist"
             on:
               repo: ocadotechnology/aimmo
-              all_branches: true
-              condition: ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} =~ ^master|versions$
+              tags: true
+              # all_branches: true
+              # condition: ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} =~ ^master|versions$
         # after_deploy:
         #   - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}"
