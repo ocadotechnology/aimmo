@@ -98,6 +98,6 @@ jobs:
             on:
               repo: ocadotechnology/aimmo
               all_branches: true
-              condition: ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} =~ master|versions
+              condition: ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} =~ ^master|versions$
         # after_deploy:
         #   - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}"
