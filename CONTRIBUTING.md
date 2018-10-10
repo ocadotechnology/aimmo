@@ -24,7 +24,14 @@ Before you merge:
 - Add documentation if necessary
 
 * Do not accept a PR yourself - at least someone else should review your code and approve it first.
-* When a PR is accepted, **congrats! 🎉** It will be merged on development.
+
+### When a PR is accepted
+
+1. It will be merged into the  development branch
+2. A new beta version of AI:MMO will be released on PyPI and Docker Hub
+3. The beta will be tested on our staging servers
+
+Eventually, development will be merged into master. This will trigger a stable release which will make it's way up to production. Congrats! 🎉
 
 ## Some conventions to keep in mind...
 We follow PEP8 convention quite strictly however we do make a few exceptions to this rule. They are as follows:
