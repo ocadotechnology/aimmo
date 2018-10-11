@@ -184,7 +184,6 @@ def create_roles():
     """
     role_path = os.path.join(BASE_DIR, 'rbac')
     run_command(['kubectl', 'apply', '-Rf', 'rbac/'])
-    #run_command(['kubectl', 'apply', '-Rf', role_path])
 
 def start():
     """

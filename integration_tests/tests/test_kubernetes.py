@@ -80,8 +80,8 @@ class TestKubernetes(unittest.TestCase):
         single_service_account = service_account_info[3].metadata.annotations['kubectl.kubernetes.io/last-applied-configuration']
         self.assertTrue('worker-manager' in single_service_account)        
 
-
         api_extension = kubernetes.client.RbacAuthorizationV1Api()
+
         # ROLES
         api_response = api_extension.list_namespaced_role('default')
         role_info = api_response.items[0].metadata.annotations['kubectl.kubernetes.io/last-applied-configuration']
