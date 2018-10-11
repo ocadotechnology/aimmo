@@ -38,13 +38,13 @@ class WorkerManager(object):
         return self._data.get_code(player_id)
 
     def fetch_all_worker_data(self, player_id_to_game_state):
-        '''for player_id, worker in self.player_id_to_worker.iteritems():
-            worker.fetch_data(player_id_to_game_state[player_id])'''
+        for player_id, worker in self.player_id_to_worker.iteritems():
+            worker.fetch_data(player_id_to_game_state[player_id])
 
-        threads = [Thread(target=worker.fetch_data, args=(player_id_to_game_state[player_id]) for (player_id, worker) in self.player_id_to_worker.iteritems())]
+        '''threads = [Thread(target=worker.fetch_data, args=(player_id_to_game_state[player_id])) for (player_id, worker) in self.player_id_to_worker.iteritems()]
 
         [thread.start() for thread in threads]
-        [thread.join() for thread in threads]
+        [thread.join() for thread in threads]'''
 
     def get_player_id_to_serialised_actions(self):
         return {player_id: self.player_id_to_worker[player_id].serialised_action for player_id in self.player_id_to_worker}
