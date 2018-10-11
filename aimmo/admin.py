@@ -4,6 +4,7 @@ from models import Avatar, Game
 
 class GameDataAdmin(admin.ModelAdmin):
     list_display = ['id', 'name']
+    
     readonly_fields = ['players']
 
     def players(self, obj):
