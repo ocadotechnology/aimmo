@@ -82,6 +82,10 @@ class ConcurrentSimulationRunner(SimulationRunner):
 
         [thread.start() for thread in threads]
         [thread.join() for thread in threads]
+        for thread in threads:
+            if thread.isAlive():
+                # get avatar from avatars based off of player_id or something
+                # set the avatar's action to a waitAction as it took too long.
 
         # Waits applied first, then attacks, then moves.
         avatars.sort(key=lambda a: PRIORITIES[type(a.action)])
