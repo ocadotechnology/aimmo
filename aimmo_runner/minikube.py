@@ -182,8 +182,7 @@ def create_roles():
     Applys the service accounts, roles, and bindings for restricting
     the rights of certain pods.
     """
-    role_path = os.path.join(BASE_DIR, 'rbac')
-    run_command(['kubectl', 'apply', '-Rf', 'rbac/'])
+    run_command(['kubectl', 'apply', '-Rf', 'rbac'])
 
 def start():
     """
