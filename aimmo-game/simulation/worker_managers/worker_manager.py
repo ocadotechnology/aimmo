@@ -39,8 +39,6 @@ class WorkerManager(object):
         return self._data.get_code(player_id)
 
     def fetch_all_worker_data(self, player_id_to_game_state):
-        #for player_id, worker in self.player_id_to_worker.iteritems():
-        #    worker.fetch_data(player_id_to_game_state[player_id])
         def timed_process(duration):
             threads = [Thread(target=worker.fetch_data,
                             args=(player_id_to_game_state[player_id],)) for (player_id, worker) in self.player_id_to_worker.iteritems()]
@@ -49,9 +47,6 @@ class WorkerManager(object):
             [thread.start() for thread in threads]
             time.sleep(duration)
         timed_process(2)
-        
-        # This needs to be done concurrently not sequentially as it is
-        # a source of slow down for game turns.
         
 
     def get_player_id_to_serialised_actions(self):

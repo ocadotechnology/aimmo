@@ -1,7 +1,6 @@
 import logging
 
 import requests
-#from requests import async
 LOGGER = logging.getLogger(__name__)
 
 
@@ -19,8 +18,6 @@ class Worker(object):
 
     def fetch_data(self, state_view):
         try:
-            #response = async.post(self.url, json=state_view)
-            #async.map(response)
             response = requests.post(self.url, json=state_view)
             response.raise_for_status()
             data = response.json()
