@@ -180,7 +180,7 @@ def restart_pods(game_creator_yaml, ingress_yaml):
 def create_roles():
     """
     Applies the service accounts, roles, and bindings for restricting
-    the rights of certain pods.
+    the rights of certain pods and their processses.
     """
     run_command(['kubectl', 'apply', '-Rf', 'rbac'])
 
