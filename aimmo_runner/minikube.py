@@ -184,6 +184,7 @@ def create_roles():
     """
     run_command(['kubectl', 'apply', '-Rf', 'rbac'])
 
+
 def start():
     """
     The entry point to the minikube class. Sends calls appropriately to set

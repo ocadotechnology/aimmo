@@ -78,7 +78,7 @@ class TestKubernetes(unittest.TestCase):
         self.assertTrue('worker' in single_service_account)
 
         single_service_account = service_account_info[3].metadata.annotations['kubectl.kubernetes.io/last-applied-configuration']
-        self.assertTrue('worker-manager' in single_service_account)        
+        self.assertTrue('worker-manager' in single_service_account)
 
         api_extension = kubernetes.client.RbacAuthorizationV1Api()
 
@@ -100,7 +100,6 @@ class TestKubernetes(unittest.TestCase):
         api_response = api_extension.list_cluster_role_binding()
         cluster_role_binding_info = api_response.items[0].metadata.annotations['kubectl.kubernetes.io/last-applied-configuration']
         self.assertTrue('create-games' in cluster_role_binding_info)
-
 
     def test_correct_initial_ingress_yaml(self):
         """
