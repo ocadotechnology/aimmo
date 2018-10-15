@@ -42,7 +42,8 @@ class TestKubernetes(unittest.TestCase):
     def test_clean_starting_state_of_cluster(self):
         """
         The purpose of this test is to check the correct number
-        of pods, replication controllers and services are created.
+        of pods, replication controllers services, service accounts, roles/cluster roles
+        and their bindings are created.
         All components created by the game will be in the "default"
         namespace.
         """
@@ -66,6 +67,39 @@ class TestKubernetes(unittest.TestCase):
         self.assertEqual(len(api_response.items), 1)
         pod_item = api_response.items[0]
         self.assertEqual(pod_item.metadata.name, "kubernetes")
+
+        # SERVICE ACCOUNTS
+        api_response = self.api_instance.list_namespaced_service_account('default')
+        service_account_info = api_response.items
+        single_service_account = service_account_info[1].metadata.annotations['kubectl.kubernetes.io/last-applied-configuration']
+        self.assertTrue('game-creator' in single_service_account)
+
+        single_service_account = service_account_info[2].metadata.annotations['kubectl.kubernetes.io/last-applied-configuration']
+        self.assertTrue('worker' in single_service_account)
+
+        single_service_account = service_account_info[3].metadata.annotations['kubectl.kubernetes.io/last-applied-configuration']
+        self.assertTrue('worker-manager' in single_service_account)
+
+        api_extension = kubernetes.client.RbacAuthorizationV1Api()
+
+        # ROLES
+        api_response = api_extension.list_namespaced_role('default')
+        role_info = api_response.items[0].metadata.annotations['kubectl.kubernetes.io/last-applied-configuration']
+        self.assertTrue('worker-manager' in role_info)
+
+        # CLUSTER ROLES
+        api_response = api_extension.list_cluster_role()
+        cluster_role_info = api_response.items[0].metadata.annotations['kubectl.kubernetes.io/last-applied-configuration']
+        self.assertTrue('game-creator' in cluster_role_info)
+
+        # BINDINGS
+        api_response = api_extension.list_namespaced_role_binding('default')
+        role_binding_info = api_response.items[0].metadata.annotations['kubectl.kubernetes.io/last-applied-configuration']
+        self.assertTrue('manage-workers' in role_binding_info)
+
+        api_response = api_extension.list_cluster_role_binding()
+        cluster_role_binding_info = api_response.items[0].metadata.annotations['kubectl.kubernetes.io/last-applied-configuration']
+        self.assertTrue('create-games' in cluster_role_binding_info)
 
     def test_correct_initial_ingress_yaml(self):
         """
