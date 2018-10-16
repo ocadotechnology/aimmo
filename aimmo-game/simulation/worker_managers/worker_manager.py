@@ -38,10 +38,18 @@ class WorkerManager(object):
     def get_code(self, player_id):
         return self._data.get_code(player_id)
 
+
     def fetch_all_worker_data(self, player_id_to_game_state):
-        def timed_process(duration):
-            threads = [Thread(target=worker.fetch_data,
+        """
+        Create a thread for each worker that sends a request for their data. After
+        a set duration these threads will close, giving a more reliable turn time.
+        """
+        def prepare_request_threads():
+            return [Thread(target=worker.fetch_data,
                             args=(player_id_to_game_state[player_id],)) for (player_id, worker) in self.player_id_to_worker.iteritems()]
+
+        def timed_process(duration):
+            threads = prepare_request_threads()
 
             [thread.setDaemon(True) for thread in threads]
             [thread.start() for thread in threads]
