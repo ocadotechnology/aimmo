@@ -1,9 +1,9 @@
 import logging
+import time
 
 from eventlet.greenpool import GreenPool
 from eventlet.semaphore import Semaphore
 from threading import Thread
-import time
 
 from ..worker import Worker
 
@@ -48,14 +48,15 @@ class WorkerManager(object):
             return [Thread(target=worker.fetch_data,
                             args=(player_id_to_game_state[player_id],)) for (player_id, worker) in self.player_id_to_worker.iteritems()]
 
-        def timed_process(duration):
+        def timed_process_for_worker_turn_requests(duration):
             threads = prepare_request_threads()
 
             [thread.setDaemon(True) for thread in threads]
             [thread.start() for thread in threads]
             time.sleep(duration)
-        timed_process(2)
         
+        timed_process_for_worker_turn_requests(2)
+
 
     def get_player_id_to_serialised_actions(self):
         return {player_id: self.player_id_to_worker[player_id].serialised_action for player_id in self.player_id_to_worker}
