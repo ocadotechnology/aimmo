@@ -5,7 +5,7 @@ from eventlet.greenpool import GreenPool
 from eventlet.semaphore import Semaphore
 from threading import Thread
 
-from ..worker import Worker
+from simulation.worker import Worker
 
 LOGGER = logging.getLogger(__name__)
 
@@ -54,7 +54,7 @@ class WorkerManager(object):
             [thread.setDaemon(True) for thread in threads]
             [thread.start() for thread in threads]
             time.sleep(duration)
-        
+
         timed_process_for_worker_turn_requests(2)
 
 
