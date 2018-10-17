@@ -38,7 +38,6 @@ class WorkerManager(object):
     def get_code(self, player_id):
         return self._data.get_code(player_id)
 
-
     def fetch_all_worker_data(self, player_id_to_game_state):
         """
         Creates a thread for each worker to send a request for their data. After
@@ -46,7 +45,7 @@ class WorkerManager(object):
         """
         def prepare_request_threads():
             return [Thread(target=worker.fetch_data,
-                            args=(player_id_to_game_state[player_id],)) for (player_id, worker) in self.player_id_to_worker.iteritems()]
+                           args=(player_id_to_game_state[player_id],)) for (player_id, worker) in self.player_id_to_worker.iteritems()]
 
         def timed_process_for_worker_turn_requests(duration):
             threads = prepare_request_threads()
@@ -56,7 +55,6 @@ class WorkerManager(object):
             time.sleep(duration)
 
         timed_process_for_worker_turn_requests(2)
-
 
     def get_player_id_to_serialised_actions(self):
         return {player_id: self.player_id_to_worker[player_id].serialised_action for player_id in self.player_id_to_worker}
