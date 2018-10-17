@@ -1,10 +1,12 @@
-FROM python:2
+FROM python:2-alpine
 
 MAINTAINER code@ocado.com
 
 ENV WORKER_MANAGER=kubernetes
 
 COPY . .
+
+RUN apk add --no-cache gcc musl-dev python-dev libffi-dev openssl-dev
 
 RUN pip install pipenv
 
