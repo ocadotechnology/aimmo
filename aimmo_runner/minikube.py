@@ -1,6 +1,8 @@
 #!/user/bin/env python
 from __future__ import print_function
 
+from subprocess import CalledProcessError
+
 import docker
 import kubernetes
 import os
@@ -74,10 +76,10 @@ def start_cluster(minikube):
     Starts the cluster unless it has been already started by the user.
     :param minikube: Executable minikube installed beforehand.
     """
-    status = run_command([minikube, 'status'], True)
-    if 'minikube: Running' in status:
+    try:
+        run_command([minikube, 'status'], True)
         print('Cluster already running')
-    else:
+    except CalledProcessError:
         run_command([minikube, 'start', '--memory=2048', '--cpus=2'])
 
 
