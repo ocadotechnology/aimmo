@@ -10,11 +10,12 @@ import eventlet
 import flask
 import socketio
 from flask_cors import CORS
+from werkzeug.wsgi import DispatcherMiddleware
+from prometheus_client import make_wsgi_app
 
 from simulation import map_generator
 from simulation.worker_managers import WORKER_MANAGERS
 from simulation.game_runner import GameRunner
-from aimmo.monitoring.metrics import expose_metrics
 
 eventlet.sleep()
 eventlet.monkey_patch()
@@ -143,12 +144,15 @@ def run_game(port):
     game_runner.set_end_turn_callback(game_api.send_updates)
     game_runner.start()
 
+def expose_metrics():
+    pass
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     host, port = sys.argv[1], int(sys.argv[2])
     socket_app = socketio.Middleware(socketio_server, flask_app,
                                      socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
-    app_dispatch = expose_metrics()
+    app_dispatch = DispatcherMiddleware(socket_app, {'/metrics': make_wsgi_app()})
     run_game(port)
     eventlet.wsgi.server(eventlet.listen((host, port)), socket_app, debug=False)
