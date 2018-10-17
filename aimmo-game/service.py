@@ -10,8 +10,6 @@ import eventlet
 import flask
 import socketio
 from flask_cors import CORS
-from werkzeug.wsgi import DispatcherMiddleware
-from prometheus_client import make_wsgi_app
 
 from simulation import map_generator
 from simulation.worker_managers import WORKER_MANAGERS
@@ -153,6 +151,5 @@ if __name__ == '__main__':
     host, port = sys.argv[1], int(sys.argv[2])
     socket_app = socketio.Middleware(socketio_server, flask_app,
                                      socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
-    app_dispatch = DispatcherMiddleware(socket_app, {'/metrics': make_wsgi_app()})
     run_game(port)
     eventlet.wsgi.server(eventlet.listen((host, port)), socket_app, debug=False)
