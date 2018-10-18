@@ -10,6 +10,8 @@ import eventlet
 import flask
 import socketio
 from flask_cors import CORS
+from werkzeug.wsgi import DispatcherMiddleware
+from prometheus_client import make_wsgi_app
 
 from simulation import map_generator
 from simulation.worker_managers import WORKER_MANAGERS
@@ -142,8 +144,6 @@ def run_game(port):
     game_runner.set_end_turn_callback(game_api.send_updates)
     game_runner.start()
 
-def expose_metrics():
-    pass
 
 
 if __name__ == '__main__':
