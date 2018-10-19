@@ -11,7 +11,7 @@ import flask
 import socketio
 from flask_cors import CORS
 from werkzeug.wsgi import DispatcherMiddleware
-from prometheus_client import make_wsgi_app
+from prometheus_client import make_wsgi_app, Summary
 
 from simulation import map_generator
 from simulation.worker_managers import WORKER_MANAGERS
@@ -26,6 +26,9 @@ socketio_server = socketio.Server()
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
+
+
+# REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
 
 
 class GameAPI(object):
@@ -145,11 +148,11 @@ def run_game(port):
     game_runner.start()
 
 
-
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     host, port = sys.argv[1], int(sys.argv[2])
-    socket_app = socketio.Middleware(socketio_server, flask_app,
+    app_dispatch = DispatcherMiddleware(flask_app, {'/metrics': make_wsgi_app()})
+    socket_app = socketio.Middleware(socketio_server, app_dispatch,
                                      socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
     run_game(port)
     eventlet.wsgi.server(eventlet.listen((host, port)), socket_app, debug=False)
