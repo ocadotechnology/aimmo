@@ -39,10 +39,8 @@ class LocalWorkerManager(WorkerManager):
             image='ocadotechnology/aimmo-game-worker:test',
             publish_all_ports=True,
             environment=env,
+            detach=True,
             ports={'5000/tcp': port})
-        # process = subprocess.Popen(['python', 'service.py', self.host, str(port), data_url],
-                                #    cwd=self.worker_directory)
-        # atexit.register(process.kill)
         self.workers[player_id] = container
         worker_url = 'http://%s:%d' % (
             self.host,
