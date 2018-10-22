@@ -21,8 +21,8 @@ class LocalWorkerManager(WorkerManager):
 
     def __init__(self, *args, **kwargs):
         self.workers = {}
-        game_id = os.environ['GAME_ID']
-        self.port_counter = itertools.count(1989 + int(game_id) * 10000)
+        self.game_id = os.environ['GAME_ID']
+        self.port_counter = itertools.count(1989 + int(self.game_id) * 10000)
         self.client = docker.from_env()
         super(LocalWorkerManager, self).__init__(*args, **kwargs)
 
@@ -36,6 +36,7 @@ class LocalWorkerManager(WorkerManager):
         env['PORT'] = port
 
         container = self.client.containers.run(
+            name="aimmo-{}-worker-{}".format(self.game_id, player_id),
             image='ocadotechnology/aimmo-game-worker:test',
             publish_all_ports=True,
             environment=env,

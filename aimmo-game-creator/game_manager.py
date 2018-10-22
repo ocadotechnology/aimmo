@@ -154,7 +154,7 @@ class LocalGameManager(GameManager):
         env['PYTHONUNBUFFERED'] = 0
         env['EXTERNAL_PORT'] = port
         self.games[game_id] = client.containers.run(
-            name="game-{}".format(game_id),
+            name="aimmo-game-{}".format(game_id),
             image='ocadotechnology/aimmo-game:test',
             environment=env,
             ports={'5000/tcp': ('0.0.0.0', port)},
