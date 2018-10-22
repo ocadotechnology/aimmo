@@ -148,14 +148,16 @@ class LocalGameManager(GameManager):
         client = docker.from_env()
         env = os.environ.copy()
         game_data = {str(k): str(v) for k, v in game_data.items()}
+        port = str(6001 + int(game_id) * 1000)
         env.update(game_data)
         env['GAME_ID'] = game_id
         env['PYTHONUNBUFFERED'] = 0
-        port = str(6001 + int(game_id) * 1000)
+        env['EXTERNAL_PORT'] = port
         self.games[game_id] = client.containers.run(
+            name="game-{}".format(game_id),
             image='ocadotechnology/aimmo-game:test',
             environment=env,
-            ports={'5000/tcp': port},
+            ports={'5000/tcp': ('0.0.0.0', port)},
             publish_all_ports=True,
             detach=True,
             tty=True,
