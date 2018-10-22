@@ -68,6 +68,7 @@ def run(use_minikube, server_wait=True, capture_output=False, test_env=False):
     else:
         from aimmo_runner import minikube
         os.environ['AIMMO_MODE'] = 'threads'
+        minikube.delete_containers()
         minikube.build_docker_images()
         minikube.start_game_creator()
         time.sleep(2)

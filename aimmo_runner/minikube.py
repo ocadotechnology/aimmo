@@ -138,17 +138,23 @@ def build_docker_images(minikube=None):
             encoding='gzip'
         )
 
+def delete_containers():
+    client = docker.from_env(version='auto')
+
+    containers = [container for container in client.containers.list() if container.name.startswith('aimmo')]
+    for container in containers:
+        container.remove(force=True)
+
 def start_game_creator():
     client = docker.from_env(version='auto')
     client.containers.run(
+        name='aimmo-game-creator',
         image='ocadotechnology/aimmo-game-creator:test',
-        # network_mode='host',
         detach=True,
         tty=True,
         volumes={
             '/var/run/docker.sock': {'bind': '/var/run/docker.sock', 'mode': 'rw'}
-            # '/Users/niket.shah1/.docker/config.json': {'bind': '/root/.docker/config.json'}
-            })
+        })
 
 def delete_components(api_instance, extensions_api_instance):
     for rc in api_instance.list_namespaced_replication_controller('default').items:
