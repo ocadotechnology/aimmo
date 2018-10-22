@@ -13,7 +13,7 @@ LOGGER = logging.getLogger(__name__)
 class LocalWorkerManager(WorkerManager):
     """Relies on them already being created already."""
 
-    host = 'docker.for.mac.localhost'
+    host = '0.0.0.0'
     worker_directory = os.path.join(
         os.path.dirname(__file__),
         '../../../aimmo-game-worker/',
