@@ -11,6 +11,7 @@ import platform
 import yaml
 import socket
 from shell_api import (run_command, create_test_bin, BASE_DIR)
+import json
 
 MINIKUBE_EXECUTABLE = "minikube"
 
@@ -114,15 +115,17 @@ def vm_none_enabled(raw_env_settings):
     return False if 'driver does not support' in raw_env_settings else True
 
 
-def build_docker_images(minikube):
+def build_docker_images(minikube=None):
     """
     Finds environment settings and builds docker images for each directory.
     :param minikube: Executable command to run in terminal.
     """
     print('Building docker images')
-    raw_env_settings = run_command([minikube, 'docker-env', '--shell="bash"'], True)
-
-    client = create_docker_client(raw_env_settings)
+    if minikube:
+        raw_env_settings = run_command([minikube, 'docker-env', '--shell="bash"'], True)
+        client = create_docker_client(raw_env_settings)
+    else:
+        client = docker.from_env(version='auto')
 
     directories = ('aimmo-game', 'aimmo-game-creator', 'aimmo-game-worker')
     for dir in directories:
@@ -135,6 +138,17 @@ def build_docker_images(minikube):
             encoding='gzip'
         )
 
+def start_game_creator():
+    client = docker.from_env(version='auto')
+    client.containers.run(
+        image='ocadotechnology/aimmo-game-creator:test',
+        # network_mode='host',
+        detach=True,
+        tty=True,
+        volumes={
+            '/var/run/docker.sock': {'bind': '/var/run/docker.sock', 'mode': 'rw'}
+            # '/Users/niket.shah1/.docker/config.json': {'bind': '/root/.docker/config.json'}
+            })
 
 def delete_components(api_instance, extensions_api_instance):
     for rc in api_instance.list_namespaced_replication_controller('default').items:

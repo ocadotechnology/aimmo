@@ -3,6 +3,7 @@ import itertools
 import logging
 import os
 import subprocess
+import docker
 
 from .worker_manager import WorkerManager
 
@@ -12,7 +13,7 @@ LOGGER = logging.getLogger(__name__)
 class LocalWorkerManager(WorkerManager):
     """Relies on them already being created already."""
 
-    host = '127.0.0.1'
+    host = 'docker.for.mac.localhost'
     worker_directory = os.path.join(
         os.path.dirname(__file__),
         '../../../aimmo-game-worker/',
@@ -22,18 +23,27 @@ class LocalWorkerManager(WorkerManager):
         self.workers = {}
         game_id = os.environ['GAME_ID']
         self.port_counter = itertools.count(1989 + int(game_id) * 10000)
+        self.client = docker.from_env()
         super(LocalWorkerManager, self).__init__(*args, **kwargs)
 
     def create_worker(self, player_id):
         assert(player_id not in self.workers)
         port = self.port_counter.next()
 
+        env = {}
         data_url = 'http://{}:{}/player/{}'.format(self.host, self.port, player_id)
+        env['DATA_URL'] = data_url
+        env['PORT'] = port
 
-        process = subprocess.Popen(['python', 'service.py', self.host, str(port), data_url],
-                                   cwd=self.worker_directory)
-        atexit.register(process.kill)
-        self.workers[player_id] = process
+        container = self.client.containers.run(
+            image='ocadotechnology/aimmo-game-worker:test',
+            publish_all_ports=True,
+            environment=env,
+            ports={'5000/tcp': port})
+        # process = subprocess.Popen(['python', 'service.py', self.host, str(port), data_url],
+                                #    cwd=self.worker_directory)
+        # atexit.register(process.kill)
+        self.workers[player_id] = container
         worker_url = 'http://%s:%d' % (
             self.host,
             port,

@@ -8,6 +8,7 @@ import requests
 from eventlet.greenpool import GreenPool
 from eventlet.semaphore import Semaphore
 import kubernetes
+import docker
 
 
 LOGGER = logging.getLogger(__name__)
@@ -144,18 +145,25 @@ class LocalGameManager(GameManager):
 
     def create_game(self, game_id, game_data):
         assert(game_id not in self.games)
-        port = str(6001 + int(game_id) * 1000)
-        process_args = [
-            "python",
-            self.game_service_path,
-            self.host,
-            port,
-        ]
+        client = docker.from_env()
         env = os.environ.copy()
         game_data = {str(k): str(v) for k, v in game_data.items()}
         env.update(game_data)
         env['GAME_ID'] = game_id
-        self.games[game_id] = subprocess.Popen(process_args, cwd=self.game_directory, env=env)
+        env['PYTHONUNBUFFERED'] = 0
+        port = str(6001 + int(game_id) * 1000)
+        self.games[game_id] = client.containers.run(
+            image='ocadotechnology/aimmo-game:test',
+            environment=env,
+            ports={'5000/tcp': port},
+            publish_all_ports=True,
+            detach=True,
+            tty=True,
+            volumes={
+                '/var/run/docker.sock': {'bind': '/var/run/docker.sock', 'mode': 'rw'}
+            # '/Users/niket.shah1/.docker/config.json': {'bind': '/root/.docker/config.json'}
+            })
+        # self.games[game_id] = subprocess.Popen(process_args, cwd=self.game_directory, env=env)
         game_url = "http://{}:{}".format(self.host, port)
         LOGGER.info("Game started - {}, listening at {}".format(game_id, game_url))
 

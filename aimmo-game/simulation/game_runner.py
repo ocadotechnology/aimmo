@@ -1,5 +1,7 @@
 import time
 import threading
+import timeit
+import logging
 
 from django_communicator import DjangoCommunicator
 from simulation_runner import ConcurrentSimulationRunner
@@ -7,6 +9,7 @@ from avatar.avatar_manager import AvatarManager
 
 TURN_TIME = 2
 
+LOGGER = logging.getLogger(__name__)
 
 class GameRunner(threading.Thread):
     def __init__(self, worker_manager_class, game_state_generator, django_api_url, port):
@@ -39,13 +42,18 @@ class GameRunner(threading.Thread):
         self.game_state.main_avatar_id = game_metadata['main_avatar']
 
     def update_workers(self):
+        start_time = timeit.default_timer()
         game_metadata = self.communicator.get_game_metadata()['main']
 
         users_to_add = self.get_users_to_add(game_metadata)
         users_to_delete = self.get_users_to_delete(game_metadata)
 
+        LOGGER.info("Figuring out the users in the game took: {}".format(timeit.default_timer() - start_time))
+        start_time = timeit.default_timer()
         self.worker_manager.add_workers(users_to_add)
         self.worker_manager.delete_workers(users_to_delete)
+        LOGGER.info("Setting up workers took: {}".format(timeit.default_timer() - start_time))
+        start_time = timeit.default_timer()
         self.game_state.add_avatars(users_to_add)
         self.game_state.delete_avatars(users_to_delete)
         self.worker_manager.update_worker_codes(game_metadata['users'])

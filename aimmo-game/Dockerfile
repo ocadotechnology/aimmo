@@ -2,7 +2,9 @@ FROM python:2-alpine
 
 MAINTAINER code@ocado.com
 
-ENV WORKER_MANAGER=kubernetes
+ENV WORKER_MANAGER=local
+
+ENV FLASK_ENV development
 
 COPY . .
 
@@ -12,4 +14,4 @@ RUN pip install pipenv
 
 RUN pipenv install --system --deploy
 
-CMD ["python", "./service.py", "0.0.0.0", "5000"]
+CMD ["python", "-u", "./service.py", "0.0.0.0", "5000"]
