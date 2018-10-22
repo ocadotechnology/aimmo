@@ -17,7 +17,6 @@ DATA_URL = ''
 
 
 def get_code_and_options():
-    LOGGER.info('Data url: ' + DATA_URL)
     data = requests.get(DATA_URL).json()
     return data['code'], data['options']
 
