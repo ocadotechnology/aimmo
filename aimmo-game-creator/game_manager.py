@@ -132,7 +132,7 @@ class GameManager(object):
 class LocalGameManager(GameManager):
     """Manages games running on local host"""
 
-    host = "host.docker.internal"
+    host = os.environ['LOCALHOST_IP']
     game_directory = os.path.join(
         os.path.dirname(__file__),
         "../aimmo-game/",

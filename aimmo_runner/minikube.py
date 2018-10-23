@@ -146,16 +146,34 @@ def delete_containers():
         container.remove(force=True)
 
 def start_game_creator():
+    os_name = platform.system()
     client = docker.from_env(version='auto')
-    client.containers.run(
-        name='aimmo-game-creator',
-        image='ocadotechnology/aimmo-game-creator:test',
-        detach=True,
-        tty=True,
-        publish_all_ports=True,
-        volumes={
-            '/var/run/docker.sock': {'bind': '/var/run/docker.sock', 'mode': 'rw'}
-        })
+    if os_name == 'Linux':
+        env = { 'LOCALHOST_IP': '127.0.0.1' }
+        client.containers.run(
+            name='aimmo-game-creator',
+            image='ocadotechnology/aimmo-game-creator:test',
+            detach=True,
+            tty=True,
+            environment=env,
+            publish_all_ports=True,
+            network_mode='host',
+            volumes={
+                '/var/run/docker.sock': {'bind': '/var/run/docker.sock', 'mode': 'rw'}
+            })
+    else:
+        env = { 'LOCALHOST_IP': 'host.docker.internal' }
+        client.containers.run(
+            name='aimmo-game-creator',
+            image='ocadotechnology/aimmo-game-creator:test',
+            detach=True,
+            tty=True,
+            environment=env,
+            publish_all_ports=True,
+            volumes={
+                '/var/run/docker.sock': {'bind': '/var/run/docker.sock', 'mode': 'rw'}
+            })
+
 
 def delete_components(api_instance, extensions_api_instance):
     for rc in api_instance.list_namespaced_replication_controller('default').items:
