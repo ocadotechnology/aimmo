@@ -152,6 +152,7 @@ def start_game_creator():
         image='ocadotechnology/aimmo-game-creator:test',
         detach=True,
         tty=True,
+        publish_all_ports=True,
         volumes={
             '/var/run/docker.sock': {'bind': '/var/run/docker.sock', 'mode': 'rw'}
         })

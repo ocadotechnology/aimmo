@@ -16,4 +16,4 @@ RUN ["/usr/local/bin/docker-entrypoint.sh"]
 
 COPY . .
 
-CMD python service.py 0.0.0.0 5000 $DATA_URL
+CMD python service.py 0.0.0.0 $PORT $DATA_URL

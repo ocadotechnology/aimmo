@@ -14,10 +14,6 @@ COPY ["Pipfile", "Pipfile.lock", "setup.py", "./"]
 
 RUN pipenv install --system --deploy
 
-COPY docker-entrypoint.sh /usr/local/bin/
-
-RUN ["/usr/local/bin/docker-entrypoint.sh"]
-
 COPY . .
 
-CMD ["python", "-u", "./service.py", "0.0.0.0", "5000"]
+CMD ["python", "-u", "./service.py", "0.0.0.0"]

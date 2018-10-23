@@ -158,7 +158,7 @@ class LocalGameManager(GameManager):
             name="aimmo-game-{}".format(game_id),
             image='ocadotechnology/aimmo-game:test',
             environment=env,
-            ports={'5000/tcp': ('0.0.0.0', port)},
+            ports={"{}/tcp".format(port): ('0.0.0.0', port)},
             publish_all_ports=True,
             detach=True,
             tty=True,

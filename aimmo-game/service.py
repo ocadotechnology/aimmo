@@ -145,14 +145,12 @@ def run_game(port):
 
 if __name__ == '__main__':
     logging.basicConfig(stream=sys.stdout, level=logging.INFO)
-    host, port = sys.argv[1], int(sys.argv[2])
+    host = sys.argv[1]
     socket_app = socketio.Middleware(socketio_server, flask_app,
                                      socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
 
-    try:
-        external_port = os.environ['EXTERNAL_PORT']
-    except KeyError:
-        external_port = port
+
+    port = int(os.environ['EXTERNAL_PORT'])
     
-    run_game(external_port)
+    run_game(port)
     eventlet.wsgi.server(eventlet.listen((host, port)), socket_app, debug=True)

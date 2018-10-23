@@ -41,7 +41,7 @@ class LocalWorkerManager(WorkerManager):
             publish_all_ports=True,
             environment=env,
             detach=True,
-            ports={'5000/tcp': port})
+            ports={"{}/tcp".format(port): port})
         self.workers[player_id] = container
         worker_url = 'http://%s:%d' % (
             self.host,
