@@ -9,6 +9,7 @@ from eventlet.greenpool import GreenPool
 from eventlet.semaphore import Semaphore
 import kubernetes
 import docker
+import json
 
 
 LOGGER = logging.getLogger(__name__)
@@ -146,26 +147,19 @@ class LocalGameManager(GameManager):
     def create_game(self, game_id, game_data):
         assert(game_id not in self.games)
         client = docker.from_env()
-        env = os.environ.copy()
         game_data = {str(k): str(v) for k, v in game_data.items()}
         port = str(6001 + int(game_id) * 1000)
-        env.update(game_data)
-        env['GAME_ID'] = game_id
-        env['PYTHONUNBUFFERED'] = 0
-        env['WORKER_MANAGER'] = 'local'
-        env['EXTERNAL_PORT'] = port
+        template = json.loads(os.environ['CONTAINER_TEMPLATE'])
+        template['environment'].update(game_data)
+        template['environment']['GAME_ID'] = game_id
+        template['environment']['PYTHONUNBUFFERED'] = 0
+        template['environment']['WORKER_MANAGER'] = 'local'
+        template['environment']['EXTERNAL_PORT'] = port
+        template['ports'] = {"{}/tcp".format(port): ('0.0.0.0', port)}
         self.games[game_id] = client.containers.run(
             name="aimmo-game-{}".format(game_id),
             image='ocadotechnology/aimmo-game:test',
-            environment=env,
-            ports={"{}/tcp".format(port): ('0.0.0.0', port)},
-            publish_all_ports=True,
-            detach=True,
-            tty=True,
-            volumes={
-                '/var/run/docker.sock': {'bind': '/var/run/docker.sock', 'mode': 'rw'}
-            # '/Users/niket.shah1/.docker/config.json': {'bind': '/root/.docker/config.json'}
-            })
+            **template)
         # self.games[game_id] = subprocess.Popen(process_args, cwd=self.game_directory, env=env)
         game_url = "http://{}:{}".format(self.host, port)
         LOGGER.info("Game started - {}, listening at {}".format(game_id, game_url))
