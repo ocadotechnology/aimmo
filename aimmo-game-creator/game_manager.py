@@ -132,7 +132,7 @@ class GameManager(object):
 class LocalGameManager(GameManager):
     """Manages games running on local host"""
 
-    host = "127.0.0.1"
+    host = "host.docker.internal"
     game_directory = os.path.join(
         os.path.dirname(__file__),
         "../aimmo-game/",
@@ -152,6 +152,7 @@ class LocalGameManager(GameManager):
         env.update(game_data)
         env['GAME_ID'] = game_id
         env['PYTHONUNBUFFERED'] = 0
+        env['WORKER_MANAGER'] = 'local'
         env['EXTERNAL_PORT'] = port
         self.games[game_id] = client.containers.run(
             name="aimmo-game-{}".format(game_id),
@@ -243,6 +244,7 @@ class KubernetesGameManager(GameManager):
         environment_variables['GAME_URL'] = 'http://game-{}'.format(game_id)
         environment_variables['IMAGE_SUFFIX'] = os.environ.get('IMAGE_SUFFIX', 'latest')
         environment_variables['K8S_NAMESPACE'] = K8S_NAMESPACE
+        environment_variables['WORKER_MANAGER'] = 'kubernetes'
 
         rc = self._make_rc(environment_variables, game_id)
         self.api.create_namespaced_replication_controller(K8S_NAMESPACE, rc)
