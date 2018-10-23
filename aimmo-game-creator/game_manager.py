@@ -155,6 +155,7 @@ class LocalGameManager(GameManager):
         template['environment']['PYTHONUNBUFFERED'] = 0
         template['environment']['WORKER_MANAGER'] = 'local'
         template['environment']['EXTERNAL_PORT'] = port
+        template['environment']['CONTAINER_TEMPLATE'] = os.environ['CONTAINER_TEMPLATE']
         template['ports'] = {"{}/tcp".format(port): ('0.0.0.0', port)}
         self.games[game_id] = client.containers.run(
             name="aimmo-game-{}".format(game_id),

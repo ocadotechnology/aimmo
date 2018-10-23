@@ -162,8 +162,8 @@ def start_game_creator():
     else:
         template['environment']['LOCALHOST_IP'] = 'host.docker.internal'
     
+    template['environment']['CONTAINER_TEMPLATE'] = json.dumps(template)
     kwargs = template.copy()
-    kwargs['environment']['CONTAINER_TEMPLATE'] = json.dumps(template)
     client.containers.run(
         name='aimmo-game-creator',
         image='ocadotechnology/aimmo-game-creator:test',

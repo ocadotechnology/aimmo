@@ -4,6 +4,7 @@ import logging
 import os
 import subprocess
 import docker
+import json
 
 from .worker_manager import WorkerManager
 
@@ -30,7 +31,7 @@ class LocalWorkerManager(WorkerManager):
         assert(player_id not in self.workers)
         port = self.port_counter.next()
 
-        env = {}
+        env = json.loads(os.environ['CONTAINER_TEMPLATE'])
         data_url = 'http://{}:{}/player/{}'.format(self.host, self.port, player_id)
         env['DATA_URL'] = data_url
         env['PORT'] = port
