@@ -2,6 +2,7 @@ from unittest import TestCase
 import random
 import string
 import mock
+import os
 
 import service
 from simulation.worker_managers.local_worker_manager import LocalWorkerManager
@@ -25,7 +26,9 @@ class MockedSocketIOServer(mock.MagicMock):
 
 
 class TestSocketIO(TestCase):
+
     def setUp(self):
+        os.environ['GAME_ID'] = '1'
         self.environ = {'QUERY_STRING': 'avatar_id=1&EIO=3&transport=polling&t=MJhoMgb'}
         self.game_api = self.create_game_api()
         self.mocked_mappings = self.game_api._socket_session_id_to_player_id
@@ -33,9 +36,13 @@ class TestSocketIO(TestCase):
                                          string.ascii_lowercase +
                                          string.digits)
                            for _ in range(19))
+    
+    def tearDown(self):
+        del os.environ['GAME_ID']
 
+    @mock.patch('docker.from_env')
     @mock.patch('service.flask_app')
-    def create_game_api(self, flask_app):
+    def create_game_api(self, flask_app, api_client):
         game_runner = GameRunner(worker_manager_class=LocalWorkerManager,
                                  game_state_generator=lambda avatar_manager: MockGameState(),
                                  django_api_url='http://test',
