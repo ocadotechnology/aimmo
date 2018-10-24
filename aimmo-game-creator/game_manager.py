@@ -133,7 +133,7 @@ class GameManager(object):
 class LocalGameManager(GameManager):
     """Manages games running on local host"""
 
-    host = os.environ['LOCALHOST_IP']
+    host = os.environ.get('LOCALHOST_IP', '0.0.0.0')
     game_directory = os.path.join(
         os.path.dirname(__file__),
         "../aimmo-game/",
@@ -149,7 +149,7 @@ class LocalGameManager(GameManager):
         client = docker.from_env()
         game_data = {str(k): str(v) for k, v in game_data.items()}
         port = str(6001 + int(game_id) * 1000)
-        template = json.loads(os.environ['CONTAINER_TEMPLATE'])
+        template = json.loads(os.environ.get('CONTAINER_TEMPLATE', '{}'))
         template['environment'].update(game_data)
         template['environment']['GAME_ID'] = game_id
         template['environment']['PYTHONUNBUFFERED'] = 0

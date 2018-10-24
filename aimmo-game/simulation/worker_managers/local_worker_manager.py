@@ -14,7 +14,7 @@ LOGGER = logging.getLogger(__name__)
 class LocalWorkerManager(WorkerManager):
     """Relies on them already being created already."""
 
-    host = os.environ['LOCALHOST_IP']
+    host = os.environ.get('LOCALHOST_IP', '127.0.0.1')
     worker_directory = os.path.join(
         os.path.dirname(__file__),
         '../../../aimmo-game-worker/',
@@ -31,7 +31,7 @@ class LocalWorkerManager(WorkerManager):
         assert(player_id not in self.workers)
         port = self.port_counter.next()
 
-        env = json.loads(os.environ['CONTAINER_TEMPLATE'])
+        env = json.loads(os.environ.get('CONTAINER_TEMPLATE', '{}'))
         data_url = 'http://{}:{}/player/{}'.format(self.host, self.port, player_id)
         env['DATA_URL'] = data_url
         env['PORT'] = port
