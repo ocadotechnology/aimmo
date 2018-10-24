@@ -28,9 +28,6 @@ LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 
-# REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
-
-
 class GameAPI(object):
     def __init__(self, game_state, worker_manager):
         self._socket_session_id_to_player_id = {}
