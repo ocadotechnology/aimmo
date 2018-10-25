@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-import cPickle as pickle
+import pickle
 import logging
 import os
 import sys
-from urlparse import parse_qs
+from urllib.parse import parse_qs
 
 import eventlet
 import flask
@@ -88,7 +88,7 @@ class GameAPI(object):
         :param query_string: String from the environment settings,
         usually located as the key 'QUERY_STRING'.
         """
-        parsed_qs = parse_qs(query_string)
+        parsed_qs = urlparse.parse_qs(query_string)
 
         try:
             avatar_id = int(parsed_qs['avatar_id'][0])
@@ -123,7 +123,7 @@ class GameAPI(object):
 
 
 def create_runner(port):
-    settings = pickle.loads(os.environ['settings'])
+    settings = pickle.loads(os.environ['settings'].encode("utf-8"))
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
     worker_manager_class = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
 

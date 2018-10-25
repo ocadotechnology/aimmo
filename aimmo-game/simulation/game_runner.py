@@ -1,9 +1,9 @@
 import time
 import threading
 
-from django_communicator import DjangoCommunicator
-from simulation_runner import ConcurrentSimulationRunner
-from avatar.avatar_manager import AvatarManager
+from simulation.django_communicator import DjangoCommunicator
+from simulation.simulation_runner import ConcurrentSimulationRunner
+from simulation.avatar.avatar_manager import AvatarManager
 
 TURN_TIME = 2
 
