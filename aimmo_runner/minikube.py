@@ -163,7 +163,7 @@ def start_game_creator():
         template['network_mode'] = 'host'
     else:
         template['environment']['LOCALHOST_IP'] = 'host.docker.internal'
-    
+
     template['environment']['CONTAINER_TEMPLATE'] = json.dumps(template)
     kwargs = template.copy()
     client.containers.run(

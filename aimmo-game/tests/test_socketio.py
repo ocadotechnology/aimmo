@@ -36,7 +36,7 @@ class TestSocketIO(TestCase):
                                          string.ascii_lowercase +
                                          string.digits)
                            for _ in range(19))
-    
+
     def tearDown(self):
         del os.environ['GAME_ID']
 

@@ -150,6 +150,6 @@ if __name__ == '__main__':
                                      socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
 
     port = int(os.environ['EXTERNAL_PORT'])
-    
+
     run_game(port)
     eventlet.wsgi.server(eventlet.listen((host, port)), socket_app, debug=True)
