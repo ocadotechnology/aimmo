@@ -41,6 +41,7 @@ class LocalWorkerManager(WorkerManager):
             image='ocadotechnology/aimmo-game-worker:test',
             publish_all_ports=True,
             environment=env,
+            network_mode='host',
             detach=True,
             ports={"{}/tcp".format(port): port})
         self.workers[player_id] = container
