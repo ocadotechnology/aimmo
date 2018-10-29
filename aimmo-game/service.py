@@ -123,10 +123,9 @@ class GameAPI(object):
 
 
 def create_runner(port):
-    settings = pickle.loads(os.environ['settings'].encode("utf-8"))
+    settings = pickle.loads(os.environ['settings'].encode("ascii"))
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
     worker_manager_class = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
-
     return GameRunner(worker_manager_class=worker_manager_class,
                       game_state_generator=generator.get_game_state,
                       django_api_url=os.environ.get('GAME_API_URL', 'http://localhost:8000/aimmo/api/games/'),
@@ -135,6 +134,7 @@ def create_runner(port):
 
 def run_game(port):
     game_runner = create_runner(port)
+    LOGGER.info("HI")
     game_api = GameAPI(game_state=game_runner.game_state,
                        worker_manager=game_runner.worker_manager)
     game_runner.set_end_turn_callback(game_api.send_updates)
@@ -147,5 +147,6 @@ if __name__ == '__main__':
     socket_app = socketio.Middleware(socketio_server, flask_app,
                                      socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
 
+    LOGGER.info("PORT PORT BABY: {}".format(port))
     run_game(port)
     eventlet.wsgi.server(eventlet.listen((host, port)), socket_app, debug=False)
