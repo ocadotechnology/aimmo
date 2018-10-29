@@ -138,12 +138,14 @@ def build_docker_images(minikube=None):
             encoding='gzip'
         )
 
+
 def delete_containers():
     client = docker.from_env(version='auto')
 
     containers = [container for container in client.containers.list() if container.name.startswith('aimmo')]
     for container in containers:
         container.remove(force=True)
+
 
 def start_game_creator():
     os_name = platform.system()

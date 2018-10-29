@@ -74,7 +74,6 @@ class WorkerManager(object):
 
     def add_new_worker(self, player_id):
         worker_url_base = self.create_worker(player_id)
-        LOGGER.info("WORKER_URL for player {}: {}".format(player_id, worker_url_base))
         self.player_id_to_worker[player_id] = Worker('{}/turn/'.format(worker_url_base))
 
     def _parallel_map(self, func, iterable_args):

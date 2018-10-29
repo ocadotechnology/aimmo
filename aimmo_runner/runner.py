@@ -72,8 +72,6 @@ def run(use_minikube, server_wait=True, capture_output=False, test_env=False):
         minikube.build_docker_images()
         minikube.start_game_creator()
         time.sleep(2)
-        # game = run_command_async(['python', _SERVICE_PY, '127.0.0.1', '5000'], capture_output=capture_output)
-        # PROCESSES.append(game)
 
     os.environ['NODE_ENV'] = 'development' if settings.DEBUG else 'production'
     server = run_command_async(['python', _MANAGE_PY, 'runserver'] + server_args, capture_output=capture_output)

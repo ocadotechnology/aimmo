@@ -149,7 +149,6 @@ if __name__ == '__main__':
     socket_app = socketio.Middleware(socketio_server, flask_app,
                                      socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
 
-
     port = int(os.environ['EXTERNAL_PORT'])
     
     run_game(port)
