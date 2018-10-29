@@ -12,11 +12,13 @@ class GameDataAdmin(admin.ModelAdmin):
 
 
 class AvatarDataAdmin(admin.ModelAdmin):
-    list_display = ['id', 'owner_name']
-
+    list_display = ['id', 'owner_name', 'game_name']
 
     def owner_name(self, obj):
         return obj.owner
+
+    def game_name(self, obj):
+        return obj.game
 
 
 admin.site.register(Game, GameDataAdmin)
