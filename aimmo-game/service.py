@@ -147,6 +147,5 @@ if __name__ == '__main__':
     socket_app = socketio.Middleware(socketio_server, flask_app,
                                      socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
 
-    LOGGER.info("PORT PORT BABY: {}".format(port))
     run_game(port)
     eventlet.wsgi.server(eventlet.listen((host, port)), socket_app, debug=False)

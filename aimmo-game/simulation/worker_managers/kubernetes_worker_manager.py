@@ -19,11 +19,9 @@ class KubernetesWorkerManager(WorkerManager):
 
     def __init__(self, *args, **kwargs):
         config.load_incluster_config()
-        LOGGER.info("I HAVE CLUSTERRRRRR!")
         #WHY HAVE YOU STOPPED WORKING!!!!
         self.api = client.CoreV1Api()
         #WHY HAVE YOU STOPPED WORKING!!!!
-        LOGGER.info("MUCH API, SUCH KUBE, VERY WOW")
         self.game_id = os.environ['GAME_ID']
         self.game_url = os.environ['GAME_URL']
         self.pod_name = os.environ['POD_NAME']
