@@ -71,7 +71,10 @@ def start_game_creator():
     template = {
         'detach': True,
         'tty': True,
-        'environment': {},
+        'environment': {
+            'FLASK_ENV': 'development',
+            'WORKER_MANAGER': 'local'
+        },
         'volumes': {
             '/var/run/docker.sock': {'bind': '/var/run/docker.sock', 'mode': 'rw'}
         }
