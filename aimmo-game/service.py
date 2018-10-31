@@ -10,8 +10,6 @@ import eventlet
 import flask
 import socketio
 from flask_cors import CORS
-from werkzeug.wsgi import DispatcherMiddleware
-from prometheus_client import make_wsgi_app, Summary
 
 from simulation import map_generator
 from simulation.worker_managers import WORKER_MANAGERS
