@@ -54,7 +54,7 @@ class WorkerManager(object):
             [thread.start() for thread in threads]
             time.sleep(duration)
 
-        timed_process_for_worker_turn_requests(2)
+        timed_process_for_worker_turn_requests(30)
 
     def get_player_id_to_serialised_actions(self):
         return {player_id: self.player_id_to_worker[player_id].serialised_action for player_id in self.player_id_to_worker}
