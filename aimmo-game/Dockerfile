@@ -4,12 +4,14 @@ MAINTAINER code@ocado.com
 
 ENV WORKER_MANAGER=kubernetes
 
-COPY . .
-
 RUN apk add --no-cache gcc musl-dev python-dev libffi-dev openssl-dev
 
 RUN pip install pipenv
 
+COPY ["Pipfile", "Pipfile.lock", "setup.py", "./"]
+
 RUN pipenv install --system --deploy
 
-CMD ["python", "./service.py", "0.0.0.0", "5000"]
+COPY . .
+
+CMD ["python", "./service.py", "0.0.0.0"]

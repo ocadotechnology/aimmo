@@ -4,8 +4,10 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-kubernetes = "*"
 aimmo-game = {editable = true, path = "."}
+docker = "*"
+kubernetes = "*"
+prometheus-client = "*"
 
 [requires]
 python_version = "3.7"

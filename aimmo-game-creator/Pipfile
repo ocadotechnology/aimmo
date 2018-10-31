@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 kubernetes = "*"
 aimmo-game-creator = {editable = true, path = "."}
+docker = "*"
 
 [requires]
 python_version = "3.7"
