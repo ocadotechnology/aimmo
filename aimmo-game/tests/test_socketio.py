@@ -42,7 +42,7 @@ class TestSocketIO(TestCase):
 
     @mock.patch('docker.from_env')
     @mock.patch('service.flask_app')
-    def create_game_api(self, flask_app, api_client):
+    def create_game_api(self, flask_app, docker_from_env):
         game_runner = GameRunner(worker_manager_class=LocalWorkerManager,
                                  game_state_generator=lambda avatar_manager: MockGameState(),
                                  django_api_url='http://test',

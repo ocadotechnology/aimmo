@@ -65,6 +65,7 @@ def delete_containers():
     for container in containers:
         container.remove(force=True)
 
+
 def start_game_creator():
     os_name = platform.system()
     client = docker.from_env(version='auto')

@@ -145,18 +145,23 @@ class LocalGameManager(GameManager):
         super(LocalGameManager, self).__init__(*args, **kwargs)
 
     def create_game(self, game_id, game_data):
-        assert(game_id not in self.games)
-        client = docker.from_env()
+        def setup_container_environment_variables(template, game_data):
+            template['environment'].update(game_data)
+            template['environment']['GAME_ID'] = game_id
+            template['environment']['PYTHONUNBUFFERED'] = 0
+            template['environment']['WORKER_MANAGER'] = 'local'
+            template['environment']['EXTERNAL_PORT'] = port
+            template['environment']['CONTAINER_TEMPLATE'] = os.environ['CONTAINER_TEMPLATE']
+
+        assert (game_id not in self.games)
         game_data = {str(k): str(v) for k, v in game_data.items()}
         port = str(6001 + int(game_id) * 1000)
+        client = docker.from_env()
+
         template = json.loads(os.environ.get('CONTAINER_TEMPLATE', '{}'))
-        template['environment'].update(game_data)
-        template['environment']['GAME_ID'] = game_id
-        template['environment']['PYTHONUNBUFFERED'] = 0
-        template['environment']['WORKER_MANAGER'] = 'local'
-        template['environment']['EXTERNAL_PORT'] = port
-        template['environment']['CONTAINER_TEMPLATE'] = os.environ['CONTAINER_TEMPLATE']
+        setup_container_environment_variables(template, game_data)
         template['ports'] = {"{}/tcp".format(port): ('0.0.0.0', port)}
+
         self.games[game_id] = client.containers.run(
             name="aimmo-game-{}".format(game_id),
             image='ocadotechnology/aimmo-game:test',
