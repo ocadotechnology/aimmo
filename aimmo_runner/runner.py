@@ -5,6 +5,7 @@ import sys
 import time
 from django.conf import settings
 from shell_api import log, run_command, run_command_async
+import docker_scripts
 
 sys.path.append("/home/travis/build/ocadotechnology/aimmo")
 
@@ -67,9 +68,10 @@ def run(use_minikube, server_wait=True, capture_output=False, test_env=False):
         os.environ['AIMMO_MODE'] = 'minikube'
     else:
         time.sleep(2)
-        game = run_command_async(['python', _SERVICE_PY, '127.0.0.1', '5000'], capture_output=capture_output)
-        PROCESSES.append(game)
         os.environ['AIMMO_MODE'] = 'threads'
+        docker_scripts.delete_containers()
+        docker_scripts.build_docker_images()
+        docker_scripts.start_game_creator()
 
     os.environ['NODE_ENV'] = 'development' if settings.DEBUG else 'production'
     server = run_command_async(['python', _MANAGE_PY, 'runserver'] + server_args, capture_output=capture_output)

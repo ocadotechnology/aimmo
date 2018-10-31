@@ -1,5 +1,6 @@
 import os
 import logging
+import mock
 import unittest
 from django.test.client import Client
 import psutil
@@ -33,7 +34,8 @@ class TestIntegration(unittest.TestCase):
 
             parent.terminate()
 
-    def test_superuser_authentication(self):
+    @mock.patch('docker.from_env')
+    def test_superuser_authentication(self, docker_from_env):
         """
         A test that will run on a clean & empty database, create all migrations, new
         browser session and passes a CSRF token with the POST input request.

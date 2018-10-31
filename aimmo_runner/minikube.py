@@ -3,14 +3,13 @@ from __future__ import print_function
 
 from subprocess import CalledProcessError
 
-import docker
 import kubernetes
 import os
-import re
 import platform
 import yaml
 import socket
 from shell_api import (run_command, create_test_bin, BASE_DIR)
+from docker_scripts import build_docker_images
 
 MINIKUBE_EXECUTABLE = "minikube"
 
@@ -81,59 +80,6 @@ def start_cluster(minikube):
         print('Cluster already running')
     except CalledProcessError:
         run_command([minikube, 'start', '--memory=2048', '--cpus=2'])
-
-
-def create_docker_client(raw_env_settings):
-    """
-    Creates a docker client using the python SDK.
-    :param raw_env_settings: String that is returned by the 'minikube docker-env' command.
-    :return:
-    """
-    if vm_none_enabled(raw_env_settings):
-        matches = re.finditer(r'^export (.+)="(.+)"$', raw_env_settings, re.MULTILINE)
-        env_variables = dict([(m.group(1), m.group(2)) for m in matches])
-
-        return docker.from_env(
-            environment=env_variables,
-            version='auto',
-        )
-    else:
-        # VM driver is set
-        return docker.from_env(
-            version='auto'
-        )
-
-
-def vm_none_enabled(raw_env_settings):
-    """
-    Check if the VM driver is enabled or not. This is important to see where
-    the environment variables live.
-    :param raw_env_settings: String that is returned by the 'minikube docker-env' command.
-    :return: Boolean value indicating if enabled or not.
-    """
-    return False if 'driver does not support' in raw_env_settings else True
-
-
-def build_docker_images(minikube):
-    """
-    Finds environment settings and builds docker images for each directory.
-    :param minikube: Executable command to run in terminal.
-    """
-    print('Building docker images')
-    raw_env_settings = run_command([minikube, 'docker-env', '--shell="bash"'], True)
-
-    client = create_docker_client(raw_env_settings)
-
-    directories = ('aimmo-game', 'aimmo-game-creator', 'aimmo-game-worker')
-    for dir in directories:
-        path = os.path.join(BASE_DIR, dir)
-        tag = 'ocadotechnology/%s:test' % dir
-        print("Building %s..." % tag)
-        client.images.build(
-            path=path,
-            tag=tag,
-            encoding='gzip'
-        )
 
 
 def delete_components(api_instance, extensions_api_instance):

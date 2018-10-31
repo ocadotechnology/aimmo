@@ -8,6 +8,8 @@ import requests
 from eventlet.greenpool import GreenPool
 from eventlet.semaphore import Semaphore
 import kubernetes
+import docker
+import json
 
 
 LOGGER = logging.getLogger(__name__)
@@ -131,7 +133,7 @@ class GameManager(object):
 class LocalGameManager(GameManager):
     """Manages games running on local host"""
 
-    host = "127.0.0.1"
+    host = os.environ.get('LOCALHOST_IP', '127.0.0.1')
     game_directory = os.path.join(
         os.path.dirname(__file__),
         "../aimmo-game/",
@@ -143,19 +145,27 @@ class LocalGameManager(GameManager):
         super(LocalGameManager, self).__init__(*args, **kwargs)
 
     def create_game(self, game_id, game_data):
-        assert(game_id not in self.games)
-        port = str(6001 + int(game_id) * 1000)
-        process_args = [
-            "python",
-            self.game_service_path,
-            self.host,
-            port,
-        ]
-        env = os.environ.copy()
+        def setup_container_environment_variables(template, game_data):
+            template['environment'].update(game_data)
+            template['environment']['GAME_ID'] = game_id
+            template['environment']['PYTHONUNBUFFERED'] = 0
+            template['environment']['WORKER_MANAGER'] = 'local'
+            template['environment']['EXTERNAL_PORT'] = port
+            template['environment']['CONTAINER_TEMPLATE'] = os.environ['CONTAINER_TEMPLATE']
+
+        assert (game_id not in self.games)
         game_data = {str(k): str(v) for k, v in game_data.items()}
-        env.update(game_data)
-        env['GAME_ID'] = game_id
-        self.games[game_id] = subprocess.Popen(process_args, cwd=self.game_directory, env=env)
+        port = str(6001 + int(game_id) * 1000)
+        client = docker.from_env()
+
+        template = json.loads(os.environ.get('CONTAINER_TEMPLATE', '{}'))
+        setup_container_environment_variables(template, game_data)
+        template['ports'] = {"{}/tcp".format(port): ('0.0.0.0', port)}
+
+        self.games[game_id] = client.containers.run(
+            name="aimmo-game-{}".format(game_id),
+            image='ocadotechnology/aimmo-game:test',
+            **template)
         game_url = "http://{}:{}".format(self.host, port)
         LOGGER.info("Game started - {}, listening at {}".format(game_id, game_url))
 
@@ -233,6 +243,7 @@ class KubernetesGameManager(GameManager):
         environment_variables['GAME_URL'] = 'http://game-{}'.format(game_id)
         environment_variables['IMAGE_SUFFIX'] = os.environ.get('IMAGE_SUFFIX', 'latest')
         environment_variables['K8S_NAMESPACE'] = K8S_NAMESPACE
+        environment_variables['WORKER_MANAGER'] = 'kubernetes'
 
         rc = self._make_rc(environment_variables, game_id)
         self.api.create_namespaced_replication_controller(K8S_NAMESPACE, rc)

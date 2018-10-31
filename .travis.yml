@@ -38,6 +38,7 @@ jobs:
       install:
         - pip install .
         - pip install coveralls
+        - pip install docker
         - pushd game_frontend
         - yarn
         - node djangoBundler.js
