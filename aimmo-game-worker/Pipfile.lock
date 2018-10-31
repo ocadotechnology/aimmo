@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "45f2773ac44b5e8c57b21ca430038217b029ced80066cfcf5d01f679a7ebabe7"
+            "sha256": "7f451a26e5b34d4adb1544a6d796ea0a66cce45e7d1c0f9cc29063e34319becb"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -22,10 +22,6 @@
                 "sha256:bf79392b8e9e5e82aa6acac3835ba58bbac0ccf7e15befa215863f83d5f6a007"
             ],
             "version": "==1.2.0"
-        },
-        "aimmo-game-creator": {
-            "editable": true,
-            "path": "."
         },
         "aimmo-game-worker": {
             "editable": true,
