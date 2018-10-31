@@ -4,7 +4,7 @@ MAINTAINER code@ocado.com
 
 ENV WORKER_MANAGER=kubernetes
 
-RUN apk add --no-cache gcc musl-dev python-dev libffi-dev openssl-dev bash curl
+RUN apk add --no-cache gcc musl-dev python-dev libffi-dev openssl-dev
 
 RUN pip install pipenv
 
