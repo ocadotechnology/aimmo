@@ -29,6 +29,9 @@ class Cell(object):
 
     def __hash__(self):
         return hash(self.location)
+    
+    def __lt__(self, other):
+        return True
 
     @property
     def moves(self):

@@ -114,6 +114,11 @@ class TestMainGenerator(_BaseGeneratorTestCase):
         habitable_edge_cells = [cell for cell in edge_cells if cell.habitable]
 
         self.assertGreaterEqual(len(habitable_edge_cells), 1)
+    
+    def test_shortest_path(self):
+        m = self.get_map(START_WIDTH=4)
+        print("hello map ⬇️")
+        print(m)
 
     def test_not_complete(self):
         game_state = self.get_game_state()

@@ -2,6 +2,7 @@ import abc
 import heapq
 import logging
 import random
+from queue import PriorityQueue
 from itertools import tee
 
 from six.moves import zip, range
@@ -92,11 +93,11 @@ def get_shortest_path_between(source_cell, destination_cell, world_map):
         y_distance = abs(branch_tip_location.y - destination_cell.location.y)
         return x_distance + y_distance + len(this_branch)
 
-    branches = PriorityQueue(key=manhattan_distance_to_destination_cell,
+    branches = PriorityQueuef(key=manhattan_distance_to_destination_cell,
                              init_items=[[source_cell]])
     visited_cells = set()
 
-    while branches:
+    while not branches.queue.empty():
         branch = branches.pop()
 
         for cell in get_adjacent_habitable_cells(branch[-1], world_map):
@@ -110,6 +111,7 @@ def get_shortest_path_between(source_cell, destination_cell, world_map):
             if cell == destination_cell:
                 return new_branch
 
+            print(f"branch to push: {new_branch}")
             branches.push(new_branch)
 
     return None
@@ -142,6 +144,7 @@ def get_random_edge_index(world_map, rng=random):
 
 
 def get_adjacent_habitable_cells(cell, world_map):
+    print(cell)
     adjacent_locations = [cell.location + d for d in ALL_DIRECTIONS]
     adjacent_locations = [location for location in adjacent_locations
                           if world_map.is_on_map(location)]
@@ -150,25 +153,34 @@ def get_adjacent_habitable_cells(cell, world_map):
     return [c for c in adjacent_cells if c.habitable]
 
 
-class PriorityQueue(object):
+class PriorityQueuef(object):
     def __init__(self, key, init_items=tuple()):
         self.key = key
         self.heap = [self._build_tuple(i) for i in init_items]
-        heapq.heapify(self.heap)
+        self.queue = PriorityQueue()
+        for item in self.heap:
+            print(f"item in heap: {item}")
+            self.queue.put(item, block=True)
+        # heapq.heapify(self.heap)
 
     def _build_tuple(self, item):
         return self.key(item), item
 
     def push(self, item):
         to_push = self._build_tuple(item)
-        heapq.heappush(self.heap, to_push)
+        # heapq.heappush(self.heap, to_push)
+        print(f"to_push: {to_push}")
+        self.queue.put(to_push, block=True)
 
     def pop(self):
-        _, item = heapq.heappop(self.heap)
+        _, item = self.queue.get(block=True)
+        # _, item = heapq.heappop(self.heap)
+        print(f"item in pop: {item}")
         return item
 
     def __len__(self):
-        return len(self.heap)
+        # return len(self.heap)
+        return self.queue.qsize()
 
 
 class _BaseLevelGenerator(_BaseGenerator):
