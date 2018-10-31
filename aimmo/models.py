@@ -52,6 +52,9 @@ class Game(models.Model):
     def is_active(self):
         return not self.completed
 
+    def __str__(self):
+        return self.name
+
     def can_user_play(self, user):
         return self.public or user in self.can_play.all()
 
