@@ -144,8 +144,7 @@ def run_game(port):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     host, port = sys.argv[1], int(sys.argv[2])
-    app_dispatch = DispatcherMiddleware(flask_app, {'/metrics': make_wsgi_app()})
-    socket_app = socketio.Middleware(socketio_server, app_dispatch,
+    socket_app = socketio.Middleware(socketio_server, flask_app,
                                      socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
     run_game(port)
     eventlet.wsgi.server(eventlet.listen((host, port)), socket_app, debug=False)
