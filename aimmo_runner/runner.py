@@ -67,7 +67,7 @@ def run(use_minikube, server_wait=True, capture_output=False, test_env=False):
         server_args.append('0.0.0.0:8000')
         os.environ['AIMMO_MODE'] = 'minikube'
     else:
-        from aimmo_runner import minikube
+        time.sleep(2)
         os.environ['AIMMO_MODE'] = 'threads'
         docker_scripts.delete_containers()
         docker_scripts.build_docker_images()
