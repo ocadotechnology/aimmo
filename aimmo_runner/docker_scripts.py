@@ -7,8 +7,8 @@ import os
 
 def vm_none_enabled(raw_env_settings):
     """
-    Check if the VM driver is enabled or not. This is important to see where
-    the environment variables live.
+    Check if the VM driver is enabled or not. This is important to see where the environment variables live.
+    
     :param raw_env_settings: String that is returned by the 'minikube docker-env' command.
     :return: Boolean value indicating if enabled or not.
     """
@@ -16,7 +16,8 @@ def vm_none_enabled(raw_env_settings):
 
 def create_docker_client(raw_env_settings):
     """
-    Creates a docker client using the python SDK.
+    Create a docker client using the python SDK.
+
     :param raw_env_settings: String that is returned by the 'minikube docker-env' command.
     :return:
     """
@@ -36,7 +37,8 @@ def create_docker_client(raw_env_settings):
 
 def build_docker_images(minikube=None):
     """
-    Finds environment settings and builds docker images for each directory.
+    Find environment settings and builds docker images for each directory.
+
     :param minikube: Executable command to run in terminal.
     """
     print('Building docker images')
@@ -59,14 +61,16 @@ def build_docker_images(minikube=None):
 
 
 def delete_containers():
+    """Delete any containers starting with 'aimmo'."""
     client = docker.from_env(version='auto')
 
-    containers = [container for container in client.containers.list() if container.name.startswith('aimmo')]
+    containers = [container for container in client.containers.list(all=True) if container.name.startswith('aimmo')]
     for container in containers:
         container.remove(force=True)
 
 
 def start_game_creator():
+    """Start an aimmo-game-creator docker container."""
     os_name = platform.system()
     client = docker.from_env(version='auto')
     template = {
