@@ -4,8 +4,8 @@ import string
 import mock
 
 import service
-from simulation.worker_managers.local_worker_manager import LocalWorkerManager
-from simulation.game_runner import GameRunner
+from ..simulation.worker_managers.local_worker_manager import LocalWorkerManager
+from ..simulation.game_runner import GameRunner
 
 
 class MockGameState(object):

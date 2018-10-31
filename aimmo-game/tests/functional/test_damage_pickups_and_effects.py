@@ -4,8 +4,8 @@ import hypothesis.strategies as st
 import math
 
 from mock_world import MockWorld
-from simulation.location import Location
-from simulation.pickups import DamageBoostPickup, DAMAGE_BOOST_DEFAULT
+from ..simulation.location import Location
+from ..simulation.pickups import DamageBoostPickup, DAMAGE_BOOST_DEFAULT
 
 
 class TestDamagePickupsAndEffects(TestCase):

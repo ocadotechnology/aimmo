@@ -2,12 +2,12 @@ from __future__ import absolute_import
 
 import unittest
 
-from simulation import action
-from simulation import event
-from simulation.avatar.avatar_manager import AvatarManager
-from simulation.direction import EAST
-from simulation.game_state import GameState
-from simulation.location import Location
+from ...simulation import action
+from ...simulation import event
+from ...simulation.avatar.avatar_manager import AvatarManager
+from ...simulation.direction import EAST
+from ...simulation.game_state import GameState
+from ...simulation.location import Location
 from .dummy_avatar import MoveDummy
 from .maps import InfiniteMap, EmptyMap, AvatarMap
 

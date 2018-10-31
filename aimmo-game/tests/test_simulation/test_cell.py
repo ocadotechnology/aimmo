@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from simulation.cell import Cell
-from tests.test_simulation.test_world_map import Serialiser
+from ...simulation.cell import Cell
+from ...tests.test_simulation.test_world_map import Serialiser
 
 
 class TestCell(TestCase):

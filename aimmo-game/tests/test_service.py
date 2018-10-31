@@ -1,12 +1,12 @@
 from unittest import TestCase
 
 import service
-from simulation.avatar.avatar_manager import AvatarManager
+from ..simulation.avatar.avatar_manager import AvatarManager
 from .test_simulation.maps import MockPickup, MockCell
 from .test_simulation.dummy_avatar import MoveEastDummy
-from simulation.location import Location
-from simulation.game_state import GameState
-from simulation.world_map import WorldMap
+from ..simulation.location import Location
+from ..simulation.game_state import GameState
+from ..simulation.world_map import WorldMap
 
 
 class TestService(TestCase):

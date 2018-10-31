@@ -1,4 +1,4 @@
-from simulation.worker_managers.worker_manager import WorkerManager
+from ...simulation.worker_managers.worker_manager import WorkerManager
 
 
 class ConcreteWorkerManager(WorkerManager):

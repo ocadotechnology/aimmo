@@ -1,7 +1,7 @@
 import random
 
-from simulation import map_generator
-from simulation.simulation_runner import SequentialSimulationRunner
+from ..simulation import map_generator
+from ..simulation.simulation_runner import SequentialSimulationRunner
 from tests.test_simulation.mock_communicator import MockCommunicator
 from tests.test_simulation.dummy_avatar import DummyAvatarManager, MoveEastDummy
 

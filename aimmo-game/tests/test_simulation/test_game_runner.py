@@ -5,9 +5,9 @@ import mock
 
 from .mock_communicator import MockCommunicator
 from .maps import InfiniteMap
-from simulation.avatar.avatar_manager import AvatarManager
-from simulation.game_state import GameState
-from simulation.game_runner import GameRunner
+from ...simulation.avatar.avatar_manager import AvatarManager
+from ...simulation.game_state import GameState
+from ...simulation.game_runner import GameRunner
 from .concrete_worker_manager import ConcreteWorkerManager
 
 

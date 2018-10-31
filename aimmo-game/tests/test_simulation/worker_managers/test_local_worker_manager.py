@@ -3,7 +3,7 @@ import os
 from unittest import TestCase
 from urlparse import urlparse
 
-from simulation.worker_managers.local_worker_manager import LocalWorkerManager
+from ....simulation.worker_managers.local_worker_manager import LocalWorkerManager
 
 
 class TestLocalWorkerManager(TestCase):
