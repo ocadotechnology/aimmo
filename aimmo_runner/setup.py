@@ -19,7 +19,7 @@ setup(
         'hypothesis',
         'flask-cors',
         'psutil',
-        'docker',
+        'docker >= 3.5, < 3.6',
         'kubernetes == 5.0.0',
     ],
     zip_safe=False,
