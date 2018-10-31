@@ -5,14 +5,16 @@ from shell_api import (run_command, create_test_bin, BASE_DIR)
 import json
 import os
 
+
 def vm_none_enabled(raw_env_settings):
     """
     Check if the VM driver is enabled or not. This is important to see where the environment variables live.
-    
+
     :param raw_env_settings: String that is returned by the 'minikube docker-env' command.
     :return: Boolean value indicating if enabled or not.
     """
     return False if 'driver does not support' in raw_env_settings else True
+
 
 def create_docker_client(raw_env_settings):
     """
@@ -34,6 +36,7 @@ def create_docker_client(raw_env_settings):
         return docker.from_env(
             version='auto'
         )
+
 
 def build_docker_images(minikube=None):
     """
