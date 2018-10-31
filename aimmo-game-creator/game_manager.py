@@ -133,7 +133,7 @@ class GameManager(object):
 class LocalGameManager(GameManager):
     """Manages games running on local host"""
 
-    host = os.environ.get('LOCALHOST_IP', '0.0.0.0')
+    host = os.environ.get('LOCALHOST_IP', '127.0.0.1')
     game_directory = os.path.join(
         os.path.dirname(__file__),
         "../aimmo-game/",
@@ -161,7 +161,6 @@ class LocalGameManager(GameManager):
             name="aimmo-game-{}".format(game_id),
             image='ocadotechnology/aimmo-game:test',
             **template)
-        # self.games[game_id] = subprocess.Popen(process_args, cwd=self.game_directory, env=env)
         game_url = "http://{}:{}".format(self.host, port)
         LOGGER.info("Game started - {}, listening at {}".format(game_id, game_url))
 

@@ -14,4 +14,4 @@ RUN pipenv install --system --deploy
 
 COPY . .
 
-CMD ["python", "-u", "./service.py", "0.0.0.0"]
+CMD ["python", "./service.py", "0.0.0.0"]
