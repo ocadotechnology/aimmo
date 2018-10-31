@@ -4,9 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-kubernetes = "*"
 aimmo-game = {editable = true, path = "."}
-docker = ">= 3.5, < 3.6"
+docker = "*"
+kubernetes = "*"
 
 [requires]
 python_version = "2.7"
