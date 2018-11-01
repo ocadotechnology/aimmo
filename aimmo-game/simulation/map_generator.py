@@ -2,8 +2,10 @@ import abc
 import heapq
 import logging
 import random
-from queue import PriorityQueue
 from itertools import tee
+from queue import PriorityQueue
+from dataclasses import dataclass
+from typing import Any
 
 from six.moves import zip, range
 
@@ -152,6 +154,13 @@ def get_adjacent_habitable_cells(cell, world_map):
     adjacent_cells = [world_map.get_cell(location) for location in adjacent_locations]
     return [c for c in adjacent_cells if c.habitable]
 
+@dataclass
+class PriorityEntry(object):
+    priority: int
+    value: Any
+
+    def __lt__(self, other):
+        return self.priority < other.priority
 
 class PriorityQueuef(object):
     def __init__(self, key, init_items=tuple()):
@@ -164,7 +173,8 @@ class PriorityQueuef(object):
         # heapq.heapify(self.heap)
 
     def _build_tuple(self, item):
-        return self.key(item), item
+        return PriorityEntry(self.key(item), item)
+        # return self.key(item), item
 
     def push(self, item):
         to_push = self._build_tuple(item)
@@ -173,10 +183,10 @@ class PriorityQueuef(object):
         self.queue.put(to_push, block=True)
 
     def pop(self):
-        _, item = self.queue.get(block=True)
+        entry: PriorityEntry = self.queue.get(block=True)
         # _, item = heapq.heappop(self.heap)
-        print(f"item in pop: {item}")
-        return item
+        print(f"item in pop: {entry.value}")
+        return entry.value
 
     def __len__(self):
         # return len(self.heap)
