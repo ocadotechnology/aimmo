@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import abc
 from unittest import TestCase
 
-from ...simulation import effects
+from simulation import effects
 from .dummy_avatar import DummyAvatar
 
 

@@ -4,10 +4,10 @@ from unittest import TestCase
 from hypothesis import given
 import hypothesis.strategies as st
 
-from mock_world import MockWorld
+from .mock_world import MockWorld
 
-from ..simulation.location import Location
-from ..simulation.pickups import (
+from simulation.location import Location
+from simulation.pickups import (
     HealthPickup, AVATAR_HEALTH_MAX, HEALTH_RESTORE_DEFAULT, HEALTH_RESTORE_MAX
 )
 

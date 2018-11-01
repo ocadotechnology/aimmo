@@ -4,9 +4,9 @@ import json
 from unittest import TestCase
 from httmock import HTTMock
 
-from ...simulation.avatar import avatar_wrapper
-from ...simulation.location import Location
-from ...simulation.worker import Worker
+from simulation.avatar import avatar_wrapper
+from simulation.location import Location
+from simulation.worker import Worker
 
 class MockEffect(object):
     def __init__(self, avatar):
@@ -84,7 +84,7 @@ class TestAvatarWrapper(TestCase):
 
     def add_effects(self, num=2):
         effects = []
-        for _ in xrange(num):
+        for _ in range(num):
             effect = MockEffect(self.avatar)
             self.avatar.effects.add(effect)
             effects.append(effect)

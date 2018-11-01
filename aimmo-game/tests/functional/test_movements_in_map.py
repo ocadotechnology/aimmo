@@ -1,9 +1,9 @@
 from unittest import TestCase
 
-from mock_world import MockWorld
-from ..simulation.location import Location
-from ..simulation import map_generator
-from ..simulation.simulation_runner import ConcurrentSimulationRunner
+from .mock_world import MockWorld
+from simulation.location import Location
+from simulation import map_generator
+from simulation.simulation_runner import ConcurrentSimulationRunner
 from tests.test_simulation.dummy_avatar import (
     MoveEastDummy, MoveWestDummy, MoveNorthDummy, MoveSouthDummy, WaitDummy, DeadDummy
 )

@@ -2,10 +2,10 @@ from __future__ import absolute_import
 
 import unittest
 
-from ...simulation.avatar.avatar_appearance import AvatarAppearance
-from ...simulation.game_state import GameState
-from ...simulation.location import Location
-from ...simulation.simulation_runner import ConcurrentSimulationRunner
+from simulation.avatar.avatar_appearance import AvatarAppearance
+from simulation.game_state import GameState
+from simulation.location import Location
+from simulation.simulation_runner import ConcurrentSimulationRunner
 
 from .dummy_avatar import (DummyAvatarManager, MoveEastDummy, MoveNorthDummy,
                            MoveSouthDummy, MoveWestDummy, WaitDummy, DeadDummy)

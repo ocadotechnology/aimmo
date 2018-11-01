@@ -2,10 +2,10 @@
 
 from collections import defaultdict
 
-from ...simulation.location import Location
-from ...simulation.cell import Cell
-from ...simulation.world_map import WorldMap
-from ...simulation.game_logic import SpawnLocationFinder
+from simulation.location import Location
+from simulation.cell import Cell
+from simulation.world_map import WorldMap
+from simulation.game_logic import SpawnLocationFinder
 
 
 class MockPickup(object):

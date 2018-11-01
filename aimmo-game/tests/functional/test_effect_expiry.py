@@ -1,10 +1,10 @@
 from unittest import TestCase
 
-from mock_world import MockWorld
+from .mock_world import MockWorld
 
-from ..simulation.location import Location
-from ..simulation.pickups import DamageBoostPickup, InvulnerabilityPickup
-from ..simulation.effects import INVULNERABILITY_RESISTANCE
+from simulation.location import Location
+from simulation.pickups import DamageBoostPickup, InvulnerabilityPickup
+from simulation.effects import INVULNERABILITY_RESISTANCE
 
 
 class TestEffectExpiry(TestCase):

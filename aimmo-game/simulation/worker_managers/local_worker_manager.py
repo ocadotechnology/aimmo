@@ -31,7 +31,13 @@ class LocalWorkerManager(WorkerManager):
         assert(player_id not in self.workers)
         port = next(self.port_counter)
 
-        template = json.loads(os.environ.get('CONTAINER_TEMPLATE', '{}'))
+        template_string = os.environ.get('CONTAINER_TEMPLATE')
+        if template_string:
+            template = json.loads(template_string)
+        else:
+            template = {
+                'environment': {}
+            } 
         data_url = 'http://{}:{}/player/{}'.format(self.host, self.port, player_id)
         template['environment']['DATA_URL'] = data_url
         template['environment']['PORT'] = port

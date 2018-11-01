@@ -2,9 +2,9 @@ import os
 import mock
 
 from unittest import TestCase
-from urlparse import urlparse
+from urllib.parse import urlparse
 
-from ....simulation.worker_managers.local_worker_manager import LocalWorkerManager
+from simulation.worker_managers.local_worker_manager import LocalWorkerManager
 
 
 class TestLocalWorkerManager(TestCase):

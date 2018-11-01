@@ -1,12 +1,12 @@
 from unittest import TestCase
 
 import service
-from ..simulation.avatar.avatar_manager import AvatarManager
+from simulation.avatar.avatar_manager import AvatarManager
 from .test_simulation.maps import MockPickup, MockCell
 from .test_simulation.dummy_avatar import MoveEastDummy
-from ..simulation.location import Location
-from ..simulation.game_state import GameState
-from ..simulation.world_map import WorldMap
+from simulation.location import Location
+from simulation.game_state import GameState
+from simulation.world_map import WorldMap
 
 
 class TestService(TestCase):
@@ -50,7 +50,7 @@ class TestService(TestCase):
         service.flask_app.config['TESTING'] = True
         self.app = service.flask_app.test_client()
         response = self.app.get('/game-1')
-        self.assertEqual(response.data, 'HEALTHY')
+        self.assertEqual(response.data, b'HEALTHY')
 
     def test_correct_json_player_dictionary(self):
         """

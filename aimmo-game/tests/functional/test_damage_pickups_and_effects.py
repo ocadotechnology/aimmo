@@ -1,11 +1,11 @@
 from unittest import TestCase
 from hypothesis import given, assume
-import hypothesis.strategies as st
+from hypothesis import strategies as st
 import math
 
-from mock_world import MockWorld
-from ..simulation.location import Location
-from ..simulation.pickups import DamageBoostPickup, DAMAGE_BOOST_DEFAULT
+from .mock_world import MockWorld
+from simulation.location import Location
+from simulation.pickups import DamageBoostPickup, DAMAGE_BOOST_DEFAULT
 
 
 class TestDamagePickupsAndEffects(TestCase):

@@ -16,7 +16,7 @@ class TestWorldMap(TestCase):
             'generates_score': False,
             'avatar': None,
             'pickup': None,
-        } for x in xrange(-columns / 2 + 1, 1 + columns / 2) for y in xrange(-rows / 2 + 1, 1 + rows / 2)]
+        } for x in range(-columns / 2 + 1, 1 + columns / 2) for y in range(-rows / 2 + 1, 1 + rows / 2)]
         return cells
 
     def assertGridSize(self, map, expected_rows, expected_columns=None):
@@ -37,7 +37,7 @@ class TestWorldMap(TestCase):
     def test_all_cells(self):
         map = WorldMap(self._generate_cells())
         self.assertLocationsEqual(map.all_cells(),
-                                  [Location(x, y) for x in xrange(-1, 2) for y in xrange(-1, 2)])
+                                  [Location(x, y) for x in range(-1, 2) for y in range(-1, 2)])
 
     def test_score_cells(self):
         cells = self._generate_cells()

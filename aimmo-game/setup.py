@@ -17,7 +17,8 @@ setup(
     ],
     tests_require=[
         'httmock',
-        'mock'
+        'mock',
+        'hypothesis'
     ],
     test_suite='tests',
     zip_safe=False,

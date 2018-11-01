@@ -2,8 +2,8 @@ from __future__ import absolute_import
 
 from unittest import TestCase
 
-from ...simulation.direction import Direction
-from ...simulation.location import Location
+from simulation.direction import Direction
+from simulation.location import Location
 
 
 class TestDirection(TestCase):

@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-import cPickle as pickle
+import pickle
 import unittest
 from json import dumps
 
@@ -40,11 +40,11 @@ class RequestMock(object):
         return {
             str(i): {
                 "name": "Game {}".format(i),
-                "settings": pickle.dumps({
+                "settings": str(pickle.dumps({
                     "test": i,
                     "test2": "Settings {}".format(i),
-                })
-            } for i in xrange(num_games)
+                })).encode('utf-8')
+            } for i in range(num_games)
         }
 
     def __call__(self, url, request):
@@ -69,7 +69,7 @@ class TestGameManager(unittest.TestCase):
             self.game_manager.update()
         self.assertEqual(len(self.game_manager.final_games), 3)
         self.assertEqual(len(list(self.game_manager._data.get_games())), 3)
-        for i in xrange(3):
+        for i in range(3):
             self.assertIn(str(i), self.game_manager.final_games)
             self.assertEqual(
                 pickle.loads(str(self.game_manager.added_games[str(i)]["settings"])),
@@ -89,7 +89,7 @@ class TestGameManager(unittest.TestCase):
         mocker = RequestMock(3)
         with HTTMock(mocker):
             self.game_manager.update()
-        for i in xrange(3):
+        for i in range(3):
             self.assertEqual(
                 self.game_manager.added_games[str(i)]["GAME_API_URL"],
                 "http://test/{}/".format(i)
