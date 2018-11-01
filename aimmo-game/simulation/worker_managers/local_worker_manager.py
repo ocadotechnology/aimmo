@@ -29,13 +29,13 @@ class LocalWorkerManager(WorkerManager):
 
     def create_worker(self, player_id):
         assert(player_id not in self.workers)
-        port = self.port_counter.next()
+        port = next(self.port_counter)
 
         env = json.loads(os.environ.get('CONTAINER_TEMPLATE', '{}'))
         data_url = 'http://{}:{}/player/{}'.format(self.host, self.port, player_id)
         env['DATA_URL'] = data_url
         env['PORT'] = port
-
+        LOGGER.info(f"{port}/tcp")
         container = self.client.containers.run(
             name="aimmo-{}-worker-{}".format(self.game_id, player_id),
             image='ocadotechnology/aimmo-game-worker:test',
@@ -43,7 +43,7 @@ class LocalWorkerManager(WorkerManager):
             environment=env,
             network_mode='host',
             detach=True,
-            ports={"{}/tcp".format(port): port})
+            ports={f"{port}/tcp": port})
         self.workers[player_id] = container
         worker_url = 'http://%s:%d' % (
             self.host,
