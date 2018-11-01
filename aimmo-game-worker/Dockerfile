@@ -12,4 +12,6 @@ RUN pipenv install --system --deploy
 
 COPY . .
 
+ENV FLASK_ENV='development'
+
 CMD python service.py 0.0.0.0 $PORT $DATA_URL

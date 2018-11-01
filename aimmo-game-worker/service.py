@@ -42,8 +42,10 @@ def run(host, port, data_url):
     logging.basicConfig(level=logging.DEBUG)
     avatar_runner = AvatarRunner()
     app.config['DEBUG'] = False
-    app.run(host, port)
+    app.run(host, port, debug=False)
+    LOGGER.info("HI!")
 
 
 if __name__ == '__main__':
+    LOGGER.info(sys.argv)
     run(host=sys.argv[1], port=int(sys.argv[2]), data_url=sys.argv[3])

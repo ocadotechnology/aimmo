@@ -24,7 +24,7 @@ class AvatarRunner(object):
     def _get_new_avatar(self, src_code):
         self.avatar_source_code = src_code
         module = imp.new_module('avatar')  # Create a temporary module to execute the src_code in
-        exec(src_code, module)
+        exec(src_code, module.__dict__)
         return module.Avatar()
 
     def _update_avatar(self, src_code):
