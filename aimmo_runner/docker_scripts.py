@@ -64,15 +64,15 @@ def build_docker_images(minikube=None):
     
     path = os.path.join(BASE_DIR, 'aimmo-game')
     tag = 'ocadotechnology/%s:test' % dir
-        print("Building %s..." % tag)
-        client.images.build(
-            path=path,
-            tag=tag,
-            encoding='gzip',
-            buildargs={
-                "target": "runner"
-            }
-        )
+    print("Building %s..." % tag)
+    client.images.build(
+        path=path,
+        tag=tag,
+        encoding='gzip',
+        buildargs={
+            "target": "runner"
+        }
+    )
 
 def delete_containers():
     """Delete any containers starting with 'aimmo'."""
