@@ -71,6 +71,8 @@ def run(use_minikube, server_wait=True, capture_output=False, test_env=False, bu
         os.environ['AIMMO_MODE'] = 'threads'
         docker_scripts.delete_containers()
         docker_scripts.build_docker_images(build_target=build_target)
+        # Should check if they built tests and set it up to run them properly?
+        # I.E. we need to start a game_creator, game, and worker manually and the tests will then run.
         docker_scripts.start_game_creator()
 
     os.environ['NODE_ENV'] = 'development' if settings.DEBUG else 'production'

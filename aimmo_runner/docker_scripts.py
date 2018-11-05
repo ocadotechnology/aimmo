@@ -71,6 +71,12 @@ def delete_containers():
     for container in containers:
         container.remove(force=True)
 
+def run_tests_in_containers():
+    # This will get run if they built the images for testing,
+    # it needs to create one of each image
+    # the tests will then run themselves.
+    pass
+
 
 def start_game_creator():
     """Start an aimmo-game-creator docker container."""
