@@ -34,7 +34,7 @@ def create_superuser_if_missing(username, password):
                                       password=password)
 
 
-def run(use_minikube, server_wait=True, capture_output=False, test_env=False):
+def run(use_minikube, server_wait=True, capture_output=False, test_env=False, build_target=None):
     logging.basicConfig()
     if test_env:
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "test_settings")
@@ -62,7 +62,7 @@ def run(use_minikube, server_wait=True, capture_output=False, test_env=False):
 
         # Import minikube here, so we can install the dependencies first
         from aimmo_runner import minikube
-        minikube.start()
+        minikube.start(build_target=build_target)
 
         server_args.append('0.0.0.0:8000')
         os.environ['AIMMO_MODE'] = 'minikube'
@@ -70,7 +70,7 @@ def run(use_minikube, server_wait=True, capture_output=False, test_env=False):
         time.sleep(2)
         os.environ['AIMMO_MODE'] = 'threads'
         docker_scripts.delete_containers()
-        docker_scripts.build_docker_images()
+        docker_scripts.build_docker_images(build_target=build_target)
         docker_scripts.start_game_creator()
 
     os.environ['NODE_ENV'] = 'development' if settings.DEBUG else 'production'

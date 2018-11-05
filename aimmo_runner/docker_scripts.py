@@ -38,7 +38,7 @@ def create_docker_client(raw_env_settings):
         )
 
 
-def build_docker_images(minikube=None):
+def build_docker_images(minikube=None, build_target=None):
     """
     Find environment settings and builds docker images for each directory.
 
@@ -51,7 +51,7 @@ def build_docker_images(minikube=None):
     else:
         client = docker.from_env(version='auto')
 
-    directories = ('aimmo-game-creator', 'aimmo-game-worker')
+    directories = ('aimmo-game', 'aimmo-game-creator', 'aimmo-game-worker')
     for dir in directories:
         path = os.path.join(BASE_DIR, dir)
         tag = 'ocadotechnology/%s:test' % dir
@@ -59,20 +59,9 @@ def build_docker_images(minikube=None):
         client.images.build(
             path=path,
             tag=tag,
-            encoding='gzip'
+            encoding='gzip',
+            target=build_target
         )
-    
-    path = os.path.join(BASE_DIR, 'aimmo-game')
-    tag = 'ocadotechnology/%s:test' % dir
-    print("Building %s..." % tag)
-    client.images.build(
-        path=path,
-        tag=tag,
-        encoding='gzip',
-        buildargs={
-            "target": "runner"
-        }
-    )
 
 def delete_containers():
     """Delete any containers starting with 'aimmo'."""

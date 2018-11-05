@@ -63,7 +63,7 @@ def list_games(request):
         game.pk:
             {
                 'name': game.name,
-                'settings': pickle.dumps(game.settings_as_dict()),
+                'settings': game.settings_as_dict(),
             } for game in Game.objects.exclude_inactive()
     }
     return JsonResponse(response)

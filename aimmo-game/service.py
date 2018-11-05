@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import pickle
+import ast
 import logging
 import os
 import sys
@@ -123,7 +124,10 @@ class GameAPI(object):
 
 
 def create_runner(port):
-    settings = pickle.loads(os.environ['settings'].encode("ascii"))
+    LOGGER.info(os.environ['settings'])
+    settings = ast.literal_eval(os.environ['settings'])
+    LOGGER.info(settings)
+
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
     worker_manager_class = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
     return GameRunner(worker_manager_class=worker_manager_class,
@@ -134,7 +138,6 @@ def create_runner(port):
 
 def run_game(port):
     game_runner = create_runner(port)
-    LOGGER.info("HI")
     game_api = GameAPI(game_state=game_runner.game_state,
                        worker_manager=game_runner.worker_manager)
     game_runner.set_end_turn_callback(game_api.send_updates)

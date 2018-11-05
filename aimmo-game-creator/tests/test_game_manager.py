@@ -40,10 +40,10 @@ class RequestMock(object):
         return {
             str(i): {
                 "name": "Game {}".format(i),
-                "settings": str(pickle.dumps({
+                "settings": {
                     "test": i,
                     "test2": "Settings {}".format(i),
-                })).encode('utf-8')
+                }
             } for i in range(num_games)
         }
 
@@ -71,10 +71,7 @@ class TestGameManager(unittest.TestCase):
         self.assertEqual(len(list(self.game_manager._data.get_games())), 3)
         for i in range(3):
             self.assertIn(str(i), self.game_manager.final_games)
-            self.assertEqual(
-                pickle.loads(str(self.game_manager.added_games[str(i)]["settings"])),
-                {"test": i, "test2": "Settings {}".format(i)}
-            )
+            self.assertEqual(self.game_manager.added_games[str(i)]["settings"], {"test": i, "test2": "Settings {}".format(i)})
             self.assertEqual(self.game_manager.added_games[str(i)]["name"], "Game {}".format(i))
 
     def test_remove_games(self):

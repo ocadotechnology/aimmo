@@ -133,7 +133,7 @@ def create_roles():
     run_command(['kubectl', 'apply', '-Rf', 'rbac'])
 
 
-def start():
+def start(build_target=None):
     """
     The entry point to the minikube class. Sends calls appropriately to set
     up minikube.
@@ -144,7 +144,7 @@ def start():
     os.environ['MINIKUBE_PATH'] = MINIKUBE_EXECUTABLE
     start_cluster(MINIKUBE_EXECUTABLE)
     create_roles()
-    build_docker_images(MINIKUBE_EXECUTABLE)
+    build_docker_images(MINIKUBE_EXECUTABLE, build_target=build_target)
     restart_ingress_addon(MINIKUBE_EXECUTABLE)
     ingress = create_ingress_yaml()
     game_creator = create_creator_yaml()

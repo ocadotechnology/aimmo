@@ -67,13 +67,13 @@ class GameManager(object):
     def create_game(self, game_id, game_data):
         """Creates a new game"""
 
-        raise NotImplemented
+        raise NotImplementedError
 
     @abstractmethod
     def delete_game(self, game_id):
         """Deletes the given game"""
 
-        raise NotImplemented
+        raise NotImplementedError
 
     def recreate_game(self, game_id, game_data):
         """Deletes and recreates the given game"""
@@ -146,6 +146,7 @@ class LocalGameManager(GameManager):
 
     def create_game(self, game_id, game_data):
         def setup_container_environment_variables(template, game_data):
+            LOGGER.info(game_data)
             template['environment'].update(game_data)
             template['environment']['GAME_ID'] = game_id
             template['environment']['PYTHONUNBUFFERED'] = 0
@@ -154,7 +155,6 @@ class LocalGameManager(GameManager):
             template['environment']['CONTAINER_TEMPLATE'] = os.environ['CONTAINER_TEMPLATE']
 
         assert (game_id not in self.games)
-        game_data = {str(k): str(v) for k, v in game_data.items()}
         port = str(6001 + int(game_id) * 1000)
         client = docker.from_env()
 
