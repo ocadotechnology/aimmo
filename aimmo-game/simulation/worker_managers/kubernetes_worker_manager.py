@@ -45,7 +45,10 @@ class KubernetesWorkerManager(WorkerManager):
         return kubernetes.client.V1Container(
             env=[kubernetes.client.V1EnvVar(
                 name='DATA_URL',
-                value='%s/player/%d' % (self.game_url, player_id))],
+                value='%s/player/%d' % (self.game_url, player_id)),
+                kubernetes.client.V1EnvVar(
+                name='PORT',
+                value='5000')],
             name='aimmo-game-worker',
             image='ocadotechnology/aimmo-game-worker:%s' % os.environ.get('IMAGE_SUFFIX', 'latest'),
             ports=[kubernetes.client.V1ContainerPort(
