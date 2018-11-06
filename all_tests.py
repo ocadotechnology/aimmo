@@ -17,8 +17,7 @@ from aimmo_runner import runner, docker_scripts
 
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-APPS = ('aimmo/', 'integration_tests/', 'aimmo-game-creator/', 'aimmo-game/', 'aimmo-game-worker/')
-#APPS = ('aimmo/', 'integration_tests/')
+APPS = ('aimmo/', 'integration_tests/')
 
 def print_help():
     print(globals()['__docstring__'])
@@ -39,7 +38,6 @@ def run_tests(compute_coverage, use_docker=True):
     failed_apps = []
     if use_docker:
         docker_scripts.delete_containers()
-        APPS = ('aimmo/', 'integration_tests/')
         client = docker.from_env()
         docker_scripts.build_docker_images(build_target='tester')
         print('Docker containers built, running tests now...')
