@@ -11,11 +11,13 @@ Optional arguments:
 import os
 import subprocess
 import sys
-from aimmo_runner import runner
+import docker
+from aimmo_runner import runner, docker_scripts
+
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-APPS = ('aimmo/', 'integration_tests/', 'aimmo-game-worker/', 'aimmo-game-creator/', 'aimmo-game/')
-
+ALL_APPS = ('aimmo/', 'integration_tests/', 'aimmo-game-creator/', 'aimmo-game/', 'aimmo-game-worker/')
+APPS = ('aimmo/', 'integration_tests/')
 
 def print_help():
     print(globals()['__docstring__'])
@@ -27,12 +29,22 @@ def main():
         sys.exit(0)
     else:
         compute_coverage = '--coverage' in sys.argv or '-c' in sys.argv
+        use_docker ='--docker=false' not in sys.argv 
         runner.run_command(['pip', 'install', '-e', BASE_DIR])
-        sys.exit(run_tests(compute_coverage))
+        sys.exit(run_tests(compute_coverage, use_docker=use_docker))
 
 
-def run_tests(compute_coverage):
+def run_tests(compute_coverage, use_docker=True):
     failed_apps = []
+    if use_docker:
+        client = docker.from_env()
+        docker_scripts.build_docker_images(build_target='tester')
+        run_game_creator_tests(client)
+        run_game_tests(client)
+        run_worker_tests(client)
+    else:
+        # If we don't want to use docker we just run all the tests as before
+        APPS = ALL_APPS 
 
     for app in APPS:
         print('Testing {}'.format(app))
@@ -57,6 +69,23 @@ def run_tests(compute_coverage):
         print('All tests ran successfully')
         return 0
 
+def run_game_creator_tests(client):
+    client.containers.run(
+        name='aimmo-game-creator-tester',
+        image='ocadotechnology/aimmo-game-creator:test'
+    )
+
+def run_game_tests(client):
+    client.containers.run(
+        name="aimmo-game-tester",
+        image='ocadotechnology/aimmo-game:test'
+    )
+
+def run_worker_tests(client):
+    client.containers.run(
+        name="aimmo-worker-tester",
+        image='ocadotechnology/aimmo-game-worker:test',
+    )
 
 if __name__ == '__main__':
     main()

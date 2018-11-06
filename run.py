@@ -7,7 +7,7 @@ import traceback
 import argparse
 from aimmo_runner import runner
 
-parser = argparse.ArgumentParser(description='Run AI:MMO in a local enviroment.')
+parser = argparse.ArgumentParser(description='Runs AI:MMO.')
 
 parser.add_argument('-k', '--kube', dest='use_minikube', 
                     action='store_true', default=False,

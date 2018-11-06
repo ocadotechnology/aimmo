@@ -41,7 +41,6 @@ class LocalWorkerManager(WorkerManager):
         data_url = 'http://{}:{}/player/{}'.format(self.host, self.port, player_id)
         template['environment']['DATA_URL'] = data_url
         template['environment']['PORT'] = port
-        LOGGER.info(f"{str(port)}/tcp")
         container = self.client.containers.run(
             name="aimmo-{}-worker-{}".format(self.game_id, player_id),
             image='ocadotechnology/aimmo-game-worker:test',
