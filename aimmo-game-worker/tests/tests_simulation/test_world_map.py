@@ -16,7 +16,7 @@ class TestWorldMap(TestCase):
             'generates_score': False,
             'avatar': None,
             'pickup': None,
-        } for x in range(-columns / 2 + 1, 1 + columns / 2) for y in range(-rows / 2 + 1, 1 + rows / 2)]
+        } for x in range(-columns // 2 + 1, 1 + columns // 2) for y in range(-rows // 2 + 1, 1 + rows // 2)]
         return cells
 
     def assertGridSize(self, map, expected_rows, expected_columns=None):
