@@ -8,6 +8,7 @@ Optional arguments:
     -c, --coverage  compute the coverage while running tests.
 """
 
+from __future__ import print_function
 import os
 import subprocess
 import sys
@@ -16,8 +17,8 @@ from aimmo_runner import runner, docker_scripts
 
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-ALL_APPS = ('aimmo/', 'integration_tests/', 'aimmo-game-creator/', 'aimmo-game/', 'aimmo-game-worker/')
-APPS = ('aimmo/', 'integration_tests/')
+APPS = ('aimmo/', 'integration_tests/', 'aimmo-game-creator/', 'aimmo-game/', 'aimmo-game-worker/')
+#APPS = ('aimmo/', 'integration_tests/')
 
 def print_help():
     print(globals()['__docstring__'])
@@ -29,7 +30,7 @@ def main():
         sys.exit(0)
     else:
         compute_coverage = '--coverage' in sys.argv or '-c' in sys.argv
-        use_docker ='--docker=false' not in sys.argv 
+        use_docker = '--no-docker-container-tests' not in sys.argv 
         runner.run_command(['pip', 'install', '-e', BASE_DIR])
         sys.exit(run_tests(compute_coverage, use_docker=use_docker))
 
@@ -37,14 +38,15 @@ def main():
 def run_tests(compute_coverage, use_docker=True):
     failed_apps = []
     if use_docker:
+        docker_scripts.delete_containers()
+        APPS = ('aimmo/', 'integration_tests/')
         client = docker.from_env()
         docker_scripts.build_docker_images(build_target='tester')
+        print('Docker containers built, running tests now...')
         run_game_creator_tests(client)
         run_game_tests(client)
         run_worker_tests(client)
-    else:
-        # If we don't want to use docker we just run all the tests as before
-        APPS = ALL_APPS 
+        docker_scripts.delete_containers()
 
     for app in APPS:
         print('Testing {}'.format(app))
@@ -55,7 +57,7 @@ def run_tests(compute_coverage, use_docker=True):
         else:
             result = subprocess.call([sys.executable, 'setup.py', 'test'], cwd=dir)
         if result != 0:
-            print('Tests failed: '.format(result))
+            print('Tests failed: {}'.format(result))
             failed_apps.append(app)
 
     if compute_coverage:
@@ -70,22 +72,31 @@ def run_tests(compute_coverage, use_docker=True):
         return 0
 
 def run_game_creator_tests(client):
-    client.containers.run(
+    logs = client.containers.run(
         name='aimmo-game-creator-tester',
-        image='ocadotechnology/aimmo-game-creator:test'
+        image='ocadotechnology/aimmo-game-creator:test',
+        stream=True
     )
+    for log in logs:
+        print(log, end='')
 
 def run_game_tests(client):
-    client.containers.run(
+    logs = client.containers.run(
         name="aimmo-game-tester",
-        image='ocadotechnology/aimmo-game:test'
+        image='ocadotechnology/aimmo-game:test',
+        stream=True
     )
+    for log in logs:
+        print(log, end='')
 
 def run_worker_tests(client):
-    client.containers.run(
+    logs = client.containers.run(
         name="aimmo-worker-tester",
         image='ocadotechnology/aimmo-game-worker:test',
+        stream=True
     )
+    for log in logs:
+        print(log, end='')
 
 if __name__ == '__main__':
     main()
