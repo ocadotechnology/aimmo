@@ -1,9 +1,12 @@
 import time
 import threading
+import logging
 
 from simulation.django_communicator import DjangoCommunicator
 from simulation.simulation_runner import ConcurrentSimulationRunner
 from simulation.avatar.avatar_manager import AvatarManager
+
+LOGGER = logging.getLogger(__name__)
 
 TURN_TIME = 2
 
@@ -11,12 +14,18 @@ TURN_TIME = 2
 class GameRunner(threading.Thread):
     def __init__(self, worker_manager_class, game_state_generator, django_api_url, port):
         super(GameRunner, self).__init__()
+        LOGGER.info(f"1 worker_manager_class: {worker_manager_class}, port: {port}")
+
         self.worker_manager = worker_manager_class(port=port)
+        LOGGER.info("2")
         self.game_state = game_state_generator(AvatarManager())
+        LOGGER.info("3")
         self.communicator = DjangoCommunicator(django_api_url=django_api_url,
                                                completion_url=django_api_url + 'complete/')
+        LOGGER.info("4")
         self.simulation_runner = ConcurrentSimulationRunner(communicator=self.communicator,
                                                             game_state=self.game_state)
+        LOGGER.info("5")
         self._end_turn_callback = lambda: None
 
     def set_end_turn_callback(self, callback_method):
@@ -39,9 +48,11 @@ class GameRunner(threading.Thread):
         self.game_state.main_avatar_id = game_metadata['main_avatar']
 
     def update_workers(self):
+        LOGGER.info("did I get here??? 🤔")
         game_metadata = self.communicator.get_game_metadata()['main']
 
         users_to_add = self.get_users_to_add(game_metadata)
+        LOGGER.info(users_to_add)
         users_to_delete = self.get_users_to_delete(game_metadata)
 
         self.worker_manager.add_workers(users_to_add)

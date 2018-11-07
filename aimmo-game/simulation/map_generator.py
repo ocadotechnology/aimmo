@@ -4,7 +4,6 @@ import logging
 import random
 from itertools import tee
 from queue import PriorityQueue
-from dataclasses import dataclass
 from typing import Any
 
 from six.moves import zip, range
@@ -113,7 +112,6 @@ def get_shortest_path_between(source_cell, destination_cell, world_map):
             if cell == destination_cell:
                 return new_branch
 
-            print(f"branch to push: {new_branch}")
             branches.push(new_branch)
 
     return None
@@ -154,10 +152,14 @@ def get_adjacent_habitable_cells(cell, world_map):
     adjacent_cells = [world_map.get_cell(location) for location in adjacent_locations]
     return [c for c in adjacent_cells if c.habitable]
 
-@dataclass
+
 class PriorityEntry(object):
     priority: int
     value: Any
+
+    def __init__(self, priority, value):
+        self.priority = priority
+        self.value = value
 
     def __lt__(self, other):
         return self.priority < other.priority
@@ -168,28 +170,20 @@ class PriorityQueuef(object):
         self.heap = [self._build_tuple(i) for i in init_items]
         self.queue = PriorityQueue()
         for item in self.heap:
-            print(f"item in heap: {item}")
             self.queue.put(item, block=True)
-        # heapq.heapify(self.heap)
 
     def _build_tuple(self, item):
         return PriorityEntry(self.key(item), item)
-        # return self.key(item), item
 
     def push(self, item):
         to_push = self._build_tuple(item)
-        # heapq.heappush(self.heap, to_push)
-        print(f"to_push: {to_push}")
         self.queue.put(to_push, block=True)
 
     def pop(self):
         entry: PriorityEntry = self.queue.get(block=True)
-        # _, item = heapq.heappop(self.heap)
-        print(f"item in pop: {entry.value}")
         return entry.value
 
     def __len__(self):
-        # return len(self.heap)
         return self.queue.qsize()
 
 

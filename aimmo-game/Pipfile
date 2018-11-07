@@ -8,6 +8,7 @@ aimmo-game = {editable = true, path = "."}
 docker = "*"
 kubernetes = "*"
 prometheus-client = "*"
+"e1839a8" = {path = ".", editable = true}
 
 [requires]
-python_version = "3.7"
+python_version = "3.6.5"

@@ -5,6 +5,7 @@ import ast
 import logging
 import os
 import sys
+import json
 from urllib.parse import parse_qs
 
 import eventlet
@@ -124,12 +125,12 @@ class GameAPI(object):
 
 
 def create_runner(port):
-    LOGGER.info(os.environ['settings'])
-    settings = ast.literal_eval(os.environ['settings'])
-    LOGGER.info(settings)
-
+    settings = json.loads(os.environ['settings'])
+    LOGGER.info("yo")
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
+    LOGGER.info("no")
     worker_manager_class = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
+    LOGGER.info("worker_manager_class set")
     return GameRunner(worker_manager_class=worker_manager_class,
                       game_state_generator=generator.get_game_state,
                       django_api_url=os.environ.get('GAME_API_URL', 'http://localhost:8000/aimmo/api/games/'),
@@ -138,6 +139,7 @@ def create_runner(port):
 
 def run_game(port):
     game_runner = create_runner(port)
+    LOGGER.info("game runner made")
     game_api = GameAPI(game_state=game_runner.game_state,
                        worker_manager=game_runner.worker_manager)
     game_runner.set_end_turn_callback(game_api.send_updates)

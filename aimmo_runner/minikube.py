@@ -87,12 +87,14 @@ def delete_components(api_instance, extensions_api_instance):
         api_instance.delete_namespaced_replication_controller(
             body=kubernetes.client.V1DeleteOptions(),
             name=rc.metadata.name,
-            namespace='default')
+            namespace='default',
+            grace_period_seconds=0)
     for pod in api_instance.list_namespaced_pod('default').items:
         api_instance.delete_namespaced_pod(
             body=kubernetes.client.V1DeleteOptions(),
             name=pod.metadata.name,
-            namespace='default')
+            namespace='default',
+            grace_period_seconds=0)
     for service in api_instance.list_namespaced_service('default').items:
         api_instance.delete_namespaced_service(
             name=service.metadata.name,

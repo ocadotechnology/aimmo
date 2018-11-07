@@ -4,6 +4,9 @@ import time
 from eventlet.greenpool import GreenPool
 from eventlet.semaphore import Semaphore
 from threading import Thread
+from concurrent import futures
+# import asyncio
+# import aiohttp
 
 from simulation.worker import Worker
 
@@ -31,7 +34,7 @@ class WorkerManager(object):
     """
     def __init__(self, port=5000):
         self._data = _WorkerManagerData({})
-        self._pool = GreenPool(size=3)
+        # self._pool = GreenPool(size=3)
         self.player_id_to_worker = {}
         self.port = port
 
@@ -54,6 +57,7 @@ class WorkerManager(object):
             [thread.start() for thread in threads]
             time.sleep(duration)
 
+        
         timed_process_for_worker_turn_requests(2)
 
     def get_player_id_to_serialised_actions(self):
@@ -77,10 +81,13 @@ class WorkerManager(object):
         self.player_id_to_worker[player_id] = Worker('{}/turn/'.format(worker_url_base))
 
     def _parallel_map(self, func, iterable_args):
-        return list(self._pool.imap(func, iterable_args))
+        with ThreadPoolExecutor() as executor:
+            results = executor.map(func, iterable_args)
+        return [result in results]
 
     def add_workers(self, users_to_add):
         self._parallel_map(self.add_new_worker, users_to_add)
+        LOGGER.info("yoyoyoyoyoyoyoyo PARIS")
 
     def delete_workers(self, players_to_delete):
         self._parallel_map(self.delete_worker, players_to_delete)
