@@ -244,6 +244,8 @@ class KubernetesGameManager(GameManager):
         environment_variables['IMAGE_SUFFIX'] = os.environ.get('IMAGE_SUFFIX', 'latest')
         environment_variables['K8S_NAMESPACE'] = K8S_NAMESPACE
         environment_variables['WORKER_MANAGER'] = 'kubernetes'
+        environment_variables['EXTERNAL_PORT'] = "5000"
+
 
         rc = self._make_rc(environment_variables, game_id)
         self.api.create_namespaced_replication_controller(K8S_NAMESPACE, rc)

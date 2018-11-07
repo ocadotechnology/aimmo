@@ -1,6 +1,7 @@
 import cPickle as pickle
 import logging
 import os
+import json
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
@@ -63,7 +64,7 @@ def list_games(request):
         game.pk:
             {
                 'name': game.name,
-                'settings': game.settings_as_dict(),
+                'settings': json.dumps(game.settings_as_dict()),
             } for game in Game.objects.exclude_inactive()
     }
     return JsonResponse(response)
