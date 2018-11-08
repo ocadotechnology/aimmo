@@ -33,6 +33,9 @@ class KubernetesWorkerManager(WorkerManager):
 
     def _make_owner_references(self):
         try:
+            LOGGER.info("HERES THE GAMES UID")
+            LOGGER.info(f"---{self._get_game_uid()}---")
+            LOGGER.info("DID I SHOW IT TO YOU?")
             return [client.V1OwnerReference(
                 api_version="v1",
                 block_owner_deletion=True,
@@ -67,6 +70,7 @@ class KubernetesWorkerManager(WorkerManager):
     def make_pod(self, player_id):
         pod_manifest = client.V1PodSpec(containers=[self._make_container(player_id)], service_account_name='worker')
         LOGGER.info("MADE POD SPEC")
+
         metadata = client.V1ObjectMeta(
             labels={
                 'app': 'aimmo-game-worker',
@@ -81,11 +85,11 @@ class KubernetesWorkerManager(WorkerManager):
     def _get_game_uid(self):
         LOGGER.info("_get_game_uid(self) is the problem")
         logging.info(self.pod_name)
-        logging.info(K8S_NAMESPACE)
+        logging.info(f"Gonna list the pods in {K8S_NAMESPACE}")
         pod_list = self.api.list_namespaced_pod(namespace=K8S_NAMESPACE,
-                                                field_selector='metadata.name={}'.format(self.pod_name))
-        LOGGER.info(pod_list)
+                                                field_selector=f'metadata.name={self.pod_name}')
         LOGGER.info("is it you?")
+        LOGGER.info(pod_list)
         pod_metadata = pod_list.items[0].metadata
         LOGGER.info("or you?")
         return pod_metadata.uid
