@@ -83,12 +83,18 @@ class KubernetesWorkerManager(WorkerManager):
         return client.V1Pod(metadata=metadata, spec=pod_manifest)
 
     def _get_game_uid(self):
-        LOGGER.info("_get_game_uid(self) is the problem")
-        logging.info(self.pod_name)
-        logging.info(f"Gonna list the pods in {K8S_NAMESPACE}")
+        LOGGER.info("_get_game_uid(self) is the problem, Line 85 in kubernetes_worker_manager.py")
+        logging.info("                      WHY U NO WORK?!")
+        logging.info("                      WHY U NO WORK?!")
+        logging.info("                      WHY U NO WORK?!")
+        logging.info("                      WHY U NO WORK?!")
         pod_list = self.api.list_namespaced_pod(namespace=K8S_NAMESPACE,
                                                 field_selector=f'metadata.name={self.pod_name}')
-        LOGGER.info("is it you?")
+        logging.info("                      WHY U NO WORK?!")
+        logging.info("                      WHY U NO WORK?!")
+        logging.info("                      WHY U NO WORK?!")
+        logging.info("                      WHY U NO WORK?!")
+        LOGGER.info("_get_game_uid(self) is the problem, Line 85 in kubernetes_worker_manager.py")
         LOGGER.info(pod_list)
         pod_metadata = pod_list.items[0].metadata
         LOGGER.info("or you?")
