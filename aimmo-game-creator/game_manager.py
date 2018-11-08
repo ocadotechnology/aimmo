@@ -5,7 +5,6 @@ import time
 from abc import ABCMeta, abstractmethod
 
 import requests
-from eventlet.greenpool import GreenPool
 from eventlet.semaphore import Semaphore
 from concurrent import futures
 import kubernetes

@@ -33,7 +33,6 @@ class WorkerManager(object):
     """
     def __init__(self, port=5000):
         self._data = _WorkerManagerData({})
-        # self._pool = GreenPool(size=3)
         self.player_id_to_worker = {}
         self.port = port
 
