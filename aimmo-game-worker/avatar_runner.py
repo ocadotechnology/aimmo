@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import logging
 import traceback
 import sys
@@ -7,72 +5,13 @@ import imp
 
 from six import StringIO
 
-from simulation.action import WaitAction, Action, MoveAction
-import simulation.direction as direction
+import avatar_restrictor
+from simulation.action import WaitAction, Action
 from user_exceptions import InvalidActionException
 
-from RestrictedPython import compile_restricted, compile_restricted_exec, utility_builtins, limited_builtins
-from RestrictedPython.PrintCollector import PrintCollector
-from RestrictedPython.Guards import safe_builtins, full_write_guard
-
-
+from RestrictedPython import compile_restricted
 
 LOGGER = logging.getLogger(__name__)
-
-try:
-    import __builtin__
-except ImportError:
-    raise ImportError
-    # Python 3
-    # import builtins as __builtin__
-
-
-def print_text(*args, **kwargs):
-    """My custom print() function."""
-    # Adding new arguments to the print function signature
-    # is probably a bad idea.
-    # Instead consider testing if custom argument keywords
-    # are present in kwargs
-    __builtin__.print('My overridden print() function!')
-    return __builtin__.print(*args, **kwargs)
-
-
-def our_import(name, globals=None, locals=None, fromlist=None):
-    # Fast path: see if the module has already been imported.
-    try:
-        return sys.modules[name]
-    except KeyError:
-        pass
-
-    # If any of the following calls raises an exception,
-    # there's a problem we can't handle -- let the caller handle it.
-
-    fp, pathname, description = imp.find_module(name)
-
-    try:
-        return imp.load_module(name, fp, pathname, description)
-    finally:
-        # Since we may exit via an exception, close fp explicitly.
-        if fp:
-            fp.close()
-
-
-_write_ = full_write_guard
-_getattr_ = getattr
-__metaclass__ = type
-restricted_globals = dict(__builtins__=safe_builtins)
-restricted_globals['_print_'] = print_text
-restricted_globals['_import_'] = our_import
-restricted_globals['_write_'] = _write_
-restricted_globals['_getattr_'] = _getattr_
-restricted_globals['__builtins__']['object'] = '<type "object">'
-restricted_globals['object'] = '<type "object">'
-restricted_globals['__metaclass__'] = __metaclass__
-restricted_globals['__name__'] = "Avataaar"
-restricted_globals['WaitAction'] = WaitAction
-restricted_globals['MoveAction'] = MoveAction
-restricted_globals['direction'] = direction
-restricted_globals['random'] = utility_builtins['random']
 
 
 class AvatarRunner(object):
@@ -86,66 +25,18 @@ class AvatarRunner(object):
         return new_avatar_code != self.avatar_source_code
 
     def _get_new_avatar(self, src_code):
-
-        # src_code = src_code.encode('utf-8')
-
-        # self.avatar_source_code = '''class Avatar:
-        #                                 def handle_turn(self, world_state, avatar_state):
-        #
-        #                                     first_name = "Florian"
-        #                                     last_name = "Aucomte"
-        #                                     name = first_name + last_name
-        #                                     print(name)
-        #
-        #                                     new_dir = random.choice(direction.ALL_DIRECTIONS)
-        #                                     return MoveAction(new_dir)'''
-
-        # self.avatar_source_code = '''class Avatar:
-        #                                def handle_turn(self, world_state, avatar_state):
-        #                                    print("Hello world")
-        #                                    return MoveAction(direction.NORTH)'''
-
         self.avatar_source_code = src_code
 
-        # LOGGER.info(src_code)
+        # module_avatar = imp.new_module('avatar')  # Create a temporary module to execute the src_code in
+        # module_avatar.__dict__.update(restricted_globals)
 
-        # LOGGER.info(type(src_code))
+        module_avatar = avatar_restrictor
 
-        # self.avatar_source_code = 'a = 5\nb=10\nprint("Sum =", a+b)'
+        LOGGER.info(module_avatar.__dict__)
 
-        # LOGGER.info(self.avatar_source_code)
+        byte_code = compile_restricted(src_code, filename='<inline-code>', mode='exec')
+        exec byte_code in module_avatar.__dict__
 
-        module_avatar = imp.new_module('avatar')  # Create a temporary module to execute the src_code in
-
-        # LOGGER.info(globals())
-
-        module_avatar.__dict__.update(restricted_globals)
-
-        # LOGGER.info(module_avatar.__dict__)
-
-        # LOGGER.info(type(object))
-        # restricted_globals['__name__'] = 'avatar_runner'
-
-        # LOGGER.info(restricted_globals)
-
-        try:
-            byte_code = compile_restricted(src_code, filename='<inline-code>', mode='exec')
-            # byte_code = compile(self.avatar_source_code, filename='code', mode='exec')
-            # LOGGER.info(type(byte_code))
-            # LOGGER.info(byte_code)
-
-            # LOGGER.info(safe_globals)
-            # LOGGER.info(module_lel.__dict__)
-
-            # module.__dict__.update(safe_globals)
-
-            # exec byte_code in module_avatar.__dict__
-            exec byte_code in restricted_globals
-        except SyntaxError as e:
-            pass
-
-        # byte_code = compile_restricted(src_code, filename='<inline code>', mode='exec')
-        # exec self.avatar_source_code in module_avatar.__dict__
         return module_avatar.Avatar()
 
     def _update_avatar(self, src_code):
@@ -160,11 +51,6 @@ class AvatarRunner(object):
         should_update = (self.avatar is None or
                          self.auto_update and self._avatar_src_changed(src_code) or
                          not self.update_successful)
-
-        LOGGER.info(self.avatar is None)
-        LOGGER.info(self.auto_update)
-        LOGGER.info(self._avatar_src_changed(src_code))
-        LOGGER.info(not self.update_successful)
 
         if should_update:
             try:
