@@ -3,7 +3,7 @@ import time
 
 from eventlet.semaphore import Semaphore
 from threading import Thread
-from concurrent import futures
+from multiprocessing.pool import Pool
 # import asyncio
 # import aiohttp
 
@@ -79,7 +79,7 @@ class WorkerManager(object):
         self.player_id_to_worker[player_id] = Worker('{}/turn/'.format(worker_url_base))
 
     def _parallel_map(self, func, iterable_args):
-        with futures.ThreadPoolExecutor() as executor:
+        with Pool() as executor:
             results = executor.map(func, iterable_args)
         return [results]
 
