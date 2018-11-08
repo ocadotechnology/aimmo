@@ -6,7 +6,7 @@ from abc import ABCMeta, abstractmethod
 
 import requests
 from eventlet.semaphore import Semaphore
-from multiprocessing import Pool
+from concurrent import futures
 import kubernetes
 import docker
 import json
@@ -128,9 +128,9 @@ class GameManager(object):
             time.sleep(10)
 
     def _parallel_map(self, func, iterable_args):
-        with Pool() as executor:
+        with futures.ThreadPoolExecutor() as executor:
             results = executor.map(func, iterable_args)
-
+        return [results]
 
 
 class LocalGameManager(GameManager):
