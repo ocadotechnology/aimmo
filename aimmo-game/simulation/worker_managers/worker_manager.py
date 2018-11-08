@@ -1,7 +1,6 @@
 import logging
 import time
 
-from eventlet.greenpool import GreenPool
 from eventlet.semaphore import Semaphore
 from threading import Thread
 from concurrent import futures
@@ -81,13 +80,12 @@ class WorkerManager(object):
         self.player_id_to_worker[player_id] = Worker('{}/turn/'.format(worker_url_base))
 
     def _parallel_map(self, func, iterable_args):
-        with ThreadPoolExecutor() as executor:
+        with futures.ThreadPoolExecutor() as executor:
             results = executor.map(func, iterable_args)
-        return [result in results]
+        return [results]
 
     def add_workers(self, users_to_add):
         self._parallel_map(self.add_new_worker, users_to_add)
-        LOGGER.info("yoyoyoyoyoyoyoyo PARIS")
 
     def delete_workers(self, players_to_delete):
         self._parallel_map(self.delete_worker, players_to_delete)

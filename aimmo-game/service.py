@@ -155,4 +155,5 @@ if __name__ == '__main__':
     port = int(os.environ['EXTERNAL_PORT'])
 
     run_game(port)
+    LOGGER.info("starting the server")
     eventlet.wsgi.server(eventlet.listen((host, port)), socket_app, debug=False)

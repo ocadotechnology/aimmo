@@ -7,6 +7,7 @@ from abc import ABCMeta, abstractmethod
 import requests
 from eventlet.greenpool import GreenPool
 from eventlet.semaphore import Semaphore
+from concurrent import futures
 import kubernetes
 import docker
 import json
@@ -60,7 +61,6 @@ class GameManager(object):
     def __init__(self, games_url):
         self._data = _GameManagerData()
         self.games_url = games_url
-        self._pool = GreenPool(size=3)
         super(GameManager, self).__init__()
 
     @abstractmethod
@@ -75,8 +75,9 @@ class GameManager(object):
 
         raise NotImplementedError
 
-    def recreate_game(self, game_id, game_data):
+    def recreate_game(self, game_to_add):
         """Deletes and recreates the given game"""
+        game_id, game_data = game_to_add
         LOGGER.info("Deleting game {}".format(game_data["name"]))
         try:
             self.delete_game(game_id)
@@ -106,9 +107,10 @@ class GameManager(object):
             }
             LOGGER.debug("Need to add games: {}".format(games_to_add))
 
-            # Add missing games
-            self._parallel_map(self.recreate_game, games_to_add.keys(), games_to_add.values())
 
+
+            # Add missing games
+            self._parallel_map(self.recreate_game, games_to_add.items())
             # Delete extra games
             known_games = set(games.keys())
             removed_game_ids = self._data.remove_unknown_games(known_games)
@@ -126,8 +128,10 @@ class GameManager(object):
             LOGGER.info("Sleeping")
             time.sleep(10)
 
-    def _parallel_map(self, func, *iterable_args):
-        list(self._pool.imap(func, *iterable_args))
+    def _parallel_map(self, func, iterable_args):
+        with futures.ThreadPoolExecutor() as executor:
+            results = executor.map(func, iterable_args)
+        return [results]
 
 
 class LocalGameManager(GameManager):

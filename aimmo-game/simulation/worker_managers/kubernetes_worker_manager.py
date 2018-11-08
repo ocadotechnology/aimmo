@@ -66,6 +66,7 @@ class KubernetesWorkerManager(WorkerManager):
 
     def make_pod(self, player_id):
         pod_manifest = client.V1PodSpec(containers=[self._make_container(player_id)], service_account_name='worker')
+        LOGGER.info("MADE POD SPEC")
         metadata = client.V1ObjectMeta(
             labels={
                 'app': 'aimmo-game-worker',
@@ -74,13 +75,19 @@ class KubernetesWorkerManager(WorkerManager):
             generate_name='aimmo-%s-worker-%s-' % (self.game_id, player_id),
             owner_references=self._make_owner_references()
         )
-
+        LOGGER.info('hey hey i wanna be a pod star')
         return client.V1Pod(metadata=metadata, spec=pod_manifest)
 
     def _get_game_uid(self):
+        LOGGER.info("_get_game_uid(self) is the problem")
+        logging.info(self.pod_name)
+        logging.info(K8S_NAMESPACE)
         pod_list = self.api.list_namespaced_pod(namespace=K8S_NAMESPACE,
                                                 field_selector='metadata.name={}'.format(self.pod_name))
+        LOGGER.info(pod_list)
+        LOGGER.info("is it you?")
         pod_metadata = pod_list.items[0].metadata
+        LOGGER.info("or you?")
         return pod_metadata.uid
 
     def _wait_for_pod_creation(self, pod_name, player_id):
@@ -96,7 +103,9 @@ class KubernetesWorkerManager(WorkerManager):
         raise EnvironmentError('Could not start worker %s.' % player_id)
 
     def create_worker(self, player_id):
+        LOGGER.info("Gonna make a pod now :3")
         pod_obj = self.make_pod(player_id)
+        LOGGER.info("All done boss :3")
         LOGGER.info('Making new worker pod: {}'.format(pod_obj.metadata.name))
         pod = self.api.create_namespaced_pod(namespace=K8S_NAMESPACE, body=pod_obj)
         pod_name = pod.metadata.name
