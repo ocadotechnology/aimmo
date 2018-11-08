@@ -72,6 +72,7 @@ restricted_globals['__name__'] = "Avataaar"
 restricted_globals['WaitAction'] = WaitAction
 restricted_globals['MoveAction'] = MoveAction
 restricted_globals['direction'] = direction
+restricted_globals['random'] = utility_builtins['random']
 
 
 class AvatarRunner(object):
@@ -90,24 +91,21 @@ class AvatarRunner(object):
 
         # self.avatar_source_code = '''class Avatar:
         #                                 def handle_turn(self, world_state, avatar_state):
-        #                                     from simulation.action import MoveAction
-        #                                     import simulation.direction as direction
-        #                                     import random
         #
         #                                     first_name = "Florian"
         #                                     last_name = "Aucomte"
         #                                     name = first_name + last_name
         #                                     print(name)
         #
-        #                                     # new_dir = random.choice(direction.ALL_DIRECTIONS)
-        #                                     return MoveAction(direction.EAST)'''
+        #                                     new_dir = random.choice(direction.ALL_DIRECTIONS)
+        #                                     return MoveAction(new_dir)'''
 
-        self.avatar_source_code = '''class Avatar:
-                                       def handle_turn(self, world_state, avatar_state):
-                                           print("Hello world")
-                                           return MoveAction(direction.NORTH)'''
+        # self.avatar_source_code = '''class Avatar:
+        #                                def handle_turn(self, world_state, avatar_state):
+        #                                    print("Hello world")
+        #                                    return MoveAction(direction.NORTH)'''
 
-        # self.avatar_source_code = src_code
+        self.avatar_source_code = src_code
 
         # LOGGER.info(src_code)
 
@@ -123,15 +121,15 @@ class AvatarRunner(object):
 
         module_avatar.__dict__.update(restricted_globals)
 
-        LOGGER.info(module_avatar.__dict__)
+        # LOGGER.info(module_avatar.__dict__)
 
         # LOGGER.info(type(object))
         # restricted_globals['__name__'] = 'avatar_runner'
 
-        LOGGER.info(restricted_globals)
+        # LOGGER.info(restricted_globals)
 
         try:
-            byte_code = compile_restricted(self.avatar_source_code, filename='<inline-code>', mode='exec')
+            byte_code = compile_restricted(src_code, filename='<inline-code>', mode='exec')
             # byte_code = compile(self.avatar_source_code, filename='code', mode='exec')
             # LOGGER.info(type(byte_code))
             # LOGGER.info(byte_code)
@@ -141,12 +139,10 @@ class AvatarRunner(object):
 
             # module.__dict__.update(safe_globals)
 
-            LOGGER.info("YAAAAAAAAAAS")
-
             # exec byte_code in module_avatar.__dict__
             exec byte_code in restricted_globals
         except SyntaxError as e:
-            raise e
+            pass
 
         # byte_code = compile_restricted(src_code, filename='<inline code>', mode='exec')
         # exec self.avatar_source_code in module_avatar.__dict__
@@ -164,6 +160,11 @@ class AvatarRunner(object):
         should_update = (self.avatar is None or
                          self.auto_update and self._avatar_src_changed(src_code) or
                          not self.update_successful)
+
+        LOGGER.info(self.avatar is None)
+        LOGGER.info(self.auto_update)
+        LOGGER.info(self._avatar_src_changed(src_code))
+        LOGGER.info(not self.update_successful)
 
         if should_update:
             try:
