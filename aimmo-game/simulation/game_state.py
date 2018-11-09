@@ -1,3 +1,5 @@
+from concurrent import futures
+from concurrent.futures import ALL_COMPLETED
 from threading import RLock
 from simulation.pickups import serialise_pickups
 
@@ -12,12 +14,17 @@ class GameState(object):
         self.avatar_manager = avatar_manager
         self._completion_callback = completion_check_callback
         self.main_avatar_id = None
-        self._lock = RLock()
+        self._pool = futures.ThreadPoolExecutor()
 
     def add_avatar(self, player_id, location=None):
-        with self._lock:
-            location = self.world_map.get_random_spawn_location() if location is None else location
-            avatar = self.avatar_manager.add_avatar(player_id, location)
+        with self._pool as executor:
+            if location is None:
+                e = executor.submit(self.world_map.get_random_spawn_location())
+                location = e.result()
+            #location = self.world_map.get_random_spawn_location() if location is None else location
+            e = executor.submit(self.avatar_manager.add_avatar, player_id, location)
+            avatar = e.result()
+            #avatar = self.avatar_manager.add_avatar(player_id, location)
             self.world_map.get_cell(location).avatar = avatar
 
     def add_avatars(self, player_ids):
@@ -29,32 +36,39 @@ class GameState(object):
             self.remove_avatar(player_id)
 
     def remove_avatar(self, player_id):
-        with self._lock:
+        with self._pool as executor:
             try:
-                avatar = self.avatar_manager.get_avatar(player_id)
+                e = executor.submit(self.avatar_manager.get_avatar, player_id)
+                avatar = e.result()
+                #avatar = self.avatar_manager.get_avatar(player_id)
             except KeyError:
                 return
             self.world_map.get_cell(avatar.location).avatar = None
-            self.avatar_manager.remove_avatar(player_id)
+            executor.submit(self.avatar_manager.remove_avatar, player_id)
+            #self.avatar_manager.remove_avatar(player_id)
 
     def _update_effects(self):
-        with self._lock:
+        with self._pool as executor:
             for avatar in self.avatar_manager.active_avatars:
-                avatar.update_effects()
+                executor.submit(avatar.update_effects)
+                #avatar.update_effects()
 
     def update_environment(self):
-        with self._lock:
-            self._update_effects()
-            num_avatars = len(self.avatar_manager.active_avatars)
-            self.world_map.update(num_avatars)
+        with self._pool as executor:
+            executor.submit(self._update_effects)
+            e = executor.submit(len, self.avatar_manager.active_avatars)
+            num_avatars = e.result()
+            #num_avatars = len(self.avatar_manager.active_avatars)
+            e = executor.submit(self.world_map.update, num_avatars)
+            #self.world_map.update(num_avatars)
 
     def is_complete(self):
-        with self._lock:
-            return self._completion_callback(self)
+        with self._pool as executor:
+            return executor.submit(self._completion_callback, self).result()
 
     def get_main_avatar(self):
-        with self._lock:
-            return self.avatar_manager.avatars_by_id[self.main_avatar_id]
+        with self._pool as executor:
+            return executor.submit(self.avatar_manager.avatars_by_id.get, self.main_avatar_id)
 
     def serialise(self):
         return {
@@ -68,15 +82,15 @@ class GameState(object):
         }
 
     def serialise_for_worker(self, avatar_wrapper):
-        with self._lock:
+        with self._pool as executor:
             return {
-                'avatar_state': avatar_wrapper.serialise(),
+                'avatar_state': executor.submit(avatar_wrapper.serialise).result(),
                 'world_map': {
-                    'cells': [cell.serialise() for cell in self.world_map.all_cells()]
+                    'cells': [executor.submit(cell.serialise).result() for cell in self.world_map.all_cells()]
                 }
             }
 
     def get_serialised_game_states_for_workers(self):
-        with self._lock:
-            return {player_id: self.serialise_for_worker(avatar_wrapper) for player_id, avatar_wrapper
+        with self._pool as executor:
+            return {player_id: executor.submit(self.serialise_for_worker, avatar_wrapper).result() for player_id, avatar_wrapper
                     in self.avatar_manager.avatars_by_id.items()}

@@ -1,7 +1,7 @@
 import logging
 from abc import ABCMeta, abstractmethod
 from concurrent import futures
-
+from concurrent.futures import ALL_COMPLETED
 from simulation.action import PRIORITIES
 
 LOGGER = logging.getLogger(__name__)
@@ -72,6 +72,7 @@ class ConcurrentSimulationRunner(SimulationRunner):
     def _parallel_map(self, func, iterable_args):
         with futures.ThreadPoolExecutor() as executor:
             results = executor.map(func, iterable_args)
+            futures.wait(results, timeout=2, return_when=ALL_COMPLETED)
         return [results]
 
     def run_turn(self, player_id_to_serialised_actions):

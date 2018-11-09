@@ -4,6 +4,7 @@ import time
 from eventlet.semaphore import Semaphore
 from threading import Thread
 from concurrent import futures
+from concurrent.futures import ALL_COMPLETED
 # import asyncio
 # import aiohttp
 
@@ -75,13 +76,16 @@ class WorkerManager(object):
         self._data.set_code(player)
 
     def add_new_worker(self, player_id):
+        LOGGER.info("GIVE LOCK")
         worker_url_base = self.create_worker(player_id)
         self.player_id_to_worker[player_id] = Worker('{}/turn/'.format(worker_url_base))
+        LOGGER.info("HAS LOCK BACK")
+        
 
     def _parallel_map(self, func, iterable_args):
         with futures.ThreadPoolExecutor() as executor:
             results = executor.map(func, iterable_args)
-        return [results]
+            futures.wait(results, return_when=ALL_COMPLETED)
 
     def add_workers(self, users_to_add):
         self._parallel_map(self.add_new_worker, users_to_add)
