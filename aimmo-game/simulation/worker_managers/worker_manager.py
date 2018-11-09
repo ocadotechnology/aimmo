@@ -85,7 +85,6 @@ class WorkerManager(object):
     def _parallel_map(self, func, iterable_args):
         with futures.ThreadPoolExecutor() as executor:
             results = executor.map(func, iterable_args)
-            futures.wait(results, return_when=ALL_COMPLETED)
 
     def add_workers(self, users_to_add):
         self._parallel_map(self.add_new_worker, users_to_add)
