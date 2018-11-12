@@ -7,6 +7,7 @@ import urllib3
 from kubernetes import client
 from kubernetes import config
 # import kubernetes.config
+
 from .worker_manager import WorkerManager
 
 LOGGER = logging.getLogger(__name__)
@@ -102,7 +103,7 @@ class KubernetesWorkerManager(WorkerManager):
         LOGGER.info("                      WHY U NO WORK?!")
         LOGGER.info("                      WHY U NO WORK?!")
         LOGGER.info("_get_game_uid(self) is the problem, Line 85 in kubernetes_worker_manager.py")
-        LOGGER.info(pod_list.result())
+        LOGGER.info(pod_list)
         pod_metadata = pod_list.items[0].metadata
         LOGGER.info("or you?")
         return pod_metadata.uid
