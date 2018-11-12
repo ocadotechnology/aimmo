@@ -11,8 +11,7 @@ from simulation.action import WaitAction, Action, MoveAction
 import simulation.direction as direction
 from user_exceptions import InvalidActionException
 
-from RestrictedPython import compile_restricted, compile_restricted_exec, utility_builtins, limited_builtins
-from RestrictedPython.PrintCollector import PrintCollector
+from RestrictedPython import compile_restricted, utility_builtins
 from RestrictedPython.Guards import safe_builtins, full_write_guard
 
 LOGGER = logging.getLogger(__name__)
@@ -36,10 +35,8 @@ restricted_globals = dict(__builtins__=safe_builtins)
 restricted_globals['_print_'] = print_text
 restricted_globals['_write_'] = _write_
 restricted_globals['_getattr_'] = _getattr_
-restricted_globals['__builtins__']['object'] = '<type "object">'
-restricted_globals['object'] = '<type "object">'
 restricted_globals['__metaclass__'] = __metaclass__
-restricted_globals['__name__'] = "Avataaar"
+restricted_globals['__name__'] = "Avatar"
 restricted_globals['WaitAction'] = WaitAction
 restricted_globals['MoveAction'] = MoveAction
 restricted_globals['direction'] = direction
