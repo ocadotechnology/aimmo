@@ -145,10 +145,6 @@
             ],
             "version": "==0.3.0"
         },
-        "e1839a8": {
-            "editable": true,
-            "path": "."
-        },
         "eventlet": {
             "hashes": [
                 "sha256:c584163e006e613707e224552fafc63e4e0aa31d7de0ab18b481ac0b385254c8",
