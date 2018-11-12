@@ -3,6 +3,7 @@ from abc import ABCMeta, abstractmethod
 from concurrent import futures
 from concurrent.futures import ALL_COMPLETED
 from simulation.action import PRIORITIES
+from threading import Thread
 
 LOGGER = logging.getLogger(__name__)
 
@@ -82,12 +83,11 @@ class ConcurrentSimulationRunner(SimulationRunner):
         """
 
         avatars = self.game_state.avatar_manager.active_avatars
-        requests = self._parallel_map(self._run_turn_for_avatar, avatar, player_id_to_serialised_actions[avatar.player_id])
-        #threads = [Thread(target=self._run_turn_for_avatar,
-        #                  args=(avatar, player_id_to_serialised_actions[avatar.player_id])) for avatar in avatars]
+        threads = [Thread(target=self._run_turn_for_avatar,
+                         args=(avatar, player_id_to_serialised_actions[avatar.player_id])) for avatar in avatars]
 
-        #[thread.start() for thread in threads]
-        #[thread.join() for thread in threads]
+        [thread.start() for thread in threads]
+        [thread.join() for thread in threads]
 
         # Waits applied first, then attacks, then moves.
         avatars.sort(key=lambda a: PRIORITIES[type(a.action)])

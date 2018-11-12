@@ -143,7 +143,7 @@ def run_game(port):
     game_api = GameAPI(game_state=game_runner.game_state,
                        worker_manager=game_runner.worker_manager)
     game_runner.set_end_turn_callback(game_api.send_updates)
-    game_runner.start()
+    game_runner.run()
 
 
 if __name__ == '__main__':
@@ -156,4 +156,4 @@ if __name__ == '__main__':
 
     run_game(port)
     LOGGER.info("starting the server")
-    eventlet.wsgi.server(eventlet.listen((host, port)), socket_app, debug=False)
+    eventlet.wsgi.server(eventlet.listen((host, port)), socket_app, debug=True)

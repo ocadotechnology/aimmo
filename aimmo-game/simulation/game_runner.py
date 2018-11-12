@@ -1,6 +1,7 @@
 import time
 import threading
 import logging
+import concurrent.futures
 
 from simulation.django_communicator import DjangoCommunicator
 from simulation.simulation_runner import ConcurrentSimulationRunner
@@ -11,7 +12,7 @@ LOGGER = logging.getLogger(__name__)
 TURN_TIME = 2
 
 
-class GameRunner(threading.Thread):
+class GameRunner:
     def __init__(self, worker_manager_class, game_state_generator, django_api_url, port):
         super(GameRunner, self).__init__()
         LOGGER.info(f"1 worker_manager_class: {worker_manager_class}, port: {port}")
@@ -65,6 +66,7 @@ class GameRunner(threading.Thread):
         self.worker_manager.fetch_all_worker_data(self.game_state.get_serialised_game_states_for_workers())
 
     def update_simulation(self, player_id_to_serialised_actions):
+        LOGGER.info(f"PARIS, THESE IS THE DICTIONARY YOU WERE LOOKING FOR: {player_id_to_serialised_actions}")
         self.simulation_runner.run_single_turn(player_id_to_serialised_actions)
         self._end_turn_callback()
 
@@ -73,7 +75,11 @@ class GameRunner(threading.Thread):
         self.update_simulation(self.worker_manager.get_player_id_to_serialised_actions())
         self.worker_manager.clear_logs()
 
-    def run(self):
+    def _run(self):
         while True:
             self.update()
             time.sleep(TURN_TIME)
+
+    def run(self):
+        with concurrent.futures.ProcessPoolExecutor(max_workers=1) as executor:
+            executor.submit(self._run())

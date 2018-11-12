@@ -83,8 +83,10 @@ class WorkerManager(object):
         
 
     def _parallel_map(self, func, iterable_args):
-        with futures.ThreadPoolExecutor() as executor:
-            results = executor.map(func, iterable_args)
+        for argument in iterable_args:
+            func(argument)
+        # with futures.ThreadPoolExecutor() as executor:
+            # results = executor.map(func, iterable_args)
 
     def add_workers(self, users_to_add):
         self._parallel_map(self.add_new_worker, users_to_add)

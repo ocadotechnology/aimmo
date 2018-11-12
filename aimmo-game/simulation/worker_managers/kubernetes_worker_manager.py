@@ -1,6 +1,7 @@
 import logging
 import os
 import time
+import urllib3
 
 # import kubernetes.client
 from kubernetes import client
@@ -19,6 +20,7 @@ class KubernetesWorkerManager(WorkerManager):
 
     def __init__(self, *args, **kwargs):
         config.load_incluster_config()
+        client.Configuration._default.debug = True
         #WHY HAVE YOU STOPPED WORKING!!!!
         self.api = client.CoreV1Api()
         #WHY HAVE YOU STOPPED WORKING!!!!
@@ -84,16 +86,22 @@ class KubernetesWorkerManager(WorkerManager):
 
     def _get_game_uid(self):
         LOGGER.info("_get_game_uid(self) is the problem, Line 85 in kubernetes_worker_manager.py")
-        logging.info("                      WHY U NO WORK?!")
-        logging.info("                      WHY U NO WORK?!")
-        logging.info("                      WHY U NO WORK?!")
-        logging.info("                      WHY U NO WORK?!")
+        LOGGER.info("                      WHY U NO WORK?!")
+        LOGGER.info("                      WHY U NO WORK?!")
+        LOGGER.info("                      WHY U NO WORK?!")
+        LOGGER.info("                      WHY U NO WORK?!")
+        # pool_manager = urllib3.PoolManager(num_pools=1)
+        # self.api.api_client.rest_client.pool_manager = pool_manager
+        # LOGGER.info(len(pool_manager.pools))
+        # pool_manager.urlopen('https://google.com')
+        # LOGGER.info(len(pool_manager.pools))
+        # LOGGER.info("Paris disapproves")
         pod_list = self.api.list_namespaced_pod(namespace=K8S_NAMESPACE,
                                                 field_selector=f'metadata.name={self.pod_name}')
-        logging.info("                      WHY U NO WORK?!")
-        logging.info("                      WHY U NO WORK?!")
-        logging.info("                      WHY U NO WORK?!")
-        logging.info("                      WHY U NO WORK?!")
+        LOGGER.info("                      WHY U NO WORK?!")
+        LOGGER.info("                      WHY U NO WORK?!")
+        LOGGER.info("                      WHY U NO WORK?!")
+        LOGGER.info("                      WHY U NO WORK?!")
         LOGGER.info("_get_game_uid(self) is the problem, Line 85 in kubernetes_worker_manager.py")
         LOGGER.info(pod_list)
         pod_metadata = pod_list.items[0].metadata

@@ -9,6 +9,7 @@ docker = "*"
 kubernetes = "*"
 prometheus-client = "*"
 "e1839a8" = {path = ".", editable = true}
+"urllib3" = "==1.22"
 
 [requires]
 python_version = "3.6.5"
