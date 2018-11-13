@@ -5,8 +5,12 @@ import traceback
 import sys
 import imp
 import inspect
+import re
 
-from six import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 import simulation.action as avatar_action
 import simulation.direction as direction
@@ -123,7 +127,8 @@ class AvatarRunner(object):
             sys.stdout = sys.__stdout__
             sys.stderr = sys.__stderr__
 
-        logs = output_log.getvalue()
+        logs = self.clean_logs(output_log.getvalue())
+
         return {'action': action, 'log': logs, 'avatar_updated': avatar_updated}
 
     def decide_action(self, world_map, avatar_state):
@@ -132,6 +137,16 @@ class AvatarRunner(object):
             raise InvalidActionException(action)
         return action.serialise()
 
+    def clean_logs(self, logs):
+        warning_pattern = "([\\\/]?([a-zA-Z0-9\.-]*[\\\/])+compile\.py:\d+: SyntaxWarning: Line \d+: " \
+                          "Print statement is deprecated and not avaliable anymore in Python 3\.\nSyntaxWarning)"
+        getattr_pattern = "<function safer_getattr at [a-z0-9]+>"
+
+        pattern = '|'.join((warning_pattern, getattr_pattern))
+        clean_logs = re.sub(pattern, '', logs)
+
+        return clean_logs
+
     @staticmethod
     def get_only_user_traceback():
         """ If the traceback does not contain any reference to the user code, found by '<string>',
@@ -139,7 +154,7 @@ class AvatarRunner(object):
         traceback_list = traceback.format_exc().split('\n')
         start_of_user_traceback = 0
         for i in range(len(traceback_list)):
-            if '<string>' in traceback_list[i]:
+            if '<inline-code>' in traceback_list[i]:
                 start_of_user_traceback = i
                 break
         return traceback_list[start_of_user_traceback:]
