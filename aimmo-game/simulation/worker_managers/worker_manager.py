@@ -76,17 +76,13 @@ class WorkerManager(object):
         self._data.set_code(player)
 
     def add_new_worker(self, player_id):
-        LOGGER.info("GIVE LOCK")
         worker_url_base = self.create_worker(player_id)
         self.player_id_to_worker[player_id] = Worker('{}/turn/'.format(worker_url_base))
-        LOGGER.info("HAS LOCK BACK")
         
 
     def _parallel_map(self, func, iterable_args):
-        for argument in iterable_args:
-            func(argument)
-        # with futures.ThreadPoolExecutor() as executor:
-            # results = executor.map(func, iterable_args)
+        with futures.ThreadPoolExecutor() as executor:
+            results = executor.map(func, iterable_args)
 
     def add_workers(self, users_to_add):
         self._parallel_map(self.add_new_worker, users_to_add)
