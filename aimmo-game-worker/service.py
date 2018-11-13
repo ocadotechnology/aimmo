@@ -17,7 +17,9 @@ DATA_URL = ''
 
 
 def get_code_and_options():
-    data = requests.get(DATA_URL).json()
+    response = requests.get(DATA_URL)
+    LOGGER.debug(response)
+    data = response.json()
     return data['code'], data['options']
 
 
@@ -40,6 +42,7 @@ def run(host, port, data_url):
     global avatar_runner, DATA_URL
     DATA_URL = data_url
     logging.basicConfig(level=logging.DEBUG)
+    LOGGER.debug(f"DATA URL: {DATA_URL}")
     avatar_runner = AvatarRunner()
     app.config['DEBUG'] = False
     app.run(host, port, debug=False)

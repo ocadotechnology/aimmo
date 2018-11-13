@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 kubernetes = "*"
-aimmo-game-worker = {editable = true, path = "."}
+aimmo-game-worker = {path = ".", editable = true}
 
 [requires]
-python_version = "3.7"
+python_version = "3.6.5"

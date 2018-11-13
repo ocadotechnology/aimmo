@@ -1,6 +1,7 @@
 import time
 import threading
 import logging
+import asyncio
 import concurrent.futures
 
 from simulation.django_communicator import DjangoCommunicator
@@ -15,18 +16,13 @@ TURN_TIME = 2
 class GameRunner:
     def __init__(self, worker_manager_class, game_state_generator, django_api_url, port):
         super(GameRunner, self).__init__()
-        LOGGER.info(f"1 worker_manager_class: {worker_manager_class}, port: {port}")
 
         self.worker_manager = worker_manager_class(port=port)
-        LOGGER.info("2")
         self.game_state = game_state_generator(AvatarManager())
-        LOGGER.info("3")
         self.communicator = DjangoCommunicator(django_api_url=django_api_url,
                                                completion_url=django_api_url + 'complete/')
-        LOGGER.info("4")
         self.simulation_runner = ConcurrentSimulationRunner(communicator=self.communicator,
                                                             game_state=self.game_state)
-        LOGGER.info("5")
         self._end_turn_callback = lambda: None
 
     def set_end_turn_callback(self, callback_method):
@@ -49,7 +45,6 @@ class GameRunner:
         self.game_state.main_avatar_id = game_metadata['main_avatar']
 
     def update_workers(self):
-        LOGGER.info("did I get here??? 🤔")
         game_metadata = self.communicator.get_game_metadata()['main']
 
         users_to_add = self.get_users_to_add(game_metadata)
@@ -72,14 +67,14 @@ class GameRunner:
 
     def update(self):
         self.update_workers()
-        self.update_simulation(self.worker_manager.get_player_id_to_serialised_actions())
-        self.worker_manager.clear_logs()
+        # self.update_simulation(self.worker_manager.get_player_id_to_serialised_actions())
+        # self.worker_manager.clear_logs()
+        # time.sleep(TURN_TIME)
+        # yield True
+        pass
 
-    def _run(self):
+    async def run(self):
         while True:
             self.update()
-            time.sleep(TURN_TIME)
-
-    def run(self):
-        with concurrent.futures.ProcessPoolExecutor(max_workers=1) as executor:
-            executor.submit(self._run())
+            LOGGER.debug("this is happening")
+            await asyncio.sleep(TURN_TIME)
