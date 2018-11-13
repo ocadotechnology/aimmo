@@ -4,15 +4,18 @@ import logging
 import traceback
 import sys
 import imp
+import inspect
 
 from six import StringIO
 
-from simulation.action import WaitAction, Action, MoveAction
+import simulation.action as avatar_action
 import simulation.direction as direction
+
+from simulation.action import WaitAction, Action
 from user_exceptions import InvalidActionException
 
 from RestrictedPython import compile_restricted, utility_builtins
-from RestrictedPython.Guards import safe_builtins, full_write_guard
+from RestrictedPython.Guards import safe_builtins, safer_getattr
 
 LOGGER = logging.getLogger(__name__)
 
@@ -24,21 +27,25 @@ except ImportError:
     # import builtins as __builtin__
 
 
-def print_text(*args, **kwargs):
-    return __builtin__.print(*args, **kwargs)
+def add_actions_to_globals():
+    action_classes = filter(lambda x: x[1].__module__ == "simulation.action", inspect.getmembers(avatar_action, inspect.isclass))
+
+    for action_class in action_classes:
+        restricted_globals[action_class[0]] = action_class[1]
 
 
-_write_ = full_write_guard
-_getattr_ = getattr
+_getattr_ = safer_getattr
 __metaclass__ = type
+
 restricted_globals = dict(__builtins__=safe_builtins)
-restricted_globals['_print_'] = print_text
-restricted_globals['_write_'] = _write_
+
 restricted_globals['_getattr_'] = _getattr_
+restricted_globals['_getiter_'] = list
+restricted_globals['_print_'] = print
 restricted_globals['__metaclass__'] = __metaclass__
 restricted_globals['__name__'] = "Avatar"
-restricted_globals['WaitAction'] = WaitAction
-restricted_globals['MoveAction'] = MoveAction
+
+add_actions_to_globals()
 restricted_globals['direction'] = direction
 restricted_globals['random'] = utility_builtins['random']
 
@@ -54,7 +61,6 @@ class AvatarRunner(object):
         return new_avatar_code != self.avatar_source_code
 
     def _get_new_avatar(self, src_code):
-
         self.avatar_source_code = src_code
 
         module_avatar = imp.new_module('avatar')  # Create a temporary module to execute the src_code in
