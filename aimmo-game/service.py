@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import eventlet
+eventlet.monkey_patch()
 import pickle
 import ast
 import logging
@@ -8,7 +10,6 @@ import sys
 import json
 from urllib.parse import parse_qs
 
-import eventlet
 import flask
 import socketio
 from flask_cors import CORS
@@ -16,9 +17,6 @@ from flask_cors import CORS
 from simulation import map_generator
 from simulation.worker_managers import WORKER_MANAGERS
 from simulation.game_runner import GameRunner
-
-eventlet.sleep()
-eventlet.monkey_patch()
 
 flask_app = flask.Flask(__name__)
 CORS(flask_app, supports_credentials=True)
