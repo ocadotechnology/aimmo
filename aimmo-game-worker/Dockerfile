@@ -13,6 +13,7 @@ COPY . .
 FROM base as runner
 ENV WORKER_MANAGER=kubernetes
 ENV FLASK_ENV='development'
+RUN apk add --no-cache bash
 CMD python ./service.py 0.0.0.0 $PORT $DATA_URL
 
 

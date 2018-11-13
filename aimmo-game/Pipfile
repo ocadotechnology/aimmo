@@ -8,6 +8,8 @@ aimmo-game = {path = ".", editable = true}
 docker = "*"
 kubernetes = "*"
 prometheus-client = "*"
+aiohttp = "*"
+aiohttp-cors = "*"
 
 [requires]
 python_version = "3.6.5"

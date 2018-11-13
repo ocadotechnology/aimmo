@@ -1,6 +1,7 @@
 import time
 import threading
 import logging
+import asyncio
 import concurrent.futures
 
 from simulation.django_communicator import DjangoCommunicator
@@ -66,14 +67,14 @@ class GameRunner:
 
     def update(self):
         self.update_workers()
-        self.update_simulation(self.worker_manager.get_player_id_to_serialised_actions())
-        self.worker_manager.clear_logs()
+        # self.update_simulation(self.worker_manager.get_player_id_to_serialised_actions())
+        # self.worker_manager.clear_logs()
+        # time.sleep(TURN_TIME)
+        # yield True
+        pass
 
-    def _run(self):
+    async def run(self):
         while True:
             self.update()
-            time.sleep(TURN_TIME)
-
-    def run(self):
-        with concurrent.futures.ProcessPoolExecutor(max_workers=1) as executor:
-            executor.submit(self._run())
+            LOGGER.debug("this is happening")
+            await asyncio.sleep(TURN_TIME)
