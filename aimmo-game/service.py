@@ -151,7 +151,10 @@ if __name__ == '__main__':
 
     socketio_server.attach(app, socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
 
-    port = int(os.environ['EXTERNAL_PORT'])
+    if os.environ['WORKER_MANAGER'] == 'local':
+        port = int(os.environ['EXTERNAL_PORT'])
+    else:
+        port = int(sys.argv[2])
 
     run_game(port)
 
