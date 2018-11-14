@@ -38,10 +38,10 @@ class TestHelperFunctions(unittest.TestCase):
             (2, 0), get_random_edge_index(map, rng=ConstantRng(5)))
 
         # Verify no out of bounds
-        with self.assertRaisesRegexp(ValueError, 'Beyond range'):
+        with self.assertRaisesRegex(ValueError, 'Beyond range'):
             get_random_edge_index(map, rng=ConstantRng(-1))
 
-        with self.assertRaisesRegexp(ValueError, 'Beyond range'):
+        with self.assertRaisesRegex(ValueError, 'Beyond range'):
             get_random_edge_index(map, rng=ConstantRng(6))
 
     def test_get_random_edge_index_can_give_all_possible(self):
@@ -58,10 +58,10 @@ class TestHelperFunctions(unittest.TestCase):
 
     def test_out_of_bounds_random_edge(self):
         map = WorldMap.generate_empty_map(3, 4, {})
-        with self.assertRaisesRegexp(ValueError, 'Beyond range'):
+        with self.assertRaisesRegex(ValueError, 'Beyond range'):
             get_random_edge_index(map, rng=ConstantRng(-1))
 
-        with self.assertRaisesRegexp(ValueError, 'Beyond range'):
+        with self.assertRaisesRegex(ValueError, 'Beyond range'):
             get_random_edge_index(map, rng=ConstantRng(6))
 
 

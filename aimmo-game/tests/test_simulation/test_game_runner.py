@@ -1,6 +1,7 @@
 from unittest import TestCase
 from json import dumps
-
+import asyncio
+import pytest
 import mock
 
 from .mock_communicator import MockCommunicator
@@ -39,69 +40,78 @@ class RequestMock(object):
         return dumps(self.value)
 
 
-class TestGameRunner(TestCase):
-    def setUp(self):
-        game_state = GameState(InfiniteMap(), AvatarManager())
-        self.game_runner = GameRunner(worker_manager_class=ConcreteWorkerManager,
-                                      game_state_generator=lambda avatar_manager: game_state,
-                                      port='0000',
-                                      django_api_url='http://test')
-        self.game_runner.communicator = MockCommunicator()
+@pytest.fixture
+def game_runner():
+    async def mock_callback():
+        pass
+    game_state = GameState(InfiniteMap(), AvatarManager())
+    game_runner = GameRunner(worker_manager_class=ConcreteWorkerManager,
+                             game_state_generator=lambda avatar_manager: game_state,
+                             port='0000',
+                             django_api_url='http://test')
 
-    def test_correct_url(self):
-        self.game_runner.communicator.get_game_metadata = mock.MagicMock()
-        self.game_runner.update()
-        # noinspection PyUnresolvedReferences
-        self.game_runner.communicator.get_game_metadata.assert_called_once()
+    game_runner.communicator = MockCommunicator()
+    game_runner.set_end_turn_callback(mock_callback)
+    return game_runner
 
-    def test_workers_and_avatars_added(self):
-        self.game_runner.communicator.data = RequestMock(3).value
-        self.game_runner.update()
+@pytest.mark.asyncio
+async def test_correct_url(game_runner):
+    game_runner.communicator.get_game_metadata = mock.MagicMock()
+    await game_runner.update()
+    # noinspection PyUnresolvedReferences
+    game_runner.communicator.get_game_metadata.assert_called_once()
 
-        self.assertEqual(len(self.game_runner.worker_manager.final_workers), 3)
-        for i in range(3):
-            self.assertIn(i, self.game_runner.game_state.avatar_manager.avatars_by_id)
-            self.assertIn(i, self.game_runner.worker_manager.final_workers)
-            self.assertEqual(self.game_runner.worker_manager.get_code(i), 'code for %s' % i)
+@pytest.mark.asyncio
+async def test_workers_and_avatars_added(game_runner):
+    game_runner.communicator.data = RequestMock(3).value
+    await game_runner.update()
 
-    def test_changed_code(self):
-        self.game_runner.communicator.data = RequestMock(4).value
-        self.game_runner.update()
-        self.game_runner.communicator.change_code(0, 'changed 0')
-        self.game_runner.communicator.change_code(2, 'changed 2')
-        self.game_runner.update()
+    assert len(game_runner.worker_manager.final_workers) == 3
+    for i in range(3):
+        assert i in game_runner.game_state.avatar_manager.avatars_by_id
+        assert i in game_runner.worker_manager.final_workers
+        assert game_runner.worker_manager.get_code(i) == 'code for %s' % i
 
-        for i in range(4):
-            self.assertIn(i, self.game_runner.worker_manager.final_workers)
-            self.assertIn(i, self.game_runner.game_state.avatar_manager.avatars_by_id)
+@pytest.mark.asyncio
+async def test_changed_code(game_runner):
+    game_runner.communicator.data = RequestMock(4).value
+    await game_runner.update()
+    game_runner.communicator.change_code(0, 'changed 0')
+    game_runner.communicator.change_code(2, 'changed 2')
+    await game_runner.update()
 
-        for i in (1, 3):
-            self.assertEqual(self.game_runner.worker_manager.get_code(i), 'code for %s' % i)
+    for i in range(4):
+        assert i in game_runner.worker_manager.final_workers
+        assert i in game_runner.game_state.avatar_manager.avatars_by_id
 
-        for i in (0, 2):
-            self.assertIn(i, self.game_runner.worker_manager.updated_workers)
-            self.assertEqual(self.game_runner.worker_manager.get_code(i), 'changed %s' % i)
+    for i in (1, 3):
+        assert game_runner.worker_manager.get_code(i) in 'code for %s' % i
 
-    def test_logs_cleared_at_each_update(self):
-        self.game_runner.communicator.data = RequestMock(3).value
-        self.game_runner.update_workers()
-        first_worker = self.game_runner.worker_manager.player_id_to_worker[0]
-        first_worker.log = 'test logs'
+    for i in (0, 2):
+        assert i in game_runner.worker_manager.updated_workers
+        assert game_runner.worker_manager.get_code(i) in 'changed %s' % i
 
-        self.game_runner.worker_manager.clear_logs()
+def test_logs_cleared_at_each_update(game_runner):
+    game_runner.communicator.data = RequestMock(3).value
+    game_runner.update_workers()
+    first_worker = game_runner.worker_manager.player_id_to_worker[0]
+    first_worker.log = 'test logs'
 
-        self.assertIsNone(first_worker.log)
+    game_runner.worker_manager.clear_logs()
 
-    def test_remove_avatars(self):
-        self.game_runner.communicator.data = RequestMock(3).value
-        self.game_runner.update()
-        del self.game_runner.communicator.data['main']['users'][1]
-        self.game_runner.update()
+    assert first_worker.log is None
 
-        for i in range(3):
-            if i == 1:
-                self.assertNotIn(i, self.game_runner.worker_manager.final_workers)
-                self.assertNotIn(i, self.game_runner.game_state.avatar_manager.avatars_by_id)
-            else:
-                self.assertIn(i, self.game_runner.worker_manager.final_workers)
-                self.assertIn(i, self.game_runner.game_state.avatar_manager.avatars_by_id)
+@pytest.mark.asyncio
+async def test_remove_avatars(game_runner):
+    game_runner.communicator.data = RequestMock(3).value
+    await game_runner.update()
+    del game_runner.communicator.data['main']['users'][1]
+    await game_runner.update()
+
+    for i in range(3):
+        if i == 1:
+            assert i not in game_runner.worker_manager.final_workers
+            assert i not in game_runner.game_state.avatar_manager.avatars_by_id
+        else:
+            assert i in game_runner.worker_manager.final_workers
+            assert i in game_runner.game_state.avatar_manager.avatars_by_id

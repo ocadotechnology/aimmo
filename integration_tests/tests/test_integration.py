@@ -49,7 +49,7 @@ class TestIntegration(unittest.TestCase):
         self.processes = runner.run(use_minikube=False, server_wait=False, capture_output=True, test_env=True)
         client = Client()
         response = client.get(reverse(url_string))
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         csrf_token = response.context['csrf_token']
 
         login_info = {
@@ -59,4 +59,4 @@ class TestIntegration(unittest.TestCase):
         }
 
         response = client.post(reverse(url_string), login_info)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)

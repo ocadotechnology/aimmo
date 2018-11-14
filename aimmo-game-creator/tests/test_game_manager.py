@@ -61,7 +61,7 @@ class TestGameManager(unittest.TestCase):
         with HTTMock(mocker):
             self.game_manager.update()
         self.assertEqual(len(mocker.urls_requested), 1)
-        self.assertRegexpMatches(mocker.urls_requested[0], "http://test/*")
+        self.assertRegex(mocker.urls_requested[0], "http://test/*")
 
     def test_games_added(self):
         mocker = RequestMock(3)

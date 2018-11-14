@@ -50,7 +50,7 @@ class GameAPI(object):
         return healthcheck
 
     def register_player_data_view(self):
-        @routes.get('/player/{player_id:\d+}')
+        @routes.get('/player/{player_id}')
         async def player_data(request: web.Request):
             LOGGER.debug("did I get here? 🤔")
             player_id = int(request.match_info['player_id'])

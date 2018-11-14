@@ -21,6 +21,7 @@ setup(
     tests_require=[
         'pytest',
         'pytest-asyncio',
+        'asynctest',
         'httmock',
         'mock',
         'hypothesis'

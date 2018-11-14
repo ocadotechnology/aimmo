@@ -43,15 +43,6 @@ class TestService(TestCase):
         test_game_state = GameState(WorldMap(grid, {}), self.avatar_manager)
         self.world_state_json = test_game_state.serialise()
 
-    def test_healthy_flask(self):
-        """
-        Tests the flask service. HEALTHY is returned if the app can be routed to root.
-        """
-        service.flask_app.config['TESTING'] = True
-        self.app = service.flask_app.test_client()
-        response = self.app.get('/game-1')
-        self.assertEqual(response.data, b'HEALTHY')
-
     def test_correct_json_player_dictionary(self):
         """
         Ensures the "players" element of the get_game_state() JSON returns the correct information for the dummy
