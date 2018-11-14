@@ -63,6 +63,7 @@ def build_docker_images(minikube=None, build_target=None):
             target=build_target
         )
 
+
 def delete_containers():
     """Delete any containers starting with 'aimmo'."""
     client = docker.from_env(version='auto')

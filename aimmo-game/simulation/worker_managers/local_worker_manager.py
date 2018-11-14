@@ -37,7 +37,7 @@ class LocalWorkerManager(WorkerManager):
         else:
             template = {
                 'environment': {}
-            } 
+            }
         data_url = 'http://{}:{}/player/{}'.format(self.host, self.port, player_id)
         template['environment']['DATA_URL'] = data_url
         template['environment']['PORT'] = port

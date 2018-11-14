@@ -46,7 +46,7 @@ class GameAPI(object):
         @routes.get('/game-{game_id}')
         async def healthcheck(request):
             return web.Response(text='HEALTHY')
-        
+
         return healthcheck
 
     def register_player_data_view(self):
@@ -143,6 +143,7 @@ def run_game(port):
                        worker_manager=game_runner.worker_manager)
     game_runner.set_end_turn_callback(game_api.send_updates)
     asyncio.ensure_future(game_runner.run())
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

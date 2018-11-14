@@ -9,7 +9,7 @@ from aimmo_runner import runner
 
 parser = argparse.ArgumentParser(description='Runs AI:MMO.')
 
-parser.add_argument('-k', '--kube', dest='use_minikube', 
+parser.add_argument('-k', '--kube', dest='use_minikube',
                     action='store_true', default=False,
                     help='To specify if you want to use your minikube enviroment for AI:MMO, default is basic docker containers.')
 parser.add_argument('-t', '--target', dest='build_target', choices=['runner', 'tester'],

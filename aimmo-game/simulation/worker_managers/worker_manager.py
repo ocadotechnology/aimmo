@@ -53,7 +53,6 @@ class WorkerManager(object):
             [thread.start() for thread in threads]
             time.sleep(duration)
 
-        
         timed_process_for_worker_turn_requests(2)
 
     def get_player_id_to_serialised_actions(self):
@@ -75,7 +74,6 @@ class WorkerManager(object):
     def add_new_worker(self, player_id):
         worker_url_base = self.create_worker(player_id)
         self.player_id_to_worker[player_id] = Worker('{}/turn/'.format(worker_url_base))
-        
 
     def _parallel_map(self, func, iterable_args):
         with futures.ThreadPoolExecutor() as executor:

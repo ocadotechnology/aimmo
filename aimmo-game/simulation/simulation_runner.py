@@ -84,7 +84,7 @@ class ConcurrentSimulationRunner(SimulationRunner):
 
         avatars = self.game_state.avatar_manager.active_avatars
         threads = [Thread(target=self._run_turn_for_avatar,
-                         args=(avatar, player_id_to_serialised_actions[avatar.player_id])) for avatar in avatars]
+                          args=(avatar, player_id_to_serialised_actions[avatar.player_id])) for avatar in avatars]
 
         [thread.start() for thread in threads]
         [thread.join() for thread in threads]

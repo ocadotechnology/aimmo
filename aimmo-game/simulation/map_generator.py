@@ -95,7 +95,7 @@ def get_shortest_path_between(source_cell, destination_cell, world_map):
         return x_distance + y_distance + len(this_branch)
 
     branches = PriorityQueuef(key=manhattan_distance_to_destination_cell,
-                             init_items=[[source_cell]])
+                              init_items=[[source_cell]])
     visited_cells = set()
 
     while not branches.queue.empty():
@@ -162,6 +162,7 @@ class PriorityEntry(object):
 
     def __lt__(self, other):
         return self.priority < other.priority
+
 
 class PriorityQueuef(object):
     def __init__(self, key, init_items=tuple()):
