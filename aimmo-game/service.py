@@ -24,8 +24,7 @@ cors = aiohttp_cors.setup(app)
 
 # flask_app = flask.Flask(__name__)
 # CORS(flask_app, supports_credentials=True)
-socketio_server = socketio.AsyncServer()
-socketio_server.attach(app)
+socketio_server = socketio.AsyncServer(logger=True, async_handlers=True)
 
 routes = web.RouteTableDef()
 
@@ -91,6 +90,7 @@ class GameAPI(object):
         return remove_session_id_from_mappings
 
     async def send_updates(self):
+        LOGGER.info("inside end turn callback")
         await self._send_game_state()
         player_id_to_worker = self.worker_manager.player_id_to_worker
         await self._send_logs(player_id_to_worker)
@@ -162,6 +162,8 @@ if __name__ == '__main__':
     host = sys.argv[1]
     # socket_app = socketio.Middleware(socketio_server, flask_app,
                                     #  socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
+
+    socketio_server.attach(app, socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
 
     port = int(os.environ['EXTERNAL_PORT'])
 

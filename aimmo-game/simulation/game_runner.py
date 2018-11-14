@@ -60,21 +60,21 @@ class GameRunner:
         self.update_main_user(game_metadata)
         self.worker_manager.fetch_all_worker_data(self.game_state.get_serialised_game_states_for_workers())
 
-    def update_simulation(self, player_id_to_serialised_actions):
+    async def update_simulation(self, player_id_to_serialised_actions):
         LOGGER.info(f"PARIS, THESE IS THE DICTIONARY YOU WERE LOOKING FOR: {player_id_to_serialised_actions}")
         self.simulation_runner.run_single_turn(player_id_to_serialised_actions)
-        self._end_turn_callback()
+        await self._end_turn_callback()
 
-    def update(self):
+    async def update(self):
         self.update_workers()
-        # self.update_simulation(self.worker_manager.get_player_id_to_serialised_actions())
-        # self.worker_manager.clear_logs()
+        await self.update_simulation(self.worker_manager.get_player_id_to_serialised_actions())
+        self.worker_manager.clear_logs()
         # time.sleep(TURN_TIME)
         # yield True
         pass
 
     async def run(self):
         while True:
-            self.update()
+            await self.update()
             LOGGER.debug("this is happening")
             await asyncio.sleep(TURN_TIME)
