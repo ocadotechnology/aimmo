@@ -15,7 +15,12 @@ setup(
         'six',
         'kubernetes'
     ],
+    setup_requires=[
+        "pytest-runner"
+    ],
     tests_require=[
+        'pytest',
+        'pytest-asyncio',
         'httmock',
         'mock',
         'hypothesis'

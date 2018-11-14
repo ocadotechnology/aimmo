@@ -11,9 +11,7 @@ import sys
 import json
 from urllib.parse import parse_qs
 
-import flask
 import socketio
-from flask_cors import CORS
 
 from simulation import map_generator
 from simulation.worker_managers import WORKER_MANAGERS
@@ -22,8 +20,6 @@ from simulation.game_runner import GameRunner
 app = web.Application()
 cors = aiohttp_cors.setup(app)
 
-# flask_app = flask.Flask(__name__)
-# CORS(flask_app, supports_credentials=True)
 socketio_server = socketio.AsyncServer(logger=True, async_handlers=True)
 
 routes = web.RouteTableDef()
@@ -45,8 +41,6 @@ class GameAPI(object):
         self.register_remove_session_id_from_mappings()
         self.register_healthcheck()
         app.add_routes(routes)
-        # for route in routes:
-        #     cors.add(route)
 
     def register_healthcheck(self):
         @routes.get('/game-{game_id}')
@@ -60,7 +54,6 @@ class GameAPI(object):
         async def player_data(request: web.Request):
             LOGGER.debug("did I get here? 🤔")
             player_id = int(request.match_info['player_id'])
-            # player_id = int(player_id)
             return web.json_response({
                 'code': self.worker_manager.get_code(player_id),
                 'options': {},
@@ -90,7 +83,6 @@ class GameAPI(object):
         return remove_session_id_from_mappings
 
     async def send_updates(self):
-        LOGGER.info("inside end turn callback")
         await self._send_game_state()
         player_id_to_worker = self.worker_manager.player_id_to_worker
         await self._send_logs(player_id_to_worker)
@@ -147,21 +139,15 @@ def create_runner(port):
 
 
 def run_game(port):
-    LOGGER.debug("Making game runner")
     game_runner = create_runner(port)
-    LOGGER.debug("game runner made")
     game_api = GameAPI(game_state=game_runner.game_state,
                        worker_manager=game_runner.worker_manager)
     game_runner.set_end_turn_callback(game_api.send_updates)
     asyncio.ensure_future(game_runner.run())
-    LOGGER.debug("game runner is running")
-    # game_runner.run()
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     host = sys.argv[1]
-    # socket_app = socketio.Middleware(socketio_server, flask_app,
-                                    #  socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
 
     socketio_server.attach(app, socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
 
@@ -171,4 +157,3 @@ if __name__ == '__main__':
 
     LOGGER.info("starting the server")
     web.run_app(app, host=host, port=port)
-    # eventlet.wsgi.server(eventlet.listen((host, port)), socket_app, debug=True)
