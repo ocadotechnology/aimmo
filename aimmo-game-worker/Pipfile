@@ -5,7 +5,8 @@ name = "pypi"
 
 [packages]
 kubernetes = "*"
-aimmo-game-creator = {editable = true, path = "."}
+aimmo-game-worker = {path = ".", editable = true}
+accesscontrol = "==3.0.14"
 
 [requires]
 python_version = "2.7"

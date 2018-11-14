@@ -20,6 +20,7 @@ from user_exceptions import InvalidActionException
 
 from RestrictedPython import compile_restricted, utility_builtins
 from RestrictedPython.Guards import safe_builtins, safer_getattr
+from AccessControl.ZopeGuards import protected_inplacevar
 
 LOGGER = logging.getLogger(__name__)
 
@@ -39,6 +40,7 @@ def add_actions_to_globals():
 
 
 _getattr_ = safer_getattr
+_inplacevar_ = protected_inplacevar
 __metaclass__ = type
 
 restricted_globals = dict(__builtins__=safe_builtins)
@@ -46,6 +48,7 @@ restricted_globals = dict(__builtins__=safe_builtins)
 restricted_globals['_getattr_'] = _getattr_
 restricted_globals['_getiter_'] = list
 restricted_globals['_print_'] = print
+restricted_globals['_inplacevar_'] = _inplacevar_
 restricted_globals['__metaclass__'] = __metaclass__
 restricted_globals['__name__'] = "Avatar"
 
