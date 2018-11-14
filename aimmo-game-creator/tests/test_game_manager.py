@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 
-import pickle
 import unittest
 from json import dumps
 

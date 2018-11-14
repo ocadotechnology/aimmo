@@ -20,7 +20,7 @@ from simulation.game_runner import GameRunner
 app = web.Application()
 cors = aiohttp_cors.setup(app)
 
-socketio_server = socketio.AsyncServer(logger=True, async_handlers=True)
+socketio_server = socketio.AsyncServer(async_handlers=True)
 
 routes = web.RouteTableDef()
 
@@ -52,7 +52,6 @@ class GameAPI(object):
     def register_player_data_view(self):
         @routes.get('/player/{player_id}')
         async def player_data(request: web.Request):
-            LOGGER.debug("did I get here? 🤔")
             player_id = int(request.match_info['player_id'])
             return web.json_response({
                 'code': self.worker_manager.get_code(player_id),

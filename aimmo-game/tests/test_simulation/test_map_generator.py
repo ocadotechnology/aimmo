@@ -118,8 +118,6 @@ class TestMainGenerator(_BaseGeneratorTestCase):
     
     def test_shortest_path(self):
         m = self.get_map(START_WIDTH=4)
-        print("hello map ⬇️")
-        print(m)
 
     def test_not_complete(self):
         game_state = self.get_game_state()

@@ -105,16 +105,12 @@ class GameManager(object):
                 id: games[id]
                 for id in self._data.add_new_games(games.keys())
             }
-            LOGGER.debug("Need to add games: {}".format(games_to_add))
-
-
 
             # Add missing games
             self._parallel_map(self.recreate_game, games_to_add.items())
             # Delete extra games
             known_games = set(games.keys())
             removed_game_ids = self._data.remove_unknown_games(known_games)
-            LOGGER.debug("Removing games: {}".format(removed_game_ids))
             self._parallel_map(self.delete_game, removed_game_ids)
 
     def get_persistent_state(self, player_id):
@@ -130,8 +126,7 @@ class GameManager(object):
 
     def _parallel_map(self, func, iterable_args):
         with futures.ThreadPoolExecutor() as executor:
-            results = executor.map(func, iterable_args)
-            #futures.wait(results, return_when=ALL_COMPLETED)
+            _ = executor.map(func, iterable_args)
 
 
 class LocalGameManager(GameManager):

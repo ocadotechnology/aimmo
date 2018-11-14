@@ -41,7 +41,6 @@ class PickupUpdater(_MapUpdater):
         target_num_pickups = int(math.ceil(
             context.num_avatars * world_map.settings['TARGET_NUM_PICKUPS_PER_AVATAR']
         ))
-        LOGGER.debug('Aiming for %s new pickups', target_num_pickups)
         max_num_pickups_to_add = target_num_pickups - len(list(world_map.pickup_cells()))
         locations = world_map._spawn_location_finder.get_random_spawn_locations(max_num_pickups_to_add)
         for cell in locations:

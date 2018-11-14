@@ -1,12 +1,9 @@
 import logging
 import os
 import time
-import urllib3
 
-# import kubernetes.client
 from kubernetes import client
 from kubernetes import config
-# import kubernetes.config
 
 from .worker_manager import WorkerManager
 
@@ -20,10 +17,7 @@ class KubernetesWorkerManager(WorkerManager):
 
     def __init__(self, *args, **kwargs):
         config.load_incluster_config()
-        client.Configuration._default.debug = True
-        #WHY HAVE YOU STOPPED WORKING!!!!
         self.api = client.CoreV1Api()
-        #WHY HAVE YOU STOPPED WORKING!!!!
         self.game_id = os.environ['GAME_ID']
         self.game_url = os.environ['GAME_URL']
         self.pod_name = os.environ['POD_NAME']
@@ -35,9 +29,6 @@ class KubernetesWorkerManager(WorkerManager):
 
     def _make_owner_references(self):
         try:
-            LOGGER.info("HERES THE GAMES UID")
-            LOGGER.info(f"---{self._get_game_uid()}---")
-            LOGGER.info("DID I SHOW IT TO YOU?")
             return [client.V1OwnerReference(
                 api_version="v1",
                 block_owner_deletion=True,
@@ -71,7 +62,6 @@ class KubernetesWorkerManager(WorkerManager):
 
     def make_pod(self, player_id):
         pod_manifest = client.V1PodSpec(containers=[self._make_container(player_id)], service_account_name='worker')
-        LOGGER.info("MADE POD SPEC")
 
         metadata = client.V1ObjectMeta(
             labels={
@@ -81,31 +71,12 @@ class KubernetesWorkerManager(WorkerManager):
             generate_name='aimmo-%s-worker-%s-' % (self.game_id, player_id),
             owner_references=self._make_owner_references()
         )
-        LOGGER.info('hey hey i wanna be a pod star')
         return client.V1Pod(metadata=metadata, spec=pod_manifest)
 
     def _get_game_uid(self):
-        LOGGER.info("_get_game_uid(self) is the problem, Line 85 in kubernetes_worker_manager.py")
-        LOGGER.info("                      WHY U NO WORK?!")
-        LOGGER.info("                      WHY U NO WORK?!")
-        LOGGER.info("                      WHY U NO WORK?!")
-        LOGGER.info("                      WHY U NO WORK?!")
-        # pool_manager = urllib3.PoolManager(num_pools=1)
-        # self.api.api_client.rest_client.pool_manager = pool_manager
-        # LOGGER.info(len(pool_manager.pools))
-        # pool_manager.urlopen('https://google.com')
-        # LOGGER.info(len(pool_manager.pools))
-        # LOGGER.info("Paris disapproves")
         pod_list = self.api.list_namespaced_pod(namespace=K8S_NAMESPACE,
                                                 field_selector=f'metadata.name={self.pod_name}')
-        LOGGER.info("                      WHY U NO WORK?!")
-        LOGGER.info("                      WHY U NO WORK?!")
-        LOGGER.info("                      WHY U NO WORK?!")
-        LOGGER.info("                      WHY U NO WORK?!")
-        LOGGER.info("_get_game_uid(self) is the problem, Line 85 in kubernetes_worker_manager.py")
-        LOGGER.info(pod_list)
         pod_metadata = pod_list.items[0].metadata
-        LOGGER.info("or you?")
         return pod_metadata.uid
 
     def _wait_for_pod_creation(self, pod_name, player_id):
@@ -121,9 +92,7 @@ class KubernetesWorkerManager(WorkerManager):
         raise EnvironmentError('Could not start worker %s.' % player_id)
 
     def create_worker(self, player_id):
-        LOGGER.info("Gonna make a pod now :3")
         pod_obj = self.make_pod(player_id)
-        LOGGER.info("All done boss :3")
         LOGGER.info('Making new worker pod: {}'.format(pod_obj.metadata.name))
         pod = self.api.create_namespaced_pod(namespace=K8S_NAMESPACE, body=pod_obj)
         pod_name = pod.metadata.name

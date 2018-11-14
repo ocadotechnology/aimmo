@@ -15,7 +15,7 @@ the latter represents the thread / pod. It is important that
 `WorkerManager` has no interaction with simulation logic.
 
 Adding workers is done in a concurrent manner, using a
-ThreadPoolExecutor. This is because thecreation of
+ThreadPoolExecutor. This is because the creation of
 workers often involves expensive io. Methods in
 `WorkerManager` (and its subclasses) **must** be thread safe.
 

@@ -123,9 +123,6 @@ class AttackAction(Action):
                                                       damage_dealt))
         attacked_avatar.damage(damage_dealt)
 
-        LOGGER.debug('{} dealt {} damage to {}'.format(self.avatar,
-                                                       damage_dealt,
-                                                       attacked_avatar))
         self.avatar.clear_action()
 
         if attacked_avatar.health <= 0:

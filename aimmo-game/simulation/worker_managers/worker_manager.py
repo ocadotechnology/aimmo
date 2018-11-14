@@ -4,9 +4,6 @@ import time
 from eventlet.semaphore import Semaphore
 from threading import Thread
 from concurrent import futures
-from concurrent.futures import ALL_COMPLETED
-# import asyncio
-# import aiohttp
 
 from simulation.worker import Worker
 

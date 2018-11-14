@@ -11,11 +11,6 @@ from simulation.worker_managers.local_worker_manager import LocalWorkerManager
 from simulation.game_runner import GameRunner
 
 
-def make_coroutine():
-    async def coroutine(*args, **kwargs):
-        return mock.Mock(*args, **kwargs)
-    return coroutine
-
 class MockGameState(object):
     def serialise(self):
         return {'foo': 'bar'}
