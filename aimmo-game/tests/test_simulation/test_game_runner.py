@@ -54,12 +54,14 @@ def game_runner():
     game_runner.set_end_turn_callback(mock_callback)
     return game_runner
 
+
 @pytest.mark.asyncio
 async def test_correct_url(game_runner):
     game_runner.communicator.get_game_metadata = mock.MagicMock()
     await game_runner.update()
     # noinspection PyUnresolvedReferences
     game_runner.communicator.get_game_metadata.assert_called_once()
+
 
 @pytest.mark.asyncio
 async def test_workers_and_avatars_added(game_runner):
@@ -71,6 +73,7 @@ async def test_workers_and_avatars_added(game_runner):
         assert i in game_runner.game_state.avatar_manager.avatars_by_id
         assert i in game_runner.worker_manager.final_workers
         assert game_runner.worker_manager.get_code(i) == 'code for %s' % i
+
 
 @pytest.mark.asyncio
 async def test_changed_code(game_runner):
@@ -91,6 +94,7 @@ async def test_changed_code(game_runner):
         assert i in game_runner.worker_manager.updated_workers
         assert game_runner.worker_manager.get_code(i) in 'changed %s' % i
 
+
 def test_logs_cleared_at_each_update(game_runner):
     game_runner.communicator.data = RequestMock(3).value
     game_runner.update_workers()
@@ -100,6 +104,7 @@ def test_logs_cleared_at_each_update(game_runner):
     game_runner.worker_manager.clear_logs()
 
     assert first_worker.log is None
+
 
 @pytest.mark.asyncio
 async def test_remove_avatars(game_runner):
