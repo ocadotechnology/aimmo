@@ -67,13 +67,15 @@ class AvatarRunner(object):
     def _get_new_avatar(self, src_code):
         self.avatar_source_code = src_code
 
-        module_avatar = imp.new_module('avatar')  # Create a temporary module to execute the src_code in
-        module_avatar.__dict__.update(restricted_globals)
+        module = imp.new_module('avatar')  # Create a temporary module to execute the src_code in
+        module.__dict__.update(restricted_globals)
 
         byte_code = compile_restricted(src_code, filename='<inline-code>', mode='exec')
-        exec byte_code in restricted_globals
+        exec(byte_code, restricted_globals)
 
-        return module_avatar.Avatar()
+        module.__dict__['Avatar'] = restricted_globals['Avatar']
+
+        return module.Avatar()
 
     def _update_avatar(self, src_code):
         """
