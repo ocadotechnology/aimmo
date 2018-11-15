@@ -1,5 +1,7 @@
 from unittest import TestCase
 
+import mock
+
 from avatar_runner import AvatarRunner
 from user_exceptions import InvalidActionException
 
