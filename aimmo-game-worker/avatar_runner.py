@@ -19,7 +19,7 @@ from simulation.action import WaitAction, Action
 from user_exceptions import InvalidActionException
 
 from RestrictedPython import compile_restricted, utility_builtins
-from RestrictedPython.Guards import safe_builtins, safer_getattr
+from RestrictedPython.Guards import safe_builtins, safer_getattr, guarded_setattr, full_write_guard
 from AccessControl.ZopeGuards import protected_inplacevar
 
 LOGGER = logging.getLogger(__name__)
@@ -40,15 +40,19 @@ def add_actions_to_globals():
 
 
 _getattr_ = safer_getattr
+_setattr_ = guarded_setattr
 _inplacevar_ = protected_inplacevar
+_write_ = full_write_guard
 __metaclass__ = type
 
 restricted_globals = dict(__builtins__=safe_builtins)
 
 restricted_globals['_getattr_'] = _getattr_
+restricted_globals['_setattr_'] = _setattr_
 restricted_globals['_getiter_'] = list
 restricted_globals['_print_'] = print
 restricted_globals['_inplacevar_'] = _inplacevar_
+restricted_globals['_write_'] = _write_
 restricted_globals['__metaclass__'] = __metaclass__
 restricted_globals['__name__'] = "Avatar"
 
@@ -143,12 +147,9 @@ class AvatarRunner(object):
         return action.serialise()
 
     def clean_logs(self, logs):
-        warning_pattern = "([\\\/]?([a-zA-Z0-9\.-]*[\\\/])+compile\.py:\d+: SyntaxWarning: Line \d+: " \
-                          "Print statement is deprecated and not avaliable anymore in Python 3\.\nSyntaxWarning)"
         getattr_pattern = "<function safer_getattr at [a-z0-9]+>"
 
-        pattern = '|'.join((warning_pattern, getattr_pattern))
-        clean_logs = re.sub(pattern, '', logs)
+        clean_logs = re.sub(getattr_pattern, '', logs)
 
         return clean_logs
 
