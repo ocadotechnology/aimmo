@@ -90,6 +90,7 @@ def run_game_tests(client):
     for log in logs:
         print(log, end='')
 
+
 def run_worker_tests(client):
     logs = client.containers.run(
         name='aimmo-worker-tester',
