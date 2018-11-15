@@ -1,7 +1,5 @@
 from unittest import TestCase
 
-import mock
-
 from avatar_runner import AvatarRunner
 from user_exceptions import InvalidActionException
 
@@ -84,6 +82,17 @@ class TestAvatarRunner(TestCase):
         with self.assertRaises(InvalidActionException):
             runner.decide_action(world_map={}, avatar_state={})
 
+    def test_does_not_update_with_imports(self):
+        avatar = '''class Avatar:
+                        def handle_turn(self, world_map, avatar_state):
+                            import os
+                            return MoveAction(random.choice(direction.ALL_DIRECTIONS))
+                  '''
+        runner = AvatarRunner()
+        runner._update_avatar(src_code=avatar)
+        with self.assertRaises(ImportError):
+            runner.decide_action(world_map={}, avatar_state={})
+
     def test_updated_successful(self):
         avatar_ok = '''class Avatar:
                         def handle_turn(self, world_map, avatar_state):
@@ -115,6 +124,32 @@ class TestAvatarRunner(TestCase):
         runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar_bad_constructor)
         self.assertFalse(runner.update_successful)
         runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar_ok)
+        self.assertTrue(runner.update_successful)
+
+    def test_updates_with_for_loop(self):
+        avatar = '''class Avatar:
+                        def handle_turn(self, world_map, avatar_state):
+                            x = 0
+                            for x in range(5):
+                                x = x + 1
+                                print(x)
+                                
+                            return MoveAction(random.choice(direction.ALL_DIRECTIONS))
+                  '''
+        runner = AvatarRunner()
+        runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        self.assertTrue(runner.update_successful)
+
+    def test_updates_with_inplace_operator(self):
+        avatar = '''class Avatar:
+                        def handle_turn(self, world_map, avatar_state):
+                            x = 0
+                            x += 2
+                                
+                            return MoveAction(random.choice(direction.ALL_DIRECTIONS))
+                  '''
+        runner = AvatarRunner()
+        runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
         self.assertTrue(runner.update_successful)
 
     def test_runtime_error_contains_only_user_traceback(self):
