@@ -42,7 +42,9 @@ def run_tests(compute_coverage, use_docker=True):
         client = docker.from_env()
         docker_scripts.build_docker_images(build_target='tester')
         print('Docker containers built, running tests now...')
-        run_container_tests(client)
+        run_game_creator_tests(client)
+        run_game_tests(client)
+        run_worker_tests(client)
         docker_scripts.delete_containers()
 
     for app in APPS:
@@ -69,16 +71,33 @@ def run_tests(compute_coverage, use_docker=True):
         return 0
 
 
-def run_container_tests(client):
-    containers = ['aimmo-game-creator', 'aimmo-game', 'aimmo-worker']
-    for container in containers:
-        logs = client.containers.run(
-            name='{}-tester'.format(container),
-            image='ocadotechnology/{}:test'.format(container),
-            stream=True
-        )
-        for log in logs:
-            print(log, end='')
+def run_game_creator_tests(client):
+    logs = client.containers.run(
+        name='aimmo-game-creator-tester',
+        image='ocadotechnology/aimmo-game-creator:test',
+        stream=True
+    )
+    for log in logs:
+        print(log, end='')
+
+
+def run_game_tests(client):
+    logs = client.containers.run(
+        name='aimmo-game-tester',
+        image='ocadotechnology/aimmo-game:test',
+        stream=True
+    )
+    for log in logs:
+        print(log, end='')
+
+def run_worker_tests(client):
+    logs = client.containers.run(
+        name='aimmo-worker-tester',
+        image='ocadotechnology/aimmo-game-worker:test',
+        stream=True
+    )
+    for log in logs:
+        print(log, end='')
 
 
 if __name__ == '__main__':
