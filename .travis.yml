@@ -54,18 +54,24 @@ jobs:
         - docker build -t ocadotechnology/aimmo-game:test .
       script:
         - docker run -it ocadotechnology/aimmo-game:test
+      after_success:
+        - coveralls
     - name: "aimmo-game-creator"
       before_install:
         - cd aimmo-game-creator
         - docker build -t ocadotechnology/aimmo-game-creator:test .
       script:
         - docker run -it ocadotechnology/aimmo-game-creator:test
+      after_success:
+        - coveralls
     - name: "aimmo-game-worker"
       before_install:
         - cd aimmo-game-worker
         - docker build -t ocadotechnology/aimmo-game-worker:test .
       script:
         - docker run -it ocadotechnology/aimmo-game-worker:test
+      after_success:
+        - coveralls
     - name: "Javascript Tests"
       before_install:
         - nvm install node
