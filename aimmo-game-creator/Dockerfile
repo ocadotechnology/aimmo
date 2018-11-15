@@ -4,7 +4,6 @@ MAINTAINER code@ocado.com
 RUN pip install pipenv
 COPY ["Pipfile", "Pipfile.lock", "setup.py", "./"]
 RUN pipenv install coverage
-RUN pipenv install coveralls
 RUN pipenv install --system --deploy
 
 FROM python:3.6-alpine as base
@@ -25,5 +24,4 @@ FROM base as coverage_tester
 ENV WORKER_MANAGER=kubernetes
 RUN pip install coveralls
 COPY --from=builder /usr/local/bin/coverage /usr/local/bin/coverage
-COPY --from=builder /usr/local/bin/coveralls /usr/local/bin/coveralls
 CMD coverage run --concurrency=eventlet --source=. setup.py test
