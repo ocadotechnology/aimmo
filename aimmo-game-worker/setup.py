@@ -9,8 +9,7 @@ setup(
     install_requires=[
         'flask',
         'requests',
-        'six',
-        'RestrictedPython == 4.0b7'
+        'six'
     ],
     tests_require=[
         'httmock',
