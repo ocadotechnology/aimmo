@@ -52,6 +52,8 @@ jobs:
       before_install:
         - cd aimmo-game
         - docker build -t ocadotechnology/aimmo-game:test .
+      install:
+        - pip install coveralls
       script:
         - docker run -it ocadotechnology/aimmo-game:test
       after_success:
@@ -60,6 +62,8 @@ jobs:
       before_install:
         - cd aimmo-game-creator
         - docker build -t ocadotechnology/aimmo-game-creator:test .
+      install:
+        - pip install coveralls
       script:
         - docker run -it ocadotechnology/aimmo-game-creator:test
       after_success:
@@ -68,6 +72,8 @@ jobs:
       before_install:
         - cd aimmo-game-worker
         - docker build -t ocadotechnology/aimmo-game-worker:test .
+      install:
+        - pip install coveralls
       script:
         - docker run -it ocadotechnology/aimmo-game-worker:test
       after_success:
