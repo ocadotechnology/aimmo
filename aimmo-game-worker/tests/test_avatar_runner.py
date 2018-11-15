@@ -22,19 +22,15 @@ class TestAvatarRunner(TestCase):
         self.assertEqual(action, {'action_type': 'wait'})
 
     def test_runner_updates_code_on_change(self):
-        avatar1 = '''class Avatar(object):
+        avatar1 = '''class Avatar:
                         def handle_turn(self, world_map, avatar_state):
-                            from simulation.action import MoveAction
-                            from simulation.direction import EAST
                             
-                            return MoveAction(EAST)
+                            return MoveAction(direction.EAST)
                   '''
-        avatar2 = '''class Avatar(object):
+        avatar2 = '''class Avatar:
                         def handle_turn(self, world_map, avatar_state):
-                            from simulation.action import MoveAction
-                            from simulation.direction import WEST
                             
-                            return MoveAction(WEST)
+                            return MoveAction(direction.WEST)
                   '''
 
         runner = AvatarRunner()
@@ -45,44 +41,16 @@ class TestAvatarRunner(TestCase):
 
         self.assertEqual(response['action'], {'action_type': 'move', 'options': {'direction': WEST}})
 
-    def test_runner_can_maintain_state(self):
-        """ This test ensures that if the code is the same, we do not recreate the avatar object in the runner.
-            We check this by making sure that self.x is being updated and its value retained. """
-
-        avatar = '''class Avatar(object):
-                        def __init__(self):
-                            from simulation.action import MoveAction
-                            from simulation.direction import NORTH, SOUTH, EAST, WEST
-                            
-                            self.moves = [MoveAction(NORTH), MoveAction(EAST), MoveAction(SOUTH), MoveAction(WEST)]
-                            self.x = 0
-                            
-                        def handle_turn(self, world_map, avatar_state):
-                            move = self.moves[self.x]
-                            self.x += 1
-                            return move
-                 '''
-        runner = AvatarRunner()
-
-        directions = [NORTH, EAST, SOUTH, WEST]
-        for direction in directions:
-            response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
-            self.assertEqual(response['action'], {'action_type': 'move', 'options': {'direction': direction}})
-
     def test_update_code_flag_simple(self):
-        avatar1 = '''class Avatar(object):
+        avatar1 = '''class Avatar:
                         def handle_turn(self, world_map, avatar_state):
-                            from simulation.action import MoveAction
-                            from simulation.direction import NORTH
                             
-                            return MoveAction(NORTH)
+                            return MoveAction(direction.NORTH)
                   '''
-        avatar2 = '''class Avatar(object):
+        avatar2 = '''class Avatar:
                                 def handle_turn(self, world_map, avatar_state):
-                                    from simulation.action import MoveAction
-                                    from simulation.direction import SOUTH
 
-                                    return MoveAction(SOUTH)
+                                    return MoveAction(direction.SOUTH)
                   '''
 
         runner = AvatarRunner()
@@ -96,7 +64,7 @@ class TestAvatarRunner(TestCase):
         self.assertFalse(response['avatar_updated'])
 
     def test_update_code_flag_with_syntax_errors(self):
-        avatar = '''class Avatar(object:
+        avatar = '''class Avatar
                         pass
                  '''
         runner = AvatarRunner()
@@ -106,11 +74,10 @@ class TestAvatarRunner(TestCase):
         self.assertFalse(response['avatar_updated'])
 
     def test_invalid_action_exception(self):
-        avatar = '''class Avatar(object):
+        avatar = '''class Avatar:
                         def handle_turn(self, world_map, avatar_state):
-                            from simulation.action import MoveAction
-                            from simulation.direction import NORTH
-                            
+                        
+                            new_dir = random.choice(direction.ALL_DIRECTIONS)
                   '''
         runner = AvatarRunner()
         runner._update_avatar(src_code=avatar)
@@ -118,32 +85,26 @@ class TestAvatarRunner(TestCase):
             runner.decide_action(world_map={}, avatar_state={})
 
     def test_updated_successful(self):
-        avatar_ok = '''class Avatar(object):
+        avatar_ok = '''class Avatar:
                         def handle_turn(self, world_map, avatar_state):
-                            from simulation.action import MoveAction
-                            from simulation.direction import NORTH
                             
-                            return MoveAction(NORTH)
+                            return MoveAction(direction.NORTH)
 
                     '''
 
-        avatar_syntax_error = '''class Avatar(object):
+        avatar_syntax_error = '''class Avatar:
                                     def handle_turn(self, world_map, avatar_state):
-                                        from simulation.action import MoveAction
-                                        from simulation.direction import NORTH
                                         
-                                        return MoveAction(NORTH
+                                        return MoveAction(direction.NORTH
 
                               '''
 
-        avatar_bad_constructor = '''class Avatar(object):
+        avatar_bad_constructor = '''class Avatar:
                                             def __init__(self):
                                                 return 1 + 'foo'
                                             def handle_turn(self, world_map, avatar_state):
-                                                from simulation.action import MoveAction
-                                                from simulation.direction import NORTH
 
-                                                return MoveAction(NORTH)
+                                                return MoveAction(direction.NORTH)
                                   '''
 
         runner = AvatarRunner()
@@ -157,26 +118,22 @@ class TestAvatarRunner(TestCase):
         self.assertTrue(runner.update_successful)
 
     def test_runtime_error_contains_only_user_traceback(self):
-        avatar = '''class Avatar(object):
+        avatar = '''class Avatar:
                         def handle_turn(self, world_map, avatar_state):
-                            from simulation.action import MoveAction
-                            from simulation.direction import NORTH
                             
                             1 + 'foo'
 
-                            return MoveAction(NORTH)
+                            return MoveAction(direction.NORTH)
                  '''
         runner = AvatarRunner()
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
         self.assertFalse('/usr/src/app/' in response['log'])
 
     def test_syntax_error_contains_only_user_traceback(self):
-        avatar = '''class Avatar(object):
+        avatar = '''class Avatar:
                         def handle_turn(self, world_map, avatar_state):
-                            from simulation.action import MoveAction
-                            from simulation.direction import NORTH
 
-                            return MoveAction(NORTH))))
+                            return MoveAction(direction.NORTH))))
                             
                  '''
         runner = AvatarRunner()
@@ -184,18 +141,14 @@ class TestAvatarRunner(TestCase):
         self.assertFalse('/usr/src/app/' in response['log'])
 
     def test_invalid_action_exception_contains_only_user_traceback(self):
-        avatar1 = '''class Avatar(object):
+        avatar1 = '''class Avatar
                         def handle_turn(self, world_map, avatar_state):
-                            from simulation.action import MoveAction
-                            from simulation.direction import NORTH
 
                             return None
                             
                  '''
-        avatar2 = '''class Avatar(object):
+        avatar2 = '''class Avatar:
                         def handle_turn(self, world_map, avatar_state):
-                            from simulation.action import MoveAction
-                            from simulation.direction import NORTH
 
                             return 1
                             
