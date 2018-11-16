@@ -36,11 +36,8 @@ class AvatarRunner(object):
         The last condition is necessary because if _get_new_avatar fails the avatar object will not have
         been updated, meaning that self.avatar will actually be for the last correct code
         """
-        should_update = (self.avatar is None or
-                         self.auto_update and self._avatar_src_changed(src_code) or
-                         not self.update_successful)
 
-        if should_update:
+        if self._should_update(src_code):
             try:
                 self.avatar = self._get_new_avatar(src_code)
             except Exception as e:
@@ -48,6 +45,10 @@ class AvatarRunner(object):
                 raise e
             else:
                 self.update_successful = True
+
+    def _should_update(self, src_code):
+        return (self.avatar is None or self.auto_update and self._avatar_src_changed(src_code) or
+                not self.update_successful)
 
     def process_avatar_turn(self, world_map, avatar_state, src_code):
         output_log = StringIO()
