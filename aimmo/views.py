@@ -100,8 +100,13 @@ def connection_parameters(request, game_id):
     """
     env_connection_settings = game_renderer.get_environment_connection_settings(game_id)
 
-    env_connection_settings.update({'avatar_id': get_avatar_id(request, game_id)})
-    return JsonResponse(env_connection_settings)
+    avatar_id, response = get_avatar_id(request, game_id)
+
+    if avatar_id:
+        env_connection_settings.update({'avatar_id': avatar_id})
+        return JsonResponse(env_connection_settings)
+    else:
+        return response
 
 
 @csrf_exempt
@@ -178,28 +183,32 @@ def add_game(request):
 
 
 def current_avatar_in_game(request, game_id):
-    return JsonResponse({'current_avatar_id': get_avatar_id(request, game_id)})
+    avatar_id, response = get_avatar_id(request, game_id)
+
+    if avatar_id:
+        return JsonResponse({'current_avatar_id': avatar_id})
+    else:
+        return response
 
 
 def get_avatar_id(request, game_id):
+    avatar_id = None
+    response = None
+
     try:
         avatar_id = game_renderer.get_avatar_id_from_user(user=request.user, game_id=game_id)
     except UserCannotPlayGameException:
         LOGGER.warning('HTTP 401 returned. User {} unauthorised to play.'.format(request.user.id))
-        return HttpResponse('User unauthorized to play',
-                            status=401)
+        response = HttpResponse('User unauthorized to play', status=401)
     except Avatar.DoesNotExist:
-        LOGGER.warning('Avatar does not exist for user {} in game {}'.format(request.user.id,
-                                                                             game_id))
-        return HttpResponse('Avatar does not exist for this user',
-                            status=404)
+        LOGGER.warning('Avatar does not exist for user {} in game {}'.format(request.user.id, game_id))
+        response = HttpResponse('Avatar does not exist for this user', status=404)
     except Exception as e:
         LOGGER.error('Unknown error occurred while getting connection parameters!')
         LOGGER.error(e)
-        return HttpResponse('Unknown error occurred when getting the current avatar',
-                            status=500)
+        response = HttpResponse('Unknown error occurred when getting the current avatar', status=500)
 
-    return avatar_id
+    return avatar_id, response
 
 
 def csrfToken(request):
