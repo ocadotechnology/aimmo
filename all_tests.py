@@ -42,7 +42,7 @@ def run_tests(compute_coverage, use_docker=True):
         client = docker.from_env()
         if compute_coverage:
             docker_scripts.build_docker_images(build_target='coverage_tester')
-        else :
+        else:
             docker_scripts.build_docker_images(build_target='tester')
         print('Docker containers built, running tests now...')
         run_game_creator_tests(client)

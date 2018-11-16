@@ -24,3 +24,5 @@ exclude_patterns:
   - "game/_version.py"
   - "versioneer.py"
   - "game_frontend/djangoBundler.js"
+  - '"""*"""'
+  - "'''*'''"
