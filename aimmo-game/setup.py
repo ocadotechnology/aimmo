@@ -5,9 +5,9 @@ import sys
 import os
 
 
-withcoverage = '-c' in sys.argv or '--coverage' in sys.argv
+withcoverage = os.environ.get('WITH_COVERAGE')
 
-if withcoverage:
+if withcoverage == 'True':
     print("starting code coverage engine")
     coveragedatafile = ".coverage"
     cov = coverage.Coverage(config_file=False)
@@ -42,7 +42,7 @@ setup(
     zip_safe=False,
 )
 
-if withcoverage:
+if withcoverage == 'True':
     print("saving coverage stats")
     cov.save()
     os.system("bash -c 'rm -f .coverage ; ln -s %s .coverage" % (coveragedatafile))
