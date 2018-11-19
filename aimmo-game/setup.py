@@ -45,6 +45,5 @@ setup(
 if withcoverage == 'True':
     print("saving coverage stats")
     cov.save()
-    #os.system("bash -c 'rm -f .coverage ; ln -s %s .coverage'" % (coveragedatafile))
-    os.system("bash -c 'coverage report > coverage-report.txt'")
+    os.system("bash -c 'cat .coverage'")
     print("exiting program")
