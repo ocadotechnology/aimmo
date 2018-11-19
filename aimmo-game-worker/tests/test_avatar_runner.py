@@ -13,7 +13,7 @@ WEST = {'x': -1, 'y': 0}
 
 class TestAvatarRunner(TestCase):
     def test_runner_does_not_crash_on_code_errors(self):
-        class Avatar(object):
+        class Avatar:
             def handle_turn(self, world_map, avatar_state):
                 assert False
 
