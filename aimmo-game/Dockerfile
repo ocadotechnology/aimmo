@@ -22,5 +22,6 @@ CMD python setup.py test
 FROM base as coverage_tester
 ENV WORKER_MANAGER=kubernetes
 ENV WITH_COVERAGE='True'
+RUN apk add bash
 COPY --from=builder /usr/local/bin/coverage /usr/local/bin/coverage
 CMD python setup.py test
