@@ -23,4 +23,4 @@ FROM base as coverage_tester
 ENV WORKER_MANAGER=kubernetes
 ENV WITH_COVERAGE='True'
 COPY --from=builder /usr/local/bin/coverage /usr/local/bin/coverage
-CMD coverage run --concurrency=eventlet --source=. setup.py test
+CMD python setup.py test
