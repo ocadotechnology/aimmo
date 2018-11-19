@@ -29,7 +29,7 @@ try:
 except ImportError:
     raise ImportError
     # Python 3
-    # import builtins as __builtin__
+    import builtins as __builtin__
 
 
 def add_actions_to_globals():
