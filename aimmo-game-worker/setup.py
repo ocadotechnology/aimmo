@@ -32,5 +32,4 @@ setup(
 if withcoverage == 'True':
     print("saving coverage stats")
     cov.save()
-    os.system("bash -c 'cat .coverage'")
     print("exiting program")
