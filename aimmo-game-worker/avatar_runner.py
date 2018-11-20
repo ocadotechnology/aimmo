@@ -1,14 +1,61 @@
+from __future__ import print_function
+
 import logging
 import traceback
 import sys
 import imp
+import inspect
+import re
 
-from six import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+
+import simulation.action as avatar_action
+import simulation.direction as direction
 
 from simulation.action import WaitAction, Action
 from user_exceptions import InvalidActionException
 
+from RestrictedPython import compile_restricted, utility_builtins
+from RestrictedPython.Guards import safe_builtins, safer_getattr, guarded_setattr, full_write_guard
+
 LOGGER = logging.getLogger(__name__)
+
+try:
+    import __builtin__
+except ImportError:
+    raise ImportError
+    # Python 3
+    import builtins as __builtin__
+
+
+def add_actions_to_globals():
+    action_classes = filter(lambda x: x[1].__module__ == "simulation.action", inspect.getmembers(avatar_action, inspect.isclass))
+
+    for action_class in action_classes:
+        restricted_globals[action_class[0]] = action_class[1]
+
+
+_getattr_ = safer_getattr
+_setattr_ = guarded_setattr
+_write_ = full_write_guard
+__metaclass__ = type
+
+restricted_globals = dict(__builtins__=safe_builtins)
+
+restricted_globals['_getattr_'] = _getattr_
+restricted_globals['_setattr_'] = _setattr_
+restricted_globals['_getiter_'] = list
+restricted_globals['_print_'] = print
+restricted_globals['_write_'] = _write_
+restricted_globals['__metaclass__'] = __metaclass__
+restricted_globals['__name__'] = "Avatar"
+
+add_actions_to_globals()
+restricted_globals['direction'] = direction
+restricted_globals['random'] = utility_builtins['random']
 
 
 class AvatarRunner(object):
@@ -23,8 +70,15 @@ class AvatarRunner(object):
 
     def _get_new_avatar(self, src_code):
         self.avatar_source_code = src_code
+
         module = imp.new_module('avatar')  # Create a temporary module to execute the src_code in
-        exec(src_code, module.__dict__)
+        module.__dict__.update(restricted_globals)
+
+        byte_code = compile_restricted(src_code, filename='<inline-code>', mode='exec')
+        exec(byte_code, restricted_globals)
+
+        module.__dict__['Avatar'] = restricted_globals['Avatar']
+
         return module.Avatar()
 
     def _update_avatar(self, src_code):
@@ -80,7 +134,8 @@ class AvatarRunner(object):
             sys.stdout = sys.__stdout__
             sys.stderr = sys.__stderr__
 
-        logs = output_log.getvalue()
+        logs = self.clean_logs(output_log.getvalue())
+
         return {'action': action, 'log': logs, 'avatar_updated': avatar_updated}
 
     def decide_action(self, world_map, avatar_state):
@@ -89,6 +144,13 @@ class AvatarRunner(object):
             raise InvalidActionException(action)
         return action.serialise()
 
+    def clean_logs(self, logs):
+        getattr_pattern = "<function safer_getattr at [a-z0-9]+>"
+
+        clean_logs = re.sub(getattr_pattern, '', logs)
+
+        return clean_logs
+
     @staticmethod
     def get_only_user_traceback():
         """ If the traceback does not contain any reference to the user code, found by '<string>',
@@ -96,7 +158,7 @@ class AvatarRunner(object):
         traceback_list = traceback.format_exc().split('\n')
         start_of_user_traceback = 0
         for i in range(len(traceback_list)):
-            if '<string>' in traceback_list[i]:
+            if '<inline-code>' in traceback_list[i]:
                 start_of_user_traceback = i
                 break
         return traceback_list[start_of_user_traceback:]

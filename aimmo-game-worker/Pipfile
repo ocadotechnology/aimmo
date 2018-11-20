@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 kubernetes = "*"
+aimmo-game-worker = {editable = true, path = "."}
+restrictedpython = "==4.0.b7"
 aimmo-game-worker = {path = ".", editable = true}
 coverage = "*"
 
