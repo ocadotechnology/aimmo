@@ -21,6 +21,7 @@ setup(
         'hypothesis',
         'flask-cors >= 3.0, < 3.1',
         'psutil >= 5.4, < 5.5',
+        'RestrictedPython == 4.0.b7'
     ],
     tests_require=[
         'httmock',
