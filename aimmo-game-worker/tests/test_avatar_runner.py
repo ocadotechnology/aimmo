@@ -13,11 +13,11 @@ WEST = {'x': -1, 'y': 0}
 
 class TestAvatarRunner(TestCase):
     def test_runner_does_not_crash_on_code_errors(self):
-        class Avatar:
-            def handle_turn(self, world_map, avatar_state):
-                assert False
+        avatar = '''class Avatar:
+                        def handle_turn(self, world_map, avatar_state):
+                            assert False'''
 
-        runner = AvatarRunner(avatar=Avatar(), auto_update=False)
+        runner = AvatarRunner(avatar=avatar, auto_update=False)
         action = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code='')['action']
         self.assertEqual(action, {'action_type': 'wait'})
 
