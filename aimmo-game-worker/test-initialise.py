@@ -8,7 +8,7 @@ url = 'http://localhost:5001/initialise/'
 if len(sys.argv) > 1:
     avatar_file = sys.argv[1]
 else:
-    avatar_file = '../aimmo/avatar_examples/dumb_avatar.py'
+    avatar_file = '../aimmo/avatar_examples/simple_avatar.py'
 
 with open(avatar_file) as avatar_fileobj:
     avatar_data = avatar_fileobj.read()

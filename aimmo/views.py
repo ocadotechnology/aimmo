@@ -44,7 +44,7 @@ def code(request, id):
     except Avatar.DoesNotExist:
         initial_code_file_name = os.path.join(
             os.path.abspath(os.path.dirname(__file__)),
-            'avatar_examples/dumb_avatar.py',
+            'avatar_examples/simple_avatar.py',
         )
         with open(initial_code_file_name) as initial_code_file:
             initial_code = initial_code_file.read()
