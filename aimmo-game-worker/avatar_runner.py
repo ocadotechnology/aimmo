@@ -174,6 +174,5 @@ class AvatarRunner(object):
             if "return" == line.strip()[0:6] and in_handle_turn:
                 line = line + ', printed'
             new_src_code.append(line)
-                
-        return '\n'.join(new_src_code)
 
+        return '\n'.join(new_src_code)
