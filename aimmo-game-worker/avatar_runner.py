@@ -103,7 +103,10 @@ class AvatarRunner(object):
             sys.stdout = output_log
             sys.stderr = output_log
             self._update_avatar(src_code)
-            action = self.decide_action(world_map, avatar_state)
+            try:
+                action = self.decide_action(world_map, avatar_state)
+            except TypeError:
+                raise InvalidActionException(None)
 
         # When an InvalidActionException is raised, the traceback might not contain
         # reference to the user's code as it can still technically be correct. so we
@@ -166,9 +169,10 @@ class AvatarRunner(object):
         for line in src_code:
             if "def handle_turn" == line.strip()[0:15]:
                 in_handle_turn = True
+            elif "def" == line.strip()[0:3]:
+                in_handle_turn = False
             if "return" == line.strip()[0:6] and in_handle_turn:
                 line = line + ', printed'
-                in_handle_turn = False
             new_src_code.append(line)
                 
         return '\n'.join(new_src_code)
