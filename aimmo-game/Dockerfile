@@ -13,7 +13,7 @@ COPY . .
 FROM base as runner
 RUN apk add --no-cache bash
 ENV WORKER_MANAGER=kubernetes
-CMD python ./service.py 0.0.0.0
+CMD python ./service.py 0.0.0.0 5000
 
 FROM base as tester
 ENV WORKER_MANAGER=kubernetes
