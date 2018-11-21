@@ -1,4 +1,5 @@
 import logging
+import asyncio
 from abc import ABCMeta, abstractmethod
 from concurrent import futures
 from concurrent.futures import ALL_COMPLETED
@@ -22,10 +23,10 @@ class SimulationRunner(object):
         self.communicator = communicator
 
     @abstractmethod
-    def run_turn(self, player_id_to_serialised_actions):
+    async def run_turn(self, player_id_to_serialised_actions):
         pass
 
-    def _run_turn_for_avatar(self, avatar, serialised_action):
+    async def _run_turn_for_avatar(self, avatar, serialised_action):
         """
         Send an avatar its view of the game state and register its
         chosen action & logs.
@@ -50,8 +51,8 @@ class SimulationRunner(object):
     def _mark_complete(self):
         self.communicator.mark_game_complete(data=self.game_state.serialise())
 
-    def run_single_turn(self, player_id_to_serialised_actions):
-        self.run_turn(player_id_to_serialised_actions)
+    async def run_single_turn(self, player_id_to_serialised_actions):
+        await self.run_turn(player_id_to_serialised_actions)
         self.game_state.update_environment()
 
 
@@ -70,24 +71,23 @@ class SequentialSimulationRunner(SimulationRunner):
 
 
 class ConcurrentSimulationRunner(SimulationRunner):
-    def _parallel_map(self, func, iterable_args):
-        with futures.ThreadPoolExecutor() as executor:
-            results = executor.map(func, iterable_args)
-            futures.wait(results, timeout=2, return_when=ALL_COMPLETED)
+    async def async_parallel_map(self, func, iterable_args):
+        aws = []
+        for arg in iterable_args:
+            aws.append(func(arg))
+        results = await asyncio.gather(aws)
         return [results]
 
-    def run_turn(self, player_id_to_serialised_actions):
+    async def run_turn(self, player_id_to_serialised_actions):
         """
         Concurrently get the intended actions from all avatars and register
         them on the world map. Then apply actions in order of priority.
         """
 
         avatars = self.game_state.avatar_manager.active_avatars
-        threads = [Thread(target=self._run_turn_for_avatar,
-                          args=(avatar, player_id_to_serialised_actions[avatar.player_id])) for avatar in avatars]
-
-        [thread.start() for thread in threads]
-        [thread.join() for thread in threads]
+        #self._run_turn_for_avatar
+        args = [(avatar, player_id_to_serialised_actions[avatar.player_id]) for avatar in avatars]
+        self.async_parallel_map(self._run_turn_for_avatar, args)
 
         # Waits applied first, then attacks, then moves.
         avatars.sort(key=lambda a: PRIORITIES[type(a.action)])

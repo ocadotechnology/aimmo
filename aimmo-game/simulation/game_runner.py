@@ -61,7 +61,7 @@ class GameRunner:
         self.worker_manager.fetch_all_worker_data(self.game_state.get_serialised_game_states_for_workers())
 
     async def update_simulation(self, player_id_to_serialised_actions):
-        self.simulation_runner.run_single_turn(player_id_to_serialised_actions)
+        await self.simulation_runner.run_single_turn(player_id_to_serialised_actions)
         await self._end_turn_callback()
 
     async def update(self):
