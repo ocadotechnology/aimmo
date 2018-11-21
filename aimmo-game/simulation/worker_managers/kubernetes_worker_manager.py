@@ -2,8 +2,8 @@ import logging
 import os
 import time
 
-import kubernetes.client
-import kubernetes.config
+from kubernetes import client
+from kubernetes import config
 
 from .worker_manager import WorkerManager
 
@@ -16,8 +16,8 @@ class KubernetesWorkerManager(WorkerManager):
     """Kubernetes worker manager."""
 
     def __init__(self, *args, **kwargs):
-        kubernetes.config.load_incluster_config()
-        self.api = kubernetes.client.CoreV1Api()
+        config.load_incluster_config()
+        self.api = client.CoreV1Api()
         self.game_id = os.environ['GAME_ID']
         self.game_url = os.environ['GAME_URL']
         self.pod_name = os.environ['POD_NAME']
@@ -29,7 +29,7 @@ class KubernetesWorkerManager(WorkerManager):
 
     def _make_owner_references(self):
         try:
-            return [kubernetes.client.V1OwnerReference(
+            return [client.V1OwnerReference(
                 api_version="v1",
                 block_owner_deletion=True,
                 controller=True,
@@ -42,8 +42,8 @@ class KubernetesWorkerManager(WorkerManager):
             return []
 
     def _make_container(self, player_id):
-        return kubernetes.client.V1Container(
-            env=[kubernetes.client.V1EnvVar(
+        return client.V1Container(
+            env=[client.V1EnvVar(
                 name='DATA_URL',
                 value='%s/player/%d' % (self.game_url, player_id)),
                 kubernetes.client.V1EnvVar(
@@ -51,21 +51,22 @@ class KubernetesWorkerManager(WorkerManager):
                 value='5000')],
             name='aimmo-game-worker',
             image='ocadotechnology/aimmo-game-worker:%s' % os.environ.get('IMAGE_SUFFIX', 'latest'),
-            ports=[kubernetes.client.V1ContainerPort(
+            ports=[client.V1ContainerPort(
                 container_port=5000,
                 protocol='TCP')],
-            resources=kubernetes.client.V1ResourceRequirements(
+            resources=client.V1ResourceRequirements(
                 limits={'cpu': '10m', 'memory': '64Mi'},
                 requests={'cpu': '7m', 'memory': '32Mi'}),
-            security_context=kubernetes.client.V1SecurityContext(
-                capabilities=kubernetes.client.V1Capabilities(
+            security_context=client.V1SecurityContext(
+                capabilities=client.V1Capabilities(
                     drop=['all'],
                     add=['NET_BIND_SERVICE']))
         )
 
     def make_pod(self, player_id):
-        pod_manifest = kubernetes.client.V1PodSpec(containers=[self._make_container(player_id)], service_account_name='worker')
-        metadata = kubernetes.client.V1ObjectMeta(
+        pod_manifest = client.V1PodSpec(containers=[self._make_container(player_id)], service_account_name='worker')
+
+        metadata = client.V1ObjectMeta(
             labels={
                 'app': 'aimmo-game-worker',
                 'game': self.game_id,
@@ -73,12 +74,11 @@ class KubernetesWorkerManager(WorkerManager):
             generate_name='aimmo-%s-worker-%s-' % (self.game_id, player_id),
             owner_references=self._make_owner_references()
         )
-
-        return kubernetes.client.V1Pod(metadata=metadata, spec=pod_manifest)
+        return client.V1Pod(metadata=metadata, spec=pod_manifest)
 
     def _get_game_uid(self):
         pod_list = self.api.list_namespaced_pod(namespace=K8S_NAMESPACE,
-                                                field_selector='metadata.name={}'.format(self.pod_name))
+                                                field_selector=f'metadata.name={self.pod_name}')
         pod_metadata = pod_list.items[0].metadata
         return pod_metadata.uid
 
@@ -118,4 +118,4 @@ class KubernetesWorkerManager(WorkerManager):
 
         for pod in pods.items:
             LOGGER.info('Deleting pod: {}'.format(pod.metadata.name))
-            self.api.delete_namespaced_pod(pod.metadata.name, K8S_NAMESPACE, kubernetes.client.V1DeleteOptions())
+            self.api.delete_namespaced_pod(pod.metadata.name, K8S_NAMESPACE, client.V1DeleteOptions())

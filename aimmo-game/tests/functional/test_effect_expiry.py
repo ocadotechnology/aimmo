@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from mock_world import MockWorld
+from .mock_world import MockWorld
 
 from simulation.location import Location
 from simulation.pickups import DamageBoostPickup, InvulnerabilityPickup

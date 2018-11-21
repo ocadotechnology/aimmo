@@ -38,7 +38,7 @@ def create_docker_client(raw_env_settings):
         )
 
 
-def build_docker_images(minikube=None):
+def build_docker_images(minikube=None, build_target=None):
     """
     Find environment settings and builds docker images for each directory.
 
@@ -59,7 +59,8 @@ def build_docker_images(minikube=None):
         client.images.build(
             path=path,
             tag=tag,
-            encoding='gzip'
+            encoding='gzip',
+            target=build_target
         )
 
 

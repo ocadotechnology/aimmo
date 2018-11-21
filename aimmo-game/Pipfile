@@ -4,10 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-aimmo-game = {editable = true, path = "."}
+aimmo-game = {path = ".", editable = true}
 docker = "*"
 kubernetes = "*"
 prometheus-client = "*"
+aiohttp = "*"
+aiohttp-cors = "*"
+coverage = "*"
 
 [requires]
-python_version = "2.7"
+python_version = "3.6.7"

@@ -1,26 +1,28 @@
 #!/usr/bin/env python
 
-import cPickle as pickle
+from aiohttp import web
+import aiohttp_cors
+import asyncio
+import pickle
+import ast
 import logging
 import os
 import sys
-from urlparse import parse_qs
+import json
+from urllib.parse import parse_qs
 
-import eventlet
-import flask
 import socketio
-from flask_cors import CORS
 
 from simulation import map_generator
 from simulation.worker_managers import WORKER_MANAGERS
 from simulation.game_runner import GameRunner
 
-eventlet.sleep()
-eventlet.monkey_patch()
+app = web.Application()
+cors = aiohttp_cors.setup(app)
 
-flask_app = flask.Flask(__name__)
-CORS(flask_app, supports_credentials=True)
-socketio_server = socketio.Server()
+socketio_server = socketio.AsyncServer(async_handlers=True)
+
+routes = web.RouteTableDef()
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -38,17 +40,20 @@ class GameAPI(object):
         self.register_world_update_on_connect()
         self.register_remove_session_id_from_mappings()
         self.register_healthcheck()
+        app.add_routes(routes)
 
     def register_healthcheck(self):
-        @flask_app.route('/game-<game_id>')
-        def healthcheck(game_id):
-            return 'HEALTHY'
+        @routes.get('/game-{game_id}')
+        async def healthcheck(request):
+            return web.Response(text='HEALTHY')
+
+        return healthcheck
 
     def register_player_data_view(self):
-        @flask_app.route('/player/<player_id>')
-        def player_data(player_id):
-            player_id = int(player_id)
-            return flask.jsonify({
+        @routes.get('/player/{player_id}')
+        async def player_data(request: web.Request):
+            player_id = int(request.match_info['player_id'])
+            return web.json_response({
                 'code': self.worker_manager.get_code(player_id),
                 'options': {},
                 'state': None,
@@ -58,16 +63,16 @@ class GameAPI(object):
 
     def register_world_update_on_connect(self):
         @socketio_server.on('connect')
-        def world_update_on_connect(sid, environ):
+        async def world_update_on_connect(sid, environ):
             query = environ['QUERY_STRING']
             self._find_avatar_id_from_query(sid, query)
-            self.send_updates()
+            await self.send_updates()
 
         return world_update_on_connect
 
     def register_remove_session_id_from_mappings(self):
         @socketio_server.on('disconnect')
-        def remove_session_id_from_mappings(sid):
+        async def remove_session_id_from_mappings(sid):
             LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
             try:
                 del self._socket_session_id_to_player_id[sid]
@@ -76,11 +81,11 @@ class GameAPI(object):
 
         return remove_session_id_from_mappings
 
-    def send_updates(self):
-        self._send_game_state()
+    async def send_updates(self):
+        await self._send_game_state()
         player_id_to_worker = self.worker_manager.player_id_to_worker
-        self._send_logs(player_id_to_worker)
-        self._send_have_avatars_code_updated(player_id_to_worker)
+        await self._send_logs(player_id_to_worker)
+        await self._send_have_avatars_code_updated(player_id_to_worker)
 
     def _find_avatar_id_from_query(self, session_id, query_string):
         """
@@ -99,34 +104,33 @@ class GameAPI(object):
             LOGGER.error("No avatar ID found. User may not be authorised ")
             LOGGER.error("query_string: " + query_string)
 
-    def _send_logs(self, player_id_to_workers):
+    async def _send_logs(self, player_id_to_workers):
         def should_send_logs(logs):
             return bool(logs)
 
         socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id.copy()
-        for sid, player_id in socket_session_id_to_player_id_copy.iteritems():
+        for sid, player_id in socket_session_id_to_player_id_copy.items():
             avatar_logs = player_id_to_workers[player_id].log
             if should_send_logs(avatar_logs):
-                socketio_server.emit('log', avatar_logs, room=sid)
+                await socketio_server.emit('log', avatar_logs, room=sid)
 
-    def _send_game_state(self):
+    async def _send_game_state(self):
         serialised_game_state = self.game_state.serialise()
         socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id.copy()
-        for sid, player_id in socket_session_id_to_player_id_copy.iteritems():
-            socketio_server.emit('game-state', serialised_game_state, room=sid)
+        for sid, player_id in socket_session_id_to_player_id_copy.items():
+            await socketio_server.emit('game-state', serialised_game_state, room=sid)
 
-    def _send_have_avatars_code_updated(self, player_id_to_workers):
+    async def _send_have_avatars_code_updated(self, player_id_to_workers):
         socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id.copy()
-        for sid, player_id in socket_session_id_to_player_id_copy.iteritems():
+        for sid, player_id in socket_session_id_to_player_id_copy.items():
             if player_id_to_workers[player_id].has_code_updated:
-                socketio_server.emit('feedback-avatar-updated', room=sid)
+                await socketio_server.emit('feedback-avatar-updated', room=sid)
 
 
 def create_runner(port):
-    settings = pickle.loads(os.environ['settings'])
+    settings = json.loads(os.environ['settings'])
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
     worker_manager_class = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
-
     return GameRunner(worker_manager_class=worker_manager_class,
                       game_state_generator=generator.get_game_state,
                       django_api_url=os.environ.get('GAME_API_URL', 'http://localhost:8000/aimmo/api/games/'),
@@ -138,14 +142,14 @@ def run_game(port):
     game_api = GameAPI(game_state=game_runner.game_state,
                        worker_manager=game_runner.worker_manager)
     game_runner.set_end_turn_callback(game_api.send_updates)
-    game_runner.start()
+    asyncio.ensure_future(game_runner.run())
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     host = sys.argv[1]
-    socket_app = socketio.Middleware(socketio_server, flask_app,
-                                     socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
+
+    socketio_server.attach(app, socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
 
     if os.environ['WORKER_MANAGER'] == 'local':
         port = int(os.environ['EXTERNAL_PORT'])
@@ -153,4 +157,6 @@ if __name__ == '__main__':
         port = int(sys.argv[2])
 
     run_game(port)
-    eventlet.wsgi.server(eventlet.listen((host, port)), socket_app, debug=False)
+
+    LOGGER.info("starting the server")
+    web.run_app(app, host=host, port=port)

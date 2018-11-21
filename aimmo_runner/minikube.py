@@ -87,12 +87,14 @@ def delete_components(api_instance, extensions_api_instance):
         api_instance.delete_namespaced_replication_controller(
             body=kubernetes.client.V1DeleteOptions(),
             name=rc.metadata.name,
-            namespace='default')
+            namespace='default',
+            grace_period_seconds=0)
     for pod in api_instance.list_namespaced_pod('default').items:
         api_instance.delete_namespaced_pod(
             body=kubernetes.client.V1DeleteOptions(),
             name=pod.metadata.name,
-            namespace='default')
+            namespace='default',
+            grace_period_seconds=0)
     for service in api_instance.list_namespaced_service('default').items:
         api_instance.delete_namespaced_service(
             name=service.metadata.name,
@@ -133,7 +135,7 @@ def create_roles():
     run_command(['kubectl', 'apply', '-Rf', 'rbac'])
 
 
-def start():
+def start(build_target=None):
     """
     The entry point to the minikube class. Sends calls appropriately to set
     up minikube.
@@ -144,7 +146,7 @@ def start():
     os.environ['MINIKUBE_PATH'] = MINIKUBE_EXECUTABLE
     start_cluster(MINIKUBE_EXECUTABLE)
     create_roles()
-    build_docker_images(MINIKUBE_EXECUTABLE)
+    build_docker_images(MINIKUBE_EXECUTABLE, build_target=build_target)
     restart_ingress_addon(MINIKUBE_EXECUTABLE)
     ingress = create_ingress_yaml()
     game_creator = create_creator_yaml()

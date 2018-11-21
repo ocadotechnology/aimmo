@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
-import effects
+import simulation.effects as effects
 
 DAMAGE_BOOST_DEFAULT = 5
 HEALTH_RESTORE_DEFAULT = 3

@@ -29,21 +29,23 @@ class LocalWorkerManager(WorkerManager):
 
     def create_worker(self, player_id):
         assert(player_id not in self.workers)
-        port = self.port_counter.next()
+        port = next(self.port_counter)
 
-        env = json.loads(os.environ.get('CONTAINER_TEMPLATE', '{}'))
+        template_string = os.environ.get('CONTAINER_TEMPLATE')
+        if template_string:
+            template = json.loads(template_string)
+        else:
+            template = {
+                'environment': {}
+            }
         data_url = 'http://{}:{}/player/{}'.format(self.host, self.port, player_id)
-        env['DATA_URL'] = data_url
-        env['PORT'] = port
-
+        template['environment']['DATA_URL'] = data_url
+        template['environment']['PORT'] = port
         container = self.client.containers.run(
             name="aimmo-{}-worker-{}".format(self.game_id, player_id),
             image='ocadotechnology/aimmo-game-worker:test',
-            publish_all_ports=True,
-            environment=env,
-            network_mode='host',
-            detach=True,
-            ports={"{}/tcp".format(port): port})
+            ports={f"{port}/tcp": port},
+            **template)
         self.workers[player_id] = container
         worker_url = 'http://%s:%d' % (
             self.host,

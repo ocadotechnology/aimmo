@@ -1,8 +1,9 @@
 import logging
 from abc import ABCMeta, abstractmethod
-from threading import Thread
-
+from concurrent import futures
+from concurrent.futures import ALL_COMPLETED
 from simulation.action import PRIORITIES
+from threading import Thread
 
 LOGGER = logging.getLogger(__name__)
 
@@ -69,6 +70,12 @@ class SequentialSimulationRunner(SimulationRunner):
 
 
 class ConcurrentSimulationRunner(SimulationRunner):
+    def _parallel_map(self, func, iterable_args):
+        with futures.ThreadPoolExecutor() as executor:
+            results = executor.map(func, iterable_args)
+            futures.wait(results, timeout=2, return_when=ALL_COMPLETED)
+        return [results]
+
     def run_turn(self, player_id_to_serialised_actions):
         """
         Concurrently get the intended actions from all avatars and register
@@ -76,7 +83,6 @@ class ConcurrentSimulationRunner(SimulationRunner):
         """
 
         avatars = self.game_state.avatar_manager.active_avatars
-
         threads = [Thread(target=self._run_turn_for_avatar,
                           args=(avatar, player_id_to_serialised_actions[avatar.player_id])) for avatar in avatars]
 

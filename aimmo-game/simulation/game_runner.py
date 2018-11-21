@@ -1,16 +1,22 @@
 import time
 import threading
+import logging
+import asyncio
+import concurrent.futures
 
-from django_communicator import DjangoCommunicator
-from simulation_runner import ConcurrentSimulationRunner
-from avatar.avatar_manager import AvatarManager
+from simulation.django_communicator import DjangoCommunicator
+from simulation.simulation_runner import ConcurrentSimulationRunner
+from simulation.avatar.avatar_manager import AvatarManager
+
+LOGGER = logging.getLogger(__name__)
 
 TURN_TIME = 2
 
 
-class GameRunner(threading.Thread):
+class GameRunner:
     def __init__(self, worker_manager_class, game_state_generator, django_api_url, port):
         super(GameRunner, self).__init__()
+
         self.worker_manager = worker_manager_class(port=port)
         self.game_state = game_state_generator(AvatarManager())
         self.communicator = DjangoCommunicator(django_api_url=django_api_url,
@@ -42,6 +48,7 @@ class GameRunner(threading.Thread):
         game_metadata = self.communicator.get_game_metadata()['main']
 
         users_to_add = self.get_users_to_add(game_metadata)
+        LOGGER.info(users_to_add)
         users_to_delete = self.get_users_to_delete(game_metadata)
 
         self.worker_manager.add_workers(users_to_add)
@@ -53,16 +60,16 @@ class GameRunner(threading.Thread):
         self.update_main_user(game_metadata)
         self.worker_manager.fetch_all_worker_data(self.game_state.get_serialised_game_states_for_workers())
 
-    def update_simulation(self, player_id_to_serialised_actions):
+    async def update_simulation(self, player_id_to_serialised_actions):
         self.simulation_runner.run_single_turn(player_id_to_serialised_actions)
-        self._end_turn_callback()
+        await self._end_turn_callback()
 
-    def update(self):
+    async def update(self):
         self.update_workers()
-        self.update_simulation(self.worker_manager.get_player_id_to_serialised_actions())
+        await self.update_simulation(self.worker_manager.get_player_id_to_serialised_actions())
         self.worker_manager.clear_logs()
 
-    def run(self):
+    async def run(self):
         while True:
-            self.update()
-            time.sleep(TURN_TIME)
+            await self.update()
+            await asyncio.sleep(TURN_TIME)
