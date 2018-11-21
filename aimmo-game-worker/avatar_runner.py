@@ -103,10 +103,7 @@ class AvatarRunner(object):
             sys.stdout = output_log
             sys.stderr = output_log
             self._update_avatar(src_code)
-            try:
-                action = self.decide_action(world_map, avatar_state)
-            except TypeError:
-                raise InvalidActionException(None)
+            action = self.decide_action(world_map, avatar_state)
 
         # When an InvalidActionException is raised, the traceback might not contain
         # reference to the user's code as it can still technically be correct. so we
@@ -133,11 +130,14 @@ class AvatarRunner(object):
         return {'action': action, 'log': logs, 'avatar_updated': avatar_updated}
 
     def decide_action(self, world_map, avatar_state):
-        action, printed = self.avatar.handle_turn(world_map, avatar_state)
-        print(printed)
-        if not isinstance(action, Action):
-            raise InvalidActionException(action)
-        return action.serialise()
+        try:
+            action, printed = self.avatar.handle_turn(world_map, avatar_state)
+            print(printed)
+            if not isinstance(action, Action):
+                raise InvalidActionException(action)
+            return action.serialise()
+        except TypeError:
+                raise InvalidActionException(None)
 
     def clean_logs(self, logs):
         getattr_pattern = "<function safer_getattr at [a-z0-9]+>"
