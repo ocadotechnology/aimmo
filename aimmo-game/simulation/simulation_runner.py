@@ -71,15 +71,8 @@ class SequentialSimulationRunner(SimulationRunner):
 
 class ConcurrentSimulationRunner(SimulationRunner):
     async def async_map(self, func, iterable_args):
-        with ThreadPoolExecutor() as executor:
-            results = []
-            loop = asyncio.get_event_loop()
-            futures = [loop.run_in_executor(executor,func,*arg) for arg in iterable_args]
-            await asyncio.gather(*futures)
-
-    async def check_has_action(self, avatar):
-        if not avatar.action:
-            avatar.action = WaitAction(avatar)
+        futures = [func(*arg) for arg in iterable_args]
+        await asyncio.gather(*futures)
 
     async def run_turn(self, player_id_to_serialised_actions):
         """
@@ -90,10 +83,7 @@ class ConcurrentSimulationRunner(SimulationRunner):
         avatars = self.game_state.avatar_manager.active_avatars
         args = [(avatar, player_id_to_serialised_actions[avatar.player_id]) for avatar in avatars]
         await self.async_map(self._run_turn_for_avatar, args)
-        for avatar in avatars:
-            LOGGER.info(avatar)
-        await self.async_map(self.check_has_action, [avatars])
-
+            
         # Waits applied first, then attacks, then moves.
         avatars.sort(key=lambda a: PRIORITIES[type(a.action)])
 
