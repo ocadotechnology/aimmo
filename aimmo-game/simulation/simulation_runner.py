@@ -2,7 +2,7 @@ import logging
 import asyncio
 from abc import ABCMeta, abstractmethod
 from concurrent.futures import ALL_COMPLETED, ThreadPoolExecutor
-from simulation.action import PRIORITIES
+from simulation.action import PRIORITIES, WaitAction
 from threading import Thread
 
 LOGGER = logging.getLogger(__name__)
@@ -74,11 +74,12 @@ class ConcurrentSimulationRunner(SimulationRunner):
         with ThreadPoolExecutor() as executor:
             results = []
             loop = asyncio.get_event_loop()
-            futures = [loop.run_in_executor(executor,func,arg) for arg in iterable_args]
-            for result in await asyncio.gather(*futures):
-                results.append(result)
-            
-            return [results]
+            futures = [loop.run_in_executor(executor,func,*arg) for arg in iterable_args]
+            await asyncio.gather(*futures)
+
+    async def check_has_action(self, avatar):
+        if not avatar.action:
+            avatar.action = WaitAction(avatar)
 
     async def run_turn(self, player_id_to_serialised_actions):
         """
@@ -88,7 +89,10 @@ class ConcurrentSimulationRunner(SimulationRunner):
 
         avatars = self.game_state.avatar_manager.active_avatars
         args = [(avatar, player_id_to_serialised_actions[avatar.player_id]) for avatar in avatars]
-        self.async_map(self._run_turn_for_avatar, args)
+        await self.async_map(self._run_turn_for_avatar, args)
+        for avatar in avatars:
+            LOGGER.info(avatar)
+        await self.async_map(self.check_has_action, [avatars])
 
         # Waits applied first, then attacks, then moves.
         avatars.sort(key=lambda a: PRIORITIES[type(a.action)])

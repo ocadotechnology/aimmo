@@ -36,6 +36,11 @@ def process_turn():
     return flask.jsonify(**response)
 
 
+@app.route('/worker-{worker_id}')
+def healthcheck():
+    return "HEALTHY"
+
+
 def run(host, port, data_url):
     global avatar_runner, DATA_URL
     DATA_URL = data_url
