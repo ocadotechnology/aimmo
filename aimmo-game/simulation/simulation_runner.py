@@ -1,8 +1,7 @@
 import logging
 import asyncio
 from abc import ABCMeta, abstractmethod
-from concurrent import futures
-from concurrent.futures import ALL_COMPLETED
+from concurrent.futures import ALL_COMPLETED, ThreadPoolExecutor
 from simulation.action import PRIORITIES
 from threading import Thread
 
@@ -71,12 +70,15 @@ class SequentialSimulationRunner(SimulationRunner):
 
 
 class ConcurrentSimulationRunner(SimulationRunner):
-    async def async_parallel_map(self, func, iterable_args):
-        aws = []
-        for arg in iterable_args:
-            aws.append(func(arg))
-        results = await asyncio.gather(aws)
-        return [results]
+    async def async_map(self, func, iterable_args):
+        with ThreadPoolExecutor() as executor:
+            results = []
+            loop = asyncio.get_event_loop()
+            futures = [loop.run_in_executor(executor,func,arg) for arg in iterable_args]
+            for result in await asyncio.gather(*futures):
+                results.append(result)
+            
+            return [results]
 
     async def run_turn(self, player_id_to_serialised_actions):
         """
@@ -85,9 +87,8 @@ class ConcurrentSimulationRunner(SimulationRunner):
         """
 
         avatars = self.game_state.avatar_manager.active_avatars
-        #self._run_turn_for_avatar
         args = [(avatar, player_id_to_serialised_actions[avatar.player_id]) for avatar in avatars]
-        self.async_parallel_map(self._run_turn_for_avatar, args)
+        self.async_map(self._run_turn_for_avatar, args)
 
         # Waits applied first, then attacks, then moves.
         avatars.sort(key=lambda a: PRIORITIES[type(a.action)])
