@@ -1,4 +1,5 @@
 from unittest import TestCase
+import asyncio
 
 from .mock_world import MockWorld
 from simulation.location import Location
@@ -36,8 +37,9 @@ class TestMovementsInMap(TestCase):
         self.set_up_environment(dummy_list, spawn)
         self.assertEqual(self.avatar.location, spawn)
 
+        loop = asyncio.get_event_loop()
         for i in range(number_of_movements):
-            self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
+            loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
 
     def test_movement_five_times_in_all_directions(self):
         """
@@ -105,8 +107,9 @@ class TestMovementsInMap(TestCase):
         obstacle_cell.habitable = False
         self.assertTrue(self.avatar.location, Location(0, 0))
 
+        loop = asyncio.get_event_loop()
         for i in range(2):
-            self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
+            loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
 
         self.assertTrue(self.avatar.location, Location(1, 0))
 
@@ -121,11 +124,11 @@ class TestMovementsInMap(TestCase):
 
         self.assertEqual(self.avatar.location, Location(0, 0))
         self.assertEqual(avatar_two.location, Location(3, 0))
-
+        loop = asyncio.get_event_loop()
         for i in range(2):
-            self.game.simulation_runner.run_single_turn(
+            loop.run_until_complete(self.game.simulation_runner.run_single_turn(
                 self.game.avatar_manager.get_player_id_to_serialised_action()
-            )
+            ))
 
         # Avatar 1 & Avatar 2 only managed to move once.
         self.assertEqual(self.avatar.location, Location(1, 0))
@@ -140,9 +143,9 @@ class TestMovementsInMap(TestCase):
         self.assertEqual(avatar_two.location, Location(4, 0))
 
         for i in range(2):
-            self.game.simulation_runner.run_single_turn(
+            loop.run_until_complete(self.game.simulation_runner.run_single_turn(
                 self.game.avatar_manager.get_player_id_to_serialised_action()
-            )
+            ))
 
         # Avatar 1 & Avatar 2 managed to only move only once.
         self.assertEqual(self.avatar.location, Location(1, 0))
@@ -155,7 +158,7 @@ class TestMovementsInMap(TestCase):
 
         self.assertEqual(self.avatar.location, Location(0, 0))
         self.assertEqual(avatar_two.location, Location(1, 0))
-        self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
+        loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
 
         self.assertEqual(self.avatar.location, Location(0, 0))
         self.assertEqual(avatar_two.location, Location(1, 0))
@@ -167,7 +170,8 @@ class TestMovementsInMap(TestCase):
         self.set_up_environment(dummy_list=[WaitDummy])
         self.assertEqual(self.avatar.location, Location(0, 0))
 
+        loop = asyncio.get_event_loop()
         for i in range(5):
-            self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
+            loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
 
         self.assertEqual(self.avatar.location, Location(0, 0))

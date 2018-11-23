@@ -1,5 +1,6 @@
 import random
 from unittest import TestCase
+import asyncio
 
 from hypothesis import given
 import hypothesis.strategies as st
@@ -29,7 +30,8 @@ class TestHealthPickupAndEffects(TestCase):
         """
         self.cell.pickup = HealthPickup(self.cell)
 
-        self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
 
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
         self.assertEqual(self.cell.avatar.health, self.initial_health +
@@ -43,7 +45,8 @@ class TestHealthPickupAndEffects(TestCase):
         self.setUp()
         self.cell.pickup = HealthPickup(self.cell, restore_value)
 
-        self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
 
         if self.initial_health + restore_value > HEALTH_RESTORE_MAX:
@@ -61,7 +64,8 @@ class TestHealthPickupAndEffects(TestCase):
         self.setUp()
         self.cell.pickup = HealthPickup(self.cell, restore_value)
 
-        self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
 
         if self.initial_health + restore_value > HEALTH_RESTORE_MAX:
@@ -81,7 +85,8 @@ class TestHealthPickupAndEffects(TestCase):
         self.setUp()
         self.cell.pickup = HealthPickup(self.cell, restore_value)
 
-        self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
 
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
         self.assertEqual(self.cell.avatar.health, AVATAR_HEALTH_MAX)

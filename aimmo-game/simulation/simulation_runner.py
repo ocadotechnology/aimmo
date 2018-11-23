@@ -56,14 +56,14 @@ class SimulationRunner(object):
 
 
 class SequentialSimulationRunner(SimulationRunner):
-    def run_turn(self, player_id_to_serialised_actions):
+    async def run_turn(self, player_id_to_serialised_actions):
         """
         Get and apply each avatar's action in turn.
         """
         avatars = self.game_state.avatar_manager.active_avatars
 
         for avatar in avatars:
-            self._run_turn_for_avatar(avatar, player_id_to_serialised_actions[avatar.player_id])
+            await self._run_turn_for_avatar(avatar, player_id_to_serialised_actions[avatar.player_id])
             location_to_clear = avatar.action.target_location
             avatar.action.process(self.game_state.world_map)
             self.game_state.world_map.clear_cell_actions(location_to_clear)
