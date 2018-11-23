@@ -83,7 +83,7 @@ class ConcurrentSimulationRunner(SimulationRunner):
         avatars = self.game_state.avatar_manager.active_avatars
         args = [(avatar, player_id_to_serialised_actions[avatar.player_id]) for avatar in avatars]
         await self.async_map(self._run_turn_for_avatar, args)
-            
+
         # Waits applied first, then attacks, then moves.
         avatars.sort(key=lambda a: PRIORITIES[type(a.action)])
 
