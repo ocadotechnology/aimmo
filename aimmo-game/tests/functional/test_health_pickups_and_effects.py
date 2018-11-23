@@ -23,6 +23,7 @@ class TestHealthPickupAndEffects(TestCase):
         self.game.game_state.add_avatar(1, Location(0, 0))
         self.cell = self.game.game_state.world_map.get_cell(Location(1, 0))
         self.initial_health = self.game.avatar_manager.get_avatar(1).health
+        self.loop = asyncio.get_event_loop()
 
     def test_health_pickups_and_effects_apply_default(self):
         """
@@ -30,8 +31,7 @@ class TestHealthPickupAndEffects(TestCase):
         """
         self.cell.pickup = HealthPickup(self.cell)
 
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
+        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
 
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
         self.assertEqual(self.cell.avatar.health, self.initial_health +
@@ -45,8 +45,7 @@ class TestHealthPickupAndEffects(TestCase):
         self.setUp()
         self.cell.pickup = HealthPickup(self.cell, restore_value)
 
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
+        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
 
         if self.initial_health + restore_value > HEALTH_RESTORE_MAX:
@@ -64,8 +63,7 @@ class TestHealthPickupAndEffects(TestCase):
         self.setUp()
         self.cell.pickup = HealthPickup(self.cell, restore_value)
 
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
+        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
 
         if self.initial_health + restore_value > HEALTH_RESTORE_MAX:
@@ -85,8 +83,7 @@ class TestHealthPickupAndEffects(TestCase):
         self.setUp()
         self.cell.pickup = HealthPickup(self.cell, restore_value)
 
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
+        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
 
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
         self.assertEqual(self.cell.avatar.health, AVATAR_HEALTH_MAX)
