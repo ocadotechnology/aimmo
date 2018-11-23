@@ -48,7 +48,6 @@ class GameRunner:
         game_metadata = self.communicator.get_game_metadata()['main']
 
         users_to_add = self.get_users_to_add(game_metadata)
-        LOGGER.info(users_to_add)
         users_to_delete = self.get_users_to_delete(game_metadata)
 
         self.worker_manager.add_workers(users_to_add)
@@ -61,7 +60,6 @@ class GameRunner:
         self.worker_manager.fetch_all_worker_data(self.game_state.get_serialised_game_states_for_workers())
 
     async def update_simulation(self, player_id_to_serialised_actions):
-        LOGGER.debug(player_id_to_serialised_actions)
         await self.simulation_runner.run_single_turn(player_id_to_serialised_actions)
         await self._end_turn_callback()
 
