@@ -3,7 +3,6 @@ MAINTAINER code@ocado.com
 
 RUN pip install pipenv
 COPY ["Pipfile", "Pipfile.lock", "setup.py", "./"]
-RUN pipenv install coverage
 RUN pipenv install --system --deploy
 
 FROM python:3.6-alpine as base
