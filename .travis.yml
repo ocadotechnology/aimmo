@@ -49,9 +49,7 @@ jobs:
         - node djangoBundler.js
         - popd
       script:
-        - python all_tests.py --no-docker-container-tests --coverage
-      after_success:
-        - coveralls
+        - python all_tests.py --no-docker-container-tests
     - name: "aimmo-game"
       addons:
         apt:
@@ -64,8 +62,6 @@ jobs:
         - pip install coveralls
       script:
         - docker run -it -p 5000:5000 ocadotechnology/aimmo-game:test
-      after_success:
-        - coveralls
     - name: "aimmo-game-creator"
       addons:
         apt:
@@ -78,8 +74,6 @@ jobs:
         - pip install coveralls
       script:
         - docker run -it -p 5000:5000 ocadotechnology/aimmo-game-creator:test
-      after_success:
-        - coveralls
     - name: "aimmo-game-worker"
       addons:
         apt:
@@ -92,8 +86,6 @@ jobs:
         - pip install coveralls
       script:
         - docker run -it -p 5000:5000 ocadotechnology/aimmo-game-worker:test
-      after_success:
-        - coveralls
     - name: "Javascript Tests"
       addons:
         apt:
