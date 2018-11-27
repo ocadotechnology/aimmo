@@ -29,7 +29,7 @@ def create_docker_client(raw_env_settings):
 
     else:
         # VM driver is set
-        os.environ['DOCKER_BUILDKIT'] = 1
+        os.environ['DOCKER_BUILDKIT'] = "1"
         env_variables = os.environ
     return docker.from_env(
             environment=env_variables,
