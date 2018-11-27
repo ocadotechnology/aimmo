@@ -1,0 +1,3 @@
+#!/bin/bash
+pwd
+docker build --target runner -t $IMAGE_NAME .
