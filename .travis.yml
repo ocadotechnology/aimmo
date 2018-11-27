@@ -33,6 +33,10 @@ jobs:
         - minikube update-context
         # Wait for Kubernetes to be up and ready.
         - JSONPATH='{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}{@.type}={@.status};{end}{end}'; until kubectl get nodes -o jsonpath="$JSONPATH" 2>&1 | grep -q "Ready=True"; do sleep 1; done
+      addons:
+        apt:
+          packages:
+            - docker-ce
       before_install:
         - nvm install node
         - nvm use node
@@ -49,6 +53,10 @@ jobs:
       after_success:
         - coveralls
     - name: "aimmo-game"
+      addons:
+        apt:
+          packages:
+            - docker-ce
       before_install:
         - cd aimmo-game
         - docker build --target tester -t ocadotechnology/aimmo-game:test .
@@ -59,6 +67,10 @@ jobs:
       after_success:
         - coveralls
     - name: "aimmo-game-creator"
+      addons:
+        apt:
+          packages:
+            - docker-ce
       before_install:
         - cd aimmo-game-creator
         - docker build --target tester -t  ocadotechnology/aimmo-game-creator:test .
@@ -69,6 +81,10 @@ jobs:
       after_success:
         - coveralls
     - name: "aimmo-game-worker"
+      addons:
+        apt:
+          packages:
+            - docker-ce
       before_install:
         - cd aimmo-game-worker
         - docker build --target tester -t ocadotechnology/aimmo-game-worker:test .
@@ -79,6 +95,10 @@ jobs:
       after_success:
         - coveralls
     - name: "Javascript Tests"
+      addons:
+        apt:
+          packages:
+            - docker-ce
       before_install:
         - nvm install node
         - nvm use node
@@ -111,6 +131,10 @@ jobs:
     - stage: deploy
       env:
         - NODE_ENV=production
+      addons:
+        apt:
+          packages:
+            - docker-ce
       before_install:
         - nvm install node
         - nvm use node

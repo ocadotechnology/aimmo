@@ -27,15 +27,14 @@ def create_docker_client(raw_env_settings):
         matches = re.finditer(r'^export (.+)="(.+)"$', raw_env_settings, re.MULTILINE)
         env_variables = dict([(m.group(1), m.group(2)) for m in matches])
 
-        return docker.from_env(
-            environment=env_variables,
-            version='auto',
-        )
     else:
         # VM driver is set
-        return docker.from_env(
-            version='auto'
-        )
+        os.environ['DOCKER_BUILDKIT'] = 1
+        env_variables = os.environ
+    return docker.from_env(
+            environment=env_variables,
+            version='auto',
+            )
 
 
 def build_docker_images(minikube=None, build_target=None):
