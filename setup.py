@@ -31,6 +31,6 @@ setup(
         'PyYAML == 3.12',
     ],
 
-    version="0.4.2.a7",
+    version=versioneer.get_version(),
     zip_safe=False,
 )
