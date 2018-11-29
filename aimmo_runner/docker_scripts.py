@@ -26,7 +26,7 @@ def create_docker_client(raw_env_settings):
     if vm_none_enabled(raw_env_settings):
         matches = re.finditer(r'^export (.+)="(.+)"$', raw_env_settings, re.MULTILINE)
         env_variables = dict([(m.group(1), m.group(2)) for m in matches])
-
+        env_variables['DOCKER_BUILDKIT'] = "1"
     else:
         # VM driver is set
         os.environ['DOCKER_BUILDKIT'] = "1"
@@ -48,7 +48,7 @@ def build_docker_images(minikube=None, build_target=None):
         raw_env_settings = run_command([minikube, 'docker-env', '--shell="bash"'], True)
         client = create_docker_client(raw_env_settings)
     else:
-        client = docker.from_env(version='auto')
+        client = create_docker_client('driver does not support')
 
     directories = ('aimmo-game', 'aimmo-game-creator', 'aimmo-game-worker')
     for dir in directories:
