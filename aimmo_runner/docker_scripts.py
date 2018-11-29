@@ -26,11 +26,12 @@ def create_docker_client(raw_env_settings):
     if vm_none_enabled(raw_env_settings):
         matches = re.finditer(r'^export (.+)="(.+)"$', raw_env_settings, re.MULTILINE)
         env_variables = dict([(m.group(1), m.group(2)) for m in matches])
-        env_variables['DOCKER_BUILDKIT'] = "1"
+        
     else:
         # VM driver is set
-        os.environ['DOCKER_BUILDKIT'] = "1"
         env_variables = os.environ
+        
+    env_variables['DOCKER_BUILDKIT'] = "1"
     return docker.from_env(
             environment=env_variables,
             version='auto',
