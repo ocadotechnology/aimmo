@@ -51,19 +51,11 @@ jobs:
       before_install:
         - cd aimmo-game
         - docker build --target tester -t ocadotechnology/aimmo-game:test .
-        - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-        - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-        - sudo apt-get update
-        - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
       install:
         - pip install coveralls
       script:
         - docker run -it -p 5000:5000 ocadotechnology/aimmo-game:test
     - name: "aimmo-game-creator"
-      addons:
-        apt:
-          packages:
-            - docker-ce
       before_install:
         - cd aimmo-game-creator
         - docker build --target tester -t  ocadotechnology/aimmo-game-creator:test .
@@ -72,10 +64,6 @@ jobs:
       script:
         - docker run -it -p 5000:5000 ocadotechnology/aimmo-game-creator:test
     - name: "aimmo-game-worker"
-      addons:
-        apt:
-          packages:
-            - docker-ce
       before_install:
         - cd aimmo-game-worker
         - docker build --target tester -t ocadotechnology/aimmo-game-worker:test .
