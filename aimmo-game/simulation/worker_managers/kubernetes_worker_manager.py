@@ -46,7 +46,7 @@ class KubernetesWorkerManager(WorkerManager):
             env=[client.V1EnvVar(
                 name='DATA_URL',
                 value='%s/player/%d' % (self.game_url, player_id)),
-                kubernetes.client.V1EnvVar(
+                client.V1EnvVar(
                 name='PORT',
                 value='5000')],
             name='aimmo-game-worker',
