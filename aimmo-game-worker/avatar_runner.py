@@ -35,11 +35,12 @@ _write_ = full_write_guard
 __metaclass__ = type
 
 restricted_globals = dict(__builtins__=safe_builtins)
+log_manager = PrintCollectorState()
 
 restricted_globals['_getattr_'] = _getattr_
 restricted_globals['_setattr_'] = _setattr_
 restricted_globals['_getiter_'] = list
-restricted_globals['_print_'] = PrintCollector
+restricted_globals['_print_'] = log_manager.get_print_collector()
 restricted_globals['_write_'] = _write_
 restricted_globals['__metaclass__'] = __metaclass__
 restricted_globals['__name__'] = "Avatar"
@@ -64,11 +65,13 @@ class AvatarRunner(object):
         module = imp.new_module('avatar')  # Create a temporary module to execute the src_code in
         module.__dict__.update(restricted_globals)
 
-        byte_code = compile_restricted(src_code, filename='<inline-code>', mode='exec')
+        try:
+            byte_code = compile_restricted(src_code, filename='<inline-code>', mode='exec')
+        except SyntaxWarning as w:
+            pass
         exec(byte_code, restricted_globals)
 
         module.__dict__['Avatar'] = restricted_globals['Avatar']
-
         return module.Avatar()
 
     def _update_avatar(self, src_code):
@@ -96,7 +99,6 @@ class AvatarRunner(object):
 
     def process_avatar_turn(self, world_map, avatar_state, src_code):
         output_log = StringIO()
-        src_code = self.get_printed(src_code)
         avatar_updated = self._avatar_src_changed(src_code)
 
         try:
@@ -131,12 +133,14 @@ class AvatarRunner(object):
 
     def decide_action(self, world_map, avatar_state):
         try:
-            action, printed = self.avatar.handle_turn(world_map, avatar_state)
-            print(printed)
+            action = self.avatar.handle_turn(world_map, avatar_state)
+            print(''.join(log_manager.get_logs()))
+            log_manager.clear_logs()
             if not isinstance(action, Action):
                 raise InvalidActionException(action)
             return action.serialise()
-        except TypeError:
+        except TypeError as e:
+                print(e)
                 raise InvalidActionException(None)
 
     def clean_logs(self, logs):
@@ -158,21 +162,4 @@ class AvatarRunner(object):
                 break
         return traceback_list[start_of_user_traceback:]
 
-    @staticmethod
-    def get_printed(src_code):
-        """ This method adds ', printed' to the end of the handle_turn return statement.
-            This is due to the fact that restricted python's PrintCollector requires this
-            explicitly, in order to get whatever has been printed by the user's code. """
-        src_code = src_code.split('\n')
-        new_src_code = []
-        in_handle_turn = False
-        for line in src_code:
-            if "def handle_turn" == line.strip()[0:15]:
-                in_handle_turn = True
-            elif "def" == line.strip()[0:3]:
-                in_handle_turn = False
-            if "return" == line.strip()[0:6] and in_handle_turn:
-                line = line + ', printed'
-            new_src_code.append(line)
 
-        return '\n'.join(new_src_code)
