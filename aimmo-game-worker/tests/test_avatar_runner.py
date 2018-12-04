@@ -17,8 +17,8 @@ class TestAvatarRunner(TestCase):
                         def handle_turn(self, world_map, avatar_state):
                             assert False'''
 
-        runner = AvatarRunner(avatar=avatar, auto_update=False)
-        action = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code='')['action']
+        runner = AvatarRunner()
+        action = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)['action']
         self.assertEqual(action, {'action_type': 'wait'})
 
     def test_runner_updates_code_on_change(self):
@@ -195,3 +195,39 @@ class TestAvatarRunner(TestCase):
         self.assertFalse('/usr/src/app/' in response['log'])
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar2)
         self.assertFalse('/usr/src/app/' in response['log'])
+
+    def test_print_collector_outputs_logs(self):
+        avatar1 = '''class Avatar:
+                        def handle_turn(self, world_map, avatar_state):
+                            print('I AM A PRINT STATEMENT')
+                            return MoveAction(direction.NORTH)
+                            
+                 '''
+        avatar2 = '''class Avatar:
+                        def handle_turn(self, world_map, avatar_state):
+                            print('I AM A PRINT STATEMENT')
+                            print('I AM ALSO A PRINT STATEMENT')
+                            return MoveAction(direction.NORTH)
+                            
+                 '''
+        avatar3 = '''class Avatar:
+                        def handle_turn(self, world_map, avatar_state):
+                            print('I AM NOT A NESTED PRINT')
+                            self.foo()
+                            return MoveAction(direction.NORTH)
+                        
+                        def foo(self):
+                            print('I AM A NESTED PRINT')
+                            
+                 '''
+        runner = AvatarRunner()
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar1)
+        self.assertTrue('I AM A PRINT STATEMENT' in response['log'])
+
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar2)
+        self.assertTrue('I AM A PRINT STATEMENT' in response['log'])
+        self.assertTrue('I AM ALSO A PRINT STATEMENT' in response['log'])
+
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar3)
+        self.assertTrue('I AM NOT A NESTED PRINT' in response['log'])
+        self.assertTrue('I AM A NESTED PRINT' in response['log'])
