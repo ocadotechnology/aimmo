@@ -1,6 +1,6 @@
 class PrintCollectorState(object):
     """ Wrapper for the PrintCollector which allows logs to have
-        state. The class definition for the PrintCollector is 
+        state. The class definition for the PrintCollector is
         passed into the globals for the user's code before execution. """
     def __init__(self):
         class PrintCollector(object):
@@ -23,13 +23,13 @@ class PrintCollectorState(object):
                     print_collector._getattr_(kwargs['file'], 'write')
 
                 print(*objects, **kwargs)
-        
+
         self.logs = []
         self.print_collector = PrintCollector
 
     def get_print_collector(self):
         return self.print_collector
-    
+
     def get_logs(self):
         return self.logs
 
