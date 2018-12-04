@@ -11,6 +11,7 @@ from io import StringIO
 
 import simulation.action as avatar_action
 import simulation.direction as direction
+from print_collector import LogManager
 
 from simulation.action import WaitAction, Action
 from user_exceptions import InvalidActionException
@@ -35,11 +36,12 @@ _write_ = full_write_guard
 __metaclass__ = type
 
 restricted_globals = dict(__builtins__=safe_builtins)
+log_manager = LogManager()
 
 restricted_globals['_getattr_'] = _getattr_
 restricted_globals['_setattr_'] = _setattr_
 restricted_globals['_getiter_'] = list
-restricted_globals['_print_'] = PrintCollector
+restricted_globals['_print_'] = log_manager.get_print_collector()
 restricted_globals['_write_'] = _write_
 restricted_globals['__metaclass__'] = __metaclass__
 restricted_globals['__name__'] = "Avatar"
@@ -64,11 +66,13 @@ class AvatarRunner(object):
         module = imp.new_module('avatar')  # Create a temporary module to execute the src_code in
         module.__dict__.update(restricted_globals)
 
-        byte_code = compile_restricted(src_code, filename='<inline-code>', mode='exec')
-        exec(byte_code, restricted_globals)
+        try:
+            byte_code = compile_restricted(src_code, filename='<inline-code>', mode='exec')
+            exec(byte_code, restricted_globals)
+        except SyntaxWarning as w:
+            pass
 
         module.__dict__['Avatar'] = restricted_globals['Avatar']
-
         return module.Avatar()
 
     def _update_avatar(self, src_code):
@@ -96,7 +100,6 @@ class AvatarRunner(object):
 
     def process_avatar_turn(self, world_map, avatar_state, src_code):
         output_log = StringIO()
-        src_code = self.get_printed(src_code)
         avatar_updated = self._avatar_src_changed(src_code)
 
         try:
@@ -104,15 +107,17 @@ class AvatarRunner(object):
             sys.stderr = output_log
             self._update_avatar(src_code)
             action = self.decide_action(world_map, avatar_state)
-
+            self.print_logs()
         # When an InvalidActionException is raised, the traceback might not contain
         # reference to the user's code as it can still technically be correct. so we
         # handle this case explicitly to avoid printing out unwanted parts of the traceback
         except InvalidActionException as e:
+            self.print_logs()
             print(e)
             action = WaitAction().serialise()
 
         except Exception as e:
+            self.print_logs()
             user_traceback = self.get_only_user_traceback()
             for trace in user_traceback:
                 print(trace)
@@ -125,26 +130,17 @@ class AvatarRunner(object):
             sys.stdout = sys.__stdout__
             sys.stderr = sys.__stderr__
 
-        logs = self.clean_logs(output_log.getvalue())
-
-        return {'action': action, 'log': logs, 'avatar_updated': avatar_updated}
+        return {'action': action, 'log': output_log.getvalue(), 'avatar_updated': avatar_updated}
 
     def decide_action(self, world_map, avatar_state):
         try:
-            action, printed = self.avatar.handle_turn(world_map, avatar_state)
-            print(printed)
+            action = self.avatar.handle_turn(world_map, avatar_state)
             if not isinstance(action, Action):
                 raise InvalidActionException(action)
             return action.serialise()
-        except TypeError:
+        except TypeError as e:
+                print(e)
                 raise InvalidActionException(None)
-
-    def clean_logs(self, logs):
-        getattr_pattern = "<function safer_getattr at [a-z0-9]+>"
-
-        clean_logs = re.sub(getattr_pattern, '', logs)
-
-        return clean_logs
 
     @staticmethod
     def get_only_user_traceback():
@@ -159,20 +155,7 @@ class AvatarRunner(object):
         return traceback_list[start_of_user_traceback:]
 
     @staticmethod
-    def get_printed(src_code):
-        """ This method adds ', printed' to the end of the handle_turn return statement.
-            This is due to the fact that restricted python's PrintCollector requires this
-            explicitly, in order to get whatever has been printed by the user's code. """
-        src_code = src_code.split('\n')
-        new_src_code = []
-        in_handle_turn = False
-        for line in src_code:
-            if "def handle_turn" == line.strip()[0:15]:
-                in_handle_turn = True
-            elif "def" == line.strip()[0:3]:
-                in_handle_turn = False
-            if "return" == line.strip()[0:6] and in_handle_turn:
-                line = line + ', printed'
-            new_src_code.append(line)
-
-        return '\n'.join(new_src_code)
+    def print_logs():
+        if not log_manager.is_empty():
+            print(log_manager.get_logs(), end='')
+            log_manager.clear_logs()

@@ -17,8 +17,8 @@ class TestAvatarRunner(TestCase):
                         def handle_turn(self, world_map, avatar_state):
                             assert False'''
 
-        runner = AvatarRunner(avatar=avatar, auto_update=False)
-        action = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code='')['action']
+        runner = AvatarRunner()
+        action = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)['action']
         self.assertEqual(action, {'action_type': 'wait'})
 
     def test_runner_updates_code_on_change(self):
@@ -195,3 +195,55 @@ class TestAvatarRunner(TestCase):
         self.assertFalse('/usr/src/app/' in response['log'])
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar2)
         self.assertFalse('/usr/src/app/' in response['log'])
+
+    def test_print_collector_outputs_logs(self):
+        avatar = '''class Avatar:
+                        def handle_turn(self, world_map, avatar_state):
+                            print('I AM A PRINT STATEMENT')
+                            return MoveAction(direction.NORTH)
+                            
+                 '''
+
+        runner = AvatarRunner()
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        self.assertTrue('I AM A PRINT STATEMENT' in response['log'])
+
+    def test_print_collector_outputs_multiple_prints(self):
+        avatar = '''class Avatar:
+                        def handle_turn(self, world_map, avatar_state):
+                            print('I AM A PRINT STATEMENT')
+                            print('I AM ALSO A PRINT STATEMENT')
+                            return MoveAction(direction.NORTH)
+                            
+                 '''
+        runner = AvatarRunner()
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        self.assertTrue('I AM A PRINT STATEMENT' in response['log'])
+        self.assertTrue('I AM ALSO A PRINT STATEMENT' in response['log'])
+
+    def test_print_collector_outputs_prints_from_different_scopes(self):
+        avatar = '''class Avatar:
+                        def handle_turn(self, world_map, avatar_state):
+                            print('I AM NOT A NESTED PRINT')
+                            self.foo()
+                            return MoveAction(direction.NORTH)
+                        
+                        def foo(self):
+                            print('I AM A NESTED PRINT')
+                            
+                 '''
+        runner = AvatarRunner()
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        self.assertTrue('I AM NOT A NESTED PRINT' in response['log'])
+        self.assertTrue('I AM A NESTED PRINT' in response['log'])
+
+    def test_print_collector_prints_output_and_runtime_error_if_exists(self):
+        avatar = '''class Avatar:
+                        def handle_turn(self, world_map, avatar_state):
+                            print('THIS CODE IS BROKEN')
+                            return None
+                 '''
+        runner = AvatarRunner()
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        self.assertTrue('THIS CODE IS BROKEN' in response['log'])
+        self.assertTrue('"None" is not a valid action object.' in response['log'])
