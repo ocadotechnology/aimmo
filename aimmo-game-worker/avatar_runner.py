@@ -11,6 +11,7 @@ from io import StringIO
 
 import simulation.action as avatar_action
 import simulation.direction as direction
+from print_collector import PrintCollectorState
 
 from simulation.action import WaitAction, Action
 from user_exceptions import InvalidActionException
@@ -67,9 +68,9 @@ class AvatarRunner(object):
 
         try:
             byte_code = compile_restricted(src_code, filename='<inline-code>', mode='exec')
+            exec(byte_code, restricted_globals)
         except SyntaxWarning as w:
             pass
-        exec(byte_code, restricted_globals)
 
         module.__dict__['Avatar'] = restricted_globals['Avatar']
         return module.Avatar()
