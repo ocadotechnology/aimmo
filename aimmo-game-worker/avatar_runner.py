@@ -162,5 +162,3 @@ class AvatarRunner(object):
                 start_of_user_traceback = i
                 break
         return traceback_list[start_of_user_traceback:]
-
-
