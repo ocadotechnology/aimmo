@@ -1,7 +1,7 @@
 import { ajax } from 'rxjs/ajax'
 import { pipe } from 'rxjs'
 import { mergeMap, map } from 'rxjs/operators'
-import api from '../api'
+import api from 'api'
 
 const getCSRFToken = action$ =>
   action$.pipe(

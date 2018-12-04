@@ -1,6 +1,13 @@
-import { UnityEvent } from 'react-unity-webgl'
 import { of } from 'rxjs'
 import { map, catchError, mergeMap } from 'rxjs/operators'
+import { UnityContent } from 'react-unity-webgl'
+
+const unityContent = new UnityContent(
+  '/static/unity/Build/unity.json',
+  '/static/unity/Build/UnityLoader.js', {
+    adjustOnWindowResize: true
+  }
+)
 
 const sendExternalEvent = communicator => action$ =>
   action$.pipe(
@@ -17,16 +24,12 @@ const emitToUnity = action$ =>
   action$.pipe(
     map(
       action => {
-        let unityEvent = new UnityEvent('World Controller', action.payload.unityEvent)
-
-        if (unityEvent.canEmit()) {
-          unityEvent.emit(action.payload.unityData)
-        } else {
-          throw new Error('Cannot emit the function!')
-        }
+        unityContent.send('World Controller', action.payload.unityEvent, action.payload.unityData)
       }
     )
   )
+
+export { unityContent }
 
 export default {
   sendExternalEvent,
