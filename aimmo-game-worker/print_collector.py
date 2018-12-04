@@ -1,4 +1,4 @@
-class PrintCollectorState(object):
+class LogManager(object):
     """ Wrapper for the PrintCollector which allows logs to have
         state. The class definition for the PrintCollector is
         passed into the globals for the user's code before execution. """
@@ -31,7 +31,8 @@ class PrintCollectorState(object):
         return self.print_collector
 
     def get_logs(self):
-        return self.logs
+        return ''.join(self.logs)
+
 
     def clear_logs(self):
         self.logs = []

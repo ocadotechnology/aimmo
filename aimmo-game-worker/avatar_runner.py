@@ -11,7 +11,7 @@ from io import StringIO
 
 import simulation.action as avatar_action
 import simulation.direction as direction
-from print_collector import PrintCollectorState
+from print_collector import LogManager
 
 from simulation.action import WaitAction, Action
 from user_exceptions import InvalidActionException
@@ -36,7 +36,7 @@ _write_ = full_write_guard
 __metaclass__ = type
 
 restricted_globals = dict(__builtins__=safe_builtins)
-log_manager = PrintCollectorState()
+log_manager = LogManager()
 
 restricted_globals['_getattr_'] = _getattr_
 restricted_globals['_setattr_'] = _setattr_
@@ -107,15 +107,20 @@ class AvatarRunner(object):
             sys.stderr = output_log
             self._update_avatar(src_code)
             action = self.decide_action(world_map, avatar_state)
-
+            print(log_manager.get_logs())
+            log_manager.clear_logs()
         # When an InvalidActionException is raised, the traceback might not contain
         # reference to the user's code as it can still technically be correct. so we
         # handle this case explicitly to avoid printing out unwanted parts of the traceback
         except InvalidActionException as e:
+            print(log_manager.get_logs())
+            log_manager.clear_logs()
             print(e)
             action = WaitAction().serialise()
 
         except Exception as e:
+            print(log_manager.get_logs())
+            log_manager.clear_logs()
             user_traceback = self.get_only_user_traceback()
             for trace in user_traceback:
                 print(trace)
@@ -128,28 +133,17 @@ class AvatarRunner(object):
             sys.stdout = sys.__stdout__
             sys.stderr = sys.__stderr__
 
-        logs = self.clean_logs(output_log.getvalue())
-
-        return {'action': action, 'log': logs, 'avatar_updated': avatar_updated}
+        return {'action': action, 'log': output_log.getvalue(), 'avatar_updated': avatar_updated}
 
     def decide_action(self, world_map, avatar_state):
         try:
             action = self.avatar.handle_turn(world_map, avatar_state)
-            print(''.join(log_manager.get_logs()))
-            log_manager.clear_logs()
             if not isinstance(action, Action):
                 raise InvalidActionException(action)
             return action.serialise()
         except TypeError as e:
                 print(e)
                 raise InvalidActionException(None)
-
-    def clean_logs(self, logs):
-        getattr_pattern = "<function safer_getattr at [a-z0-9]+>"
-
-        clean_logs = re.sub(getattr_pattern, '', logs)
-
-        return clean_logs
 
     @staticmethod
     def get_only_user_traceback():
