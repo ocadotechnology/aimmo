@@ -33,6 +33,8 @@ class LogManager(object):
     def get_logs(self):
         return ''.join(self.logs)
 
+    def is_empty(self):
+        return self.logs == []
 
     def clear_logs(self):
         self.logs = []

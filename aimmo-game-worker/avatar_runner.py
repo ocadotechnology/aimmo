@@ -107,20 +107,23 @@ class AvatarRunner(object):
             sys.stderr = output_log
             self._update_avatar(src_code)
             action = self.decide_action(world_map, avatar_state)
-            print(log_manager.get_logs())
-            log_manager.clear_logs()
+            if not log_manager.is_empty():
+                print(log_manager.get_logs(), end='')
+                log_manager.clear_logs()
         # When an InvalidActionException is raised, the traceback might not contain
         # reference to the user's code as it can still technically be correct. so we
         # handle this case explicitly to avoid printing out unwanted parts of the traceback
         except InvalidActionException as e:
-            print(log_manager.get_logs())
-            log_manager.clear_logs()
+            if not log_manager.is_empty():
+                print(log_manager.get_logs(), end='')
+                log_manager.clear_logs()
             print(e)
             action = WaitAction().serialise()
 
         except Exception as e:
-            print(log_manager.get_logs())
-            log_manager.clear_logs()
+            if not log_manager.is_empty():
+                print(log_manager.get_logs(), end='')
+                log_manager.clear_logs()
             user_traceback = self.get_only_user_traceback()
             for trace in user_traceback:
                 print(trace)
