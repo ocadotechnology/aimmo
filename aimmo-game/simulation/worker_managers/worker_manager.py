@@ -73,7 +73,7 @@ class WorkerManager(object):
 
     def add_new_worker(self, player_id):
         worker_url_base = self.create_worker(player_id)
-        self.player_id_to_worker[player_id] = Worker('{}/turn/'.format(worker_url_base))
+        self.player_id_to_worker[player_id] = Worker(f'{worker_url_base}/turn/')
 
     def _parallel_map(self, func, iterable_args):
         with futures.ThreadPoolExecutor() as executor:

@@ -2,6 +2,7 @@ from unittest import TestCase
 from hypothesis import given, assume
 from hypothesis import strategies as st
 import math
+import asyncio
 
 from .mock_world import MockWorld
 from simulation.location import Location
@@ -19,12 +20,13 @@ class TestDamagePickupsAndEffects(TestCase):
         _avatar_spawn_cell = self.game.game_state.world_map.get_cell(Location(0, 0))
         self.initial_attack_strength = _avatar_spawn_cell.avatar.attack_strength
         self.cell = self.game.game_state.world_map.get_cell(Location(1, 0))
+        self.loop = asyncio.get_event_loop()
 
     def test_damage_boost_pickup_can_be_picked_up_default(self):
         pickup_created = DamageBoostPickup(self.cell)
         self.cell.pickup = pickup_created
 
-        self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
+        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
 
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
         self.assertEqual(len(self.game.avatar_manager.get_avatar(1).effects), 1)
@@ -37,7 +39,7 @@ class TestDamagePickupsAndEffects(TestCase):
         pickup_created = DamageBoostPickup(self.cell, boost_value)
         self.cell.pickup = pickup_created
 
-        self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
+        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
 
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
         self.assertEqual(len(self.game.avatar_manager.get_avatar(1).effects), 1)
@@ -51,7 +53,7 @@ class TestDamagePickupsAndEffects(TestCase):
         pickup_created = DamageBoostPickup(self.cell, boost_value)
         self.cell.pickup = pickup_created
 
-        self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
+        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
 
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
         self.assertEqual(len(self.game.avatar_manager.get_avatar(1).effects), 1)
@@ -65,7 +67,7 @@ class TestDamagePickupsAndEffects(TestCase):
         pickup_created = DamageBoostPickup(self.cell)
         self.cell.pickup = pickup_created
 
-        self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
+        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
 
         self.assertTrue(self.cell.avatar.attack_strength, self.initial_attack_strength + DAMAGE_BOOST_DEFAULT)
 
@@ -78,6 +80,6 @@ class TestDamagePickupsAndEffects(TestCase):
         pickup_created = DamageBoostPickup(self.cell, boost_value)
         self.cell.pickup = pickup_created
 
-        self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action())
+        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
 
         self.assertTrue(self.cell.avatar.attack_strength, self.initial_attack_strength + boost_value)

@@ -6,36 +6,27 @@ import json
 import os
 
 
-def vm_none_enabled(raw_env_settings):
-    """
-    Check if the VM driver is enabled or not. This is important to see where the environment variables live.
-
-    :param raw_env_settings: String that is returned by the 'minikube docker-env' command.
-    :return: Boolean value indicating if enabled or not.
-    """
-    return False if 'driver does not support' in raw_env_settings else True
-
-
-def create_docker_client(raw_env_settings):
+def create_docker_client(use_raw_env=False, minikube=None):
     """
     Create a docker client using the python SDK.
 
     :param raw_env_settings: String that is returned by the 'minikube docker-env' command.
     :return:
     """
-    if vm_none_enabled(raw_env_settings):
+    if use_raw_env:
+        raw_env_settings = run_command([minikube, 'docker-env', '--shell="bash"'], True)
         matches = re.finditer(r'^export (.+)="(.+)"$', raw_env_settings, re.MULTILINE)
         env_variables = dict([(m.group(1), m.group(2)) for m in matches])
-
-        return docker.from_env(
-            environment=env_variables,
-            version='auto',
-        )
+        
     else:
         # VM driver is set
-        return docker.from_env(
-            version='auto'
-        )
+        env_variables = os.environ
+
+    env_variables['DOCKER_BUILDKIT'] = "1"
+    return docker.from_env(
+            environment=env_variables,
+            version='auto',
+            )
 
 
 def build_docker_images(minikube=None, build_target=None):
@@ -46,10 +37,9 @@ def build_docker_images(minikube=None, build_target=None):
     """
     print('Building docker images')
     if minikube:
-        raw_env_settings = run_command([minikube, 'docker-env', '--shell="bash"'], True)
-        client = create_docker_client(raw_env_settings)
+        client = create_docker_client(use_raw_env=True, minikube=minikube)
     else:
-        client = docker.from_env(version='auto')
+        client = create_docker_client(use_raw_env=False, minikube=minikube)
 
     directories = ('aimmo-game', 'aimmo-game-creator', 'aimmo-game-worker')
     for dir in directories:
