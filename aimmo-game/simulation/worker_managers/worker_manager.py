@@ -45,7 +45,7 @@ class WorkerManager(object):
         def prepare_request_threads():
             return [Thread(target=worker.fetch_data,
                            args=(player_id_to_game_state[player_id], self._data.get_code(player_id)))
-                        for (player_id, worker) in self.player_id_to_worker.items()]
+                    for (player_id, worker) in self.player_id_to_worker.items()]
 
         def timed_process_for_worker_turn_requests(duration):
             threads = prepare_request_threads()
