@@ -8,6 +8,7 @@ class Worker(object):
     def __init__(self, worker_url):
         self.url = worker_url
         self.log = None
+        self.code = None
         self.serialised_action = None
         self.has_code_updated = False
 
