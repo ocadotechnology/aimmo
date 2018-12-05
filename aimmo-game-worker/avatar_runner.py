@@ -8,6 +8,7 @@ import inspect
 import re
 
 from io import StringIO
+import contextlib
 
 import simulation.action as avatar_action
 import simulation.direction as direction
@@ -35,8 +36,9 @@ _setattr_ = guarded_setattr
 _write_ = full_write_guard
 __metaclass__ = type
 
-restricted_globals = dict(__builtins__=safe_builtins)
+# Sets up restricted coding environment for the user
 log_manager = LogManager()
+restricted_globals = dict(__builtins__=safe_builtins)
 
 restricted_globals['_getattr_'] = _getattr_
 restricted_globals['_setattr_'] = _setattr_
@@ -46,9 +48,20 @@ restricted_globals['_write_'] = _write_
 restricted_globals['__metaclass__'] = __metaclass__
 restricted_globals['__name__'] = "Avatar"
 
+# Adds AI:MMO specific modules to the user's environment
 add_actions_to_globals()
 restricted_globals['direction'] = direction
 restricted_globals['random'] = utility_builtins['random']
+
+# Temporarily switches stdout to a stringIO object 
+@contextlib.contextmanager
+def stdoutIO(stdout=None):
+    old = sys.stdout
+    if stdout is None:
+        stdout = StringIO.StringIO()
+    sys.stdout = stdout
+    yield stdout
+    sys.stdout = old
 
 
 class AvatarRunner(object):
