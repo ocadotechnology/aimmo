@@ -16,9 +16,15 @@ class Worker(object):
         self.serialised_action = None
         self.has_code_updated = False
 
-    def fetch_data(self, state_view):
+    def fetch_data(self, state_view, code):
         try:
-            response = requests.post(self.url, json=state_view)
+            code_and_options = {
+                'code': code,
+                'options': {},
+                'state': None,
+            }
+            data = {**state_view, **code_and_options}
+            response = requests.post(self.url, json=data)
             response.raise_for_status()
             data = response.json()
             self.serialised_action = data['action']

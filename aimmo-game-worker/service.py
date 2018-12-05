@@ -23,10 +23,9 @@ def get_code_and_options():
 
 @app.route('/turn/', methods=['POST'])
 def process_turn():
-    code, options = get_code_and_options()
     data = flask.request.get_json()
     world_map = WorldMap(**data['world_map'])
-
+    code, options = data['code'], data['options']
     avatar_state = AvatarState(location=data['avatar_state']['location'],
                                score=data['avatar_state']['score'],
                                health=data['avatar_state']['health'])
