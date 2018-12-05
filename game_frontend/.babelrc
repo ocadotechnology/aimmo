@@ -6,7 +6,8 @@
       "root": ["./src"],
       "alias": {
         "features": "./src/redux/features",
-        "theme": "./src/theme"
+        "theme": "./src/theme",
+        "api": "./src/redux/api"
       }
     }],
     "transform-class-properties"
