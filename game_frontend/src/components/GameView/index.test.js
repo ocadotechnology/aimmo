@@ -2,6 +2,8 @@
 import React from 'react'
 import GameView, { GameViewLayout } from 'components/GameView'
 import { shallow } from 'enzyme/build/index'
+import { unityContent } from 'api/unity'
+jest.mock('api/unity')
 
 describe('<GameView />', () => {
   it('shows loading bar whilst unity is loading', () => {
