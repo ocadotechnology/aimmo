@@ -69,7 +69,7 @@ class TestAvatarWrapper(TestCase):
         if request_mock is None:
             request_mock = ActionRequest()
         with HTTMock(request_mock):
-            worker_data = self.worker.fetch_data(None)
+            worker_data = self.worker.fetch_data(None, None)
             self.avatar.decide_action(worker_data)
 
     def test_bad_action_data_given(self):

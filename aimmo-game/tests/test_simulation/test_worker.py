@@ -27,7 +27,7 @@ class TestWorker(TestCase):
     @mock.patch('simulation.worker.requests.post',
                 return_value=construct_test_response())
     def test_fetch_data_fetches_correct_response(self, mocked_post):
-        self.worker.fetch_data(state_view={})
+        self.worker.fetch_data(state_view={}, code='')
 
         mocked_post.assert_called_once()
         self.assertEqual(self.worker.serialised_action, 'test_action')
@@ -50,7 +50,7 @@ class TestWorker(TestCase):
     @mock.patch.object(target=Worker, attribute='_set_defaults')
     def test_fetch_data_cannot_connect_to_worker(self, mocked_set_defaults,
                                                  mocked_post):
-        self.worker.fetch_data(state_view={})
+        self.worker.fetch_data(state_view={}, code='')
 
         mocked_post.assert_called_once()
         mocked_set_defaults.assert_called_once()
@@ -60,7 +60,7 @@ class TestWorker(TestCase):
     @mock.patch.object(target=Worker, attribute='_set_defaults')
     def test_missing_key_in_worker_data(self, mocked_set_defaults,
                                         mocked_post):
-        self.worker.fetch_data(state_view={})
+        self.worker.fetch_data(state_view={}, code='')
 
         mocked_post.assert_called_once()
         mocked_set_defaults.assert_called_once()
