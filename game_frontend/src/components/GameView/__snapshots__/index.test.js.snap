@@ -7,6 +7,34 @@ exports[`<GameView /> does not show the loading bar when unity has loaded 1`] = 
     unityContent={
       UnityContent {
         "buildJsonPath": "/static/unity/Build/unity.json",
+        "constructor": [MockFunction],
+        "on": [MockFunction] {
+          "calls": Array [
+            Array [
+              "loaded",
+              [Function],
+            ],
+            Array [
+              "loaded",
+              [Function],
+            ],
+          ],
+          "results": Array [
+            Object {
+              "isThrow": false,
+              "value": undefined,
+            },
+            Object {
+              "isThrow": false,
+              "value": undefined,
+            },
+          ],
+        },
+        "send": [MockFunction],
+        "setComponentInstance": [MockFunction],
+        "setFullscreen": [MockFunction],
+        "setUnityInstance": [MockFunction],
+        "triggerUnityEvent": [MockFunction],
         "uniqueID": 1,
         "unityConfig": Object {
           "adjustOnWindowResize": true,
@@ -14,16 +42,7 @@ exports[`<GameView /> does not show the loading bar when unity has loaded 1`] = 
           "modules": Object {},
           "unityVersion": 2,
         },
-        "unityEvents": Array [
-          Object {
-            "eventCallback": [Function],
-            "eventName": "loaded",
-          },
-          Object {
-            "eventCallback": [Function],
-            "eventName": "loaded",
-          },
-        ],
+        "unityEvents": Array [],
         "unityLoaderJsPath": "/static/unity/Build/UnityLoader.js",
       }
     }
@@ -42,6 +61,26 @@ exports[`<GameView /> shows loading bar whilst unity is loading 1`] = `
     unityContent={
       UnityContent {
         "buildJsonPath": "/static/unity/Build/unity.json",
+        "constructor": [MockFunction],
+        "on": [MockFunction] {
+          "calls": Array [
+            Array [
+              "loaded",
+              [Function],
+            ],
+          ],
+          "results": Array [
+            Object {
+              "isThrow": false,
+              "value": undefined,
+            },
+          ],
+        },
+        "send": [MockFunction],
+        "setComponentInstance": [MockFunction],
+        "setFullscreen": [MockFunction],
+        "setUnityInstance": [MockFunction],
+        "triggerUnityEvent": [MockFunction],
         "uniqueID": 1,
         "unityConfig": Object {
           "adjustOnWindowResize": true,
@@ -49,12 +88,7 @@ exports[`<GameView /> shows loading bar whilst unity is loading 1`] = `
           "modules": Object {},
           "unityVersion": 2,
         },
-        "unityEvents": Array [
-          Object {
-            "eventCallback": [Function],
-            "eventName": "loaded",
-          },
-        ],
+        "unityEvents": Array [],
         "unityLoaderJsPath": "/static/unity/Build/UnityLoader.js",
       }
     }

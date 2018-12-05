@@ -1,5 +1,10 @@
 {
-  "presets": ["react-app"],
+  "presets": [
+    ["@babel/preset-env", {
+      "useBuiltIns": "entry"
+    }],
+    "@babel/preset-react"
+  ],
   "plugins": [
     ["module-resolver", {
       "cwd": "babelrc",
@@ -10,6 +15,6 @@
         "api": "./src/redux/api"
       }
     }],
-    "transform-class-properties"
+    "@babel/plugin-proposal-class-properties"
   ]
 }
