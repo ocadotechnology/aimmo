@@ -55,13 +55,21 @@ restricted_globals['random'] = utility_builtins['random']
 
 # Temporarily switches stdout to a stringIO object 
 @contextlib.contextmanager
-def stdoutIO(stdout=None):
-    old = sys.stdout
+def capture_output(stdout=None, stderr=None):
+    oldout = sys.stdout
+    olderr = sys.stderr
+
     if stdout is None:
         stdout = StringIO.StringIO()
+    if stderr is None:
+        stderr = StringIO.StringIO()
     sys.stdout = stdout
-    yield stdout
-    sys.stdout = old
+    sys.stderr = stderr
+    yield stdout, stderr
+
+    sys.stdout = oldout
+    sys.stderr = olderr
+
 
 
 class AvatarRunner(object):
@@ -112,38 +120,32 @@ class AvatarRunner(object):
                 not self.update_successful)
 
     def process_avatar_turn(self, world_map, avatar_state, src_code):
-        output_log = StringIO()
         avatar_updated = self._avatar_src_changed(src_code)
 
-        try:
-            sys.stdout = output_log
-            sys.stderr = output_log
-            self._update_avatar(src_code)
-            action = self.decide_action(world_map, avatar_state)
-            self.print_logs()
-        # When an InvalidActionException is raised, the traceback might not contain
-        # reference to the user's code as it can still technically be correct. so we
-        # handle this case explicitly to avoid printing out unwanted parts of the traceback
-        except InvalidActionException as e:
-            self.print_logs()
-            print(e)
-            action = WaitAction().serialise()
+        with capture_output() as stdout, stderr:
+            try:
+                self._update_avatar(src_code)
+                action = self.decide_action(world_map, avatar_state)
+                self.print_logs()
 
-        except Exception as e:
-            self.print_logs()
-            user_traceback = self.get_only_user_traceback()
-            for trace in user_traceback:
-                print(trace)
+            # This needs to be handled explicitly as the users code and still be technically correct here.
+            except InvalidActionException as e:
+                self.print_logs()
+                print(e)
+                action = WaitAction().serialise()
 
-            LOGGER.info("Code failed to run")
-            LOGGER.info(e)
-            action = WaitAction().serialise()
+            except Exception as e:
+                self.print_logs()
+                user_traceback = self.get_only_user_traceback()
+                for trace in user_traceback:
+                    print(trace)
 
-        finally:
-            sys.stdout = sys.__stdout__
-            sys.stderr = sys.__stderr__
+                LOGGER.info("Code failed to run")
+                LOGGER.info(e)
+                action = WaitAction().serialise()
 
-        return {'action': action, 'log': output_log.getvalue(), 'avatar_updated': avatar_updated}
+        output_log = stdout.getvalue() + stderr.getvalue()
+        return {'action': action, 'log': output_log, 'avatar_updated': avatar_updated}
 
     def decide_action(self, world_map, avatar_state):
         try:
