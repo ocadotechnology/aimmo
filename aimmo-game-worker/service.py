@@ -13,7 +13,6 @@ from simulation.avatar_state import AvatarState
 from simulation.world_map import WorldMap
 from avatar_runner import AvatarRunner
 
-#app = flask.Flask(__name__)
 app = web.Application()
 cors = aiohttp_cors.setup(app)
 
@@ -33,10 +32,7 @@ def get_code_and_options():
 @routes.post('/turn/')
 async def process_turn(request):
     code, options = get_code_and_options()
-    data = request.content.read()
-    LOGGER.info('#########################')
-    LOGGER.info(request)
-    LOGGER.info(data)
+    data = json.loads(await request.content.read())
     world_map = WorldMap(**data['world_map'])
 
     avatar_state = AvatarState(location=data['avatar_state']['location'],
@@ -46,7 +42,6 @@ async def process_turn(request):
     response = avatar_runner.process_avatar_turn(world_map, avatar_state, code)
 
     return web.json_response(response)
-    #flask.jsonify(**response)
 
 
 def run(host, port, data_url):
@@ -54,7 +49,6 @@ def run(host, port, data_url):
     DATA_URL = data_url
     logging.basicConfig(level=logging.DEBUG)
     avatar_runner = AvatarRunner()
-    #app.config['DEBUG'] = False
     app.add_routes(routes)
     web.run_app(app, host=host, port=port)
     LOGGER.info("HI!")
