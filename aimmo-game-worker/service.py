@@ -1,15 +1,24 @@
 #!/usr/bin/env python
 import logging
 import sys
+import json
 
 import flask
 import requests
+from aiohttp import web
+import aiohttp_cors
+import asyncio
 
 from simulation.avatar_state import AvatarState
 from simulation.world_map import WorldMap
 from avatar_runner import AvatarRunner
 
-app = flask.Flask(__name__)
+#app = flask.Flask(__name__)
+app = web.Application()
+cors = aiohttp_cors.setup(app)
+
+routes = web.RouteTableDef()
+
 LOGGER = logging.getLogger(__name__)
 
 avatar_runner = None
@@ -21,10 +30,13 @@ def get_code_and_options():
     return data['code'], data['options']
 
 
-@app.route('/turn/', methods=['POST'])
-def process_turn():
+@routes.post('/turn/')
+async def process_turn(request):
     code, options = get_code_and_options()
-    data = flask.request.get_json()
+    data = request.content.read()
+    LOGGER.info('#########################')
+    LOGGER.info(request)
+    LOGGER.info(data)
     world_map = WorldMap(**data['world_map'])
 
     avatar_state = AvatarState(location=data['avatar_state']['location'],
@@ -33,7 +45,8 @@ def process_turn():
 
     response = avatar_runner.process_avatar_turn(world_map, avatar_state, code)
 
-    return flask.jsonify(**response)
+    return web.json_response(response)
+    #flask.jsonify(**response)
 
 
 def run(host, port, data_url):
@@ -41,8 +54,9 @@ def run(host, port, data_url):
     DATA_URL = data_url
     logging.basicConfig(level=logging.DEBUG)
     avatar_runner = AvatarRunner()
-    app.config['DEBUG'] = False
-    app.run(host, port, debug=False)
+    #app.config['DEBUG'] = False
+    app.add_routes(routes)
+    web.run_app(app, host=host, port=port)
     LOGGER.info("HI!")
 
 

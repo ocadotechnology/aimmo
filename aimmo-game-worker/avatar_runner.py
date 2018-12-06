@@ -53,16 +53,16 @@ add_actions_to_globals()
 restricted_globals['direction'] = direction
 restricted_globals['random'] = utility_builtins['random']
 
-# Temporarily switches stdout to a stringIO object 
+# Temporarily switches stdout and stderr to stringIO objects or variable
 @contextlib.contextmanager
 def capture_output(stdout=None, stderr=None):
     oldout = sys.stdout
     olderr = sys.stderr
 
     if stdout is None:
-        stdout = StringIO.StringIO()
+        stdout = StringIO()
     if stderr is None:
-        stderr = StringIO.StringIO()
+        stderr = StringIO()
     sys.stdout = stdout
     sys.stderr = stderr
     yield stdout, stderr
@@ -122,7 +122,7 @@ class AvatarRunner(object):
     def process_avatar_turn(self, world_map, avatar_state, src_code):
         avatar_updated = self._avatar_src_changed(src_code)
 
-        with capture_output() as stdout, stderr:
+        with capture_output() as output:
             try:
                 self._update_avatar(src_code)
                 action = self.decide_action(world_map, avatar_state)
@@ -144,7 +144,12 @@ class AvatarRunner(object):
                 LOGGER.info(e)
                 action = WaitAction().serialise()
 
-        output_log = stdout.getvalue() + stderr.getvalue()
+        stdout, stderr = output
+        output_log = stdout.getvalue()
+        if not stderr.getvalue() == '':
+            LOGGER.info(stderr.getvalue())
+            output_log.append("* Server had a hiccup, sorry about that 😓 *")
+
         return {'action': action, 'log': output_log, 'avatar_updated': avatar_updated}
 
     def decide_action(self, world_map, avatar_state):
