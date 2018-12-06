@@ -17,10 +17,10 @@ class Worker(object):
         self.serialised_action = None
         self.has_code_updated = False
 
-    def fetch_data(self, state_view, code):
+    def fetch_data(self, state_view):
         try:
             code_and_options = {
-                'code': code,
+                'code': self.code,
                 'options': {},
                 'state': None,
             }
