@@ -2,7 +2,7 @@
 import logging
 import sys
 import json
-
+import timeit
 import flask
 import requests
 from aiohttp import web
@@ -40,7 +40,7 @@ async def process_turn(request):
                                health=data['avatar_state']['health'])
 
     response = avatar_runner.process_avatar_turn(world_map, avatar_state, code)
-
+    LOGGER.info(f"I TOOK THIS LONG TO SEND MY FIRST REQUEST: {timeit.default_timer() - start}")
     return web.json_response(response)
 
 
@@ -51,8 +51,10 @@ def run(host, port, data_url):
     avatar_runner = AvatarRunner()
     app.add_routes(routes)
     web.run_app(app, host=host, port=port)
+    LOGGER.info(f"I TOOK THIS LONG TO START UP: {timeit.default_timer() - start}")
     LOGGER.info("HI!")
 
 
 if __name__ == '__main__':
+    start = timeit.default_timer()
     run(host=sys.argv[1], port=int(sys.argv[2]), data_url=sys.argv[3])
