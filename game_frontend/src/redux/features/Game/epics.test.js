@@ -4,7 +4,7 @@ import { TestScheduler } from 'rxjs/testing'
 import { ActionsObservable, StateObservable } from 'redux-observable'
 import epics from './epics'
 import actions from './actions'
-import api from '../../api'
+import api from 'api'
 import { delay, mapTo } from 'rxjs/operators'
 
 const deepEquals = (actual, expected) =>

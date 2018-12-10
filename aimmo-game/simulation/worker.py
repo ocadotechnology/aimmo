@@ -8,6 +8,7 @@ class Worker(object):
     def __init__(self, worker_url):
         self.url = worker_url
         self.log = None
+        self.code = None
         self.serialised_action = None
         self.has_code_updated = False
 
@@ -18,7 +19,13 @@ class Worker(object):
 
     def fetch_data(self, state_view):
         try:
-            response = requests.post(self.url, json=state_view)
+            code_and_options = {
+                'code': self.code,
+                'options': {},
+                'state': None,
+            }
+            data = {**state_view, **code_and_options}
+            response = requests.post(self.url, json=data)
             response.raise_for_status()
             data = response.json()
             self.serialised_action = data['action']

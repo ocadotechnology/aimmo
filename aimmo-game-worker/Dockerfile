@@ -15,5 +15,4 @@ ENV FLASK_ENV='development'
 CMD python ./service.py 0.0.0.0 $PORT $DATA_URL
 
 FROM base as tester
-ENV WORKER_MANAGER=kubernetes
 CMD python setup.py test

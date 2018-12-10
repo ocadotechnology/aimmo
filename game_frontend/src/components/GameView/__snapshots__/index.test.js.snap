@@ -1,11 +1,98 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<GameView /> matches snapshot 1`] = `
+exports[`<GameView /> does not show the loading bar when unity has loaded 1`] = `
 <styled.div>
   <Unity
-    loader="/static/unity/Build/UnityLoader.js"
-    onProgress={[Function]}
-    src="/static/unity/Build/unity.json"
+    height="100%"
+    unityContent={
+      UnityContent {
+        "buildJsonPath": "/static/unity/Build/unity.json",
+        "constructor": [MockFunction],
+        "on": [MockFunction] {
+          "calls": Array [
+            Array [
+              "loaded",
+              [Function],
+            ],
+            Array [
+              "loaded",
+              [Function],
+            ],
+          ],
+          "results": Array [
+            Object {
+              "isThrow": false,
+              "value": undefined,
+            },
+            Object {
+              "isThrow": false,
+              "value": undefined,
+            },
+          ],
+        },
+        "send": [MockFunction],
+        "setComponentInstance": [MockFunction],
+        "setFullscreen": [MockFunction],
+        "setUnityInstance": [MockFunction],
+        "triggerUnityEvent": [MockFunction],
+        "uniqueID": 1,
+        "unityConfig": Object {
+          "adjustOnWindowResize": true,
+          "id": "nill",
+          "modules": Object {},
+          "unityVersion": 2,
+        },
+        "unityEvents": Array [],
+        "unityLoaderJsPath": "/static/unity/Build/UnityLoader.js",
+      }
+    }
+    width="100%"
+  />
+</styled.div>
+`;
+
+exports[`<GameView /> shows loading bar whilst unity is loading 1`] = `
+<styled.div>
+  <WithStyles(LinearProgress)
+    color="secondary"
+  />
+  <Unity
+    height="100%"
+    unityContent={
+      UnityContent {
+        "buildJsonPath": "/static/unity/Build/unity.json",
+        "constructor": [MockFunction],
+        "on": [MockFunction] {
+          "calls": Array [
+            Array [
+              "loaded",
+              [Function],
+            ],
+          ],
+          "results": Array [
+            Object {
+              "isThrow": false,
+              "value": undefined,
+            },
+          ],
+        },
+        "send": [MockFunction],
+        "setComponentInstance": [MockFunction],
+        "setFullscreen": [MockFunction],
+        "setUnityInstance": [MockFunction],
+        "triggerUnityEvent": [MockFunction],
+        "uniqueID": 1,
+        "unityConfig": Object {
+          "adjustOnWindowResize": true,
+          "id": "nill",
+          "modules": Object {},
+          "unityVersion": 2,
+        },
+        "unityEvents": Array [],
+        "unityLoaderJsPath": "/static/unity/Build/UnityLoader.js",
+      }
+    }
+    width="100%"
   />
 </styled.div>
 `;

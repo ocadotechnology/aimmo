@@ -34,7 +34,7 @@ async def process_turn(request):
     code, options = get_code_and_options()
     data = json.loads(await request.content.read())
     world_map = WorldMap(**data['world_map'])
-
+    code, options = data['code'], data['options']
     avatar_state = AvatarState(location=data['avatar_state']['location'],
                                score=data['avatar_state']['score'],
                                health=data['avatar_state']['health'])
