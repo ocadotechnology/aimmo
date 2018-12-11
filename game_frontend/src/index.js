@@ -4,7 +4,7 @@ import { render } from 'react-dom'
 
 import { MuiThemeProvider } from '@material-ui/core/styles'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components'
-import { lightTheme } from 'theme'
+import { darkTheme } from 'theme'
 import { Provider } from 'react-redux'
 
 import GamePage from './components/GamePage'
@@ -44,8 +44,8 @@ function getGameIDFromURL () {
 const reduxStore = configureStore(initialState)
 
 const RootJSX = () => (
-  <StyledComponentsThemeProvider theme={lightTheme}>
-    <MuiThemeProvider theme={lightTheme}>
+  <StyledComponentsThemeProvider theme={darkTheme}>
+    <MuiThemeProvider theme={darkTheme}>
       <Provider store={reduxStore}>
         <GamePage />
       </Provider>

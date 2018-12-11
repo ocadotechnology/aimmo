@@ -75,6 +75,7 @@ export class IDEEditor extends PureComponent {
             fontFamily: this.props.theme.additionalVariables.typography.code.fontFamily
           }} />
         <RunCodeButton
+          color='secondary'
           aria-label='Run Code'
           variant='extendedFab'
           id='post-code-button'

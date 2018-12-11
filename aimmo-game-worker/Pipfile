@@ -8,6 +8,8 @@ kubernetes = "*"
 aimmo-game-worker = {editable = true, path = "."}
 restrictedpython = "==4.0.b7"
 coverage = "*"
+aiohttp = "*"
+aiohttp-cors = "*"
 
 [requires]
 python_version = "3.6.7"
