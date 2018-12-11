@@ -2,8 +2,6 @@
 import logging
 import sys
 import json
-import flask
-import requests
 from aiohttp import web
 import aiohttp_cors
 import asyncio
@@ -23,14 +21,8 @@ avatar_runner = None
 DATA_URL = ''
 
 
-def get_code_and_options():
-    data = requests.get(DATA_URL).json()
-    return data['code'], data['options']
-
-
 @routes.post('/turn/')
 async def process_turn(request):
-    code, options = get_code_and_options()
     data = json.loads(await request.content.read())
     world_map = WorldMap(**data['world_map'])
     code, options = data['code'], data['options']
