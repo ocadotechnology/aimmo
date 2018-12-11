@@ -123,26 +123,7 @@ class AvatarRunner(object):
         avatar_updated = self._avatar_src_changed(src_code)
 
         with capture_output() as output:
-            try:
-                self._update_avatar(src_code)
-                action = self.decide_action(world_map, avatar_state)
-                self.print_logs()
-
-            # This needs to be handled explicitly as the users code can still be technically correct here.
-            except InvalidActionException as e:
-                self.print_logs()
-                print(e)
-                action = WaitAction().serialise()
-
-            except Exception as e:
-                self.print_logs()
-                user_traceback = self.get_only_user_traceback()
-                for trace in user_traceback:
-                    print(trace)
-
-                LOGGER.info("Code failed to run")
-                LOGGER.info(e)
-                action = WaitAction().serialise()
+            action = self.run_users_code(world_map, avatar_state, src_code)
 
         stdout, stderr = output
         output_log = stdout.getvalue()
@@ -150,6 +131,30 @@ class AvatarRunner(object):
             LOGGER.info(stderr.getvalue())
 
         return {'action': action, 'log': output_log, 'avatar_updated': avatar_updated}
+
+    def run_users_code(self, world_map, avatar_state, src_code):
+        try:
+            self._update_avatar(src_code)
+            action = self.decide_action(world_map, avatar_state)
+            self.print_logs()
+
+        # This needs to be handled explicitly as the users code can still be technically correct here.
+        except InvalidActionException as e:
+            self.print_logs()
+            print(e)
+            action = WaitAction().serialise()
+
+        except Exception as e:
+            self.print_logs()
+            user_traceback = self.get_only_user_traceback()
+            for trace in user_traceback:
+                print(trace)
+
+            LOGGER.info("Code failed to run")
+            LOGGER.info(e)
+            action = WaitAction().serialise()
+
+        return action
 
     def decide_action(self, world_map, avatar_state):
         try:
