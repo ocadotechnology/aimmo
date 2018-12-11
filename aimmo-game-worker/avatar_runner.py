@@ -175,6 +175,9 @@ class AvatarRunner(object):
 
     @staticmethod
     def print_logs():
+        """ Prints out stdout from the users code. Need to specify "end=''",
+            otherwise there will be lots of spacing inbetween text on the console
+            due to extra '\n' characters. """
         if not log_manager.is_empty():
             print(log_manager.get_logs(), end='')
             log_manager.clear_logs()
