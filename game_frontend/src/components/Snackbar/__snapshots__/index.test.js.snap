@@ -111,16 +111,16 @@ exports[`<Snackbar /> renders correctly with type=error 1`] = `
           "A700": "#616161",
         },
         "primary": Object {
-          "contrastText": "rgba(0, 0, 0, 0.87)",
-          "dark": "rgb(178, 178, 178)",
-          "light": "rgb(255, 255, 255)",
-          "main": "#FFFFFF",
+          "contrastText": "#fff",
+          "dark": "rgb(67, 67, 67)",
+          "light": "rgb(127, 127, 127)",
+          "main": "#606060",
         },
         "secondary": Object {
-          "contrastText": "rgba(0, 0, 0, 0.87)",
-          "dark": "rgb(144, 143, 137)",
-          "light": "rgb(216, 215, 208)",
-          "main": "#CFCDC5",
+          "contrastText": "#fff",
+          "dark": "rgb(156, 65, 162)",
+          "light": "rgb(229, 126, 236)",
+          "main": "#DF5EE8",
         },
         "text": Object {
           "disabled": "rgba(0, 0, 0, 0.38)",
@@ -164,9 +164,6 @@ exports[`<Snackbar /> renders correctly with type=error 1`] = `
       },
       "spacing": Object {
         "unit": 8,
-      },
-      "text": Object {
-        "secondary": "#FFFFFF",
       },
       "transitions": Object {
         "create": [Function],
@@ -413,16 +410,16 @@ exports[`<Snackbar /> renders correctly with type=info 1`] = `
           "A700": "#616161",
         },
         "primary": Object {
-          "contrastText": "rgba(0, 0, 0, 0.87)",
-          "dark": "rgb(178, 178, 178)",
-          "light": "rgb(255, 255, 255)",
-          "main": "#FFFFFF",
+          "contrastText": "#fff",
+          "dark": "rgb(67, 67, 67)",
+          "light": "rgb(127, 127, 127)",
+          "main": "#606060",
         },
         "secondary": Object {
-          "contrastText": "rgba(0, 0, 0, 0.87)",
-          "dark": "rgb(144, 143, 137)",
-          "light": "rgb(216, 215, 208)",
-          "main": "#CFCDC5",
+          "contrastText": "#fff",
+          "dark": "rgb(156, 65, 162)",
+          "light": "rgb(229, 126, 236)",
+          "main": "#DF5EE8",
         },
         "text": Object {
           "disabled": "rgba(0, 0, 0, 0.38)",
@@ -466,9 +463,6 @@ exports[`<Snackbar /> renders correctly with type=info 1`] = `
       },
       "spacing": Object {
         "unit": 8,
-      },
-      "text": Object {
-        "secondary": "#FFFFFF",
       },
       "transitions": Object {
         "create": [Function],
@@ -715,16 +709,16 @@ exports[`<Snackbar /> renders correctly with type=success 1`] = `
           "A700": "#616161",
         },
         "primary": Object {
-          "contrastText": "rgba(0, 0, 0, 0.87)",
-          "dark": "rgb(178, 178, 178)",
-          "light": "rgb(255, 255, 255)",
-          "main": "#FFFFFF",
+          "contrastText": "#fff",
+          "dark": "rgb(67, 67, 67)",
+          "light": "rgb(127, 127, 127)",
+          "main": "#606060",
         },
         "secondary": Object {
-          "contrastText": "rgba(0, 0, 0, 0.87)",
-          "dark": "rgb(144, 143, 137)",
-          "light": "rgb(216, 215, 208)",
-          "main": "#CFCDC5",
+          "contrastText": "#fff",
+          "dark": "rgb(156, 65, 162)",
+          "light": "rgb(229, 126, 236)",
+          "main": "#DF5EE8",
         },
         "text": Object {
           "disabled": "rgba(0, 0, 0, 0.38)",
@@ -768,9 +762,6 @@ exports[`<Snackbar /> renders correctly with type=success 1`] = `
       },
       "spacing": Object {
         "unit": 8,
-      },
-      "text": Object {
-        "secondary": "#FFFFFF",
       },
       "transitions": Object {
         "create": [Function],
@@ -1012,16 +1003,16 @@ exports[`<Snackbar /> renders correctly with type=warning 1`] = `
           "A700": "#616161",
         },
         "primary": Object {
-          "contrastText": "rgba(0, 0, 0, 0.87)",
-          "dark": "rgb(178, 178, 178)",
-          "light": "rgb(255, 255, 255)",
-          "main": "#FFFFFF",
+          "contrastText": "#fff",
+          "dark": "rgb(67, 67, 67)",
+          "light": "rgb(127, 127, 127)",
+          "main": "#606060",
         },
         "secondary": Object {
-          "contrastText": "rgba(0, 0, 0, 0.87)",
-          "dark": "rgb(144, 143, 137)",
-          "light": "rgb(216, 215, 208)",
-          "main": "#CFCDC5",
+          "contrastText": "#fff",
+          "dark": "rgb(156, 65, 162)",
+          "light": "rgb(229, 126, 236)",
+          "main": "#DF5EE8",
         },
         "text": Object {
           "disabled": "rgba(0, 0, 0, 0.38)",
@@ -1065,9 +1056,6 @@ exports[`<Snackbar /> renders correctly with type=warning 1`] = `
       },
       "spacing": Object {
         "unit": 8,
-      },
-      "text": Object {
-        "secondary": "#FFFFFF",
       },
       "transitions": Object {
         "create": [Function],
@@ -1329,16 +1317,16 @@ exports[`<StyledSnackbarContent /> renders correctly 1`] = `
           "A700": "#616161",
         },
         "primary": Object {
-          "contrastText": "rgba(0, 0, 0, 0.87)",
-          "dark": "rgb(178, 178, 178)",
-          "light": "rgb(255, 255, 255)",
-          "main": "#FFFFFF",
+          "contrastText": "#fff",
+          "dark": "rgb(67, 67, 67)",
+          "light": "rgb(127, 127, 127)",
+          "main": "#606060",
         },
         "secondary": Object {
-          "contrastText": "rgba(0, 0, 0, 0.87)",
-          "dark": "rgb(144, 143, 137)",
-          "light": "rgb(216, 215, 208)",
-          "main": "#CFCDC5",
+          "contrastText": "#fff",
+          "dark": "rgb(156, 65, 162)",
+          "light": "rgb(229, 126, 236)",
+          "main": "#DF5EE8",
         },
         "text": Object {
           "disabled": "rgba(0, 0, 0, 0.38)",
@@ -1382,9 +1370,6 @@ exports[`<StyledSnackbarContent /> renders correctly 1`] = `
       },
       "spacing": Object {
         "unit": 8,
-      },
-      "text": Object {
-        "secondary": "#FFFFFF",
       },
       "transitions": Object {
         "create": [Function],

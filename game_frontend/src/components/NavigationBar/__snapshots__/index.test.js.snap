@@ -3,7 +3,7 @@
 exports[`<NavigationBar /> renders correctly 1`] = `
 <styled.nav>
   <WithStyles(AppBar)
-    color="secondary"
+    color="primary"
     position="sticky"
   >
     <Styled(WithStyles(Toolbar))>
