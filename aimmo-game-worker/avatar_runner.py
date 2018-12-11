@@ -163,7 +163,6 @@ class AvatarRunner(object):
                 raise InvalidActionException(action)
             return action.serialise()
         except TypeError as e:
-                print(e)
                 raise InvalidActionException(None)
 
     @staticmethod
