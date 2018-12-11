@@ -3,7 +3,6 @@ import threading
 import logging
 import asyncio
 import concurrent.futures
-import timeit
 
 from simulation.django_communicator import DjangoCommunicator
 from simulation.simulation_runner import ConcurrentSimulationRunner
@@ -71,9 +70,5 @@ class GameRunner:
 
     async def run(self):
         while True:
-            start = timeit.default_timer()
             await self.update() # This function takes ~2.03 seconds to complete
-            LOGGER.info(f"Time to run update: {timeit.default_timer()-start}")
-            #await asyncio.sleep(TURN_TIME) # This may not be needed. But it would be preferable to keep it
-            LOGGER.info(f"Time for whole turn: {timeit.default_timer()-start}")
 
