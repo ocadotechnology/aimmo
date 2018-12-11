@@ -8,6 +8,7 @@ import inspect
 import re
 
 from io import StringIO
+import contextlib
 
 import simulation.action as avatar_action
 import simulation.direction as direction
@@ -35,8 +36,9 @@ _setattr_ = guarded_setattr
 _write_ = full_write_guard
 __metaclass__ = type
 
-restricted_globals = dict(__builtins__=safe_builtins)
+# Sets up restricted coding environment for the user
 log_manager = LogManager()
+restricted_globals = dict(__builtins__=safe_builtins)
 
 restricted_globals['_getattr_'] = _getattr_
 restricted_globals['_setattr_'] = _setattr_
@@ -46,9 +48,28 @@ restricted_globals['_write_'] = _write_
 restricted_globals['__metaclass__'] = __metaclass__
 restricted_globals['__name__'] = "Avatar"
 
+# Adds AI:MMO specific modules to the user's environment
 add_actions_to_globals()
 restricted_globals['direction'] = direction
 restricted_globals['random'] = utility_builtins['random']
+
+
+# Temporarily switches stdout and stderr to stringIO objects or variable
+@contextlib.contextmanager
+def capture_output(stdout=None, stderr=None):
+    old_out = sys.stdout
+    old_err = sys.stderr
+
+    if stdout is None:
+        stdout = StringIO()
+    if stderr is None:
+        stderr = StringIO()
+    sys.stdout = stdout
+    sys.stderr = stderr
+    yield stdout, stderr
+
+    sys.stdout = old_out
+    sys.stderr = old_err
 
 
 class AvatarRunner(object):
@@ -99,18 +120,24 @@ class AvatarRunner(object):
                 not self.update_successful)
 
     def process_avatar_turn(self, world_map, avatar_state, src_code):
-        output_log = StringIO()
         avatar_updated = self._avatar_src_changed(src_code)
 
+        with capture_output() as output:
+            action = self.run_users_code(world_map, avatar_state, src_code)
+
+        stdout, stderr = output
+        output_log = stdout.getvalue()
+        if not stderr.getvalue() == '':
+            LOGGER.info(stderr.getvalue())
+
+        return {'action': action, 'log': output_log, 'avatar_updated': avatar_updated}
+
+    def run_users_code(self, world_map, avatar_state, src_code):
         try:
-            sys.stdout = output_log
-            sys.stderr = output_log
             self._update_avatar(src_code)
             action = self.decide_action(world_map, avatar_state)
             self.print_logs()
-        # When an InvalidActionException is raised, the traceback might not contain
-        # reference to the user's code as it can still technically be correct. so we
-        # handle this case explicitly to avoid printing out unwanted parts of the traceback
+
         except InvalidActionException as e:
             self.print_logs()
             print(e)
@@ -126,11 +153,7 @@ class AvatarRunner(object):
             LOGGER.info(e)
             action = WaitAction().serialise()
 
-        finally:
-            sys.stdout = sys.__stdout__
-            sys.stderr = sys.__stderr__
-
-        return {'action': action, 'log': output_log.getvalue(), 'avatar_updated': avatar_updated}
+        return action
 
     def decide_action(self, world_map, avatar_state):
         try:
@@ -139,12 +162,11 @@ class AvatarRunner(object):
                 raise InvalidActionException(action)
             return action.serialise()
         except TypeError as e:
-                print(e)
                 raise InvalidActionException(None)
 
     @staticmethod
     def get_only_user_traceback():
-        """ If the traceback does not contain any reference to the user code, found by '<string>',
+        """ If the traceback does not contain any reference to the user code, found by '<inline-code>',
             then this method will just return the full traceback. """
         traceback_list = traceback.format_exc().split('\n')
         start_of_user_traceback = 0
@@ -156,6 +178,7 @@ class AvatarRunner(object):
 
     @staticmethod
     def print_logs():
+        """ Prints out stdout from the users code. """
         if not log_manager.is_empty():
             print(log_manager.get_logs(), end='')
             log_manager.clear_logs()
