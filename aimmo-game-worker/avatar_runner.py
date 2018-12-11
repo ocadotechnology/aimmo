@@ -53,6 +53,7 @@ add_actions_to_globals()
 restricted_globals['direction'] = direction
 restricted_globals['random'] = utility_builtins['random']
 
+
 # Temporarily switches stdout and stderr to stringIO objects or variable
 @contextlib.contextmanager
 def capture_output(stdout=None, stderr=None):
@@ -69,7 +70,6 @@ def capture_output(stdout=None, stderr=None):
 
     sys.stdout = oldout
     sys.stderr = olderr
-
 
 
 class AvatarRunner(object):
@@ -128,7 +128,7 @@ class AvatarRunner(object):
                 action = self.decide_action(world_map, avatar_state)
                 self.print_logs()
 
-            # This needs to be handled explicitly as the users code and still be technically correct here.
+            # This needs to be handled explicitly as the users code can still be technically correct here.
             except InvalidActionException as e:
                 self.print_logs()
                 print(e)

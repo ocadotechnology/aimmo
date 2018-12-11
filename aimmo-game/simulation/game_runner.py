@@ -70,5 +70,4 @@ class GameRunner:
 
     async def run(self):
         while True:
-            await self.update() # This function takes ~2.03 seconds to complete
-
+            await self.update()
