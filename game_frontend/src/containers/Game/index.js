@@ -31,7 +31,10 @@ export class Game extends Component {
   render () {
     return (
       <Fragment>
-        <GameView connectToGame={this.props.connectToGame} />
+        <GameView
+          connectToGame={this.props.connectToGame}
+          gameDataLoaded={this.props.gameDataLoaded}
+        />
         <Snackbar
           type='success'
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -51,7 +54,8 @@ const mapDispatchToProps = {
 }
 
 const mapStateToProps = state => ({
-  showSnackbarForAvatarUpdated: state.game.showSnackbarForAvatarUpdated
+  showSnackbarForAvatarUpdated: state.game.showSnackbarForAvatarUpdated,
+  gameDataLoaded: state.game.gameDataLoaded
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game)

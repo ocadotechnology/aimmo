@@ -246,3 +246,22 @@ describe('getConnectionParametersEpic', () => {
     testScheduler.flush()
   })
 })
+
+describe('gameLoadedEpic', () => {
+  it('dispatches an GAME_LOADED action only when the first game state is received', () => {
+    const testScheduler = createTestScheduler()
+
+    testScheduler.run(({ hot, cold, expectObservable }) => {
+      const action$ = hot('--a--b--b', {
+        a: actions.socketConnectToGameRequest(),
+        b: actions.socketGameStateReceived({})
+      })
+
+      const output$ = epics.gameLoadedEpic(action$)
+
+      expectObservable(output$).toBe('-----c---', {
+        c: actions.gameDataLoaded()
+      })
+    })
+  })
+})
