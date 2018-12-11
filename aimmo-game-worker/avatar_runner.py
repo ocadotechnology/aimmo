@@ -168,7 +168,7 @@ class AvatarRunner(object):
 
     @staticmethod
     def get_only_user_traceback():
-        """ If the traceback does not contain any reference to the user code, found by '<string>',
+        """ If the traceback does not contain any reference to the user code, found by '<inline-code>',
             then this method will just return the full traceback. """
         traceback_list = traceback.format_exc().split('\n')
         start_of_user_traceback = 0
