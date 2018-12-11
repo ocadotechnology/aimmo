@@ -2,7 +2,6 @@ import types from './types'
 import { editorTypes } from 'features/Editor'
 
 const gameReducer = (state = {}, action) => {
-  console.log(action.type)
   switch (action.type) {
     case types.SOCKET_GAME_STATE_RECEIVED:
       return {
