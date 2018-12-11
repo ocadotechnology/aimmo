@@ -9,6 +9,7 @@ import PropTypes from 'prop-types'
 import { withTheme } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import PlayIcon from 'components/icons/Play'
+import { CircularProgress } from '@material-ui/core'
 
 export const IDEEditorLayout = styled.div`
   position: relative;
@@ -28,7 +29,27 @@ export const MarginedPlayIcon = styled(PlayIcon)`
   margin-right: ${props => props.theme.spacing.unit}px;
 `
 
+export const MarginedCircularProgress = styled(CircularProgress)`
+  margin-right: ${props => props.theme.spacing.unit}px;
+`
+
 export class IDEEditor extends PureComponent {
+  renderRunCodeButtonContent (avatarUpdating) {
+    if (avatarUpdating) {
+      return (
+        <>
+          <MarginedCircularProgress size='24px' />Updating
+        </>
+      )
+    } else {
+      return (
+        <>
+          <MarginedPlayIcon />Run Code
+        </>
+      )
+    }
+  }
+
   render () {
     return (
       <IDEEditorLayout>
@@ -58,7 +79,7 @@ export class IDEEditor extends PureComponent {
           variant='extendedFab'
           id='post-code-button'
           onClick={this.props.postCode}>
-          <MarginedPlayIcon />Run Code
+          {this.renderRunCodeButtonContent(this.props.avatarUpdating)}
         </RunCodeButton>
       </IDEEditorLayout>
     )
@@ -70,7 +91,8 @@ IDEEditor.propTypes = {
   getCode: PropTypes.func,
   editorChanged: PropTypes.func,
   theme: PropTypes.object,
-  postCode: PropTypes.func
+  postCode: PropTypes.func,
+  avatarUpdating: PropTypes.bool
 }
 
 export default withTheme()(IDEEditor)

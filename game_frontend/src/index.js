@@ -27,6 +27,7 @@ const initialState = {
       game_id: getGameIDFromURL() || 1
     },
     gameDataLoaded: false,
+    avatarUpdating: false,
     showSnackbarForAvatarUpdated: false
   },
   consoleLog: {

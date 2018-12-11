@@ -26,6 +26,7 @@ export class IDE extends Component {
             postCode={this.props.postCode}
             getCode={this.props.getCode}
             editorChanged={this.props.editorChanged}
+            avatarUpdating={this.props.avatarUpdating}
           />
           <IDEConsole logs={this.props.logs} />
         </MuiThemeProvider>
@@ -36,7 +37,8 @@ export class IDE extends Component {
 
 const mapStateToProps = state => ({
   code: state.editor.code,
-  logs: state.consoleLog.logs
+  logs: state.consoleLog.logs,
+  avatarUpdating: state.game.avatarUpdating
 })
 
 const mapDispatchToProps = {
