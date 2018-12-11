@@ -138,7 +138,6 @@ class AvatarRunner(object):
             action = self.decide_action(world_map, avatar_state)
             self.print_logs()
 
-        # This needs to be handled explicitly as the users code can still be technically correct here.
         except InvalidActionException as e:
             self.print_logs()
             print(e)
