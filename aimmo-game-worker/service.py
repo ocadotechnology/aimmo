@@ -40,6 +40,7 @@ def run(host, port, data_url):
     logging.basicConfig(level=logging.DEBUG)
     avatar_runner = AvatarRunner()
     app.add_routes(routes)
+    LOGGER.info('STARTING THE SERVER.')
     web.run_app(app, host=host, port=port)
 
 
