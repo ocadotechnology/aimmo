@@ -75,6 +75,12 @@ const snackbarForAvatarUpdatedShown = () => (
   }
 )
 
+const gameDataLoaded = () => (
+  {
+    type: types.GAME_DATA_LOADED
+  }
+)
+
 export default {
   socketConnectToGameRequest,
   sendGameStateFail,
@@ -85,5 +91,6 @@ export default {
   unitySendAvatarIDSuccess,
   unitySendAvatarIDFail,
   socketFeedbackAvatarUpdated,
-  snackbarForAvatarUpdatedShown
+  snackbarForAvatarUpdatedShown,
+  gameDataLoaded
 }

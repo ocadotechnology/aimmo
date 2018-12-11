@@ -17,6 +17,11 @@ const gameReducer = (state = {}, action) => {
         ...state,
         showSnackbarForAvatarUpdated: false
       }
+    case types.GAME_DATA_LOADED:
+      return {
+        ...state,
+        gameDataLoaded: true
+      }
     default:
       return state
   }
