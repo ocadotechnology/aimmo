@@ -14,5 +14,4 @@ ENV WORKER_MANAGER=kubernetes
 CMD ["python", "./service.py", "0.0.0.0"]
 
 FROM base as tester
-ENV WORKER_MANAGER=kubernetes
 CMD ["python", "setup.py", "test"]
