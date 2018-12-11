@@ -148,7 +148,6 @@ class AvatarRunner(object):
         output_log = stdout.getvalue()
         if not stderr.getvalue() == '':
             LOGGER.info(stderr.getvalue())
-            output_log = output_log + "* Server had a hiccup, sorry about that 😓 *"
 
         return {'action': action, 'log': output_log, 'avatar_updated': avatar_updated}
 
