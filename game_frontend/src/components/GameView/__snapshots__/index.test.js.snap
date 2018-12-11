@@ -1,8 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<GameView /> does not show the loading bar when unity has loaded 1`] = `
+exports[`<GameView /> does not show the loading bar when the game has loaded 1`] = `
 <styled.div>
-  <Unity
+  <Styled(Unity)
+    gameDataLoaded={true}
     height="100%"
     unityContent={
       UnityContent {
@@ -51,12 +52,15 @@ exports[`<GameView /> does not show the loading bar when unity has loaded 1`] = 
 </styled.div>
 `;
 
-exports[`<GameView /> shows loading bar whilst unity is loading 1`] = `
+exports[`<GameView /> shows loading bar whilst game is loading 1`] = `
 <styled.div>
-  <WithStyles(LinearProgress)
-    color="secondary"
-  />
-  <Unity
+  <styled.div>
+    <Styled(WithStyles(CircularProgress))
+      color="inherit"
+    />
+  </styled.div>
+  <Styled(Unity)
+    gameDataLoaded={true}
     height="100%"
     unityContent={
       UnityContent {
@@ -104,5 +108,60 @@ exports[`<GameViewLayout /> matches snapshot 1`] = `
 
 <div
   className="c0"
+/>
+`;
+
+exports[`<LoadingBackgroundOverlay /> matches snapshot 1`] = `
+.c0 {
+  height: 100%;
+  width: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  background-color: rgba(0,0,0,0.2);
+}
+
+<div
+  className="c0"
+/>
+`;
+
+exports[`<StyledCircularProgress /> matches snapshot 1`] = `
+.c0 {
+  max-width: 50%;
+}
+
+<WithStyles(CircularProgress)
+  className="c0"
+/>
+`;
+
+exports[`<StyledUnity /> is not shown when game data is loading 1`] = `
+.c0 {
+  display: none;
+}
+
+<Unity
+  className="c0"
+/>
+`;
+
+exports[`<StyledUnity /> is shown when game data has loaded 1`] = `
+.c0 {
+  display: block;
+}
+
+<Unity
+  className="c0"
+  gameDataLoaded={true}
 />
 `;

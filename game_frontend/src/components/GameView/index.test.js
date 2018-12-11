@@ -1,23 +1,27 @@
 /* eslint-env jest */
 import React from 'react'
-import GameView, { GameViewLayout } from 'components/GameView'
+import GameView, { GameViewLayout, StyledUnity, LoadingBackgroundOverlay, StyledCircularProgress } from 'components/GameView'
 import { shallow } from 'enzyme/build/index'
-import { unityContent } from 'api/unity'
 jest.mock('api/unity')
 
 describe('<GameView />', () => {
-  it('shows loading bar whilst unity is loading', () => {
-    const component = shallow(<GameView />)
+  it('shows loading bar whilst game is loading', () => {
+    const connectToGame = jest.fn()
+    const props = {
+      connectToGame,
+      gameDataLoaded: false
+    }
+    const component = shallow(<GameView {...props} />)
     expect(component).toMatchSnapshot()
   })
 
-  it('does not show the loading bar when unity has loaded', () => {
+  it('does not show the loading bar when the game has loaded', () => {
     const connectToGame = jest.fn()
     const props = {
-      connectToGame
+      connectToGame,
+      gameDataLoaded: true
     }
     const component = shallow(<GameView {...props} />)
-    component.instance().unityContentLoaded()
     expect(component).toMatchSnapshot()
   })
 
@@ -30,6 +34,32 @@ describe('<GameView />', () => {
     expect(connectToGame).not.toBeCalled()
     component.instance().unityContentLoaded()
     expect(connectToGame).toBeCalled()
+  })
+})
+
+describe('<StyledUnity />', () => {
+  it('is not shown when game data is loading', () => {
+    const component = shallow(<StyledUnity />)
+    expect(component).toMatchSnapshot()
+  })
+
+  it('is shown when game data has loaded', () => {
+    const component = shallow(<StyledUnity gameDataLoaded />)
+    expect(component).toMatchSnapshot()
+  })
+})
+
+describe('<StyledCircularProgress />', () => {
+  it('matches snapshot', () => {
+    const component = shallow(<StyledCircularProgress />)
+    expect(component).toMatchSnapshot()
+  })
+})
+
+describe('<LoadingBackgroundOverlay />', () => {
+  it('matches snapshot', () => {
+    const component = shallow(<LoadingBackgroundOverlay />)
+    expect(component).toMatchSnapshot()
   })
 })
 
