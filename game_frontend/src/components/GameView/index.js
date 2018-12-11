@@ -36,7 +36,7 @@ export default class GameView extends Component {
     this.props.connectToGame()
   }
 
-  renderloadingBar = gameDataLoaded => {
+  renderLoadingScreen = gameDataLoaded => {
     if (!gameDataLoaded) {
       return (
         <LoadingBackgroundOverlay>
@@ -59,7 +59,7 @@ export default class GameView extends Component {
   render () {
     return (
       <GameViewLayout>
-        {this.renderloadingBar(this.props.gameDataLoaded)}
+        {this.renderLoadingScreen(this.props.gameDataLoaded)}
         {this.renderUnityView(unityContent, this.props.gameDataLoaded)}
       </GameViewLayout>
     )
