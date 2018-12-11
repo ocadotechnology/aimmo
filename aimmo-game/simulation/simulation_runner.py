@@ -73,7 +73,7 @@ class ConcurrentSimulationRunner(SimulationRunner):
     async def async_map(self, func, iterable_args):
         futures = [func(*arg) for arg in iterable_args]
         await asyncio.gather(*futures)
-        
+
     async def run_turn(self, player_id_to_serialised_actions):
         """
         Concurrently get the intended actions from all avatars and register
