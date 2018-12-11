@@ -57,8 +57,8 @@ restricted_globals['random'] = utility_builtins['random']
 # Temporarily switches stdout and stderr to stringIO objects or variable
 @contextlib.contextmanager
 def capture_output(stdout=None, stderr=None):
-    oldout = sys.stdout
-    olderr = sys.stderr
+    old_out = sys.stdout
+    old_err = sys.stderr
 
     if stdout is None:
         stdout = StringIO()
@@ -68,8 +68,8 @@ def capture_output(stdout=None, stderr=None):
     sys.stderr = stderr
     yield stdout, stderr
 
-    sys.stdout = oldout
-    sys.stderr = olderr
+    sys.stdout = old_out
+    sys.stderr = old_err
 
 
 class AvatarRunner(object):
@@ -180,9 +180,7 @@ class AvatarRunner(object):
 
     @staticmethod
     def print_logs():
-        """ Prints out stdout from the users code. Need to specify "end=''",
-            otherwise there will be lots of spacing inbetween text on the console
-            due to extra '\n' characters. """
+        """ Prints out stdout from the users code. """
         if not log_manager.is_empty():
             print(log_manager.get_logs(), end='')
             log_manager.clear_logs()

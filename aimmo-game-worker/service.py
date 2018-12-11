@@ -41,7 +41,6 @@ def run(host, port, data_url):
     avatar_runner = AvatarRunner()
     app.add_routes(routes)
     web.run_app(app, host=host, port=port)
-    LOGGER.info("HI!")
 
 
 if __name__ == '__main__':
