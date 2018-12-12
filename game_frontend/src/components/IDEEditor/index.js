@@ -38,7 +38,9 @@ export class IDEEditor extends PureComponent {
     if (avatarUpdating) {
       return (
         <>
-          <MarginedCircularProgress size='24px' />Updating
+          <MarginedCircularProgress
+            color='inherit'
+            size='24px' />Updating
         </>
       )
     } else {
