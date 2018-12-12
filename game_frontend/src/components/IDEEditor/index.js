@@ -78,6 +78,7 @@ export class IDEEditor extends PureComponent {
           }} />
         <RunCodeButton
           color='secondary'
+          disabled={this.props.avatarUpdating}
           aria-label='Run Code'
           variant='extendedFab'
           id='post-code-button'
