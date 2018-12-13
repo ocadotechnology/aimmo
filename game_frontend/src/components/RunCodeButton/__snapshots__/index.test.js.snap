@@ -855,6 +855,20 @@ exports[`<MarginedPlayIcon /> matches snapshot 1`] = `
 />
 `;
 
+exports[`<RunCodeButton /> becomes enabled when code has been changed 1`] = `
+<WithStyles(Button)
+  aria-label="Run Code"
+  color="secondary"
+  disabled={false}
+  id="post-code-button"
+  onClick={[MockFunction]}
+  variant="extendedFab"
+>
+  <Styled(PlayIcon) />
+  Run Code
+</WithStyles(Button)>
+`;
+
 exports[`<RunCodeButton /> renders with a done status 1`] = `
 <WithStyles(Button)
   aria-label="Run Code"
@@ -873,9 +887,9 @@ exports[`<RunCodeButton /> renders with a normal status 1`] = `
 <WithStyles(Button)
   aria-label="Run Code"
   color="secondary"
-  disabled={false}
+  disabled={true}
   id="post-code-button"
-  onClick={[MockFunction]}
+  onClick={[Function]}
   variant="extendedFab"
 >
   <Styled(PlayIcon) />
@@ -889,7 +903,7 @@ exports[`<RunCodeButton /> renders with a updating status 1`] = `
   color="secondary"
   disabled={true}
   id="post-code-button"
-  onClick={[MockFunction]}
+  onClick={[Function]}
   variant="extendedFab"
 >
   <Styled(WithStyles(CircularProgress))

@@ -7,7 +7,9 @@ describe('<RunCodeButton />', () => {
   it('renders with a normal status', () => {
     const props = {
       whenClicked: jest.fn(),
-      status: RunCodeButtonStatus.normal
+      runCodeButtonStatus: {
+        status: RunCodeButtonStatus.normal
+      }
     }
 
     const component = createShallowWithTheme(<RunCodeButton {...props} />, 'dark')
@@ -18,7 +20,9 @@ describe('<RunCodeButton />', () => {
   it('renders with a updating status', () => {
     const props = {
       whenClicked: jest.fn(),
-      status: RunCodeButtonStatus.updating
+      runCodeButtonStatus: {
+        status: RunCodeButtonStatus.updating
+      }
     }
 
     const component = createShallowWithTheme(<RunCodeButton {...props} />, 'dark')
@@ -29,7 +33,23 @@ describe('<RunCodeButton />', () => {
   it('renders with a done status', () => {
     const props = {
       whenClicked: jest.fn(),
-      status: RunCodeButtonStatus.done
+      runCodeButtonStatus: {
+        status: RunCodeButtonStatus.done
+      }
+    }
+
+    const component = createShallowWithTheme(<RunCodeButton {...props} />, 'dark')
+
+    expect(component).toMatchSnapshot()
+  })
+
+  it('becomes enabled when code has been changed', () => {
+    const props = {
+      whenClicked: jest.fn(),
+      runCodeButtonStatus: {
+        status: RunCodeButtonStatus.normal
+      },
+      isCodeOnServerDifferent: true
     }
 
     const component = createShallowWithTheme(<RunCodeButton {...props} />, 'dark')
