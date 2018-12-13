@@ -14,7 +14,8 @@ export class IDE extends Component {
     postCode: PropTypes.func,
     getCode: PropTypes.func,
     editorChanged: PropTypes.func,
-    logs: PropTypes.arrayOf(PropTypes.object)
+    logs: PropTypes.arrayOf(PropTypes.object),
+    runCodeButtonStatus: PropTypes.object
   }
 
   render () {
@@ -23,10 +24,11 @@ export class IDE extends Component {
         <MuiThemeProvider theme={darkTheme}>
           <IDEEditor
             code={this.props.code}
+            codeOnServer={this.props.codeOnServer}
             postCode={this.props.postCode}
             getCode={this.props.getCode}
             editorChanged={this.props.editorChanged}
-            avatarUpdating={this.props.avatarUpdating}
+            runCodeButtonStatus={this.props.runCodeButtonStatus}
           />
           <IDEConsole logs={this.props.logs} />
         </MuiThemeProvider>
@@ -36,9 +38,10 @@ export class IDE extends Component {
 }
 
 const mapStateToProps = state => ({
-  code: state.editor.code,
+  code: state.editor.code.code,
+  codeOnServer: state.editor.code.codeOnServer,
   logs: state.consoleLog.logs,
-  avatarUpdating: state.game.avatarUpdating
+  runCodeButtonStatus: state.editor.runCodeButton
 })
 
 const mapDispatchToProps = {

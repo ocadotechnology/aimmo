@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import React from 'react'
-import { IDEEditor, IDEEditorLayout, MarginedPlayIcon, RunCodeButton } from 'components/IDEEditor'
+import { IDEEditor, IDEEditorLayout } from 'components/IDEEditor'
 import createShallowWithTheme from 'testHelpers/createShallow'
 
 describe('<IDEEditor />', () => {
@@ -33,21 +33,5 @@ describe('<IDEEditorLayout />', () => {
   it('renders correctly', () => {
     const tree = createShallowWithTheme(<IDEEditorLayout />, 'dark')
     expect(tree).toMatchSnapshot()
-  })
-})
-
-describe('<RunCodeButton />', () => {
-  it('matches snapshot', () => {
-    const component = createShallowWithTheme(<RunCodeButton />, 'dark')
-
-    expect(component).toMatchSnapshot()
-  })
-})
-
-describe('<MarginedPlayIcon />', () => {
-  it('matches snapshot', () => {
-    const component = createShallowWithTheme(<MarginedPlayIcon />, 'dark')
-
-    expect(component).toMatchSnapshot()
   })
 })

@@ -1,5 +1,4 @@
 import types from './types'
-import { editorTypes } from 'features/Editor'
 
 const gameReducer = (state = {}, action) => {
   switch (action.type) {
@@ -11,8 +10,7 @@ const gameReducer = (state = {}, action) => {
     case types.SOCKET_FEEDBACK_AVATAR_UPDATED:
       return {
         ...state,
-        showSnackbarForAvatarUpdated: true,
-        avatarUpdating: false
+        showSnackbarForAvatarUpdated: true
       }
     case types.SNACKBAR_FOR_AVATAR_FEEDBACK_SHOWN:
       return {
@@ -23,11 +21,6 @@ const gameReducer = (state = {}, action) => {
       return {
         ...state,
         gameDataLoaded: true
-      }
-    case editorTypes.POST_CODE_REQUEST:
-      return {
-        ...state,
-        avatarUpdating: true
       }
     default:
       return state
