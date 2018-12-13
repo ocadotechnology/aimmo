@@ -9,15 +9,6 @@ import { MuiThemeProvider } from '@material-ui/core/styles'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components'
 
 export class IDE extends Component {
-  static propTypes = {
-    code: PropTypes.string,
-    postCode: PropTypes.func,
-    getCode: PropTypes.func,
-    editorChanged: PropTypes.func,
-    logs: PropTypes.arrayOf(PropTypes.object),
-    runCodeButtonStatus: PropTypes.object
-  }
-
   render () {
     return (
       <StyledComponentsThemeProvider theme={darkTheme}>
@@ -48,6 +39,15 @@ const mapDispatchToProps = {
   getCode: editorActions.getCodeRequest,
   editorChanged: editorActions.keyPressed,
   postCode: editorActions.postCodeRequest
+}
+
+IDE.propTypes = {
+  code: PropTypes.string,
+  postCode: PropTypes.func,
+  getCode: PropTypes.func,
+  editorChanged: PropTypes.func,
+  logs: PropTypes.arrayOf(PropTypes.object),
+  runCodeButtonStatus: PropTypes.object
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(IDE)

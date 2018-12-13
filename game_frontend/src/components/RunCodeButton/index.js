@@ -25,19 +25,6 @@ export const RunCodeButtonStatus = Object.freeze({
 })
 
 export default class RunCodeButton extends Component {
-  static propTypes = {
-    whenClicked: PropTypes.func,
-    runCodeButtonStatus: PropTypes.shape({
-      status: PropTypes.oneOf([
-        RunCodeButtonStatus.normal,
-        RunCodeButtonStatus.updating,
-        RunCodeButtonStatus.done]
-      )
-    }),
-    isCodeOnServerDifferent: PropTypes.bool,
-    className: PropTypes.string
-  }
-
   shouldButtonBeDisabled () {
     if (this.props.runCodeButtonStatus.status === RunCodeButtonStatus.done) {
       return false
@@ -91,4 +78,17 @@ export default class RunCodeButton extends Component {
       </Button>
     )
   }
+}
+
+RunCodeButton.propTypes = {
+  whenClicked: PropTypes.func,
+  runCodeButtonStatus: PropTypes.shape({
+    status: PropTypes.oneOf([
+      RunCodeButtonStatus.normal,
+      RunCodeButtonStatus.updating,
+      RunCodeButtonStatus.done]
+    )
+  }),
+  isCodeOnServerDifferent: PropTypes.bool,
+  className: PropTypes.string
 }
