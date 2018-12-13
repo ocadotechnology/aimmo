@@ -43,13 +43,27 @@ describe('<RunCodeButton />', () => {
     expect(component).toMatchSnapshot()
   })
 
-  it('becomes enabled when code has been changed', () => {
+  it('becomes enabled when code is different from the server', () => {
     const props = {
       whenClicked: jest.fn(),
       runCodeButtonStatus: {
         status: RunCodeButtonStatus.normal
       },
       isCodeOnServerDifferent: true
+    }
+
+    const component = createShallowWithTheme(<RunCodeButton {...props} />, 'dark')
+
+    expect(component).toMatchSnapshot()
+  })
+
+  it('becomes disabled when code is the same as the server', () => {
+    const props = {
+      whenClicked: jest.fn(),
+      runCodeButtonStatus: {
+        status: RunCodeButtonStatus.normal
+      },
+      isCodeOnServerDifferent: false
     }
 
     const component = createShallowWithTheme(<RunCodeButton {...props} />, 'dark')

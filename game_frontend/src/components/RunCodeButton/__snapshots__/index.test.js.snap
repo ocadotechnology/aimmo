@@ -855,7 +855,21 @@ exports[`<MarginedPlayIcon /> matches snapshot 1`] = `
 />
 `;
 
-exports[`<RunCodeButton /> becomes enabled when code has been changed 1`] = `
+exports[`<RunCodeButton /> becomes disabled when code is the same as the server 1`] = `
+<WithStyles(Button)
+  aria-label="Run Code"
+  color="secondary"
+  disabled={true}
+  id="post-code-button"
+  onClick={[Function]}
+  variant="extendedFab"
+>
+  <Styled(PlayIcon) />
+  Run Code
+</WithStyles(Button)>
+`;
+
+exports[`<RunCodeButton /> becomes enabled when code is different from the server 1`] = `
 <WithStyles(Button)
   aria-label="Run Code"
   color="secondary"
