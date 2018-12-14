@@ -37,7 +37,8 @@ const initialState = {
   },
   consoleLog: {
     logs: []
-  }
+  },
+  timeoutStatus: false
 }
 
 function getGameIDFromURL () {

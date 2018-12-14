@@ -28,6 +28,11 @@ const codeReducer = (state = {}, action) => {
 
 const runCodeButtonReducer = (state = {}, action) => {
   switch (action.type) {
+    case types.SET_TIMEOUT:
+      return {
+        ...state,
+        timeoutStatus: true
+      }
     case types.POST_CODE_REQUEST:
       return {
         ...state,

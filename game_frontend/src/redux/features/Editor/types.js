@@ -9,6 +9,8 @@ const POST_CODE_FAILURE = 'features/Editor/POST_CODE_FAILURE'
 const CHANGE_CODE = 'features/Editor/CHANGE_CODE'
 const KEY_PRESSED = 'features/Editor/KEY_PRESSED'
 
+const SET_TIMEOUT = 'features/Editor/TIMEOUT'
+
 export default {
   GET_CODE_REQUEST,
   GET_CODE_SUCCESS,
@@ -17,5 +19,6 @@ export default {
   POST_CODE_SUCCESS,
   POST_CODE_FAILURE,
   CHANGE_CODE,
-  KEY_PRESSED
+  KEY_PRESSED,
+  SET_TIMEOUT
 }
