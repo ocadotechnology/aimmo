@@ -33,12 +33,12 @@ const initialState = {
       game_id: getGameIDFromURL() || 1
     },
     gameDataLoaded: false,
-    showSnackbarForAvatarUpdated: false
+    showSnackbarForAvatarUpdated: false,
+    timeoutStatus: false
   },
   consoleLog: {
     logs: []
-  },
-  timeoutStatus: false
+  }
 }
 
 function getGameIDFromURL () {
