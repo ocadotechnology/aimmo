@@ -45,16 +45,11 @@ const keyPressed = code => (
   }
 )
 
-const setTimeout = () => ({
-  type: types.SET_TIMEOUT
-})
-
 export default {
   getCodeRequest,
   getCodeReceived,
   postCodeRequest,
   postCodeReceived,
   changeCode,
-  keyPressed,
-  setTimeout
+  keyPressed
 }

@@ -1,22 +1,10 @@
 import actions from './actions'
 import types from './types'
-import { gameTypes } from 'features/Game'
 import { Scheduler, of } from 'rxjs'
 import { map, mergeMap, catchError, debounceTime } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
 const backgroundScheduler = Scheduler.async
-
-// const { TIMEOUT, ...requestBasedGameTypes } = gameTypes
-// const { KEY_PRESSED, CODE_CHANGE, ...requestBasedEditorTypes } = types
-// const requestBasedTypes = { ...requestBasedGameTypes, ...requestBasedEditorTypes }
-
-const timeoutEpic = (action$) =>
-  action$.pipe(
-    ofType(types.POST_CODE_REQUEST, types.GET_CODE_REQUEST, gameTypes.SOCKET_CONNECT_TO_GAME_REQUEST, gameTypes.SOCKET_GAME_STATE_RECEIVED),
-    debounceTime(12000),
-    map(action => actions.setTimeout())
-  )
 
 const getCodeEpic = (action$, state$, { api }) =>
   action$.pipe(
@@ -59,6 +47,5 @@ const changeCodeEpic = (action$, state$, dependencies, scheduler = backgroundSch
 export default {
   getCodeEpic,
   postCodeEpic,
-  changeCodeEpic,
-  timeoutEpic
+  changeCodeEpic
 }

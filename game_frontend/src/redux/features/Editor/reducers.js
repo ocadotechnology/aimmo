@@ -9,7 +9,8 @@ const codeReducer = (state = {}, action) => {
       return {
         ...state,
         code: action.payload.code,
-        codeOnServer: action.payload.code
+        codeOnServer: action.payload.code,
+        timeoutStatus: false
       }
     case types.CHANGE_CODE:
       return {
@@ -21,6 +22,11 @@ const codeReducer = (state = {}, action) => {
         ...state,
         codeOnServer: state.code
       }
+    case types.POST_CODE_FAILURE:
+      return {
+        ...state,
+        timeoutStatus: true
+      }
     default:
       return state
   }
@@ -28,15 +34,11 @@ const codeReducer = (state = {}, action) => {
 
 const runCodeButtonReducer = (state = {}, action) => {
   switch (action.type) {
-    case types.SET_TIMEOUT:
-      return {
-        ...state,
-        timeoutStatus: true
-      }
     case types.POST_CODE_REQUEST:
       return {
         ...state,
-        status: RunCodeButtonStatus.updating
+        status: RunCodeButtonStatus.updating,
+        timeoutStatus: false
       }
     case gameTypes.SOCKET_FEEDBACK_AVATAR_UPDATED:
       return {

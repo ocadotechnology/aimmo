@@ -25,8 +25,7 @@ const initialState = {
       code: ''
     },
     runCodeButton: {
-      status: RunCodeButtonStatus.normal,
-      timeoutStatus: false
+      status: RunCodeButtonStatus.normal
     }
   },
   game: {
@@ -34,7 +33,8 @@ const initialState = {
       game_id: getGameIDFromURL() || 1
     },
     gameDataLoaded: false,
-    showSnackbarForAvatarUpdated: false
+    showSnackbarForAvatarUpdated: false,
+    timeoutStatus: false
   },
   consoleLog: {
     logs: []

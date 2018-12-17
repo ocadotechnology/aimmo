@@ -81,6 +81,10 @@ const gameDataLoaded = () => (
   }
 )
 
+const setTimeout = () => ({
+  type: types.SET_TIMEOUT
+})
+
 export default {
   socketConnectToGameRequest,
   sendGameStateFail,
@@ -92,5 +96,6 @@ export default {
   unitySendAvatarIDFail,
   socketFeedbackAvatarUpdated,
   snackbarForAvatarUpdatedShown,
-  gameDataLoaded
+  gameDataLoaded,
+  setTimeout
 }
