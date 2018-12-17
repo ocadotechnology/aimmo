@@ -7,15 +7,15 @@ import { ofType } from 'redux-observable'
 
 const backgroundScheduler = Scheduler.async
 
-const { TIMEOUT, ...requestBasedGameTypes } = gameTypes
-const { KEY_PRESSED, CODE_CHANGE, ...requestBasedEditorTypes } = types
-const requestBasedTypes = { ...requestBasedGameTypes, ...requestBasedEditorTypes }
+// const { TIMEOUT, ...requestBasedGameTypes } = gameTypes
+// const { KEY_PRESSED, CODE_CHANGE, ...requestBasedEditorTypes } = types
+// const requestBasedTypes = { ...requestBasedGameTypes, ...requestBasedEditorTypes }
 
-const timeoutEpic = (action$, state$, scheduler = backgroundScheduler) =>
+const timeoutEpic = (action$) =>
   action$.pipe(
-    ofType(requestBasedTypes),
-    debounceTime(20000, scheduler),
-    map(action => action.setTimeout())
+    ofType(types.POST_CODE_REQUEST, types.GET_CODE_REQUEST, gameTypes.SOCKET_CONNECT_TO_GAME_REQUEST, gameTypes.SOCKET_GAME_STATE_RECEIVED),
+    debounceTime(12000),
+    map(action => actions.setTimeout())
   )
 
 const getCodeEpic = (action$, state$, { api }) =>
