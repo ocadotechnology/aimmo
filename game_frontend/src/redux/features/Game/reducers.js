@@ -10,7 +10,8 @@ const gameReducer = (state = {}, action) => {
     case types.SOCKET_GAME_STATE_RECEIVED:
       return {
         ...state,
-        gameState: action.payload.gameState
+        gameState: action.payload.gameState,
+        timeoutStatus: false
       }
     case types.SOCKET_FEEDBACK_AVATAR_UPDATED:
       return {

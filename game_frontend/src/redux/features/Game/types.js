@@ -17,7 +17,7 @@ const SNACKBAR_FOR_AVATAR_FEEDBACK_SHOWN = 'features/Game/SNACKBAR_FOR_AVATAR_FE
 
 const GAME_DATA_LOADED = 'features/Game/GAME_DATA_LOADED'
 
-const SET_TIMEOUT = 'features/Editor/TIMEOUT'
+const SET_TIMEOUT = 'features/Game/TIMEOUT'
 
 export default {
   SOCKET_CONNECT_TO_GAME_REQUEST,
