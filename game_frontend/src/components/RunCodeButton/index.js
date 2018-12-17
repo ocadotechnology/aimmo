@@ -1,8 +1,10 @@
 import styled from 'styled-components'
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
 import PlayIcon from 'components/icons/Play'
+import BugIcon from 'components/icons/Bug'
 import { CircularProgress } from '@material-ui/core'
 import CheckCircle from 'components/icons/CheckCircle'
 
@@ -18,13 +20,17 @@ export const MarginedCheckCircle = styled(CheckCircle)`
   margin-right: ${props => props.theme.spacing.unit}px;
 `
 
+export const MarginedBugIcon = styled(BugIcon)`
+  margin-right: ${props => props.theme.spacing.unit}px;
+`
+
 export const RunCodeButtonStatus = Object.freeze({
   normal: 'normal',
   updating: 'updating',
   done: 'done'
 })
 
-export default class RunCodeButton extends Component {
+export class RunCodeButton extends Component {
   shouldButtonBeDisabled () {
     if (this.props.runCodeButtonStatus.status === RunCodeButtonStatus.done) {
       return false
@@ -40,27 +46,35 @@ export default class RunCodeButton extends Component {
   }
 
   renderContent (status) {
-    switch (status) {
-      case RunCodeButtonStatus.normal:
-        return (
+    if (this.props.timeoutStatus) {
+      return (
         <>
-          <MarginedPlayIcon />Run Code
+          <MarginedBugIcon />Run Code
         </>
-        )
-      case RunCodeButtonStatus.updating:
-        return (
-        <>
-          <MarginedCircularProgress
-            color='inherit'
-            size='24px' />Updating
-        </>
-        )
-      case RunCodeButtonStatus.done:
-        return (
+      )
+    } else {
+      switch (status) {
+        case RunCodeButtonStatus.normal:
+          return (
           <>
-            <MarginedCheckCircle />Done
-        </>
-        )
+            <MarginedPlayIcon />Run Code
+          </>
+          )
+        case RunCodeButtonStatus.updating:
+          return (
+          <>
+            <MarginedCircularProgress
+              color='inherit'
+              size='24px' />Updating
+          </>
+          )
+        case RunCodeButtonStatus.done:
+          return (
+            <>
+              <MarginedCheckCircle />Done
+          </>
+          )
+      }
     }
   }
 
@@ -92,3 +106,9 @@ RunCodeButton.propTypes = {
   isCodeOnServerDifferent: PropTypes.bool,
   className: PropTypes.string
 }
+
+const mapStateToProps = state => ({
+  timeoutStatus: state.game.timeoutStatus
+})
+
+export default connect(mapStateToProps)(RunCodeButton)
