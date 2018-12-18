@@ -70,6 +70,17 @@ describe('<RunCodeButton />', () => {
 
     expect(component).toMatchSnapshot()
   })
+
+  it('shows an error when a timeout is detected', () => {
+    const props = {
+      whenClicked: jest.fn(),
+      timeoutStatus: true
+    }
+
+    const component = createShallowWithTheme(<RunCodeButton {...props} />, 'dark')
+
+    expect(component).toMatchSnapshot()
+  })
 })
 
 describe('<MarginedPlayIcon />', () => {
