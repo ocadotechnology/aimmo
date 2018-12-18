@@ -68,6 +68,7 @@ jobs:
       script:
         - docker run -it -p 5000:5000 ocadotechnology/aimmo-game-creator:test
       after_success:
+        - ls -a 
         - codecov
     - name: "aimmo-game-worker"
       before_install:
@@ -78,6 +79,7 @@ jobs:
       script:
         - docker run -it -p 5000:5000 ocadotechnology/aimmo-game-worker:test
       after_success:
+        - ls -a 
         - codecov
     - name: "Javascript Tests"
       before_install:
