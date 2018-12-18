@@ -28,8 +28,7 @@ describe('editorReducer', () => {
   it('should handle CHANGE_CODE', () => {
     const expectedState = {
       code: {
-        code: 'class Avatar',
-        codeOnServer: 'class Avatar'
+        code: 'class Avatar'
       },
       runCodeButton: {}
     }
