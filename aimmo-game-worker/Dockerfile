@@ -15,4 +15,5 @@ ENV FLASK_ENV='development'
 CMD python ./service.py 0.0.0.0 $PORT $DATA_URL
 
 FROM base as tester
-CMD python setup.py test
+RUN pip install coverage
+CMD coverage run setup.py test

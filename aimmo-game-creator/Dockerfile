@@ -13,5 +13,7 @@ FROM base as runner
 ENV WORKER_MANAGER=kubernetes
 CMD ["python", "./service.py", "0.0.0.0"]
 
+
 FROM base as tester
-CMD ["python", "setup.py", "test"]
+RUN pip install coverage
+CMD ["coverage", "run", "setup.py", "test"]

@@ -9,7 +9,8 @@ COPY --from=builder /usr/local/lib/python3.6/site-packages /usr/local/lib/python
 COPY . .
 
 FROM base as tester
-CMD python setup.py test
+RUN pip install coverage
+CMD coverage run setup.py test
 
 FROM base as runner
 ENV WORKER_MANAGER=kubernetes
