@@ -32,24 +32,27 @@ export const RunCodeButtonStatus = Object.freeze({
 
 export class RunCodeButton extends Component {
   shouldButtonBeDisabled () {
-    if (this.props.runCodeButtonStatus.status === RunCodeButtonStatus.done) {
+    if (this.props.timeoutStatus) {
       return false
+    } else {
+      if (this.props.runCodeButtonStatus.status === RunCodeButtonStatus.done) {
+        return false
+      }
+      return !this.props.isCodeOnServerDifferent ||
+        this.props.runCodeButtonStatus.status === RunCodeButtonStatus.updating
     }
-    return !this.props.isCodeOnServerDifferent ||
-      this.props.runCodeButtonStatus.status === RunCodeButtonStatus.updating
   }
 
-  getOnClickHandler () {
-    if (!(this.shouldButtonBeDisabled() && this.props.runCodeButtonStatus === RunCodeButtonStatus.done)) {
-      return this.props.whenClicked
-    }
+  shouldButtonBeClickable () {
+    return (!(this.shouldButtonBeDisabled() && this.props.runCodeButtonStatus === RunCodeButtonStatus.done) ||
+            !this.props.timeoutStatus)
   }
 
   renderContent (status) {
     if (this.props.timeoutStatus) {
       return (
         <>
-          <MarginedBugIcon />Run Code
+          <MarginedBugIcon />Error
         </>
       )
     } else {
@@ -87,7 +90,7 @@ export class RunCodeButton extends Component {
         aria-label='Run Code'
         variant='extendedFab'
         id='post-code-button'
-        onClick={this.shouldButtonBeDisabled() ? () => { } : this.props.whenClicked}>
+        onClick={this.shouldButtonBeClickable() ? () => { } : this.props.whenClicked}>
         {this.renderContent(this.props.runCodeButtonStatus.status)}
       </Button>
     )
