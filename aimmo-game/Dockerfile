@@ -11,7 +11,7 @@ COPY . .
 FROM base as tester
 STOPSIGNAL SIGINT
 RUN pip install coverage
-CMD exec coverage run setup.py test
+CMD exec coverage run setup.py test; sleep 10
 
 FROM base as runner
 ENV WORKER_MANAGER=kubernetes
