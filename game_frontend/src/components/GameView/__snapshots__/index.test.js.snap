@@ -60,7 +60,7 @@ exports[`<GameView /> shows loading bar whilst game is loading 1`] = `
     />
   </styled.div>
   <Styled(Unity)
-    gameDataLoaded={true}
+    gameDataLoaded={false}
     height="100%"
     unityContent={
       UnityContent {

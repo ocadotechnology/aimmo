@@ -49,7 +49,7 @@ export default class GameView extends Component {
   renderUnityView = (unityContent, gameDataLoaded) => {
     return (
       <StyledUnity
-        gameDataLoaded
+        gameDataLoaded={gameDataLoaded}
         unityContent={unityContent}
         height='100%'
         width='100%' />
