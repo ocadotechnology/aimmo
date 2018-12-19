@@ -12,10 +12,13 @@ setup(
     include_package_data=True,
     install_requires=[
         'eventlet',
-        'kubernetes >= 6.0.0'
+        'kubernetes >= 6.0.0',
     ],
     tests_require=[
         'httmock',
+        'docker',
+        'aiohttp',
+        'aiohttp_cors'
     ],
     test_suite='tests',
     zip_safe=False,

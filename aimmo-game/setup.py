@@ -28,7 +28,10 @@ setup(
         'asynctest',
         'httmock',
         'mock',
-        'hypothesis'
+        'hypothesis',
+        'docker',
+        'aiohttp',
+        'aiohttp_cors'
     ],
     test_suite='tests',
     zip_safe=False,
