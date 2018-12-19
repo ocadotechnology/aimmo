@@ -10,7 +10,6 @@ kubernetes = "*"
 prometheus-client = "*"
 aiohttp = "*"
 aiohttp-cors = "*"
-coverage = "*"
 
 [requires]
 python_version = "3.6.7"
