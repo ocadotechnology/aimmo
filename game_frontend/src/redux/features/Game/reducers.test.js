@@ -12,7 +12,8 @@ describe('gameReducer', () => {
       gameState: {
         id: 1
       },
-      initialState: 'someValue'
+      initialState: 'someValue',
+      timeoutStatus: false
     }
     const action = actions.socketGameStateReceived({ id: 1 })
     expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
