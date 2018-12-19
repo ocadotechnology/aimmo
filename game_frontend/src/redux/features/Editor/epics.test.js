@@ -80,7 +80,7 @@ describe('postCodeEpic', () => {
         }
       },
       editor: {
-        code: code
+        code: { code }
       }
     }
 
