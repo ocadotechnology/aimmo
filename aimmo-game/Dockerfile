@@ -9,8 +9,9 @@ COPY --from=builder /usr/local/lib/python3.6/site-packages /usr/local/lib/python
 COPY . .
 
 FROM base as tester
+STOPSIGNAL SIGINT
 RUN pip install coverage
-CMD coverage run setup.py test
+CMD exec coverage run setup.py test
 
 FROM base as runner
 ENV WORKER_MANAGER=kubernetes
