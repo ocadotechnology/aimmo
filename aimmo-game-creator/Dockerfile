@@ -16,4 +16,5 @@ CMD python ./service.py 0.0.0.0
 
 FROM base as tester
 RUN pip install coverage
-CMD ./run_tests -c
+RUN apk add --no-cache bash
+CMD ./run_tests.sh -c
