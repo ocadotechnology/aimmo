@@ -16,4 +16,4 @@ CMD python ./service.py 0.0.0.0 $PORT $DATA_URL
 
 FROM base as tester
 RUN pip install coverage
-CMD run_tests -c
+CMD ./run_tests -c
