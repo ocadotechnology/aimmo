@@ -7,15 +7,14 @@ import 'brace/snippets/python'
 import 'brace/ext/language_tools'
 import PropTypes from 'prop-types'
 import { withTheme } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
-import PlayIcon from 'components/icons/Play'
+import RunCodeButton from 'components/RunCodeButton'
 
 export const IDEEditorLayout = styled.div`
   position: relative;
   grid-area: ide-editor;
 `
 
-export const RunCodeButton = styled(Button)`
+export const PositionedRunCodeButton = styled(RunCodeButton)`
   && {
     position: absolute;
     right: ${props => props.theme.spacing.unit * 3}px;
@@ -24,11 +23,11 @@ export const RunCodeButton = styled(Button)`
   }
 `
 
-export const MarginedPlayIcon = styled(PlayIcon)`
-  margin-right: ${props => props.theme.spacing.unit}px;
-`
-
 export class IDEEditor extends PureComponent {
+  isCodeOnServerDifferent () {
+    return this.props.code !== this.props.codeOnServer
+  }
+
   render () {
     return (
       <IDEEditorLayout>
@@ -53,14 +52,12 @@ export class IDEEditor extends PureComponent {
             tabSize: 2,
             fontFamily: this.props.theme.additionalVariables.typography.code.fontFamily
           }} />
-        <RunCodeButton
-          color='secondary'
+        <PositionedRunCodeButton
+          runCodeButtonStatus={this.props.runCodeButtonStatus}
+          isCodeOnServerDifferent={this.isCodeOnServerDifferent()}
           aria-label='Run Code'
-          variant='extendedFab'
           id='post-code-button'
-          onClick={this.props.postCode}>
-          <MarginedPlayIcon />Run Code
-        </RunCodeButton>
+          whenClicked={this.props.postCode} />
       </IDEEditorLayout>
     )
   }
@@ -68,10 +65,12 @@ export class IDEEditor extends PureComponent {
 
 IDEEditor.propTypes = {
   code: PropTypes.string,
+  codeOnServer: PropTypes.string,
   getCode: PropTypes.func,
   editorChanged: PropTypes.func,
   theme: PropTypes.object,
-  postCode: PropTypes.func
+  postCode: PropTypes.func,
+  runCodeButtonStatus: PropTypes.object
 }
 
 export default withTheme()(IDEEditor)

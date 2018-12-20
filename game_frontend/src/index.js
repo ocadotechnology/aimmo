@@ -2,15 +2,16 @@ import '@babel/polyfill'
 import React from 'react'
 import { render } from 'react-dom'
 
+import WebFont from 'webfontloader'
 import { MuiThemeProvider } from '@material-ui/core/styles'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components'
 import { darkTheme } from 'theme'
-import { Provider } from 'react-redux'
 
-import GamePage from './components/GamePage'
+import { Provider } from 'react-redux'
 import configureStore from './redux/store'
 
-import WebFont from 'webfontloader'
+import GamePage from './components/GamePage'
+import { RunCodeButtonStatus } from 'components/RunCodeButton'
 
 WebFont.load({
   typekit: {
@@ -20,14 +21,20 @@ WebFont.load({
 
 const initialState = {
   editor: {
-    code: ''
+    code: {
+      code: ''
+    },
+    runCodeButton: {
+      status: RunCodeButtonStatus.normal
+    }
   },
   game: {
     connectionParameters: {
       game_id: getGameIDFromURL() || 1
     },
     gameDataLoaded: false,
-    showSnackbarForAvatarUpdated: false
+    showSnackbarForAvatarUpdated: false,
+    timeoutStatus: false
   },
   consoleLog: {
     logs: []
