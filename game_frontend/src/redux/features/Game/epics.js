@@ -1,8 +1,15 @@
 import actions from './actions'
 import types from './types'
 import { of } from 'rxjs'
-import { map, mergeMap, catchError } from 'rxjs/operators'
+import { map, mergeMap, catchError, switchMap, first, mapTo, debounceTime } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
+
+const timeoutEpic = (action$) =>
+  action$.pipe(
+    ofType(types.SOCKET_GAME_STATE_RECEIVED),
+    debounceTime(12000),
+    map(action => actions.setTimeout())
+  )
 
 const getConnectionParametersEpic = (action$, state$, { api: { get } }) => action$.pipe(
   ofType(types.SOCKET_CONNECT_TO_GAME_REQUEST),
@@ -22,6 +29,17 @@ const sendGameStateEpic = (action$, state$, { api: { unity } }) => action$.pipe(
     actions.sendGameStateFail
   )),
   unity.sendExternalEvent(unity.emitToUnity)
+)
+
+const gameLoadedEpic = action$ => action$.pipe(
+  ofType(types.SOCKET_CONNECT_TO_GAME_REQUEST),
+  switchMap(() =>
+    action$.pipe(
+      ofType(types.SOCKET_GAME_STATE_RECEIVED),
+      first(),
+      mapTo(actions.gameDataLoaded())
+    )
+  )
 )
 
 const connectToGameEpic = (action$, state$, { api: { socket, unity } }) => action$.pipe(
@@ -49,6 +67,8 @@ const sendAvatarIDEpic = (action$, state$, { api: { unity } }) => action$.pipe(
 export default {
   getConnectionParametersEpic,
   connectToGameEpic,
+  gameLoadedEpic,
   sendGameStateEpic,
-  sendAvatarIDEpic
+  sendAvatarIDEpic,
+  timeoutEpic
 }

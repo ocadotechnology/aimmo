@@ -9,6 +9,8 @@ pylint = "<2.0.0"
 [packages]
 "e1839a8" = {editable = true, path = "."}
 kubernetes = "*"
+eventlet = "*"
+docker = "*"
 
 [requires]
 python_version = "2.7"

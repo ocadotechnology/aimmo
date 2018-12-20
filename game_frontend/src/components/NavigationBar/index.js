@@ -18,7 +18,6 @@ export default class NavigationBar extends Component {
     return (
       <NavigationBarLayout>
         <AppBar
-          color='secondary'
           position='sticky'>
           <CloseToolbar>
             <IconButton

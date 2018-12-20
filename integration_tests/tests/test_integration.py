@@ -1,5 +1,6 @@
 import os
 import logging
+import mock
 import unittest
 from django.test.client import Client
 import psutil
@@ -33,7 +34,8 @@ class TestIntegration(unittest.TestCase):
 
             parent.terminate()
 
-    def test_superuser_authentication(self):
+    @mock.patch('docker.from_env')
+    def test_superuser_authentication(self, docker_from_env):
         """
         A test that will run on a clean & empty database, create all migrations, new
         browser session and passes a CSRF token with the POST input request.
@@ -47,7 +49,7 @@ class TestIntegration(unittest.TestCase):
         self.processes = runner.run(use_minikube=False, server_wait=False, capture_output=True, test_env=True)
         client = Client()
         response = client.get(reverse(url_string))
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         csrf_token = response.context['csrf_token']
 
         login_info = {
@@ -57,4 +59,4 @@ class TestIntegration(unittest.TestCase):
         }
 
         response = client.post(reverse(url_string), login_info)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)

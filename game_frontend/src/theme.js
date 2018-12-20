@@ -2,10 +2,10 @@ import { createMuiTheme } from '@material-ui/core/styles'
 
 const palette = {
   primary: {
-    main: '#FFFFFF'
+    main: '#606060'
   },
   secondary: {
-    main: '#CFCDC5'
+    main: '#DF5EE8'
   }
 }
 
@@ -39,9 +39,6 @@ const theme = {
   additionalVariables,
   shape,
   overrides,
-  text: {
-    secondary: '#FFFFFF'
-  },
   typography: {
     fontFamily: [
       'museo-sans',

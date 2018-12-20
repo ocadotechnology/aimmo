@@ -1,11 +1,102 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<GameView /> matches snapshot 1`] = `
+exports[`<GameView /> does not show the loading bar when the game has loaded 1`] = `
 <styled.div>
-  <Unity
-    loader="/static/unity/Build/UnityLoader.js"
-    onProgress={[Function]}
-    src="/static/unity/Build/unity.json"
+  <Styled(Unity)
+    gameDataLoaded={true}
+    height="100%"
+    unityContent={
+      UnityContent {
+        "buildJsonPath": "/static/unity/Build/unity.json",
+        "constructor": [MockFunction],
+        "on": [MockFunction] {
+          "calls": Array [
+            Array [
+              "loaded",
+              [Function],
+            ],
+            Array [
+              "loaded",
+              [Function],
+            ],
+          ],
+          "results": Array [
+            Object {
+              "isThrow": false,
+              "value": undefined,
+            },
+            Object {
+              "isThrow": false,
+              "value": undefined,
+            },
+          ],
+        },
+        "send": [MockFunction],
+        "setComponentInstance": [MockFunction],
+        "setFullscreen": [MockFunction],
+        "setUnityInstance": [MockFunction],
+        "triggerUnityEvent": [MockFunction],
+        "uniqueID": 1,
+        "unityConfig": Object {
+          "adjustOnWindowResize": true,
+          "id": "nill",
+          "modules": Object {},
+          "unityVersion": 2,
+        },
+        "unityEvents": Array [],
+        "unityLoaderJsPath": "/static/unity/Build/UnityLoader.js",
+      }
+    }
+    width="100%"
+  />
+</styled.div>
+`;
+
+exports[`<GameView /> shows loading bar whilst game is loading 1`] = `
+<styled.div>
+  <styled.div>
+    <Styled(WithStyles(CircularProgress))
+      color="inherit"
+    />
+  </styled.div>
+  <Styled(Unity)
+    gameDataLoaded={false}
+    height="100%"
+    unityContent={
+      UnityContent {
+        "buildJsonPath": "/static/unity/Build/unity.json",
+        "constructor": [MockFunction],
+        "on": [MockFunction] {
+          "calls": Array [
+            Array [
+              "loaded",
+              [Function],
+            ],
+          ],
+          "results": Array [
+            Object {
+              "isThrow": false,
+              "value": undefined,
+            },
+          ],
+        },
+        "send": [MockFunction],
+        "setComponentInstance": [MockFunction],
+        "setFullscreen": [MockFunction],
+        "setUnityInstance": [MockFunction],
+        "triggerUnityEvent": [MockFunction],
+        "uniqueID": 1,
+        "unityConfig": Object {
+          "adjustOnWindowResize": true,
+          "id": "nill",
+          "modules": Object {},
+          "unityVersion": 2,
+        },
+        "unityEvents": Array [],
+        "unityLoaderJsPath": "/static/unity/Build/UnityLoader.js",
+      }
+    }
+    width="100%"
   />
 </styled.div>
 `;
@@ -17,5 +108,60 @@ exports[`<GameViewLayout /> matches snapshot 1`] = `
 
 <div
   className="c0"
+/>
+`;
+
+exports[`<LoadingBackgroundOverlay /> matches snapshot 1`] = `
+.c0 {
+  height: 100%;
+  width: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  background-color: rgba(0,0,0,0.2);
+}
+
+<div
+  className="c0"
+/>
+`;
+
+exports[`<StyledCircularProgress /> matches snapshot 1`] = `
+.c0 {
+  max-width: 50%;
+}
+
+<WithStyles(CircularProgress)
+  className="c0"
+/>
+`;
+
+exports[`<StyledUnity /> is not shown when game data is loading 1`] = `
+.c0 {
+  display: none;
+}
+
+<Unity
+  className="c0"
+/>
+`;
+
+exports[`<StyledUnity /> is shown when game data has loaded 1`] = `
+.c0 {
+  display: block;
+}
+
+<Unity
+  className="c0"
+  gameDataLoaded={true}
 />
 `;

@@ -26,7 +26,6 @@ class SpawnLocationFinder:
         try:
             return random.sample(potential_locations, max_locations)
         except ValueError:
-            LOGGER.debug('Not enough potential locations')
             return potential_locations
 
     def get_random_spawn_location(self):

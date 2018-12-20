@@ -21,11 +21,12 @@ setup(
         'hypothesis',
         'flask-cors >= 3.0, < 3.1',
         'psutil >= 5.4, < 5.5',
+        'RestrictedPython == 4.0.b7'
     ],
     tests_require=[
         'httmock',
         'mock == 2.0.0',
-        'docker == 2.7.0',
+        'docker >= 3.5, < 3.6',
         'kubernetes == 5.0.0',
         'PyYAML == 3.12',
     ],

@@ -12,7 +12,8 @@ describe('gameReducer', () => {
       gameState: {
         id: 1
       },
-      initialState: 'someValue'
+      initialState: 'someValue',
+      timeoutStatus: false
     }
     const action = actions.socketGameStateReceived({ id: 1 })
     expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
@@ -33,6 +34,15 @@ describe('gameReducer', () => {
       initialState: 'someValue'
     }
     const action = actions.snackbarForAvatarUpdatedShown()
+    expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
+  })
+
+  it('should handle GAME_DATA_LOADED', () => {
+    const expectedState = {
+      gameDataLoaded: true,
+      initialState: 'someValue'
+    }
+    const action = actions.gameDataLoaded()
     expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
   })
 })

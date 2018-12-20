@@ -12,6 +12,7 @@ setup(
     tests_require=[
         'requests',
         'psutil',
+        'mock',
         'kubernetes == 5.0.0',
     ],
     test_suite='test_utils.test_suite.DjangoAutoTestSuite',

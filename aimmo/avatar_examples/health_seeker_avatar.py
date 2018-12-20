@@ -1,10 +1,5 @@
-class Avatar(object):
+class Avatar:
     def handle_turn(self, world_state, avatar_state):
-        from simulation.action import MoveAction
-        from simulation import direction
-        import random
-        from simulation.action import WaitAction
-
         self.world_state = world_state
         self.avatar_state = avatar_state
 
@@ -29,12 +24,11 @@ class Avatar(object):
         pickup_cells = list(self.world_state.pickup_cells())
         if pickup_cells:
             c = min(pickup_cells, key=lambda cell: self.distance_between(cell.location, self.avatar_state.location))
-            print 'targetting', c
+            print('targetting' + c)
             return c.location
         else:
             return None
 
     def get_possible_directions(self):
-        from simulation import direction
         directions = (direction.EAST, direction.SOUTH, direction.WEST, direction.NORTH)
         return [d for d in directions if self.world_state.can_move_to(self.avatar_state.location + d)]

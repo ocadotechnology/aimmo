@@ -8,13 +8,16 @@ Optional arguments:
     -c, --coverage  compute the coverage while running tests.
 """
 
+from __future__ import print_function
 import os
 import subprocess
 import sys
-from aimmo_runner import runner
+import docker
+from aimmo_runner import runner, docker_scripts
+
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-APPS = ('aimmo/', 'integration_tests/', 'aimmo-game-worker/', 'aimmo-game-creator/', 'aimmo-game/')
+APPS = ('aimmo/', 'integration_tests/')
 
 
 def print_help():
@@ -27,12 +30,22 @@ def main():
         sys.exit(0)
     else:
         compute_coverage = '--coverage' in sys.argv or '-c' in sys.argv
+        use_docker = '--no-docker-container-tests' not in sys.argv
         runner.run_command(['pip', 'install', '-e', BASE_DIR])
-        sys.exit(run_tests(compute_coverage))
+        sys.exit(run_tests(compute_coverage, use_docker=use_docker))
 
 
-def run_tests(compute_coverage):
+def run_tests(compute_coverage, use_docker=True):
     failed_apps = []
+    if use_docker:
+        docker_scripts.delete_containers()
+        client = docker.from_env()
+        docker_scripts.build_docker_images(build_target='tester')
+        print('Docker containers built, running tests now...')
+        run_game_creator_tests(client)
+        run_game_tests(client)
+        run_worker_tests(client)
+        docker_scripts.delete_containers()
 
     for app in APPS:
         print('Testing {}'.format(app))
@@ -43,7 +56,7 @@ def run_tests(compute_coverage):
         else:
             result = subprocess.call([sys.executable, 'setup.py', 'test'], cwd=dir)
         if result != 0:
-            print('Tests failed: '.format(result))
+            print('Tests failed: {}'.format(result))
             failed_apps.append(app)
 
     if compute_coverage:
@@ -56,6 +69,36 @@ def run_tests(compute_coverage):
     else:
         print('All tests ran successfully')
         return 0
+
+
+def run_game_creator_tests(client):
+    logs = client.containers.run(
+        name='aimmo-game-creator-tester',
+        image='ocadotechnology/aimmo-game-creator:test',
+        stream=True
+    )
+    for log in logs:
+        print(log, end='')
+
+
+def run_game_tests(client):
+    logs = client.containers.run(
+        name='aimmo-game-tester',
+        image='ocadotechnology/aimmo-game:test',
+        stream=True
+    )
+    for log in logs:
+        print(log, end='')
+
+
+def run_worker_tests(client):
+    logs = client.containers.run(
+        name='aimmo-worker-tester',
+        image='ocadotechnology/aimmo-game-worker:test',
+        stream=True
+    )
+    for log in logs:
+        print(log, end='')
 
 
 if __name__ == '__main__':

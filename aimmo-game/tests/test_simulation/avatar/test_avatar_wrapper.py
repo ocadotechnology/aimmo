@@ -84,7 +84,7 @@ class TestAvatarWrapper(TestCase):
 
     def add_effects(self, num=2):
         effects = []
-        for _ in xrange(num):
+        for _ in range(num):
             effect = MockEffect(self.avatar)
             self.avatar.effects.add(effect)
             effects.append(effect)

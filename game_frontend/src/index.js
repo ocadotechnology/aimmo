@@ -1,16 +1,17 @@
-import 'babel-polyfill'
+import '@babel/polyfill'
 import React from 'react'
 import { render } from 'react-dom'
 
+import WebFont from 'webfontloader'
 import { MuiThemeProvider } from '@material-ui/core/styles'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components'
-import { lightTheme } from 'theme'
-import { Provider } from 'react-redux'
+import { darkTheme } from 'theme'
 
-import GamePage from './components/GamePage'
+import { Provider } from 'react-redux'
 import configureStore from './redux/store'
 
-import WebFont from 'webfontloader'
+import GamePage from './components/GamePage'
+import { RunCodeButtonStatus } from 'components/RunCodeButton'
 
 WebFont.load({
   typekit: {
@@ -20,13 +21,20 @@ WebFont.load({
 
 const initialState = {
   editor: {
-    code: ''
+    code: {
+      code: ''
+    },
+    runCodeButton: {
+      status: RunCodeButtonStatus.normal
+    }
   },
   game: {
     connectionParameters: {
       game_id: getGameIDFromURL() || 1
     },
-    showSnackbarForAvatarUpdated: false
+    gameDataLoaded: false,
+    showSnackbarForAvatarUpdated: false,
+    timeoutStatus: false
   },
   consoleLog: {
     logs: []
@@ -42,8 +50,8 @@ function getGameIDFromURL () {
 const reduxStore = configureStore(initialState)
 
 const RootJSX = () => (
-  <StyledComponentsThemeProvider theme={lightTheme}>
-    <MuiThemeProvider theme={lightTheme}>
+  <StyledComponentsThemeProvider theme={darkTheme}>
+    <MuiThemeProvider theme={darkTheme}>
       <Provider store={reduxStore}>
         <GamePage />
       </Provider>

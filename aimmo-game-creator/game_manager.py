@@ -5,9 +5,12 @@ import time
 from abc import ABCMeta, abstractmethod
 
 import requests
-from eventlet.greenpool import GreenPool
 from eventlet.semaphore import Semaphore
+from concurrent import futures
+from concurrent.futures import ALL_COMPLETED
 import kubernetes
+import docker
+import json
 
 
 LOGGER = logging.getLogger(__name__)
@@ -58,23 +61,23 @@ class GameManager(object):
     def __init__(self, games_url):
         self._data = _GameManagerData()
         self.games_url = games_url
-        self._pool = GreenPool(size=3)
         super(GameManager, self).__init__()
 
     @abstractmethod
     def create_game(self, game_id, game_data):
         """Creates a new game"""
 
-        raise NotImplemented
+        raise NotImplementedError
 
     @abstractmethod
     def delete_game(self, game_id):
         """Deletes the given game"""
 
-        raise NotImplemented
+        raise NotImplementedError
 
-    def recreate_game(self, game_id, game_data):
+    def recreate_game(self, game_to_add):
         """Deletes and recreates the given game"""
+        game_id, game_data = game_to_add
         LOGGER.info("Deleting game {}".format(game_data["name"]))
         try:
             self.delete_game(game_id)
@@ -102,15 +105,12 @@ class GameManager(object):
                 id: games[id]
                 for id in self._data.add_new_games(games.keys())
             }
-            LOGGER.debug("Need to add games: {}".format(games_to_add))
 
             # Add missing games
-            self._parallel_map(self.recreate_game, games_to_add.keys(), games_to_add.values())
-
+            self._parallel_map(self.recreate_game, games_to_add.items())
             # Delete extra games
             known_games = set(games.keys())
             removed_game_ids = self._data.remove_unknown_games(known_games)
-            LOGGER.debug("Removing games: {}".format(removed_game_ids))
             self._parallel_map(self.delete_game, removed_game_ids)
 
     def get_persistent_state(self, player_id):
@@ -124,14 +124,15 @@ class GameManager(object):
             LOGGER.info("Sleeping")
             time.sleep(10)
 
-    def _parallel_map(self, func, *iterable_args):
-        list(self._pool.imap(func, *iterable_args))
+    def _parallel_map(self, func, iterable_args):
+        with futures.ThreadPoolExecutor() as executor:
+            _ = executor.map(func, iterable_args)
 
 
 class LocalGameManager(GameManager):
     """Manages games running on local host"""
 
-    host = "127.0.0.1"
+    host = os.environ.get('LOCALHOST_IP', '127.0.0.1')
     game_directory = os.path.join(
         os.path.dirname(__file__),
         "../aimmo-game/",
@@ -143,19 +144,26 @@ class LocalGameManager(GameManager):
         super(LocalGameManager, self).__init__(*args, **kwargs)
 
     def create_game(self, game_id, game_data):
-        assert(game_id not in self.games)
+        def setup_container_environment_variables(template, game_data):
+            template['environment'].update(game_data)
+            template['environment']['GAME_ID'] = game_id
+            template['environment']['PYTHONUNBUFFERED'] = 0
+            template['environment']['WORKER_MANAGER'] = 'local'
+            template['environment']['EXTERNAL_PORT'] = port
+            template['environment']['CONTAINER_TEMPLATE'] = os.environ['CONTAINER_TEMPLATE']
+
+        assert (game_id not in self.games)
         port = str(6001 + int(game_id) * 1000)
-        process_args = [
-            "python",
-            self.game_service_path,
-            self.host,
-            port,
-        ]
-        env = os.environ.copy()
-        game_data = {str(k): str(v) for k, v in game_data.items()}
-        env.update(game_data)
-        env['GAME_ID'] = game_id
-        self.games[game_id] = subprocess.Popen(process_args, cwd=self.game_directory, env=env)
+        client = docker.from_env()
+
+        template = json.loads(os.environ.get('CONTAINER_TEMPLATE', '{}'))
+        setup_container_environment_variables(template, game_data)
+        template['ports'] = {"{}/tcp".format(port): ('0.0.0.0', port)}
+
+        self.games[game_id] = client.containers.run(
+            name="aimmo-game-{}".format(game_id),
+            image='ocadotechnology/aimmo-game:test',
+            **template)
         game_url = "http://{}:{}".format(self.host, port)
         LOGGER.info("Game started - {}, listening at {}".format(game_id, game_url))
 
@@ -233,6 +241,8 @@ class KubernetesGameManager(GameManager):
         environment_variables['GAME_URL'] = 'http://game-{}'.format(game_id)
         environment_variables['IMAGE_SUFFIX'] = os.environ.get('IMAGE_SUFFIX', 'latest')
         environment_variables['K8S_NAMESPACE'] = K8S_NAMESPACE
+        environment_variables['WORKER_MANAGER'] = 'kubernetes'
+        environment_variables['EXTERNAL_PORT'] = "5000"
 
         rc = self._make_rc(environment_variables, game_id)
         self.api.create_namespaced_replication_controller(K8S_NAMESPACE, rc)

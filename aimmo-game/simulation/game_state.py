@@ -1,5 +1,5 @@
 from threading import RLock
-from pickups import serialise_pickups
+from simulation.pickups import serialise_pickups
 
 
 class GameState(object):
@@ -79,4 +79,4 @@ class GameState(object):
     def get_serialised_game_states_for_workers(self):
         with self._lock:
             return {player_id: self.serialise_for_worker(avatar_wrapper) for player_id, avatar_wrapper
-                    in self.avatar_manager.avatars_by_id.iteritems()}
+                    in self.avatar_manager.avatars_by_id.items()}

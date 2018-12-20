@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 import unittest
+import asyncio
 
 from simulation.avatar.avatar_appearance import AvatarAppearance
 from simulation.game_state import GameState
@@ -57,7 +58,8 @@ class TestSimulationRunner(unittest.TestCase):
         return self.avatar_manager.get_avatar(player_id)
 
     def run_turn(self):
-        self.simulation_runner.run_turn(self.avatar_manager.avatars_by_id)
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self.simulation_runner.run_turn(self.avatar_manager.avatars_by_id))
 
     def test_run_turn(self):
         """
