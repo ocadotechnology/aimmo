@@ -8,8 +8,6 @@ from simulation.location import Location
 from simulation.game_state import GameState
 from simulation.world_map import WorldMap
 
-from .helper.coverage_collector import coverageCollector
-
 class TestService(TestCase):
     class DummyAvatarManager(AvatarManager):
         avatars = [MoveEastDummy(1, Location(0, -1))]
@@ -44,7 +42,6 @@ class TestService(TestCase):
         test_game_state = GameState(WorldMap(grid, {}), self.avatar_manager)
         self.world_state_json = test_game_state.serialise()
 
-    @coverageCollector
     def test_correct_json_player_dictionary(self):
         """
         Ensures the "players" element of the get_game_state() JSON returns the correct information for the dummy
@@ -63,7 +60,6 @@ class TestService(TestCase):
         self.assertEqual(details['orientation'], "north")
         self.assertEqual(details['score'], 0)
 
-    @coverageCollector
     def test_correct_json_score_locations(self):
         """
         Ensures the correct score location in the "score_locations" element; is returned by the JSON.
@@ -72,7 +68,6 @@ class TestService(TestCase):
         self.assertEqual(score_list[0]['location']['x'], 0)
         self.assertEqual(score_list[0]['location']['y'], 1)
 
-    @coverageCollector
     def test_correct_json_north_east_corner(self):
         """
         Top right corner of the map must be correct to determine the map size.
@@ -81,7 +76,6 @@ class TestService(TestCase):
         self.assertEqual(north_east_corner['x'], 1)
         self.assertEqual(north_east_corner['y'], 1)
 
-    @coverageCollector
     def test_correct_json_south_west_corner(self):
         """
         Bottom left corner of the map must be correct to determine the map size.
@@ -90,7 +84,6 @@ class TestService(TestCase):
         self.assertEqual(south_west_corner['x'], 0)
         self.assertEqual(south_west_corner['y'], -1)
 
-    @coverageCollector
     def test_correct_json_era(self):
         """
         Ensure that the era (for the assets in Unity) is correct.
@@ -100,7 +93,6 @@ class TestService(TestCase):
         era = self.world_state_json['era']
         self.assertEqual(era, "less_flat")
 
-    @coverageCollector
     def test_correct_json_world_pickups_returned_is_correct_amount(self):
         """
         The JSON returns the correct amount of pickups.
@@ -108,7 +100,6 @@ class TestService(TestCase):
         pickup_list = self.world_state_json['pickups']
         self.assertEqual(len(pickup_list), 2)
 
-    @coverageCollector
     def test_correct_json_world_obstacles(self):
         """
         JSON generated must return correct location, width, height, type and orientation about obstacles.

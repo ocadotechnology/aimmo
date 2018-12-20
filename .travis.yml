@@ -52,7 +52,6 @@ jobs:
         - cd aimmo-game
         - docker build --target tester -t ocadotechnology/aimmo-game:test .
       install:
-        - pip install coverage
         - pip install codecov
       script:
         - docker run -it -p 5000:5000 ocadotechnology/aimmo-game:test

@@ -9,7 +9,6 @@ COPY --from=builder /usr/local/lib/python3.6/site-packages /usr/local/lib/python
 COPY . .
 
 FROM base as tester
-STOPSIGNAL SIGINT
 RUN pip install coverage
 CMD exec coverage run setup.py test; sleep 10
 
