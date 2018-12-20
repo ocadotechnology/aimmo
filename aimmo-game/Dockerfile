@@ -10,7 +10,7 @@ COPY . .
 
 FROM base as tester
 RUN pip install coverage
-CMD exec coverage run setup.py test; sleep 10
+CMD run_tests -c
 
 FROM base as runner
 ENV WORKER_MANAGER=kubernetes
