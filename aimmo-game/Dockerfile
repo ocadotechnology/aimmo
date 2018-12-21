@@ -10,6 +10,7 @@ COPY . .
 
 FROM base as tester
 RUN pip install coverage
+RUN apk add --no-cache bash
 CMD ./run_tests.sh -c
 
 FROM base as runner
