@@ -2,7 +2,8 @@
 coverage=$1
 
 function coverage_ready {
-    if [ -e .coverage ]; then
+    output=$(find .coverage)
+    if [ $output = '.coverage' ]; then
         echo '.coverage file found!'
         exit
     fi
