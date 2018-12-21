@@ -3,7 +3,7 @@ coverage=$1
 
 function coverage_ready {
     if [ -f '.coverage' ]; then
-        break
+        exit
     fi
 }
 
