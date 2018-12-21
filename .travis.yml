@@ -47,6 +47,9 @@ jobs:
         - popd
       script:
         - python all_tests.py --no-docker-container-tests
+      after_success:
+        - ls -a 
+        - codecov
     - name: "aimmo-game"
       before_install:
         - cd aimmo-game
