@@ -4,6 +4,7 @@ import random
 import unittest
 
 from simulation import map_generator
+from simulation import map_generator
 from simulation.location import Location
 from simulation.map_generator import get_random_edge_index
 from simulation.world_map import WorldMap
@@ -37,10 +38,10 @@ class TestHelperFunctions(unittest.TestCase):
             (2, 0), get_random_edge_index(map, rng=ConstantRng(5)))
 
         # Verify no out of bounds
-        with self.assertRaisesRegexp(ValueError, 'Beyond range'):
+        with self.assertRaisesRegex(ValueError, 'Beyond range'):
             get_random_edge_index(map, rng=ConstantRng(-1))
 
-        with self.assertRaisesRegexp(ValueError, 'Beyond range'):
+        with self.assertRaisesRegex(ValueError, 'Beyond range'):
             get_random_edge_index(map, rng=ConstantRng(6))
 
     def test_get_random_edge_index_can_give_all_possible(self):
@@ -57,10 +58,10 @@ class TestHelperFunctions(unittest.TestCase):
 
     def test_out_of_bounds_random_edge(self):
         map = WorldMap.generate_empty_map(3, 4, {})
-        with self.assertRaisesRegexp(ValueError, 'Beyond range'):
+        with self.assertRaisesRegex(ValueError, 'Beyond range'):
             get_random_edge_index(map, rng=ConstantRng(-1))
 
-        with self.assertRaisesRegexp(ValueError, 'Beyond range'):
+        with self.assertRaisesRegex(ValueError, 'Beyond range'):
             get_random_edge_index(map, rng=ConstantRng(6))
 
 
@@ -114,6 +115,9 @@ class TestMainGenerator(_BaseGeneratorTestCase):
         habitable_edge_cells = [cell for cell in edge_cells if cell.habitable]
 
         self.assertGreaterEqual(len(habitable_edge_cells), 1)
+    
+    def test_shortest_path(self):
+        m = self.get_map(START_WIDTH=4)
 
     def test_not_complete(self):
         game_state = self.get_game_state()

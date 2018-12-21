@@ -3,7 +3,7 @@
 exports[`<Code /> renders correctly 1`] = `
 .c0 {
   font-family: 'Source Code Pro',monospace;
-  color: #FFFFFF;
+  color: #606060;
 }
 
 <p

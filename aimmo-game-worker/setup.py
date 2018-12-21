@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from setuptools import find_packages, setup
+import sys
+import os
 
+
+withcoverage = os.environ.get('WITH_COVERAGE')
 
 setup(
     name='aimmo-game-worker',
@@ -8,8 +12,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'flask',
-        'requests',
-        'six'
+        'requests'
     ],
     tests_require=[
         'httmock',

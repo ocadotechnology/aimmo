@@ -4,7 +4,7 @@ import { TestScheduler } from 'rxjs/testing'
 import { ActionsObservable, StateObservable } from 'redux-observable'
 import epics from './epics'
 import actions from './actions'
-import api from '../../api'
+import api from 'api'
 import { delay, mapTo } from 'rxjs/operators'
 
 const deepEquals = (actual, expected) =>
@@ -244,5 +244,24 @@ describe('getConnectionParametersEpic', () => {
 
     testScheduler.expectObservable(actual).toBe(marbles2, values)
     testScheduler.flush()
+  })
+})
+
+describe('gameLoadedEpic', () => {
+  it('dispatches an GAME_LOADED action only when the first game state is received', () => {
+    const testScheduler = createTestScheduler()
+
+    testScheduler.run(({ hot, cold, expectObservable }) => {
+      const action$ = hot('--a--b--b', {
+        a: actions.socketConnectToGameRequest(),
+        b: actions.socketGameStateReceived({})
+      })
+
+      const output$ = epics.gameLoadedEpic(action$)
+
+      expectObservable(output$).toBe('-----c---', {
+        c: actions.gameDataLoaded()
+      })
+    })
   })
 })

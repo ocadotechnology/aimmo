@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 
-import cPickle as pickle
 import unittest
 from json import dumps
 
@@ -40,11 +39,11 @@ class RequestMock(object):
         return {
             str(i): {
                 "name": "Game {}".format(i),
-                "settings": pickle.dumps({
+                "settings": {
                     "test": i,
                     "test2": "Settings {}".format(i),
-                })
-            } for i in xrange(num_games)
+                }
+            } for i in range(num_games)
         }
 
     def __call__(self, url, request):
@@ -61,7 +60,7 @@ class TestGameManager(unittest.TestCase):
         with HTTMock(mocker):
             self.game_manager.update()
         self.assertEqual(len(mocker.urls_requested), 1)
-        self.assertRegexpMatches(mocker.urls_requested[0], "http://test/*")
+        self.assertRegex(mocker.urls_requested[0], "http://test/*")
 
     def test_games_added(self):
         mocker = RequestMock(3)
@@ -69,12 +68,9 @@ class TestGameManager(unittest.TestCase):
             self.game_manager.update()
         self.assertEqual(len(self.game_manager.final_games), 3)
         self.assertEqual(len(list(self.game_manager._data.get_games())), 3)
-        for i in xrange(3):
+        for i in range(3):
             self.assertIn(str(i), self.game_manager.final_games)
-            self.assertEqual(
-                pickle.loads(str(self.game_manager.added_games[str(i)]["settings"])),
-                {"test": i, "test2": "Settings {}".format(i)}
-            )
+            self.assertEqual(self.game_manager.added_games[str(i)]["settings"], {"test": i, "test2": "Settings {}".format(i)})
             self.assertEqual(self.game_manager.added_games[str(i)]["name"], "Game {}".format(i))
 
     def test_remove_games(self):
@@ -89,7 +85,7 @@ class TestGameManager(unittest.TestCase):
         mocker = RequestMock(3)
         with HTTMock(mocker):
             self.game_manager.update()
-        for i in xrange(3):
+        for i in range(3):
             self.assertEqual(
                 self.game_manager.added_games[str(i)]["GAME_API_URL"],
                 "http://test/{}/".format(i)

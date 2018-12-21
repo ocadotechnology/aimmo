@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from setuptools import find_packages, setup
+import sys
+import os
 
+
+withcoverage = os.environ.get('WITH_COVERAGE')
 
 setup(
     name='aimmo-game',
@@ -15,9 +19,16 @@ setup(
         'six',
         'kubernetes'
     ],
+    setup_requires=[
+        "pytest-runner"
+    ],
     tests_require=[
+        'pytest',
+        'pytest-asyncio',
+        'asynctest',
         'httmock',
-        'mock'
+        'mock',
+        'hypothesis'
     ],
     test_suite='tests',
     zip_safe=False,

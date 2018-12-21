@@ -75,6 +75,16 @@ const snackbarForAvatarUpdatedShown = () => (
   }
 )
 
+const gameDataLoaded = () => (
+  {
+    type: types.GAME_DATA_LOADED
+  }
+)
+
+const setTimeout = () => ({
+  type: types.SET_TIMEOUT
+})
+
 export default {
   socketConnectToGameRequest,
   sendGameStateFail,
@@ -85,5 +95,7 @@ export default {
   unitySendAvatarIDSuccess,
   unitySendAvatarIDFail,
   socketFeedbackAvatarUpdated,
-  snackbarForAvatarUpdatedShown
+  snackbarForAvatarUpdatedShown,
+  gameDataLoaded,
+  setTimeout
 }

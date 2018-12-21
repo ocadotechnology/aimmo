@@ -108,7 +108,7 @@ class TestKubernetes(unittest.TestCase):
         and only one specific rule, with only one path specified!
         """
         api_response = self.api_extension_instance.list_namespaced_ingress("default")
-        self.assertEquals(len(api_response.items), 1)
+        self.assertEqual(len(api_response.items), 1)
 
         # NAME
         self.assertEqual(api_response.items[0].metadata.name, "aimmo-ingress")

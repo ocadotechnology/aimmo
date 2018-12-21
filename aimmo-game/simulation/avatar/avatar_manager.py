@@ -24,7 +24,7 @@ class AvatarManager(object):
 
     @property
     def avatars(self):
-        return list(self.avatars_by_id.viewvalues())
+        return list(self.avatars_by_id.values())
 
     @property
     def active_avatars(self):

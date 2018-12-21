@@ -3,6 +3,8 @@ import heapq
 import logging
 import random
 from itertools import tee
+from queue import PriorityQueue
+from typing import Any
 
 from six.moves import zip, range
 
@@ -92,11 +94,11 @@ def get_shortest_path_between(source_cell, destination_cell, world_map):
         y_distance = abs(branch_tip_location.y - destination_cell.location.y)
         return x_distance + y_distance + len(this_branch)
 
-    branches = PriorityQueue(key=manhattan_distance_to_destination_cell,
-                             init_items=[[source_cell]])
+    branches = PriorityQueuef(key=manhattan_distance_to_destination_cell,
+                              init_items=[[source_cell]])
     visited_cells = set()
 
-    while branches:
+    while not branches.queue.empty():
         branch = branches.pop()
 
         for cell in get_adjacent_habitable_cells(branch[-1], world_map):
@@ -150,25 +152,39 @@ def get_adjacent_habitable_cells(cell, world_map):
     return [c for c in adjacent_cells if c.habitable]
 
 
-class PriorityQueue(object):
+class PriorityEntry(object):
+    priority: int
+    value: Any
+
+    def __init__(self, priority, value):
+        self.priority = priority
+        self.value = value
+
+    def __lt__(self, other):
+        return self.priority < other.priority
+
+
+class PriorityQueuef(object):
     def __init__(self, key, init_items=tuple()):
         self.key = key
         self.heap = [self._build_tuple(i) for i in init_items]
-        heapq.heapify(self.heap)
+        self.queue = PriorityQueue()
+        for item in self.heap:
+            self.queue.put(item, block=True)
 
     def _build_tuple(self, item):
-        return self.key(item), item
+        return PriorityEntry(self.key(item), item)
 
     def push(self, item):
         to_push = self._build_tuple(item)
-        heapq.heappush(self.heap, to_push)
+        self.queue.put(to_push, block=True)
 
     def pop(self):
-        _, item = heapq.heappop(self.heap)
-        return item
+        entry: PriorityEntry = self.queue.get(block=True)
+        return entry.value
 
     def __len__(self):
-        return len(self.heap)
+        return self.queue.qsize()
 
 
 class _BaseLevelGenerator(_BaseGenerator):
