@@ -21,6 +21,5 @@ class AvatarDataAdmin(admin.ModelAdmin):
     def game_name(self, obj):
         return obj.game
 
-
 admin.site.register(Game, GameDataAdmin)
 admin.site.register(Avatar, AvatarDataAdmin)
