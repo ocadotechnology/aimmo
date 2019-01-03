@@ -90,7 +90,7 @@ export class RunCodeButton extends Component {
         aria-label='Run Code'
         variant='extendedFab'
         id='post-code-button'
-        onClick={this.shouldButtonBeClickable() ? () => { } : this.props.whenClicked}>
+        onClick={this.shouldButtonBeClickable() ? this.props.whenClicked : () => { }}>
         {this.renderContent(this.props.runCodeButtonStatus.status)}
       </Button>
     )
