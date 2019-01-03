@@ -46,7 +46,7 @@ jobs:
         - node djangoBundler.js
         - popd
       script:
-        - python all_tests.py --no-docker-container-tests
+        - python all_tests.py -c --no-docker-container-tests
       after_success:
         - ls -a 
         - codecov
