@@ -12,6 +12,7 @@ function coverage_ready {
 if [ $coverage = '-c' ]; then
     echo 'Collecting coverage...'
     coverage run setup.py test
+    ls -a
     for i in {1..5}; do
         echo 'Waiting for .coverage file...'
         coverage_ready
