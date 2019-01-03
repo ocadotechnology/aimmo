@@ -57,7 +57,7 @@ jobs:
       install:
         - pip install codecov
       script:
-        - docker run -it -p 5000:5000 --mount type=bind,source="$(pwd)"/.coverage,target="$(pwd)"/.coverage ocadotechnology/aimmo-game:test
+        - docker run -it -p 5000:5000 -v /.coverage.txt:/.coverage.txt ocadotechnology/aimmo-game:test
       after_success:
         - ls -a 
         - codecov
