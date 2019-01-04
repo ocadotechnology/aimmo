@@ -61,7 +61,8 @@ jobs:
         - docker run -it -p 5000:5000 -v /coveragedata:/coveragedata ocadotechnology/aimmo-game:test
       after_success:
         - ls -a
-        - cd coveragedata 
+        - cd coveragedata
+        - ls -a
         - codecov
     - name: "aimmo-game-creator"
       before_install:
