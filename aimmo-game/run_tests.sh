@@ -1,5 +1,6 @@
 #!/bin/bash
 coverage=$1
+
 function coverage_ready {
     output=$(find .coverage)
     if [ $output = '.coverage' ]; then
