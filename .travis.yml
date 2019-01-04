@@ -61,7 +61,7 @@ jobs:
         - docker run -it -p 5000:5000 -v /coveragedata:/coveragedata ocadotechnology/aimmo-game:test
       after_success:
         - read CONTAINERID <<< $(docker container ls | awk '/[0-9]/ { print $1 }')
-        - docker cp $CONTAINERID:/coveragedata/.coverage /coveragedata/
+        - docker cp ${CONTAINERID}:/coveragedata/.coverage /coveragedata/
         - cd coveragedata
         - ls -a
         - codecov
