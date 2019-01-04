@@ -58,11 +58,10 @@ jobs:
       install:
         - pip install codecov
       script:
-        - docker run -it -p 5000:5000 -v /coveragedata:/coveragedata ocadotechnology/aimmo-game:test
+        - docker run -it -p 5000:5000 ocadotechnology/aimmo-game:test
       after_success:
         - read CONTAINERID <<< $(docker ps --all -q | head -1)
         - docker cp -a $CONTAINERID:/.coverage /.coverage
-        - cd coveragedata
         - ls -a
         - codecov
     - name: "aimmo-game-creator"
