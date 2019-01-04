@@ -61,7 +61,8 @@ jobs:
         - docker run -it -p 5000:5000 -v /coveragedata:/coveragedata ocadotechnology/aimmo-game:test
       after_success:
         - read CONTAINERNAME <<< $(docker ps --format "{{.Names}}")
-        - docker cp ${CONTAINERNAME}:/coveragedata/.coverage /coveragedata/
+        - echo $CONTAINERNAME
+        - docker cp aimmo-game:/coveragedata/.coverage /coveragedata/
         - cd coveragedata
         - ls -a
         - codecov
