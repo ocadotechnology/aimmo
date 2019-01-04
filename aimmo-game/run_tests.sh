@@ -4,10 +4,6 @@ function coverage_ready {
     output=$(find .coverage)
     if [ $output = '.coverage' ]; then
         echo '.coverage file found!'
-        ls -a
-        mv .coverage coveragedata/.coverage
-        cd coveragedata
-        ls -a
         exit
     fi
 }
