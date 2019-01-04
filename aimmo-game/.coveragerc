@@ -1,5 +1,6 @@
 [run]
 branch = True
+source = aimmo-game
 
 [report]
 exclude_lines =
