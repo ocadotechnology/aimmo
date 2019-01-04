@@ -54,7 +54,6 @@ jobs:
       before_install:
         - cd aimmo-game
         - docker build --target tester -t ocadotechnology/aimmo-game:test .
-        - cut -d -f1 /etc/passwd
       install:
         - pip install codecov
       script:
