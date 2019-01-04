@@ -62,7 +62,7 @@ jobs:
       after_success:
         - read CONTAINERNAME <<< $(docker ps --format "{{.Names}}")
         - echo $CONTAINERNAME
-        - docker cp aimmo-game:/coveragedata/.coverage /coveragedata/
+        - docker cp travi:/coveragedata/.coverage /coveragedata/
         - cd coveragedata
         - ls -a
         - codecov
