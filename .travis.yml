@@ -53,13 +53,14 @@ jobs:
     - name: "aimmo-game"
       before_install:
         - cd aimmo-game
-        - mkdir coveragedata
         - docker build --target tester -t ocadotechnology/aimmo-game:test .
+        - cut -d -f1 /etc/passwd
       install:
         - pip install codecov
       script:
         - docker run -it -p 5000:5000 ocadotechnology/aimmo-game:test
       after_success:
+        # Get the ID of the container so we can get the coverage data out.
         - read CONTAINERID <<< $(docker ps --all -q | head -1)
         - docker cp -a $CONTAINERID:/.coverage /.coverage
         - ls -a
