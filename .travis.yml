@@ -63,7 +63,7 @@ jobs:
         - read CONTAINERID <<< $(docker ps --all -q | head -1)
         - echo $CONTAINERID
 
-        - docker cp $CONTAINERID:/coveragedata/ /coveragedata/
+        - docker cp $CONTAINERID:/coveragedata/.coverage /coveragedata/.coverage
         - cd coveragedata
         - ls -a
         - codecov
