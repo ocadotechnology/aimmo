@@ -53,6 +53,8 @@ jobs:
     - name: "aimmo-game"
       before_install:
         - cd aimmo-game
+        - touch .coverage
+        - chmod 777 .coverage
         - docker build --target tester -t ocadotechnology/aimmo-game:test .
       install:
         - pip install codecov
