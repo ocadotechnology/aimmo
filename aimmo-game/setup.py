@@ -34,5 +34,5 @@ setup(
         'aiohttp_cors'
     ],
     test_suite='tests',
-    zip_safe=True,
+    zip_safe=False,
 )
