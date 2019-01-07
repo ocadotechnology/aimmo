@@ -4,7 +4,6 @@ group: edge
 language: python
 python:
   - "2.7"
-  - "3.6"
 services:
   - docker
 env:
@@ -64,7 +63,7 @@ jobs:
         - read CONTAINERID <<< $(docker ps --all -q | head -1)
         - sudo docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
         - coverage xml -i
-        - ls -al
+        - ls -a
         - codecov
     - name: "aimmo-game-creator"
       before_install:
