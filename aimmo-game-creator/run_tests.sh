@@ -5,7 +5,6 @@ function coverage_ready {
     output=$(find .coverage)
     if [ $output = '.coverage' ]; then
         echo '.coverage file found!'
-        chmod 777 .coverage
         coverage xml -i
         exit
     fi
