@@ -12,7 +12,7 @@ function coverage_ready {
 
 if [ $coverage = '-c' ]; then
     echo 'Collecting coverage...'
-    coverage run setup.py test
+    coverage run --source="../aimmo-game" setup.py test
     for i in {1..5}; do
         echo 'Waiting for .coverage file...'
         coverage_ready
