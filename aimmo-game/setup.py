@@ -23,7 +23,7 @@ setup(
         "pytest-runner"
     ],
     tests_require=[
-        'pytest',
+        'pytest==4.0.2',
         'pytest-asyncio',
         'asynctest',
         'httmock',
