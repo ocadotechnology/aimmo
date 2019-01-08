@@ -5,8 +5,6 @@ function coverage_ready {
     output=$(find .coverage)
     if [ $output = '.coverage' ]; then
         echo '.coverage file found!'
-        sleep 10
-        cat .coverage
         exit
     fi
 }

@@ -10,7 +10,7 @@ COPY --from=builder /usr/local/lib/python3.6/site-packages /usr/local/lib/python
 COPY . .
 
 FROM base as tester
-RUN pip install coverage
+RUN pip install coverage==4.1
 RUN apk add --no-cache bash
 CMD ./run_tests.sh -c
 

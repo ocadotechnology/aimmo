@@ -15,6 +15,6 @@ ENV FLASK_ENV='development'
 CMD python ./service.py 0.0.0.0 $PORT $DATA_URL
 
 FROM base as tester
-RUN pip install coverage
+RUN pip install coverage==4.1
 RUN apk add --no-cache bash
 CMD ./run_tests.sh -c
