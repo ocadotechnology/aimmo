@@ -69,7 +69,7 @@ const socketFeedbackAvatarUpdated = () => (
   }
 )
 
-const snackbarForAvatarUpdatedShown = () => (
+const snackbarShown = () => (
   {
     type: types.SNACKBAR_FOR_AVATAR_FEEDBACK_SHOWN
   }
@@ -95,7 +95,7 @@ export default {
   unitySendAvatarIDSuccess,
   unitySendAvatarIDFail,
   socketFeedbackAvatarUpdated,
-  snackbarForAvatarUpdatedShown,
+  snackbarShown,
   gameDataLoaded,
   setTimeout
 }

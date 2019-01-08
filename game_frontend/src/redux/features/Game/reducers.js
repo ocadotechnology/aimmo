@@ -16,12 +16,13 @@ const gameReducer = (state = {}, action) => {
     case types.SOCKET_FEEDBACK_AVATAR_UPDATED:
       return {
         ...state,
-        showSnackbarForAvatarUpdated: true
+        showSnackbar: true,
+        snackbarMessage: 'Your Avatar has been updated with your new code!'
       }
     case types.SNACKBAR_FOR_AVATAR_FEEDBACK_SHOWN:
       return {
         ...state,
-        showSnackbarForAvatarUpdated: false
+        showSnackbar: false
       }
     case types.GAME_DATA_LOADED:
       return {

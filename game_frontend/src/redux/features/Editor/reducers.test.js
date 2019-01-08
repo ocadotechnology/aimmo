@@ -70,7 +70,7 @@ describe('runCodeButtonReducer', () => {
       }
     }
 
-    const action = gameActions.snackbarForAvatarUpdatedShown()
+    const action = gameActions.snackbarShown()
     expect(editorReducer({}, action)).toEqual(expectedState)
   })
 })

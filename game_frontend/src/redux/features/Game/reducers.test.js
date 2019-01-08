@@ -21,8 +21,9 @@ describe('gameReducer', () => {
 
   it('should handle SOCKET_FEEDBACK_AVATAR_UPDATED', () => {
     const expectedState = {
-      showSnackbarForAvatarUpdated: true,
-      initialState: 'someValue'
+      showSnackbar: true,
+      initialState: 'someValue',
+      snackbarMessage: 'Your Avatar has been updated with your new code!'
     }
     const action = actions.socketFeedbackAvatarUpdated()
     expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
@@ -30,10 +31,10 @@ describe('gameReducer', () => {
 
   it('should handle SNACKBAR_FOR_AVATAR_FEEDBACK_SHOWN', () => {
     const expectedState = {
-      showSnackbarForAvatarUpdated: false,
+      showSnackbar: false,
       initialState: 'someValue'
     }
-    const action = actions.snackbarForAvatarUpdatedShown()
+    const action = actions.snackbarShown()
     expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
   })
 

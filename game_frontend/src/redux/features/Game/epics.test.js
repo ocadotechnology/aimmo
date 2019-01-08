@@ -265,3 +265,22 @@ describe('gameLoadedEpic', () => {
     })
   })
 })
+
+describe('timeoutEpic', () => {
+  it('dispatches an SET_TIMEOUT action when we haven\'t received a game state', () => {
+    const testScheduler = createTestScheduler()
+
+    testScheduler.run(({ hot, cold, expectObservable }) => {
+      const action$ = cold('--a--a-- 11999ms -', {
+        a: actions.socketGameStateReceived({})
+      })
+
+      const state$ = null
+      const output$ = epics.timeoutEpic(action$, state$, {}, testScheduler)
+
+      expectObservable(output$).toBe('------ 11999ms b--', {
+        b: actions.setTimeout()
+      })
+    })
+  })
+})

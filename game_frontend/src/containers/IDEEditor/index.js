@@ -8,6 +8,8 @@ import 'brace/ext/language_tools'
 import PropTypes from 'prop-types'
 import { withTheme } from '@material-ui/core/styles'
 import RunCodeButton from 'components/RunCodeButton'
+import { connect } from 'react-redux'
+import { actions as editorActions } from 'features/Editor'
 
 export const IDEEditorLayout = styled.div`
   position: relative;
@@ -73,4 +75,16 @@ IDEEditor.propTypes = {
   runCodeButtonStatus: PropTypes.object
 }
 
-export default withTheme()(IDEEditor)
+const mapStateToProps = state => ({
+  code: state.editor.code.code,
+  codeOnServer: state.editor.code.codeOnServer,
+  runCodeButtonStatus: state.editor.runCodeButton
+})
+
+const mapDispatchToProps = {
+  getCode: editorActions.getCodeRequest,
+  editorChanged: editorActions.keyPressed,
+  postCode: editorActions.postCodeRequest
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme()(IDEEditor))

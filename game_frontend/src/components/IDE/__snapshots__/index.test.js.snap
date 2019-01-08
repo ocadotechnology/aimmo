@@ -50,6 +50,15 @@ exports[`<IDE /> renders correctly 1`] = `
         },
       },
       "overrides": Object {
+        "MuiSnackbar": Object {
+          "anchorOriginTopRight": Object {
+            "right": "25% !important",
+            "transform": "translate(50%, 64px)",
+          },
+          "root": Object {
+            "zIndex": "1000",
+          },
+        },
         "MuiSnackbarContent": Object {
           "root": Object {
             "paddingLeft": "14px",
@@ -327,6 +336,15 @@ exports[`<IDE /> renders correctly 1`] = `
           },
         },
         "overrides": Object {
+          "MuiSnackbar": Object {
+            "anchorOriginTopRight": Object {
+              "right": "25% !important",
+              "transform": "translate(50%, 64px)",
+            },
+            "root": Object {
+              "zIndex": "1000",
+            },
+          },
           "MuiSnackbarContent": Object {
             "root": Object {
               "paddingLeft": "14px",
@@ -555,8 +573,8 @@ exports[`<IDE /> renders correctly 1`] = `
       }
     }
   >
-    <WithTheme(IDEEditor) />
-    <IDEConsole />
+    <Connect(WithTheme(IDEEditor)) />
+    <Connect(IDEConsole) />
   </MuiThemeProvider>
 </ThemeProvider>
 `;

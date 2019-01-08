@@ -8,24 +8,26 @@ import Snackbar from 'components/Snackbar'
 export class Game extends Component {
   static propTypes = {
     connectToGame: PropTypes.func,
-    theme: PropTypes.object
+    theme: PropTypes.object,
+    showSnackbar: PropTypes.bool,
+    snackbarMessage: PropTypes.string
   }
 
   state = {
-    showSnackbar: this.props.showSnackbarForAvatarUpdated
+    showSnackbar: this.props.showSnackbar
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.showSnackbarForAvatarUpdated !== this.props.showSnackbarForAvatarUpdated) {
+    if (nextProps.showSnackbar !== this.props.showSnackbar) {
       this.setState({
-        showSnackbar: nextProps.showSnackbarForAvatarUpdated
+        showSnackbar: nextProps.showSnackbar
       })
     }
   }
 
   handleClose = () => {
     this.setState({ showSnackbar: false })
-    this.props.snackbarForAvatarUpdatedShown()
+    this.props.snackbarShown()
   }
 
   render () {
@@ -37,11 +39,11 @@ export class Game extends Component {
         />
         <Snackbar
           type='success'
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
           open={this.state.showSnackbar}
           direction='up'
           onClose={this.handleClose}
-          message='Your Avatar has been updated with your new code!'
+          message={this.props.snackbarMessage}
         />
       </Fragment>
     )
@@ -50,11 +52,12 @@ export class Game extends Component {
 
 const mapDispatchToProps = {
   connectToGame: actions.socketConnectToGameRequest,
-  snackbarForAvatarUpdatedShown: actions.snackbarForAvatarUpdatedShown
+  snackbarShown: actions.snackbarShown
 }
 
 const mapStateToProps = state => ({
-  showSnackbarForAvatarUpdated: state.game.showSnackbarForAvatarUpdated,
+  showSnackbar: state.game.showSnackbar,
+  snackbarMessage: state.game.snackbarMessage,
   gameDataLoaded: state.game.gameDataLoaded
 })
 
