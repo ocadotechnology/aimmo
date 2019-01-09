@@ -3,6 +3,8 @@ branch = True
 omit = 
     tests/*
     .eggs/*
+    /usr/*
+data_file=.coverage-aimmo-creator
 
 [report]
 exclude_lines =

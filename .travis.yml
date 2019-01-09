@@ -48,8 +48,6 @@ jobs:
       script:
         - python all_tests.py -c --no-docker-container-tests
       after_success:
-        - ls -a 
-        - ls -a aimmo-game
         - codecov
     - name: "aimmo-game"
       before_install:
@@ -62,8 +60,7 @@ jobs:
       after_success:
         # Get the ID of the container so we can get the coverage data out.
         - read CONTAINERID <<< $(docker ps --all -q | head -1)
-        - sudo docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
-        - ls -a
+        - sudo docker cp -a $CONTAINERID:.coverage-aimmo-game $(pwd)/.coverage-aimmo-game
         - codecov
     - name: "aimmo-game-creator"
       before_install:
@@ -76,9 +73,7 @@ jobs:
       after_success:
         # Get the ID of the container so we can get the coverage data out.
         - read CONTAINERID <<< $(docker ps --all -q | head -1)
-        - sudo docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
-        - cp .coverage $TRAVIS_BUILD_DIR/.coverage
-        - ls -a
+        - sudo docker cp -a $CONTAINERID:.coverage-aimmo-game-creator $(pwd)/.coverage-aimmo-game-creator
         - codecov
     - name: "aimmo-game-worker"
       before_install:
@@ -91,8 +86,7 @@ jobs:
       after_success:
         # Get the ID of the container so we can get the coverage data out.
         - read CONTAINERID <<< $(docker ps --all -q | head -1)
-        - sudo docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
-        - ls -a
+        - sudo docker cp -a $CONTAINERID:.coverage-aimmo-game-worker $(pwd)/.coverage-aimmo-game-worker
         - codecov
     - name: "Javascript Tests"
       before_install:
@@ -104,6 +98,7 @@ jobs:
         - yarn test
     - stage: coverage
       script:
+        - echo 'This stage may not be necessary but is here for now just in case'
     - stage: release
       script:
         - bash tag_release_on_travis.sh
