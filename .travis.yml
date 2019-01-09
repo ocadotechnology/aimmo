@@ -97,6 +97,7 @@ jobs:
       script:
         - yarn test
     - stage: coverage
+    - name: Collect reports
       script:
         - echo 'This stage may not be necessary but is here for now just in case'
     - stage: release
