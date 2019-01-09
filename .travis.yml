@@ -61,7 +61,7 @@ jobs:
         # Get the ID of the container so we can get the coverage data out.
         - read CONTAINERID <<< $(docker ps --all -q | head -1)
         - sudo docker cp -a $CONTAINERID:.coverage-aimmo-game $(pwd)/.coverage
-        — bash <(curl -s https://codecov.io/bash)
+        - bash <(curl -s https://codecov.io/bash)
     - name: "aimmo-game-creator"
       before_install:
         - cd aimmo-game-creator
@@ -74,7 +74,7 @@ jobs:
         # Get the ID of the container so we can get the coverage data out.
         - read CONTAINERID <<< $(docker ps --all -q | head -1)
         - sudo docker cp -a $CONTAINERID:.coverage-aimmo-game-creator $(pwd)/.coverage
-        — bash <(curl -s https://codecov.io/bash)
+        - bash <(curl -s https://codecov.io/bash)
     - name: "aimmo-game-worker"
       before_install:
         - cd aimmo-game-worker
@@ -87,7 +87,7 @@ jobs:
         # Get the ID of the container so we can get the coverage data out.
         - read CONTAINERID <<< $(docker ps --all -q | head -1)
         - sudo docker cp -a $CONTAINERID:.coverage-aimmo-game-worker $(pwd)/.coverage
-        — bash <(curl -s https://codecov.io/bash)
+        - bash <(curl -s https://codecov.io/bash)
     - name: "Javascript Tests"
       before_install:
         - nvm install node
