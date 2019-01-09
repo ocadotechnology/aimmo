@@ -1,6 +1,8 @@
 [run]
 branch = True
-source = aimmo-game
+omit = 
+    tests/*
+    .eggs/*
 
 [report]
 exclude_lines =
