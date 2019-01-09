@@ -167,6 +167,8 @@ def _add_and_return_level(num, user):
 def add_game(request):
     if request.method == 'POST':
         form = forms.AddGameForm(request.POST)
+        playable_games = request.user.playable_games.all()
+        form.add_playable_games(playable_games)
         if form.is_valid():
             game = form.save(commit=False)
             game.generator = 'Main'

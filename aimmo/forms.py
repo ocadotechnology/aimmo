@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 
 from aimmo.models import Game
@@ -12,3 +13,20 @@ class AddGameForm(ModelForm):
                    'target_num_pickups_per_avatar', 'pickup_spawn_chance', 'obstacle_ratio',
                    'start_height', 'start_width'
                    ]
+
+    def clean(self):
+        name = self.cleaned_data['name']
+
+        playable_games_names = [
+            playable_game.name
+            for playable_game in self.playable_games
+            if self.playable_games and name
+        ]
+
+        if name in playable_games_names:
+            raise ValidationError("Sorry, a game with this name already exists.")
+
+        return self.cleaned_data
+
+    def add_playable_games(self, playable_games):
+        self.playable_games = playable_games
