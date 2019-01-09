@@ -49,6 +49,7 @@ jobs:
         - python all_tests.py -c --no-docker-container-tests
       after_success:
         - ls -a 
+        - ls -a aimmo-game
         - codecov
     - name: "aimmo-game"
       before_install:
@@ -62,7 +63,6 @@ jobs:
         # Get the ID of the container so we can get the coverage data out.
         - read CONTAINERID <<< $(docker ps --all -q | head -1)
         - sudo docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
-        #- sudo docker cp -a $CONTAINERID:.coverage.xml $(pwd)/.coverage.xml
         - ls -a
         - codecov
     - name: "aimmo-game-creator"
@@ -101,6 +101,8 @@ jobs:
         - cd game_frontend && yarn
       script:
         - yarn test
+    - stage: coverage
+      script:
     - stage: release
       script:
         - bash tag_release_on_travis.sh
