@@ -21,13 +21,19 @@ export const StyledSnackbarContent = styled(MaterialSnackbarContent)`
     border-radius: ${props => props.theme.additionalVariables.snackbar.borderRadius};
   }
 `
+export const SnackbarTypes = Object.freeze({
+  success: 'success',
+  warning: 'warning',
+  error: 'error',
+  info: 'info'
+})
 
 export class Snackbar extends Component {
   static duration = 2000
   static muiName = 'Snackbar'
 
   static propTypes = {
-    type: PropTypes.oneOf(['success', 'warning', 'error', 'info']).isRequired,
+    type: PropTypes.oneOf(Object.values(SnackbarTypes)).isRequired,
     message: PropTypes.string.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,

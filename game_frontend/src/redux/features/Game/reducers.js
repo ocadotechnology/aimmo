@@ -2,22 +2,22 @@ import types from './types'
 
 const gameReducer = (state = {}, action) => {
   switch (action.type) {
-    case types.SET_TIMEOUT:
-      return {
-        ...state,
-        timeoutStatus: true
-      }
     case types.SOCKET_GAME_STATE_RECEIVED:
       return {
         ...state,
-        gameState: action.payload.gameState,
-        timeoutStatus: false
+        gameState: action.payload.gameState
       }
-    case types.SOCKET_FEEDBACK_AVATAR_UPDATED:
+    case types.SOCKET_FEEDBACK_AVATAR_UPDATED_SUCCESS:
       return {
         ...state,
         showSnackbar: true,
         snackbarMessage: 'Your Avatar has been updated with your new code!'
+      }
+    case types.SOCKET_FEEDBACK_AVATAR_UPDATED_TIMEOUT:
+      return {
+        ...state,
+        showSnackbar: true,
+        snackbarMessage: 'Sorry there has been a server error! Please try again in 30 seconds.'
       }
     case types.SNACKBAR_FOR_AVATAR_FEEDBACK_SHOWN:
       return {

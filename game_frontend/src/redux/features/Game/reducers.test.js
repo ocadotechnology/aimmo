@@ -12,20 +12,19 @@ describe('gameReducer', () => {
       gameState: {
         id: 1
       },
-      initialState: 'someValue',
-      timeoutStatus: false
+      initialState: 'someValue'
     }
     const action = actions.socketGameStateReceived({ id: 1 })
     expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
   })
 
-  it('should handle SOCKET_FEEDBACK_AVATAR_UPDATED', () => {
+  it('should handle SOCKET_FEEDBACK_AVATAR_UPDATED_SUCCESS', () => {
     const expectedState = {
       showSnackbar: true,
       initialState: 'someValue',
       snackbarMessage: 'Your Avatar has been updated with your new code!'
     }
-    const action = actions.socketFeedbackAvatarUpdated()
+    const action = actions.socketFeedbackAvatarUpdatedSuccess()
     expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
   })
 

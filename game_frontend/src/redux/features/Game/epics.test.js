@@ -4,6 +4,7 @@ import { TestScheduler } from 'rxjs/testing'
 import { ActionsObservable, StateObservable } from 'redux-observable'
 import epics from './epics'
 import actions from './actions'
+import { actions as editorActions } from 'features/Editor'
 import api from 'api'
 import { delay, mapTo } from 'rxjs/operators'
 
@@ -266,21 +267,37 @@ describe('gameLoadedEpic', () => {
   })
 })
 
-describe('timeoutEpic', () => {
-  it('dispatches an SET_TIMEOUT action when we haven\'t received a game state', () => {
+describe('avatarUpdatingTimeoutEpic', () => {
+  it('dispatches an SET_TIMEOUT action when we sent code to update the avatar but nothing has come back in 25s', () => {
     const testScheduler = createTestScheduler()
 
     testScheduler.run(({ hot, cold, expectObservable }) => {
-      const action$ = cold('--a--a-- 11999ms -', {
-        a: actions.socketGameStateReceived({})
+      const action$ = hot('--a--a-- 24999ms -', {
+        a: editorActions.postCodeRequest()
       })
 
       const state$ = null
-      const output$ = epics.timeoutEpic(action$, state$, {}, testScheduler)
+      const output$ = epics.avatarUpdatingTimeoutEpic(action$, state$, {}, testScheduler)
 
-      expectObservable(output$).toBe('------ 11999ms b--', {
-        b: actions.setTimeout()
+      expectObservable(output$).toBe('------ 24999ms b--', {
+        b: actions.socketFeedbackAvatarUpdatedTimeout()
       })
+    })
+  })
+
+  it('does not dispatch an SET_TIMEOUT action when we sent code to update the avatar and it does not timeout', () => {
+    const testScheduler = createTestScheduler()
+
+    testScheduler.run(({ hot, cold, expectObservable }) => {
+      const action$ = hot('--a--- 10s -b--a--b--', {
+        a: editorActions.postCodeRequest(),
+        b: actions.socketFeedbackAvatarUpdatedSuccess()
+      })
+
+      const state$ = null
+      const output$ = epics.avatarUpdatingTimeoutEpic(action$, state$, {}, testScheduler)
+
+      expectObservable(output$).toBe('----', {})
     })
   })
 })

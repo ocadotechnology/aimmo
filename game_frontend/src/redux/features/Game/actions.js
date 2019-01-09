@@ -63,9 +63,15 @@ const unitySendAvatarIDFail = () => (
   }
 )
 
-const socketFeedbackAvatarUpdated = () => (
+const socketFeedbackAvatarUpdatedSuccess = () => (
   {
-    type: types.SOCKET_FEEDBACK_AVATAR_UPDATED
+    type: types.SOCKET_FEEDBACK_AVATAR_UPDATED_SUCCESS
+  }
+)
+
+const socketFeedbackAvatarUpdatedTimeout = () => (
+  {
+    type: types.SOCKET_FEEDBACK_AVATAR_UPDATED_TIMEOUT
   }
 )
 
@@ -94,7 +100,8 @@ export default {
   connectionParametersReceived,
   unitySendAvatarIDSuccess,
   unitySendAvatarIDFail,
-  socketFeedbackAvatarUpdated,
+  socketFeedbackAvatarUpdatedSuccess,
+  socketFeedbackAvatarUpdatedTimeout,
   snackbarShown,
   gameDataLoaded,
   setTimeout

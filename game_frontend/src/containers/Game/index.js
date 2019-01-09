@@ -3,14 +3,15 @@ import GameView from 'components/GameView'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { actions } from 'redux/features/Game'
-import Snackbar from 'components/Snackbar'
+import Snackbar, { SnackbarTypes } from 'components/Snackbar'
 
 export class Game extends Component {
   static propTypes = {
     connectToGame: PropTypes.func,
     theme: PropTypes.object,
     showSnackbar: PropTypes.bool,
-    snackbarMessage: PropTypes.string
+    snackbarMessage: PropTypes.string,
+    snackbarType: PropTypes.oneOf(Object.values(SnackbarTypes))
   }
 
   state = {
