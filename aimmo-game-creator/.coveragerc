@@ -4,7 +4,7 @@ omit =
     tests/*
     .eggs/*
     /usr/*
-data_file=.coverage-aimmo-creator
+data_file=.coverage-aimmo-game-creator
 
 [report]
 exclude_lines =
