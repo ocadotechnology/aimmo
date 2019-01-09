@@ -96,10 +96,6 @@ jobs:
         - cd game_frontend && yarn
       script:
         - yarn test
-    - stage: coverage
-    - name: Collect reports
-      script:
-        - echo 'This stage may not be necessary but is here for now just in case'
     - stage: release
       script:
         - bash tag_release_on_travis.sh
