@@ -96,7 +96,9 @@ jobs:
       install:
         - cd game_frontend && yarn
       script:
-        - yarn test
+        - yarn test --coverage
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
     - stage: release
       script:
         - bash tag_release_on_travis.sh
