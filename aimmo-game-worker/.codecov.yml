@@ -3,7 +3,7 @@ codecov:
     require_ci_to_pass: yes
 
 fixes:
-  - "::/aimmo/aimmo-game-worker/"
+  - "::aimmo-game-worker/"
 
 coverage:
   precision: 2
