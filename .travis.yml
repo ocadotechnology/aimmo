@@ -63,11 +63,8 @@ jobs:
         # Get the ID of the container so we can get the coverage data out.
         - read CONTAINERID <<< $(docker ps --all -q | head -1)
         - sudo docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
-        - pwd
-        - coverage report
-        - cat .coverage
+        - coverage xml
         - bash <(curl -s https://codecov.io/bash)
-        - cat coverage.xml
     - name: "aimmo-game-creator"
       before_install:
         - cd aimmo-game-creator
@@ -80,6 +77,7 @@ jobs:
         # Get the ID of the container so we can get the coverage data out.
         - read CONTAINERID <<< $(docker ps --all -q | head -1)
         - sudo docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
+        - coverage xml
         - bash <(curl -s https://codecov.io/bash)
     - name: "aimmo-game-worker"
       before_install:
@@ -93,6 +91,7 @@ jobs:
         # Get the ID of the container so we can get the coverage data out.
         - read CONTAINERID <<< $(docker ps --all -q | head -1)
         - sudo docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
+        - coverage xml
         - bash <(curl -s https://codecov.io/bash)
     - name: "Javascript Tests"
       before_install:
