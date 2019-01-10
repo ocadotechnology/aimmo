@@ -67,6 +67,7 @@ jobs:
         - coverage report
         - cat .coverage
         - bash <(curl -s https://codecov.io/bash)
+        - cat coverage.xml
     - name: "aimmo-game-creator"
       before_install:
         - cd aimmo-game-creator
