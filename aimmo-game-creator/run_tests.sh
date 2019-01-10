@@ -2,8 +2,8 @@
 coverage=$1
 
 function coverage_ready {
-    output=$(find .coverage-aimmo-game-creator)
-    if [ $output = '.coverage-aimmo-game-creator' ]; then
+    output=$(find .coverage)
+    if [ $output = '.coverage' ]; then
         echo '.coverage file found!'
         exit
     fi
