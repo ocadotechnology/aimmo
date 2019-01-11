@@ -17,14 +17,12 @@ class TestForms(TestCase):
         cls.game.save()
 
     def test_create_game(self):
-        form = forms.AddGameForm({'name': 'test2'})
-        form.add_playable_games({self.game})
+        form = forms.AddGameForm([self.game], {'name': 'test2'})
         self.assertTrue(form.is_valid())
         new_game = form.save()
         self.assertEqual(new_game.name, "test2")
 
     def test_cannot_create_duplicate_game(self):
-        form = forms.AddGameForm({'name': 'test'})
-        form.add_playable_games({self.game})
+        form = forms.AddGameForm([self.game], {'name': 'test'})
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors, {'__all__': [u'Sorry, a game with this name already exists.']})

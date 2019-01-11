@@ -5,6 +5,10 @@ from aimmo.models import Game
 
 
 class AddGameForm(ModelForm):
+    def __init__(self, playable_games, *args, **kwargs):
+        self.playable_games = playable_games
+        super(AddGameForm, self).__init__(*args, **kwargs)
+
     class Meta:
         model = Game
         exclude = ['Main', 'owner', 'auth_token', 'completed', 'main_user', 'static_data', 'can_play',
@@ -27,6 +31,3 @@ class AddGameForm(ModelForm):
             raise ValidationError("Sorry, a game with this name already exists.")
 
         return self.cleaned_data
-
-    def add_playable_games(self, playable_games):
-        self.playable_games = playable_games
