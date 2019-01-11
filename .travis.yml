@@ -48,8 +48,6 @@ jobs:
       script:
         - python all_tests.py -c --no-docker-container-tests
       after_success:
-        - ls -a
-        - pwd
         - codecov
     - name: "aimmo-game"
       before_install:
