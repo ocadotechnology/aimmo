@@ -6,8 +6,6 @@ function coverage_ready {
     if [ $output = '.coverage' ]; then
         echo '.coverage file found!'
         coverage xml -i
-        cat .coverage
-        cat coverage.xml
         exit
     fi
 }
