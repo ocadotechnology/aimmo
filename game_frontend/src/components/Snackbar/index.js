@@ -29,7 +29,7 @@ export const SnackbarTypes = Object.freeze({
 })
 
 export class Snackbar extends Component {
-  static duration = 2000
+  static duration = 4000
   static muiName = 'Snackbar'
 
   static propTypes = {
