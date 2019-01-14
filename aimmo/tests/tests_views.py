@@ -52,6 +52,15 @@ class TestViews(TestCase):
         c.login(username='test', password='password')
         return c
 
+    def _go_to_page(self, link, kwarg_name, game_id):
+        c = Client()
+        response = c.get(reverse(link, kwargs={kwarg_name: game_id}))
+        return response
+
+    def _make_game_private(self):
+        self.game.public = False
+        self.game.save()
+
     def test_add_new_code(self):
         c = self.login()
         response = c.post(reverse('aimmo/code', kwargs={'id': 1}), {'code': self.CODE})
@@ -106,17 +115,19 @@ class TestViews(TestCase):
         self.assertEqual(response.context['game_url_base'], 'base 1')
         self.assertEqual(response.context['game_url_path'], 'path 1')
 
-    def test_play_for_non_existant_game(self):
+    def test_play_for_non_existent_game(self):
         c = self.login()
         response = c.get(reverse('aimmo/play', kwargs={'id': 2}))
         self.assertEqual(response.status_code, 404)
 
-    def test_play_for_non_authed_user(self):
-        self.game.public = False
-        self.game.save()
+    def _run_test_for_unauthorised_user(self, link, kwarg_name, status_code):
+        self._make_game_private()
         c = self.login()
-        response = c.get(reverse('aimmo/play', kwargs={'id': 1}))
-        self.assertEqual(response.status_code, 404)
+        response = c.get(reverse(link, kwargs={kwarg_name: 1}))
+        self.assertEqual(response.status_code, status_code)
+
+    def test_play_for_unauthorised_user(self):
+        self._run_test_for_unauthorised_user('aimmo/play', 'id', 404)
 
     def test_play_inactive_level(self):
         c = self.login()
@@ -142,28 +153,27 @@ class TestViews(TestCase):
         response = c.get(reverse('aimmo/game_details', kwargs={'id': 1}))
         self.assertJSONEqual(response.content, self.EXPECTED_GAMES)
 
-    def test_games_api_for_non_existant_game(self):
-        c = Client()
-        response = c.get(reverse('aimmo/game_details', kwargs={'id': 5}))
+    def test_games_api_for_non_existent_game(self):
+        response = self._go_to_page('aimmo/game_details', 'id', 5)
         self.assertEqual(response.status_code, 404)
+
+    def _run_mark_complete_test(self, request_method, game_id, success_expected):
+        c = Client()
+        if request_method == "POST":
+            response = c.post(reverse('aimmo/complete_game', kwargs={'id': game_id}))
+        else:
+            response = c.get(reverse('aimmo/complete_game', kwargs={'id': game_id}))
+        self.assertEqual(response.status_code == 200, success_expected)
+        self.assertEqual(models.Game.objects.get(id=1).completed, success_expected)
 
     def test_mark_complete(self):
-        c = Client()
-        response = c.post(reverse('aimmo/complete_game', kwargs={'id': 1}))
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(models.Game.objects.get(id=1).completed)
+        self._run_mark_complete_test("POST", 1, True)
 
-    def test_mark_complete_for_non_existant_game(self):
-        c = Client()
-        response = c.post(reverse('aimmo/complete_game', kwargs={'id': 3}))
-        self.assertEqual(response.status_code, 404)
-        self.assertFalse(models.Game.objects.get(id=1).completed)
+    def test_mark_complete_for_non_existent_game(self):
+        self._run_mark_complete_test("POST", 3, False)
 
     def test_mark_complete_requires_POST(self):
-        c = Client()
-        response = c.get(reverse('aimmo/complete_game', kwargs={'id': 1}))
-        self.assertNotEqual(response.status_code, 200)
-        self.assertFalse(models.Game.objects.get(id=1).completed)
+        self._run_mark_complete_test("GET", 1, False)
 
     def test_mark_complete_has_no_csrf_check(self):
         c = Client(enforce_csrf_checks=True)
@@ -176,17 +186,12 @@ class TestViews(TestCase):
         c.post(reverse('aimmo/complete_game', kwargs={'id': 1}), 'static', content_type='application/json')
         self.assertEqual(models.Game.objects.get(id=1).static_data, 'static')
 
-    def test_current_avatar_api_for_non_existant_game(self):
-        c = Client()
-        response = c.get(reverse('aimmo/current_avatar_in_game', kwargs={'game_id': 1}))
+    def test_current_avatar_api_for_non_existent_game(self):
+        response = self._go_to_page('aimmo/current_avatar_in_game', 'game_id', 1)
         self.assertEqual(response.status_code, 404)
 
     def test_current_avatar_api_for_unauthorised_games(self):
-        self.game.public = False
-        self.game.save()
-        c = self.login()
-        response = c.get(reverse('aimmo/current_avatar_in_game', kwargs={'game_id': 1}))
-        self.assertEqual(response.status_code, 401)
+        self._run_test_for_unauthorised_user('aimmo/current_avatar_in_game', 'game_id', 401)
 
     def test_current_avatar_api_for_two_users(self):
         # Set up the first avatar
