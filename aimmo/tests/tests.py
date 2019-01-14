@@ -121,11 +121,14 @@ class TestViews(TestCase):
         response = c.get(reverse('aimmo/play', kwargs={'id': 2}))
         self.assertEqual(response.status_code, 404)
 
-    def test_play_for_non_authorised_user(self):
+    def _run_test_for_unauthorised_user(self, link, kwarg_name, status_code):
         self._make_game_private()
         c = self.login()
-        response = c.get(reverse('aimmo/play', kwargs={'id': 1}))
-        self.assertEqual(response.status_code, 404)
+        response = c.get(reverse(link, kwargs={kwarg_name: 1}))
+        self.assertEqual(response.status_code, status_code)
+
+    def test_play_for_unauthorised_user(self):
+        self._run_test_for_unauthorised_user('aimmo/play', 'id', 404)
 
     def test_play_inactive_level(self):
         c = self.login()
@@ -189,10 +192,7 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_current_avatar_api_for_unauthorised_games(self):
-        self._make_game_private()
-        c = self.login()
-        response = c.get(reverse('aimmo/current_avatar_in_game', kwargs={'game_id': 1}))
-        self.assertEqual(response.status_code, 401)
+        self._run_test_for_unauthorised_user('aimmo/current_avatar_in_game', 'game_id', 401)
 
     def test_current_avatar_api_for_two_users(self):
         # Set up the first avatar
@@ -288,13 +288,15 @@ class TestModels(TestCase):
         self.game.public = True
         self.assertTrue(self.game.can_user_play(AnonymousUser()))
 
-    def test_authorised_user_can_play(self):
+    def _run_test_authorisation_to_play(self, user, can_play):
         self._make_game_private_for_user(self.user1)
-        self.assertTrue(self.game.can_user_play(self.user1))
+        self.assertEqual(self.game.can_user_play(user), can_play)
 
-    def test_non_authorised_user_cannot_play(self):
-        self._make_game_private_for_user(self.user1)
-        self.assertFalse(self.game.can_user_play(self.user2))
+    def test_authorised_user_can_play(self):
+        self._run_test_authorisation_to_play(self.user1, True)
+
+    def test_unauthorised_user_cannot_play(self):
+        self._run_test_authorisation_to_play(self.user2, False)
 
     def test_game_active_by_default(self):
         self.assertTrue(self.game.is_active)
