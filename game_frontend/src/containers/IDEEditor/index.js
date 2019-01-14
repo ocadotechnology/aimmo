@@ -30,6 +30,17 @@ export class IDEEditor extends PureComponent {
     return this.props.code !== this.props.codeOnServer
   }
 
+  options () {
+    return {
+      enableBasicAutocompletion: true,
+      enableLiveAutocompletion: true,
+      enableSnippets: true,
+      showLineNumbers: true,
+      tabSize: 2,
+      fontFamily: this.props.theme.additionalVariables.typography.code.fontFamily
+    }
+  }
+
   render () {
     return (
       <IDEEditorLayout>
@@ -46,14 +57,7 @@ export class IDEEditor extends PureComponent {
           value={this.props.code}
           width='100%'
           height='100%'
-          setOptions={{
-            enableBasicAutocompletion: true,
-            enableLiveAutocompletion: true,
-            enableSnippets: true,
-            showLineNumbers: true,
-            tabSize: 2,
-            fontFamily: this.props.theme.additionalVariables.typography.code.fontFamily
-          }} />
+          setOptions={this.options()} />
         <PositionedRunCodeButton
           runCodeButtonStatus={this.props.runCodeButtonStatus}
           isCodeOnServerDifferent={this.isCodeOnServerDifferent()}
