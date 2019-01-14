@@ -593,6 +593,13 @@ spec:
             baseImage:
               description: Base image that is used to deploy pods, without tag.
               type: string
+            configMaps:
+              description: ConfigMaps is a list of ConfigMaps in the same namespace
+                as the Alertmanager object, which shall be mounted into the Alertmanager
+                Pods. The ConfigMaps are mounted into /etc/alertmanager/configmaps/<configmap-name>.
+              items:
+                type: string
+              type: array
             containers:
               description: Containers allows injecting additional containers. This
                 is meant to allow adding an authentication proxy to an Alertmanager
@@ -1057,8 +1064,8 @@ spec:
                             to by services.
                           type: string
                         protocol:
-                          description: Protocol for port. Must be UDP or TCP. Defaults
-                            to "TCP".
+                          description: Protocol for port. Must be UDP, TCP, or SCTP.
+                            Defaults to "TCP".
                           type: string
                       required:
                       - containerPort
@@ -1211,6 +1218,13 @@ spec:
                           privileged containers are essentially equivalent to root
                           on the host. Defaults to false.
                         type: boolean
+                      procMount:
+                        description: procMount denotes the type of proc mount to use
+                          for the containers. The default is DefaultProcMount which
+                          uses the container runtime defaults for readonly paths and
+                          masked paths. This requires the ProcMountType feature flag
+                          to be enabled.
+                        type: string
                       readOnlyRootFilesystem:
                         description: Whether this container has a read-only root filesystem.
                           Default is false.
@@ -1333,8 +1347,8 @@ spec:
                         mountPropagation:
                           description: mountPropagation determines how mounts are
                             propagated from the host to container and the other way
-                            around. When not set, MountPropagationHostToContainer
-                            is used. This field is beta in 1.10.
+                            around. When not set, MountPropagationNone is used. This
+                            field is beta in 1.10.
                           type: string
                         name:
                           description: This must match the Name of a Volume.
@@ -1363,6 +1377,12 @@ spec:
               description: The external URL the Alertmanager instances will be available
                 under. This is necessary to generate correct URLs. This is necessary
                 if Alertmanager is not served from root of a DNS name.
+              type: string
+            image:
+              description: Image if specified has precedence over baseImage, tag and
+                sha combinations. Specifying the version is still necessary to ensure
+                the Prometheus Operator knows what version of Alertmanager is being
+                configured.
               type: string
             imagePullSecrets:
               description: An optional list of references to secrets in the same namespace
@@ -1569,11 +1589,12 @@ spec:
                                 the server has more data available. The value is opaque
                                 and may be used to issue another request to the endpoint
                                 that served this list to retrieve the next set of
-                                available objects. Continuing a list may not be possible
-                                if the server configuration has changed or more than
-                                a few minutes have passed. The resourceVersion field
-                                returned when using this continue value will be identical
-                                to the value in the first response.
+                                available objects. Continuing a consistent list may
+                                not be possible if the server configuration has changed
+                                or more than a few minutes have passed. The resourceVersion
+                                field returned when using this continue value will
+                                be identical to the value in the first response, unless
+                                you have received this token from an error message.
                               type: string
                             resourceVersion:
                               description: 'String that identifies the server''s internal
@@ -1698,8 +1719,8 @@ spec:
                   type: object
             retention:
               description: Time duration Alertmanager shall retain data for. Default
-                is '120h', and must match the regular expression `[0-9]+(ms|s|m|h|d|w|y)`
-                (milliseconds seconds minutes hours days weeks years).
+                is '120h', and must match the regular expression `[0-9]+(ms|s|m|h)`
+                (milliseconds seconds minutes hours).
               type: string
             routePrefix:
               description: The route prefix Alertmanager registers HTTP handlers for.
@@ -1815,11 +1836,6 @@ spec:
                 is specified, then by default an [EmptyDir](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir)
                 will be used.
               properties:
-                class:
-                  description: 'Name of the StorageClass to use when requesting storage
-                    provisioning. More info: https://kubernetes.io/docs/user-guide/persistent-volumes/#storageclasses
-                    (DEPRECATED - instead use `volumeClaimTemplate.spec.storageClassName`)'
-                  type: string
                 emptyDir:
                   description: Represents an empty directory for a pod. Empty directory
                     volumes support ownership management and SELinux relabeling.
@@ -1830,63 +1846,6 @@ spec:
                         Must be an empty string (default) or Memory. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir'
                       type: string
                     sizeLimit: {}
-                resources:
-                  description: ResourceRequirements describes the compute resource
-                    requirements.
-                  properties:
-                    limits:
-                      description: 'Limits describes the maximum amount of compute
-                        resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
-                      type: object
-                    requests:
-                      description: 'Requests describes the minimum amount of compute
-                        resources required. If Requests is omitted for a container,
-                        it defaults to Limits if that is explicitly specified, otherwise
-                        to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
-                      type: object
-                selector:
-                  description: A label selector is a label query over a set of resources.
-                    The result of matchLabels and matchExpressions are ANDed. An empty
-                    label selector matches all objects. A null label selector matches
-                    no objects.
-                  properties:
-                    matchExpressions:
-                      description: matchExpressions is a list of label selector requirements.
-                        The requirements are ANDed.
-                      items:
-                        description: A label selector requirement is a selector that
-                          contains values, a key, and an operator that relates the
-                          key and values.
-                        properties:
-                          key:
-                            description: key is the label key that the selector applies
-                              to.
-                            type: string
-                          operator:
-                            description: operator represents a key's relationship
-                              to a set of values. Valid operators are In, NotIn, Exists
-                              and DoesNotExist.
-                            type: string
-                          values:
-                            description: values is an array of string values. If the
-                              operator is In or NotIn, the values array must be non-empty.
-                              If the operator is Exists or DoesNotExist, the values
-                              array must be empty. This array is replaced during a
-                              strategic merge patch.
-                            items:
-                              type: string
-                            type: array
-                        required:
-                        - key
-                        - operator
-                      type: array
-                    matchLabels:
-                      description: matchLabels is a map of {key,value} pairs. A single
-                        {key,value} in the matchLabels map is equivalent to an element
-                        of matchExpressions, whose key field is "key", the operator
-                        is "In", and the values array contains only "value". The requirements
-                        are ANDed.
-                      type: object
                 volumeClaimTemplate:
                   description: PersistentVolumeClaim is a user's request for and claim
                     to a persistent volume
@@ -2093,12 +2052,14 @@ spec:
                                         available. The value is opaque and may be
                                         used to issue another request to the endpoint
                                         that served this list to retrieve the next
-                                        set of available objects. Continuing a list
-                                        may not be possible if the server configuration
+                                        set of available objects. Continuing a consistent
+                                        list may not be possible if the server configuration
                                         has changed or more than a few minutes have
                                         passed. The resourceVersion field returned
                                         when using this continue value will be identical
-                                        to the value in the first response.
+                                        to the value in the first response, unless
+                                        you have received this token from an error
+                                        message.
                                       type: string
                                     resourceVersion:
                                       description: 'String that identifies the server''s
@@ -2216,6 +2177,26 @@ spec:
                           items:
                             type: string
                           type: array
+                        dataSource:
+                          description: TypedLocalObjectReference contains enough information
+                            to let you locate the typed referenced object inside the
+                            same namespace.
+                          properties:
+                            apiGroup:
+                              description: APIGroup is the group for the resource
+                                being referenced. If APIGroup is not specified, the
+                                specified Kind must be in the core API group. For
+                                any other third-party types, APIGroup is required.
+                              type: string
+                            kind:
+                              description: Kind is the type of resource being referenced
+                              type: string
+                            name:
+                              description: Name is the name of resource being referenced
+                              type: string
+                          required:
+                          - kind
+                          - name
                         resources:
                           description: ResourceRequirements describes the compute
                             resource requirements.
