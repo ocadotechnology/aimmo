@@ -25,6 +25,10 @@ class TestModels(TestCase):
         self.game.public = False
         self.game.can_play = [user]
 
+    def _run_test_authorisation_to_play(self, user, can_play):
+        self._make_game_private_for_user(self.user1)
+        self.assertEqual(self.game.can_user_play(user), can_play)
+
     def test_public_games_can_be_accessed(self):
         self.game.public = True
         self.assertTrue(self.game.can_user_play(self.user1))
@@ -33,10 +37,6 @@ class TestModels(TestCase):
     def test_anon_user_can_play_public_game(self):
         self.game.public = True
         self.assertTrue(self.game.can_user_play(AnonymousUser()))
-
-    def _run_test_authorisation_to_play(self, user, can_play):
-        self._make_game_private_for_user(self.user1)
-        self.assertEqual(self.game.can_user_play(user), can_play)
 
     def test_authorised_user_can_play(self):
         self._run_test_authorisation_to_play(self.user1, True)
