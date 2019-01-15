@@ -8,7 +8,7 @@ exports[`<Snackbar /> renders correctly with type=error 1`] = `
       "vertical": "up",
     }
   }
-  autoHideDuration={2420}
+  autoHideDuration={4420}
   message="Snackbar message 🍿🍫"
   onClose={[MockFunction]}
   open={true}
@@ -60,6 +60,15 @@ exports[`<Snackbar /> renders correctly with type=error 1`] = `
         },
       },
       "overrides": Object {
+        "MuiSnackbar": Object {
+          "anchorOriginTopRight": Object {
+            "right": "25% !important",
+            "transform": "translate(50%, 64px)",
+          },
+          "root": Object {
+            "zIndex": "1000",
+          },
+        },
         "MuiSnackbarContent": Object {
           "root": Object {
             "paddingLeft": "14px",
@@ -307,7 +316,7 @@ exports[`<Snackbar /> renders correctly with type=info 1`] = `
       "vertical": "up",
     }
   }
-  autoHideDuration={2420}
+  autoHideDuration={4420}
   message="Snackbar message 🍿🍫"
   onClose={[MockFunction]}
   open={true}
@@ -359,6 +368,15 @@ exports[`<Snackbar /> renders correctly with type=info 1`] = `
         },
       },
       "overrides": Object {
+        "MuiSnackbar": Object {
+          "anchorOriginTopRight": Object {
+            "right": "25% !important",
+            "transform": "translate(50%, 64px)",
+          },
+          "root": Object {
+            "zIndex": "1000",
+          },
+        },
         "MuiSnackbarContent": Object {
           "root": Object {
             "paddingLeft": "14px",
@@ -606,7 +624,7 @@ exports[`<Snackbar /> renders correctly with type=success 1`] = `
       "vertical": "up",
     }
   }
-  autoHideDuration={2420}
+  autoHideDuration={4420}
   message="Snackbar message 🍿🍫"
   onClose={[MockFunction]}
   open={true}
@@ -658,6 +676,15 @@ exports[`<Snackbar /> renders correctly with type=success 1`] = `
         },
       },
       "overrides": Object {
+        "MuiSnackbar": Object {
+          "anchorOriginTopRight": Object {
+            "right": "25% !important",
+            "transform": "translate(50%, 64px)",
+          },
+          "root": Object {
+            "zIndex": "1000",
+          },
+        },
         "MuiSnackbarContent": Object {
           "root": Object {
             "paddingLeft": "14px",
@@ -900,7 +927,7 @@ exports[`<Snackbar /> renders correctly with type=success 1`] = `
 exports[`<Snackbar /> renders correctly with type=warning 1`] = `
 <WithStyles(Snackbar)
   anchorOrigin={Object {}}
-  autoHideDuration={2420}
+  autoHideDuration={4420}
   message="Snackbar message 🍿🍫"
   onClose={[MockFunction]}
   open={true}
@@ -952,6 +979,15 @@ exports[`<Snackbar /> renders correctly with type=warning 1`] = `
         },
       },
       "overrides": Object {
+        "MuiSnackbar": Object {
+          "anchorOriginTopRight": Object {
+            "right": "25% !important",
+            "transform": "translate(50%, 64px)",
+          },
+          "root": Object {
+            "zIndex": "1000",
+          },
+        },
         "MuiSnackbarContent": Object {
           "root": Object {
             "paddingLeft": "14px",
@@ -1266,6 +1302,15 @@ exports[`<StyledSnackbarContent /> renders correctly 1`] = `
         },
       },
       "overrides": Object {
+        "MuiSnackbar": Object {
+          "anchorOriginTopRight": Object {
+            "right": "25% !important",
+            "transform": "translate(50%, 64px)",
+          },
+          "root": Object {
+            "zIndex": "1000",
+          },
+        },
         "MuiSnackbarContent": Object {
           "root": Object {
             "paddingLeft": "14px",

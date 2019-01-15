@@ -58,7 +58,7 @@ describe('runCodeButtonReducer', () => {
       }
     }
 
-    const action = gameActions.socketFeedbackAvatarUpdated()
+    const action = gameActions.socketFeedbackAvatarUpdatedSuccess()
     expect(editorReducer({}, action)).toEqual(expectedState)
   })
 
@@ -70,7 +70,7 @@ describe('runCodeButtonReducer', () => {
       }
     }
 
-    const action = gameActions.snackbarForAvatarUpdatedShown()
+    const action = gameActions.snackbarShown()
     expect(editorReducer({}, action)).toEqual(expectedState)
   })
 })
