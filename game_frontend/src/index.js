@@ -33,7 +33,8 @@ const initialState = {
       game_id: getGameIDFromURL() || 1
     },
     gameDataLoaded: false,
-    showSnackbarForAvatarUpdated: false,
+    showSnackbar: false,
+    snackbarMessage: '',
     timeoutStatus: false
   },
   consoleLog: {

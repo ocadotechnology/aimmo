@@ -174,7 +174,7 @@ class TestSocketIO:
             await self.game_api.send_updates()
 
             user_game_state_call = mock.call('game-state', {'foo': 'bar'}, room=self.sid)
-            user_game_code_changed_call = mock.call('feedback-avatar-updated', room=self.sid)
+            user_game_code_changed_call = mock.call('feedback-avatar-updated', {}, room=self.sid)
 
             mocked_emit.assert_has_calls([user_game_state_call, user_game_code_changed_call], any_order=True)
 

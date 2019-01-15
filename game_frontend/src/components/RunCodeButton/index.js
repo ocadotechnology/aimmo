@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
 import PlayIcon from 'components/icons/Play'
@@ -27,57 +26,70 @@ export const MarginedBugIcon = styled(BugIcon)`
 export const RunCodeButtonStatus = Object.freeze({
   normal: 'normal',
   updating: 'updating',
+  error: 'error',
   done: 'done'
 })
 
-export class RunCodeButton extends Component {
-  shouldButtonBeDisabled () {
-    if (this.props.timeoutStatus) {
-      return false
-    } else {
-      if (this.props.runCodeButtonStatus.status === RunCodeButtonStatus.done) {
+export default class RunCodeButton extends Component {
+  static propTypes = {
+    whenClicked: PropTypes.func,
+    runCodeButtonStatus: PropTypes.shape({
+      status: PropTypes.oneOf([
+        RunCodeButtonStatus.normal,
+        RunCodeButtonStatus.updating,
+        RunCodeButtonStatus.error,
+        RunCodeButtonStatus.done]
+      )
+    }),
+    isCodeOnServerDifferent: PropTypes.bool,
+    className: PropTypes.string
+  }
+
+  shouldButtonBeDisabled = () => {
+    switch (this.props.runCodeButtonStatus.status) {
+      case RunCodeButtonStatus.error:
+      case RunCodeButtonStatus.done:
         return false
-      }
-      return !this.props.isCodeOnServerDifferent ||
-        this.props.runCodeButtonStatus.status === RunCodeButtonStatus.updating
+      default:
+        return !this.props.isCodeOnServerDifferent ||
+          this.props.runCodeButtonStatus.status === RunCodeButtonStatus.updating
     }
   }
 
   shouldButtonBeClickable () {
-    return (!(this.shouldButtonBeDisabled() && this.props.runCodeButtonStatus === RunCodeButtonStatus.done) ||
-            !this.props.timeoutStatus)
+    return !this.shouldButtonBeDisabled() ||
+      this.props.runCodeButtonStatus.status !== RunCodeButtonStatus.done ||
+      this.props.runCodeButtonStatus.status !== RunCodeButtonStatus.error
   }
 
   renderContent (status) {
-    if (this.props.timeoutStatus) {
-      return (
-        <>
-          <MarginedBugIcon />Error
-        </>
-      )
-    } else {
-      switch (status) {
-        case RunCodeButtonStatus.normal:
-          return (
+    switch (status) {
+      case RunCodeButtonStatus.normal:
+        return (
           <>
             <MarginedPlayIcon />Run Code
           </>
-          )
-        case RunCodeButtonStatus.updating:
-          return (
+        )
+      case RunCodeButtonStatus.updating:
+        return (
           <>
             <MarginedCircularProgress
               color='inherit'
               size='24px' />Updating
           </>
-          )
-        case RunCodeButtonStatus.done:
-          return (
+        )
+      case RunCodeButtonStatus.error:
+        return (
+          <>
+            <MarginedBugIcon />Error!
+          </>
+        )
+      case RunCodeButtonStatus.done:
+        return (
             <>
               <MarginedCheckCircle />Done
           </>
-          )
-      }
+        )
     }
   }
 
@@ -96,22 +108,3 @@ export class RunCodeButton extends Component {
     )
   }
 }
-
-RunCodeButton.propTypes = {
-  whenClicked: PropTypes.func,
-  runCodeButtonStatus: PropTypes.shape({
-    status: PropTypes.oneOf([
-      RunCodeButtonStatus.normal,
-      RunCodeButtonStatus.updating,
-      RunCodeButtonStatus.done]
-    )
-  }),
-  isCodeOnServerDifferent: PropTypes.bool,
-  className: PropTypes.string
-}
-
-const mapStateToProps = state => ({
-  timeoutStatus: state.game.timeoutStatus
-})
-
-export default connect(mapStateToProps)(RunCodeButton)

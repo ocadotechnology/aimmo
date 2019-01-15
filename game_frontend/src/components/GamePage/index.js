@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import IDE from 'containers/IDE'
+import IDE from 'components/IDE'
 import Game from 'containers/Game'
 import NavigationBar from 'components/NavigationBar'
 

@@ -26,6 +26,15 @@ const shape = {
 }
 
 const overrides = {
+  MuiSnackbar: {
+    root: {
+      zIndex: '1000'
+    },
+    anchorOriginTopRight: {
+      right: '25% !important',
+      transform: 'translate(50%, 64px)'
+    }
+  },
   MuiSnackbarContent: {
     root: {
       paddingRight: '14px',

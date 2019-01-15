@@ -47,7 +47,7 @@ exports[`<IDEEditor /> matches snapshot 1`] = `
     width="100%"
     wrapEnabled={false}
   />
-  <Styled(Connect(RunCodeButton))
+  <Styled(RunCodeButton)
     aria-label="Run Code"
     id="post-code-button"
     isCodeOnServerDifferent={true}
