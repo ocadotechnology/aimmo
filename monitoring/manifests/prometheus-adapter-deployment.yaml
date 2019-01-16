@@ -23,7 +23,7 @@ spec:
         - --config=/etc/adapter/config.yaml
         - --logtostderr=true
         - --metrics-relist-interval=1m
-        - --prometheus-url=http://prometheus-k8s.monitoring.svc:9090/
+        - --prometheus-url=http://prometheus-k8s.monitoring.svc:9090/prometheus
         - --secure-port=6443
         image: quay.io/coreos/k8s-prometheus-adapter-amd64:v0.4.1
         name: prometheus-adapter
