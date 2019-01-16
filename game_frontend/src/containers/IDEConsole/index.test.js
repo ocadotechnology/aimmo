@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import React from 'react'
-import IDEConsole, { StyledConsole } from 'components/IDEConsole'
+import { IDEConsole, StyledConsole } from 'containers/IDEConsole'
 import createShallowWithTheme from 'testHelpers/createShallow'
 
 describe('<IDEConsole />', () => {

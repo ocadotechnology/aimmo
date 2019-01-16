@@ -1,15 +1,11 @@
 import actions from './actions'
 import types from './types'
-import { of } from 'rxjs'
-import { map, mergeMap, catchError, switchMap, first, mapTo, debounceTime } from 'rxjs/operators'
+import { editorTypes } from 'features/Editor'
+import { Scheduler, of } from 'rxjs'
+import { map, mergeMap, catchError, switchMap, first, mapTo, timeout, ignoreElements } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
-const timeoutEpic = (action$) =>
-  action$.pipe(
-    ofType(types.SOCKET_GAME_STATE_RECEIVED),
-    debounceTime(12000),
-    map(action => actions.setTimeout())
-  )
+const backgroundScheduler = Scheduler.async
 
 const getConnectionParametersEpic = (action$, state$, { api: { get } }) => action$.pipe(
   ofType(types.SOCKET_CONNECT_TO_GAME_REQUEST),
@@ -64,11 +60,26 @@ const sendAvatarIDEpic = (action$, state$, { api: { unity } }) => action$.pipe(
   unity.sendExternalEvent(unity.emitToUnity)
 )
 
+const avatarUpdatingTimeoutEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) => action$.pipe(
+  ofType(editorTypes.POST_CODE_REQUEST),
+  switchMap(() =>
+    action$.pipe(
+      ofType(types.SOCKET_FEEDBACK_AVATAR_UPDATED_SUCCESS),
+      timeout(25000, scheduler),
+      first(),
+      ignoreElements(),
+      catchError(() =>
+        of(actions.socketFeedbackAvatarUpdatedTimeout())
+      )
+    )
+  )
+)
+
 export default {
   getConnectionParametersEpic,
   connectToGameEpic,
   gameLoadedEpic,
   sendGameStateEpic,
   sendAvatarIDEpic,
-  timeoutEpic
+  avatarUpdatingTimeoutEpic
 }

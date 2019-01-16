@@ -3,7 +3,7 @@
 exports[`<GamePage /> matches snapshot 1`] = `
 <styled.div>
   <NavigationBar />
-  <Connect(IDE) />
+  <IDE />
   <Connect(Game) />
 </styled.div>
 `;

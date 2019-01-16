@@ -165,8 +165,10 @@ def _add_and_return_level(num, user):
 @login_required
 @preview_user_required
 def add_game(request):
+    playable_games = request.user.playable_games.all()
+
     if request.method == 'POST':
-        form = forms.AddGameForm(request.POST)
+        form = forms.AddGameForm(playable_games, data=request.POST)
         if form.is_valid():
             game = form.save(commit=False)
             game.generator = 'Main'
@@ -178,7 +180,7 @@ def add_game(request):
                 game.can_play.add(*users)
             return redirect('aimmo/play', id=game.id)
     else:
-        form = forms.AddGameForm()
+        form = forms.AddGameForm(playable_games)
     return render(request, 'players/add_game.html', {'form': form})
 
 

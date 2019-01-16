@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import LogEntries from 'components/LogEntries'
+import { connect } from 'react-redux'
 
 export const StyledConsole = styled.div`
   grid-area: ide-console;
@@ -28,7 +29,11 @@ export const StyledConsole = styled.div`
   }
 `
 
-export default class IDEConsole extends Component {
+export class IDEConsole extends Component {
+  static propTypes = {
+    logs: PropTypes.arrayOf(PropTypes.object)
+  }
+
   state = {
     scrolledToBottom: true
   }
@@ -65,6 +70,10 @@ export default class IDEConsole extends Component {
   }
 }
 
-IDEConsole.propTypes = {
-  logs: PropTypes.arrayOf(PropTypes.object)
-}
+const mapStateToProps = state => ({
+  logs: state.consoleLog.logs
+})
+
+const mapDispatchToProps = {}
+
+export default connect(mapStateToProps, mapDispatchToProps)(IDEConsole)
