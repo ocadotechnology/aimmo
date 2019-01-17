@@ -9,7 +9,7 @@ metadata:
     nginx.org/mergeable-ingress-type: minion
 spec:
   rules:
-  - host: dev-aimmo.codeforlife.education
+  - host: staging-aimmo.codeforlife.education
     http:
       paths:
       - backend:

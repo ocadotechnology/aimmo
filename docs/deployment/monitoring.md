@@ -52,9 +52,11 @@ and replacing `{CLUSTER}` with either dev/staging/default depending on which clu
 
 Again you need to replace `{CLUSTER}` with either dev/staging/default depending on which cluster you're working on.
 
-4. After that, look for the `grafana-ini-configmap.yaml` file, this contains the the main config file used to setup [Grafana](https://grafana.com/). inside the `[server]` header, look for the line:
+4. After that, look for the `grafana-ini-configmap.yaml` file, this contains the the main config file used to setup [Grafana](https://grafana.com/). inside the `[server]` header, look for the lines:
 
 ```ini
+domain = {CLUSTER}-aimmo.codeforlife.education
+...
 root_url = https://{CLUSTER}-aimmo.codeforlife.education/grafana/
 ```
 
@@ -84,6 +86,6 @@ This is needed because we make use of multiple ingress files but you are only al
 
 6. Finally, should be able to apply these manifests to the cluster you're working with.
 
-to do this, run `kubectl create -f manifests/ || true` if prometheus does not exist on that cluster at all. If the manifests have already been applied before, use: `kubectl apply -f manifests/ || true` and this will update the existing manifests and reset all the relavent components.
+to do this, run `kubectl create -f manifests/ || true`, if prometheus does not exist on that cluster at all. If the manifests have already been applied before, use: `kubectl apply -f manifests/ || true` and this will update the existing manifests and reset all the relavent components. You can use `kubectl delete -f manifests/ || true` if you need to remove our monitoring for whatever reason (at present this will also destroy all data).
 
 *Note: kubectl needs to be configured to work with the GCloud cluster for this method to work*
