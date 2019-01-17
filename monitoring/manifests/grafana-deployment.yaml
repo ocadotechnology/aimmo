@@ -14,7 +14,7 @@ spec:
     metadata:
       labels:
         app: grafana
-    spec:
+    spec:  
       containers:
       - image: grafana/grafana:5.2.4
         name: grafana
@@ -69,6 +69,9 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/statefulset
           name: grafana-dashboard-statefulset
           readOnly: false
+        - mountPath: /etc/grafana
+          name: grafana-config
+          readOnly: false
       nodeSelector:
         beta.kubernetes.io/os: linux
       securityContext:
@@ -111,3 +114,6 @@ spec:
       - configMap:
           name: grafana-dashboard-statefulset
         name: grafana-dashboard-statefulset
+      - configMap:
+          name: grafana-config
+        name: grafana-config
