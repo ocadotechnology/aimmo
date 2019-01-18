@@ -1,6 +1,6 @@
 # Monitoring
 
-This document outlines the process we use to collect metrics from our clusters on Google cloud engine and how to restart the relavent pods in the event they break in some way.
+This document outlines the process we use to collect metrics from our clusters on Google Cloud Engine and how to restart the relevant pods in the event they break in some way.
 
 *Note: the monitoring setup is a one time event that should only be done again in the event of failure or breakage*
 
@@ -12,21 +12,21 @@ Everything on our cluster is monitored via [Prometheus](https://prometheus.io/),
 
 ### Prometheus workflow
 
-Here is the offical workflow for [Prometheus](https://prometheus.io/): ![Prometheus workflow & relationship diagram](prometheus4k8s.png) *[image source](https://itnext.io/kubernetes-monitoring-with-prometheus-in-15-minutes-8e54d1de2e13)*
+Here is the official workflow for [Prometheus](https://prometheus.io/): ![Prometheus workflow & relationship diagram](prometheus4k8s.png) *[image source](https://itnext.io/kubernetes-monitoring-with-prometheus-in-15-minutes-8e54d1de2e13)*
 
-In the above picture there are a number of different components. In short, [Prometheus](https://prometheus.io/) uses service monitors to scrape metrics from all services on the cluster and holds them for a set amount of time. The operator is build on a framework used to package and deploy applications to kubernetes clusters, more information on operators can be found [here](https://coreos.com/operators/), but it's not required to understand how [Prometheus](https://prometheus.io/) interacts with the cluster.
+In the above picture there are a number of different components. In short, [Prometheus](https://prometheus.io/) uses service monitors to scrape metrics from all services on the cluster and holds them for a set amount of time. The operator is built on a framework used to package and deploy applications to kubernetes clusters, more information on operators can be found [here](https://coreos.com/operators/), but it's not required to understand how [Prometheus](https://prometheus.io/) interacts with the cluster.
 
-This gives us all we need all we need to collect data and store it, but not a good way of making use of any of that data. That is handled via various Data vizualisation tools.
+This gives us all we need to collect data and store it, but not a good way of making use of any of that data. That is handled via various Data vizualisation tools.
 
 ### Data Visualisation
 
-There are a number of ways to view the data [Prometheus](https://prometheus.io/) collects, the ones we make use of are: The Prometheus web UI, and [Grafana](https://grafana.com/). The Prometheus web UI is a simple tool that allows you to create queries on various metrics, view results in simple graphs, and view things like data targets (which is where all your data comes from), rules, and alerts (alerts will be explained later).
+There are a number of ways to view the data [Prometheus](https://prometheus.io/) collects, the ones we make use of are: the Prometheus web UI, and [Grafana](https://grafana.com/). The Prometheus web UI is a simple tool that allows you to create queries on various metrics, view results in simple graphs, and view things like data targets (which is where all your data comes from), rules, and alerts (alerts will be explained later).
 
-[Grafana](https://grafana.com/) is a tool that allows to create dashboards and organise our data, and gives a much wider range of options when it comes to creating graphs and charts. it uses the same query language as the Prometheus web UI for collecting data, making it much simpler to switch between the web UI and Grafana.
+[Grafana](https://grafana.com/) is a tool that allows to create dashboards and organise our data, and gives a much wider range of options when it comes to creating graphs and charts. It uses the same query language as the Prometheus web UI for collecting data, making it much simpler to switch between the web UI and Grafana.
 
 # Setup
 
-In the `monitoring` folder in cluster-setup in the deploy app-engine repo, you will find a sub-folder called. This folder contains all the configuration required to get [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) onto our clusters, but they will need to be exposed manually.
+In the `monitoring` folder in `cluster-setup` in the deploy app-engine repo. This folder contains all the configuration required to get [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) onto our clusters, but they will need to be exposed manually.
 
 1. To do this, first find thet file named `prometheus-prometheus.yaml` and change the following line:
 
@@ -52,7 +52,7 @@ and replacing `{CLUSTER}` with either dev/staging/default depending on which clu
 
 Again you need to replace `{CLUSTER}` with either dev/staging/default depending on which cluster you're working on.
 
-4. After that, look for the `grafana-ini-configmap.yaml` file, this contains the the main config file used to setup [Grafana](https://grafana.com/). inside the `[server]` header, look for the lines:
+4. After that, look for the `grafana-ini-configmap.yaml` file, this contains the main config file used to setup [Grafana](https://grafana.com/). inside the `[server]` header, look for the lines:
 
 ```ini
 domain = {CLUSTER}-aimmo.codeforlife.education
@@ -62,9 +62,9 @@ root_url = https://{CLUSTER}-aimmo.codeforlife.education/grafana/
 
 and once again replace `{CLUSTER}` with either dev/staging/default.
 
-5. Next, you need to go onto the Kubernetes Engine section of our [Google cloud console](https://console.cloud.google.com) dashboard, then go into services and look for the `aimmo-ingress` for the cluster you're working. It should be near to, or at the top of the list of services.
+5. Next, you need to go onto the Kubernetes Engine section of our [Google cloud console](https://console.cloud.google.com) dashboard, then go into services and look for the `aimmo-ingress` for the cluster you're working on. It should be near to, or at the top of the list of services.
 
-Click on the ingress to open up it's details, then click "EDIT". You should see something like this:
+Click on the ingress to open up its details, then click "EDIT". You should see something like this:
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -86,7 +86,7 @@ This is needed because we make use of multiple ingress files but you are only al
 
 6. Finally, should be able to apply these manifests to the cluster you're working with.
 
-to do this, run `kubectl create -f manifests/ || true`, if prometheus does not exist on that cluster at all. If the manifests have already been applied before, use: `kubectl apply -f manifests/ || true` and this will update the existing manifests and reset all the relavent components. You can use `kubectl delete -f manifests/ || true` if you need to remove our monitoring for whatever reason (at present this will also destroy all data).
+To do this, run `kubectl create -f monitoring/ || true`, if prometheus does not exist on that cluster at all. If the manifests have already been applied before, use: `kubectl apply -f monitoring/ || true` and this will update the existing manifests and reset all the relevant components. You can use `kubectl delete -f monitoring/ || true` if you need to remove our monitoring for whatever reason (at present this will also destroy all data). You need to be in the same directory as the monitoring folder to run these commands.
 
 *Note: kubectl needs to be configured to work with the GCloud cluster for this method to work*
 
