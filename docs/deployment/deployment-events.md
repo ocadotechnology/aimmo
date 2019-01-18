@@ -1,7 +1,5 @@
 # Deployment Events
 
----
-
 We use Travis for contiguous integration. Travis CI is the first step in our integration pipeline. Each time a push is made Travis runs all our tests and sends the coverage reports for display to [coveralls.io](https://coveralls.io/). 
 
 Our package Django app `aimmo` is deployed to [Pypi](https://pypi.python.org/pypi/aimmo) and we use [Versioneer](https://github.com/warner/python-versioneer) for package versioning.
