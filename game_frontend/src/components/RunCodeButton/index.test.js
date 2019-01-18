@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import React from 'react'
-import RunCodeButton, { MarginedCheckCircle, MarginedCircularProgress, MarginedPlayIcon, RunCodeButtonStatus } from 'components/RunCodeButton'
+import RunCodeButton, { MarginedCheckCircle, MarginedCircularProgress, MarginedPlayIcon, RunCodeButtonStatus, MarginedBugIcon } from 'components/RunCodeButton'
 import createShallowWithTheme from 'testHelpers/createShallow'
 
 describe('<RunCodeButton />', () => {
@@ -74,7 +74,9 @@ describe('<RunCodeButton />', () => {
   it('shows an error when a timeout is detected', () => {
     const props = {
       whenClicked: jest.fn(),
-      timeoutStatus: true
+      runCodeButtonStatus: {
+        status: RunCodeButtonStatus.error
+      }
     }
 
     const component = createShallowWithTheme(<RunCodeButton {...props} />, 'dark')
@@ -102,6 +104,14 @@ describe('<MarginedCheckCircle />', () => {
 describe('<MarginedCircularProgress />', () => {
   it('matches snapshot', () => {
     const component = createShallowWithTheme(<MarginedCircularProgress />, 'dark')
+
+    expect(component).toMatchSnapshot()
+  })
+})
+
+describe('<MarginedBugIcon />', () => {
+  it('matches snapshot', () => {
+    const component = createShallowWithTheme(<MarginedBugIcon />, 'dark')
 
     expect(component).toMatchSnapshot()
   })
