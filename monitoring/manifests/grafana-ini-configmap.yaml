@@ -42,7 +42,7 @@ data:
     ;http_port = 3000
 
     # The public facing domain name used to access grafana from a browser
-    domain = staging-aimmo.codeforlife.education
+    domain = default-aimmo.codeforlife.education
 
     # Redirect to correct domain if host header does not match domain
     # Prevents DNS rebinding attacks
@@ -50,7 +50,7 @@ data:
 
     # The full public facing url you use in browser, used for redirects and emails
     # If you use reverse proxy and sub path specify full url (with sub path)
-    root_url = https://staging-aimmo.codeforlife.education/grafana/
+    root_url = https://default-aimmo.codeforlife.education/grafana/
 
     # Log web requests
     ;router_logging = false

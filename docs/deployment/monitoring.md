@@ -89,3 +89,53 @@ This is needed because we make use of multiple ingress files but you are only al
 to do this, run `kubectl create -f manifests/ || true`, if prometheus does not exist on that cluster at all. If the manifests have already been applied before, use: `kubectl apply -f manifests/ || true` and this will update the existing manifests and reset all the relavent components. You can use `kubectl delete -f manifests/ || true` if you need to remove our monitoring for whatever reason (at present this will also destroy all data).
 
 *Note: kubectl needs to be configured to work with the GCloud cluster for this method to work*
+
+## Potential setup issues
+
+Below are some issues you may encounter when setting up [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) on any of the clusters.
+
+### Grafana looks a bit empty
+
+If when you go to `https://CLUSTER_URL/grafana` all you see is a mostly blank page containing some text, this means the ingress isn't configured quite right so it's not exposing all the styles. Below are some examples for working configs for the `grafana-ingress.yaml`
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: grafana-ingress
+  namespace: monitoring
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.org/mergeable-ingress-type: minion
+spec:
+  rules:
+  - host: staging-aimmo.codeforlife.education
+    http:
+      paths:
+      - backend:
+          serviceName: grafana
+          servicePort: 3000
+        path: /grafana/?(.*)
+```
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: grafana-ingress
+  namespace: monitoring
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.org/mergeable-ingress-type: minion
+spec:
+  rules:
+  - host: staging-aimmo.codeforlife.education
+    http:
+      paths:
+      - backend:
+          serviceName: grafana
+          servicePort: 3000
+        path: /grafana
+```

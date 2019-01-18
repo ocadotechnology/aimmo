@@ -7,7 +7,7 @@ metadata:
   namespace: monitoring
 spec:
   baseImage: quay.io/prometheus/alertmanager
-  externalUrl: "https://staging-aimmo.codeforlife.education/alertmanager"
+  externalUrl: "https://default-aimmo.codeforlife.education/alertmanager"
   routePrefix: "/alertmanager"
   nodeSelector:
     beta.kubernetes.io/os: linux
