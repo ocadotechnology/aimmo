@@ -26,7 +26,7 @@ There are a number of ways to view the data [Prometheus](https://prometheus.io/)
 
 # Setup
 
-In the `monitoring` folder in the AI:MMO root directory (will be moved to app-engine in future), you will find a sub-folder called `manifests`. This folder contains all the configuration required to get [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) onto our clusters, but they will need to be exposed manually.
+In the `monitoring` folder in cluster-setup in the deploy app-engine repo, you will find a sub-folder called. This folder contains all the configuration required to get [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) onto our clusters, but they will need to be exposed manually.
 
 1. To do this, first find thet file named `prometheus-prometheus.yaml` and change the following line:
 
