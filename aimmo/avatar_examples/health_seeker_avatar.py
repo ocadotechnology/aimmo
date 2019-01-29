@@ -1,5 +1,5 @@
 class Avatar:
-    def handle_turn(self, world_state, avatar_state):
+    def next_turn(self, world_state, avatar_state):
         self.world_state = world_state
         self.avatar_state = avatar_state
 
