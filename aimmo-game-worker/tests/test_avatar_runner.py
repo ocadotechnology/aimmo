@@ -14,7 +14,7 @@ WEST = {'x': -1, 'y': 0}
 class TestAvatarRunner(TestCase):
     def test_runner_does_not_crash_on_code_errors(self):
         avatar = '''class Avatar:
-                        def handle_turn(self, world_map, avatar_state):
+                        def next_turn(self, world_map, avatar_state):
                             assert False'''
 
         runner = AvatarRunner()
@@ -23,12 +23,12 @@ class TestAvatarRunner(TestCase):
 
     def test_runner_updates_code_on_change(self):
         avatar1 = '''class Avatar:
-                        def handle_turn(self, world_map, avatar_state):
+                        def next_turn(self, world_map, avatar_state):
                             
                             return MoveAction(direction.EAST)
                   '''
         avatar2 = '''class Avatar:
-                        def handle_turn(self, world_map, avatar_state):
+                        def next_turn(self, world_map, avatar_state):
                             
                             return MoveAction(direction.WEST)
                   '''
@@ -43,12 +43,12 @@ class TestAvatarRunner(TestCase):
 
     def test_update_code_flag_simple(self):
         avatar1 = '''class Avatar:
-                        def handle_turn(self, world_map, avatar_state):
+                        def next_turn(self, world_map, avatar_state):
                             
                             return MoveAction(direction.NORTH)
                   '''
         avatar2 = '''class Avatar:
-                                def handle_turn(self, world_map, avatar_state):
+                                def next_turn(self, world_map, avatar_state):
 
                                     return MoveAction(direction.SOUTH)
                   '''
@@ -75,7 +75,7 @@ class TestAvatarRunner(TestCase):
 
     def test_invalid_action_exception(self):
         avatar = '''class Avatar:
-                        def handle_turn(self, world_map, avatar_state):
+                        def next_turn(self, world_map, avatar_state):
                         
                             new_dir = random.choice(direction.ALL_DIRECTIONS)
                   '''
@@ -86,7 +86,7 @@ class TestAvatarRunner(TestCase):
 
     def test_does_not_update_with_imports(self):
         avatar = '''class Avatar:
-                        def handle_turn(self, world_map, avatar_state):
+                        def next_turn(self, world_map, avatar_state):
                             import os
                             return MoveAction(random.choice(direction.ALL_DIRECTIONS))
                   '''
@@ -97,14 +97,14 @@ class TestAvatarRunner(TestCase):
 
     def test_updated_successful(self):
         avatar_ok = '''class Avatar:
-                        def handle_turn(self, world_map, avatar_state):
+                        def next_turn(self, world_map, avatar_state):
                             
                             return MoveAction(direction.NORTH)
 
                     '''
 
         avatar_syntax_error = '''class Avatar:
-                                    def handle_turn(self, world_map, avatar_state):
+                                    def next_turn(self, world_map, avatar_state):
                                         
                                         return MoveAction(direction.NORTH
 
@@ -113,7 +113,7 @@ class TestAvatarRunner(TestCase):
         avatar_bad_constructor = '''class Avatar:
                                             def __init__(self):
                                                 return 1 + 'foo'
-                                            def handle_turn(self, world_map, avatar_state):
+                                            def next_turn(self, world_map, avatar_state):
 
                                                 return MoveAction(direction.NORTH)
                                   '''
@@ -130,7 +130,7 @@ class TestAvatarRunner(TestCase):
 
     def test_updates_with_for_loop(self):
         avatar = '''class Avatar:
-                        def handle_turn(self, world_map, avatar_state):
+                        def next_turn(self, world_map, avatar_state):
                             x = 0
                             for x in range(5):
                                 x = x + 1
@@ -144,7 +144,7 @@ class TestAvatarRunner(TestCase):
 
     def test_updates_with_inplace_operator(self):
         avatar = '''class Avatar:
-                        def handle_turn(self, world_map, avatar_state):
+                        def next_turn(self, world_map, avatar_state):
                             x = 0
                             x += 2
                                 
@@ -156,7 +156,7 @@ class TestAvatarRunner(TestCase):
 
     def test_runtime_error_contains_only_user_traceback(self):
         avatar = '''class Avatar:
-                        def handle_turn(self, world_map, avatar_state):
+                        def next_turn(self, world_map, avatar_state):
                             
                             1 + 'foo'
 
@@ -168,7 +168,7 @@ class TestAvatarRunner(TestCase):
 
     def test_syntax_error_contains_only_user_traceback(self):
         avatar = '''class Avatar:
-                        def handle_turn(self, world_map, avatar_state):
+                        def next_turn(self, world_map, avatar_state):
 
                             return MoveAction(direction.NORTH))))
                             
@@ -179,13 +179,13 @@ class TestAvatarRunner(TestCase):
 
     def test_invalid_action_exception_contains_only_user_traceback(self):
         avatar1 = '''class Avatar
-                        def handle_turn(self, world_map, avatar_state):
+                        def next_turn(self, world_map, avatar_state):
 
                             return None
                             
                  '''
         avatar2 = '''class Avatar:
-                        def handle_turn(self, world_map, avatar_state):
+                        def next_turn(self, world_map, avatar_state):
 
                             return 1
                             
@@ -198,7 +198,7 @@ class TestAvatarRunner(TestCase):
 
     def test_print_collector_outputs_logs(self):
         avatar = '''class Avatar:
-                        def handle_turn(self, world_map, avatar_state):
+                        def next_turn(self, world_map, avatar_state):
                             print('I AM A PRINT STATEMENT')
                             return MoveAction(direction.NORTH)
                             
@@ -210,7 +210,7 @@ class TestAvatarRunner(TestCase):
 
     def test_print_collector_outputs_multiple_prints(self):
         avatar = '''class Avatar:
-                        def handle_turn(self, world_map, avatar_state):
+                        def next_turn(self, world_map, avatar_state):
                             print('I AM A PRINT STATEMENT')
                             print('I AM ALSO A PRINT STATEMENT')
                             return MoveAction(direction.NORTH)
@@ -223,7 +223,7 @@ class TestAvatarRunner(TestCase):
 
     def test_print_collector_outputs_prints_from_different_scopes(self):
         avatar = '''class Avatar:
-                        def handle_turn(self, world_map, avatar_state):
+                        def next_turn(self, world_map, avatar_state):
                             print('I AM NOT A NESTED PRINT')
                             self.foo()
                             return MoveAction(direction.NORTH)
@@ -239,7 +239,7 @@ class TestAvatarRunner(TestCase):
 
     def test_print_collector_prints_output_and_runtime_error_if_exists(self):
         avatar = '''class Avatar:
-                        def handle_turn(self, world_map, avatar_state):
+                        def next_turn(self, world_map, avatar_state):
                             print('THIS CODE IS BROKEN')
                             return None
                  '''

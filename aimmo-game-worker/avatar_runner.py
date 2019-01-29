@@ -157,7 +157,11 @@ class AvatarRunner(object):
 
     def decide_action(self, world_map, avatar_state):
         try:
-            action = self.avatar.handle_turn(world_map, avatar_state)
+            try:
+                action = self.avatar.handle_turn(world_map, avatar_state)
+            except AttributeError:
+                action = self.avatar.next_turn(world_map, avatar_state)
+
             if not isinstance(action, Action):
                 raise InvalidActionException(action)
             return action.serialise()

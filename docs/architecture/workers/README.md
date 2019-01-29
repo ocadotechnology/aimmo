@@ -47,13 +47,13 @@ global worker_avatar
 worker_avatar = Avatar(**options)
 ```
 
-The service assumes the user's `Avatar` class implements the method `handle_turn` and acts accordingly:
+The service assumes the user's `Avatar` class implements the method `next_turn` and acts accordingly:
 
 ```python
 @app.route('/turn/', methods=['POST'])
 def process_turn():
    [...]
-   action = worker_avatar.handle_turn(avatar_state, world_map)
+   action = worker_avatar.next_turn(avatar_state, world_map)
    return flask.jsonify(action=action.serialise())
 ```
 
