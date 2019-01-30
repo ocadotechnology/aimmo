@@ -222,7 +222,7 @@ class KubernetesGameManager(GameManager):
         pod_metadata = kubernetes.client.V1ObjectMeta(labels={'app': 'aimmo-game', 'game_id': game_id}, annotations={
             "metrics.alpha.kubernetes.io/custom-endpoints": [{
                     "path": "/metrics",
-                    "port": "8000"
+                    "port": "8000",
                     "names": []
                 }
             ]
