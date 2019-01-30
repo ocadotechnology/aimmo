@@ -219,7 +219,14 @@ class KubernetesGameManager(GameManager):
                     add=['NET_BIND_SERVICE'])))
 
         pod_manifest = kubernetes.client.V1PodSpec(containers=[container], service_account_name='worker-manager')
-        pod_metadata = kubernetes.client.V1ObjectMeta(labels={'app': 'aimmo-game', 'game_id': game_id})
+        pod_metadata = kubernetes.client.V1ObjectMeta(labels={'app': 'aimmo-game', 'game_id': game_id}, annotations={
+            "metrics.alpha.kubernetes.io/custom-endpoints": [{
+                    "path": "/metrics",
+                    "port": "8000"
+                    "names": []
+                }
+            ]
+        })
         pod_template_manifest = kubernetes.client.V1PodTemplateSpec(spec=pod_manifest, metadata=pod_metadata)
 
         rc_manifest = kubernetes.client.V1ReplicationControllerSpec(
