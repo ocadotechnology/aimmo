@@ -13,4 +13,3 @@ def GAME_TURN_PROCESSING_SECONDS():
                         buckets=CUSTOM_BUCKET,
                         labelnames=('game_id'),
                         labelvalues=(f'{os.environ['GAME_ID']}'))
-
