@@ -12,5 +12,5 @@ def GAME_TURN_PROCESSING_SECONDS():
     return Histogram('function_exec_time', 'Test metric to see if we can time a functions execution',
                         buckets=CUSTOM_BUCKET,
                         labelnames=('game_id'),
-                        labelvalues=(f'{os.environ['GAME_ID']))
+                        labelvalues=(f'{os.environ['GAME_ID']}'))
 
