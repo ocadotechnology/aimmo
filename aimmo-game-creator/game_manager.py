@@ -220,12 +220,9 @@ class KubernetesGameManager(GameManager):
 
         pod_manifest = kubernetes.client.V1PodSpec(containers=[container], service_account_name='worker-manager')
         pod_metadata = kubernetes.client.V1ObjectMeta(labels={'app': 'aimmo-game', 'game_id': game_id}, annotations={
-            "metrics.alpha.kubernetes.io/custom-endpoints": [{
-                    "path": "/metrics",
-                    "port": "8000",
-                    "names": []
-                }
-            ]
+                    "prometheus.io/scrape": "true",
+                    "prometheus.io/port": "8080",
+                    "prometheus.io/path": "/metrics" # this is the default already
         })
         pod_template_manifest = kubernetes.client.V1PodTemplateSpec(spec=pod_manifest, metadata=pod_metadata)
 
