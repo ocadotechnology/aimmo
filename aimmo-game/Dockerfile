@@ -1,5 +1,5 @@
 FROM python:3.6 as builder
-LABEL Author='code@ocado.com'
+LABEL Author='codeforlife@ocado.com'
 
 RUN pip install pipenv
 COPY ["Pipfile", "Pipfile.lock", "setup.py", "./"]
@@ -11,7 +11,6 @@ COPY . .
 
 FROM base as tester
 RUN pip install coverage
-RUN apk add --no-cache bash
 CMD ./run_tests.sh -c
 
 FROM base as runner

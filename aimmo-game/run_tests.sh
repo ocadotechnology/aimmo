@@ -1,4 +1,3 @@
-#!/bin/bash
 coverage=$1
 
 function coverage_ready {
