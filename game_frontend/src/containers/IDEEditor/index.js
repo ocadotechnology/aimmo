@@ -8,6 +8,8 @@ import 'brace/ext/language_tools'
 import PropTypes from 'prop-types'
 import { withTheme } from '@material-ui/core/styles'
 import RunCodeButton from 'components/RunCodeButton'
+import { connect } from 'react-redux'
+import { actions as editorActions } from 'features/Editor'
 
 export const IDEEditorLayout = styled.div`
   position: relative;
@@ -28,6 +30,17 @@ export class IDEEditor extends PureComponent {
     return this.props.code !== this.props.codeOnServer
   }
 
+  options () {
+    return {
+      enableBasicAutocompletion: true,
+      enableLiveAutocompletion: true,
+      enableSnippets: true,
+      showLineNumbers: true,
+      tabSize: 2,
+      fontFamily: this.props.theme.additionalVariables.typography.code.fontFamily
+    }
+  }
+
   render () {
     return (
       <IDEEditorLayout>
@@ -44,14 +57,7 @@ export class IDEEditor extends PureComponent {
           value={this.props.code}
           width='100%'
           height='100%'
-          setOptions={{
-            enableBasicAutocompletion: true,
-            enableLiveAutocompletion: true,
-            enableSnippets: true,
-            showLineNumbers: true,
-            tabSize: 2,
-            fontFamily: this.props.theme.additionalVariables.typography.code.fontFamily
-          }} />
+          setOptions={this.options()} />
         <PositionedRunCodeButton
           runCodeButtonStatus={this.props.runCodeButtonStatus}
           isCodeOnServerDifferent={this.isCodeOnServerDifferent()}
@@ -73,4 +79,16 @@ IDEEditor.propTypes = {
   runCodeButtonStatus: PropTypes.object
 }
 
-export default withTheme()(IDEEditor)
+const mapStateToProps = state => ({
+  code: state.editor.code.code,
+  codeOnServer: state.editor.code.codeOnServer,
+  runCodeButtonStatus: state.editor.runCodeButton
+})
+
+const mapDispatchToProps = {
+  getCode: editorActions.getCodeRequest,
+  editorChanged: editorActions.keyPressed,
+  postCode: editorActions.postCodeRequest
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme()(IDEEditor))

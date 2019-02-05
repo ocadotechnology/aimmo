@@ -1,8 +1,7 @@
 /* eslint-env jest */
 import React from 'react'
-import { IDEEditor, IDEEditorLayout } from 'components/IDEEditor'
+import { IDEEditor, IDEEditorLayout } from 'containers/IDEEditor'
 import createShallowWithTheme from 'testHelpers/createShallow'
-import { Avatar } from '@material-ui/core'
 
 describe('<IDEEditor />', () => {
   it('matches snapshot', () => {

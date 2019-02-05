@@ -33,10 +33,15 @@ const runCodeButtonReducer = (state = {}, action) => {
         ...state,
         status: RunCodeButtonStatus.updating
       }
-    case gameTypes.SOCKET_FEEDBACK_AVATAR_UPDATED:
+    case gameTypes.SOCKET_FEEDBACK_AVATAR_UPDATED_SUCCESS:
       return {
         ...state,
         status: RunCodeButtonStatus.done
+      }
+    case gameTypes.SOCKET_FEEDBACK_AVATAR_UPDATED_TIMEOUT:
+      return {
+        ...state,
+        status: RunCodeButtonStatus.error
       }
     case gameTypes.SNACKBAR_FOR_AVATAR_FEEDBACK_SHOWN:
       return {

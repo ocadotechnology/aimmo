@@ -82,10 +82,10 @@ class GameAPI(object):
         return remove_session_id_from_mappings
 
     async def send_updates(self):
-        await self._send_game_state()
         player_id_to_worker = self.worker_manager.player_id_to_worker
-        await self._send_logs(player_id_to_worker)
         await self._send_have_avatars_code_updated(player_id_to_worker)
+        await self._send_game_state()
+        await self._send_logs(player_id_to_worker)
 
     def _find_avatar_id_from_query(self, session_id, query_string):
         """
@@ -124,7 +124,7 @@ class GameAPI(object):
         socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id.copy()
         for sid, player_id in socket_session_id_to_player_id_copy.items():
             if player_id_to_workers[player_id].has_code_updated:
-                await socketio_server.emit('feedback-avatar-updated', room=sid)
+                await socketio_server.emit('feedback-avatar-updated', {}, room=sid)
 
 
 def create_runner(port):

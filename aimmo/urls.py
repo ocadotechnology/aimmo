@@ -8,6 +8,8 @@ from django_js_reverse.views import urls_js
 from aimmo import views
 from app_settings import preview_user_required
 
+HOMEPAGE_REGEX = r'^aimmo/'
+
 urlpatterns = [
     url(r'^$', login_required(preview_user_required(TemplateView.as_view(template_name='players/home.html'))), name='aimmo/home'),
 
