@@ -16,4 +16,4 @@ def GAME_TURN_PROCESSING_SECONDS():
     CUSTOM_BUCKET = [x/10 for x in range(10,101)]
     GAME_TURN_PROCESSING = Histogram('game_turn_processing_seconds', 'Measures the time taken for the game to complete a single turn in seconds',
                         buckets=CUSTOM_BUCKET)
-    return GAME_TURN_PROCESSING
+    return GAME_TURN_PROCESSING.time()
