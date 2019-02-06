@@ -15,10 +15,7 @@ setup(
         'kubernetes >= 6.0.0',
     ],
     tests_require=[
-        'httmock',
-        'docker',
-        'aiohttp',
-        'aiohttp_cors'
+        'httmock'
     ],
     test_suite='tests',
     zip_safe=False,

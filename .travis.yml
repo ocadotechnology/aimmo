@@ -59,9 +59,7 @@ jobs:
         - docker run -it -p 5000:5000 ocadotechnology/aimmo-game:test
       after_success:
         # Get the ID of the container so we can get the coverage data out.
-        - read CONTAINERID <<< $(docker ps --all -q | head -1)
-        - sudo docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
-        - sudo docker cp -a $CONTAINERID:coverage.xml $(pwd)/coverage.xml
+        - $TRAVIS_BUILD_DIR/get_coverage_on_travis.sh
         - bash <(curl -s https://codecov.io/bash)
     - name: "aimmo-game-creator"
       before_install:
@@ -73,9 +71,7 @@ jobs:
         - docker run -it -p 5000:5000 ocadotechnology/aimmo-game-creator:test
       after_success:
         # Get the ID of the container so we can get the coverage data out.
-        - read CONTAINERID <<< $(docker ps --all -q | head -1)
-        - sudo docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
-        - sudo docker cp -a $CONTAINERID:coverage.xml $(pwd)/coverage.xml
+        - $TRAVIS_BUILD_DIR/get_coverage_on_travis.sh
         - bash <(curl -s https://codecov.io/bash)
     - name: "aimmo-game-worker"
       before_install:
@@ -87,9 +83,7 @@ jobs:
         - docker run -it -p 5000:5000 ocadotechnology/aimmo-game-worker:test
       after_success:
         # Get the ID of the container so we can get the coverage data out.
-        - read CONTAINERID <<< $(docker ps --all -q | head -1)
-        - sudo docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
-        - sudo docker cp -a $CONTAINERID:coverage.xml $(pwd)/coverage.xml
+        - $TRAVIS_BUILD_DIR/get_coverage_on_travis.sh
         - bash <(curl -s https://codecov.io/bash)
     - name: "Javascript Tests"
       before_install:

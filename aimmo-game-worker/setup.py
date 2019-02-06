@@ -16,10 +16,7 @@ setup(
     ],
     tests_require=[
         'httmock',
-        'mock',
-        'docker',
-        'aiohttp',
-        'aiohttp_cors'
+        'mock'
     ],
     test_suite='tests',
     zip_safe=False,
