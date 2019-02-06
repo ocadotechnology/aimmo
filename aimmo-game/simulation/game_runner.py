@@ -9,7 +9,7 @@ from simulation.django_communicator import DjangoCommunicator
 from simulation.simulation_runner import ConcurrentSimulationRunner
 from simulation.avatar.avatar_manager import AvatarManager
 
-from metrics import GAME_TURN_PROCESSING_SECONDS
+from metrics import GAME_TURN_TIME
 
 
 LOGGER = logging.getLogger(__name__)
@@ -68,7 +68,7 @@ class GameRunner:
         await self._end_turn_callback()
 
     async def update(self):
-        with GAME_TURN_PROCESSING_SECONDS():
+        with GAME_TURN_TIME():
             self.update_workers()
             await self.update_simulation(self.worker_manager.get_player_id_to_serialised_actions())
             self.worker_manager.clear_logs()
