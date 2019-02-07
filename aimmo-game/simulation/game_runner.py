@@ -11,7 +11,6 @@ from simulation.avatar.avatar_manager import AvatarManager
 
 from metrics import GAME_TURN_TIME
 
-
 LOGGER = logging.getLogger(__name__)
 
 TURN_TIME = 2
