@@ -254,7 +254,7 @@ class KubernetesGameManager(GameManager):
     def _make_service(self, game_id):
         service_manifest = kubernetes.client.V1ServiceSpec(
             selector={'app': 'aimmo-game', 'game_id': game_id},
-            ports=[kubernetes.client.V1ServicePort(protocol='TCP', port=80, target_port=5000)],
+            ports=[kubernetes.client.V1ServicePort(name='tcp',protocol='TCP', port=80, target_port=5000)],
             type='NodePort')
 
         service_metadata = kubernetes.client.V1ObjectMeta(
