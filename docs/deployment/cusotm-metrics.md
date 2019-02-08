@@ -20,8 +20,8 @@ Okay, now we can look at creating our metric.
 
 3. Now it's time to create your metric. When implementing things we want to keep the metrics as unintrusive as possible from existing code, so when possible you should follow the example in `aimmo-game`.
 
-    * Below is an example of a custom metric from the `metrics.py` file. The first snippet contains the metrics itself, while the second snippet contains the function with how we want to use that metric.
-    * This approach allows us to keep all our metrics in single place so they're easy to find. Then you can simply import your metric where needed for use.
+    * Below is an example of a custom metric from the `metrics.py` file. The first snippet contains the metric itself, while the second snippet contains the function with how we want to use that metric.
+    * This approach allows us to keep all our metrics in a single place so they're easy to find. Then you can simply import your metric where needed for use.
 
         ```python
         CUSTOM_BUCKET = [x/10 for x in range(10, 61)]
