@@ -6,8 +6,11 @@ import os
 
 # Measures the time taken for the game to go through an entire turn (game runner's update method)
 CUSTOM_BUCKET = [x/10 for x in range(10, 61)]
-GAME_TURN = Histogram('game_turn_time', 'Measures the time taken for the game to complete a single turn in seconds',
-                    buckets=CUSTOM_BUCKET)
+GAME_TURN = Histogram(
+    'game_turn_time', 
+    'Measures the time taken for the game to complete a single turn in seconds',
+    buckets=CUSTOM_BUCKET
+)
 
 
 def GAME_TURN_TIME():
