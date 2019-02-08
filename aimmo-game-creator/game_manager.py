@@ -222,7 +222,7 @@ class KubernetesGameManager(GameManager):
         pod_metadata = kubernetes.client.V1ObjectMeta(labels={'app': 'aimmo-game', 'game_id': game_id}, annotations={
                     "prometheus.io/scrape": "true",
                     "prometheus.io/port": "8080",
-                    "prometheus.io/path": "/metrics" # this is the default already
+                    "prometheus.io/path": "/metrics"  # this is the default already
         })
         pod_template_manifest = kubernetes.client.V1PodTemplateSpec(spec=pod_manifest, metadata=pod_metadata)
 
@@ -254,7 +254,7 @@ class KubernetesGameManager(GameManager):
     def _make_service(self, game_id):
         service_manifest = kubernetes.client.V1ServiceSpec(
             selector={'app': 'aimmo-game', 'game_id': game_id},
-            ports=[kubernetes.client.V1ServicePort(name='tcp',protocol='TCP', port=80, target_port=5000)],
+            ports=[kubernetes.client.V1ServicePort(name='tcp', protocol='TCP', port=80, target_port=5000)],
             type='NodePort')
 
         service_metadata = kubernetes.client.V1ObjectMeta(
