@@ -15,7 +15,8 @@ GAME_TURN = Histogram(
 
 def GAME_TURN_TIME():
     """
-    Used for measuring the time it games for the game to complete a turn. This
-    is measured using the Histogram datatype.
+    Use for measuring the time it games for the game to complete a turn.
+
+    This is measured using the Histogram datatype.
     """
     return GAME_TURN.time()
