@@ -222,7 +222,7 @@ class KubernetesGameManager(GameManager):
         pod_metadata = kubernetes.client.V1ObjectMeta(labels={'app': 'aimmo-game', 'game_id': game_id}, annotations={
                     "prometheus.io/scrape": "true",
                     "prometheus.io/port": "8080",
-                    "prometheus.io/path": "/metrics"  # this is the default already
+                    "prometheus.io/path": "/metrics"
         })
         pod_template_manifest = kubernetes.client.V1PodTemplateSpec(spec=pod_manifest, metadata=pod_metadata)
 

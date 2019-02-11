@@ -1,4 +1,4 @@
-from prometheus_client import Histogram, Gauge, Summary, Counter
+from prometheus_client import Histogram
 import os
 
 # DO NOT use a metric more than once, it will probably break them. If you need to measure
@@ -14,6 +14,8 @@ GAME_TURN = Histogram(
 
 
 def GAME_TURN_TIME():
-    """ Used for measuring the time it games for the game to complete a turn. This
-        is measured using the Histogram datatype. """
+    """
+    Used for measuring the time it games for the game to complete a turn. This
+    is measured using the Histogram datatype. 
+    """
     return GAME_TURN.time()
