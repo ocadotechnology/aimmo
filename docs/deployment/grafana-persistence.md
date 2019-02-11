@@ -1,4 +1,5 @@
 # Grafana Persistence
+
 Here we will talk about how to connect our instances of Grafana to a database on Gcloud to ensure that data such as logins, permissions, and dashboards persist if the pod stops or is restarted for whatever reason.
 
 ## Setup

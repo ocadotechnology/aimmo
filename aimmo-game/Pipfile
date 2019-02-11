@@ -10,6 +10,10 @@ kubernetes = "*"
 prometheus-client = "*"
 aiohttp = "*"
 aiohttp-cors = "*"
+aiohttp-wsgi = "*"
 
 [requires]
 python_version = "3.6.7"
+
+[dev-packages]
+pydocstyle = "*"
