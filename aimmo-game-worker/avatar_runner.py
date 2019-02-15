@@ -92,6 +92,9 @@ class AvatarRunner(object):
             exec(byte_code, restricted_globals)
         except SyntaxWarning as w:
             pass
+        except SyntaxError as e:
+            print(e)
+            
 
         module.__dict__['Avatar'] = restricted_globals['Avatar']
         return module.Avatar()
