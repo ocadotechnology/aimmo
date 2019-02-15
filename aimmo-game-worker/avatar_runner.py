@@ -94,7 +94,6 @@ class AvatarRunner(object):
             pass
         except SyntaxError as e:
             print(e)
-            
 
         module.__dict__['Avatar'] = restricted_globals['Avatar']
         return module.Avatar()
