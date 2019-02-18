@@ -211,8 +211,8 @@ class KubernetesGameManager(GameManager):
             ports=[kubernetes.client.V1ContainerPort(container_port=5000)],
             name='aimmo-game',
             resources=kubernetes.client.V1ResourceRequirements(
-                        limits={'cpu': '36m', 'memory': '128Mi'},
-                        requests={'cpu': '12m', 'memory': '64Mi'}),
+                        limits={'cpu': '95m', 'memory': '128Mi'},
+                        requests={'cpu': '24m', 'memory': '64Mi'}),
             security_context=kubernetes.client.V1SecurityContext(
                 capabilities=kubernetes.client.V1Capabilities(
                     drop=['all'],
