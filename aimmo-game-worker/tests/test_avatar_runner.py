@@ -259,3 +259,13 @@ class TestAvatarRunner(TestCase):
             runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
         with self.assertRaises(SyntaxError):
             runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+
+    def test_syntax_warning_not_shown_to_user(self):
+        avatar = '''class Avatar:
+                        def next_turn(self, world_map, avatar_state):
+                            print('I AM A PRINT')
+                            return MoveAction(direction.NORTH)
+                 '''
+        runner = AvatarRunner()
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        self.assertFalse('SyntaxWarning' in response['log'])
