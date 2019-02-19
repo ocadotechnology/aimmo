@@ -247,3 +247,16 @@ class TestAvatarRunner(TestCase):
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
         self.assertTrue('THIS CODE IS BROKEN' in response['log'])
         self.assertTrue('"None" is not a valid action object.' in response['log'])
+    
+        def test_syntax_errors_show_in_user_code(self):
+        avatar = '''class Avatar:
+                        def next_turn(self, world_map, avatar_state):
+                            print('THIS CODE IS BROKEN')
+                            return MoveAction(direction.NORTH))))))))
+                 '''
+        runner = AvatarRunner()
+        runner._update_avatar(src_code=avatar)
+        with self.assertRaises(SyntaxError):
+            runner.decide_action(world_map={}, avatar_state={})
+        with self.assertRaises(SyntaxError):
+            runner.decide_action(world_map={}, avatar_state={})
