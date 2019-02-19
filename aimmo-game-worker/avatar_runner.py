@@ -116,7 +116,6 @@ class AvatarRunner(object):
             except Exception as e:
                 self.update_successful = False
                 raise e
-                
 
     def _should_update(self, src_code):
         return (self.avatar is None or self.auto_update and self._avatar_src_changed(src_code) or
