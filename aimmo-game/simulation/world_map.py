@@ -4,7 +4,7 @@ from logging import getLogger
 from simulation.level_settings import DEFAULT_LEVEL_SETTINGS
 from simulation.location import Location
 from simulation.game_logic import SpawnLocationFinder, ScoreLocationUpdater, MapContext, PickupUpdater, MapExpander
-from simulation.game_logic.pickup_appliers import PickupApplier
+from simulation.game_logic import PickupApplier
 from simulation.cell import Cell
 
 LOGGER = getLogger(__name__)
