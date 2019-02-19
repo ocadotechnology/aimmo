@@ -21,6 +21,15 @@ class TestAvatarRunner(TestCase):
         action = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)['action']
         self.assertEqual(action, {'action_type': 'wait'})
 
+    def test_runner_gives_wait_action_on_compile_errors(self):
+        avatar = '''class Avatar:
+                        def next_turn(self, world_map, avatar_state):
+                            return MoveAction(direction.WEST)))))'''
+
+        runner = AvatarRunner()
+        action = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)['action']
+        self.assertEqual(action, {'action_type': 'wait'})
+
     def test_runner_updates_code_on_change(self):
         avatar1 = '''class Avatar:
                         def next_turn(self, world_map, avatar_state):
@@ -247,3 +256,25 @@ class TestAvatarRunner(TestCase):
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
         self.assertTrue('THIS CODE IS BROKEN' in response['log'])
         self.assertTrue('"None" is not a valid action object.' in response['log'])
+    
+        def test_syntax_errors_are_detected_correctly(self):
+        avatar = '''class Avatar:
+                        def next_turn(self, world_map, avatar_state):
+                            print('THIS CODE IS BROKEN')
+                            return MoveAction(direction.NORTH))))))))
+                 '''
+        runner = AvatarRunner()
+        with self.assertRaises(SyntaxError):
+            runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        with self.assertRaises(SyntaxError):
+            runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+
+    def test_syntax_warning_not_shown_to_user(self):
+        avatar = '''class Avatar:
+                        def next_turn(self, world_map, avatar_state):
+                            print('I AM A PRINT')
+                            return MoveAction(direction.NORTH)
+                 '''
+        runner = AvatarRunner()
+        response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        self.assertFalse('SyntaxWarning' in response['log'])

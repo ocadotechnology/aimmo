@@ -92,8 +92,6 @@ class AvatarRunner(object):
             exec(byte_code, restricted_globals)
         except SyntaxWarning as w:
             pass
-        except SyntaxError as e:
-            print(e)
 
         module.__dict__['Avatar'] = restricted_globals['Avatar']
         return module.Avatar()
@@ -111,11 +109,13 @@ class AvatarRunner(object):
         if self._should_update(src_code):
             try:
                 self.avatar = self._get_new_avatar(src_code)
+                self.update_successful = True
+            except SyntaxError as e:
+                self.update_successful = False
+                print(e)
             except Exception as e:
                 self.update_successful = False
                 raise e
-            else:
-                self.update_successful = True
 
     def _should_update(self, src_code):
         return (self.avatar is None or self.auto_update and self._avatar_src_changed(src_code) or
