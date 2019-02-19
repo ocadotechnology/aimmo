@@ -255,8 +255,7 @@ class TestAvatarRunner(TestCase):
                             return MoveAction(direction.NORTH))))))))
                  '''
         runner = AvatarRunner()
-        runner._update_avatar(src_code=avatar)
         with self.assertRaises(SyntaxError):
-            runner.decide_action(world_map={}, avatar_state={})
+            runner._get_new_avatar(src_code)
         with self.assertRaises(SyntaxError):
-            runner.decide_action(world_map={}, avatar_state={})
+            runner._get_new_avatar(src_code)
