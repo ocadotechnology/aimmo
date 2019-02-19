@@ -73,7 +73,6 @@ db.sqlite3
 example_project/example_project/static/
 
 # Created during minikube testing
-manifests
 test-bin/
 
 # Hypothesis seed examples

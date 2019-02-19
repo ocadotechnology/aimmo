@@ -211,15 +211,19 @@ class KubernetesGameManager(GameManager):
             ports=[kubernetes.client.V1ContainerPort(container_port=5000)],
             name='aimmo-game',
             resources=kubernetes.client.V1ResourceRequirements(
-                        limits={'cpu': '300m', 'memory': '128Mi'},
-                        requests={'cpu': '10m', 'memory': '64Mi'}),
+                        limits={'cpu': '95m', 'memory': '128Mi'},
+                        requests={'cpu': '24m', 'memory': '64Mi'}),
             security_context=kubernetes.client.V1SecurityContext(
                 capabilities=kubernetes.client.V1Capabilities(
                     drop=['all'],
                     add=['NET_BIND_SERVICE'])))
 
         pod_manifest = kubernetes.client.V1PodSpec(containers=[container], service_account_name='worker-manager')
-        pod_metadata = kubernetes.client.V1ObjectMeta(labels={'app': 'aimmo-game', 'game_id': game_id})
+        pod_metadata = kubernetes.client.V1ObjectMeta(labels={'app': 'aimmo-game', 'game_id': game_id}, annotations={
+                    "prometheus.io/scrape": "true",
+                    "prometheus.io/port": "8080",
+                    "prometheus.io/path": "/metrics"
+        })
         pod_template_manifest = kubernetes.client.V1PodTemplateSpec(spec=pod_manifest, metadata=pod_metadata)
 
         rc_manifest = kubernetes.client.V1ReplicationControllerSpec(
@@ -250,7 +254,7 @@ class KubernetesGameManager(GameManager):
     def _make_service(self, game_id):
         service_manifest = kubernetes.client.V1ServiceSpec(
             selector={'app': 'aimmo-game', 'game_id': game_id},
-            ports=[kubernetes.client.V1ServicePort(protocol='TCP', port=80, target_port=5000)],
+            ports=[kubernetes.client.V1ServicePort(name='tcp', protocol='TCP', port=80, target_port=5000)],
             type='NodePort')
 
         service_metadata = kubernetes.client.V1ObjectMeta(

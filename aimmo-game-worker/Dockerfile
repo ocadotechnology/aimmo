@@ -1,5 +1,5 @@
 FROM python:3.6 as builder
-MAINTAINER code@ocado.com
+LABEL Author='codeforlife@ocado.com'
 
 RUN pip install pipenv
 COPY ["Pipfile", "Pipfile.lock", "setup.py", "./"]
@@ -15,4 +15,5 @@ ENV FLASK_ENV='development'
 CMD python ./service.py 0.0.0.0 $PORT $DATA_URL
 
 FROM base as tester
-CMD python setup.py test
+RUN pip install coverage
+CMD ./run_tests.sh -c

@@ -56,7 +56,7 @@ class KubernetesWorkerManager(WorkerManager):
                 protocol='TCP')],
             resources=client.V1ResourceRequirements(
                 limits={'cpu': '10m', 'memory': '64Mi'},
-                requests={'cpu': '7m', 'memory': '32Mi'}),
+                requests={'cpu': '6m', 'memory': '32Mi'}),
             security_context=client.V1SecurityContext(
                 capabilities=client.V1Capabilities(
                     drop=['all'],
