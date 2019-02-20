@@ -10,8 +10,9 @@ AVATAR_HEALTH_MAX = 100
 class _Pickup(object):
     __metaclass__ = ABCMeta
 
-    def __init__(self, cell):
+    def __init__(self, cell, conditions=[]):
         self.cell = cell
+        self.conditions = conditions
 
     def __str__(self):
         return self.__class__.__name__
