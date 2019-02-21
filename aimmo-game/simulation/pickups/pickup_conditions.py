@@ -15,13 +15,13 @@ def avatar_on_cell_group(cells: List[Cell]):
         return any([cell.avatar is not None for cell in cells])
     return condition
 
-def avatar_on_team(avatar: WorldMap, team): # TEAMS NOT IMPLENTED, DO NOT USE
+def avatar_on_team(avatar: WorldMap, team):  # TEAMS NOT IMPLENTED, DO NOT USE
     """ Returns an expression that checks if a given avatar is on a specific team """
     def condition(worldmap: WorldMap):
         return avatar.team == team
     return condition
 
-def avatar_has_score(avatar:object, score): # SCORES NOT IMPLENTED, DO NOT USE
+def avatar_has_score(avatar:object, score):  # SCORES NOT IMPLENTED, DO NOT USE
     """ Returns an expression that checks if a given avatar has reached a certain score """
     def condition(worldmap: WorldMap):
         return avatar.score >= score
