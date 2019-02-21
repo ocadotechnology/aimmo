@@ -55,4 +55,3 @@ class TestConditions(TestCase):
     def test_passive_condition(self):
         condition = passive()
         self.assertTrue(condition(None))
-        
