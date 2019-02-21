@@ -21,7 +21,7 @@ def avatar_on_team(avatar: object, team):  # TEAMS NOT IMPLENTED, DO NOT USE
         return avatar.team == team
     return condition
 
-def avatar_has_score(avatar:object, score):  # SCORES NOT IMPLENTED, DO NOT USE
+def avatar_has_score(avatar: object, score):  # SCORES NOT IMPLENTED, DO NOT USE
     """ Returns an expression that checks if a given avatar has reached a certain score """
     def condition(worldmap: WorldMap):
         return avatar.score >= score
