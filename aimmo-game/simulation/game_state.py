@@ -1,8 +1,8 @@
 from threading import RLock
-from simulation.pickups import serialise_pickups
+from simulation.pickups.pickups import serialise_pickups
 
 
-class GameState(object):
+class GameState:
     """
     Encapsulates the entire game state, including avatars, their code, and the world.
     """
