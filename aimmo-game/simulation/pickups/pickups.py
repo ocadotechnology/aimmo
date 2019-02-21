@@ -25,10 +25,10 @@ class _Pickup(object):
     def delete(self):
         self.cell.pickup = None
 
-    def conditions_met(self, game_state: object):
+    def conditions_met(self, world_map: object):
         """ Applies logical and on all conditions, returns True is all conditions are met. """
         try:
-            return all([c(game_state) for c in self.conditions])
+            return all([c(world_map) for c in self.conditions])
         except Exception as e:
             LOGGER.info("Could not complete pickup condition check :'( ")
             raise e
