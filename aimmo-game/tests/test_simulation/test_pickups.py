@@ -3,7 +3,8 @@ from __future__ import absolute_import
 import abc
 from unittest import TestCase
 
-from simulation import effects, pickups
+from simulation import effects
+from simulation.pickups import pickups
 from .dummy_avatar import DummyAvatar
 from .maps import MockCell
 

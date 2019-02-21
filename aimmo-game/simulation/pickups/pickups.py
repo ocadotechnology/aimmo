@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod, abstractproperty
 from logging import getLogger
 from functools import reduce
 import simulation.effects as effects
-#from simulation.game_state import GameState
+from simulation.world_map import WorldMap
 from simulation.pickups.pickup_conditions import avatar_on_cell
 LOGGER = getLogger(__name__)
 
@@ -25,7 +25,7 @@ class _Pickup(object):
     def delete(self):
         self.cell.pickup = None
 
-    def conditions_met(self, world_map: object):
+    def conditions_met(self, world_map: WorldMap):
         """ Applies logical and on all conditions, returns True is all conditions are met. """
         try:
             return all([c(world_map) for c in self.conditions])

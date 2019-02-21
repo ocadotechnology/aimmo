@@ -1,4 +1,4 @@
-from simulation.worldmap import WorldMap
+from simulation.world_map import WorldMap
 from simulation.cell import Cell
 from typing import List
 
