@@ -1,6 +1,6 @@
 # Conditions
 
-Conditions are a subcomponent of an `Interactable`.
+Conditions are a component of an `Interactable`.
 
 A condition can be thought of as an expression, these expressions will be evalutated every turn. If all the conditions for an `Interactable` are found to be true, it will cause the Interactable's effect(s) to occur.
 
