@@ -24,7 +24,7 @@ Since any given pickup is a subclass of `Interactable` we know it contains an at
 
 The `conditions_met` function then evaluates these expressions, and if all the conditions are met, the Interactable's effect(s) will trigger.
 
-Finally, as a general pattern , conditions should follow this format:
+Finally, as a general pattern, conditions should follow this format:
 
 ```python
 def NAME_OF_CONDITION(data required by the expression):
