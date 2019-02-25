@@ -8,9 +8,10 @@ INVULNERABILITY_RESISTANCE = 1000
 class _Effect(object):
     __metaclass__ = ABCMeta
 
-    def __init__(self, avatar):
-        self._avatar = avatar
+    def __init__(self, target):
+        self._target = target
         self.is_expired = False
+        self._target.effects.add(self)
 
     @abstractmethod
     def on_turn(self):
@@ -27,9 +28,9 @@ class _TimedEffect(_Effect):
 
     def remove(self):
         try:
-            self._avatar.effects.remove(self)
+            self._target.effects.remove(self)
         except KeyError as e:
-            raise KeyError("The avatar object does not exist! Cannot remove the effect.")
+            raise KeyError("The target object does not exist! Cannot remove the effect.")
 
     def on_turn(self):
         self._time_remaining -= 1
@@ -40,11 +41,11 @@ class _TimedEffect(_Effect):
 class InvulnerabilityPickupEffect(_TimedEffect):
     def __init__(self, *args):
         super(InvulnerabilityPickupEffect, self).__init__(*args)
-        self._avatar.resistance += INVULNERABILITY_RESISTANCE
+        self._target.resistance += INVULNERABILITY_RESISTANCE
 
     def remove(self):
         super(InvulnerabilityPickupEffect, self).remove()
-        self._avatar.resistance -= INVULNERABILITY_RESISTANCE
+        self._target.resistance -= INVULNERABILITY_RESISTANCE
 
 
 class DamageBoostPickupEffect(_TimedEffect):
@@ -53,8 +54,8 @@ class DamageBoostPickupEffect(_TimedEffect):
 
         self._damage_boost = int(round(damage_boost))
         super(DamageBoostPickupEffect, self).__init__(*args)
-        self._avatar.attack_strength += self._damage_boost
+        self._target.attack_strength += self._damage_boost
 
     def remove(self):
         super(DamageBoostPickupEffect, self).remove()
-        self._avatar.attack_strength -= self._damage_boost
+        self._target.attack_strength -= self._damage_boost
