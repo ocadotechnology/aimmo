@@ -18,6 +18,7 @@ class _Pickup(object):
     def __init__(self, cell):
         self.cell = cell
         self.conditions = []
+        self.effects = {}
 
     def __str__(self):
         return self.__class__.__name__
@@ -33,11 +34,8 @@ class _Pickup(object):
             LOGGER.info("Could not complete pickup condition check :'( ")
             raise e
 
-    def apply(self, avatar=None, cell=None, team=None, goal=None, region=None, interactable=None):
-        self._apply(avatar)
-
     @abstractmethod
-    def _apply(self, avatar):
+    def apply(self, avatar=None, cell=None, region=None):
         raise NotImplementedError()
 
     @abstractmethod
@@ -57,6 +55,8 @@ class HealthPickup(_Pickup):
             raise ValueError("Health Restored has to be within 0-100 range!")
 
         self.conditions.append(avatar_on_cell(cell))
+        self.effects['give_health'] = self.give_health
+        self.effects['delete'] = self.delete
 
     def __repr__(self):
         return 'HealthPickup(health_restored={})'.format(self.health_restored)
@@ -70,13 +70,16 @@ class HealthPickup(_Pickup):
                 }
         }
 
-    def _apply(self, avatar):
+    def give_health(self, avatar):
         avatar.health += self.health_restored
 
         # Make sure the health is capped at 100.
         if avatar.health > AVATAR_HEALTH_MAX:
             avatar.health = AVATAR_HEALTH_MAX
-        self.delete()
+        
+    def apply(self, avatar=None, cell=None, region=None):
+        self.effects['give_health'](avatar)
+        self.effects['delete']()
 
 
 class _PickupEffect(_Pickup):
@@ -85,15 +88,17 @@ class _PickupEffect(_Pickup):
     def __init__(self, *args):
         super(_PickupEffect, self).__init__(*args)
         self.params = []
+        self.effects['give_effect'] = avatar.effects.add
+        self.effects['delete'] = self.delete
 
     @abstractproperty
     def EFFECT(self):
         raise NotImplementedError()
 
-    def _apply(self, avatar):
+    def apply(self, avatar=None, cell=None, region=None):
         self.params.append(avatar)
-        avatar.effects.add(self.EFFECT(*self.params))
-        self.delete()
+        self.effects['give_effect'](self.EFFECT(*self.params))
+        self.effects['delete']()
 
 
 class InvulnerabilityPickup(_PickupEffect):
