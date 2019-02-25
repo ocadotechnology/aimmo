@@ -87,8 +87,7 @@ class _PickupEffect(_Pickup):
 
     def __init__(self, *args):
         super(_PickupEffect, self).__init__(*args)
-        self.params = []
-        self.effects['give_effect'] = avatar.effects.add
+        self.effects['give_effect'] = self.EFFECT
         self.effects['delete'] = self.delete
 
     @abstractproperty
@@ -96,8 +95,9 @@ class _PickupEffect(_Pickup):
         raise NotImplementedError()
 
     def apply(self, avatar=None, cell=None, region=None):
-        self.params.append(avatar)
-        self.effects['give_effect'](self.EFFECT(*self.params))
+        avatar.effects.add(
+            self.effects['give_effect'](avatar)
+        )
         self.effects['delete']()
 
 
