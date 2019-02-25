@@ -31,7 +31,7 @@ class TestDamagePickupsAndEffects(TestCase):
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
         self.assertEqual(len(self.game.avatar_manager.get_avatar(1).effects), 1)
         damage_boost_effect = self.game.avatar_manager.get_avatar(1).effects.pop()
-        self.assertTrue(isinstance(damage_boost_effect, pickup_created.EFFECT))
+        self.assertTrue(isinstance(damage_boost_effect, pickup_created.effects['give_dmgBoost']))
 
     @given(st.integers(min_value=1))
     def test_damage_boost_pickup_can_be_picked_up_custom_integer(self, boost_value):
@@ -44,7 +44,7 @@ class TestDamagePickupsAndEffects(TestCase):
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
         self.assertEqual(len(self.game.avatar_manager.get_avatar(1).effects), 1)
         damage_boost_effect = self.game.avatar_manager.get_avatar(1).effects.pop()
-        self.assertTrue(isinstance(damage_boost_effect, pickup_created.EFFECT))
+        self.assertTrue(isinstance(damage_boost_effect, pickup_created.effects['give_dmgBoost']))
 
     @given(st.floats(min_value=1))
     def test_damage_boost_pickup_can_be_picked_up_custom_floats(self, boost_value):
@@ -58,7 +58,7 @@ class TestDamagePickupsAndEffects(TestCase):
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
         self.assertEqual(len(self.game.avatar_manager.get_avatar(1).effects), 1)
         damage_boost_effect = self.game.avatar_manager.get_avatar(1).effects.pop()
-        self.assertTrue(isinstance(damage_boost_effect, pickup_created.EFFECT))
+        self.assertTrue(isinstance(damage_boost_effect, pickup_created.effects['give_dmgBoost']))
 
     def test_damage_boost_increases_attack_strength_with_default_integer(self):
         """

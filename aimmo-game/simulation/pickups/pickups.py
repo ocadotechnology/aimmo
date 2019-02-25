@@ -82,31 +82,19 @@ class HealthPickup(_Pickup):
         self.effects['delete']()
 
 
-class _PickupEffect(_Pickup):
-    __metaclass__ = ABCMeta
-
-    def __init__(self, *args):
-        super(_PickupEffect, self).__init__(*args)
-        self.effects['give_effect'] = self.EFFECT
-        self.effects['delete'] = self.delete
-
-    @abstractproperty
-    def EFFECT(self):
-        raise NotImplementedError()
-
-    def apply(self, avatar=None, cell=None, region=None):
-        avatar.effects.add(
-            self.effects['give_effect'](avatar)
-        )
-        self.effects['delete']()
-
-
-class InvulnerabilityPickup(_PickupEffect):
-    EFFECT = effects.InvulnerabilityPickupEffect
-
+class InvulnerabilityPickup(_Pickup):
     def __init__(self, cell):
         super(InvulnerabilityPickup, self).__init__(cell)
         self.conditions.append(avatar_on_cell(cell))
+        self.effects['give_invulnerability'] = effects.InvulnerabilityPickupEffect
+        self.effects['delete'] = self.delete
+
+    def apply(self, avatar=None, cell=None, region=None):
+        self.effects['give_invulnerability'](avatar)
+        self.effects['delete']()
+
+    def __repr__(self):
+        return 'InvulnerabilityPickup(damage_boost={})'.format(self.damage_boost)
 
     def serialise(self):
         return {
@@ -118,17 +106,20 @@ class InvulnerabilityPickup(_PickupEffect):
         }
 
 
-class DamageBoostPickup(_PickupEffect):
-    EFFECT = effects.DamageBoostPickupEffect
-
+class DamageBoostPickup(_Pickup):
     def __init__(self, cell, damage_boost=DAMAGE_BOOST_DEFAULT):
         if damage_boost <= 0:
             raise ValueError("The damage_boost parameter is less than or equal to 0!")
 
         super(DamageBoostPickup, self).__init__(cell)
         self.conditions.append(avatar_on_cell(cell))
+        self.effects['give_dmgBoost'] = effects.DamageBoostPickupEffect
+        self.effects['delete'] = self.delete
         self.damage_boost = damage_boost
-        self.params.append(self.damage_boost)
+
+    def apply(self, avatar=None, cell=None, region=None):
+        self.effects['give_dmgBoost'](self.damage_boost, avatar)
+        self.effects['delete']()
 
     def __repr__(self):
         return 'DamageBoostPickup(damage_boost={})'.format(self.damage_boost)
