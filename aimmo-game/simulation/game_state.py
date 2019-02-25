@@ -1,5 +1,5 @@
 from threading import RLock
-from simulation.pickups.pickups import serialise_pickups
+from simulation.pickups.pickup_types import serialise_pickups
 
 
 class GameState:

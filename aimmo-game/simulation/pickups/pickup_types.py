@@ -2,8 +2,11 @@ from abc import ABCMeta, abstractmethod, abstractproperty
 from logging import getLogger
 from functools import reduce
 import simulation.effects as effects
-from simulation.world_map import WorldMap
 from simulation.pickups.pickup_conditions import avatar_on_cell
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from simulation.world_map import WorldMap
 LOGGER = getLogger(__name__)
 
 DAMAGE_BOOST_DEFAULT = 5
@@ -25,13 +28,9 @@ class _Pickup(object):
     def delete(self):
         self.cell.pickup = None
 
-    def conditions_met(self, world_map: WorldMap):
-        """ Applies logical and on all conditions, returns True is all conditions are met. """
-        try:
-            return all([c(world_map) for c in self.conditions])
-        except Exception as e:
-            LOGGER.info("Could not complete pickup condition check :'( ")
-            raise e
+    def conditions_met(self, world_map: 'WorldMap'):
+        """ Applies logical AND on all conditions, returns True is all conditions are met. """
+        return all([c(world_map) for c in self.conditions])
 
     def apply(self, avatar):
         self._apply(avatar)

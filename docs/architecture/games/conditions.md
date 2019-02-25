@@ -14,7 +14,7 @@ def avatar_on_cell(cell: Cell):
     return condition
 ```
 
-This condition allows an `Interactable` to check for the existence of an avatar of a given cell. It may look somewhat confusing, but this approach can make applying this idea relatively simple. For example, here is this condition as used by our pickups:
+This condition allows an `Interactable` to check for the existence of an avatar of a given cell. This approach can make applying this idea relatively simple. For example, here is this condition as used by our pickups:
 
 ```python
 self.conditions.append(avatar_on_cell(cell))

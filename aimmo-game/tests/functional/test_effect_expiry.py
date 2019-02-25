@@ -4,7 +4,7 @@ import asyncio
 from .mock_world import MockWorld
 
 from simulation.location import Location
-from simulation.pickups.pickups import DamageBoostPickup, InvulnerabilityPickup
+from simulation.pickups.pickup_types import DamageBoostPickup, InvulnerabilityPickup
 from simulation.effects import INVULNERABILITY_RESISTANCE
 
 

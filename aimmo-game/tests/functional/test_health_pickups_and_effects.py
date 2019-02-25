@@ -8,7 +8,7 @@ import hypothesis.strategies as st
 from .mock_world import MockWorld
 
 from simulation.location import Location
-from simulation.pickups.pickups import (
+from simulation.pickups.pickup_types import (
     HealthPickup, AVATAR_HEALTH_MAX, HEALTH_RESTORE_DEFAULT, HEALTH_RESTORE_MAX
 )
 
