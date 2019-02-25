@@ -33,9 +33,8 @@ class _Pickup(object):
             LOGGER.info("Could not complete pickup condition check :'( ")
             raise e
 
-    def apply(self, avatar):
+    def apply(self, avatar=None, cell=None, team=None, goal=None, region=None, interactable=None):
         self._apply(avatar)
-        self.delete()
 
     @abstractmethod
     def _apply(self, avatar):
@@ -77,6 +76,7 @@ class HealthPickup(_Pickup):
         # Make sure the health is capped at 100.
         if avatar.health > AVATAR_HEALTH_MAX:
             avatar.health = AVATAR_HEALTH_MAX
+        self.delete()
 
 
 class _PickupEffect(_Pickup):
@@ -93,6 +93,7 @@ class _PickupEffect(_Pickup):
     def _apply(self, avatar):
         self.params.append(avatar)
         avatar.effects.add(self.EFFECT(*self.params))
+        self.delete()
 
 
 class InvulnerabilityPickup(_PickupEffect):
