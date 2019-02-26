@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from simulation.world_map import WorldMap
+
 LOGGER = getLogger(__name__)
 
 DAMAGE_BOOST_DEFAULT = 5
