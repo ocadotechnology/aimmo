@@ -4,7 +4,7 @@ from logging import getLogger
 from typing import TYPE_CHECKING
 
 import simulation.effects as effects
-from simulation.pickups.pickup_conditions import TurnState, avatar_on_cell
+from simulation.pickups.conditions import TurnState, avatar_on_cell
 
 if TYPE_CHECKING:
     from simulation.world_map import WorldMap

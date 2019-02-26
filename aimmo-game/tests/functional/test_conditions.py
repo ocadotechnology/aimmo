@@ -1,13 +1,14 @@
-import pytest
-from hypothesis import given, assume
-from hypothesis import strategies as st
-import math
 import asyncio
+import math
+
+import pytest
+from hypothesis import assume, given
+from hypothesis import strategies as st
+from simulation.cell import Cell
+from simulation.location import Location
+from simulation.pickups.conditions import TurnState, avatar_on_cell
 
 from .mock_world import MockWorld
-from simulation.location import Location
-from simulation.cell import Cell
-from simulation.pickups.pickup_conditions import avatar_on_cell, TurnState
 
 
 @pytest.fixture
