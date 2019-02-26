@@ -1,5 +1,5 @@
-from typing import TYPE_CHECKING
 from logging import getLogger
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from simulation.world_map import WorldMap
@@ -11,7 +11,7 @@ class PickupApplier:
     """
     Applier for all pickups on the WorldMap.
 
-    Handles the checking of if conditions are met, then applies any effects for pickups
+    Handles the checking if conditions are met, then applies any effects for pickups
     where this occurs.
     """
 

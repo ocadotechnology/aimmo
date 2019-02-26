@@ -1,9 +1,10 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
-from logging import getLogger
 from functools import reduce
-import simulation.effects as effects
-from simulation.pickups.pickup_conditions import avatar_on_cell, TurnState
+from logging import getLogger
 from typing import TYPE_CHECKING
+
+import simulation.effects as effects
+from simulation.pickups.pickup_conditions import TurnState, avatar_on_cell
 
 if TYPE_CHECKING:
     from simulation.world_map import WorldMap
