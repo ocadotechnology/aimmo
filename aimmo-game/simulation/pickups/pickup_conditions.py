@@ -5,7 +5,7 @@ if TYPE_CHECKING:
     from simulation.world_map import WorldMap
 
 class TurnState:
-    def __init__(self, world_map: WorldMap, pickup_cell: Cell):
+    def __init__(self, world_map: 'WorldMap', pickup_cell: Cell):
         self.world_map = world_map
         self.pickup_cell = pickup_cell
 
