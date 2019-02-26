@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod, abstractproperty
 from logging import getLogger
 from functools import reduce
 import simulation.effects as effects
-from simulation.pickups.pickup_conditions import avatar_on_cell, Parameters
+from simulation.pickups.pickup_conditions import avatar_on_cell, TurnState
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -29,9 +29,9 @@ class _Pickup(object):
         self.cell.pickup = None
 
     def conditions_met(self, world_map: 'WorldMap'):
-        parameters = Parameters(world_map, self.cell)
+        turn_state = TurnState(world_map, self.cell)
         """ Applies logical AND on all conditions, returns True is all conditions are met. """
-        return all([condition(parameters) for condition in self.conditions])
+        return all([condition(turn_state) for condition in self.conditions])
 
     def apply(self, avatar):
         self._apply(avatar)
