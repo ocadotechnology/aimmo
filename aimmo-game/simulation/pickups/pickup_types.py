@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod, abstractproperty
 from logging import getLogger
 from functools import reduce
 import simulation.effects as effects
-from simulation.pickups.pickup_conditions import avatar_on_cell
+from simulation.pickups.pickup_conditions import avatar_on_cell, Parameters
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -29,8 +29,9 @@ class _Pickup(object):
         self.cell.pickup = None
 
     def conditions_met(self, world_map: 'WorldMap'):
+        parameters = Parameters(world_map, self.cell)
         """ Applies logical AND on all conditions, returns True is all conditions are met. """
-        return all([c(world_map) for c in self.conditions])
+        return all([condition(parameters) for condition in self.conditions])
 
     def apply(self, avatar):
         self._apply(avatar)
@@ -56,7 +57,7 @@ class HealthPickup(_Pickup):
         else:
             raise ValueError("Health Restored has to be within 0-100 range!")
 
-        self.conditions.append(avatar_on_cell(cell))
+        self.conditions.append(avatar_on_cell)
 
     def __repr__(self):
         return 'HealthPickup(health_restored={})'.format(self.health_restored)
@@ -99,7 +100,7 @@ class InvulnerabilityPickup(_PickupEffect):
 
     def __init__(self, cell):
         super(InvulnerabilityPickup, self).__init__(cell)
-        self.conditions.append(avatar_on_cell(cell))
+        self.conditions.append(avatar_on_cell)
 
     def serialise(self):
         return {
@@ -119,7 +120,7 @@ class DamageBoostPickup(_PickupEffect):
             raise ValueError("The damage_boost parameter is less than or equal to 0!")
 
         super(DamageBoostPickup, self).__init__(cell)
-        self.conditions.append(avatar_on_cell(cell))
+        self.conditions.append(avatar_on_cell)
         self.damage_boost = damage_boost
         self.params.append(self.damage_boost)
 
