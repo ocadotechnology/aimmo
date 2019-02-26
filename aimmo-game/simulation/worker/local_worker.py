@@ -1,17 +1,15 @@
-import atexit
 import itertools
 import logging
 import os
-import subprocess
 import docker
 import json
 
-from .worker_manager import WorkerManager
+from .worker import Worker
 
 LOGGER = logging.getLogger(__name__)
 
 
-class LocalWorkerManager(WorkerManager):
+class LocalWorker(Worker):
     """Relies on them already being created already."""
 
     host = os.environ.get('LOCALHOST_IP', '127.0.0.1')
@@ -25,7 +23,7 @@ class LocalWorkerManager(WorkerManager):
         self.game_id = os.environ['GAME_ID']
         self.port_counter = itertools.count(1989 + int(self.game_id) * 10000)
         self.client = docker.from_env()
-        super(LocalWorkerManager, self).__init__(*args, **kwargs)
+        super(LocalWorker, self).__init__(*args, **kwargs)
 
     def create_worker(self, player_id):
         assert(player_id not in self.workers)

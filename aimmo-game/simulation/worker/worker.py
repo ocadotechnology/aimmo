@@ -41,3 +41,9 @@ class Worker(object):
             LOGGER.exception('Unknown error while fetching turn data.')
             LOGGER.exception(e)
             self._set_defaults()
+
+    def create_worker(self, player_id):
+        raise NotImplementedError
+
+    def remove_worker(self, player_id):
+        raise NotImplementedError

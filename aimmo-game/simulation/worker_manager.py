@@ -47,17 +47,11 @@ class WorkerManager(object):
         for worker in self.player_id_to_worker.values():
             worker.log = None
 
-    def create_worker(self, player_id):
-        raise NotImplementedError
-
-    def remove_worker(self, player_id):
-        raise NotImplementedError
-
     def update_code(self, player):
         self.player_id_to_worker[player['id']].code = player['code']
 
     def add_new_worker(self, player_id):
-        worker_url_base = self.create_worker(player_id)
+        worker_url_base = Worker.create_worker(player_id)
         self.player_id_to_worker[player_id] = Worker(f'{worker_url_base}/turn/')
 
     def _parallel_map(self, func, iterable_args):
@@ -72,7 +66,7 @@ class WorkerManager(object):
 
     def delete_worker(self, player):
         del self.player_id_to_worker[player]
-        self.remove_worker(player)
+        Worker.remove_worker(player)
 
     def update_worker_codes(self, players):
         self._parallel_map(self.update_code, players)

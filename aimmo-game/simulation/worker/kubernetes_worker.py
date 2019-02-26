@@ -5,15 +5,15 @@ import time
 from kubernetes import client
 from kubernetes import config
 
-from .worker_manager import WorkerManager
+from .worker import Worker
 
 LOGGER = logging.getLogger(__name__)
 # Default here to stop import errors if imported when running locally
 K8S_NAMESPACE = os.environ.get('K8S_NAMESPACE', '')
 
 
-class KubernetesWorkerManager(WorkerManager):
-    """Kubernetes worker manager."""
+class KubernetesWorker(Worker):
+    """Kubernetes worker."""
 
     def __init__(self, *args, **kwargs):
         config.load_incluster_config()
@@ -21,7 +21,7 @@ class KubernetesWorkerManager(WorkerManager):
         self.game_id = os.environ['GAME_ID']
         self.game_url = os.environ['GAME_URL']
         self.pod_name = os.environ['POD_NAME']
-        super(KubernetesWorkerManager, self).__init__(*args, **kwargs)
+        super(KubernetesWorker, self).__init__(*args, **kwargs)
 
     @staticmethod
     def _create_a_label_selector_from_labels(label_list):
