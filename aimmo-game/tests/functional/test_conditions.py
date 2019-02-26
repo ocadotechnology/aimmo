@@ -19,13 +19,8 @@ def game():
 def test_avatar_on_cell(game):
     cell = game.game_state.world_map.get_cell(Location(1, 0))
     condition = avatar_on_cell(TurnState(game.game_state.world_map, cell))
-    assert condition is False
+    assert not condition
 
     cell = game.game_state.world_map.get_cell(Location(0, 0))
     condition = avatar_on_cell(TurnState(game.game_state.world_map, cell))
-    assert condition is True
-
-
-def test_passive_condition(game):
-    condition = passive(TurnState(None, None))
-    assert condition is True
+    assert condition
