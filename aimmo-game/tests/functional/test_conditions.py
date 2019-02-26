@@ -7,7 +7,7 @@ import asyncio
 from .mock_world import MockWorld
 from simulation.location import Location
 from simulation.cell import Cell
-from simulation.pickups.pickup_conditions import avatar_on_cell, passive, TurnState
+from simulation.pickups.pickup_conditions import avatar_on_cell, TurnState
 
 
 @pytest.fixture
