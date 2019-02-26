@@ -6,7 +6,8 @@ import asyncio
 
 from .mock_world import MockWorld
 from simulation.location import Location
-from simulation.pickups.pickups import DamageBoostPickup, DAMAGE_BOOST_DEFAULT
+from simulation.pickups import DamageBoostPickup
+from simulation.pickups.pickup_types import DAMAGE_BOOST_DEFAULT
 
 
 class TestDamagePickupsAndEffects(TestCase):

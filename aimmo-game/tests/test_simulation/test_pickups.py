@@ -4,7 +4,7 @@ import abc
 from unittest import TestCase
 
 from simulation import effects
-from simulation.pickups import pickups
+from simulation.pickups import pickup_types
 from .dummy_avatar import DummyAvatar
 from .maps import MockCell
 
@@ -49,11 +49,11 @@ class _BaseCases(object):
 
 
 class TestHealthPickup(_BaseCases.BasePickupTestCase):
-    pickup_class = pickups.HealthPickup
+    pickup_class = pickup_types.HealthPickup
 
     def test_invulnerability_is_applied(self):
         self.apply_pickup()
-        self.assertIsInstance(self.pickup, pickups.HealthPickup)
+        self.assertIsInstance(self.pickup, pickup_types.HealthPickup)
 
     def test_health_increases(self):
         self.apply_pickup()
@@ -108,12 +108,12 @@ class TestHealthPickup(_BaseCases.BasePickupTestCase):
 
 
 class TestInvulnerabilityPickup(_BaseCases.BasePickupEffectTestCase):
-    pickup_class = pickups.InvulnerabilityPickup
+    pickup_class = pickup_types.InvulnerabilityPickup
     effect_class = effects.InvulnerabilityPickupEffect
 
     def test_invulnerability_is_applied(self):
         self.apply_pickup()
-        self.assertIsInstance(self.pickup, pickups.InvulnerabilityPickup)
+        self.assertIsInstance(self.pickup, pickup_types.InvulnerabilityPickup)
 
     def test_second_invulnerability_can_be_picked_up(self):
         self.assertEqual(self.avatar.resistance, 0)
@@ -136,12 +136,12 @@ class TestInvulnerabilityPickup(_BaseCases.BasePickupEffectTestCase):
 
 
 class TestDamageBoostPickup(_BaseCases.BasePickupEffectTestCase):
-    pickup_class = pickups.DamageBoostPickup
+    pickup_class = pickup_types.DamageBoostPickup
     effect_class = effects.DamageBoostPickupEffect
 
     def test_damage_boost_pickup_is_applied(self):
         self.apply_pickup()
-        self.assertIsInstance(self.pickup, pickups.DamageBoostPickup)
+        self.assertIsInstance(self.pickup, pickup_types.DamageBoostPickup)
 
     def test_damage_boost_pickup_default_params(self):
         self.assertEqual(len(self.avatar.effects), 0)
