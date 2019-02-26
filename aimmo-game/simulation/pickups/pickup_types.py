@@ -138,7 +138,7 @@ class DamageBoostPickup(_PickupEffect):
         }
 
 
-def serialise_pickups(world_map):
+def serialize_pickups(world_map):
     return [cell.pickup.serialise() for cell in world_map.pickup_cells()]
 
 

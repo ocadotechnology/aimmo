@@ -5,11 +5,12 @@ if TYPE_CHECKING:
     from simulation.cell import Cell
 
 class TurnState:
+    """ Data structure used by conditions. """
     def __init__(self, world_map: 'WorldMap', pickup_cell: 'Cell'):
         self.world_map = world_map
         self.pickup_cell = pickup_cell
 
 
 def avatar_on_cell(turn_state: TurnState):
-    """ Returns an expression that checks if an avatar is on a specified cell """
+    """ Returns an expression that checks if an avatar is on a specified cell. """
     return turn_state.pickup_cell.avatar is not None
