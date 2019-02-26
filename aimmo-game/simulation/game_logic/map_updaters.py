@@ -1,11 +1,12 @@
+import math
+import random
 from abc import ABCMeta, abstractmethod
 from collections import namedtuple
-import random
-import math
 from logging import getLogger
-from simulation.pickups import pickups
+
 from simulation.cell import Cell
 from simulation.location import Location
+from simulation.pickups import ALL_PICKUPS
 
 LOGGER = getLogger(__name__)
 
@@ -46,7 +47,7 @@ class PickupUpdater(_MapUpdater):
         for cell in locations:
             if random.random() < world_map.settings['PICKUP_SPAWN_CHANCE']:
                 LOGGER.info('Adding new pickup at %s', cell)
-                cell.pickup = random.choice(pickups.ALL_PICKUPS)(cell)
+                cell.pickup = random.choice(ALL_PICKUPS)(cell)
 
 
 class MapExpander(_MapUpdater):

@@ -1,10 +1,16 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
-from logging import getLogger
 from functools import reduce
+from logging import getLogger
+from typing import TYPE_CHECKING
+
 import simulation.effects as effects
-from simulation.world_map import WorldMap
-from simulation.pickups.pickup_conditions import avatar_on_cell
+from simulation.pickups.conditions import TurnState, avatar_on_cell
+
+if TYPE_CHECKING:
+    from simulation.world_map import WorldMap
+
 LOGGER = getLogger(__name__)
+
 
 DAMAGE_BOOST_DEFAULT = 5
 HEALTH_RESTORE_DEFAULT = 3
@@ -26,13 +32,10 @@ class _Pickup(object):
     def delete(self):
         self.cell.pickup = None
 
-    def conditions_met(self, world_map: WorldMap):
+    def conditions_met(self, world_map: 'WorldMap'):
         """ Applies logical and on all conditions, returns True is all conditions are met. """
-        try:
-            return all([c(world_map) for c in self.conditions])
-        except Exception as e:
-            LOGGER.info("Could not complete pickup condition check :'( ")
-            raise e
+        turn_state = TurnState(world_map, self.cell)
+        return all([condition(turn_state) for condition in self.conditions])
 
     @abstractmethod
     def apply(self, avatar=None, cell=None, region=None):
@@ -54,7 +57,7 @@ class HealthPickup(_Pickup):
         else:
             raise ValueError("Health Restored has to be within 0-100 range!")
 
-        self.conditions.append(avatar_on_cell(cell))
+        self.conditions.append(avatar_on_cell)
         self.effects['give_health'] = self.give_health
         self.effects['delete'] = self.delete
 
@@ -85,7 +88,7 @@ class HealthPickup(_Pickup):
 class InvulnerabilityPickup(_Pickup):
     def __init__(self, cell):
         super(InvulnerabilityPickup, self).__init__(cell)
-        self.conditions.append(avatar_on_cell(cell))
+        self.conditions.append(avatar_on_cell)
         self.effects['give_invulnerability'] = effects.InvulnerabilityPickupEffect
         self.effects['delete'] = self.delete
 
@@ -112,7 +115,7 @@ class DamageBoostPickup(_Pickup):
             raise ValueError("The damage_boost parameter is less than or equal to 0!")
 
         super(DamageBoostPickup, self).__init__(cell)
-        self.conditions.append(avatar_on_cell(cell))
+        self.conditions.append(avatar_on_cell)
         self.effects['give_dmgBoost'] = effects.DamageBoostPickupEffect
         self.effects['delete'] = self.delete
         self.damage_boost = damage_boost
