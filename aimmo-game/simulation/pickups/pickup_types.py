@@ -3,10 +3,10 @@ from functools import reduce
 from logging import getLogger
 from typing import TYPE_CHECKING
 
-import simulation.effects as effects
+import simulation.pickups.effects
 from simulation.pickups.conditions import TurnState, avatar_on_cell
 
-if TYPE_CHECKING:
+if TYPE_CHECKING: 
     from simulation.world_map import WorldMap
 
 LOGGER = getLogger(__name__)
