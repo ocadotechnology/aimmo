@@ -1,11 +1,11 @@
-from unittest import TestCase
 import asyncio
+from unittest import TestCase
 
-from .mock_world import MockWorld
-
+from simulation.effects import INVULNERABILITY_RESISTANCE
 from simulation.location import Location
 from simulation.pickups import DamageBoostPickup, InvulnerabilityPickup
-from simulation.effects import INVULNERABILITY_RESISTANCE
+
+from .mock_world import MockWorld
 
 
 class TestEffectExpiry(TestCase):
@@ -26,7 +26,7 @@ class TestEffectExpiry(TestCase):
         }
 
         self.game = MockWorld(SETTINGS)
-        self.game.game_state.add_avatar(1, Location(0, 0))
+        self.game.simulation_runner.add_avatar(1, Location(0, 0))
         self.avatar = self.game.avatar_manager.get_avatar(1)
         self.cell = self.game.game_state.world_map.get_cell(Location(1, 0))
 

@@ -1,15 +1,15 @@
-import time
-import threading
-import logging
 import asyncio
 import concurrent.futures
+import logging
+import threading
+import time
+
 from prometheus_client import Histogram
 
+from metrics import GAME_TURN_TIME
+from simulation.avatar.avatar_manager import AvatarManager
 from simulation.django_communicator import DjangoCommunicator
 from simulation.simulation_runner import ConcurrentSimulationRunner
-from simulation.avatar.avatar_manager import AvatarManager
-
-from metrics import GAME_TURN_TIME
 
 LOGGER = logging.getLogger(__name__)
 
@@ -55,8 +55,8 @@ class GameRunner:
 
         self.worker_manager.add_workers(users_to_add)
         self.worker_manager.delete_workers(users_to_delete)
-        self.game_state.add_avatars(users_to_add)
-        self.game_state.delete_avatars(users_to_delete)
+        self.simulation_runner.add_avatars(users_to_add)
+        self.simulation_runner.delete_avatars(users_to_delete)
         self.worker_manager.update_worker_codes(game_metadata['users'])
 
         self.update_main_user(game_metadata)
