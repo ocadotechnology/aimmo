@@ -23,7 +23,6 @@ class SimulationRunner(object):
         self.communicator = communicator
         self._lock = threading.RLock()
 
-
     @abstractmethod
     async def run_turn(self, player_id_to_serialised_actions):
         pass

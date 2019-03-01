@@ -63,13 +63,13 @@ class TestSimulationRunner(unittest.TestCase):
         loop.run_until_complete(self.simulation_runner.run_turn(self.avatar_manager.avatars_by_id))
 
     def test_updates_map(self):
-        self.construct_simulation_runner([],[])
+        self.construct_simulation_runner([], [])
 
         self.simulation_runner.update_environment()
         self.assertEqual(self.game_state.world_map.updates, 1)
 
     def test_add_avatar(self):
-        self.construct_simulation_runner([],[])
+        self.construct_simulation_runner([], [])
 
         self.simulation_runner.add_avatar(7)
         self.assertIn(7, self.game_state.avatar_manager.avatars_by_id)
@@ -96,11 +96,11 @@ class TestSimulationRunner(unittest.TestCase):
         self.assertTrue(self.game_state.world_map.get_cell(Location(1, 1)).avatar.marked)
 
     def test_remove_non_existant_avatar(self):
-        self.construct_simulation_runner([],[])
+        self.construct_simulation_runner([], [])
         self.simulation_runner.remove_avatar(10)
 
     def test_updates_map_with_correct_num_avatars(self):
-        self.construct_simulation_runner([],[])
+        self.construct_simulation_runner([], [])
 
         self.avatar_manager.add_avatar(1)
         self.simulation_runner.update_environment()
