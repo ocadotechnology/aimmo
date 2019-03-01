@@ -1,9 +1,10 @@
-import logging
 import asyncio
+import logging
+import threading
 from abc import ABCMeta, abstractmethod
-from concurrent.futures import ALL_COMPLETED, ThreadPoolExecutor
-from simulation.action import PRIORITIES, WaitAction
 from threading import Thread
+
+from simulation.action import PRIORITIES, WaitAction
 
 LOGGER = logging.getLogger(__name__)
 
@@ -20,6 +21,8 @@ class SimulationRunner(object):
     def __init__(self, game_state, communicator):
         self.game_state = game_state
         self.communicator = communicator
+        self._lock = threading.RLock()
+
 
     @abstractmethod
     async def run_turn(self, player_id_to_serialised_actions):
@@ -43,16 +46,18 @@ class SimulationRunner(object):
         if avatar.decide_action(serialised_action):
             avatar.action.register(self.game_state.world_map)
 
-    def _update_environment(self, game_state):
-        num_avatars = len(game_state.avatar_manager.active_avatars)
-        game_state.world_map.reconstruct_interactive_state(num_avatars)
+    def update_environment(self):
+        with self._lock:
+            self.game_state._update_effects()
+            num_avatars = len(self.game_state.avatar_manager.active_avatars)
+            self.game_state.world_map.update(num_avatars)
 
     def _mark_complete(self):
         self.communicator.mark_game_complete(data=self.game_state.serialise())
 
     async def run_single_turn(self, player_id_to_serialised_actions):
         await self.run_turn(player_id_to_serialised_actions)
-        self.game_state.update_environment()
+        self.update_environment()
 
 
 class SequentialSimulationRunner(SimulationRunner):

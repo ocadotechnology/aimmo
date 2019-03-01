@@ -42,11 +42,6 @@ class GameState:
             for avatar in self.avatar_manager.active_avatars:
                 avatar.update_effects()
 
-    def update_environment(self):
-        with self._lock:
-            self._update_effects()
-            num_avatars = len(self.avatar_manager.active_avatars)
-            self.world_map.update(num_avatars)
 
     def get_main_avatar(self):
         with self._lock:

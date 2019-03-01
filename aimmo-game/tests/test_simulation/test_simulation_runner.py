@@ -1,15 +1,16 @@
 from __future__ import absolute_import
 
-import unittest
 import asyncio
+import unittest
 
 from simulation.avatar.avatar_appearance import AvatarAppearance
 from simulation.game_state import GameState
 from simulation.location import Location
 from simulation.simulation_runner import ConcurrentSimulationRunner
 
-from .dummy_avatar import (DummyAvatarManager, MoveEastDummy, MoveNorthDummy,
-                           MoveSouthDummy, MoveWestDummy, WaitDummy, DeadDummy)
+from .dummy_avatar import (DeadDummy, DummyAvatarManager, MoveEastDummy,
+                           MoveNorthDummy, MoveSouthDummy, MoveWestDummy,
+                           WaitDummy)
 from .maps import InfiniteMap
 from .mock_communicator import MockCommunicator
 
@@ -60,6 +61,24 @@ class TestSimulationRunner(unittest.TestCase):
     def run_turn(self):
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self.simulation_runner.run_turn(self.avatar_manager.avatars_by_id))
+
+    def test_updates_map(self):
+        self.construct_simulation_runner([],[])
+
+        self.simulation_runner.update_environment()
+        self.assertEqual(self.game_state.world_map.updates, 1)
+
+    def test_updates_map_with_correct_num_avatars(self):
+        self.construct_simulation_runner([],[])
+
+        self.avatar_manager.add_avatar(1)
+        self.simulation_runner.update_environment()
+        self.assertEqual(self.game_state.world_map.num_avatars, 1)
+
+        self.avatar_manager.add_avatar(2)
+        self.avatar_manager.add_avatar(3)
+        self.simulation_runner.update_environment()
+        self.assertEqual(self.game_state.world_map.num_avatars, 3)
 
     def test_run_turn(self):
         """

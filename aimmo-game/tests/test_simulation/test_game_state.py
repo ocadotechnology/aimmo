@@ -59,23 +59,23 @@ class TestGameState(TestCase):
         self.assertEqual(avatar.location.x, 10)
         self.assertEqual(avatar.location.y, 10)
 
-    def test_updates_map(self):
-        map = InfiniteMap()
-        state = GameState(map, DummyAvatarManager())
-        state.update_environment()
-        self.assertEqual(map.updates, 1)
+    # def test_updates_map(self):
+    #     map = InfiniteMap()
+    #     state = GameState(map, DummyAvatarManager())
+    #     state.update_environment()
+    #     self.assertEqual(map.updates, 1)
 
-    def test_updates_map_with_correct_num_avatars(self):
-        map = InfiniteMap()
-        manager = DummyAvatarManager()
-        manager.add_avatar(1)
-        state = GameState(map, manager)
-        state.update_environment()
-        self.assertEqual(map.num_avatars, 1)
-        manager.add_avatar(2)
-        manager.add_avatar(3)
-        state.update_environment()
-        self.assertEqual(map.num_avatars, 3)
+    # def test_updates_map_with_correct_num_avatars(self):
+    #     map = InfiniteMap()
+    #     manager = DummyAvatarManager()
+    #     manager.add_avatar(1)
+    #     state = GameState(map, manager)
+    #     state.update_environment()
+    #     self.assertEqual(map.num_avatars, 1)
+    #     manager.add_avatar(2)
+    #     manager.add_avatar(3)
+    #     state.update_environment()
+    #     self.assertEqual(map.num_avatars, 3)
 
     def test_no_main_avatar_by_default(self):
         state = GameState(EmptyMap(), DummyAvatarManager())
