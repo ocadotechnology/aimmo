@@ -95,7 +95,7 @@ class TestSimulationRunner(unittest.TestCase):
         self.assertTrue(self.avatar_manager.avatars_by_id[1].marked)
         self.assertTrue(self.game_state.world_map.get_cell(Location(1, 1)).avatar.marked)
 
-    def test_remove_non_existant_avatar(self):
+    def test_remove_non_existent_avatar(self):
         self.construct_simulation_runner([], [])
         self.simulation_runner.remove_avatar(10)
 
