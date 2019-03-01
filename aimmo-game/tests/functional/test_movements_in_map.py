@@ -1,13 +1,15 @@
-from unittest import TestCase
 import asyncio
+from unittest import TestCase
+
+from tests.test_simulation.dummy_avatar import (DeadDummy, MoveEastDummy,
+                                                MoveNorthDummy, MoveSouthDummy,
+                                                MoveWestDummy, WaitDummy)
+
+from simulation import map_generator
+from simulation.location import Location
+from simulation.simulation_runner import ConcurrentSimulationRunner
 
 from .mock_world import MockWorld
-from simulation.location import Location
-from simulation import map_generator
-from simulation.simulation_runner import ConcurrentSimulationRunner
-from tests.test_simulation.dummy_avatar import (
-    MoveEastDummy, MoveWestDummy, MoveNorthDummy, MoveSouthDummy, WaitDummy, DeadDummy
-)
 
 
 class TestMovementsInMap(TestCase):
@@ -25,7 +27,7 @@ class TestMovementsInMap(TestCase):
         """
         self.game = MockWorld(TestMovementsInMap.SETTINGS, dummy_list,
                               map_generator_class, ConcurrentSimulationRunner)
-        self.game.game_state.add_avatar(player_id=1, location=location)
+        self.game.simulation_runner.add_avatar(player_id=1, location=location)
         self.avatar = self.game.avatar_manager.get_avatar(1)
 
     def set_up_and_make_movements_in_a_single_direction(self, dummy_list,
@@ -119,7 +121,7 @@ class TestMovementsInMap(TestCase):
         """
         # Even number of cells between two avatars.
         self.set_up_environment([MoveEastDummy, MoveWestDummy])
-        self.game.game_state.add_avatar(2, Location(3, 0))
+        self.game.simulation_runner.add_avatar(2, Location(3, 0))
         avatar_two = self.game.avatar_manager.get_avatar(2)
 
         self.assertEqual(self.avatar.location, Location(0, 0))
@@ -136,7 +138,7 @@ class TestMovementsInMap(TestCase):
 
         # Odd number of cells between two avatars.
         self.set_up_environment([MoveEastDummy, MoveWestDummy])
-        self.game.game_state.add_avatar(2, Location(4, 0))
+        self.game.simulation_runner.add_avatar(2, Location(4, 0))
         avatar_two = self.game.avatar_manager.get_avatar(2)
 
         self.assertEqual(self.avatar.location, Location(0, 0))
@@ -153,7 +155,7 @@ class TestMovementsInMap(TestCase):
 
         # Live avatar can't move into a square occupied by a 'dead' (no worker) avatar
         self.set_up_environment([DeadDummy, MoveWestDummy])
-        self.game.game_state.add_avatar(2, Location(1, 0))
+        self.game.simulation_runner.add_avatar(2, Location(1, 0))
         avatar_two = self.game.avatar_manager.get_avatar(2)
 
         self.assertEqual(self.avatar.location, Location(0, 0))

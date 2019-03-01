@@ -26,7 +26,7 @@ class TestEffectExpiry(TestCase):
         }
 
         self.game = MockWorld(SETTINGS)
-        self.game.game_state.add_avatar(1, Location(0, 0))
+        self.game.simulation_runner.add_avatar(1, Location(0, 0))
         self.avatar = self.game.avatar_manager.get_avatar(1)
         self.cell = self.game.game_state.world_map.get_cell(Location(1, 0))
 

@@ -1,15 +1,16 @@
 from __future__ import absolute_import
 
-import unittest
 import asyncio
+import unittest
 
 from simulation.avatar.avatar_appearance import AvatarAppearance
 from simulation.game_state import GameState
 from simulation.location import Location
 from simulation.simulation_runner import ConcurrentSimulationRunner
 
-from .dummy_avatar import (DummyAvatarManager, MoveEastDummy, MoveNorthDummy,
-                           MoveSouthDummy, MoveWestDummy, WaitDummy, DeadDummy)
+from .dummy_avatar import (DeadDummy, DummyAvatar, DummyAvatarManager,
+                           MoveEastDummy, MoveNorthDummy, MoveSouthDummy,
+                           MoveWestDummy, WaitDummy)
 from .maps import InfiniteMap
 from .mock_communicator import MockCommunicator
 
@@ -47,7 +48,7 @@ class TestSimulationRunner(unittest.TestCase):
         self.simulation_runner = ConcurrentSimulationRunner(game_state=self.game_state,
                                                             communicator=MockCommunicator())
         for index, location in enumerate(locations):
-            self.game_state.add_avatar(index, location)
+            self.simulation_runner.add_avatar(index, location)
 
     def assert_at(self, avatar, location):
         self.assertEqual(avatar.location, location)
@@ -60,6 +61,55 @@ class TestSimulationRunner(unittest.TestCase):
     def run_turn(self):
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self.simulation_runner.run_turn(self.avatar_manager.avatars_by_id))
+
+    def test_updates_map(self):
+        self.construct_simulation_runner([], [])
+
+        self.simulation_runner.update_environment()
+        self.assertEqual(self.game_state.world_map.updates, 1)
+
+    def test_add_avatar(self):
+        self.construct_simulation_runner([], [])
+
+        self.simulation_runner.add_avatar(7)
+        self.assertIn(7, self.game_state.avatar_manager.avatars_by_id)
+
+        avatar = self.game_state.avatar_manager.avatars_by_id[7]
+        self.assertEqual(avatar.location.x, 2)
+        self.assertEqual(avatar.location.y, 2)
+
+    def test_remove_avatar(self):
+        self.construct_simulation_runner(
+            [DummyAvatar, DummyAvatar],
+            [Location(0, 0), Location(1, 1)]
+        )
+
+        avatar = self.get_avatar(1)
+        avatar.marked = True
+
+        self.simulation_runner.remove_avatar(0)
+
+        self.assertNotIn(0, self.avatar_manager.avatars_by_id)
+        self.assertEqual(self.game_state.world_map.get_cell(Location(0, 0)).avatar, None)
+
+        self.assertTrue(self.avatar_manager.avatars_by_id[1].marked)
+        self.assertTrue(self.game_state.world_map.get_cell(Location(1, 1)).avatar.marked)
+
+    def test_remove_non_existent_avatar(self):
+        self.construct_simulation_runner([], [])
+        self.simulation_runner.remove_avatar(10)
+
+    def test_updates_map_with_correct_num_avatars(self):
+        self.construct_simulation_runner([], [])
+
+        self.avatar_manager.add_avatar(1)
+        self.simulation_runner.update_environment()
+        self.assertEqual(self.game_state.world_map.num_avatars, 1)
+
+        self.avatar_manager.add_avatar(2)
+        self.avatar_manager.add_avatar(3)
+        self.simulation_runner.update_environment()
+        self.assertEqual(self.game_state.world_map.num_avatars, 3)
 
     def test_run_turn(self):
         """
