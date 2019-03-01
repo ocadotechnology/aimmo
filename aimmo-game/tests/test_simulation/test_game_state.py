@@ -4,9 +4,9 @@ from unittest import TestCase
 
 from simulation.game_state import GameState
 from simulation.location import Location
-from .dummy_avatar import DummyAvatar
-from .dummy_avatar import DummyAvatarManager
-from .maps import InfiniteMap, AvatarMap, EmptyMap
+
+from .dummy_avatar import DummyAvatar, DummyAvatarManager
+from .maps import AvatarMap, EmptyMap, InfiniteMap
 
 
 class TestGameState(TestCase):
@@ -86,18 +86,3 @@ class TestGameState(TestCase):
         (game_state, avatar, _, _) = self.game_state_with_two_avatars()
         game_state.main_avatar_id = avatar.player_id
         self.assertEqual(game_state.get_main_avatar(), avatar)
-
-    def test_is_complete_calls_lambda(self):
-        class LambdaTest(object):
-            def __init__(self, return_value):
-                self.return_value = return_value
-
-            def __call__(self, game_state):
-                self.game_state = game_state
-                return self.return_value
-
-        test = LambdaTest(True)
-        game_state = GameState(EmptyMap(), DummyAvatarManager(), test)
-        self.assertTrue(game_state.is_complete())
-        test.return_value = False
-        self.assertFalse(game_state.is_complete())

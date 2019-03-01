@@ -11,7 +11,6 @@ class GameState:
     def __init__(self, world_map, avatar_manager, completion_check_callback=lambda: None):
         self.world_map = world_map
         self.avatar_manager = avatar_manager
-        self._completion_callback = completion_check_callback
         self.main_avatar_id = None
         self._lock = RLock()
 
@@ -48,10 +47,6 @@ class GameState:
             self._update_effects()
             num_avatars = len(self.avatar_manager.active_avatars)
             self.world_map.update(num_avatars)
-
-    def is_complete(self):
-        with self._lock:
-            return self._completion_callback(self)
 
     def get_main_avatar(self):
         with self._lock:
