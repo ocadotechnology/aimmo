@@ -56,7 +56,7 @@ class GameRunner:
         self.worker_manager.add_workers(users_to_add)
         self.worker_manager.delete_workers(users_to_delete)
         self.simulation_runner.add_avatars(users_to_add)
-        self.game_state.delete_avatars(users_to_delete)
+        self.simulation_runner.delete_avatars(users_to_delete)
         self.worker_manager.update_worker_codes(game_metadata['users'])
 
         self.update_main_user(game_metadata)

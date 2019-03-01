@@ -14,19 +14,6 @@ class GameState:
         self.main_avatar_id = None
         self._lock = RLock()
 
-    def delete_avatars(self, player_ids):
-        for player_id in player_ids:
-            self.remove_avatar(player_id)
-
-    def remove_avatar(self, player_id):
-        with self._lock:
-            try:
-                avatar = self.avatar_manager.get_avatar(player_id)
-            except KeyError:
-                return
-            self.world_map.get_cell(avatar.location).avatar = None
-            self.avatar_manager.remove_avatar(player_id)
-
     def get_main_avatar(self):
         with self._lock:
             return self.avatar_manager.avatars_by_id[self.main_avatar_id]

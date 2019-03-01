@@ -66,9 +66,22 @@ class SimulationRunner(object):
             avatar = self.game_state.avatar_manager.add_avatar(player_id, location)
             self.game_state.world_map.get_cell(location).avatar = avatar
 
+    def remove_avatar(self, player_id):
+        with self._lock:
+            try:
+                avatar = self.game_state.avatar_manager.get_avatar(player_id)
+            except KeyError:
+                return
+            self.game_state.world_map.get_cell(avatar.location).avatar = None
+            self.game_state.avatar_manager.remove_avatar(player_id)
+
     def add_avatars(self, player_ids):
         for player_id in player_ids:
             self.add_avatar(player_id)
+
+    def delete_avatars(self, player_ids):
+        for player_id in player_ids:
+            self.remove_avatar(player_id)
 
     async def run_single_turn(self, player_id_to_serialised_actions):
         await self.run_turn(player_id_to_serialised_actions)
