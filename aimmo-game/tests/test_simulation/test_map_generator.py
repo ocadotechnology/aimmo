@@ -6,6 +6,7 @@ import unittest
 from simulation import map_generator
 from simulation.location import Location
 from simulation.map_generator import get_random_edge_index
+from simulation.simulation_runner import SequentialSimulationRunner
 from simulation.world_map import WorldMap
 
 from .dummy_avatar import DummyAvatarManager
@@ -131,6 +132,7 @@ class TestLevel1Generator(_BaseGeneratorTestCase):
 
     def test_static_spawn(self):
         game_state = self.get_game_state()
+        sim_runner = SequentialSimulationRunner(game_state, None)
         for i in range(5):
-            game_state.add_avatar(i)
+            sim_runner.add_avatar(i)
             self.assertEqual(game_state.avatar_manager.avatars_by_id[i].location, Location(-2, 0))

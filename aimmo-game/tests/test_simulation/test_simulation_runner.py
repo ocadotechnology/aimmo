@@ -48,7 +48,7 @@ class TestSimulationRunner(unittest.TestCase):
         self.simulation_runner = ConcurrentSimulationRunner(game_state=self.game_state,
                                                             communicator=MockCommunicator())
         for index, location in enumerate(locations):
-            self.game_state.add_avatar(index, location)
+            self.simulation_runner.add_avatar(index, location)
 
     def assert_at(self, avatar, location):
         self.assertEqual(avatar.location, location)
@@ -67,6 +67,16 @@ class TestSimulationRunner(unittest.TestCase):
 
         self.simulation_runner.update_environment()
         self.assertEqual(self.game_state.world_map.updates, 1)
+
+    def test_add_avatar(self):
+        self.construct_simulation_runner([],[])
+
+        self.simulation_runner.add_avatar(7)
+        self.assertIn(7, self.game_state.avatar_manager.avatars_by_id)
+
+        avatar = self.game_state.avatar_manager.avatars_by_id[7]
+        self.assertEqual(avatar.location.x, 2)
+        self.assertEqual(avatar.location.y, 2)
 
     def test_updates_map_with_correct_num_avatars(self):
         self.construct_simulation_runner([],[])

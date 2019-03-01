@@ -20,7 +20,7 @@ class TestHealthPickupAndEffects(TestCase):
         avatar manager, game state, turn manager and a map generator.
         """
         self.game = MockWorld()
-        self.game.game_state.add_avatar(1, Location(0, 0))
+        self.game.simulation_runner.add_avatar(1, Location(0, 0))
         self.cell = self.game.game_state.world_map.get_cell(Location(1, 0))
         self.initial_health = self.game.avatar_manager.get_avatar(1).health
         self.loop = asyncio.get_event_loop()

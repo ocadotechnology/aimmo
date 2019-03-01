@@ -46,14 +46,29 @@ class SimulationRunner(object):
         if avatar.decide_action(serialised_action):
             avatar.action.register(self.game_state.world_map)
 
+    def _update_effects(self):
+        with self._lock:
+            for avatar in self.game_state.avatar_manager.active_avatars:
+                avatar.update_effects()
+
     def update_environment(self):
         with self._lock:
-            self.game_state._update_effects()
+            self._update_effects()
             num_avatars = len(self.game_state.avatar_manager.active_avatars)
             self.game_state.world_map.update(num_avatars)
 
     def _mark_complete(self):
         self.communicator.mark_game_complete(data=self.game_state.serialise())
+
+    def add_avatar(self, player_id, location=None):
+        with self._lock:
+            location = self.game_state.world_map.get_random_spawn_location() if location is None else location
+            avatar = self.game_state.avatar_manager.add_avatar(player_id, location)
+            self.game_state.world_map.get_cell(location).avatar = avatar
+
+    def add_avatars(self, player_ids):
+        for player_id in player_ids:
+            self.add_avatar(player_id)
 
     async def run_single_turn(self, player_id_to_serialised_actions):
         await self.run_turn(player_id_to_serialised_actions)
