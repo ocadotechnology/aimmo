@@ -3,8 +3,9 @@ from functools import reduce
 from logging import getLogger
 from typing import TYPE_CHECKING
 
-import simulation.pickups.effects
 from simulation.pickups.conditions import TurnState, avatar_on_cell
+from simulation.pickups.effects import (DamageBoostPickupEffect,
+                                        InvulnerabilityPickupEffect)
 
 if TYPE_CHECKING: 
     from simulation.world_map import WorldMap
@@ -24,7 +25,7 @@ class _Pickup(object):
     def __init__(self, cell):
         self.cell = cell
         self.conditions = []
-        self.effects = {}
+        self.effects = []
 
     def __str__(self):
         return self.__class__.__name__
@@ -58,8 +59,8 @@ class HealthPickup(_Pickup):
             raise ValueError("Health Restored has to be within 0-100 range!")
 
         self.conditions.append(avatar_on_cell)
-        self.effects['give_health'] = self.give_health
-        self.effects['delete'] = self.delete
+        self.effects.append(self.give_health)
+        self.effects.append(self.delete)
 
     def __repr__(self):
         return 'HealthPickup(health_restored={})'.format(self.health_restored)
@@ -81,20 +82,20 @@ class HealthPickup(_Pickup):
             avatar.health = AVATAR_HEALTH_MAX
         
     def apply(self, avatar=None, cell=None, region=None):
-        self.effects['give_health'](avatar)
-        self.effects['delete']()
+        self.effects[0](avatar)
+        self.effects[1]()
 
 
 class InvulnerabilityPickup(_Pickup):
     def __init__(self, cell):
         super(InvulnerabilityPickup, self).__init__(cell)
         self.conditions.append(avatar_on_cell)
-        self.effects['give_invulnerability'] = effects.InvulnerabilityPickupEffect
-        self.effects['delete'] = self.delete
+        self.effects.append(InvulnerabilityPickupEffect)
+        self.effects.append(self.delete)
 
     def apply(self, avatar=None, cell=None, region=None):
-        self.effects['give_invulnerability'](avatar)
-        self.effects['delete']()
+        self.effects[0](avatar)
+        self.effects[1]()
 
     def __repr__(self):
         return 'InvulnerabilityPickup(damage_boost={})'.format(self.damage_boost)
@@ -116,13 +117,13 @@ class DamageBoostPickup(_Pickup):
 
         super(DamageBoostPickup, self).__init__(cell)
         self.conditions.append(avatar_on_cell)
-        self.effects['give_dmgBoost'] = effects.DamageBoostPickupEffect
-        self.effects['delete'] = self.delete
+        self.effects.append(DamageBoostPickupEffect)
+        self.effects.append(self.delete)
         self.damage_boost = damage_boost
 
     def apply(self, avatar=None, cell=None, region=None):
-        self.effects['give_dmgBoost'](self.damage_boost, avatar)
-        self.effects['delete']()
+        self.effects[0](self.damage_boost, avatar)
+        self.effects[1]()
 
     def __repr__(self):
         return 'DamageBoostPickup(damage_boost={})'.format(self.damage_boost)

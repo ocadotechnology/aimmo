@@ -46,7 +46,7 @@ class TestEffectExpiry(TestCase):
                 self.game.avatar_manager.get_player_id_to_serialised_action()
             ))
 
-        self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created.effects['give_dmgBoost']))
+        self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created.effects[0]))
         self.assertEqual(list(self.avatar.effects)[0]._time_remaining, 5)
         self.assertEqual(self.avatar.attack_strength, 11)
 
@@ -73,7 +73,7 @@ class TestEffectExpiry(TestCase):
         for i in range(6):
             loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
 
-        self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created.effects['give_invulnerability']))
+        self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created.effects[0]))
         self.assertEqual(list(self.avatar.effects)[0]._time_remaining, 5)
         self.assertEqual(self.avatar.resistance, INVULNERABILITY_RESISTANCE)
 
@@ -105,7 +105,7 @@ class TestEffectExpiry(TestCase):
             self.game.avatar_manager.get_player_id_to_serialised_action()
         ))
 
-        self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created_one.effects['give_dmgBoost']))
+        self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created_one.effects[0]))
         self.assertEqual(len(self.avatar.effects), 1)
         self.assertEqual(list(self.avatar.effects)[0]._time_remaining, 10)
         self.assertEqual(self.avatar.attack_strength, 11)
@@ -116,7 +116,7 @@ class TestEffectExpiry(TestCase):
                 self.game.avatar_manager.get_player_id_to_serialised_action()
             ))
 
-        self.assertTrue(isinstance(list(self.avatar.effects)[1], pickup_created_two.effects['give_dmgBoost']))
+        self.assertTrue(isinstance(list(self.avatar.effects)[1], pickup_created_two.effects[0]))
         self.assertEqual(len(self.avatar.effects), 2)
         self.assertEqual(self.avatar.attack_strength, 26)
 
@@ -160,7 +160,7 @@ class TestEffectExpiry(TestCase):
             self.game.avatar_manager.get_player_id_to_serialised_action()
         ))
 
-        self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created_one.effects['give_invulnerability']))
+        self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created_one.effects[0]))
         self.assertEqual(len(self.avatar.effects), 1)
         self.assertEqual(list(self.avatar.effects)[0]._time_remaining, 10)
         self.assertEqual(self.avatar.resistance, INVULNERABILITY_RESISTANCE)
@@ -171,7 +171,7 @@ class TestEffectExpiry(TestCase):
                 self.game.avatar_manager.get_player_id_to_serialised_action()
             ))
 
-        self.assertTrue(isinstance(list(self.avatar.effects)[1], pickup_created_two.effects['give_invulnerability']))
+        self.assertTrue(isinstance(list(self.avatar.effects)[1], pickup_created_two.effects[0]))
         self.assertEqual(len(self.avatar.effects), 2)
         self.assertEqual(self.avatar.resistance, INVULNERABILITY_RESISTANCE * 2)
 
