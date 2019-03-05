@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, List
 
 if TYPE_CHECKING:
-    from simulation.world_map import WorldMap
+    from simulation.game_state import GameState
     from simulation.cell import Cell
 
 
@@ -12,8 +12,8 @@ class TurnState:
     On a given turn, all conditions for a pickup get access to the same TurnState object.
     """
 
-    def __init__(self, world_map: 'WorldMap', pickup_cell: 'Cell'):
-        self.world_map = world_map
+    def __init__(self, game_state: 'GameState', pickup_cell: 'Cell'):
+        self.game_state = game_state
         self.pickup_cell = pickup_cell
 
 

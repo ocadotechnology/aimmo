@@ -2,7 +2,7 @@ from logging import getLogger
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from simulation.world_map import WorldMap
+    from simulation.game_state import GameState
 
 LOGGER = getLogger(__name__)
 
@@ -15,8 +15,8 @@ class PickupApplier:
     where this occurs.
     """
 
-    def apply(self, worldmap: 'WorldMap'):
+    def apply(self, game_state: 'GameState'):
         """ Applies pickup effects to any avatar that is on a pickup cell """
-        for cell in worldmap.pickup_cells():
-            if cell.pickup.conditions_met(worldmap):
+        for cell in game_state.world_map.pickup_cells():
+            if cell.pickup.conditions_met(game_state):
                 cell.pickup.apply(cell.avatar)

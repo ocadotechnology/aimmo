@@ -54,7 +54,7 @@ class SimulationRunner(object):
         with self._lock:
             self._update_effects()
             num_avatars = len(self.game_state.avatar_manager.active_avatars)
-            self.game_state.world_map.update(num_avatars)
+            self.game_state.world_map.update(num_avatars, self.game_state)
 
     def _mark_complete(self):
         self.communicator.mark_game_complete(data=self.game_state.serialise())

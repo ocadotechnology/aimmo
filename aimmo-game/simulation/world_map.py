@@ -1,10 +1,12 @@
 import math
 from logging import getLogger
 
+from simulation.cell import Cell
+from simulation.game_logic import (MapContext, MapExpander, PickupApplier,
+                                   PickupUpdater, ScoreLocationUpdater,
+                                   SpawnLocationFinder)
 from simulation.level_settings import DEFAULT_LEVEL_SETTINGS
 from simulation.location import Location
-from simulation.game_logic import SpawnLocationFinder, ScoreLocationUpdater, MapContext, PickupUpdater, MapExpander, PickupApplier
-from simulation.cell import Cell
 
 LOGGER = getLogger(__name__)
 
@@ -105,13 +107,13 @@ class WorldMap(object):
     def num_cells(self):
         return self.num_rows * self.num_cols
 
-    def update(self, num_avatars):
-        self._update_avatars()
+    def update(self, num_avatars, game_state):
+        self._update_avatars(game_state)
         self._update_map(num_avatars)
 
-    def _update_avatars(self):
+    def _update_avatars(self, game_state):
         self._apply_score()
-        PickupApplier().apply(self)
+        PickupApplier().apply(game_state)
 
     def _apply_score(self):
         for cell in self.score_cells():
