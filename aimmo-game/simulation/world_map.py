@@ -2,6 +2,7 @@ import math
 from logging import getLogger
 
 from simulation.cell import Cell
+from simulation.game_logic import SpawnLocationFinder
 from simulation.level_settings import DEFAULT_LEVEL_SETTINGS
 from simulation.location import Location
 

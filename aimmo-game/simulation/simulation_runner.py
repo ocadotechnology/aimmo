@@ -5,6 +5,9 @@ from abc import ABCMeta, abstractmethod
 from threading import Thread
 
 from simulation.action import PRIORITIES, WaitAction
+from simulation.game_logic import (MapContext, MapExpander, PickupApplier,
+                                   PickupUpdater, ScoreLocationUpdater,
+                                   SpawnLocationFinder)
 
 LOGGER = logging.getLogger(__name__)
 
