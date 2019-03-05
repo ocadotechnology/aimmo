@@ -1,5 +1,8 @@
 from threading import RLock
 
+from simulation.game_logic import (MapContext, MapExpander, PickupApplier,
+                                   PickupUpdater, ScoreLocationUpdater,
+                                   SpawnLocationFinder)
 from simulation.pickups.pickup_types import serialise_pickups
 
 

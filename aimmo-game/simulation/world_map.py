@@ -2,9 +2,6 @@ import math
 from logging import getLogger
 
 from simulation.cell import Cell
-from simulation.game_logic import (MapContext, MapExpander, PickupApplier,
-                                   PickupUpdater, ScoreLocationUpdater,
-                                   SpawnLocationFinder)
 from simulation.level_settings import DEFAULT_LEVEL_SETTINGS
 from simulation.location import Location
 
@@ -106,27 +103,6 @@ class WorldMap(object):
     @property
     def num_cells(self):
         return self.num_rows * self.num_cols
-
-    def update(self, num_avatars, game_state):
-        self._update_avatars(game_state)
-        self._update_map(num_avatars)
-
-    def _update_avatars(self, game_state):
-        self._apply_score()
-        PickupApplier().apply(game_state)
-
-    def _apply_score(self):
-        for cell in self.score_cells():
-            try:
-                cell.avatar.score += 1
-            except AttributeError:
-                pass
-
-    def _update_map(self, num_avatars):
-        context = MapContext(num_avatars=num_avatars)
-        MapExpander().update(self, context=context)
-        ScoreLocationUpdater().update(self, context=context)
-        PickupUpdater().update(self, context=context)
 
     def can_move_to(self, target_location):
         if not self.is_on_map(target_location):
