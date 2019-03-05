@@ -21,6 +21,7 @@ class _Pickup(object):
         self.cell = cell
         self.conditions = []
         self.effects = []
+        self.targets = []
 
     def __str__(self):
         return self.__class__.__name__
@@ -33,11 +34,11 @@ class _Pickup(object):
         turn_state = TurnState(game_state, self.cell)
         return all([condition(turn_state) for condition in self.conditions])
 
+    
     def apply(self, game_state: 'GameState'):
         """Apply all effects in sequential order."""
-        turn_state = TurnState(game_state, self.cell)
-        for effect in self.effects:
-            effect(turn_state)
+        for effect, target in zip(self.effects, self.targets):
+            effect(target)
 
     @abstractmethod
     def serialise(self):
@@ -48,8 +49,12 @@ class HealthPickup(_Pickup):
     def __init__(self, cell):
         super(HealthPickup, self).__init__(cell)
         self.conditions.append(avatar_on_cell)
+
         self.effects.append(HealthPickupEffect)
+        self.targets.append(self.cell)
+
         self.effects.append(self.delete)
+        self.targets.append(None)
 
     def __repr__(self):
         return 'HealthPickup(Location={})'.format(self.cell.location)
@@ -68,8 +73,12 @@ class InvulnerabilityPickup(_Pickup):
     def __init__(self, cell):
         super(InvulnerabilityPickup, self).__init__(cell)
         self.conditions.append(avatar_on_cell)
+
         self.effects.append(InvulnerabilityPickupEffect)
+        self.targets.append(self.cell)
+
         self.effects.append(self.delete)
+        self.targets.append(None)
 
     def __repr__(self):
         return 'InvulnerabilityPickup(Location={})'.format(self.cell.location)
@@ -88,8 +97,12 @@ class DamageBoostPickup(_Pickup):
     def __init__(self, cell):
         super(DamageBoostPickup, self).__init__(cell)
         self.conditions.append(avatar_on_cell)
+        
         self.effects.append(DamageBoostPickupEffect)
+        self.targets.append(self.cell)
+
         self.effects.append(self.delete)
+        self.targets.append(None)
 
     def __repr__(self):
         return 'DamageBoostPickup(Location={})'.format(self.cell.location)

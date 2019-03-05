@@ -6,9 +6,9 @@ import hypothesis.strategies as st
 from hypothesis import given
 from simulation.location import Location
 from simulation.pickups import HealthPickup
-from simulation.pickups.pickup_types import (AVATAR_HEALTH_MAX,
-                                             HEALTH_RESTORE_DEFAULT,
-                                             HEALTH_RESTORE_MAX)
+from simulation.pickups.effects import (AVATAR_HEALTH_MAX,
+                                        HEALTH_RESTORE_DEFAULT,
+                                        HEALTH_RESTORE_MAX)
 
 from .mock_world import MockWorld
 

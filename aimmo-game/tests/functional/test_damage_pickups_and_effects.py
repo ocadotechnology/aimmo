@@ -6,7 +6,7 @@ from hypothesis import assume, given
 from hypothesis import strategies as st
 from simulation.location import Location
 from simulation.pickups import DamageBoostPickup
-from simulation.pickups.pickup_types import DAMAGE_BOOST_DEFAULT
+from simulation.pickups.effects import DAMAGE_BOOST_DEFAULT
 
 from .mock_world import MockWorld
 
