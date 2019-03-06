@@ -35,10 +35,19 @@ class _Pickup(object):
         return all([condition(turn_state) for condition in self.conditions])
 
     
-    def apply(self, game_state: 'GameState'):
-        """Apply all effects in sequential order."""
+    def apply(self):
+        """
+        Apply all effects in sequential order.
+        
+        Targets for effects can be a single object, or a list of objects. all
+        targets must have an 'effect' attribute that is of type=set.
+        """
         for effect, target in zip(self.effects, self.targets):
-            effect(target)
+            if isinstance(type(target), list):
+                for sub_target in target:
+                    effect(sub_target)
+            else:
+                effect(target)
 
     @abstractmethod
     def serialise(self):
@@ -51,7 +60,7 @@ class HealthPickup(_Pickup):
         self.conditions.append(avatar_on_cell)
 
         self.effects.append(HealthPickupEffect)
-        self.targets.append(self.cell)
+        self.targets.append(self.cell.avatar)
 
         self.effects.append(self.delete)
         self.targets.append(None)
@@ -75,7 +84,7 @@ class InvulnerabilityPickup(_Pickup):
         self.conditions.append(avatar_on_cell)
 
         self.effects.append(InvulnerabilityPickupEffect)
-        self.targets.append(self.cell)
+        self.targets.append(self.cell.avatar)
 
         self.effects.append(self.delete)
         self.targets.append(None)
@@ -99,7 +108,7 @@ class DamageBoostPickup(_Pickup):
         self.conditions.append(avatar_on_cell)
         
         self.effects.append(DamageBoostPickupEffect)
-        self.targets.append(self.cell)
+        self.targets.append(self.cell.avatar)
 
         self.effects.append(self.delete)
         self.targets.append(None)
