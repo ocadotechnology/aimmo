@@ -22,7 +22,13 @@ FIVE_RIGHT_OF_ORIGIN = Location(5, 0)
 ABOVE_ORIGIN = Location(0, 1)
 FIVE_RIGHT_OF_ORIGIN_AND_ONE_ABOVE = Location(5, 1)
 
-
+SETTINGS = {
+            'TARGET_NUM_CELLS_PER_AVATAR': 0,
+            'TARGET_NUM_PICKUPS_PER_AVATAR': 0,
+            'TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR': 0,
+            'SCORE_DESPAWN_CHANCE': 0,
+            'PICKUP_SPAWN_CHANCE': 0,
+        }
 class MockGameState(GameState):
     def get_state_for(self, avatar):
         return self
@@ -37,6 +43,20 @@ class TestSimulationRunner(unittest.TestCase):
             o : Avatar successfully moved
             ! : Dead avatar (that should be waiting)
     """
+
+    def _generate_grid(self, columns=2, rows=2):
+        alphabet = iter(ascii_uppercase)
+        grid = {Location(x, y): MockCell(Location(x, y), name=next(alphabet))
+                for x in range(columns) for y in range(rows)}
+        return grid
+
+    def assertGridSize(self, world_map, expected_columns, expected_rows=None):
+        if expected_rows is None:
+            expected_rows = expected_columns
+        self.assertEqual(world_map.num_rows, expected_rows)
+        self.assertEqual(world_map.num_cols, expected_columns)
+        self.assertEqual(world_map.num_cells, expected_rows*expected_columns)
+        self.assertEqual(len(list(world_map.all_cells())), expected_rows*expected_columns)
 
     def construct_default_avatar_appearance(self):
         return AvatarAppearance("#000", "#ddd", "#777", "#fff")
@@ -104,12 +124,167 @@ class TestSimulationRunner(unittest.TestCase):
 
         self.avatar_manager.add_avatar(1)
         self.simulation_runner.update_environment()
-        self.assertEqual(self.game_state.world_map.num_avatars, 1)
+        self.assertEqual(self.simulation_runner.game_state.world_map.num_avatars, 1)
 
         self.avatar_manager.add_avatar(2)
         self.avatar_manager.add_avatar(3)
         self.simulation_runner.update_environment()
         self.assertEqual(self.game_state.world_map.num_avatars, 3)
+
+    def test_grid_expand(self):
+        self.construct_simulation_runner([], [])
+        settings = SETTINGS.copy()
+        settings['TARGET_NUM_CELLS_PER_AVATAR'] = 5
+        self.simulation_runner.game_state.world_map = WorldMap(self._generate_grid(), SETTINGS)
+        self.simulation_runner.update(1)
+        self.assertTrue(world_map.is_on_map(Location(-1, -1)))
+        self.assertTrue(world_map.is_on_map(Location(-1, 2)))
+        self.assertTrue(world_map.is_on_map(Location(2, 2)))
+        self.assertTrue(world_map.is_on_map(Location(2, -1)))
+        self.assertGridSize(world_map, 4)
+
+        self.simulation_runner.update(4)
+        self.assertGridSize(world_map, 6)
+        self.assertTrue(world_map.is_on_map(Location(0, 3)))
+        self.assertTrue(world_map.is_on_map(Location(3, 0)))
+        self.assertTrue(world_map.is_on_map(Location(-2, 0)))
+        self.assertTrue(world_map.is_on_map(Location(0, -2)))
+
+    def test_grid_doesnt_expand(self):
+        self.construct_simulation_runner([], [])
+        settings = SETTINGS.copy()
+        settings['TARGET_NUM_CELLS_PER_AVATAR'] = 4
+        self.simulation_runner.game_state.world_map = WorldMap(self._generate_grid(), settings)
+        self.simulation_runner.update(1)
+        self.assertGridSize(world_map, 2)
+
+    def test_scores_removed(self):
+        self.construct_simulation_runner([], [])
+        settings = SETTINGS.copy()
+        settings['SCORE_DESPAWN_CHANCE'] = 1
+        grid = self._generate_grid()
+        grid[Location(0, 1)].generates_score = True
+        self.simulation_runner.game_state.world_map = WorldMap(grid, SETTINGS)
+        self.simulation_runner.update(1)
+        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.score_cells())), 0)
+
+    def test_score_despawn_chance(self):
+        self.construct_simulation_runner([], [])
+        settings = SETTINGS.copy()
+        settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR'] = 0
+        grid = self._generate_grid()
+        grid[Location(0, 1)].generates_score = True
+        self.simulation_runner.game_state.world_map = WorldMap(grid, self.settings)
+        self.simulation_runner.update(1)
+        self.assertIn(grid[Location(0, 1)], world_map.score_cells())
+        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.score_cells())), 1)
+
+    def test_scores_added(self):
+        self.construct_simulation_runner([], [])
+        settings = SETTINGS.copy()
+        settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR'] = 1
+        self.simulation_runner.game_state.world_map = WorldMap(self._generate_grid(), settings)
+        self.simulation_runner.update(1)
+        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.score_cells())), 1)
+
+        self.simulation_runner.update(2)
+        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.score_cells())), 2)
+
+    def test_scores_applied(self):
+        self.construct_simulation_runner([], [])
+        grid = self._generate_grid()
+        avatar = DummyAvatar()
+        grid[Location(1, 1)].generates_score = True
+        grid[Location(1, 1)].avatar = avatar
+        self.simulation_runner.game_state.world_map = WorldMap(grid, self.settings)
+        self.simulation_runner.update(1)
+        self.assertEqual(avatar.score, 1)
+
+    def test_scores_not_added_when_at_target(self):
+        self.construct_simulation_runner([], [])
+        settings = SETTINGS.copy()
+        settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR'] = 1
+        grid = self._generate_grid()
+        grid[Location(0, 1)].generates_score = True
+        world_map = WorldMap(grid, self.settings)
+        self.simulation_runner.game_state.world_map = WorldMap(grid, self.settings)
+        self.simulation_runner.update(1)
+        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.score_cells())), 1)
+        self.assertIn(grid[Location(0, 1)], self.simulation_runner.game_state.world_map.score_cells())
+
+    def test_not_enough_score_space(self):
+        self.construct_simulation_runner([], [])
+        settings = SETTINGS.copy()
+        settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR'] = 1
+        grid = self._generate_grid(1, 1)
+        grid[Location(0, 0)].avatar = 'avatar'
+        self.simulation_runner.game_state.world_map = WorldMap(grid, self.settings)
+        self.simulation_runner.update(1)
+        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.score_cells())), 0)
+
+    def test_not_enough_score_space(self):
+        self.construct_simulation_runner([], [])
+        settings = SETTINGS.copy()
+        settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR'] = 1
+        grid = self._generate_grid(1, 1)
+        grid[Location(0, 0)].avatar = 'avatar'
+        self.simulation_runner.game_state.world_map = WorldMap(grid, self.settings)
+        self.simulation_runner.update(1)
+        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.score_cells())), 0)
+
+    def test_pickups_added(self):
+        self.construct_simulation_runner([], [])
+        settings = SETTINGS.copy()
+        settings['TARGET_NUM_PICKUPS_PER_AVATAR'] = 1
+        settings['PICKUP_SPAWN_CHANCE'] = 1
+        self.simulation_runner.game_state.world_map = WorldMap(self._generate_grid(), self.settings)
+        self.simulation_runner.update(1)
+        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.pickup_cells())), 1)
+
+        self.simulation_runner.update(2)
+        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.pickup_cells())), 2)
+
+    def test_pickups_applied(self):
+        self.construct_simulation_runner([], [])
+        grid = self._generate_grid()
+        pickup = MockPickup()
+        avatar = DummyAvatar()
+        grid[Location(1, 1)].pickup = pickup
+        grid[Location(1, 1)].avatar = avatar
+        self.simulation_runner.game_state.world_map = WorldMap(grid, self.settings)
+        self.simulation_runner.update(1)
+        self.assertEqual(pickup.applied_to, avatar)
+
+    def test_pickup_spawn_chance(self):
+        self.construct_simulation_runner([], [])
+        settings = SETTINGS.copy()
+        settings['TARGET_NUM_PICKUPS_PER_AVATAR'] = 5
+        settings['PICKUP_SPAWN_CHANCE'] = 0
+        grid = self._generate_grid()
+        self.simulation_runner.game_state.world_map = WorldMap(grid, self.settings)
+        self.simulation_runner.update(1)
+        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.pickup_cells())), 0)
+
+    def test_pickups_not_added_when_at_target(self):
+        self.construct_simulation_runner([], [])
+        settings = SETTINGS.copy()
+        settings['TARGET_NUM_PICKUPS_PER_AVATAR'] = 1
+        grid = self._generate_grid()
+        grid[Location(0, 1)].pickup = MockPickup()
+        self.simulation_runner.game_state.world_map = WorldMap(grid, self.settings)
+        self.simulation_runner.update(1)
+        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.pickup_cells())), 1)
+        self.assertIn(grid[Location(0, 1)], self.simulation_runner.game_state.world_map.pickup_cells())
+
+    def test_not_enough_pickup_space(self):
+        self.construct_simulation_runner([], [])
+        settings = SETTINGS.copy()
+        settings['TARGET_NUM_PICKUPS_PER_AVATAR'] = 1
+        grid = self._generate_grid(1, 1)
+        grid[Location(0, 0)].generates_score = True
+        self.simulation_runner.game_state.world_map = WorldMap(grid, self.settings)
+        self.simulation_runner.update(1)
+        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.pickup_cells())), 0)
 
     def test_run_turn(self):
         """
