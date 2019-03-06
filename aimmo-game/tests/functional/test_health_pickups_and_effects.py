@@ -36,6 +36,21 @@ class TestHealthPickupAndEffects(TestCase):
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
         self.assertEqual(self.cell.avatar.health, self.initial_health +
                          HEALTH_RESTORE_DEFAULT)
+        self.assertEqual(self.cell.pickup.serialise(), {
+            'type': 'health',
+            'location': {
+                'x': self.cell.location.x,
+                'y': self.cell.location.y,
+            }
+        })
+
+    def test_health_cannot_be_greater_than_100(self):
+        self.assertEqual(self.avatar.health, 5)
+        self.set_custom_pickup(100)
+
+        self.apply_pickup()
+
+        self.assertEqual(self.avatar.health, 100)
 
     @given(st.integers(1, HEALTH_RESTORE_MAX))
     def test_health_pickups_and_effects_apply_custom_integers(self, restore_value):

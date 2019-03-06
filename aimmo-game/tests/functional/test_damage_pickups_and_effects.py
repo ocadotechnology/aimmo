@@ -27,7 +27,13 @@ class TestDamagePickupsAndEffects(TestCase):
     def test_damage_boost_pickup_can_be_picked_up_default(self):
         pickup_created = DamageBoostPickup(self.cell)
         self.cell.pickup = pickup_created
-
+        self.assertEqual(self.cell.pickup.serialise(), {
+            'type': 'damage_boost',
+            'location': {
+                'x': 0,
+                'y': 0,
+            }
+        })
         self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
 
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
