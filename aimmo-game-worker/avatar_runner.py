@@ -22,41 +22,12 @@ from simulation.action import Action, WaitAction
 from user_exceptions import InvalidActionException
 
 LOGGER = logging.getLogger(__name__)
-
-
-def add_actions_to_globals():
-    action_classes = filter(lambda x: x[1].__module__ == "simulation.action", inspect.getmembers(avatar_action, inspect.isclass))
-
-    for action_class in action_classes:
-        restricted_globals[action_class[0]] = action_class[1]
-
-
-_getattr_ = safer_getattr
-_setattr_ = guarded_setattr
-_write_ = full_write_guard
-__metaclass__ = type
-
-# Sets up restricted coding environment for the user
 log_manager = LogManager()
-restricted_globals = dict(__builtins__=safe_builtins)
-
-restricted_globals['_getattr_'] = _getattr_
-restricted_globals['_setattr_'] = _setattr_
-restricted_globals['_getiter_'] = list
-restricted_globals['_print_'] = log_manager.get_print_collector()
-restricted_globals['_write_'] = _write_
-restricted_globals['__metaclass__'] = __metaclass__
-restricted_globals['__name__'] = "Avatar"
-
-# Adds AI:MMO specific modules to the user's environment
-add_actions_to_globals()
-restricted_globals['direction'] = direction
-restricted_globals['random'] = utility_builtins['random']
 
 
-# Temporarily switches stdout and stderr to stringIO objects or variable
 @contextlib.contextmanager
 def capture_output(stdout=None, stderr=None):
+    """Temporarily switches stdout and stderr to stringIO objects or variable."""
     old_out = sys.stdout
     old_err = sys.stderr
 
@@ -82,7 +53,9 @@ class AvatarRunner(object):
     def process_avatar_turn(self, world_map, avatar_state, src_code):
         with capture_output() as output:
             if self.code_updater.should_update(self.avatar, src_code):
+                print('updating avatar')
                 avatar_updated = self.code_updater.update_avatar(src_code)
+                print('avatar updated')
 
             action = self.run_users_code(world_map, avatar_state, src_code)
 
