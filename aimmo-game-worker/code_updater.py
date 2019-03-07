@@ -12,6 +12,8 @@ from RestrictedPython import compile_restricted, utility_builtins
 from RestrictedPython.Guards import (full_write_guard, guarded_setattr,
                                      safe_builtins, safer_getattr)
 
+from simulation.action import Action, WaitAction
+
 
 def add_actions_to_globals():
     action_classes = filter(lambda x: x[1].__module__ == "simulation.action", inspect.getmembers(avatar_action, inspect.isclass))

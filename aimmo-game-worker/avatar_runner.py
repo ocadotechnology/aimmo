@@ -47,7 +47,7 @@ class AvatarRunner(object):
             if self.code_updater.should_update(self.avatar, src_code):
                 print('updating avatar')
                 avatar_updated = self.code_updater.update_avatar(src_code)
-                print('avatar updated')
+                print(f'avatar updated, {avatar_updated}')
 
             action = self.run_users_code(world_map, avatar_state, src_code)
 
