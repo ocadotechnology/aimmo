@@ -43,11 +43,10 @@ class AvatarRunner(object):
         self.code_updater.globals['_print_'] = log_manager.get_print_collector()
 
     def process_avatar_turn(self, world_map, avatar_state, src_code):
+        avatar_updated = False
         with capture_output() as output:
-            if self.code_updater.should_update(self.avatar, src_code):
-                print('updating avatar')
-                avatar_updated = self.code_updater.update_avatar(src_code)
-                print(f'avatar updated, {avatar_updated}')
+            if self.code_updater.should_update(self.avatar, self.auto_update, src_code):
+                self.avatar, avatar_updated = self.code_updater.update_avatar(src_code)
 
             action = self.run_users_code(world_map, avatar_state, src_code)
 
@@ -67,7 +66,10 @@ class AvatarRunner(object):
             self.print_logs()
             print(e)
             action = WaitAction().serialise()
-
+        except AttributeError as e:
+            self.print_logs()
+            print(e)
+            action = WaitAction().serialise()
         except Exception as e:
             self.print_logs()
             user_traceback = self.get_only_user_traceback()
