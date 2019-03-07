@@ -1,6 +1,5 @@
 from __future__ import print_function
 
-import contextlib
 import imp
 import inspect
 import logging
@@ -12,13 +11,6 @@ from io import StringIO
 from RestrictedPython import compile_restricted, utility_builtins
 from RestrictedPython.Guards import (full_write_guard, guarded_setattr,
                                      safe_builtins, safer_getattr)
-from RestrictedPython.PrintCollector import PrintCollector
-
-import simulation.action as avatar_action
-import simulation.direction as direction
-from print_collector import LogManager
-from simulation.action import Action, WaitAction
-from user_exceptions import InvalidActionException
 
 
 def add_actions_to_globals():
@@ -33,7 +25,6 @@ _setattr_ = guarded_setattr
 _write_ = full_write_guard
 __metaclass__ = type
 
-log_manager = LogManager()
 restricted_globals = dict(__builtins__=safe_builtins)
 
 restricted_globals['_getattr_'] = _getattr_

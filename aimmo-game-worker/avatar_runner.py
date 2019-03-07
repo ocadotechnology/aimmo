@@ -1,22 +1,14 @@
 from __future__ import print_function
 
 import contextlib
-import imp
-import inspect
 import logging
 import re
 import sys
 import traceback
 from io import StringIO
 
-from RestrictedPython import compile_restricted, utility_builtins
-from RestrictedPython.Guards import (full_write_guard, guarded_setattr,
-                                     safe_builtins, safer_getattr)
-from RestrictedPython.PrintCollector import PrintCollector
-
 import simulation.action as avatar_action
 import simulation.direction as direction
-from code_updater import CodeUpdater
 from print_collector import LogManager
 from simulation.action import Action, WaitAction
 from user_exceptions import InvalidActionException
