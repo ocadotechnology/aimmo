@@ -77,50 +77,6 @@ class AvatarRunner(object):
         self.avatar = avatar
         self.auto_update = auto_update
         self.code_updater = code_updater
-        self.avatar_source_code = None
-        self.update_successful = False
-
-    def _avatar_src_changed(self, new_avatar_code):
-        return new_avatar_code != self.avatar_source_code
-
-    def _get_new_avatar(self, src_code):
-        self.avatar_source_code = src_code
-        module = imp.new_module('avatar')  # Create a temporary module to execute the src_code in
-        module.__dict__.update(restricted_globals)
-
-        try:
-            byte_code = compile_restricted(src_code, filename='<inline-code>', mode='exec')
-            exec(byte_code, restricted_globals)
-        except SyntaxWarning as w:
-            pass
-
-        module.__dict__['Avatar'] = restricted_globals['Avatar']
-        return module.Avatar()
-
-    def _update_avatar(self, src_code):
-        """
-        We update the avatar object if any of the following are true:
-        1. We don't have an avatar object yet, so self.avatar is None
-        2. The new source code we have been given is different
-        3. If the previous attempt to create an avatar object failed (i.e. _get_new_avatar threw an exception)
-        The last condition is necessary because if _get_new_avatar fails the avatar object will not have
-        been updated, meaning that self.avatar will actually be for the last correct code
-        """
-
-        if self._should_update(src_code):
-            try:
-                self.avatar = self._get_new_avatar(src_code)
-                self.update_successful = True
-            except SyntaxError as e:
-                self.update_successful = False
-                print(e)
-            except Exception as e:
-                self.update_successful = False
-                raise e
-
-    def _should_update(self, src_code):
-        return (self.avatar is None or self.auto_update and self._avatar_src_changed(src_code) or
-                not self.update_successful)
 
     def process_avatar_turn(self, world_map, avatar_state, src_code):
         with capture_output() as output:
@@ -138,7 +94,6 @@ class AvatarRunner(object):
 
     def run_users_code(self, world_map, avatar_state, src_code):
         try:
-            self._update_avatar(src_code)
             action = self.decide_action(world_map, avatar_state)
             self.print_logs()
 
@@ -161,10 +116,7 @@ class AvatarRunner(object):
 
     def decide_action(self, world_map, avatar_state):
         try:
-            try:
-                action = self.avatar.handle_turn(world_map, avatar_state)
-            except AttributeError:
-                action = self.avatar.next_turn(world_map, avatar_state)
+            action = self.avatar.next_turn(world_map, avatar_state)
 
             if not isinstance(action, Action):
                 raise InvalidActionException(action)
