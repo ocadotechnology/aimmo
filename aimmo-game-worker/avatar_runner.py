@@ -1,25 +1,25 @@
 from __future__ import print_function
 
-import logging
-import traceback
-import sys
+import contextlib
 import imp
 import inspect
+import logging
 import re
-
+import sys
+import traceback
 from io import StringIO
-import contextlib
+
+from RestrictedPython import compile_restricted, utility_builtins
+from RestrictedPython.Guards import (full_write_guard, guarded_setattr,
+                                     safe_builtins, safer_getattr)
+from RestrictedPython.PrintCollector import PrintCollector
 
 import simulation.action as avatar_action
 import simulation.direction as direction
+from code_updater import CodeUpdater
 from print_collector import LogManager
-
-from simulation.action import WaitAction, Action
+from simulation.action import Action, WaitAction
 from user_exceptions import InvalidActionException
-
-from RestrictedPython import compile_restricted, utility_builtins
-from RestrictedPython.Guards import safe_builtins, safer_getattr, guarded_setattr, full_write_guard
-from RestrictedPython.PrintCollector import PrintCollector
 
 LOGGER = logging.getLogger(__name__)
 
@@ -73,9 +73,10 @@ def capture_output(stdout=None, stderr=None):
 
 
 class AvatarRunner(object):
-    def __init__(self, avatar=None, auto_update=True):
+    def __init__(self, avatar=None, auto_update=True, code_updater=None):
         self.avatar = avatar
         self.auto_update = auto_update
+        self.code_updater = code_updater
         self.avatar_source_code = None
         self.update_successful = False
 
@@ -122,9 +123,10 @@ class AvatarRunner(object):
                 not self.update_successful)
 
     def process_avatar_turn(self, world_map, avatar_state, src_code):
-        avatar_updated = self._avatar_src_changed(src_code)
-
         with capture_output() as output:
+            if self.code_updater.should_update(self.avatar, src_code):
+                avatar_updated = self.code_updater.update_avatar(src_code)
+
             action = self.run_users_code(world_map, avatar_state, src_code)
 
         stdout, stderr = output
@@ -168,7 +170,7 @@ class AvatarRunner(object):
                 raise InvalidActionException(action)
             return action.serialise()
         except TypeError as e:
-                raise InvalidActionException(None)
+            raise InvalidActionException(None)
 
     @staticmethod
     def get_only_user_traceback():
