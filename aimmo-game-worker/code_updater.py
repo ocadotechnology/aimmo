@@ -12,7 +12,8 @@ from RestrictedPython import compile_restricted, utility_builtins
 from RestrictedPython.Guards import (full_write_guard, guarded_setattr,
                                      safe_builtins, safer_getattr)
 
-from simulation.action import Action, WaitAction
+import simulation.action as avatar_action
+import simulation.direction as direction
 
 
 def add_actions_to_globals():
@@ -57,8 +58,10 @@ class CodeUpdater:
         The last condition is necessary because if _get_new_avatar fails the avatar object will not have
         been updated, meaning that self.avatar will actually be for the last correct code
         """
+        avatar = None
         try:
-            self.avatar = self._get_new_avatar(src_code)
+            avatar = self._get_new_avatar(src_code)
+
             self.update_successful = True
         except SyntaxError as e:
             self.update_successful = False
@@ -66,13 +69,13 @@ class CodeUpdater:
         except Exception as e:
             self.update_successful = False
             raise e
-        return self.update_successful
+        return (avatar, self._avatar_src_changed(src_code))
 
     def _avatar_src_changed(self, new_avatar_code):
         return new_avatar_code != self.avatar_source_code
 
-    def should_update(self, avatar, src_code):
-        return (avatar is None or self.auto_update and self._avatar_src_changed(src_code) or
+    def should_update(self, avatar, auto_update, src_code):
+        return (avatar is None or auto_update and self._avatar_src_changed(src_code) or
                 not self.update_successful)
 
     def _get_new_avatar(self, src_code):
