@@ -1,11 +1,12 @@
 import logging
 import time
+import os
 
 from eventlet.semaphore import Semaphore
 from threading import Thread
 from concurrent import futures
 
-from simulation.worker import Worker
+from simulation.workers import WORKER
 
 LOGGER = logging.getLogger(__name__)
 
@@ -17,13 +18,14 @@ class WorkerManager(object):
     def __init__(self, port=5000):
         self.player_id_to_worker = {}
         self.port = port
+        self.worker_class = WORKER[os.environ['WORKER']]
 
     def get_code(self, player_id):
         return self.player_id_to_worker[player_id].code
 
     def fetch_all_worker_data(self, player_id_to_game_state):
         """
-        Creates a thread for each worker to send a request for their data. After
+        Creates a thread for each workers to send a request for their data. After
         a set duration these threads will close, giving a consistent turn time.
         """
         def prepare_request_threads():
@@ -51,8 +53,7 @@ class WorkerManager(object):
         self.player_id_to_worker[player['id']].code = player['code']
 
     def add_new_worker(self, player_id):
-        worker_url_base = Worker.create_worker(player_id)
-        self.player_id_to_worker[player_id] = Worker(f'{worker_url_base}/turn/')
+        self.player_id_to_worker[player_id] = self.worker_class(player_id)
 
     def _parallel_map(self, func, iterable_args):
         with futures.ThreadPoolExecutor() as executor:
@@ -64,9 +65,11 @@ class WorkerManager(object):
     def delete_workers(self, players_to_delete):
         self._parallel_map(self.delete_worker, players_to_delete)
 
-    def delete_worker(self, player):
-        del self.player_id_to_worker[player]
-        Worker.remove_worker(player)
+    def delete_worker(self, player_id):
+        if player_id in self.player_id_to_worker:
+            worker = self.player_id_to_worker[player_id]
+            del worker
+            worker.remove_worker()
 
     def update_worker_codes(self, players):
         self._parallel_map(self.update_code, players)

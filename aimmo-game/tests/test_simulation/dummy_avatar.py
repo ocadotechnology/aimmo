@@ -43,7 +43,7 @@ class DummyAvatar(AvatarWrapper):
 
 class LiveDummy(DummyAvatar):
     """
-    An avatar that still has a fully functioning worker.
+    An avatar that still has a fully functioning workers.
     """
 
     def __init__(self, player_id=1, initial_location=(0, 0)):
@@ -56,7 +56,7 @@ class LiveDummy(DummyAvatar):
 
 class DeadDummy(DummyAvatar):
     """
-    An avatar whose worker is no longer responding or returning an invalid action.
+    An avatar whose workers is no longer responding or returning an invalid action.
     """
 
     def __init__(self, player_id=1, initial_location=(0, 0)):

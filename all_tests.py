@@ -93,8 +93,8 @@ def run_game_tests(client):
 
 def run_worker_tests(client):
     logs = client.containers.run(
-        name='aimmo-worker-tester',
-        image='ocadotechnology/aimmo-game-worker:test',
+        name='aimmo-workers-tester',
+        image='ocadotechnology/aimmo-game-workers:test',
         stream=True
     )
     for log in logs:

@@ -1,7 +1,7 @@
 import mock
 from unittest import TestCase
 from requests import Response
-from simulation.worker import Worker
+from simulation.workers.worker import Worker
 
 DEFAULT_RESPONSE_CONTENT = b'{"action": "test_action",' \
                            b'"log": "test_log",' \
@@ -22,9 +22,9 @@ def construct_test_response(status_code=200,
 
 class TestWorker(TestCase):
     def setUp(self):
-        self.worker = Worker(worker_url='http://test')
+        self.worker = Worker(1)
 
-    @mock.patch('simulation.worker.requests.post',
+    @mock.patch('simulation.workers.requests.post',
                 return_value=construct_test_response())
     def test_fetch_data_fetches_correct_response(self, mocked_post):
         self.worker.fetch_data(state_view={})
@@ -45,7 +45,7 @@ class TestWorker(TestCase):
         self.assertIsNone(self.worker.log)
         self.assertFalse(self.worker.has_code_updated)
 
-    @mock.patch('simulation.worker.requests.post',
+    @mock.patch('simulation.workers.requests.post',
                 return_value=construct_test_response(status_code=500))
     @mock.patch.object(target=Worker, attribute='_set_defaults')
     def test_fetch_data_cannot_connect_to_worker(self, mocked_set_defaults,
@@ -55,7 +55,7 @@ class TestWorker(TestCase):
         mocked_post.assert_called_once()
         mocked_set_defaults.assert_called_once()
 
-    @mock.patch('simulation.worker.requests.post',
+    @mock.patch('simulation.workers.requests.post',
                 return_value=construct_test_response(response_content=MISSING_KEY_RESPONSE_CONTENT))
     @mock.patch.object(target=Worker, attribute='_set_defaults')
     def test_missing_key_in_worker_data(self, mocked_set_defaults,

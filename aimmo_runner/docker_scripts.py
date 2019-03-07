@@ -41,7 +41,7 @@ def build_docker_images(minikube=None, build_target=None):
     else:
         client = create_docker_client(use_raw_env=False, minikube=minikube)
 
-    directories = ('aimmo-game', 'aimmo-game-creator', 'aimmo-game-worker')
+    directories = ('aimmo-game', 'aimmo-game-creator', 'aimmo-game-workers')
     for dir in directories:
         path = os.path.join(BASE_DIR, dir)
         tag = 'ocadotechnology/%s:test' % dir
@@ -72,7 +72,7 @@ def start_game_creator():
         'tty': True,
         'environment': {
             'FLASK_ENV': 'development',
-            'WORKER_MANAGER': 'local'
+            'WORKER': 'local'
         },
         'volumes': {
             '/var/run/docker.sock': {'bind': '/var/run/docker.sock', 'mode': 'rw'}

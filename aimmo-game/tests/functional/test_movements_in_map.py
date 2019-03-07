@@ -151,7 +151,7 @@ class TestMovementsInMap(TestCase):
         self.assertEqual(self.avatar.location, Location(1, 0))
         self.assertEqual(avatar_two.location, Location(3, 0))
 
-        # Live avatar can't move into a square occupied by a 'dead' (no worker) avatar
+        # Live avatar can't move into a square occupied by a 'dead' (no workers) avatar
         self.set_up_environment([DeadDummy, MoveWestDummy])
         self.game.game_state.add_avatar(2, Location(1, 0))
         avatar_two = self.game.avatar_manager.get_avatar(2)

@@ -10,7 +10,7 @@ COPY --from=builder /usr/local/lib/python3.6/site-packages /usr/local/lib/python
 COPY . .
 
 FROM base as runner
-ENV WORKER_MANAGER=kubernetes
+ENV WORKER=kubernetes
 ENV FLASK_ENV='development'
 CMD python ./service.py 0.0.0.0 $PORT $DATA_URL
 

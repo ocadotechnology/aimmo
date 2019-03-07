@@ -63,14 +63,14 @@ jobs:
         - pip install coveralls
       script:
         - docker run -it -p 5000:5000 ocadotechnology/aimmo-game-creator:test
-    - name: "aimmo-game-worker"
+    - name: "aimmo-game-workers"
       before_install:
-        - cd aimmo-game-worker
-        - docker build --target tester -t ocadotechnology/aimmo-game-worker:test .
+        - cd aimmo-game-workers
+        - docker build --target tester -t ocadotechnology/aimmo-game-workers:test .
       install:
         - pip install coveralls
       script:
-        - docker run -it -p 5000:5000 ocadotechnology/aimmo-game-worker:test
+        - docker run -it -p 5000:5000 ocadotechnology/aimmo-game-workers:test
     - name: "Javascript Tests"
       before_install:
         - nvm install node

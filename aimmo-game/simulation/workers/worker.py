@@ -5,17 +5,24 @@ LOGGER = logging.getLogger(__name__)
 
 
 class Worker(object):
-    def __init__(self, worker_url):
-        self.url = worker_url
+    def __init__(self, player_id):
         self.log = None
+        self.player_id = player_id
         self.code = None
         self.serialised_action = None
         self.has_code_updated = False
+        self.url = self._create_worker()
 
     def _set_defaults(self):
         self.log = None
         self.serialised_action = None
         self.has_code_updated = False
+
+    def _create_worker(self):
+        NotImplemented
+
+    def remove_worker(self):
+        NotImplemented
 
     def fetch_data(self, state_view):
         try:
@@ -32,18 +39,12 @@ class Worker(object):
             self.log = data['log']
             self.has_code_updated = data['avatar_updated']
         except requests.exceptions.ConnectionError:
-            LOGGER.info('Could not connect to worker, probably not ready yet')
+            LOGGER.info('Could not connect to workers, probably not ready yet')
             self._set_defaults()
         except KeyError as e:
-            LOGGER.error('Missing key in data from worker: {}'.format(e))
+            LOGGER.error('Missing key in data from workers: {}'.format(e))
             self._set_defaults()
         except Exception as e:
             LOGGER.exception('Unknown error while fetching turn data.')
             LOGGER.exception(e)
             self._set_defaults()
-
-    def create_worker(self, player_id):
-        raise NotImplementedError
-
-    def remove_worker(self, player_id):
-        raise NotImplementedError

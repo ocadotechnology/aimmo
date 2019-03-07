@@ -7,6 +7,7 @@ import concurrent.futures
 from simulation.django_communicator import DjangoCommunicator
 from simulation.simulation_runner import ConcurrentSimulationRunner
 from simulation.avatar.avatar_manager import AvatarManager
+from simulation.worker_manager import WorkerManager
 
 LOGGER = logging.getLogger(__name__)
 
@@ -14,10 +15,10 @@ TURN_TIME = 2
 
 
 class GameRunner:
-    def __init__(self, worker_manager_class, game_state_generator, django_api_url, port):
+    def __init__(self, game_state_generator, django_api_url, port):
         super(GameRunner, self).__init__()
 
-        self.worker_manager = worker_manager_class(port=port)
+        self.worker_manager = WorkerManager(port=port)
         self.game_state = game_state_generator(AvatarManager())
         self.communicator = DjangoCommunicator(django_api_url=django_api_url,
                                                completion_url=django_api_url + 'complete/')

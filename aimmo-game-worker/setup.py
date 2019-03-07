@@ -7,7 +7,7 @@ import os
 withcoverage = os.environ.get('WITH_COVERAGE')
 
 setup(
-    name='aimmo-game-worker',
+    name='aimmo-game-workers',
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
