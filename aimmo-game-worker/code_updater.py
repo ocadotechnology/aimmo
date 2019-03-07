@@ -64,16 +64,16 @@ class CodeUpdater:
         The last condition is necessary because if _get_new_avatar fails the avatar object will not have
         been updated, meaning that self.avatar will actually be for the last correct code
         """
-        if self.should_update(src_code):
-            try:
-                self.avatar = self._get_new_avatar(src_code)
-                self.update_successful = True
-            except SyntaxError as e:
-                self.update_successful = False
-                print(e)
-            except Exception as e:
-                self.update_successful = False
-                raise e
+        try:
+            self.avatar = self._get_new_avatar(src_code)
+            self.update_successful = True
+        except SyntaxError as e:
+            self.update_successful = False
+            print(e)
+        except Exception as e:
+            self.update_successful = False
+            raise e
+        return self.update_successful
 
     def _avatar_src_changed(self, new_avatar_code):
         return new_avatar_code != self.avatar_source_code
