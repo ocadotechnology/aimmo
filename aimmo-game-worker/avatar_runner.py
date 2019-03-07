@@ -77,6 +77,7 @@ class AvatarRunner(object):
         self.avatar = avatar
         self.auto_update = auto_update
         self.code_updater = code_updater
+        self.code_updater.globals['_print_'] = log_manager.get_print_collector()
 
     def process_avatar_turn(self, world_map, avatar_state, src_code):
         with capture_output() as output:
