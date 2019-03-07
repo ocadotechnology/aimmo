@@ -41,7 +41,7 @@ def build_docker_images(minikube=None, build_target=None):
     else:
         client = create_docker_client(use_raw_env=False, minikube=minikube)
 
-    directories = ('aimmo-game', 'aimmo-game-creator', 'aimmo-game-workers')
+    directories = ('aimmo-game', 'aimmo-game-creator', 'aimmo-game-worker')
     for dir in directories:
         path = os.path.join(BASE_DIR, dir)
         tag = 'ocadotechnology/%s:test' % dir

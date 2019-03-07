@@ -25,7 +25,7 @@ class WorkerManager(object):
 
     def fetch_all_worker_data(self, player_id_to_game_state):
         """
-        Creates a thread for each workers to send a request for their data. After
+        Creates a thread for each worker to send a request for their data. After
         a set duration these threads will close, giving a consistent turn time.
         """
         def prepare_request_threads():

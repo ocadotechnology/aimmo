@@ -13,7 +13,7 @@ K8S_NAMESPACE = os.environ.get('K8S_NAMESPACE', '')
 
 
 class KubernetesWorker(Worker):
-    """Kubernetes workers."""
+    """Kubernetes worker."""
 
     def __init__(self, *args, **kwargs):
         config.load_incluster_config()
@@ -49,8 +49,8 @@ class KubernetesWorker(Worker):
                 client.V1EnvVar(
                 name='PORT',
                 value='5000')],
-            name='aimmo-game-workers',
-            image='ocadotechnology/aimmo-game-workers:%s' % os.environ.get('IMAGE_SUFFIX', 'latest'),
+            name='aimmo-game-worker',
+            image='ocadotechnology/aimmo-game-worker:%s' % os.environ.get('IMAGE_SUFFIX', 'latest'),
             ports=[client.V1ContainerPort(
                 container_port=5000,
                 protocol='TCP')],
@@ -64,14 +64,14 @@ class KubernetesWorker(Worker):
         )
 
     def make_pod(self, player_id):
-        pod_manifest = client.V1PodSpec(containers=[self._make_container(player_id)], service_account_name='workers')
+        pod_manifest = client.V1PodSpec(containers=[self._make_container(player_id)], service_account_name='worker')
 
         metadata = client.V1ObjectMeta(
             labels={
-                'app': 'aimmo-game-workers',
+                'app': 'aimmo-game-worker',
                 'game': self.game_id,
                 'player': str(player_id)},
-            generate_name='aimmo-%s-workers-%s-' % (self.game_id, player_id),
+            generate_name='aimmo-%s-worker-%s-' % (self.game_id, player_id),
             owner_references=self._make_owner_references()
         )
         return client.V1Pod(metadata=metadata, spec=pod_manifest)
@@ -92,7 +92,7 @@ class KubernetesWorker(Worker):
 
             time.sleep(1)
 
-        raise EnvironmentError('Could not start workers %s.' % player_id)
+        raise EnvironmentError('Could not start worker %s.' % player_id)
 
     def _create_worker(self, player_id):
         pod_obj = self.make_pod(player_id)
@@ -107,7 +107,7 @@ class KubernetesWorker(Worker):
         return worker_url
 
     def remove_worker(self, player_id):
-        app_label = 'app=aimmo-game-workers'
+        app_label = 'app=aimmo-game-worker'
         game_label = 'game={}'.format(self.game_id)
         player_label = 'player={}'.format(player_id)
         label_selector = self._create_a_label_selector_from_labels([app_label,

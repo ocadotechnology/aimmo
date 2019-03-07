@@ -39,10 +39,10 @@ class Worker(object):
             self.log = data['log']
             self.has_code_updated = data['avatar_updated']
         except requests.exceptions.ConnectionError:
-            LOGGER.info('Could not connect to workers, probably not ready yet')
+            LOGGER.info('Could not connect to worker, probably not ready yet')
             self._set_defaults()
         except KeyError as e:
-            LOGGER.error('Missing key in data from workers: {}'.format(e))
+            LOGGER.error('Missing key in data from worker: {}'.format(e))
             self._set_defaults()
         except Exception as e:
             LOGGER.exception('Unknown error while fetching turn data.')

@@ -15,7 +15,7 @@ class LocalWorker(Worker):
     host = os.environ.get('LOCALHOST_IP', '127.0.0.1')
     worker_directory = os.path.join(
         os.path.dirname(__file__),
-        '../../../aimmo-game-workers/',
+        '../../../aimmo-game-worker/',
     )
 
     def __init__(self, *args, **kwargs):
@@ -38,8 +38,8 @@ class LocalWorker(Worker):
         template['environment']['DATA_URL'] = data_url
         template['environment']['PORT'] = port
         self.client.containers.run(
-            name="aimmo-{}-workers-{}".format(self.game_id, self.player_id),
-            image='ocadotechnology/aimmo-game-workers:test',
+            name="aimmo-{}-worker-{}".format(self.game_id, self.player_id),
+            image='ocadotechnology/aimmo-game-worker:test',
             ports={f"{port}/tcp": port},
             **template)
         worker_url = 'http://%s:%d' % (

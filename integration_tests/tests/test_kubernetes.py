@@ -75,17 +75,17 @@ class TestKubernetes(unittest.TestCase):
         self.assertTrue('game-creator' in single_service_account)
 
         single_service_account = service_account_info[2].metadata.annotations['kubectl.kubernetes.io/last-applied-configuration']
-        self.assertTrue('workers' in single_service_account)
+        self.assertTrue('worker' in single_service_account)
 
         single_service_account = service_account_info[3].metadata.annotations['kubectl.kubernetes.io/last-applied-configuration']
-        self.assertTrue('workers-manager' in single_service_account)
+        self.assertTrue('worker-manager' in single_service_account)
 
         api_extension = kubernetes.client.RbacAuthorizationV1Api()
 
         # ROLES
         api_response = api_extension.list_namespaced_role('default')
         role_info = api_response.items[0].metadata.annotations['kubectl.kubernetes.io/last-applied-configuration']
-        self.assertTrue('workers-manager' in role_info)
+        self.assertTrue('worker-manager' in role_info)
 
         # CLUSTER ROLES
         api_response = api_extension.list_cluster_role()
@@ -145,7 +145,7 @@ class TestKubernetes(unittest.TestCase):
                     self.fail("Worker not created!")
 
                 for item in temp_response.items:
-                    if item.metadata.name.startswith("aimmo-1-workers"):
+                    if item.metadata.name.startswith("aimmo-1-worker"):
                         return
 
                 timeout += 1
