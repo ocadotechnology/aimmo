@@ -22,7 +22,7 @@ class TestLocalWorker(TestCase):
         self.assertEqual(url2.port, 21989)
 
     @mock.patch('docker.from_env')
-    def test_local_workers_in_the_same_game_do_not_have_port_conflicts(self, docker_from_env):
+    def test_local_worker_in_the_same_game_do_not_have_port_conflicts(self, docker_from_env):
         os.environ['GAME_ID'] = '1'
         worker1 = LocalWorker(1)
         worker2 = LocalWorker(2)
