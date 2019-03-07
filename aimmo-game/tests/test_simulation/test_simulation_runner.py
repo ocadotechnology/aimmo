@@ -33,6 +33,8 @@ SETTINGS = {
             'SCORE_DESPAWN_CHANCE': 0,
             'PICKUP_SPAWN_CHANCE': 0,
         }
+
+
 class MockGameState(GameState):
     def get_state_for(self, avatar):
         return self
@@ -220,16 +222,6 @@ class TestSimulationRunner(unittest.TestCase):
         self.simulation_runner.update(1, self.simulation_runner.game_state)
         self.assertEqual(len(list(self.simulation_runner.game_state.world_map.score_cells())), 0)
 
-    def test_not_enough_score_space(self):
-        self.construct_simulation_runner([], [])
-        settings = SETTINGS.copy()
-        settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR'] = 1
-        grid = self._generate_grid(1, 1)
-        grid[Location(0, 0)].avatar = 'avatar'
-        self.simulation_runner.game_state.world_map = WorldMap(grid, settings)
-        self.simulation_runner.update(1, self.simulation_runner.game_state)
-        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.score_cells())), 0)
-
     def test_pickups_added(self):
         self.construct_simulation_runner([], [])
         settings = SETTINGS.copy()
@@ -262,7 +254,7 @@ class TestSimulationRunner(unittest.TestCase):
         self.simulation_runner.game_state.world_map = WorldMap(grid, settings)
         self.simulation_runner.update(1, self.simulation_runner.game_state)
         self.assertEqual(len(list(self.simulation_runner.game_state.world_map.pickup_cells())), 0)
-    
+
     @patch('simulation.pickups.pickup_types.DamageBoostPickup')
     def test_pickups_not_added_when_at_target(self, mockPickup):
         self.construct_simulation_runner([], [])

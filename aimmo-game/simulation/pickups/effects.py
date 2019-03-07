@@ -10,6 +10,7 @@ HEALTH_RESTORE_DEFAULT = 3
 HEALTH_RESTORE_MAX = 100
 AVATAR_HEALTH_MAX = 100
 
+
 class _Effect(object):
     __metaclass__ = ABCMeta
 
@@ -32,6 +33,7 @@ class _Effect(object):
             self._target.effects.remove(self)
         except KeyError as e:
             raise KeyError("The target object does not exist! Cannot remove the effect.")
+
 
 class InvulnerabilityPickupEffect(_Effect):
     def __init__(self, *args):

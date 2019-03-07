@@ -8,7 +8,7 @@ from simulation.pickups.effects import (DamageBoostPickupEffect,
                                         HealthPickupEffect,
                                         InvulnerabilityPickupEffect)
 
-if TYPE_CHECKING: 
+if TYPE_CHECKING:
     from simulation.game_state import GameState
 
 LOGGER = getLogger(__name__)
@@ -34,11 +34,10 @@ class _Pickup(object):
         turn_state = TurnState(game_state, self.cell)
         return all([condition(turn_state) for condition in self.conditions])
 
-    
     def apply(self):
         """
         Apply all effects in sequential order.
-        
+
         Targets for effects can be a single object, or a list of objects. all
         targets must have an 'effect' attribute that is of type=set.
         """
@@ -66,7 +65,7 @@ class HealthPickup(_Pickup):
 
         self.effects.append(HealthPickupEffect)
         self.effects.append(self.delete)
-        
+
     def get_targets(self):
         return [
             self.cell.avatar,
@@ -116,7 +115,7 @@ class DamageBoostPickup(_Pickup):
     def __init__(self, cell):
         super(DamageBoostPickup, self).__init__(cell)
         self.conditions.append(avatar_on_cell)
-        
+
         self.effects.append(DamageBoostPickupEffect)
         self.effects.append(self.delete)
 
