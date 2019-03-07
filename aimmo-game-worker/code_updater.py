@@ -33,12 +33,12 @@ _setattr_ = guarded_setattr
 _write_ = full_write_guard
 __metaclass__ = type
 
+log_manager = LogManager()
 restricted_globals = dict(__builtins__=safe_builtins)
 
 restricted_globals['_getattr_'] = _getattr_
 restricted_globals['_setattr_'] = _setattr_
 restricted_globals['_getiter_'] = list
-restricted_globals['_print_'] = log_manager.get_print_collector()
 restricted_globals['_write_'] = _write_
 restricted_globals['__metaclass__'] = __metaclass__
 restricted_globals['__name__'] = "Avatar"
@@ -79,7 +79,7 @@ class CodeUpdater:
         return new_avatar_code != self.avatar_source_code
 
     def should_update(self, avatar, src_code):
-        return (self.avatar is None or self.auto_update and self._avatar_src_changed(src_code) or
+        return (avatar is None or self.auto_update and self._avatar_src_changed(src_code) or
                 not self.update_successful)
 
     def _get_new_avatar(self, src_code):
