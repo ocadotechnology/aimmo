@@ -33,7 +33,6 @@ class _Effect(object):
         except KeyError as e:
             raise KeyError("The target object does not exist! Cannot remove the effect.")
 
-
 class InvulnerabilityPickupEffect(_Effect):
     def __init__(self, *args):
         super(InvulnerabilityPickupEffect, self).__init__(*args)

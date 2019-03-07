@@ -30,37 +30,10 @@ class TestDamagePickupsAndEffects(TestCase):
         self.assertEqual(self.cell.pickup.serialise(), {
             'type': 'damage_boost',
             'location': {
-                'x': 0,
-                'y': 0,
+                'x': self.cell.location.x,
+                'y': self.cell.location.y,
             }
         })
-        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
-
-        self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
-        self.assertEqual(len(self.game.avatar_manager.get_avatar(1).effects), 1)
-        damage_boost_effect = self.game.avatar_manager.get_avatar(1).effects.pop()
-        self.assertTrue(isinstance(damage_boost_effect, pickup_created.effects[0]))
-
-    @given(st.integers(min_value=1))
-    def test_damage_boost_pickup_can_be_picked_up_custom_integer(self, boost_value):
-        self.setUp()
-        pickup_created = DamageBoostPickup(self.cell, boost_value)
-        self.cell.pickup = pickup_created
-
-        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
-
-        self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
-        self.assertEqual(len(self.game.avatar_manager.get_avatar(1).effects), 1)
-        damage_boost_effect = self.game.avatar_manager.get_avatar(1).effects.pop()
-        self.assertTrue(isinstance(damage_boost_effect, pickup_created.effects[0]))
-
-    @given(st.floats(min_value=1))
-    def test_damage_boost_pickup_can_be_picked_up_custom_floats(self, boost_value):
-        assume(not math.isinf(boost_value))
-        self.setUp()
-        pickup_created = DamageBoostPickup(self.cell, boost_value)
-        self.cell.pickup = pickup_created
-
         self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
 
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
@@ -78,16 +51,3 @@ class TestDamagePickupsAndEffects(TestCase):
         self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
 
         self.assertTrue(self.cell.avatar.attack_strength, self.initial_attack_strength + DAMAGE_BOOST_DEFAULT)
-
-    @given(st.integers(min_value=1))
-    def test_damage_boost_increases_attack_strength_with_custom_integers(self, boost_value):
-        """
-        Damage Boost with random integers provided as a parameter.
-        """
-        self.setUp()
-        pickup_created = DamageBoostPickup(self.cell, boost_value)
-        self.cell.pickup = pickup_created
-
-        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
-
-        self.assertTrue(self.cell.avatar.attack_strength, self.initial_attack_strength + boost_value)

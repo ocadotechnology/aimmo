@@ -19,4 +19,4 @@ class PickupApplier:
         """ Applies pickup effects to any avatar that is on a pickup cell """
         for cell in game_state.world_map.pickup_cells():
             if cell.pickup.conditions_met(game_state):
-                cell.pickup.apply(cell.avatar)
+                cell.pickup.apply()

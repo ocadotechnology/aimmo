@@ -26,7 +26,7 @@ class _Pickup(object):
     def __str__(self):
         return self.__class__.__name__
 
-    def delete(self, turn_state):
+    def delete(self):
         self.cell.pickup = None
 
     def conditions_met(self, game_state: 'GameState'):
@@ -42,6 +42,7 @@ class _Pickup(object):
         Targets for effects can be a single object, or a list of objects. all
         targets must have an 'effect' attribute that is of type=set.
         """
+        self.targets = self.get_targets()
         for effect, target in zip(self.effects, self.targets):
             if isinstance(type(target), list):
                 for sub_target in target:
@@ -53,6 +54,10 @@ class _Pickup(object):
     def serialise(self):
         raise NotImplementedError()
 
+    @abstractmethod
+    def get_targets(self):
+        raise NotImplementedError()
+
 
 class HealthPickup(_Pickup):
     def __init__(self, cell):
@@ -60,10 +65,13 @@ class HealthPickup(_Pickup):
         self.conditions.append(avatar_on_cell)
 
         self.effects.append(HealthPickupEffect)
-        self.targets.append(self.cell.avatar)
-
         self.effects.append(self.delete)
-        self.targets.append(None)
+        
+    def get_targets(self):
+        return [
+            self.cell.avatar,
+        ]
+
 
     def __repr__(self):
         return 'HealthPickup(Location={})'.format(self.cell.location)
@@ -84,10 +92,12 @@ class InvulnerabilityPickup(_Pickup):
         self.conditions.append(avatar_on_cell)
 
         self.effects.append(InvulnerabilityPickupEffect)
-        self.targets.append(self.cell.avatar)
-
         self.effects.append(self.delete)
-        self.targets.append(None)
+
+    def get_targets(self):
+        return [
+            self.cell.avatar,
+        ]
 
     def __repr__(self):
         return 'InvulnerabilityPickup(Location={})'.format(self.cell.location)
@@ -108,10 +118,12 @@ class DamageBoostPickup(_Pickup):
         self.conditions.append(avatar_on_cell)
         
         self.effects.append(DamageBoostPickupEffect)
-        self.targets.append(self.cell.avatar)
-
         self.effects.append(self.delete)
-        self.targets.append(None)
+
+    def get_targets(self):
+        return [
+            self.cell.avatar,
+        ]
 
     def __repr__(self):
         return 'DamageBoostPickup(Location={})'.format(self.cell.location)

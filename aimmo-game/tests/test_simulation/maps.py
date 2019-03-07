@@ -2,20 +2,19 @@
 
 from collections import defaultdict
 
-from simulation.location import Location
 from simulation.cell import Cell
-from simulation.world_map import WorldMap
 from simulation.game_logic import SpawnLocationFinder
+from simulation.location import Location
+from simulation.world_map import WorldMap
 
 
 class MockPickup(object):
-    def __init__(self, name='', cell=None):
-        self.applied_to = None
+    def __init__(self, name='', cell=None, target=None):
+        self.applied_to = target
         self.name = name
         self.cell = None
 
-    def apply(self, avatar):
-        self.applied_to = avatar
+    def apply(self):
         if self.cell:
             self.cell.pickup = None
 

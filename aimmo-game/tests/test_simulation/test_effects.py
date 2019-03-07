@@ -6,10 +6,11 @@ from unittest import TestCase
 from simulation.pickups import effects
 
 from .dummy_avatar import DummyAvatar
+from .maps import MockCell
 
 
 class _BaseCases(object):
-    class BaseTimedEffectTestCase(TestCase):
+    class BaseEffectTestCase(TestCase):
         __metaclass__ = abc.ABCMeta
 
         @abc.abstractmethod
@@ -17,6 +18,7 @@ class _BaseCases(object):
             pass
 
         def setUp(self):
+            self.cell = MockCell()
             self.avatar = DummyAvatar(1, None)
             self.effect = self.make_effect(self.avatar)
             self.avatar.effects.add(self.effect)
@@ -34,7 +36,7 @@ class _BaseCases(object):
             self.assertTrue(self.effect.is_expired)
 
 
-class TestInvulnerabilityEffect(_BaseCases.BaseTimedEffectTestCase):
+class TestInvulnerabilityEffect(_BaseCases.BaseEffectTestCase):
     def make_effect(self, *args):
         return effects.InvulnerabilityPickupEffect(*args)
 
@@ -50,9 +52,9 @@ class TestInvulnerabilityEffect(_BaseCases.BaseTimedEffectTestCase):
         self.assertRaises(KeyError, self.effect.remove)
 
 
-class TestDamageBoostPickupEffect(_BaseCases.BaseTimedEffectTestCase):
+class TestDamageBoostPickupEffect(_BaseCases.BaseEffectTestCase):
     def make_effect(self, *args):
-        return effects.DamageBoostPickupEffect(5, *args)
+        return effects.DamageBoostPickupEffect(*args)
 
     def test_damage_increases(self):
         self.assertEqual(self.avatar.attack_strength, 6)
