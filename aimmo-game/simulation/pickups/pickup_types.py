@@ -71,17 +71,16 @@ class HealthPickup(_Pickup):
             self.cell.avatar,
         ]
 
-
     def __repr__(self):
         return 'HealthPickup(Location={})'.format(self.cell.location)
 
     def serialise(self):
         return {
-                'type': 'health',
-                'location': {
+            'type': 'health',
+            'location': {
                     'x': self.cell.location.x,
                     'y': self.cell.location.y,
-                }
+            }
         }
 
 
@@ -103,11 +102,11 @@ class InvulnerabilityPickup(_Pickup):
 
     def serialise(self):
         return {
-                'type': 'invulnerability',
-                'location': {
+            'type': 'invulnerability',
+            'location': {
                     'x': self.cell.location.x,
                     'y': self.cell.location.y,
-                }
+            }
         }
 
 
@@ -129,11 +128,11 @@ class DamageBoostPickup(_Pickup):
 
     def serialise(self):
         return {
-                'type': 'damage_boost',
-                'location': {
+            'type': 'damage_boost',
+            'location': {
                     'x': self.cell.location.x,
                     'y': self.cell.location.y,
-                }
+            }
         }
 
 
