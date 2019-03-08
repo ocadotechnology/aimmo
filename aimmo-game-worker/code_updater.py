@@ -59,6 +59,7 @@ class CodeUpdater:
         been updated, meaning that self.avatar will actually be for the last correct code
         """
         avatar = None
+        new_code_recieved = self._avatar_src_changed(src_code)
         try:
             avatar = self._get_new_avatar(src_code)
 
@@ -69,7 +70,8 @@ class CodeUpdater:
         except Exception as e:
             self.update_successful = False
             raise e
-        return (avatar, self._avatar_src_changed(src_code))
+        print(avatar)
+        return (avatar, new_code_recieved)
 
     def _avatar_src_changed(self, new_avatar_code):
         return new_avatar_code != self.avatar_source_code
