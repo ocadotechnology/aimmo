@@ -32,7 +32,8 @@ class _Effect(object):
         try:
             self._target.effects.remove(self)
         except KeyError as e:
-            raise KeyError("The target object does not exist! Cannot remove the effect.")
+            raise KeyError(
+                "The target object does not exist! Cannot remove the effect.")
 
 
 class InvulnerabilityPickupEffect(_Effect):
@@ -60,6 +61,7 @@ class DamageBoostPickupEffect(_Effect):
 
     def __repr__(self):
         return f'DamageBoostPickupEffect(value={self._damage_boost})'
+
 
 class HealthPickupEffect(_Effect):
     def __init__(self, *args):
