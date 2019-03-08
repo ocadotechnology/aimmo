@@ -1,23 +1,23 @@
 #!/usr/bin/env python
 
-from aiohttp import web
-import aiohttp_cors
-from aiohttp_wsgi import WSGIHandler
-from prometheus_client import make_wsgi_app
-import asyncio
-import pickle
 import ast
+import asyncio
+import json
 import logging
 import os
+import pickle
 import sys
-import json
 from urllib.parse import parse_qs
 
+import aiohttp_cors
 import socketio
+from aiohttp import web
+from aiohttp_wsgi import WSGIHandler
+from prometheus_client import make_wsgi_app
 
 from simulation import map_generator
-from simulation.worker_managers import WORKER_MANAGERS
 from simulation.game_runner import GameRunner
+from simulation.worker_managers import WORKER_MANAGERS
 
 app = web.Application()
 cors = aiohttp_cors.setup(app)
@@ -125,6 +125,7 @@ class GameAPI(object):
     async def _send_have_avatars_code_updated(self, player_id_to_workers):
         socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id.copy()
         for sid, player_id in socket_session_id_to_player_id_copy.items():
+            LOGGER.info(f'{player_id_to_workers}')
             if player_id_to_workers[player_id].has_code_updated:
                 await socketio_server.emit('feedback-avatar-updated', {}, room=sid)
 
