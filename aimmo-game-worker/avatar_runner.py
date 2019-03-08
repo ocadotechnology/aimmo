@@ -7,6 +7,11 @@ import sys
 import traceback
 from io import StringIO
 
+from RestrictedPython import compile_restricted, utility_builtins
+from RestrictedPython.Guards import (full_write_guard, guarded_setattr,
+                                     safe_builtins, safer_getattr)
+from RestrictedPython.PrintCollector import PrintCollector
+
 import simulation.action as avatar_action
 import simulation.direction as direction
 from print_collector import LogManager
