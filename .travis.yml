@@ -97,7 +97,6 @@ jobs:
         - nvm use node
       install:
         - cd game_frontend && yarn
-        - yarn node --version
       script:
         - yarn test --coverage
       after_success:
