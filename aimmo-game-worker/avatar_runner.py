@@ -48,7 +48,10 @@ class AvatarRunner(object):
             if self.code_updater.should_update(self.avatar, self.auto_update, src_code):
                 self.avatar, avatar_updated = self.code_updater.update_avatar(src_code)
 
-            action = self.run_users_code(world_map, avatar_state, src_code)
+            if self.avatar:
+                action = self.run_users_code(world_map, avatar_state, src_code)
+            else:
+                action = WaitAction().serialise()
 
         stdout, stderr = output
         output_log = stdout.getvalue()
