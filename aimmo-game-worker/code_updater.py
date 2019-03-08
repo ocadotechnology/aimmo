@@ -69,7 +69,7 @@ class CodeUpdater:
         except Exception as e:
             self.update_successful = False
             raise e
-        return (avatar, self.update_successful)
+        return (avatar, self._avatar_src_changed(src_code))
 
     def _avatar_src_changed(self, new_avatar_code):
         return new_avatar_code != self.avatar_source_code
