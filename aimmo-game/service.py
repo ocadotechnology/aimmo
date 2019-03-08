@@ -14,7 +14,6 @@ from urllib.parse import parse_qs
 import socketio
 
 from simulation import map_generator
-from simulation.worker_managers import WorkerManager
 from simulation.game_runner import GameRunner
 
 app = web.Application()
