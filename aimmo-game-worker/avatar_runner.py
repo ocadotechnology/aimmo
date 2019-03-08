@@ -88,12 +88,13 @@ class AvatarRunner(object):
     def decide_action(self, world_map, avatar_state):
         try:
             action = self.avatar.next_turn(world_map, avatar_state)
-
             if not isinstance(action, Action):
                 raise InvalidActionException(action)
+
             return action.serialise()
         except TypeError as e:
-            raise InvalidActionException(None)
+            print(e)
+            return WaitAction().serialise()
 
     @staticmethod
     def get_only_user_traceback():

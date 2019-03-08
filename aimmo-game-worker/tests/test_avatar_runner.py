@@ -89,7 +89,7 @@ class TestAvatarRunner(TestCase):
                             new_dir = random.choice(direction.ALL_DIRECTIONS)
                   '''
         runner = AvatarRunner(code_updater=CodeUpdater())
-        runner._update_avatar(src_code=avatar)
+        runner.avatar, _ = runner.code_updater.update_avatar(src_code=avatar)
         with self.assertRaises(InvalidActionException):
             runner.decide_action(world_map={}, avatar_state={})
 
@@ -100,7 +100,7 @@ class TestAvatarRunner(TestCase):
                             return MoveAction(random.choice(direction.ALL_DIRECTIONS))
                   '''
         runner = AvatarRunner(code_updater=CodeUpdater())
-        runner._update_avatar(src_code=avatar)
+        runner.avatar, _ = runner.code_updater.update_avatar(src_code=avatar)
         with self.assertRaises(ImportError):
             runner.decide_action(world_map={}, avatar_state={})
 
@@ -132,7 +132,8 @@ class TestAvatarRunner(TestCase):
         self.assertTrue(runner.code_updater.update_successful)
         runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar_syntax_error)
         self.assertFalse(runner.code_updater.update_successful)
-        runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar_bad_constructor)
+        with self.assertRaises(TypeError):
+            runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar_bad_constructor)
         self.assertFalse(runner.code_updater.update_successful)
         runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar_ok)
         self.assertTrue(runner.code_updater.update_successful)
@@ -264,10 +265,10 @@ class TestAvatarRunner(TestCase):
                             return MoveAction(direction.NORTH))))))))
                  '''
         runner = AvatarRunner(code_updater=CodeUpdater())
-        with self.assertRaises(SyntaxError):
-            runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
-        with self.assertRaises(SyntaxError):
-            runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        self.assertFalse(runner.code_updater.update_successful)
+        runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        self.assertFalse(runner.code_updater.update_successful)
 
     def test_syntax_warning_not_shown_to_user(self):
         avatar = '''class Avatar:
