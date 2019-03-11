@@ -30,7 +30,7 @@ class TestHealthPickupAndEffects(TestCase):
         HealthPickups without any parameter provided.
         """
         self.cell.pickup = HealthPickup(self.cell)
-        self.assertEqual(self.cell.pickup.serialise(), {
+        self.assertEqual(self.cell.pickup.serialize(), {
             'type': 'health',
             'location': {
                 'x': self.cell.location.x,
@@ -38,7 +38,7 @@ class TestHealthPickupAndEffects(TestCase):
             }
         })
 
-        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
+        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialized_action()))
 
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
         self.assertEqual(self.cell.avatar.health, self.initial_health +
@@ -55,7 +55,7 @@ class TestHealthPickupAndEffects(TestCase):
         avatar.health = 97
         self.cell.pickup = HealthPickup(self.cell)
 
-        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
+        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialized_action()))
 
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
         self.assertEqual(self.cell.avatar.health, AVATAR_HEALTH_MAX)

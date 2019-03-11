@@ -21,7 +21,7 @@ class MockPickup(object):
     def conditions_met(self, world_map):
         return True
 
-    def serialise(self):
+    def serialize(self):
         return {'name': self.name}
 
 

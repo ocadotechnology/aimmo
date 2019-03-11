@@ -30,18 +30,18 @@ class TestWorker(TestCase):
         self.worker.fetch_data(state_view={})
 
         mocked_post.assert_called_once()
-        self.assertEqual(self.worker.serialised_action, 'test_action')
+        self.assertEqual(self.worker.serialized_action, 'test_action')
         self.assertEqual(self.worker.log, 'test_log')
         self.assertEqual(self.worker.has_code_updated, 'True')
 
     def test_setting_defaults_works_correctly(self):
         self.worker.log = 'test_log_fake'
-        self.worker.serialised_action = 'test_action_fake'
+        self.worker.serialized_action = 'test_action_fake'
         self.worker.has_code_updated = 'test_avatar_updated_fake'
 
         self.worker._set_defaults()
 
-        self.assertIsNone(self.worker.serialised_action)
+        self.assertIsNone(self.worker.serialized_action)
         self.assertIsNone(self.worker.log)
         self.assertFalse(self.worker.has_code_updated)
 

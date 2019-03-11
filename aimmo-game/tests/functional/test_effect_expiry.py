@@ -44,7 +44,7 @@ class TestEffectExpiry(TestCase):
         loop = asyncio.get_event_loop()
         for i in range(6):
             loop.run_until_complete(self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialised_action()
+                self.game.avatar_manager.get_player_id_to_serialized_action()
             ))
 
         self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created.effects[0]))
@@ -54,7 +54,7 @@ class TestEffectExpiry(TestCase):
         # Run 5 more turns and expect the effect to expire.
         for i in range(5):
             loop.run_until_complete(self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialised_action()
+                self.game.avatar_manager.get_player_id_to_serialized_action()
             ))
 
         self.assertEqual(len(self.avatar.effects), 0)
@@ -72,7 +72,7 @@ class TestEffectExpiry(TestCase):
         # Avatar moves EAST to (1,0) where pickup is located, then repeats it 5 times.
         loop = asyncio.get_event_loop()
         for i in range(6):
-            loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
+            loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialized_action()))
 
         self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created.effects[0]))
         self.assertEqual(list(self.avatar.effects)[0]._time_remaining, 5)
@@ -80,7 +80,7 @@ class TestEffectExpiry(TestCase):
 
         # Run 5 more turns and expect the effect to expire.
         for i in range(5):
-            loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
+            loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialized_action()))
 
         self.assertEqual(len(self.avatar.effects), 0)
         self.assertEqual(self.avatar.resistance, 0)
@@ -103,7 +103,7 @@ class TestEffectExpiry(TestCase):
         # Avatar moves EAST to (1,0) where pickup one is located.
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self.game.simulation_runner.run_single_turn(
-            self.game.avatar_manager.get_player_id_to_serialised_action()
+            self.game.avatar_manager.get_player_id_to_serialized_action()
         ))
 
         self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created_one.effects[0]))
@@ -114,7 +114,7 @@ class TestEffectExpiry(TestCase):
         # Move twice to the second pickup.
         for i in range(2):
             loop.run_until_complete(self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialised_action()
+                self.game.avatar_manager.get_player_id_to_serialized_action()
             ))
 
         self.assertTrue(isinstance(list(self.avatar.effects)[1], pickup_created_two.effects[0]))
@@ -124,7 +124,7 @@ class TestEffectExpiry(TestCase):
         # Eight turns later, we expect the first effect to expire.
         for i in range(8):
             loop.run_until_complete(self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialised_action()
+                self.game.avatar_manager.get_player_id_to_serialized_action()
             ))
 
         self.assertEqual(len(self.avatar.effects), 1)
@@ -134,7 +134,7 @@ class TestEffectExpiry(TestCase):
         # Two turns later, the second pickup expires too.
         for i in range(2):
             loop.run_until_complete(self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialised_action()
+                self.game.avatar_manager.get_player_id_to_serialized_action()
             ))
 
         self.assertEqual(len(self.avatar.effects), 0)
@@ -158,7 +158,7 @@ class TestEffectExpiry(TestCase):
         # Avatar moves EAST to (1,0) where pickup one is located.
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self.game.simulation_runner.run_single_turn(
-            self.game.avatar_manager.get_player_id_to_serialised_action()
+            self.game.avatar_manager.get_player_id_to_serialized_action()
         ))
 
         self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created_one.effects[0]))
@@ -169,7 +169,7 @@ class TestEffectExpiry(TestCase):
         # Move twice to the second pickup.
         for i in range(2):
             loop.run_until_complete(self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialised_action()
+                self.game.avatar_manager.get_player_id_to_serialized_action()
             ))
 
         self.assertTrue(isinstance(list(self.avatar.effects)[1], pickup_created_two.effects[0]))
@@ -179,7 +179,7 @@ class TestEffectExpiry(TestCase):
         # Eight turns later, we expect the first effect to expire.
         for i in range(8):
             loop.run_until_complete(self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialised_action()
+                self.game.avatar_manager.get_player_id_to_serialized_action()
             ))
 
         self.assertEqual(len(self.avatar.effects), 1)
@@ -189,7 +189,7 @@ class TestEffectExpiry(TestCase):
         # Two turns later, the second pickup expires too.
         for i in range(2):
             loop.run_until_complete(self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialised_action()
+                self.game.avatar_manager.get_player_id_to_serialized_action()
             ))
 
         self.assertEqual(len(self.avatar.effects), 0)

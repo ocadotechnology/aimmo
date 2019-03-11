@@ -60,16 +60,16 @@ class GameRunner:
         self.worker_manager.update_worker_codes(game_metadata['users'])
 
         self.update_main_user(game_metadata)
-        self.worker_manager.fetch_all_worker_data(self.game_state.get_serialised_game_states_for_workers())
+        self.worker_manager.fetch_all_worker_data(self.game_state.get_serialized_game_states_for_workers())
 
-    async def update_simulation(self, player_id_to_serialised_actions):
-        await self.simulation_runner.run_single_turn(player_id_to_serialised_actions)
+    async def update_simulation(self, player_id_to_serialized_actions):
+        await self.simulation_runner.run_single_turn(player_id_to_serialized_actions)
         await self._end_turn_callback()
 
     async def update(self):
         with GAME_TURN_TIME():
             self.update_workers()
-            await self.update_simulation(self.worker_manager.get_player_id_to_serialised_actions())
+            await self.update_simulation(self.worker_manager.get_player_id_to_serialized_actions())
             self.worker_manager.clear_logs()
 
     async def run(self):

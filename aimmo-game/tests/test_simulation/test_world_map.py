@@ -20,11 +20,11 @@ def int_floor(num):
     return int(math.floor(num))
 
 
-class Serialiser(object):
+class serializer(object):
     def __init__(self, content):
         self.content = content
 
-    def serialise(self):
+    def serialize(self):
         return self.content
 
 

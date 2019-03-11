@@ -1,3 +1,6 @@
+"""
+
+"""
 import math
 from abc import ABCMeta, abstractmethod
 
@@ -12,14 +15,12 @@ AVATAR_HEALTH_MAX = 100
 
 
 class _Effect(object):
-    __metaclass__ = ABCMeta
-
-    def __init__(self, target, duration=DEFAULT_EFFECT_TIME):
-        self._target = target
+    def __init__(self, recipient, duration=DEFAULT_EFFECT_TIME):
+        self._recipient = recipient
         self.is_expired = False
         self._time_remaining = duration
         try:
-            self._target.effects.add(self)
+            self._recipient.effects.add(self)
         except KeyError as e:
             raise KeyError("The target object does support effects.")
 
@@ -30,7 +31,7 @@ class _Effect(object):
 
     def remove(self):
         try:
-            self._target.effects.remove(self)
+            self._recipient.effects.remove(self)
         except KeyError as e:
             raise KeyError(
                 "The target object does not exist! Cannot remove the effect.")
@@ -39,11 +40,11 @@ class _Effect(object):
 class InvulnerabilityPickupEffect(_Effect):
     def __init__(self, *args):
         super(InvulnerabilityPickupEffect, self).__init__(*args)
-        self._target.resistance += INVULNERABILITY_RESISTANCE
+        self._recipient.resistance += INVULNERABILITY_RESISTANCE
 
     def remove(self):
         super(InvulnerabilityPickupEffect, self).remove()
-        self._target.resistance -= INVULNERABILITY_RESISTANCE
+        self._recipient.resistance -= INVULNERABILITY_RESISTANCE
 
     def __repr__(self):
         return f'InvulnerabilityPickupEffect(value={INVULNERABILITY_RESISTANCE})'
@@ -53,11 +54,11 @@ class DamageBoostPickupEffect(_Effect):
     def __init__(self, *args):
         self._damage_boost = int(round(DAMAGE_BOOST_DEFAULT))
         super(DamageBoostPickupEffect, self).__init__(*args)
-        self._target.attack_strength += self._damage_boost
+        self._recipient.attack_strength += self._damage_boost
 
     def remove(self):
         super(DamageBoostPickupEffect, self).remove()
-        self._target.attack_strength -= self._damage_boost
+        self._recipient.attack_strength -= self._damage_boost
 
     def __repr__(self):
         return f'DamageBoostPickupEffect(value={self._damage_boost})'
@@ -67,10 +68,10 @@ class HealthPickupEffect(_Effect):
     def __init__(self, *args):
         super(HealthPickupEffect, self).__init__(duration=1, *args)
         self.health_restored = HEALTH_RESTORE_DEFAULT
-        self.give_health(self._target)
+        self.give_health(self._recipient)
 
     def remove(self):
-        super(InvulnerabilityPickupEffect, self).remove()
+        super(HealthPickupEffect, self).remove()
 
     def give_health(self, avatar):
         avatar.health += self.health_restored

@@ -6,8 +6,7 @@ from threading import Thread
 
 from simulation.action import PRIORITIES, WaitAction
 from simulation.game_logic import (MapContext, MapExpander, PickupApplier,
-                                   PickupUpdater, ScoreLocationUpdater,
-                                   SpawnLocationFinder)
+                                   PickupUpdater, ScoreLocationUpdater)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -27,25 +26,25 @@ class SimulationRunner(object):
         self._lock = threading.RLock()
 
     @abstractmethod
-    async def run_turn(self, player_id_to_serialised_actions):
+    async def run_turn(self, player_id_to_serialized_actions):
         pass
 
-    async def _run_turn_for_avatar(self, avatar, serialised_action):
+    async def _run_turn_for_avatar(self, avatar, serialized_action):
         """
         Send an avatar its view of the game state and register its
         chosen action & logs.
         """
-        self._register_actions(avatar, serialised_action)
+        self._register_actions(avatar, serialized_action)
 
-    def _register_actions(self, avatar, serialised_action):
+    def _register_actions(self, avatar, serialized_action):
         """
         Calls a function that constructs the action object, does error handling,
         and finally registers it onto the avatar.
 
         :param avatar: Avatar wrapper object
-        :param serialised_action: A string representing the action
+        :param serialized_action: A string representing the action
         """
-        if avatar.decide_action(serialised_action):
+        if avatar.decide_action(serialized_action):
             avatar.action.register(self.game_state.world_map)
 
     def _update_effects(self):
@@ -81,12 +80,14 @@ class SimulationRunner(object):
         PickupUpdater().update(self.game_state.world_map, context=context)
 
     def _mark_complete(self):
-        self.communicator.mark_game_complete(data=self.game_state.serialise())
+        self.communicator.mark_game_complete(data=self.game_state.serialize())
 
     def add_avatar(self, player_id, location=None):
         with self._lock:
-            location = self.game_state.world_map.get_random_spawn_location() if location is None else location
-            avatar = self.game_state.avatar_manager.add_avatar(player_id, location)
+            location = self.game_state.world_map.get_random_spawn_location(
+            ) if location is None else location
+            avatar = self.game_state.avatar_manager.add_avatar(
+                player_id, location)
             self.game_state.world_map.get_cell(location).avatar = avatar
 
     def remove_avatar(self, player_id):
@@ -106,20 +107,20 @@ class SimulationRunner(object):
         for player_id in player_ids:
             self.remove_avatar(player_id)
 
-    async def run_single_turn(self, player_id_to_serialised_actions):
-        await self.run_turn(player_id_to_serialised_actions)
+    async def run_single_turn(self, player_id_to_serialized_actions):
+        await self.run_turn(player_id_to_serialized_actions)
         self.update_environment()
 
 
 class SequentialSimulationRunner(SimulationRunner):
-    async def run_turn(self, player_id_to_serialised_actions):
+    async def run_turn(self, player_id_to_serialized_actions):
         """
         Get and apply each avatar's action in turn.
         """
         avatars = self.game_state.avatar_manager.active_avatars
 
         for avatar in avatars:
-            await self._run_turn_for_avatar(avatar, player_id_to_serialised_actions[avatar.player_id])
+            await self._run_turn_for_avatar(avatar, player_id_to_serialized_actions[avatar.player_id])
             location_to_clear = avatar.action.target_location
             avatar.action.process(self.game_state.world_map)
             self.game_state.world_map.clear_cell_actions(location_to_clear)
@@ -130,14 +131,15 @@ class ConcurrentSimulationRunner(SimulationRunner):
         futures = [func(*arg) for arg in iterable_args]
         await asyncio.gather(*futures)
 
-    async def run_turn(self, player_id_to_serialised_actions):
+    async def run_turn(self, player_id_to_serialized_actions):
         """
         Concurrently get the intended actions from all avatars and register
         them on the world map. Then apply actions in order of priority.
         """
 
         avatars = self.game_state.avatar_manager.active_avatars
-        args = [(avatar, player_id_to_serialised_actions[avatar.player_id]) for avatar in avatars]
+        args = [(avatar, player_id_to_serialized_actions[avatar.player_id])
+                for avatar in avatars]
         await self.async_map(self._run_turn_for_avatar, args)
 
         # Waits applied first, then attacks, then moves.

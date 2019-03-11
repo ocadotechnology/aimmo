@@ -40,8 +40,8 @@ class WorkerManager(object):
 
         timed_process_for_worker_turn_requests(2)
 
-    def get_player_id_to_serialised_actions(self):
-        return {player_id: self.player_id_to_worker[player_id].serialised_action for player_id in self.player_id_to_worker}
+    def get_player_id_to_serialized_actions(self):
+        return {player_id: self.player_id_to_worker[player_id].serialized_action for player_id in self.player_id_to_worker}
 
     def clear_logs(self):
         for worker in self.player_id_to_worker.values():

@@ -29,8 +29,8 @@ class _Pickup(object):
     def delete(self):
         self.cell.pickup = None
 
-    def conditions_met(self, game_state: 'GameState'):
-        """Apply logical and on all conditions, returns True is all conditions are met."""
+    def conditions_met(self, game_state: 'GameState') -> 'bool':
+        """Apply logical `AND` on all conditions, returns True is all conditions are met."""
         turn_state = TurnState(game_state, self.cell)
         return all([condition(turn_state) for condition in self.conditions])
 
@@ -50,11 +50,11 @@ class _Pickup(object):
                 effect(target)
 
     @abstractmethod
-    def serialise(self):
+    def serialize(self):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_targets(self):
+    def get_targets(self) -> 'list':
         raise NotImplementedError()
 
 
@@ -74,7 +74,7 @@ class HealthPickup(_Pickup):
     def __repr__(self):
         return 'HealthPickup(Location={})'.format(self.cell.location)
 
-    def serialise(self):
+    def serialize(self):
         return {
             'type': 'health',
             'location': {
@@ -100,7 +100,7 @@ class InvulnerabilityPickup(_Pickup):
     def __repr__(self):
         return 'InvulnerabilityPickup(Location={})'.format(self.cell.location)
 
-    def serialise(self):
+    def serialize(self):
         return {
             'type': 'invulnerability',
             'location': {
@@ -126,7 +126,7 @@ class DamageBoostPickup(_Pickup):
     def __repr__(self):
         return 'DamageBoostPickup(Location={})'.format(self.cell.location)
 
-    def serialise(self):
+    def serialize(self):
         return {
             'type': 'damage_boost',
             'location': {
@@ -136,8 +136,8 @@ class DamageBoostPickup(_Pickup):
         }
 
 
-def serialise_pickups(world_map):
-    return [cell.pickup.serialise() for cell in world_map.pickup_cells()]
+def serialize_pickups(world_map):
+    return [cell.pickup.serialize() for cell in world_map.pickup_cells()]
 
 
 ALL_PICKUPS = (

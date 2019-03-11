@@ -1,6 +1,6 @@
 from threading import RLock
 
-from simulation.pickups.pickup_types import serialise_pickups
+from simulation.pickups.pickup_types import serialize_pickups
 
 
 class GameState:
@@ -18,27 +18,27 @@ class GameState:
         with self._lock:
             return self.avatar_manager.avatars_by_id[self.main_avatar_id]
 
-    def serialise(self):
+    def serialize(self):
         return {
             'era': "less_flat",
-            'southWestCorner': self.world_map.get_serialised_south_west_corner(),
-            'northEastCorner': self.world_map.get_serialised_north_east_corner(),
-            'players': self.avatar_manager.serialise_players(),
-            'pickups': serialise_pickups(self.world_map),
-            'scoreLocations': (self.world_map.serialise_score_location()),
-            'obstacles': self.world_map.serialise_obstacles()
+            'southWestCorner': self.world_map.get_serialized_south_west_corner(),
+            'northEastCorner': self.world_map.get_serialized_north_east_corner(),
+            'players': self.avatar_manager.serialize_players(),
+            'pickups': serialize_pickups(self.world_map),
+            'scoreLocations': (self.world_map.serialize_score_location()),
+            'obstacles': self.world_map.serialize_obstacles()
         }
 
-    def serialise_for_worker(self, avatar_wrapper):
+    def serialize_for_worker(self, avatar_wrapper):
         with self._lock:
             return {
-                'avatar_state': avatar_wrapper.serialise(),
+                'avatar_state': avatar_wrapper.serialize(),
                 'world_map': {
-                    'cells': [cell.serialise() for cell in self.world_map.all_cells()]
+                    'cells': [cell.serialize() for cell in self.world_map.all_cells()]
                 }
             }
 
-    def get_serialised_game_states_for_workers(self):
+    def get_serialized_game_states_for_workers(self):
         with self._lock:
-            return {player_id: self.serialise_for_worker(avatar_wrapper) for player_id, avatar_wrapper
+            return {player_id: self.serialize_for_worker(avatar_wrapper) for player_id, avatar_wrapper
                     in self.avatar_manager.avatars_by_id.items()}

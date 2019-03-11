@@ -41,7 +41,7 @@ class TestMovementsInMap(TestCase):
 
         loop = asyncio.get_event_loop()
         for i in range(number_of_movements):
-            loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
+            loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialized_action()))
 
     def test_movement_five_times_in_all_directions(self):
         """
@@ -111,7 +111,7 @@ class TestMovementsInMap(TestCase):
 
         loop = asyncio.get_event_loop()
         for i in range(2):
-            loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
+            loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialized_action()))
 
         self.assertTrue(self.avatar.location, Location(1, 0))
 
@@ -129,7 +129,7 @@ class TestMovementsInMap(TestCase):
         loop = asyncio.get_event_loop()
         for i in range(2):
             loop.run_until_complete(self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialised_action()
+                self.game.avatar_manager.get_player_id_to_serialized_action()
             ))
 
         # Avatar 1 & Avatar 2 only managed to move once.
@@ -146,7 +146,7 @@ class TestMovementsInMap(TestCase):
 
         for i in range(2):
             loop.run_until_complete(self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialised_action()
+                self.game.avatar_manager.get_player_id_to_serialized_action()
             ))
 
         # Avatar 1 & Avatar 2 managed to only move only once.
@@ -160,7 +160,7 @@ class TestMovementsInMap(TestCase):
 
         self.assertEqual(self.avatar.location, Location(0, 0))
         self.assertEqual(avatar_two.location, Location(1, 0))
-        loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
+        loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialized_action()))
 
         self.assertEqual(self.avatar.location, Location(0, 0))
         self.assertEqual(avatar_two.location, Location(1, 0))
@@ -174,6 +174,6 @@ class TestMovementsInMap(TestCase):
 
         loop = asyncio.get_event_loop()
         for i in range(5):
-            loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
+            loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialized_action()))
 
         self.assertEqual(self.avatar.location, Location(0, 0))
