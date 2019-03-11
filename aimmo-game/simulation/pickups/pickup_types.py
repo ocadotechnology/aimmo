@@ -1,15 +1,15 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
 from functools import reduce
 from logging import getLogger
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 from simulation.pickups.conditions import TurnState, avatar_on_cell
-from simulation.pickups.effects import (DamageBoostPickupEffect,
-                                        HealthPickupEffect,
-                                        InvulnerabilityPickupEffect)
+from simulation.pickups.effects import (DamageBoostEffect, HealthEffect,
+                                        InvulnerabilityEffect)
 
 if TYPE_CHECKING:
     from simulation.game_state import GameState
+    from simulation.avatar.avatar_wrapper import AvatarWrapper
 
 LOGGER = getLogger(__name__)
 
@@ -42,19 +42,18 @@ class _Pickup(object):
         targets must have an 'effect' attribute that is of type=set.
         """
         self.targets = self.get_targets()
-        for effect, target in zip(self.effects, self.targets):
-            if isinstance(type(target), list):
-                for sub_target in target:
-                    effect(sub_target)
-            else:
+        for effect in self.effects:
+            for target in self.targets:
                 effect(target)
+
+        self.delete()
 
     @abstractmethod
     def serialize(self):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_targets(self) -> 'list':
+    def get_targets(self) -> 'List[AvatarWrapper]':
         raise NotImplementedError()
 
 
@@ -63,12 +62,11 @@ class HealthPickup(_Pickup):
         super(HealthPickup, self).__init__(cell)
         self.conditions.append(avatar_on_cell)
 
-        self.effects.append(HealthPickupEffect)
-        self.effects.append(self.delete)
+        self.effects.append(HealthEffect)
 
     def get_targets(self):
         return [
-            self.cell.avatar,
+            self.cell.avatar
         ]
 
     def __repr__(self):
@@ -89,12 +87,11 @@ class InvulnerabilityPickup(_Pickup):
         super(InvulnerabilityPickup, self).__init__(cell)
         self.conditions.append(avatar_on_cell)
 
-        self.effects.append(InvulnerabilityPickupEffect)
-        self.effects.append(self.delete)
+        self.effects.append(InvulnerabilityEffect)
 
     def get_targets(self):
         return [
-            self.cell.avatar,
+            self.cell.avatar
         ]
 
     def __repr__(self):
@@ -115,12 +112,11 @@ class DamageBoostPickup(_Pickup):
         super(DamageBoostPickup, self).__init__(cell)
         self.conditions.append(avatar_on_cell)
 
-        self.effects.append(DamageBoostPickupEffect)
-        self.effects.append(self.delete)
+        self.effects.append(DamageBoostEffect)
 
     def get_targets(self):
         return [
-            self.cell.avatar,
+            self.cell.avatar
         ]
 
     def __repr__(self):

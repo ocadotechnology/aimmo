@@ -38,7 +38,7 @@ class _BaseCases(object):
 
 class TestInvulnerabilityEffect(_BaseCases.BaseEffectTestCase):
     def make_effect(self, *args):
-        return effects.InvulnerabilityPickupEffect(*args)
+        return effects.InvulnerabilityEffect(*args)
 
     def test_resistance_increases(self):
         self.assertEqual(self.avatar.resistance, 1000)
@@ -52,9 +52,9 @@ class TestInvulnerabilityEffect(_BaseCases.BaseEffectTestCase):
         self.assertRaises(KeyError, self.effect.remove)
 
 
-class TestDamageBoostPickupEffect(_BaseCases.BaseEffectTestCase):
+class TestDamageBoostEffect(_BaseCases.BaseEffectTestCase):
     def make_effect(self, *args):
-        return effects.DamageBoostPickupEffect(*args)
+        return effects.DamageBoostEffect(*args)
 
     def test_damage_increases(self):
         self.assertEqual(self.avatar.attack_strength, 6)
