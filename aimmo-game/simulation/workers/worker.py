@@ -19,10 +19,10 @@ class Worker(object):
         self.has_code_updated = False
 
     def _create_worker(self):
-        NotImplemented
+        raise NotImplementedError
 
     def remove_worker(self):
-        NotImplemented
+        raise NotImplementedError
 
     def fetch_data(self, state_view):
         try:

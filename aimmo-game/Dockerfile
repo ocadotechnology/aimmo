@@ -12,5 +12,5 @@ FROM base as tester
 CMD python setup.py test
 
 FROM base as runner
-ENV WORKER_MANAGER=kubernetes
+ENV WORKER=kubernetes
 CMD python ./service.py 0.0.0.0 5000
