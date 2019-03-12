@@ -18,6 +18,10 @@ class NewEffect(_Effect):
 """
 import math
 from abc import ABCMeta, abstractmethod
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from simulation.avatar.avatar_wrapper import AvatarWrapper
 
 DEFAULT_EFFECT_TIME = 10
 
@@ -34,7 +38,7 @@ class _Effect(object):
     Base effect class, does nothing on its own.
     """
 
-    def __init__(self, recipient, duration=DEFAULT_EFFECT_TIME):
+    def __init__(self, recipient: 'AvatarWrapper', duration=DEFAULT_EFFECT_TIME):
         self._recipient = recipient
         self.is_expired = False
         self._time_remaining = duration
