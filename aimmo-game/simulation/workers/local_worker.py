@@ -20,8 +20,8 @@ class LocalWorker(Worker):
 
     def __init__(self, *args, **kwargs):
         self.game_id = os.environ['GAME_ID']
-        self.port_counter = itertools.count(1989 + int(self.game_id) * 10000)
         self.client = docker.from_env()
+        # self.port_counter = port_counter
         super(LocalWorker, self).__init__(*args, **kwargs)
 
     def _create_worker(self):
@@ -49,5 +49,5 @@ class LocalWorker(Worker):
         LOGGER.info("Worker started for %s, listening at %s", self.player_id, worker_url)
         return worker_url
 
-    def remove_worker(self, player_id):
+    def remove_worker(self):
         self.kill()

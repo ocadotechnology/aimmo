@@ -7,6 +7,7 @@ from threading import Thread
 from concurrent import futures
 
 from simulation.workers import WORKER
+import itertools
 
 LOGGER = logging.getLogger(__name__)
 
@@ -18,7 +19,7 @@ class WorkerManager(object):
     def __init__(self, port=5000):
         self.player_id_to_worker = {}
         self.port = port
-        self.worker_class = WORKER[os.environ['WORKER']]
+        self.worker_class = WORKER[os.environ.get('WORKER', 'local')]
 
     def get_code(self, player_id):
         return self.player_id_to_worker[player_id].code
@@ -53,7 +54,7 @@ class WorkerManager(object):
         self.player_id_to_worker[player['id']].code = player['code']
 
     def add_new_worker(self, player_id):
-        self.player_id_to_worker[player_id] = self.worker_class(player_id)
+        self.player_id_to_worker[player_id] = self.worker_class(player_id, self.port, itertools.count(1989 + int(os.environ["GAME_ID"]) * 10000))
 
     def _parallel_map(self, func, iterable_args):
         with futures.ThreadPoolExecutor() as executor:
@@ -68,8 +69,8 @@ class WorkerManager(object):
     def delete_worker(self, player_id):
         if player_id in self.player_id_to_worker:
             worker = self.player_id_to_worker[player_id]
-            del worker
             worker.remove_worker()
+            del worker
 
     def update_worker_codes(self, players):
         self._parallel_map(self.update_code, players)
