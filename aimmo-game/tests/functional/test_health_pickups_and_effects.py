@@ -5,8 +5,8 @@ from unittest import TestCase
 import hypothesis.strategies as st
 from hypothesis import given
 from simulation.location import Location
-from simulation.pickups import HealthPickup
-from simulation.pickups.effects import (AVATAR_HEALTH_MAX,
+from simulation.interactables import HealthPickup
+from simulation.interactables.effects import (AVATAR_HEALTH_MAX,
                                         HEALTH_RESTORE_DEFAULT,
                                         HEALTH_RESTORE_MAX)
 

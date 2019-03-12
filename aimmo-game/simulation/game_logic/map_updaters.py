@@ -6,7 +6,7 @@ from logging import getLogger
 
 from simulation.cell import Cell
 from simulation.location import Location
-from simulation.pickups import ALL_PICKUPS
+from simulation.interactables import ALL_PICKUPS
 
 LOGGER = getLogger(__name__)
 

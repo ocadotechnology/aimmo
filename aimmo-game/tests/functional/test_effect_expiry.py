@@ -2,8 +2,8 @@ import asyncio
 from unittest import TestCase
 
 from simulation.location import Location
-from simulation.pickups import DamageBoostPickup, InvulnerabilityPickup
-from simulation.pickups.effects import (DAMAGE_BOOST_DEFAULT,
+from simulation.interactables import DamageBoostPickup, InvulnerabilityPickup
+from simulation.interactables.effects import (DAMAGE_BOOST_DEFAULT,
                                         INVULNERABILITY_RESISTANCE)
 
 from .mock_world import MockWorld

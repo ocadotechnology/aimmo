@@ -8,7 +8,7 @@ from unittest.mock import patch
 from simulation.avatar.avatar_appearance import AvatarAppearance
 from simulation.game_state import GameState
 from simulation.location import Location
-from simulation.pickups import DamageBoostPickup
+from simulation.interactables import DamageBoostPickup
 from simulation.simulation_runner import ConcurrentSimulationRunner
 from simulation.world_map import WorldMap
 
@@ -255,7 +255,7 @@ class TestSimulationRunner(unittest.TestCase):
         self.simulation_runner.update(1, self.simulation_runner.game_state)
         self.assertEqual(len(list(self.simulation_runner.game_state.world_map.pickup_cells())), 0)
 
-    @patch('simulation.pickups.pickup_types.DamageBoostPickup')
+    @patch('simulation.interactables.pickups.DamageBoostPickup')
     def test_pickups_not_added_when_at_target(self, mockPickup):
         self.construct_simulation_runner([], [])
         settings = SETTINGS.copy()
