@@ -9,12 +9,12 @@ class Worker(object):
         self.url = worker_url
         self.log = None
         self.code = None
-        self.serialised_action = None
+        self.serialized_action = None
         self.has_code_updated = False
 
     def _set_defaults(self):
         self.log = None
-        self.serialised_action = None
+        self.serialized_action = None
         self.has_code_updated = False
 
     def fetch_data(self, state_view):
@@ -28,7 +28,7 @@ class Worker(object):
             response = requests.post(self.url, json=data)
             response.raise_for_status()
             data = response.json()
-            self.serialised_action = data['action']
+            self.serialized_action = data['action']
             self.log = data['log']
             self.has_code_updated = data['avatar_updated']
         except requests.exceptions.ConnectionError:

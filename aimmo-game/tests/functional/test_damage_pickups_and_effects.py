@@ -6,7 +6,7 @@ from hypothesis import assume, given
 from hypothesis import strategies as st
 from simulation.location import Location
 from simulation.pickups import DamageBoostPickup
-from simulation.pickups.pickup_types import DAMAGE_BOOST_DEFAULT
+from simulation.pickups.effects import DAMAGE_BOOST_DEFAULT
 
 from .mock_world import MockWorld
 
@@ -27,40 +27,19 @@ class TestDamagePickupsAndEffects(TestCase):
     def test_damage_boost_pickup_can_be_picked_up_default(self):
         pickup_created = DamageBoostPickup(self.cell)
         self.cell.pickup = pickup_created
-
-        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
-
-        self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
-        self.assertEqual(len(self.game.avatar_manager.get_avatar(1).effects), 1)
-        damage_boost_effect = self.game.avatar_manager.get_avatar(1).effects.pop()
-        self.assertTrue(isinstance(damage_boost_effect, pickup_created.EFFECT))
-
-    @given(st.integers(min_value=1))
-    def test_damage_boost_pickup_can_be_picked_up_custom_integer(self, boost_value):
-        self.setUp()
-        pickup_created = DamageBoostPickup(self.cell, boost_value)
-        self.cell.pickup = pickup_created
-
-        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
+        self.assertEqual(self.cell.pickup.serialize(), {
+            'type': 'damage_boost',
+            'location': {
+                'x': self.cell.location.x,
+                'y': self.cell.location.y,
+            }
+        })
+        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialized_action()))
 
         self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
         self.assertEqual(len(self.game.avatar_manager.get_avatar(1).effects), 1)
         damage_boost_effect = self.game.avatar_manager.get_avatar(1).effects.pop()
-        self.assertTrue(isinstance(damage_boost_effect, pickup_created.EFFECT))
-
-    @given(st.floats(min_value=1))
-    def test_damage_boost_pickup_can_be_picked_up_custom_floats(self, boost_value):
-        assume(not math.isinf(boost_value))
-        self.setUp()
-        pickup_created = DamageBoostPickup(self.cell, boost_value)
-        self.cell.pickup = pickup_created
-
-        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
-
-        self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
-        self.assertEqual(len(self.game.avatar_manager.get_avatar(1).effects), 1)
-        damage_boost_effect = self.game.avatar_manager.get_avatar(1).effects.pop()
-        self.assertTrue(isinstance(damage_boost_effect, pickup_created.EFFECT))
+        self.assertTrue(isinstance(damage_boost_effect, pickup_created.effects[0]))
 
     def test_damage_boost_increases_attack_strength_with_default_integer(self):
         """
@@ -69,19 +48,6 @@ class TestDamagePickupsAndEffects(TestCase):
         pickup_created = DamageBoostPickup(self.cell)
         self.cell.pickup = pickup_created
 
-        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
+        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialized_action()))
 
         self.assertTrue(self.cell.avatar.attack_strength, self.initial_attack_strength + DAMAGE_BOOST_DEFAULT)
-
-    @given(st.integers(min_value=1))
-    def test_damage_boost_increases_attack_strength_with_custom_integers(self, boost_value):
-        """
-        Damage Boost with random integers provided as a parameter.
-        """
-        self.setUp()
-        pickup_created = DamageBoostPickup(self.cell, boost_value)
-        self.cell.pickup = pickup_created
-
-        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialised_action()))
-
-        self.assertTrue(self.cell.avatar.attack_strength, self.initial_attack_strength + boost_value)

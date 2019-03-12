@@ -20,6 +20,7 @@ plugins:
     enabled: false
 exclude_patterns:
   - "*.test.js"
+  - "*/tests/**/*.py"
   - "game/_version.py"
   - "versioneer.py"
   - "game_frontend/djangoBundler.js"
