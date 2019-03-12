@@ -1,11 +1,11 @@
-from abc import ABCMeta, abstractmethod, abstractproperty
 from functools import reduce
 from logging import getLogger
 from typing import TYPE_CHECKING, List
 
-from simulation.pickups.conditions import TurnState, avatar_on_cell
-from simulation.pickups.effects import (DamageBoostEffect, HealthEffect,
-                                        InvulnerabilityEffect)
+from simulation.interactables.conditions import TurnState, avatar_on_cell
+from simulation.interactables.effects import (DamageBoostEffect, HealthEffect,
+                                              InvulnerabilityEffect)
+from simulation.interactables.interactable import Interactable
 
 if TYPE_CHECKING:
     from simulation.game_state import GameState
@@ -14,50 +14,7 @@ if TYPE_CHECKING:
 LOGGER = getLogger(__name__)
 
 
-class _Pickup(object):
-    __metaclass__ = ABCMeta
-
-    def __init__(self, cell):
-        self.cell = cell
-        self.conditions = []
-        self.effects = []
-        self.targets = []
-
-    def __str__(self):
-        return self.__class__.__name__
-
-    def delete(self):
-        self.cell.pickup = None
-
-    def conditions_met(self, game_state: 'GameState') -> 'bool':
-        """Apply logical `AND` on all conditions, returns True is all conditions are met."""
-        turn_state = TurnState(game_state, self.cell)
-        return all([condition(turn_state) for condition in self.conditions])
-
-    def apply(self):
-        """
-        Apply all effects in sequential order.
-
-        Targets for effects can be a single object, or a list of objects. all
-        targets must have an 'effect' attribute that is of type=set.
-        """
-        self.targets = self.get_targets()
-        for effect in self.effects:
-            for target in self.targets:
-                effect(target)
-
-        self.delete()
-
-    @abstractmethod
-    def serialize(self):
-        raise NotImplementedError()
-
-    @abstractmethod
-    def get_targets(self) -> 'List[AvatarWrapper]':
-        raise NotImplementedError()
-
-
-class HealthPickup(_Pickup):
+class HealthPickup(Interactable):
     def __init__(self, cell):
         super(HealthPickup, self).__init__(cell)
         self.conditions.append(avatar_on_cell)
@@ -82,7 +39,7 @@ class HealthPickup(_Pickup):
         }
 
 
-class InvulnerabilityPickup(_Pickup):
+class InvulnerabilityPickup(Interactable):
     def __init__(self, cell):
         super(InvulnerabilityPickup, self).__init__(cell)
         self.conditions.append(avatar_on_cell)
@@ -107,7 +64,7 @@ class InvulnerabilityPickup(_Pickup):
         }
 
 
-class DamageBoostPickup(_Pickup):
+class DamageBoostPickup(Interactable):
     def __init__(self, cell):
         super(DamageBoostPickup, self).__init__(cell)
         self.conditions.append(avatar_on_cell)
