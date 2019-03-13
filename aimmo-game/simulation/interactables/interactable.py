@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from simulation.avatar.avatar_wrapper import AvatarWrapper
 
 
-class Interactable(object):
+class _Interactable(object):
     __metaclass__ = ABCMeta
 
     def __init__(self, cell):

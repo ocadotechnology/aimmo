@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, List
 from simulation.interactables.conditions import TurnState, avatar_on_cell
 from simulation.interactables.effects import (DamageBoostEffect, HealthEffect,
                                               InvulnerabilityEffect)
-from simulation.interactables.interactable import Interactable
+from simulation.interactables.interactable import _Interactable
 
 if TYPE_CHECKING:
     from simulation.game_state import GameState
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 LOGGER = getLogger(__name__)
 
 
-class HealthPickup(Interactable):
+class HealthPickup(_Interactable):
     def __init__(self, cell):
         super(HealthPickup, self).__init__(cell)
         self.conditions.append(avatar_on_cell)
@@ -39,7 +39,7 @@ class HealthPickup(Interactable):
         }
 
 
-class InvulnerabilityPickup(Interactable):
+class InvulnerabilityPickup(_Interactable):
     def __init__(self, cell):
         super(InvulnerabilityPickup, self).__init__(cell)
         self.conditions.append(avatar_on_cell)
@@ -64,7 +64,7 @@ class InvulnerabilityPickup(Interactable):
         }
 
 
-class DamageBoostPickup(Interactable):
+class DamageBoostPickup(_Interactable):
     def __init__(self, cell):
         super(DamageBoostPickup, self).__init__(cell)
         self.conditions.append(avatar_on_cell)
