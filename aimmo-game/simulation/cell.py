@@ -12,13 +12,13 @@ class Cell(object):
         self.habitable = habitable
         self.generates_score = generates_score
         self.avatar = None
-        self.pickup = None
+        self.interactable = None
         self.partially_fogged = partially_fogged
         self.actions = []
 
     def __repr__(self):
         return 'Cell({} h={} s={} a={} p={} f{})'.format(
-            self.location, self.habitable, self.generates_score, self.avatar, self.pickup,
+            self.location, self.habitable, self.generates_score, self.avatar, self.interactable,
             self.partially_fogged)
 
     def __eq__(self, other):
@@ -51,6 +51,6 @@ class Cell(object):
                 'generates_score': self.generates_score,
                 'habitable': self.habitable,
                 'location': self.location.serialize(),
-                'pickup': self.pickup.serialize() if self.pickup else None,
+                'pickup': self.interactable.serialize() if self.interactable else None,
                 'partially_fogged': self.partially_fogged
             }

@@ -90,7 +90,7 @@ class DamageBoostPickup(Interactable):
 
 
 def serialize_pickups(world_map):
-    return [cell.pickup.serialize() for cell in world_map.pickup_cells()]
+    return [cell.interactable.serialize() for cell in world_map.pickup_cells()]
 
 
 ALL_PICKUPS = (

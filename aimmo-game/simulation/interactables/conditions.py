@@ -12,11 +12,11 @@ class TurnState:
     On a given turn, all conditions for a pickup get access to the same TurnState object.
     """
 
-    def __init__(self, game_state: 'GameState', pickup_cell: 'Cell'):
+    def __init__(self, game_state: 'GameState', interactable_cell: 'Cell'):
         self.game_state = game_state
-        self.pickup_cell = pickup_cell
+        self.interactable_cell = interactable_cell
 
 
 def avatar_on_cell(turn_state: TurnState):
     """ Returns an expression that checks if an avatar is on a specified cell. """
-    return turn_state.pickup_cell.avatar is not None
+    return turn_state.interactable_cell.avatar is not None

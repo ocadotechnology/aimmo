@@ -21,7 +21,7 @@ class Interactable(object):
         return self.__class__.__name__
 
     def delete(self):
-        self.cell.pickup = None
+        self.cell.interactable = None
 
     def conditions_met(self, game_state: 'GameState') -> 'bool':
         """Apply logical `AND` on all conditions, returns True if all conditions are met."""

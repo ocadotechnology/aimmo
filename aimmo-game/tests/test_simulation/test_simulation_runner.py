@@ -239,7 +239,7 @@ class TestSimulationRunner(unittest.TestCase):
         grid = self._generate_grid()
         avatar = DummyAvatar()
         pickup = MockPickup(target=avatar)
-        grid[Location(1, 1)].pickup = pickup
+        grid[Location(1, 1)].interactable = pickup
         grid[Location(1, 1)].avatar = avatar
         self.simulation_runner.game_state.world_map = WorldMap(grid, SETTINGS)
         self.simulation_runner.update(1, self.simulation_runner.game_state)
@@ -261,7 +261,7 @@ class TestSimulationRunner(unittest.TestCase):
         settings = SETTINGS.copy()
         settings['TARGET_NUM_PICKUPS_PER_AVATAR'] = 1
         grid = self._generate_grid()
-        grid[Location(0, 1)].pickup = mockPickup()
+        grid[Location(0, 1)].interactable = mockPickup()
         self.simulation_runner.game_state.world_map = WorldMap(grid, settings)
         self.simulation_runner.update(1, self.simulation_runner.game_state)
         self.assertEqual(len(list(self.simulation_runner.game_state.world_map.pickup_cells())), 1)

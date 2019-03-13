@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "aimmo-game"
+		},
+		{
+			"path": "aimmo-game-worker"
+		},
+		{
+			"path": "aimmo-game-creator"
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "docs"
+		}
+	],
+	"settings": {}
+}

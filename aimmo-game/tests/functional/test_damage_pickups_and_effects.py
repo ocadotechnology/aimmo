@@ -26,8 +26,8 @@ class TestDamagePickupsAndEffects(TestCase):
 
     def test_damage_boost_pickup_can_be_picked_up_default(self):
         pickup_created = DamageBoostPickup(self.cell)
-        self.cell.pickup = pickup_created
-        self.assertEqual(self.cell.pickup.serialize(), {
+        self.cell.interactable = pickup_created
+        self.assertEqual(self.cell.interactable.serialize(), {
             'type': 'damage_boost',
             'location': {
                 'x': self.cell.location.x,
@@ -46,7 +46,7 @@ class TestDamagePickupsAndEffects(TestCase):
         Damage boost with no value parameter provided (ie. default).
         """
         pickup_created = DamageBoostPickup(self.cell)
-        self.cell.pickup = pickup_created
+        self.cell.interactable = pickup_created
 
         self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialized_action()))
 

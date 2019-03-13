@@ -29,8 +29,8 @@ class TestHealthPickupAndEffects(TestCase):
         """
         HealthPickups without any parameter provided.
         """
-        self.cell.pickup = HealthPickup(self.cell)
-        self.assertEqual(self.cell.pickup.serialize(), {
+        self.cell.interactable = HealthPickup(self.cell)
+        self.assertEqual(self.cell.interactable.serialize(), {
             'type': 'health',
             'location': {
                 'x': self.cell.location.x,
@@ -53,7 +53,7 @@ class TestHealthPickupAndEffects(TestCase):
         self.setUp()
         avatar = self.game.avatar_manager.get_avatar(1)
         avatar.health = 97
-        self.cell.pickup = HealthPickup(self.cell)
+        self.cell.interactable = HealthPickup(self.cell)
 
         self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialized_action()))
 

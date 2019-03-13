@@ -1,10 +1,9 @@
 from base64 import urlsafe_b64encode
 from os import urandom
 
+from aimmo import app_settings
 from django.contrib.auth.models import User
 from django.db import models
-
-from aimmo import app_settings
 
 GAME_GENERATORS = [
     ('Main', 'Open World'),  # Default
