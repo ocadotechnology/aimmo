@@ -28,7 +28,7 @@ setup(
         'mock == 2.0.0',
         'docker >= 3.5, < 3.6',
         'kubernetes == 5.0.0',
-        'PyYAML == 3.12',
+        'PyYAML == 4.2b1',
     ],
 
     version=versioneer.get_version(),

@@ -1,5 +1,15 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
+from functools import reduce
+from logging import getLogger
+from typing import TYPE_CHECKING
+
 import simulation.effects as effects
+from simulation.pickups.conditions import TurnState, avatar_on_cell
+
+if TYPE_CHECKING:
+    from simulation.world_map import WorldMap
+
+LOGGER = getLogger(__name__)
 
 DAMAGE_BOOST_DEFAULT = 5
 HEALTH_RESTORE_DEFAULT = 3
@@ -12,12 +22,18 @@ class _Pickup(object):
 
     def __init__(self, cell):
         self.cell = cell
+        self.conditions = []
 
     def __str__(self):
         return self.__class__.__name__
 
     def delete(self):
         self.cell.pickup = None
+
+    def conditions_met(self, world_map: 'WorldMap'):
+        turn_state = TurnState(world_map, self.cell)
+        """ Applies logical AND on all conditions, returns True is all conditions are met. """
+        return all([condition(turn_state) for condition in self.conditions])
 
     def apply(self, avatar):
         self._apply(avatar)
@@ -36,13 +52,14 @@ class HealthPickup(_Pickup):
     def __init__(self, cell, health_restored=HEALTH_RESTORE_DEFAULT):
         # Round the integer up to the nearest value (ceiling).
         health_restored = int(round(health_restored))
-
         # Check if the value provided is legal.
         if 0 < health_restored <= HEALTH_RESTORE_MAX:
             super(HealthPickup, self).__init__(cell)
             self.health_restored = health_restored
         else:
             raise ValueError("Health Restored has to be within 0-100 range!")
+
+        self.conditions.append(avatar_on_cell)
 
     def __repr__(self):
         return 'HealthPickup(health_restored={})'.format(self.health_restored)
@@ -83,6 +100,10 @@ class _PickupEffect(_Pickup):
 class InvulnerabilityPickup(_PickupEffect):
     EFFECT = effects.InvulnerabilityPickupEffect
 
+    def __init__(self, cell):
+        super(InvulnerabilityPickup, self).__init__(cell)
+        self.conditions.append(avatar_on_cell)
+
     def serialise(self):
         return {
                 'type': 'invulnerability',
@@ -101,6 +122,7 @@ class DamageBoostPickup(_PickupEffect):
             raise ValueError("The damage_boost parameter is less than or equal to 0!")
 
         super(DamageBoostPickup, self).__init__(cell)
+        self.conditions.append(avatar_on_cell)
         self.damage_boost = damage_boost
         self.params.append(self.damage_boost)
 
@@ -117,7 +139,7 @@ class DamageBoostPickup(_PickupEffect):
         }
 
 
-def serialise_pickups(world_map):
+def serialize_pickups(world_map):
     return [cell.pickup.serialise() for cell in world_map.pickup_cells()]
 
 

@@ -19,6 +19,9 @@ class MockPickup(object):
         if self.cell:
             self.cell.pickup = None
 
+    def conditions_met(self, world_map):
+        return True
+
     def serialise(self):
         return {'name': self.name}
 

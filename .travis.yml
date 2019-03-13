@@ -39,46 +39,68 @@ jobs:
         - nvm use node
       install:
         - pip install .
-        - pip install coveralls
+        - pip install codecov
         - pip install docker
         - pushd game_frontend
         - yarn
         - node djangoBundler.js
         - popd
       script:
-        - python all_tests.py --no-docker-container-tests
+        - python all_tests.py -c --no-docker-container-tests
+      after_success:
+        - codecov
     - name: "aimmo-game"
       before_install:
         - cd aimmo-game
         - docker build --target tester -t ocadotechnology/aimmo-game:test .
       install:
-        - pip install coveralls
+        - pip install codecov
       script:
         - docker run -it -p 5000:5000 ocadotechnology/aimmo-game:test
+      after_success:
+        # Get the coverage data from the container
+        - read CONTAINERID <<< $(docker ps --all -q | head -1)
+        - sudo docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
+        - sudo docker cp -a $CONTAINERID:coverage.xml $(pwd)/coverage.xml
+        - bash <(curl -s https://codecov.io/bash)
     - name: "aimmo-game-creator"
       before_install:
         - cd aimmo-game-creator
         - docker build --target tester -t  ocadotechnology/aimmo-game-creator:test .
       install:
-        - pip install coveralls
+        - pip install codecov
       script:
         - docker run -it -p 5000:5000 ocadotechnology/aimmo-game-creator:test
+      after_success:
+        # Get the coverage data from the container
+        - read CONTAINERID <<< $(docker ps --all -q | head -1)
+        - sudo docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
+        - sudo docker cp -a $CONTAINERID:coverage.xml $(pwd)/coverage.xml
+        - bash <(curl -s https://codecov.io/bash)
     - name: "aimmo-game-worker"
       before_install:
         - cd aimmo-game-worker
         - docker build --target tester -t ocadotechnology/aimmo-game-worker:test .
       install:
-        - pip install coveralls
+        - pip install codecov
       script:
         - docker run -it -p 5000:5000 ocadotechnology/aimmo-game-worker:test
+      after_success:
+        # Get the coverage data from the container
+        - read CONTAINERID <<< $(docker ps --all -q | head -1)
+        - sudo docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
+        - sudo docker cp -a $CONTAINERID:coverage.xml $(pwd)/coverage.xml
+        - bash <(curl -s https://codecov.io/bash)
     - name: "Javascript Tests"
       before_install:
-        - nvm install node
+        - nvm install v11.10.0
         - nvm use node
       install:
         - cd game_frontend && yarn
       script:
-        - yarn test
+        - yarn test --coverage
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
     - stage: release
       script:
         - bash tag_release_on_travis.sh
