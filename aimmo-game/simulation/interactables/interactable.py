@@ -24,7 +24,7 @@ class Interactable(object):
         self.cell.pickup = None
 
     def conditions_met(self, game_state: 'GameState') -> 'bool':
-        """Apply logical `AND` on all conditions, returns True is all conditions are met."""
+        """Apply logical `AND` on all conditions, returns True if all conditions are met."""
         turn_state = TurnState(game_state, self.cell)
         return all([condition(turn_state) for condition in self.conditions])
 
@@ -32,7 +32,7 @@ class Interactable(object):
         """
         Apply all effects in sequential order.
 
-        Targets for effects can be a single object, or a list of objects. all
+        Targets for effects can be a single object, or a list of objects. All
         targets must have an 'effect' attribute that is of type=set.
         """
         self.targets = self.get_targets()
