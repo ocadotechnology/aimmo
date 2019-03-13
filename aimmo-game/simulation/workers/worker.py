@@ -5,17 +5,26 @@ LOGGER = logging.getLogger(__name__)
 
 
 class Worker(object):
-    def __init__(self, worker_url):
-        self.url = worker_url
+    def __init__(self, player_id, port, port_counter):
         self.log = None
+        self.player_id = player_id
+        self.port = port
+        self.port_counter = port_counter
         self.code = None
         self.serialised_action = None
         self.has_code_updated = False
+        self.url = self._create_worker()
 
     def _set_defaults(self):
         self.log = None
         self.serialised_action = None
         self.has_code_updated = False
+
+    def _create_worker(self):
+        raise NotImplementedError
+
+    def remove_worker(self):
+        raise NotImplementedError
 
     def fetch_data(self, state_view):
         try:

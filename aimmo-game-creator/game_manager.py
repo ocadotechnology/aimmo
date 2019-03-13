@@ -148,7 +148,7 @@ class LocalGameManager(GameManager):
             template['environment'].update(game_data)
             template['environment']['GAME_ID'] = game_id
             template['environment']['PYTHONUNBUFFERED'] = 0
-            template['environment']['WORKER_MANAGER'] = 'local'
+            template['environment']['WORKER'] = 'local'
             template['environment']['EXTERNAL_PORT'] = port
             template['environment']['CONTAINER_TEMPLATE'] = os.environ['CONTAINER_TEMPLATE']
 
@@ -241,7 +241,7 @@ class KubernetesGameManager(GameManager):
         environment_variables['GAME_URL'] = 'http://game-{}'.format(game_id)
         environment_variables['IMAGE_SUFFIX'] = os.environ.get('IMAGE_SUFFIX', 'latest')
         environment_variables['K8S_NAMESPACE'] = K8S_NAMESPACE
-        environment_variables['WORKER_MANAGER'] = 'kubernetes'
+        environment_variables['WORKER'] = 'kubernetes'
         environment_variables['EXTERNAL_PORT'] = "5000"
 
         rc = self._make_rc(environment_variables, game_id)

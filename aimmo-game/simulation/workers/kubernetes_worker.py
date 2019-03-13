@@ -5,15 +5,15 @@ import time
 from kubernetes import client
 from kubernetes import config
 
-from .worker_manager import WorkerManager
+from .worker import Worker
 
 LOGGER = logging.getLogger(__name__)
 # Default here to stop import errors if imported when running locally
 K8S_NAMESPACE = os.environ.get('K8S_NAMESPACE', '')
 
 
-class KubernetesWorkerManager(WorkerManager):
-    """Kubernetes worker manager."""
+class KubernetesWorker(Worker):
+    """Kubernetes worker."""
 
     def __init__(self, *args, **kwargs):
         config.load_incluster_config()
@@ -21,7 +21,7 @@ class KubernetesWorkerManager(WorkerManager):
         self.game_id = os.environ['GAME_ID']
         self.game_url = os.environ['GAME_URL']
         self.pod_name = os.environ['POD_NAME']
-        super(KubernetesWorkerManager, self).__init__(*args, **kwargs)
+        super(KubernetesWorker, self).__init__(*args, **kwargs)
 
     @staticmethod
     def _create_a_label_selector_from_labels(label_list):
@@ -63,15 +63,15 @@ class KubernetesWorkerManager(WorkerManager):
                     add=['NET_BIND_SERVICE']))
         )
 
-    def make_pod(self, player_id):
-        pod_manifest = client.V1PodSpec(containers=[self._make_container(player_id)], service_account_name='worker')
+    def make_pod(self):
+        pod_manifest = client.V1PodSpec(containers=[self._make_container(self.player_id)], service_account_name='worker')
 
         metadata = client.V1ObjectMeta(
             labels={
                 'app': 'aimmo-game-worker',
                 'game': self.game_id,
-                'player': str(player_id)},
-            generate_name='aimmo-%s-worker-%s-' % (self.game_id, player_id),
+                'player': str(self.player_id)},
+            generate_name='aimmo-%s-worker-%s-' % (self.game_id, self.player_id),
             owner_references=self._make_owner_references()
         )
         return client.V1Pod(metadata=metadata, spec=pod_manifest)
@@ -94,22 +94,22 @@ class KubernetesWorkerManager(WorkerManager):
 
         raise EnvironmentError('Could not start worker %s.' % player_id)
 
-    def create_worker(self, player_id):
-        pod_obj = self.make_pod(player_id)
-        LOGGER.info('Making new worker pod: {}'.format(pod_obj.metadata.name))
+    def _create_worker(self):
+        pod_obj = self.make_pod(self.player_id)
+        LOGGER.info('Making new workers pod: {}'.format(pod_obj.metadata.name))
         pod = self.api.create_namespaced_pod(namespace=K8S_NAMESPACE, body=pod_obj)
         pod_name = pod.metadata.name
-        pod = self._wait_for_pod_creation(pod_name, player_id)
+        pod = self._wait_for_pod_creation(pod_name, self.player_id)
 
         worker_url = 'http://%s:5000' % pod.status.pod_ip
         LOGGER.info('Worker ip: {}'.format(pod.status.pod_ip))
-        LOGGER.info('Worker started for %s, listening at %s', player_id, worker_url)
+        LOGGER.info('Worker started for %s, listening at %s', self.player_id, worker_url)
         return worker_url
 
-    def remove_worker(self, player_id):
+    def remove_worker(self):
         app_label = 'app=aimmo-game-worker'
         game_label = 'game={}'.format(self.game_id)
-        player_label = 'player={}'.format(player_id)
+        player_label = 'player={}'.format(self.player_id)
         label_selector = self._create_a_label_selector_from_labels([app_label,
                                                                     game_label,
                                                                     player_label])

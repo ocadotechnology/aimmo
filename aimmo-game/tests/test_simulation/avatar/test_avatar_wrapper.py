@@ -6,7 +6,7 @@ from httmock import HTTMock
 
 from simulation.avatar import avatar_wrapper
 from simulation.location import Location
-from simulation.worker import Worker
+from simulation.workers.worker import Worker
 
 class MockEffect(object):
     def __init__(self, avatar):
