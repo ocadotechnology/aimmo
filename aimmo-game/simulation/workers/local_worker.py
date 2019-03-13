@@ -1,13 +1,15 @@
 import itertools
+import json
 import logging
 import os
+
 import docker
-import json
 
 from .worker import Worker
 
 LOGGER = logging.getLogger(__name__)
 
+port_counter = itertools.count(1989 + int(os.environ["GAME_ID"]) * 10000)
 
 class LocalWorker(Worker):
     """Relies on them already being created already."""
@@ -21,11 +23,10 @@ class LocalWorker(Worker):
     def __init__(self, *args, **kwargs):
         self.game_id = os.environ['GAME_ID']
         self.client = docker.from_env()
-        # self.port_counter = port_counter
         super(LocalWorker, self).__init__(*args, **kwargs)
 
     def _create_worker(self):
-        port = next(self.port_counter)
+        port = next(port_counter)
 
         template_string = os.environ.get('CONTAINER_TEMPLATE')
         if template_string:
