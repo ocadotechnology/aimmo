@@ -5,8 +5,8 @@ from collections import namedtuple
 from logging import getLogger
 
 from simulation.cell import Cell
+from simulation.interactables.pickups import ALL_PICKUPS
 from simulation.location import Location
-from simulation.interactables import ALL_PICKUPS
 
 LOGGER = getLogger(__name__)
 

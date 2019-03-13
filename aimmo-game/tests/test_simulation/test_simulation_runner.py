@@ -8,7 +8,7 @@ from unittest.mock import patch
 from simulation.avatar.avatar_appearance import AvatarAppearance
 from simulation.game_state import GameState
 from simulation.location import Location
-from simulation.interactables import DamageBoostPickup
+from simulation.interactables.pickups import DamageBoostPickup
 from simulation.simulation_runner import ConcurrentSimulationRunner
 from simulation.world_map import WorldMap
 
