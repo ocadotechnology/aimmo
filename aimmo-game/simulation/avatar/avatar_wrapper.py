@@ -68,9 +68,9 @@ class AvatarWrapper(object):
 
         return direction_of_orientation.cardinal
 
-    def decide_action(self, serialised_action):
+    def decide_action(self, serialized_action):
         try:
-            action = self._construct_action(serialised_action)
+            action = self._construct_action(serialized_action)
 
         except (KeyError, ValueError) as err:
             LOGGER.error('Bad action data supplied: %s', err)
@@ -102,10 +102,10 @@ class AvatarWrapper(object):
         self.health -= applied_dmg
         return applied_dmg
 
-    def serialise(self):
+    def serialize(self):
         return {
             'health': self.health,
-            'location': self.location.serialise(),
+            'location': self.location.serialize(),
             'score': self.score,
             'id': self.player_id,
             'orientation': self.orientation

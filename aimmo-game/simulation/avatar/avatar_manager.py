@@ -30,10 +30,10 @@ class AvatarManager(object):
     def active_avatars(self):
         return self.avatars[:]
 
-    def serialise_players(self):
+    def serialize_players(self):
         """
         To be called on a required update of players in the front-end of the game.
         """
 
-        return [player.serialise() for player in self.avatars]
+        return [player.serialize() for player in self.avatars]
 

@@ -38,19 +38,19 @@ class Cell(object):
     def is_occupied(self):
         return self.avatar is not None
 
-    def serialise(self):
+    def serialize(self):
         if self.partially_fogged:
             return {
                 'generates_score': self.generates_score,
-                'location': self.location.serialise(),
+                'location': self.location.serialize(),
                 'partially_fogged': self.partially_fogged
             }
         else:
             return {
-                'avatar': self.avatar.serialise() if self.avatar else None,
+                'avatar': self.avatar.serialize() if self.avatar else None,
                 'generates_score': self.generates_score,
                 'habitable': self.habitable,
-                'location': self.location.serialise(),
-                'pickup': self.pickup.serialise() if self.pickup else None,
+                'location': self.location.serialize(),
+                'pickup': self.pickup.serialize() if self.pickup else None,
                 'partially_fogged': self.partially_fogged
             }

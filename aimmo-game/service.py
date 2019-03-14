@@ -117,10 +117,10 @@ class GameAPI(object):
                 await socketio_server.emit('log', avatar_logs, room=sid)
 
     async def _send_game_state(self):
-        serialised_game_state = self.game_state.serialise()
+        serialized_game_state = self.game_state.serialize()
         socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id.copy()
         for sid, player_id in socket_session_id_to_player_id_copy.items():
-            await socketio_server.emit('game-state', serialised_game_state, room=sid)
+            await socketio_server.emit('game-state', serialized_game_state, room=sid)
 
     async def _send_have_avatars_code_updated(self, player_id_to_workers):
         socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id.copy()
@@ -133,10 +133,12 @@ class GameAPI(object):
 def create_runner(port):
     settings = json.loads(os.environ['settings'])
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
-    worker_manager_class = WORKER_MANAGERS[os.environ.get('WORKER_MANAGER', 'local')]
+    worker_manager_class = WORKER_MANAGERS[os.environ.get(
+        'WORKER_MANAGER', 'local')]
     return GameRunner(worker_manager_class=worker_manager_class,
                       game_state_generator=generator.get_game_state,
-                      django_api_url=os.environ.get('GAME_API_URL', 'http://localhost:8000/aimmo/api/games/'),
+                      django_api_url=os.environ.get(
+                          'GAME_API_URL', 'http://localhost:8000/aimmo/api/games/'),
                       port=port)
 
 
@@ -152,7 +154,8 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     host = sys.argv[1]
 
-    socketio_server.attach(app, socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
+    socketio_server.attach(app, socketio_path=os.environ.get(
+        'SOCKETIO_RESOURCE', 'socket.io'))
 
     if os.environ['WORKER_MANAGER'] == 'local':
         port = int(os.environ['EXTERNAL_PORT'])

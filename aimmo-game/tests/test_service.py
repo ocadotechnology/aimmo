@@ -41,7 +41,7 @@ class TestService(TestCase):
                 for y in range(3) for x in range(2)}
 
         test_game_state = GameState(WorldMap(grid, {}), self.avatar_manager)
-        self.world_state_json = test_game_state.serialise()
+        self.world_state_json = test_game_state.serialize()
 
     def test_correct_json_player_dictionary(self):
         """

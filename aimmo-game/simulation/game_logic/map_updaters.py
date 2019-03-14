@@ -1,11 +1,12 @@
+import math
+import random
 from abc import ABCMeta, abstractmethod
 from collections import namedtuple
-import random
-import math
 from logging import getLogger
-from simulation.pickups import ALL_PICKUPS
+
 from simulation.cell import Cell
 from simulation.location import Location
+from simulation.pickups import ALL_PICKUPS
 
 LOGGER = getLogger(__name__)
 

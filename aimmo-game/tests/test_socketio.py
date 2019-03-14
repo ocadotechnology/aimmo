@@ -12,7 +12,7 @@ from simulation.game_runner import GameRunner
 
 
 class MockGameState(object):
-    def serialise(self):
+    def serialize(self):
         return {'foo': 'bar'}
 
 

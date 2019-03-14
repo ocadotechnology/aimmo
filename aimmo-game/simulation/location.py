@@ -24,5 +24,5 @@ class Location(object):
     def __hash__(self):
         return hash((self.x, self.y))
 
-    def serialise(self):
+    def serialize(self):
         return {'x': self.x, 'y': self.y}
