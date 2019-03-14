@@ -1,14 +1,16 @@
 #!/usr/bin/env python
+import asyncio
+import json
 import logging
 import sys
-import json
-from aiohttp import web
-import aiohttp_cors
-import asyncio
 
+import aiohttp_cors
+from aiohttp import web
+
+from avatar_runner import AvatarRunner
+from code_updater import CodeUpdater
 from simulation.avatar_state import AvatarState
 from simulation.world_map import WorldMap
-from avatar_runner import AvatarRunner
 
 app = web.Application()
 cors = aiohttp_cors.setup(app)
@@ -18,6 +20,7 @@ routes = web.RouteTableDef()
 LOGGER = logging.getLogger(__name__)
 
 avatar_runner = None
+code_updater = None
 DATA_URL = ''
 
 
@@ -38,7 +41,8 @@ def run(host, port, data_url):
     global avatar_runner, DATA_URL
     DATA_URL = data_url
     logging.basicConfig(level=logging.DEBUG)
-    avatar_runner = AvatarRunner()
+    code_updater = CodeUpdater()
+    avatar_runner = AvatarRunner(code_updater=code_updater)
     app.add_routes(routes)
     LOGGER.info('STARTING THE SERVER.')
     LOGGER.info(f'RUNNING ON: (host: {host}, port: {port})')
