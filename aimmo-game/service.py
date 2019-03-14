@@ -125,7 +125,6 @@ class GameAPI(object):
     async def _send_have_avatars_code_updated(self, player_id_to_workers):
         socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id.copy()
         for sid, player_id in socket_session_id_to_player_id_copy.items():
-            LOGGER.info(f'{player_id_to_workers}')
             if player_id_to_workers[player_id].has_code_updated:
                 await socketio_server.emit('feedback-avatar-updated', {}, room=sid)
 
