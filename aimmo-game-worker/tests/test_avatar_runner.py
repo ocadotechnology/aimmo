@@ -1,8 +1,8 @@
 from unittest import TestCase
 
 import mock
-
 from avatar_runner import AvatarRunner
+from code_updater import CodeUpdater
 from user_exceptions import InvalidActionException
 
 NORTH = {'x': 0, 'y': 1}
@@ -17,7 +17,7 @@ class TestAvatarRunner(TestCase):
                         def next_turn(self, world_map, avatar_state):
                             assert False'''
 
-        runner = AvatarRunner()
+        runner = AvatarRunner(code_updater=CodeUpdater())
         action = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)['action']
         self.assertEqual(action, {'action_type': 'wait'})
 
@@ -26,7 +26,7 @@ class TestAvatarRunner(TestCase):
                         def next_turn(self, world_map, avatar_state):
                             return MoveAction(direction.WEST)))))'''
 
-        runner = AvatarRunner()
+        runner = AvatarRunner(code_updater=CodeUpdater())
         action = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)['action']
         self.assertEqual(action, {'action_type': 'wait'})
 
@@ -42,7 +42,7 @@ class TestAvatarRunner(TestCase):
                             return MoveAction(direction.WEST)
                   '''
 
-        runner = AvatarRunner()
+        runner = AvatarRunner(code_updater=CodeUpdater())
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar1)
         self.assertEqual(response['action'], {'action_type': 'move', 'options': {'direction': EAST}})
 
@@ -62,7 +62,7 @@ class TestAvatarRunner(TestCase):
                                     return MoveAction(direction.SOUTH)
                   '''
 
-        runner = AvatarRunner()
+        runner = AvatarRunner(code_updater=CodeUpdater())
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar1)
         self.assertTrue(response['avatar_updated'])
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar1)
@@ -76,7 +76,7 @@ class TestAvatarRunner(TestCase):
         avatar = '''class Avatar
                         pass
                  '''
-        runner = AvatarRunner()
+        runner = AvatarRunner(code_updater=CodeUpdater())
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
         self.assertTrue(response['avatar_updated'])
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
@@ -88,8 +88,8 @@ class TestAvatarRunner(TestCase):
                         
                             new_dir = random.choice(direction.ALL_DIRECTIONS)
                   '''
-        runner = AvatarRunner()
-        runner._update_avatar(src_code=avatar)
+        runner = AvatarRunner(code_updater=CodeUpdater())
+        runner.avatar, _ = runner.code_updater.update_avatar(src_code=avatar)
         with self.assertRaises(InvalidActionException):
             runner.decide_action(world_map={}, avatar_state={})
 
@@ -99,8 +99,8 @@ class TestAvatarRunner(TestCase):
                             import os
                             return MoveAction(random.choice(direction.ALL_DIRECTIONS))
                   '''
-        runner = AvatarRunner()
-        runner._update_avatar(src_code=avatar)
+        runner = AvatarRunner(code_updater=CodeUpdater())
+        runner.avatar, _ = runner.code_updater.update_avatar(src_code=avatar)
         with self.assertRaises(ImportError):
             runner.decide_action(world_map={}, avatar_state={})
 
@@ -127,15 +127,16 @@ class TestAvatarRunner(TestCase):
                                                 return MoveAction(direction.NORTH)
                                   '''
 
-        runner = AvatarRunner()
+        runner = AvatarRunner(code_updater=CodeUpdater())
         runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar_ok)
-        self.assertTrue(runner.update_successful)
+        self.assertTrue(runner.code_updater.update_successful)
         runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar_syntax_error)
-        self.assertFalse(runner.update_successful)
-        runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar_bad_constructor)
-        self.assertFalse(runner.update_successful)
+        self.assertFalse(runner.code_updater.update_successful)
+        with self.assertRaises(TypeError):
+            runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar_bad_constructor)
+        self.assertFalse(runner.code_updater.update_successful)
         runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar_ok)
-        self.assertTrue(runner.update_successful)
+        self.assertTrue(runner.code_updater.update_successful)
 
     def test_updates_with_for_loop(self):
         avatar = '''class Avatar:
@@ -147,9 +148,9 @@ class TestAvatarRunner(TestCase):
                                 
                             return MoveAction(random.choice(direction.ALL_DIRECTIONS))
                   '''
-        runner = AvatarRunner()
+        runner = AvatarRunner(code_updater=CodeUpdater())
         runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
-        self.assertTrue(runner.update_successful)
+        self.assertTrue(runner.code_updater.update_successful)
 
     def test_updates_with_inplace_operator(self):
         avatar = '''class Avatar:
@@ -159,9 +160,9 @@ class TestAvatarRunner(TestCase):
                                 
                             return MoveAction(random.choice(direction.ALL_DIRECTIONS))
                   '''
-        runner = AvatarRunner()
+        runner = AvatarRunner(code_updater=CodeUpdater())
         runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
-        self.assertTrue(runner.update_successful)
+        self.assertTrue(runner.code_updater.update_successful)
 
     def test_runtime_error_contains_only_user_traceback(self):
         avatar = '''class Avatar:
@@ -171,7 +172,7 @@ class TestAvatarRunner(TestCase):
 
                             return MoveAction(direction.NORTH)
                  '''
-        runner = AvatarRunner()
+        runner = AvatarRunner(code_updater=CodeUpdater())
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
         self.assertFalse('/usr/src/app/' in response['log'])
 
@@ -182,7 +183,7 @@ class TestAvatarRunner(TestCase):
                             return MoveAction(direction.NORTH))))
                             
                  '''
-        runner = AvatarRunner()
+        runner = AvatarRunner(code_updater=CodeUpdater())
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
         self.assertFalse('/usr/src/app/' in response['log'])
 
@@ -199,7 +200,7 @@ class TestAvatarRunner(TestCase):
                             return 1
                             
                  '''
-        runner = AvatarRunner()
+        runner = AvatarRunner(code_updater=CodeUpdater())
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar1)
         self.assertFalse('/usr/src/app/' in response['log'])
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar2)
@@ -213,7 +214,7 @@ class TestAvatarRunner(TestCase):
                             
                  '''
 
-        runner = AvatarRunner()
+        runner = AvatarRunner(code_updater=CodeUpdater())
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
         self.assertTrue('I AM A PRINT STATEMENT' in response['log'])
 
@@ -225,7 +226,7 @@ class TestAvatarRunner(TestCase):
                             return MoveAction(direction.NORTH)
                             
                  '''
-        runner = AvatarRunner()
+        runner = AvatarRunner(code_updater=CodeUpdater())
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
         self.assertTrue('I AM A PRINT STATEMENT' in response['log'])
         self.assertTrue('I AM ALSO A PRINT STATEMENT' in response['log'])
@@ -241,7 +242,7 @@ class TestAvatarRunner(TestCase):
                             print('I AM A NESTED PRINT')
                             
                  '''
-        runner = AvatarRunner()
+        runner = AvatarRunner(code_updater=CodeUpdater())
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
         self.assertTrue('I AM NOT A NESTED PRINT' in response['log'])
         self.assertTrue('I AM A NESTED PRINT' in response['log'])
@@ -252,22 +253,22 @@ class TestAvatarRunner(TestCase):
                             print('THIS CODE IS BROKEN')
                             return None
                  '''
-        runner = AvatarRunner()
+        runner = AvatarRunner(code_updater=CodeUpdater())
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
         self.assertTrue('THIS CODE IS BROKEN' in response['log'])
         self.assertTrue('"None" is not a valid action object.' in response['log'])
-    
-        def test_syntax_errors_are_detected_correctly(self):
+
+    def test_syntax_errors_are_detected_correctly(self):
         avatar = '''class Avatar:
                         def next_turn(self, world_map, avatar_state):
                             print('THIS CODE IS BROKEN')
                             return MoveAction(direction.NORTH))))))))
                  '''
-        runner = AvatarRunner()
-        with self.assertRaises(SyntaxError):
-            runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
-        with self.assertRaises(SyntaxError):
-            runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        runner = AvatarRunner(code_updater=CodeUpdater())
+        runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        self.assertFalse(runner.code_updater.update_successful)
+        runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
+        self.assertFalse(runner.code_updater.update_successful)
 
     def test_syntax_warning_not_shown_to_user(self):
         avatar = '''class Avatar:
@@ -275,6 +276,6 @@ class TestAvatarRunner(TestCase):
                             print('I AM A PRINT')
                             return MoveAction(direction.NORTH)
                  '''
-        runner = AvatarRunner()
+        runner = AvatarRunner(code_updater=CodeUpdater())
         response = runner.process_avatar_turn(world_map={}, avatar_state={}, src_code=avatar)
         self.assertFalse('SyntaxWarning' in response['log'])
