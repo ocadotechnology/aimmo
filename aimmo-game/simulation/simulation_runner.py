@@ -5,7 +5,7 @@ from abc import ABCMeta, abstractmethod
 from threading import Thread
 
 from simulation.action import PRIORITIES, WaitAction
-from simulation.game_logic import (MapContext, MapExpander, PickupApplier,
+from simulation.game_logic import (MapContext, MapExpander, EffectApplier,
                                    PickupUpdater, ScoreLocationUpdater)
 
 LOGGER = logging.getLogger(__name__)
@@ -64,7 +64,7 @@ class SimulationRunner(object):
 
     def _update_avatars(self, game_state):
         self._apply_score()
-        PickupApplier().apply(game_state)
+        EffectApplier().apply(game_state)
 
     def _apply_score(self):
         for cell in self.game_state.world_map.score_cells():

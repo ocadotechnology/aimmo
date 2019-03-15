@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 LOGGER = getLogger(__name__)
 
 
-class PickupApplier:
+class EffectApplier:
     """
     Applier for all pickups on the WorldMap.
 
