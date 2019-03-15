@@ -32,6 +32,8 @@ HEALTH_RESTORE_DEFAULT = 3
 HEALTH_RESTORE_MAX = 100
 AVATAR_HEALTH_MAX = 100
 
+SCORE_INCREASE_DEFAULT = 1
+
 
 class _Effect(object):
     """
@@ -105,3 +107,16 @@ class HealthEffect(_Effect):
 
     def __repr__(self):
         return f'HealthEffect(value={self.health_restored})'
+
+
+class ScoreEffect(_Effect):
+    def __init__(self, *args):
+        super(ScoreEffect, self).__init__(duration=1, *args)
+        self.score_given = SCORE_INCREASE_DEFAULT
+        self._recipient.score += self.score_given
+
+    def remove(self):
+        super(ScoreEffect, self).remove()
+
+    def __repr__(self):
+        return f'ScoreEffect(value={self.score_given})'
