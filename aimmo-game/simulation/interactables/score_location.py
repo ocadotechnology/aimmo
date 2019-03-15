@@ -5,9 +5,9 @@ from simulation.interactables.interactable import _Interactable
 
 class ScoreLocation(_Interactable):
     def __init__(self, cell):
-        super(DamageBoostPickup, self).__init__(cell)
-        self.conditions.append(avatar_on_cell)
+        super(ScoreLocation, self).__init__(cell)
 
+        self.conditions.append(avatar_on_cell)
         self.effects.append(ScoreEffect)
 
     def get_targets(self):

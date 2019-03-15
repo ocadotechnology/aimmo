@@ -3,6 +3,7 @@ from logging import getLogger
 
 from simulation.cell import Cell
 from simulation.game_logic import SpawnLocationFinder
+from simulation.interactables.score_location import ScoreLocation
 from simulation.level_settings import DEFAULT_LEVEL_SETTINGS
 from simulation.location import Location
 
@@ -52,9 +53,9 @@ class WorldMap(object):
         return self.grid.values()
 
     def score_cells(self):
-        return (c for c in self.all_cells() if c.generates_score)
+        return (c for c in self.all_cells() if isinstance(c.interactable, ScoreLocation))
 
-    def pickup_cells(self):
+    def interactable_cells(self):
         return (c for c in self.all_cells() if c.interactable)
 
     def is_on_map(self, location):
@@ -187,7 +188,7 @@ class WorldMap(object):
         def get_coords(cell):
             return {'location': {'x': cell.location.x, 'y': cell.location.y}}
 
-        return [get_coords(cell) for cell in self.all_cells() if cell.generates_score]
+        return [get_coords(cell) for cell in self.all_cells() if isinstance(cell.interactable, ScoreLocation)]
 
     def serialize_obstacles(self):
         """
