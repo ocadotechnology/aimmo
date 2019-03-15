@@ -7,8 +7,9 @@ from unittest.mock import patch
 
 from simulation.avatar.avatar_appearance import AvatarAppearance
 from simulation.game_state import GameState
-from simulation.location import Location
 from simulation.interactables.pickups import DamageBoostPickup
+from simulation.interactables.score_location import ScoreLocation
+from simulation.location import Location
 from simulation.simulation_runner import ConcurrentSimulationRunner
 from simulation.world_map import WorldMap
 
@@ -164,7 +165,7 @@ class TestSimulationRunner(unittest.TestCase):
         settings = SETTINGS.copy()
         settings['SCORE_DESPAWN_CHANCE'] = 1
         grid = self._generate_grid()
-        grid[Location(0, 1)].generates_score = True
+        grid[Location(0, 1)].interactable = ScoreLocation(grid[Location(0, 1)])
         self.simulation_runner.game_state.world_map = WorldMap(grid, settings)
         self.simulation_runner.update(1, self.simulation_runner.game_state)
         self.assertEqual(len(list(self.simulation_runner.game_state.world_map.score_cells())), 0)
@@ -174,7 +175,7 @@ class TestSimulationRunner(unittest.TestCase):
         settings = SETTINGS.copy()
         settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR'] = 0
         grid = self._generate_grid()
-        grid[Location(0, 1)].generates_score = True
+        grid[Location(0, 1)].interactable = ScoreLocation(grid[Location(0, 1)])
         self.simulation_runner.game_state.world_map = WorldMap(grid, settings)
         self.simulation_runner.update(1, self.simulation_runner.game_state)
         self.assertIn(grid[Location(0, 1)], self.simulation_runner.game_state.world_map.score_cells())
@@ -195,7 +196,7 @@ class TestSimulationRunner(unittest.TestCase):
         self.construct_simulation_runner([], [])
         grid = self._generate_grid()
         avatar = DummyAvatar()
-        grid[Location(1, 1)].generates_score = True
+        grid[Location(1, 1)].interactable = ScoreLocation(grid[Location(1, 1)])
         grid[Location(1, 1)].avatar = avatar
         self.simulation_runner.game_state.world_map = WorldMap(grid, SETTINGS)
         self.simulation_runner.update(1, self.simulation_runner.game_state)
@@ -206,7 +207,7 @@ class TestSimulationRunner(unittest.TestCase):
         settings = SETTINGS.copy()
         settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR'] = 1
         grid = self._generate_grid()
-        grid[Location(0, 1)].generates_score = True
+        grid[Location(0, 1)].interactable = ScoreLocation(grid[Location(0, 1)])
         self.simulation_runner.game_state.world_map = WorldMap(grid, settings)
         self.simulation_runner.update(1, self.simulation_runner.game_state)
         self.assertEqual(len(list(self.simulation_runner.game_state.world_map.score_cells())), 1)
@@ -229,10 +230,10 @@ class TestSimulationRunner(unittest.TestCase):
         settings['PICKUP_SPAWN_CHANCE'] = 1
         self.simulation_runner.game_state.world_map = WorldMap(self._generate_grid(), settings)
         self.simulation_runner.update(1, self.simulation_runner.game_state)
-        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.pickup_cells())), 1)
+        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.interactable_cells())), 1)
 
         self.simulation_runner.update(2, self.simulation_runner.game_state)
-        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.pickup_cells())), 2)
+        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.interactable_cells())), 2)
 
     def test_pickups_applied(self):
         self.construct_simulation_runner([], [])
@@ -253,7 +254,7 @@ class TestSimulationRunner(unittest.TestCase):
         grid = self._generate_grid()
         self.simulation_runner.game_state.world_map = WorldMap(grid, settings)
         self.simulation_runner.update(1, self.simulation_runner.game_state)
-        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.pickup_cells())), 0)
+        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.interactable_cells())), 0)
 
     @patch('simulation.interactables.pickups.DamageBoostPickup')
     def test_pickups_not_added_when_at_target(self, mockPickup):
@@ -264,15 +265,15 @@ class TestSimulationRunner(unittest.TestCase):
         grid[Location(0, 1)].interactable = mockPickup()
         self.simulation_runner.game_state.world_map = WorldMap(grid, settings)
         self.simulation_runner.update(1, self.simulation_runner.game_state)
-        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.pickup_cells())), 1)
-        self.assertIn(grid[Location(0, 1)], self.simulation_runner.game_state.world_map.pickup_cells())
+        self.assertEqual(len(list(self.simulation_runner.game_state.world_map.interactable_cells())), 1)
+        self.assertIn(grid[Location(0, 1)], self.simulation_runner.game_state.world_map.interactable_cells())
 
     def test_not_enough_pickup_space(self):
         self.construct_simulation_runner([], [])
         settings = SETTINGS.copy()
         settings['TARGET_NUM_PICKUPS_PER_AVATAR'] = 1
         grid = self._generate_grid(1, 1)
-        grid[Location(0, 0)].generates_score = True
+        grid[Location(0, 0)].interactable = ScoreLocation(grid[Location(0, 0)])
         self.simulation_runner.game_state.world_map = WorldMap(grid, settings)
         self.simulation_runner.update(1, self.simulation_runner.game_state)
         self.assertEqual(len(list(self.simulation_runner.game_state.world_map.pickup_cells())), 0)

@@ -3,6 +3,7 @@ from logging import getLogger
 
 from simulation.cell import Cell
 from simulation.game_logic import SpawnLocationFinder
+from simulation.interactables.pickups import ALL_PICKUPS
 from simulation.interactables.score_location import ScoreLocation
 from simulation.level_settings import DEFAULT_LEVEL_SETTINGS
 from simulation.location import Location
@@ -52,11 +53,14 @@ class WorldMap(object):
     def all_cells(self):
         return self.grid.values()
 
+    def interactable_cells(self):
+        return (c for c in self.all_cells() if c.interactable)
+
     def score_cells(self):
         return (c for c in self.all_cells() if isinstance(c.interactable, ScoreLocation))
 
-    def interactable_cells(self):
-        return (c for c in self.all_cells() if c.interactable)
+    def pickup_cells(self):
+        return (c for c in self.all_cells() if isinstance(c.interactable, ALL_PICKUPS))
 
     def is_on_map(self, location):
         try:

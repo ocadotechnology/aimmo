@@ -3,6 +3,7 @@ from unittest import TestCase
 import service
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.game_state import GameState
+from simulation.interactables.score_location import ScoreLocation
 from simulation.location import Location
 from simulation.world_map import WorldMap
 
@@ -30,7 +31,7 @@ class TestService(TestCase):
                 {'interactable': MockPickup(
                     'b'), 'avatar': self.avatar_manager.avatars[0]},
                 {},
-                {'generates_score': True},
+                {},
             ],
             [
                 {},
@@ -41,7 +42,7 @@ class TestService(TestCase):
 
         grid = {Location(x, y-1): MockCell(Location(x, y-1), **CELLS[x][y])
                 for y in range(3) for x in range(2)}
-
+        grid[Location(0, 1)].interactable = ScoreLocation(grid[Location(0, 1)])
         test_game_state = GameState(WorldMap(grid, {}), self.avatar_manager)
         self.world_state_json = test_game_state.serialize()
 
@@ -96,12 +97,12 @@ class TestService(TestCase):
         era = self.world_state_json['era']
         self.assertEqual(era, "less_flat")
 
-    def test_correct_json_world_pickups_returned_is_correct_amount(self):
+    def test_correct_json_world_interactables_returned_is_correct_amount(self):
         """
         The JSON returns the correct amount of pickups.
         """
-        pickup_list = self.world_state_json['pickups']
-        self.assertEqual(len(pickup_list), 2)
+        interactable_list = self.world_state_json['interactables']
+        self.assertEqual(len(interactable_list), 3)
 
     def test_correct_json_world_obstacles(self):
         """

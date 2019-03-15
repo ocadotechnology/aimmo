@@ -18,12 +18,11 @@ class Cell(object):
             setattr(self, key, value)
 
     def __repr__(self):
-        return 'Cell({} h={} s={} a={} p={})'.format(
+        return 'Cell({} h={} s={} a={} i={})'.format(
             self.location,
             getattr(self, 'habitable', 0),
-            self.generates_score,
             getattr(self, 'avatar', 0),
-            getattr(self, 'pickup', 0))
+            getattr(self, 'interactable', 0))
 
     def __eq__(self, other):
         return self.location == other.location
@@ -47,11 +46,11 @@ class WorldMap(object):
     def all_cells(self):
         return self.cells.values()
 
-    def score_cells(self):
-        return [c for c in self.all_cells() if c.generates_score]
+    def interactable_cells(self):
+        return [c for c in self.all_cells() if getattr(c, 'interactable', False)]
 
-    def pickup_cells(self):
-        return [c for c in self.all_cells() if getattr(c, 'pickup', False)]
+    def score_cells(self):
+        return [c for c in self.interactable_cells() if 'score_location' in c.interactable.keys()]
 
     def partially_fogged_cells(self):
         return [c for c in self.all_cells() if c.partially_fogged]

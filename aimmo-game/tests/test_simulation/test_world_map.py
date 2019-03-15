@@ -5,6 +5,7 @@ from string import ascii_uppercase
 from unittest import TestCase
 
 from simulation.game_logic import SpawnLocationFinder
+from simulation.interactables.score_location import ScoreLocation
 from simulation.location import Location
 from simulation.world_map import WorldMap, WorldMapStaticSpawnDecorator
 
@@ -78,8 +79,10 @@ class TestWorldMap(TestCase):
         self.assertEqual(len(cell_names), 4)
 
     def test_score_cells(self):
-        score_cell1 = MockCell(generates_score=True)
-        score_cell2 = MockCell(generates_score=True)
+        score_cell1 = MockCell()
+        score_cell1.interactable = ScoreLocation(score_cell1)
+        score_cell2 = MockCell()
+        score_cell2.interactable = ScoreLocation(score_cell2)
         no_score_cell = MockCell()
         grid = self._grid_from_list([[score_cell1, no_score_cell],
                                      [no_score_cell, score_cell2]])
@@ -92,7 +95,8 @@ class TestWorldMap(TestCase):
     def test_potential_spawns(self):
         spawnable1 = MockCell()
         spawnable2 = MockCell()
-        score_cell = MockCell(generates_score=True)
+        score_cell = MockCell()
+        score_cell.interactable = ScoreLocation(score_cell)
         unhabitable = MockCell(habitable=False)
         filled = MockCell(avatar='avatar')
         grid = self._grid_from_list([[spawnable1, score_cell, unhabitable],
@@ -109,14 +113,14 @@ class TestWorldMap(TestCase):
             filled, cells, "Cells with avatars should not be spawns")
         self.assertEqual(len(cells), 2)
 
-    def test_pickup_cells(self):
+    def test_interactable_cells(self):
         pickup_cell1 = MockCell(interactable=MockPickup())
         pickup_cell2 = MockCell(interactable=MockPickup())
         no_pickup_cell = MockCell()
         grid = self._grid_from_list([[pickup_cell1, no_pickup_cell],
                                      [no_pickup_cell, pickup_cell2]])
         world_map = WorldMap(grid, self.settings)
-        cells = list(world_map.pickup_cells())
+        cells = list(world_map.interactable_cells())
         self.assertIn(pickup_cell1, cells)
         self.assertIn(pickup_cell2, cells)
         self.assertEqual(len(cells), 2, "Non-pickup cells present")
