@@ -5,8 +5,8 @@ from simulation.interactables.pickups.invulnerability_pickup import \
     InvulnerabilityPickup
 
 
-def serialize_interactables(world_map):
-    return [cell.interactable.serialize() for cell in world_map.interactable_cells()]
+def serialize_pickups(world_map):
+    return [cell.interactable.serialize() for cell in world_map.pickup_cells()]
 
 
 ALL_PICKUPS = (

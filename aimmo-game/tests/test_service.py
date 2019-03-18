@@ -3,7 +3,6 @@ from unittest import TestCase
 import service
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.game_state import GameState
-from simulation.interactables.score_location import ScoreLocation
 from simulation.location import Location
 from simulation.world_map import WorldMap
 
