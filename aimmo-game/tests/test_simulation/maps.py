@@ -16,7 +16,7 @@ class MockPickup(object):
 
     def apply(self):
         if self.cell:
-            self.cell.pickup = None
+            self.cell.interactable = None
 
     def conditions_met(self, world_map):
         return True
@@ -27,12 +27,12 @@ class MockPickup(object):
 
 class MockCell(Cell):
     def __init__(self, location=Location(0, 0), habitable=True, generates_score=False,
-                 avatar=None, pickup=None, name=None, actions=[]):
+                 avatar=None, interactable=None, name=None, actions=[]):
         self.location = location
         self.habitable = habitable
         self.generates_score = generates_score
         self.avatar = avatar
-        self.pickup = pickup
+        self.interactable = interactable
         self.name = name
         self.actions = actions
         self.partially_fogged = False
@@ -118,5 +118,5 @@ class PickupMap(WorldMap):
 
     def get_cell(self, location):
         cell = Cell(location)
-        cell.pickup = self._pickup
+        cell.interactable = self._pickup
         return cell

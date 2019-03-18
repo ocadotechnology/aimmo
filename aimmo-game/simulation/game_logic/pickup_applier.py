@@ -18,5 +18,5 @@ class PickupApplier:
     def apply(self, game_state: 'GameState'):
         """ Applies pickup effects to any avatar that is on a pickup cell """
         for cell in game_state.world_map.pickup_cells():
-            if cell.pickup.conditions_met(game_state):
-                cell.pickup.apply()
+            if cell.interactable.conditions_met(game_state):
+                cell.interactable.apply()

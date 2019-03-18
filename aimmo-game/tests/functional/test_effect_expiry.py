@@ -2,9 +2,9 @@ import asyncio
 from unittest import TestCase
 
 from simulation.location import Location
-from simulation.pickups import DamageBoostPickup, InvulnerabilityPickup
-from simulation.pickups.effects import (DAMAGE_BOOST_DEFAULT,
-                                        INVULNERABILITY_RESISTANCE)
+from simulation.interactables.pickups import DamageBoostPickup, InvulnerabilityPickup
+from simulation.interactables.effects import (DAMAGE_BOOST_DEFAULT,
+                                              INVULNERABILITY_RESISTANCE)
 
 from .mock_world import MockWorld
 
@@ -37,7 +37,7 @@ class TestEffectExpiry(TestCase):
         then we wait for the effect to expire EFFECT_TIME turns later (value defined in the effects class).
         """
         pickup_created = DamageBoostPickup(self.cell)
-        self.cell.pickup = pickup_created
+        self.cell.interactable = pickup_created
         self.assertEqual(self.avatar.attack_strength, 1)
 
         # Avatar moves EAST to (1,0) where pickup is located, then repeats it 5 times.
@@ -47,7 +47,8 @@ class TestEffectExpiry(TestCase):
                 self.game.avatar_manager.get_player_id_to_serialized_action()
             ))
 
-        self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created.effects[0]))
+        self.assertTrue(isinstance(list(self.avatar.effects)
+                                   [0], pickup_created.effects[0]))
         self.assertEqual(list(self.avatar.effects)[0]._time_remaining, 5)
         self.assertEqual(self.avatar.attack_strength, DAMAGE_BOOST_DEFAULT + 1)
 
@@ -66,21 +67,24 @@ class TestEffectExpiry(TestCase):
         and then we wait for the effect to expire EFFECT_TIME turns later (value defined in the effects class).
         """
         pickup_created = InvulnerabilityPickup(self.cell)
-        self.cell.pickup = pickup_created
+        self.cell.interactable = pickup_created
         self.assertEqual(self.avatar.resistance, 0)
 
         # Avatar moves EAST to (1,0) where pickup is located, then repeats it 5 times.
         loop = asyncio.get_event_loop()
         for i in range(6):
-            loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialized_action()))
+            loop.run_until_complete(self.game.simulation_runner.run_single_turn(
+                self.game.avatar_manager.get_player_id_to_serialized_action()))
 
-        self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created.effects[0]))
+        self.assertTrue(isinstance(list(self.avatar.effects)
+                                   [0], pickup_created.effects[0]))
         self.assertEqual(list(self.avatar.effects)[0]._time_remaining, 5)
         self.assertEqual(self.avatar.resistance, INVULNERABILITY_RESISTANCE)
 
         # Run 5 more turns and expect the effect to expire.
         for i in range(5):
-            loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialized_action()))
+            loop.run_until_complete(self.game.simulation_runner.run_single_turn(
+                self.game.avatar_manager.get_player_id_to_serialized_action()))
 
         self.assertEqual(len(self.avatar.effects), 0)
         self.assertEqual(self.avatar.resistance, 0)
@@ -95,8 +99,8 @@ class TestEffectExpiry(TestCase):
         pickup_created_one = DamageBoostPickup(cell_one)
         pickup_created_two = DamageBoostPickup(cell_two)
 
-        cell_one.pickup = pickup_created_one
-        cell_two.pickup = pickup_created_two
+        cell_one.interactable = pickup_created_one
+        cell_two.interactable = pickup_created_two
 
         self.assertEqual(self.avatar.attack_strength, 1)
 
@@ -106,7 +110,8 @@ class TestEffectExpiry(TestCase):
             self.game.avatar_manager.get_player_id_to_serialized_action()
         ))
 
-        self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created_one.effects[0]))
+        self.assertTrue(isinstance(list(self.avatar.effects)
+                                   [0], pickup_created_one.effects[0]))
         self.assertEqual(len(self.avatar.effects), 1)
         self.assertEqual(list(self.avatar.effects)[0]._time_remaining, 10)
         self.assertEqual(self.avatar.attack_strength, DAMAGE_BOOST_DEFAULT + 1)
@@ -117,9 +122,11 @@ class TestEffectExpiry(TestCase):
                 self.game.avatar_manager.get_player_id_to_serialized_action()
             ))
 
-        self.assertTrue(isinstance(list(self.avatar.effects)[1], pickup_created_two.effects[0]))
+        self.assertTrue(isinstance(list(self.avatar.effects)
+                                   [1], pickup_created_two.effects[0]))
         self.assertEqual(len(self.avatar.effects), 2)
-        self.assertEqual(self.avatar.attack_strength, DAMAGE_BOOST_DEFAULT * 2 + 1)
+        self.assertEqual(self.avatar.attack_strength,
+                         DAMAGE_BOOST_DEFAULT * 2 + 1)
 
         # Eight turns later, we expect the first effect to expire.
         for i in range(8):
@@ -150,8 +157,8 @@ class TestEffectExpiry(TestCase):
         pickup_created_one = InvulnerabilityPickup(cell_one)
         pickup_created_two = InvulnerabilityPickup(cell_two)
 
-        cell_one.pickup = pickup_created_one
-        cell_two.pickup = pickup_created_two
+        cell_one.interactable = pickup_created_one
+        cell_two.interactable = pickup_created_two
 
         self.assertEqual(self.avatar.resistance, 0)
 
@@ -161,7 +168,8 @@ class TestEffectExpiry(TestCase):
             self.game.avatar_manager.get_player_id_to_serialized_action()
         ))
 
-        self.assertTrue(isinstance(list(self.avatar.effects)[0], pickup_created_one.effects[0]))
+        self.assertTrue(isinstance(list(self.avatar.effects)
+                                   [0], pickup_created_one.effects[0]))
         self.assertEqual(len(self.avatar.effects), 1)
         self.assertEqual(list(self.avatar.effects)[0]._time_remaining, 10)
         self.assertEqual(self.avatar.resistance, INVULNERABILITY_RESISTANCE)
@@ -172,9 +180,11 @@ class TestEffectExpiry(TestCase):
                 self.game.avatar_manager.get_player_id_to_serialized_action()
             ))
 
-        self.assertTrue(isinstance(list(self.avatar.effects)[1], pickup_created_two.effects[0]))
+        self.assertTrue(isinstance(list(self.avatar.effects)
+                                   [1], pickup_created_two.effects[0]))
         self.assertEqual(len(self.avatar.effects), 2)
-        self.assertEqual(self.avatar.resistance, INVULNERABILITY_RESISTANCE * 2)
+        self.assertEqual(self.avatar.resistance,
+                         INVULNERABILITY_RESISTANCE * 2)
 
         # Eight turns later, we expect the first effect to expire.
         for i in range(8):

@@ -18,7 +18,7 @@ class TestCell(TestCase):
     def _create_full_cell(self):
         cell = Cell(serializer('location'), False, True)
         cell.avatar = serializer('avatar')
-        cell.pickup = serializer('pickup')
+        cell.interactable = serializer('pickup')
         self.expected = {
             'avatar': 'avatar',
             'generates_score': True,
@@ -41,6 +41,6 @@ class TestCell(TestCase):
 
     def test_serialize_no_pickup(self):
         cell = self._create_full_cell()
-        cell.pickup = None
+        cell.interactable = None
         self.expected['pickup'] = None
         self.assertEqual(cell.serialize(), self.expected)

@@ -55,7 +55,7 @@ class WorldMap(object):
         return (c for c in self.all_cells() if c.generates_score)
 
     def pickup_cells(self):
-        return (c for c in self.all_cells() if c.pickup)
+        return (c for c in self.all_cells() if c.interactable)
 
     def is_on_map(self, location):
         try:
@@ -146,7 +146,7 @@ class WorldMap(object):
 
     def __iter__(self):
         return ((self.get_cell(Location(x, y))
-                for y in range(self.min_y(), self.max_y() + 1))
+                 for y in range(self.min_y(), self.max_y() + 1))
                 for x in range(self.min_x(), self.max_x() + 1))
 
     # Serialisation Utilities
@@ -198,14 +198,14 @@ class WorldMap(object):
 
         def serialize_obstacle(cell):
             return {'location': {
-                         'x': cell.location.x,
-                         'y': cell.location.y,
-                     },
-                    'width': 1,
-                    'height': 1,
-                    'type': "wall",
-                    'orientation': "north",
-                    }
+                'x': cell.location.x,
+                'y': cell.location.y,
+            },
+                'width': 1,
+                'height': 1,
+                'type': "wall",
+                'orientation': "north",
+            }
 
         return [serialize_obstacle(cell) for cell in self.all_cells() if not cell.habitable]
 
