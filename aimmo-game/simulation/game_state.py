@@ -1,6 +1,6 @@
 from threading import RLock
 
-from simulation.interactables.pickups import serialize_pickups
+from simulation.interactables import serialize_interactables
 
 
 class GameState:
