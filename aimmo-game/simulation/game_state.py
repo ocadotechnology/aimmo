@@ -25,7 +25,6 @@ class GameState:
             'northEastCorner': self.world_map.get_serialized_north_east_corner(),
             'players': self.avatar_manager.serialize_players(),
             'interactables': serialize_interactables(self.world_map),
-            'scoreLocations': (self.world_map.serialize_score_location()),
             'obstacles': self.world_map.serialize_obstacles()
         }
 
