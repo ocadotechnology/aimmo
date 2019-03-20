@@ -10,6 +10,7 @@ class Cell(object):
 
     def __init__(self, location, avatar=None, **kwargs):
         self.location = Location(**location)
+        self.avatar = None
         if avatar:
             self.avatar = AvatarState(location=avatar['location'],
                                       score=avatar['score'],
@@ -18,11 +19,12 @@ class Cell(object):
             setattr(self, key, value)
 
     def __repr__(self):
-        return 'Cell({} h={} s={} a={} i={})'.format(
+        return 'Cell({} h={} a={} i={})'.format(
             self.location,
-            getattr(self, 'habitable', 0),
-            getattr(self, 'avatar', 0),
-            getattr(self, 'interactable', 0))
+            self.habitable,
+            self.avatar,
+            self.interactable
+        )
 
     def __eq__(self, other):
         return self.location == other.location
@@ -40,6 +42,7 @@ class WorldMap(object):
     def __init__(self, cells):
         self.cells = {}
         for cell_data in cells:
+            print(cell_data)
             cell = Cell(**cell_data)
             self.cells[cell.location] = cell
 
@@ -47,10 +50,10 @@ class WorldMap(object):
         return self.cells.values()
 
     def interactable_cells(self):
-        return [c for c in self.all_cells() if getattr(c, 'interactable', False)]
+        return [c for c in self.all_cells() if c.interactable]
 
     def score_cells(self):
-        return [c for c in self.interactable_cells() if 'score_location' in c.interactable.keys()]
+        return [c for c in self.interactable_cells() if 'score' in c.interactable.values()]
 
     def partially_fogged_cells(self):
         return [c for c in self.all_cells() if c.partially_fogged]
