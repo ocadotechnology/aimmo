@@ -23,12 +23,15 @@ setup(
         "pytest-runner"
     ],
     tests_require=[
-        'pytest',
+        'pytest==4.0.2',
         'pytest-asyncio',
         'asynctest',
         'httmock',
         'mock',
-        'hypothesis'
+        'hypothesis',
+        'docker',
+        'aiohttp',
+        'aiohttp_cors'
     ],
     test_suite='tests',
     zip_safe=False,

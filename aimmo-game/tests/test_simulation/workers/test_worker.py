@@ -2,6 +2,7 @@ import mock
 from unittest import TestCase
 from requests import Response
 from simulation.workers.worker import Worker
+from simulation.workers.local_worker import LocalWorker
 
 DEFAULT_RESPONSE_CONTENT = b'{"action": "test_action",' \
                            b'"log": "test_log",' \
@@ -22,7 +23,7 @@ def construct_test_response(status_code=200,
 
 class TestWorker(TestCase):
     def setUp(self):
-        self.worker = Worker(1)
+        self.worker = LocalWorker(1, 0)
 
     @mock.patch('simulation.workers.worker.requests.post',
                 return_value=construct_test_response())

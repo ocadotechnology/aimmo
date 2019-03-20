@@ -1,12 +1,15 @@
 import itertools
+import json
 import logging
 import os
+
 import docker
-import json
 
 from .worker import Worker
 
 LOGGER = logging.getLogger(__name__)
+
+port_counter = itertools.count(1989 + int(os.environ.get("GAME_ID", 0) * 10000))
 
 
 class LocalWorker(Worker):
@@ -19,13 +22,12 @@ class LocalWorker(Worker):
     )
 
     def __init__(self, *args, **kwargs):
-        self.game_id = os.environ['GAME_ID']
+        self.game_id = os.environ.get("GAME_ID", 0)
         self.client = docker.from_env()
-        # self.port_counter = port_counter
         super(LocalWorker, self).__init__(*args, **kwargs)
 
     def _create_worker(self):
-        port = next(self.port_counter)
+        port = next(port_counter)
 
         template_string = os.environ.get('CONTAINER_TEMPLATE')
         if template_string:
@@ -34,7 +36,7 @@ class LocalWorker(Worker):
             template = {
                 'environment': {}
             }
-        data_url = 'http://{}:{}/player/{}'.format(self.host, self.port, self.player_id)
+        data_url = 'http://{}:{}/player/{}'.format(self.host, self.game_port, self.player_id)
         template['environment']['DATA_URL'] = data_url
         template['environment']['PORT'] = port
         self.client.containers.run(

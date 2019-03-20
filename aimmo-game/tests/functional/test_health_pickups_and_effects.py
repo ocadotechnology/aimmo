@@ -1,16 +1,16 @@
+import asyncio
 import random
 from unittest import TestCase
-import asyncio
 
-from hypothesis import given
 import hypothesis.strategies as st
+from hypothesis import given
+from simulation.location import Location
+from simulation.pickups import HealthPickup
+from simulation.pickups.pickup_types import (AVATAR_HEALTH_MAX,
+                                             HEALTH_RESTORE_DEFAULT,
+                                             HEALTH_RESTORE_MAX)
 
 from .mock_world import MockWorld
-
-from simulation.location import Location
-from simulation.pickups import (
-    HealthPickup, AVATAR_HEALTH_MAX, HEALTH_RESTORE_DEFAULT, HEALTH_RESTORE_MAX
-)
 
 
 class TestHealthPickupAndEffects(TestCase):
@@ -20,7 +20,7 @@ class TestHealthPickupAndEffects(TestCase):
         avatar manager, game state, turn manager and a map generator.
         """
         self.game = MockWorld()
-        self.game.game_state.add_avatar(1, Location(0, 0))
+        self.game.simulation_runner.add_avatar(1, Location(0, 0))
         self.cell = self.game.game_state.world_map.get_cell(Location(1, 0))
         self.initial_health = self.game.avatar_manager.get_avatar(1).health
         self.loop = asyncio.get_event_loop()

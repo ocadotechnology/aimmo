@@ -1,15 +1,15 @@
 import logging
 
 import requests
+
 LOGGER = logging.getLogger(__name__)
 
 
 class Worker(object):
-    def __init__(self, player_id, port, port_counter):
+    def __init__(self, player_id, game_port):
         self.log = None
         self.player_id = player_id
-        self.port = port
-        self.port_counter = port_counter
+        self.game_port = game_port
         self.code = None
         self.serialised_action = None
         self.has_code_updated = False
@@ -34,7 +34,7 @@ class Worker(object):
                 'state': None,
             }
             data = {**state_view, **code_and_options}
-            response = requests.post(self.url, json=data)
+            response = requests.post(f"{self.url}/turn/", json=data)
             response.raise_for_status()
             data = response.json()
             self.serialised_action = data['action']

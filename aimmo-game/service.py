@@ -2,6 +2,8 @@
 
 from aiohttp import web
 import aiohttp_cors
+from aiohttp_wsgi import WSGIHandler
+from prometheus_client import make_wsgi_app
 import asyncio
 import pickle
 import ast
@@ -154,6 +156,9 @@ if __name__ == '__main__':
         port = int(sys.argv[2])
 
     run_game(port)
+
+    wsgi_handler = WSGIHandler(make_wsgi_app())
+    app.add_routes([web.get('/{path_info:metrics}', wsgi_handler)])
 
     LOGGER.info("starting the server")
     web.run_app(app, host=host, port=port)

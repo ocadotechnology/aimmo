@@ -1,12 +1,14 @@
-from unittest import TestCase
-from hypothesis import given, assume
-from hypothesis import strategies as st
-import math
 import asyncio
+import math
+from unittest import TestCase
+
+from hypothesis import assume, given
+from hypothesis import strategies as st
+from simulation.location import Location
+from simulation.pickups import DamageBoostPickup
+from simulation.pickups.pickup_types import DAMAGE_BOOST_DEFAULT
 
 from .mock_world import MockWorld
-from simulation.location import Location
-from simulation.pickups import DamageBoostPickup, DAMAGE_BOOST_DEFAULT
 
 
 class TestDamagePickupsAndEffects(TestCase):
@@ -16,7 +18,7 @@ class TestDamagePickupsAndEffects(TestCase):
         avatar manager, game state, turn manager and a map generator.
         """
         self.game = MockWorld()
-        self.game.game_state.add_avatar(1, Location(0, 0))
+        self.game.simulation_runner.add_avatar(1, Location(0, 0))
         _avatar_spawn_cell = self.game.game_state.world_map.get_cell(Location(0, 0))
         self.initial_attack_strength = _avatar_spawn_cell.avatar.attack_strength
         self.cell = self.game.game_state.world_map.get_cell(Location(1, 0))
