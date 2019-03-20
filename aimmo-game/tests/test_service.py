@@ -68,9 +68,11 @@ class TestService(TestCase):
         """
         Ensures the correct score location in the "score_locations" element; is returned by the JSON.
         """
-        score_list = self.world_state_json['scoreLocations']
-        self.assertEqual(score_list[0]['location']['x'], 0)
-        self.assertEqual(score_list[0]['location']['y'], 1)
+        interactable_list = self.world_state_json['interactables']
+        for interactable in interactable_list:
+            if 'ScoreLocation' in interactable:
+                self.assertEqual(interactable['location']['x'], 0)
+                self.assertEqual(interactable['location']['y'], 1)
 
     def test_correct_json_north_east_corner(self):
         """
