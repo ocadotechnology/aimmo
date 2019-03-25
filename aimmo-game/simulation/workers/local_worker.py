@@ -9,7 +9,7 @@ from .worker import Worker
 
 LOGGER = logging.getLogger(__name__)
 
-port_counter = itertools.count(1989 + int(os.environ.get("GAME_ID", 0) * 10000))
+port_counter = itertools.count(1989 + int(os.environ.get("GAME_ID", 0)) * 10000)
 
 
 class LocalWorker(Worker):
@@ -22,13 +22,18 @@ class LocalWorker(Worker):
     )
 
     def __init__(self, *args, **kwargs):
-        self.game_id = os.environ.get("GAME_ID", 0)
+        self.game_id = os.environ.get('GAME_ID', 0)
         self.client = docker.from_env()
         super(LocalWorker, self).__init__(*args, **kwargs)
 
-    def _create_worker(self):
-        port = next(port_counter)
+    @staticmethod
+    def _init_port_counter():
+        global port_counter
+        port_counter = itertools.count(1989 + int(os.environ['GAME_ID']) * 10000)
 
+    def _create_worker(self):
+        global port_counter
+        port = next(port_counter)
         template_string = os.environ.get('CONTAINER_TEMPLATE')
         if template_string:
             template = json.loads(template_string)

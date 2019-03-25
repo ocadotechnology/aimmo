@@ -30,6 +30,7 @@ class TestSocketIO:
 
     def setup_method(self, method):
         os.environ['GAME_ID'] = '1'
+        LocalWorker._init_port_counter()
         self.environ = {'QUERY_STRING': 'avatar_id=1&EIO=3&transport=polling&t=MJhoMgb'}
         self.game_api = self.create_game_api()
         self.mocked_mappings = self.game_api._socket_session_id_to_player_id
