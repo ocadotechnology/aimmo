@@ -1,8 +1,8 @@
 """
-interactables is a library for adding dynamic objects to the world map.
+Interactables is a library for adding objects to the world map.
 
 This contains the definitions of these objects, including all their effects and conditions,
-multiple interactbles of the same type are grouped (pickups for example).
+multiple interactables of the same type are grouped (pickups for example).
 """
 
 
