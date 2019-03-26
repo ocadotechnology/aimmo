@@ -9,14 +9,14 @@ LOGGER = getLogger(__name__)
 
 class EffectApplier:
     """
-    Applier for all pickups on the WorldMap.
+    Applier for all interactables on the WorldMap.
 
-    Handles the checking if conditions are met, then applies any effects for pickups
+    Handles the checking if conditions are met, then applies any effects for interactables
     where this occurs.
     """
 
     def apply(self, game_state: 'GameState'):
-        """ Applies pickup effects to any avatar that is on a pickup cell """
+        """Apply interactable effects to any avatar that is on a pickup cell."""
         for cell in game_state.world_map.interactable_cells():
             if cell.interactable.conditions_met(game_state):
                 cell.interactable.apply()

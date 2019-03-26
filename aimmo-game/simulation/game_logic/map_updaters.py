@@ -52,9 +52,9 @@ class PickupUpdater(_MapUpdater):
             max_num_pickups_to_add)
         for cell in locations:
             if random.random() < world_map.settings['PICKUP_SPAWN_CHANCE']:
-                LOGGER.info('Adding new pickup at %s', cell)
                 cell.interactable = random.choice(ALL_PICKUPS)(cell)
-                LOGGER.info('new pickup is: %s', cell.interactable)
+                LOGGER.info('Adding new pickup at %s of type %s',
+                            cell, cell.interactable)
 
 
 class MapExpander(_MapUpdater):

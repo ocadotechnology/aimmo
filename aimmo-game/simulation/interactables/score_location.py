@@ -16,7 +16,7 @@ class ScoreLocation(_Interactable):
         ]
 
     def __repr__(self):
-        return 'ScoreLocation(Location={})'.format(self.cell.location)
+        return f"ScoreLocation(Location={self.cell.location})"
 
     def serialize(self):
         return {

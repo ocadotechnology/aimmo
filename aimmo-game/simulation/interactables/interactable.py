@@ -13,7 +13,7 @@ class _Interactable(object):
 
     def __init__(self, cell):
         self.cell = cell
-        self.temporary = False
+        self.delete_after_effects_applied = False
 
         self.conditions = []
         self.effects = []
@@ -42,7 +42,7 @@ class _Interactable(object):
             for target in self.targets:
                 effect(target)
 
-        if self.temporary:
+        if self.delete_after_effects_applied:
             self.delete()
 
     @abstractmethod

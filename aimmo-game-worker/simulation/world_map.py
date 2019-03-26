@@ -42,7 +42,6 @@ class WorldMap(object):
     def __init__(self, cells):
         self.cells = {}
         for cell_data in cells:
-            print(cell_data)
             cell = Cell(**cell_data)
             self.cells[cell.location] = cell
 
@@ -50,13 +49,18 @@ class WorldMap(object):
         return self.cells.values()
 
     def interactable_cells(self):
-        return [c for c in self.all_cells() if c.interactable]
+        return [cell for cells in self.all_cells() if cell.interactable]
+
+    def pickup_cells(self):
+        return [cell for cells in self.interactable_cells if 'damage_boost' in cell.interactable.values()
+                or 'invulnerability' in c.interactable.values()
+                or 'health' in c.interactable.values()]
 
     def score_cells(self):
-        return [c for c in self.interactable_cells() if 'score' in c.interactable.values()]
+        return [cell for cells in self.interactable_cells() if 'score' in cell.interactable.values()]
 
     def partially_fogged_cells(self):
-        return [c for c in self.all_cells() if c.partially_fogged]
+        return [cell for cells in self.all_cells() if cell.partially_fogged]
 
     def is_visible(self, location):
         return location in self.cells
