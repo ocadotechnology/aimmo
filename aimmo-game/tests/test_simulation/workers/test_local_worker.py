@@ -43,4 +43,3 @@ class TestLocalWorker(TestCase):
 
         self.assertEqual(url1.port, 11989)
         self.assertEqual(url2.port, 11990)
-
