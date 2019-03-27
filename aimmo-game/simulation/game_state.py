@@ -1,6 +1,6 @@
 from threading import RLock
 
-from simulation.interactables.pickups import serialize_pickups
+from simulation.interactables import serialize_interactables
 
 
 class GameState:
@@ -24,8 +24,7 @@ class GameState:
             'southWestCorner': self.world_map.get_serialized_south_west_corner(),
             'northEastCorner': self.world_map.get_serialized_north_east_corner(),
             'players': self.avatar_manager.serialize_players(),
-            'pickups': serialize_pickups(self.world_map),
-            'scoreLocations': (self.world_map.serialize_score_location()),
+            'interactables': serialize_interactables(self.world_map),
             'obstacles': self.world_map.serialize_obstacles()
         }
 

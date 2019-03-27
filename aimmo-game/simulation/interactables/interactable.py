@@ -13,6 +13,8 @@ class _Interactable(object):
 
     def __init__(self, cell):
         self.cell = cell
+        self.delete_after_effects_applied = False
+
         self.conditions = []
         self.effects = []
         self.targets = []
@@ -40,7 +42,8 @@ class _Interactable(object):
             for target in self.targets:
                 effect(target)
 
-        self.delete()
+        if self.delete_after_effects_applied:
+            self.delete()
 
     @abstractmethod
     def serialize(self):

@@ -6,14 +6,14 @@ from itertools import tee
 from queue import PriorityQueue
 from typing import Any
 
-from six.moves import zip, range
+from six.moves import range, zip
 
 from simulation.direction import ALL_DIRECTIONS
 from simulation.game_state import GameState
-from simulation.location import Location
-from simulation.world_map import WorldMap
-from simulation.world_map import WorldMapStaticSpawnDecorator
+from simulation.interactables.score_location import ScoreLocation
 from simulation.level_settings import DEFAULT_LEVEL_SETTINGS
+from simulation.location import Location
+from simulation.world_map import WorldMap, WorldMapStaticSpawnDecorator
 
 LOGGER = logging.getLogger(__name__)
 
@@ -42,8 +42,10 @@ class Main(_BaseGenerator):
         world_map = WorldMap.generate_empty_map(height, width, self.settings)
 
         # We set one non-corner edge cell as empty, to ensure that the map can be expanded
-        always_empty_edge_x, always_empty_edge_y = get_random_edge_index(world_map)
-        always_empty_location = Location(always_empty_edge_x, always_empty_edge_y)
+        always_empty_edge_x, always_empty_edge_y = get_random_edge_index(
+            world_map)
+        always_empty_location = Location(
+            always_empty_edge_x, always_empty_edge_y)
 
         for cell in shuffled(world_map.all_cells()):
             if (cell.location != always_empty_location and
@@ -148,7 +150,8 @@ def get_adjacent_habitable_cells(cell, world_map):
     adjacent_locations = [location for location in adjacent_locations
                           if world_map.is_on_map(location)]
 
-    adjacent_cells = [world_map.get_cell(location) for location in adjacent_locations]
+    adjacent_cells = [world_map.get_cell(location)
+                      for location in adjacent_locations]
     return [c for c in adjacent_cells if c.habitable]
 
 
@@ -199,7 +202,8 @@ class Level1(_BaseLevelGenerator):
     def get_map(self):
         world_map = WorldMap.generate_empty_map(1, 5, self.settings)
         world_map = WorldMapStaticSpawnDecorator(world_map, Location(-2, 0))
-        world_map.get_cell(Location(2, 0)).generates_score = True
+        world_map.get_cell(Location(2, 0)).interactable = ScoreLocation(
+            world_map.get_cell(Location(2, 0)))
         return world_map
 
     def check_complete(self, game_state):

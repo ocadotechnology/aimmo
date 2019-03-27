@@ -6,6 +6,7 @@ from logging import getLogger
 
 from simulation.cell import Cell
 from simulation.interactables.pickups import ALL_PICKUPS
+from simulation.interactables.score_location import ScoreLocation
 from simulation.location import Location
 
 LOGGER = getLogger(__name__)
@@ -25,7 +26,7 @@ class ScoreLocationUpdater(_MapUpdater):
     def update(self, world_map, context):
         for cell in world_map.score_cells():
             if random.random() < world_map.settings['SCORE_DESPAWN_CHANCE']:
-                cell.generates_score = False
+                cell.interactable.delete()
 
         new_num_score_locations = len(list(world_map.score_cells()))
         target_num_score_locations = int(math.ceil(
@@ -36,7 +37,7 @@ class ScoreLocationUpdater(_MapUpdater):
         locations = world_map._spawn_location_finder.get_random_spawn_locations(
             num_score_locations_to_add)
         for cell in locations:
-            cell.generates_score = True
+            cell.interactable = ScoreLocation(cell)
 
 
 class PickupUpdater(_MapUpdater):
@@ -51,8 +52,9 @@ class PickupUpdater(_MapUpdater):
             max_num_pickups_to_add)
         for cell in locations:
             if random.random() < world_map.settings['PICKUP_SPAWN_CHANCE']:
-                LOGGER.info('Adding new pickup at %s', cell)
                 cell.interactable = random.choice(ALL_PICKUPS)(cell)
+                LOGGER.info('Adding new pickup at %s of type %s',
+                            cell, cell.interactable)
 
 
 class MapExpander(_MapUpdater):

@@ -13,9 +13,8 @@ class TestWorldMap(TestCase):
         cells = [{
             'location': {'x': x, 'y': y},
             'habitable': True,
-            'generates_score': False,
             'avatar': None,
-            'pickup': None,
+            'interactable': None,
         } for x in range(-columns // 2 + 1, 1 + columns // 2) for y in range(-rows // 2 + 1, 1 + rows // 2)]
         return cells
 
@@ -41,17 +40,17 @@ class TestWorldMap(TestCase):
 
     def test_score_cells(self):
         cells = self._generate_cells()
-        cells[0]['generates_score'] = True
-        cells[5]['generates_score'] = True
+        cells[0]['interactable'] = {'score_location': 5}
+        cells[5]['interactable'] = {'score_location': 5}
         map = WorldMap(cells)
         self.assertLocationsEqual(map.score_cells(), (Location(-1, -1), Location(0, 1)))
 
-    def test_pickup_cells(self):
+    def test_interactable_cells(self):
         cells = self._generate_cells()
-        cells[0]['pickup'] = {'health_restored': 5}
-        cells[8]['pickup'] = {'health_restored': 2}
+        cells[0]['interactable'] = {'health_restored': 5}
+        cells[8]['interactable'] = {'health_restored': 2}
         map = WorldMap(cells)
-        self.assertLocationsEqual(map.pickup_cells(), (Location(-1, -1), Location(1, 1)))
+        self.assertLocationsEqual(map.interactable_cells(), (Location(-1, -1), Location(1, 1)))
 
     def test_location_is_visible(self):
         map = WorldMap(self._generate_cells())

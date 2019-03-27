@@ -5,7 +5,7 @@ from abc import ABCMeta, abstractmethod
 from threading import Thread
 
 from simulation.action import PRIORITIES, WaitAction
-from simulation.game_logic import (MapContext, MapExpander, PickupApplier,
+from simulation.game_logic import (EffectApplier, MapContext, MapExpander,
                                    PickupUpdater, ScoreLocationUpdater)
 
 LOGGER = logging.getLogger(__name__)
@@ -59,19 +59,8 @@ class SimulationRunner(object):
             self.update(num_avatars, self.game_state)
 
     def update(self, num_avatars, game_state):
-        self._update_avatars(game_state)
+        EffectApplier().apply(game_state)
         self._update_map(num_avatars)
-
-    def _update_avatars(self, game_state):
-        self._apply_score()
-        PickupApplier().apply(game_state)
-
-    def _apply_score(self):
-        for cell in self.game_state.world_map.score_cells():
-            try:
-                cell.avatar.score += 1
-            except AttributeError:
-                pass
 
     def _update_map(self, num_avatars):
         context = MapContext(num_avatars=num_avatars)

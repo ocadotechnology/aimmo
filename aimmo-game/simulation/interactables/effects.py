@@ -32,6 +32,8 @@ HEALTH_RESTORE_DEFAULT = 3
 HEALTH_RESTORE_MAX = 100
 AVATAR_HEALTH_MAX = 100
 
+SCORE_INCREASE_DEFAULT = 1
+
 
 class _Effect(object):
     """
@@ -70,7 +72,7 @@ class InvulnerabilityEffect(_Effect):
         self._recipient.resistance -= INVULNERABILITY_RESISTANCE
 
     def __repr__(self):
-        return f'InvulnerabilityEffect(value={INVULNERABILITY_RESISTANCE})'
+        return f"InvulnerabilityEffect(value={INVULNERABILITY_RESISTANCE})"
 
 
 class DamageBoostEffect(_Effect):
@@ -84,7 +86,7 @@ class DamageBoostEffect(_Effect):
         self._recipient.attack_strength -= self._damage_boost
 
     def __repr__(self):
-        return f'DamageBoostEffect(value={self._damage_boost})'
+        return f"DamageBoostEffect(value={self._damage_boost})"
 
 
 class HealthEffect(_Effect):
@@ -104,4 +106,17 @@ class HealthEffect(_Effect):
             avatar.health = AVATAR_HEALTH_MAX
 
     def __repr__(self):
-        return f'HealthEffect(value={self.health_restored})'
+        return f"HealthEffect(value={self.health_restored})"
+
+
+class ScoreEffect(_Effect):
+    def __init__(self, *args):
+        super(ScoreEffect, self).__init__(duration=1, *args)
+        self.score_given = SCORE_INCREASE_DEFAULT
+        self._recipient.score += self.score_given
+
+    def remove(self):
+        super(ScoreEffect, self).remove()
+
+    def __repr__(self):
+        return f"ScoreEffect(value={self.score_given})"

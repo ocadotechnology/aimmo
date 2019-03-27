@@ -4,6 +4,7 @@ from collections import defaultdict
 
 from simulation.cell import Cell
 from simulation.game_logic import SpawnLocationFinder
+from simulation.interactables.score_location import ScoreLocation
 from simulation.location import Location
 from simulation.world_map import WorldMap
 
@@ -26,11 +27,10 @@ class MockPickup(object):
 
 
 class MockCell(Cell):
-    def __init__(self, location=Location(0, 0), habitable=True, generates_score=False,
+    def __init__(self, location=Location(0, 0), habitable=True,
                  avatar=None, interactable=None, name=None, actions=[]):
         self.location = location
         self.habitable = habitable
-        self.generates_score = generates_score
         self.avatar = avatar
         self.interactable = interactable
         self.name = name
@@ -92,7 +92,9 @@ class EmptyMap(WorldMap):
 
 class ScoreOnOddColumnsMap(InfiniteMap):
     def get_cell(self, location):
-        default_cell = Cell(location, generates_score=(location.x % 2 == 1))
+        default_cell = Cell(location)
+        if location.x % 2 == 1:
+            default_cell.interactable = ScoreLocation(default_cell)
         return self._cell_cache.setdefault(location, default_cell)
 
 

@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 from simulation.cell import Cell
+
 from .test_world_map import serializer
 
 
@@ -16,15 +17,14 @@ class TestCell(TestCase):
         self.assertNotEqual(cell1, cell2)
 
     def _create_full_cell(self):
-        cell = Cell(serializer('location'), False, True)
+        cell = Cell(serializer('location'), False, False)
         cell.avatar = serializer('avatar')
-        cell.interactable = serializer('pickup')
+        cell.interactable = serializer('interactable')
         self.expected = {
             'avatar': 'avatar',
-            'generates_score': True,
             'habitable': False,
             'location': 'location',
-            'pickup': 'pickup',
+            'interactable': 'interactable',
             'partially_fogged': False
         }
         return cell
@@ -42,5 +42,5 @@ class TestCell(TestCase):
     def test_serialize_no_pickup(self):
         cell = self._create_full_cell()
         cell.interactable = None
-        self.expected['pickup'] = None
+        self.expected['interactable'] = None
         self.assertEqual(cell.serialize(), self.expected)
