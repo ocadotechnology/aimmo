@@ -1,6 +1,4 @@
-from unittest import TestCase
 from json import dumps
-import asyncio
 import pytest
 import mock
 
@@ -9,6 +7,7 @@ from .maps import InfiniteMap
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.game_state import GameState
 from simulation.game_runner import GameRunner
+from .mock_worker_manager import MockWorkerManager
 
 
 class RequestMock(object):
@@ -46,7 +45,8 @@ def game_runner():
     game_state = GameState(InfiniteMap(), AvatarManager())
     game_runner = GameRunner(game_state_generator=lambda avatar_manager: game_state,
                              port='0000',
-                             django_api_url='http://test')
+                             django_api_url='http://test',
+                             worker_manager_class=MockWorkerManager)
 
     game_runner.communicator = MockCommunicator()
     game_runner.set_end_turn_callback(mock_callback)

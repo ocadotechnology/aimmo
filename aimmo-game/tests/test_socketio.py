@@ -7,8 +7,8 @@ import pytest
 from asynctest import CoroutineMock
 
 import service
-from simulation.workers.local_worker import LocalWorker
 from simulation.game_runner import GameRunner
+from .test_simulation.mock_worker_manager import MockWorkerManager
 
 
 class MockGameState(object):
@@ -30,7 +30,6 @@ class TestSocketIO:
 
     def setup_method(self, method):
         os.environ['GAME_ID'] = '1'
-        LocalWorker._init_port_counter()
         self.environ = {'QUERY_STRING': 'avatar_id=1&EIO=3&transport=polling&t=MJhoMgb'}
         self.game_api = self.create_game_api()
         self.mocked_mappings = self.game_api._socket_session_id_to_player_id
@@ -47,7 +46,8 @@ class TestSocketIO:
     def create_game_api(self, app, docker_from_env):
         game_runner = GameRunner(game_state_generator=lambda avatar_manager: MockGameState(),
                                  django_api_url='http://test',
-                                 port='0000')
+                                 port='0000',
+                                 worker_manager_class=MockWorkerManager)
         return service.GameAPI(game_state=game_runner.game_state,
                                worker_manager=game_runner.worker_manager)
 

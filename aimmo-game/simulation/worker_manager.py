@@ -56,10 +56,8 @@ class WorkerManager(object):
         self.player_id_to_worker[player_id] = self.worker_class(player_id, self.port)
 
     def _parallel_map(self, func, iterable_args):
-        for arg in iterable_args:
-            func(arg)
-        # with futures.ThreadPoolExecutor() as executor:
-            # results = executor.map(func, iterable_args)
+        with futures.ThreadPoolExecutor() as executor:
+            results = executor.map(func, iterable_args)
 
     def add_workers(self, users_to_add):
         self._parallel_map(self.add_new_worker, users_to_add)
@@ -70,8 +68,8 @@ class WorkerManager(object):
     def delete_worker(self, player_id):
         if player_id in self.player_id_to_worker:
             worker = self.player_id_to_worker[player_id]
+            del self.player_id_to_worker[player_id]
             worker.remove_worker()
-            del worker
 
     def update_worker_codes(self, players):
         self._parallel_map(self.update_code, players)
