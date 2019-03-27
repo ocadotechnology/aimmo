@@ -5,6 +5,8 @@ from string import ascii_uppercase
 from unittest import TestCase
 
 from simulation.game_logic import SpawnLocationFinder
+from simulation.interactables.interactable import _Interactable
+from simulation.interactables.pickups import ALL_PICKUPS, HealthPickup
 from simulation.interactables.score_location import ScoreLocation
 from simulation.location import Location
 from simulation.world_map import WorldMap, WorldMapStaticSpawnDecorator
@@ -60,6 +62,47 @@ class TestWorldMap(TestCase):
         self.assertEqual(world_map.num_cells, expected_rows*expected_columns)
         self.assertEqual(len(list(world_map.all_cells())),
                          expected_rows*expected_columns)
+
+    def test_get_all_cells(self):
+        world_map = WorldMap(self._generate_grid(), self.settings)
+        cell_list = list(world_map.all_cells())
+
+        self.assertEqual(len(cell_list), 4)
+        self.assertTrue(isinstance(cell_list[0], MockCell))
+
+    def test_get_all_interactables(self):
+        interactable_cell = MockCell()
+        interactable_cell.interactable = ScoreLocation(interactable_cell)
+        grid = self._grid_from_list([[interactable_cell, MockCell()],
+                                     [MockCell(), MockCell()]])
+        world_map = WorldMap(grid, self.settings)
+        interactable_list = list(world_map.interactable_cells())
+
+        self.assertEqual(len(interactable_list), 1)
+        self.assertTrue(isinstance(
+            interactable_list[0].interactable, _Interactable))
+
+    def test_get_all_score_locations(self):
+        score_cell = MockCell()
+        score_cell.interactable = ScoreLocation(score_cell)
+        grid = self._grid_from_list([[score_cell, MockCell()],
+                                     [MockCell(), MockCell()]])
+        world_map = WorldMap(grid, self.settings)
+        score_list = list(world_map.score_cells())
+
+        self.assertEqual(len(score_list), 1)
+        self.assertTrue(isinstance(score_list[0].interactable, ScoreLocation))
+
+    def test_get_all_pickup_locations(self):
+        pickup_cell = MockCell()
+        pickup_cell.interactable = HealthPickup(pickup_cell)
+        grid = self._grid_from_list([[pickup_cell, MockCell()],
+                                     [MockCell(), MockCell()]])
+        world_map = WorldMap(grid, self.settings)
+        pickup_list = list(world_map.pickup_cells())
+
+        self.assertEqual(len(pickup_list), 1)
+        self.assertTrue(isinstance(pickup_list[0].interactable, ALL_PICKUPS))
 
     def test_grid_size(self):
         world_map = WorldMap(self._generate_grid(1, 3), self.settings)

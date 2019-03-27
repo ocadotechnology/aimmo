@@ -54,13 +54,13 @@ class WorldMap(object):
         return self.grid.values()
 
     def interactable_cells(self):
-        return (cell for cells in self.all_cells() if cell.interactable)
+        return (cell for cell in self.all_cells() if cell.interactable)
 
     def score_cells(self):
-        return (cell for cells in self.all_cells() if isinstance(cell.interactable, ScoreLocation))
+        return (cell for cell in self.all_cells() if isinstance(cell.interactable, ScoreLocation))
 
     def pickup_cells(self):
-        return (cell for cells in self.all_cells() if isinstance(cell.interactable, ALL_PICKUPS))
+        return (cell for cell in self.all_cells() if isinstance(cell.interactable, ALL_PICKUPS))
 
     def is_on_map(self, location):
         try:
