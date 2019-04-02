@@ -1,19 +1,19 @@
 #!/usr/bin/env python
 
-from aiohttp import web
-import aiohttp_cors
-from aiohttp_wsgi import WSGIHandler
-from prometheus_client import make_wsgi_app
-import asyncio
-import pickle
 import ast
+import asyncio
+import json
 import logging
 import os
+import pickle
 import sys
-import json
 from urllib.parse import parse_qs
 
+import aiohttp_cors
 import socketio
+from aiohttp import web
+from aiohttp_wsgi import WSGIHandler
+from prometheus_client import make_wsgi_app
 
 from simulation import map_generator
 from simulation.game_runner import GameRunner
@@ -116,10 +116,10 @@ class GameAPI(object):
                 await socketio_server.emit('log', avatar_logs, room=sid)
 
     async def _send_game_state(self):
-        serialised_game_state = self.game_state.serialise()
+        serialized_game_state = self.game_state.serialize()
         socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id.copy()
         for sid, player_id in socket_session_id_to_player_id_copy.items():
-            await socketio_server.emit('game-state', serialised_game_state, room=sid)
+            await socketio_server.emit('game-state', serialized_game_state, room=sid)
 
     async def _send_have_avatars_code_updated(self, player_id_to_workers):
         socket_session_id_to_player_id_copy = self._socket_session_id_to_player_id.copy()
@@ -148,7 +148,8 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     host = sys.argv[1]
 
-    socketio_server.attach(app, socketio_path=os.environ.get('SOCKETIO_RESOURCE', 'socket.io'))
+    socketio_server.attach(app, socketio_path=os.environ.get(
+        'SOCKETIO_RESOURCE', 'socket.io'))
 
     if os.environ['WORKER'] == 'local':
         port = int(os.environ['EXTERNAL_PORT'])

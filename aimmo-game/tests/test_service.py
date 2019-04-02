@@ -2,11 +2,13 @@ from unittest import TestCase
 
 import service
 from simulation.avatar.avatar_manager import AvatarManager
-from .test_simulation.maps import MockPickup, MockCell
-from .test_simulation.dummy_avatar import MoveEastDummy
-from simulation.location import Location
 from simulation.game_state import GameState
+from simulation.interactables.score_location import ScoreLocation
+from simulation.location import Location
 from simulation.world_map import WorldMap
+
+from .test_simulation.dummy_avatar import MoveEastDummy
+from .test_simulation.maps import MockCell, MockPickup
 
 
 class TestService(TestCase):
@@ -26,22 +28,23 @@ class TestService(TestCase):
 
         CELLS = [
             [
-                {'pickup': MockPickup('b'), 'avatar': self.avatar_manager.avatars[0]},
+                {'interactable': MockPickup(
+                    'b'), 'avatar': self.avatar_manager.avatars[0]},
                 {},
-                {'generates_score': True},
+                {},
             ],
             [
                 {},
                 {'habitable': False},
-                {'pickup': MockPickup('a')},
+                {'interactable': MockPickup('a')},
             ],
         ]
 
         grid = {Location(x, y-1): MockCell(Location(x, y-1), **CELLS[x][y])
                 for y in range(3) for x in range(2)}
-
+        grid[Location(0, 1)].interactable = ScoreLocation(grid[Location(0, 1)])
         test_game_state = GameState(WorldMap(grid, {}), self.avatar_manager)
-        self.world_state_json = test_game_state.serialise()
+        self.world_state_json = test_game_state.serialize()
 
     def test_correct_json_player_dictionary(self):
         """
@@ -65,9 +68,11 @@ class TestService(TestCase):
         """
         Ensures the correct score location in the "score_locations" element; is returned by the JSON.
         """
-        score_list = self.world_state_json['scoreLocations']
-        self.assertEqual(score_list[0]['location']['x'], 0)
-        self.assertEqual(score_list[0]['location']['y'], 1)
+        interactable_list = self.world_state_json['interactables']
+        for interactable in interactable_list:
+            if 'ScoreLocation' in interactable:
+                self.assertEqual(interactable['location']['x'], 0)
+                self.assertEqual(interactable['location']['y'], 1)
 
     def test_correct_json_north_east_corner(self):
         """
@@ -94,12 +99,12 @@ class TestService(TestCase):
         era = self.world_state_json['era']
         self.assertEqual(era, "less_flat")
 
-    def test_correct_json_world_pickups_returned_is_correct_amount(self):
+    def test_correct_json_world_interactables_returned_is_correct_amount(self):
         """
         The JSON returns the correct amount of pickups.
         """
-        pickup_list = self.world_state_json['pickups']
-        self.assertEqual(len(pickup_list), 2)
+        interactable_list = self.world_state_json['interactables']
+        self.assertEqual(len(interactable_list), 3)
 
     def test_correct_json_world_obstacles(self):
         """

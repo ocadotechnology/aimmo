@@ -9,6 +9,10 @@ aimmo-game-worker = {editable = true, path = "."}
 restrictedpython = "==4.0.b7"
 aiohttp = "*"
 aiohttp-cors = "*"
+idna-ssl = "*"
 
 [requires]
 python_version = "3.6.7"
+
+[dev-packages]
+"autopep8" = "*"

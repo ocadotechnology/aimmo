@@ -11,13 +11,13 @@ class Worker(object):
         self.player_id = player_id
         self.game_port = game_port
         self.code = None
-        self.serialised_action = None
+        self.serialized_action = None
         self.has_code_updated = False
         self.url = self._create_worker()
 
     def _set_defaults(self):
         self.log = None
-        self.serialised_action = None
+        self.serialized_action = None
         self.has_code_updated = False
 
     def _create_worker(self):
@@ -37,7 +37,7 @@ class Worker(object):
             response = requests.post(f"{self.url}/turn/", json=data)
             response.raise_for_status()
             data = response.json()
-            self.serialised_action = data['action']
+            self.serialized_action = data['action']
             self.log = data['log']
             self.has_code_updated = data['avatar_updated']
         except requests.exceptions.ConnectionError:

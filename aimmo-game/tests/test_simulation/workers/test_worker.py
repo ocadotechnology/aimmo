@@ -4,7 +4,6 @@ from requests import Response
 from simulation.workers.worker import Worker
 from tests.test_simulation.concrete_worker import ConcreteWorker
 
-# from simulation.workers.local_worker import LocalWorker
 
 DEFAULT_RESPONSE_CONTENT = b'{"action": "test_action",' \
                            b'"log": "test_log",' \
@@ -33,7 +32,7 @@ class TestWorker(TestCase):
         self.worker.fetch_data(state_view={})
 
         mocked_post.assert_called_once()
-        self.assertEqual(self.worker.serialised_action, 'test_action')
+        self.assertEqual(self.worker.serialized_action, 'test_action')
         self.assertEqual(self.worker.log, 'test_log')
         self.assertEqual(self.worker.has_code_updated, 'True')
 
@@ -44,7 +43,7 @@ class TestWorker(TestCase):
 
         self.worker._set_defaults()
 
-        self.assertIsNone(self.worker.serialised_action)
+        self.assertIsNone(self.worker.serialized_action)
         self.assertIsNone(self.worker.log)
         self.assertFalse(self.worker.has_code_updated)
 

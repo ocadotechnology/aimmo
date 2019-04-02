@@ -3,7 +3,7 @@ import math
 
 import pytest
 from simulation.location import Location
-from simulation.pickups.conditions import TurnState, avatar_on_cell
+from simulation.interactables.conditions import TurnState, avatar_on_cell
 
 from .mock_world import MockWorld
 

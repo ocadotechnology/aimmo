@@ -15,9 +15,8 @@ class SpawnLocationFinder:
         """
         return (c for c in self._world_map.all_cells()
                 if c.habitable and not
-                c.generates_score and not
                 c.avatar and not
-                c.pickup)
+                c.interactable)
 
     def get_random_spawn_locations(self, max_locations):
         if max_locations <= 0:

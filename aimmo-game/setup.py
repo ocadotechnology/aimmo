@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from setuptools import find_packages, setup
-import sys
 import os
+import sys
 
+from setuptools import find_packages, setup
 
 withcoverage = os.environ.get('WITH_COVERAGE')
 
@@ -11,10 +11,11 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
+        'aiohttp',
+        'aiohttp-cors',
+        'aiohttp-wsgi',
         'eventlet',
-        'flask',
-        'flask-cors',
-        'python-socketio==2.0.0',
+        'python-socketio==4.0.0',
         'requests',
         'six',
         'kubernetes'

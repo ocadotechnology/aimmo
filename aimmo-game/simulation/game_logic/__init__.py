@@ -1,6 +1,6 @@
 from .spawn_location_finder import SpawnLocationFinder
 from .map_updaters import ScoreLocationUpdater, MapContext, PickupUpdater, MapExpander
-from .pickup_applier import PickupApplier
+from .effect_applier import EffectApplier
 
 __all__ = [
     'SpawnLocationFinder',
@@ -8,5 +8,5 @@ __all__ = [
     'MapContext',
     'PickupUpdater',
     'MapExpander',
-    'PickupApplier'
+    'EffectApplier'
 ]

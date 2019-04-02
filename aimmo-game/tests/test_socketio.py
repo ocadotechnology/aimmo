@@ -12,7 +12,7 @@ from .test_simulation.mock_worker_manager import MockWorkerManager
 
 
 class MockGameState(object):
-    def serialise(self):
+    def serialize(self):
         return {'foo': 'bar'}
 
 
