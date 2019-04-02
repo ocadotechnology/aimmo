@@ -10,6 +10,8 @@ from metrics import GAME_TURN_TIME
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.django_communicator import DjangoCommunicator
 from simulation.simulation_runner import ConcurrentSimulationRunner
+from simulation.avatar.avatar_manager import AvatarManager
+from simulation.worker_manager import WorkerManager
 
 LOGGER = logging.getLogger(__name__)
 
@@ -17,7 +19,7 @@ TURN_TIME = 2
 
 
 class GameRunner:
-    def __init__(self, worker_manager_class, game_state_generator, django_api_url, port):
+    def __init__(self, game_state_generator, django_api_url, port, worker_manager_class=WorkerManager):
         super(GameRunner, self).__init__()
 
         self.worker_manager = worker_manager_class(port=port)

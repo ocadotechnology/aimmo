@@ -1,21 +1,30 @@
 import logging
 
 import requests
+
 LOGGER = logging.getLogger(__name__)
 
 
 class Worker(object):
-    def __init__(self, worker_url):
-        self.url = worker_url
+    def __init__(self, player_id, game_port):
         self.log = None
+        self.player_id = player_id
+        self.game_port = game_port
         self.code = None
         self.serialized_action = None
         self.has_code_updated = False
+        self.url = self._create_worker()
 
     def _set_defaults(self):
         self.log = None
         self.serialized_action = None
         self.has_code_updated = False
+
+    def _create_worker(self):
+        raise NotImplementedError
+
+    def remove_worker(self):
+        raise NotImplementedError
 
     def fetch_data(self, state_view):
         try:
@@ -25,7 +34,7 @@ class Worker(object):
                 'state': None,
             }
             data = {**state_view, **code_and_options}
-            response = requests.post(self.url, json=data)
+            response = requests.post(f"{self.url}/turn/", json=data)
             response.raise_for_status()
             data = response.json()
             self.serialized_action = data['action']

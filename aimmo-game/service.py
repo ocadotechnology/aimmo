@@ -17,7 +17,6 @@ from prometheus_client import make_wsgi_app
 
 from simulation import map_generator
 from simulation.game_runner import GameRunner
-from simulation.worker_managers import WORKER_MANAGERS
 
 app = web.Application()
 cors = aiohttp_cors.setup(app)
@@ -132,12 +131,8 @@ class GameAPI(object):
 def create_runner(port):
     settings = json.loads(os.environ['settings'])
     generator = getattr(map_generator, settings['GENERATOR'])(settings)
-    worker_manager_class = WORKER_MANAGERS[os.environ.get(
-        'WORKER_MANAGER', 'local')]
-    return GameRunner(worker_manager_class=worker_manager_class,
-                      game_state_generator=generator.get_game_state,
-                      django_api_url=os.environ.get(
-                          'GAME_API_URL', 'http://localhost:8000/aimmo/api/games/'),
+    return GameRunner(game_state_generator=generator.get_game_state,
+                      django_api_url=os.environ.get('GAME_API_URL', 'http://localhost:8000/aimmo/api/games/'),
                       port=port)
 
 
@@ -156,7 +151,7 @@ if __name__ == '__main__':
     socketio_server.attach(app, socketio_path=os.environ.get(
         'SOCKETIO_RESOURCE', 'socket.io'))
 
-    if os.environ['WORKER_MANAGER'] == 'local':
+    if os.environ['WORKER'] == 'local':
         port = int(os.environ['EXTERNAL_PORT'])
     else:
         port = int(sys.argv[2])

@@ -6,7 +6,7 @@ from httmock import HTTMock
 
 from simulation.avatar import avatar_wrapper
 from simulation.location import Location
-from simulation.worker import Worker
+from tests.test_simulation.concrete_worker import ConcreteWorker
 
 class MockEffect(object):
     def __init__(self, avatar):
@@ -60,7 +60,7 @@ class TestAvatarWrapper(TestCase):
     def setUp(self):
         global actions_created
         actions_created = []
-        self.worker = Worker(worker_url='http://test')
+        self.worker = ConcreteWorker(1, 0)
         self.avatar = avatar_wrapper.AvatarWrapper(player_id=None,
                                                    initial_location=None,
                                                    avatar_appearance=None)
