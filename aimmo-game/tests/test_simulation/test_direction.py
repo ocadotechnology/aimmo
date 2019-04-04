@@ -34,8 +34,8 @@ class TestDirection(TestCase):
 
     def test_repr(self):
         txt = repr(Direction(1, 0))
-        self.assertRegex(txt, 'x *= *1')
-        self.assertRegex(txt, 'y *= *0')
+        self.assertRegex(txt, "x *= *1")
+        self.assertRegex(txt, "y *= *0")
 
     def test_incorrect_equality(self):
         d1 = Direction(0, 1)

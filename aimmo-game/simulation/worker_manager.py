@@ -15,10 +15,11 @@ class WorkerManager(object):
     """
     Methods of this class must be thread safe unless explicitly stated.
     """
+
     def __init__(self, port=5000):
         self.player_id_to_worker = {}
         self.port = port
-        self.worker_class = WORKER[os.environ.get('WORKER', 'local')]
+        self.worker_class = WORKER[os.environ.get("WORKER", "local")]
 
     def get_code(self, player_id):
         return self.player_id_to_worker[player_id].code
@@ -28,10 +29,14 @@ class WorkerManager(object):
         Creates a thread for each worker to send a request for their data. After
         a set duration these threads will close, giving a consistent turn time.
         """
+
         def prepare_request_threads():
-            return [Thread(target=worker.fetch_data,
-                           args=(player_id_to_game_state[player_id],))
-                    for (player_id, worker) in self.player_id_to_worker.items()]
+            return [
+                Thread(
+                    target=worker.fetch_data, args=(player_id_to_game_state[player_id],)
+                )
+                for (player_id, worker) in self.player_id_to_worker.items()
+            ]
 
         def timed_process_for_worker_turn_requests(duration):
             threads = prepare_request_threads()
@@ -43,14 +48,17 @@ class WorkerManager(object):
         timed_process_for_worker_turn_requests(2)
 
     def get_player_id_to_serialized_actions(self):
-        return {player_id: self.player_id_to_worker[player_id].serialized_action for player_id in self.player_id_to_worker}
+        return {
+            player_id: self.player_id_to_worker[player_id].serialized_action
+            for player_id in self.player_id_to_worker
+        }
 
     def clear_logs(self):
         for worker in self.player_id_to_worker.values():
             worker.log = None
 
     def update_code(self, player):
-        self.player_id_to_worker[player['id']].code = player['code']
+        self.player_id_to_worker[player["id"]].code = player["code"]
 
     def add_new_worker(self, player_id):
         self.player_id_to_worker[player_id] = self.worker_class(player_id, self.port)

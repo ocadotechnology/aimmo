@@ -46,9 +46,9 @@ class AvatarWrapper(object):
         return isinstance(self.action, MoveAction)
 
     def _construct_action(self, action_data):
-        action_type = action_data['action_type']
-        action_args = action_data.get('options', {})
-        action_args['avatar'] = self
+        action_type = action_data["action_type"]
+        action_args = action_data.get("options", {})
+        action_args["avatar"] = self
         return ACTIONS[action_type](**action_args)
 
     def calculate_orientation(self):
@@ -60,8 +60,10 @@ class AvatarWrapper(object):
         _current_location = self.location
         _previous_location = self.previous_location
 
-        direction_of_orientation = Direction(_current_location.x - _previous_location.x,
-                                             _current_location.y - _previous_location.y)
+        direction_of_orientation = Direction(
+            _current_location.x - _previous_location.x,
+            _current_location.y - _previous_location.y,
+        )
 
         if _current_location == _previous_location:
             return self.orientation
@@ -73,9 +75,9 @@ class AvatarWrapper(object):
             action = self._construct_action(serialized_action)
 
         except (KeyError, ValueError) as err:
-            LOGGER.error('Bad action data supplied: %s', err)
+            LOGGER.error("Bad action data supplied: %s", err)
         except TypeError as err:
-            LOGGER.error('Worker data not received: %s', err)
+            LOGGER.error("Worker data not received: %s", err)
         else:
             self._action = action
             return True
@@ -104,15 +106,14 @@ class AvatarWrapper(object):
 
     def serialize(self):
         return {
-            'health': self.health,
-            'location': self.location.serialize(),
-            'score': self.score,
-            'id': self.player_id,
-            'orientation': self.orientation
+            "health": self.health,
+            "location": self.location.serialize(),
+            "score": self.score,
+            "id": self.player_id,
+            "orientation": self.orientation,
         }
 
     def __repr__(self):
-        return 'Avatar(id={}, location={}, health={}, score={})'.format(self.player_id,
-                                                                        self.location,
-                                                                        self.health,
-                                                                        self.score)
+        return "Avatar(id={}, location={}, health={}, score={})".format(
+            self.player_id, self.location, self.health, self.score
+        )

@@ -57,10 +57,18 @@ class WorldMap(object):
         return (cell for cell in self.all_cells() if cell.interactable)
 
     def score_cells(self):
-        return (cell for cell in self.all_cells() if isinstance(cell.interactable, ScoreLocation))
+        return (
+            cell
+            for cell in self.all_cells()
+            if isinstance(cell.interactable, ScoreLocation)
+        )
 
     def pickup_cells(self):
-        return (cell for cell in self.all_cells() if isinstance(cell.interactable, ALL_PICKUPS))
+        return (
+            cell
+            for cell in self.all_cells()
+            if isinstance(cell.interactable, ALL_PICKUPS)
+        )
 
     def is_on_map(self, location):
         try:
@@ -74,7 +82,7 @@ class WorldMap(object):
             return self.grid[location]
         except KeyError:
             # For backwards-compatibility, this throws ValueError
-            raise ValueError('Location %s is not on the map' % location)
+            raise ValueError("Location %s is not on the map" % location)
 
     def get_cell_by_coords(self, x, y):
         return self.get_cell(Location(x, y))
@@ -115,9 +123,11 @@ class WorldMap(object):
             return False
         cell = self.get_cell(target_location)
 
-        return (cell.habitable
-                and (not cell.is_occupied or cell.avatar.is_moving)
-                and len(cell.moves) <= 1)
+        return (
+            cell.habitable
+            and (not cell.is_occupied or cell.avatar.is_moving)
+            and len(cell.moves) <= 1
+        )
 
     def attackable_avatar(self, target_location):
         """
@@ -138,10 +148,10 @@ class WorldMap(object):
         return None
 
     def get_no_fog_distance(self):
-        return self.settings['NO_FOG_OF_WAR_DISTANCE']
+        return self.settings["NO_FOG_OF_WAR_DISTANCE"]
 
     def get_partial_fog_distance(self):
-        return self.settings['PARTIAL_FOG_OF_WAR_DISTANCE']
+        return self.settings["PARTIAL_FOG_OF_WAR_DISTANCE"]
 
     def get_random_spawn_location(self):
         return self._spawn_location_finder.get_random_spawn_location()
@@ -150,9 +160,13 @@ class WorldMap(object):
         return repr(self.grid)
 
     def __iter__(self):
-        return ((self.get_cell(Location(x, y))
-                 for y in range(self.min_y(), self.max_y() + 1))
-                for x in range(self.min_x(), self.max_x() + 1))
+        return (
+            (
+                self.get_cell(Location(x, y))
+                for y in range(self.min_y(), self.max_y() + 1)
+            )
+            for x in range(self.min_x(), self.max_x() + 1)
+        )
 
     # Serialisation Utilities
     def get_serialized_south_west_corner(self):
@@ -163,10 +177,7 @@ class WorldMap(object):
         :return: A dictionary with two values, x and y coordinates for the bottom left
         (south-west) corner of the map.
         """
-        return {
-            "x": self.min_x(),
-            "y": self.min_y(),
-        }
+        return {"x": self.min_x(), "y": self.min_y()}
 
     def get_serialized_north_east_corner(self):
         """
@@ -176,10 +187,7 @@ class WorldMap(object):
         :return: A dictionary with two values, x and y coordinates for the top right
         (north-west) corner of the map.
         """
-        return {
-            "x": self.max_x(),
-            "y": self.max_y(),
-        }
+        return {"x": self.max_x(), "y": self.max_y()}
 
     def serialize_score_location(self):
         """
@@ -190,9 +198,13 @@ class WorldMap(object):
         """
 
         def get_coords(cell):
-            return {'location': {'x': cell.location.x, 'y': cell.location.y}}
+            return {"location": {"x": cell.location.x, "y": cell.location.y}}
 
-        return [get_coords(cell) for cell in self.all_cells() if isinstance(cell.interactable, ScoreLocation)]
+        return [
+            get_coords(cell)
+            for cell in self.all_cells()
+            if isinstance(cell.interactable, ScoreLocation)
+        ]
 
     def serialize_obstacles(self):
         """
@@ -202,17 +214,17 @@ class WorldMap(object):
         """
 
         def serialize_obstacle(cell):
-            return {'location': {
-                'x': cell.location.x,
-                'y': cell.location.y,
-            },
-                'width': 1,
-                'height': 1,
-                'type': "wall",
-                'orientation': "north",
+            return {
+                "location": {"x": cell.location.x, "y": cell.location.y},
+                "width": 1,
+                "height": 1,
+                "type": "wall",
+                "orientation": "north",
             }
 
-        return [serialize_obstacle(cell) for cell in self.all_cells() if not cell.habitable]
+        return [
+            serialize_obstacle(cell) for cell in self.all_cells() if not cell.habitable
+        ]
 
 
 def WorldMapStaticSpawnDecorator(world_map, spawn_location):

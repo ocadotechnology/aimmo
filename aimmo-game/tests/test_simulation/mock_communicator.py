@@ -8,19 +8,18 @@ class MockCommunicator(object):
                     {
                         "id": 1,
                         "code": "class Avatar(object):\n"
-                                "    def next_turn(self, world_view, events):\n"
-                                "        from simulation.action import WaitAction\n"
-                                "        return WaitAction()\n"
+                        "    def next_turn(self, world_view, events):\n"
+                        "        from simulation.action import WaitAction\n"
+                        "        return WaitAction()\n",
                     },
-
                     {
                         "id": 2,
                         "code": "class Avatar(object):\n"
-                                "    def next_turn(self, world_view, events):\n"
-                                "        from simulation.action import WaitAction\n"
-                                "        return WaitAction()\n"
+                        "    def next_turn(self, world_view, events):\n"
+                        "        from simulation.action import WaitAction\n"
+                        "        return WaitAction()\n",
                     },
-                ]
+                ],
             }
         }
 
@@ -31,7 +30,7 @@ class MockCommunicator(object):
         return {}
 
     def change_code(self, avatar_id, new_code):
-        users = self.data['main']['users']
+        users = self.data["main"]["users"]
         for i in range(len(users)):
-            if users[i]['id'] == avatar_id:
-                users[i]['code'] = new_code
+            if users[i]["id"] == avatar_id:
+                users[i]["code"] = new_code

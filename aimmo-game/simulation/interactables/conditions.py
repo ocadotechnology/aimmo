@@ -12,7 +12,7 @@ class TurnState:
     On a given turn, all conditions for a pickup get access to the same TurnState object.
     """
 
-    def __init__(self, game_state: 'GameState', interactable_cell: 'Cell'):
+    def __init__(self, game_state: "GameState", interactable_cell: "Cell"):
         self.game_state = game_state
         self.interactable_cell = interactable_cell
 

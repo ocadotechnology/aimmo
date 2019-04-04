@@ -1,5 +1,3 @@
-
-
 from collections import defaultdict
 
 from simulation.cell import Cell
@@ -10,7 +8,7 @@ from simulation.world_map import WorldMap
 
 
 class MockPickup(object):
-    def __init__(self, name='', cell=None, target=None):
+    def __init__(self, name="", cell=None, target=None):
         self.applied_to = target
         self.name = name
         self.cell = None
@@ -23,12 +21,19 @@ class MockPickup(object):
         return True
 
     def serialize(self):
-        return {'name': self.name}
+        return {"name": self.name}
 
 
 class MockCell(Cell):
-    def __init__(self, location=Location(0, 0), habitable=True,
-                 avatar=None, interactable=None, name=None, actions=[]):
+    def __init__(
+        self,
+        location=Location(0, 0),
+        habitable=True,
+        avatar=None,
+        interactable=None,
+        name=None,
+        actions=[],
+    ):
         self.location = location
         self.habitable = habitable
         self.avatar = avatar
@@ -66,11 +71,11 @@ class InfiniteMap(WorldMap):
 
     @property
     def num_rows(self):
-        return float('inf')
+        return float("inf")
 
     @property
     def num_cols(self):
-        return float('inf')
+        return float("inf")
 
 
 class EmptyMap(WorldMap):

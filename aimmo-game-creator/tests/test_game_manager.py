@@ -39,11 +39,9 @@ class RequestMock(object):
         return {
             str(i): {
                 "name": "Game {}".format(i),
-                "settings": {
-                    "test": i,
-                    "test2": "Settings {}".format(i),
-                }
-            } for i in range(num_games)
+                "settings": {"test": i, "test2": "Settings {}".format(i)},
+            }
+            for i in range(num_games)
         }
 
     def __call__(self, url, request):
@@ -70,8 +68,13 @@ class TestGameManager(unittest.TestCase):
         self.assertEqual(len(list(self.game_manager._data.get_games())), 3)
         for i in range(3):
             self.assertIn(str(i), self.game_manager.final_games)
-            self.assertEqual(self.game_manager.added_games[str(i)]["settings"], {"test": i, "test2": "Settings {}".format(i)})
-            self.assertEqual(self.game_manager.added_games[str(i)]["name"], "Game {}".format(i))
+            self.assertEqual(
+                self.game_manager.added_games[str(i)]["settings"],
+                {"test": i, "test2": "Settings {}".format(i)},
+            )
+            self.assertEqual(
+                self.game_manager.added_games[str(i)]["name"], "Game {}".format(i)
+            )
 
     def test_remove_games(self):
         mocker = RequestMock(3)
@@ -88,6 +91,8 @@ class TestGameManager(unittest.TestCase):
         for i in range(3):
             self.assertEqual(
                 self.game_manager.added_games[str(i)]["GAME_API_URL"],
-                "http://test/{}/".format(i)
+                "http://test/{}/".format(i),
             )
-            self.assertEqual(self.game_manager.added_games[str(i)]["name"], "Game {}".format(i))
+            self.assertEqual(
+                self.game_manager.added_games[str(i)]["name"], "Game {}".format(i)
+            )
