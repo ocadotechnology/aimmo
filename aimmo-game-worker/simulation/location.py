@@ -10,7 +10,7 @@ class Location(object):
         return Location(self.x - direction.x, self.y - direction.y)
 
     def __repr__(self):
-        return 'Location({}, {})'.format(self.x, self.y)
+        return "Location({}, {})".format(self.x, self.y)
 
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y

@@ -12,18 +12,13 @@ class DamageBoostPickup(_Interactable):
         self.effects.append(DamageBoostEffect)
 
     def get_targets(self):
-        return [
-            self.cell.avatar
-        ]
+        return [self.cell.avatar]
 
     def __repr__(self):
-        return 'DamageBoostPickup(Location={})'.format(self.cell.location)
+        return "DamageBoostPickup(Location={})".format(self.cell.location)
 
     def serialize(self):
         return {
-            'type': 'damage_boost',
-            'location': {
-                    'x': self.cell.location.x,
-                    'y': self.cell.location.y,
-            }
+            "type": "damage_boost",
+            "location": {"x": self.cell.location.x, "y": self.cell.location.y},
         }

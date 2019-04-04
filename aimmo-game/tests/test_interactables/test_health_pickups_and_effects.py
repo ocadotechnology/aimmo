@@ -6,9 +6,11 @@ import hypothesis.strategies as st
 from hypothesis import given
 from simulation.location import Location
 from simulation.interactables.pickups import HealthPickup
-from simulation.interactables.effects import (AVATAR_HEALTH_MAX,
-                                              HEALTH_RESTORE_DEFAULT,
-                                              HEALTH_RESTORE_MAX)
+from simulation.interactables.effects import (
+    AVATAR_HEALTH_MAX,
+    HEALTH_RESTORE_DEFAULT,
+    HEALTH_RESTORE_MAX,
+)
 
 from .mock_world import MockWorld
 
@@ -30,21 +32,24 @@ class TestHealthPickupAndEffects(TestCase):
         HealthPickups without any parameter provided.
         """
         self.cell.interactable = HealthPickup(self.cell)
-        self.assertEqual(self.cell.interactable.serialize(), {
-            'type': 'health',
-            'location': {
-                'x': self.cell.location.x,
-                'y': self.cell.location.y,
-            }
-        })
+        self.assertEqual(
+            self.cell.interactable.serialize(),
+            {
+                "type": "health",
+                "location": {"x": self.cell.location.x, "y": self.cell.location.y},
+            },
+        )
 
-        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(
-            self.game.avatar_manager.get_player_id_to_serialized_action()))
+        self.loop.run_until_complete(
+            self.game.simulation_runner.run_single_turn(
+                self.game.avatar_manager.get_player_id_to_serialized_action()
+            )
+        )
 
-        self.assertEqual(self.cell.avatar,
-                         self.game.avatar_manager.get_avatar(1))
-        self.assertEqual(self.cell.avatar.health, self.initial_health +
-                         HEALTH_RESTORE_DEFAULT)
+        self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
+        self.assertEqual(
+            self.cell.avatar.health, self.initial_health + HEALTH_RESTORE_DEFAULT
+        )
 
     def test_health_effect_is_capped_at_HEALTH_RESTORE_MAX(self):
         """
@@ -57,9 +62,11 @@ class TestHealthPickupAndEffects(TestCase):
         avatar.health = 97
         self.cell.interactable = HealthPickup(self.cell)
 
-        self.loop.run_until_complete(self.game.simulation_runner.run_single_turn(
-            self.game.avatar_manager.get_player_id_to_serialized_action()))
+        self.loop.run_until_complete(
+            self.game.simulation_runner.run_single_turn(
+                self.game.avatar_manager.get_player_id_to_serialized_action()
+            )
+        )
 
-        self.assertEqual(self.cell.avatar,
-                         self.game.avatar_manager.get_avatar(1))
+        self.assertEqual(self.cell.avatar, self.game.avatar_manager.get_avatar(1))
         self.assertEqual(self.cell.avatar.health, AVATAR_HEALTH_MAX)

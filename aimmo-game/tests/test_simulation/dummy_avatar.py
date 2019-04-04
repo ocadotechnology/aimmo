@@ -5,6 +5,7 @@ from simulation.action import MoveAction, WaitAction
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.avatar.avatar_wrapper import AvatarWrapper
 from simulation.direction import NORTH, EAST, SOUTH, WEST
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -12,9 +13,9 @@ class DummyAvatar(AvatarWrapper):
     def __init__(self, player_id=1, initial_location=(0, 0)):
         # TODO: extract avatar state and state-altering methods into a new class.
         #       The new class is to be shared between DummyAvatarRunner and AvatarRunner
-        super(DummyAvatar, self).__init__(player_id,
-                                          initial_location,
-                                          avatar_appearance=None)
+        super(DummyAvatar, self).__init__(
+            player_id, initial_location, avatar_appearance=None
+        )
         self.times_died = 0
         self.attack_strength = 1
         self.effects = set()
@@ -34,7 +35,7 @@ class DummyAvatar(AvatarWrapper):
         self.times_died += 1
 
     def fetch_data(self, state_view):
-        return {'action': '', 'log': 'Testing', 'avatar_updated': False}
+        return {"action": "", "log": "Testing", "avatar_updated": False}
 
     def damage(self, amount):
         self.health -= amount
@@ -74,6 +75,7 @@ class WaitDummy(LiveDummy):
     """
     Avatar that always waits.
     """
+
     def next_turn(self, world_map=None, avatar_state=None):
         return WaitAction(self)
 
@@ -82,6 +84,7 @@ class MoveDummy(LiveDummy):
     """
     Avatar that always moves in one direction.
     """
+
     def __init__(self, player_id, initial_location, direction):
         super(MoveDummy, self).__init__(player_id, initial_location)
         self._direction = direction
@@ -132,4 +135,7 @@ class DummyAvatarManager(AvatarManager):
         for dummy in self.avatars_by_id.values():
             dummy.decide_action(None)
 
-        return {player_id: self.avatars_by_id[player_id]._action for player_id in self.avatars_by_id}
+        return {
+            player_id: self.avatars_by_id[player_id]._action
+            for player_id in self.avatars_by_id
+        }

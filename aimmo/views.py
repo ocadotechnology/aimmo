@@ -25,10 +25,7 @@ def _post_code_success_response(message):
 
 
 def _create_response(status, message):
-    response = {
-        "status": status,
-        "message": message
-    }
+    response = {"status": status, "message": message}
     return JsonResponse(response)
 
 
@@ -45,47 +42,36 @@ def code(request, id):
     except Avatar.DoesNotExist:
         initial_code_file_name = os.path.join(
             os.path.abspath(os.path.dirname(__file__)),
-            'avatar_examples/simple_avatar.py',
+            "avatar_examples/simple_avatar.py",
         )
         with open(initial_code_file_name) as initial_code_file:
             initial_code = initial_code_file.read()
-        avatar = Avatar.objects.create(owner=request.user, code=initial_code,
-                                       game_id=id)
-    if request.method == 'POST':
-        avatar.code = request.POST['code']
+        avatar = Avatar.objects.create(
+            owner=request.user, code=initial_code, game_id=id
+        )
+    if request.method == "POST":
+        avatar.code = request.POST["code"]
         avatar.save()
         return HttpResponse(status=200)
     else:
-        return JsonResponse({'code': avatar.code})
+        return JsonResponse({"code": avatar.code})
 
 
 def list_games(request):
     response = {
-        game.pk:
-            {
-                'name': game.name,
-                'settings': json.dumps(game.settings_as_dict()),
-            } for game in Game.objects.exclude_inactive()
+        game.pk: {"name": game.name, "settings": json.dumps(game.settings_as_dict())}
+        for game in Game.objects.exclude_inactive()
     }
     return JsonResponse(response)
 
 
 def get_game(request, id):
     game = get_object_or_404(Game, id=id)
-    response = {
-        'main': {
-            'parameters': [],
-            'main_avatar': None,
-            'users': [],
-        }
-    }
+    response = {"main": {"parameters": [], "main_avatar": None, "users": []}}
     for avatar in game.avatar_set.all():
         if avatar.owner_id == game.main_user_id:
-            response['main']['main_avatar'] = avatar.id
-        response['main']['users'].append({
-            'id': avatar.id,
-            'code': avatar.code,
-        })
+            response["main"]["main_avatar"] = avatar.id
+        response["main"]["users"].append({"id": avatar.id, "code": avatar.code})
     return JsonResponse(response)
 
 
@@ -103,31 +89,31 @@ def connection_parameters(request, game_id):
     avatar_id, response = get_avatar_id(request, game_id)
 
     if avatar_id:
-        env_connection_settings.update({'avatar_id': avatar_id})
+        env_connection_settings.update({"avatar_id": avatar_id})
         return JsonResponse(env_connection_settings)
     else:
         return response
 
 
 @csrf_exempt
-@require_http_methods(['POST'])
+@require_http_methods(["POST"])
 def mark_game_complete(request, id):
     game = get_object_or_404(Game, id=id)
     game.completed = True
     game.static_data = request.body
     game.save()
-    return HttpResponse('Done!')
+    return HttpResponse("Done!")
 
 
 class ProgramView(TemplateView):
-    template_name = 'players/program.html'
+    template_name = "players/program.html"
 
     def get_context_data(self, **kwargs):
         context = super(ProgramView, self).get_context_data(**kwargs)
-        game = get_object_or_404(Game, id=self.kwargs['id'])
+        game = get_object_or_404(Game, id=self.kwargs["id"])
         if not game.can_user_play(self.request.user):
             raise Http404
-        context['game_id'] = int(self.kwargs['id'])
+        context["game_id"] = int(self.kwargs["id"])
         return context
 
 
@@ -140,16 +126,20 @@ def watch_game(request, id):
 
 def watch_level(request, num):
     try:
-        game = Game.objects.get(levelattempt__user=request.user, levelattempt__level_number=num)
+        game = Game.objects.get(
+            levelattempt__user=request.user, levelattempt__level_number=num
+        )
     except Game.DoesNotExist:
-        LOGGER.debug('Adding level')
+        LOGGER.debug("Adding level")
         game = _add_and_return_level(num, request.user)
-    LOGGER.debug('Displaying game with id %s', game.id)
+    LOGGER.debug("Displaying game with id %s", game.id)
     return game_renderer.render_game(request, game)
 
 
 def _add_and_return_level(num, user):
-    game = Game(generator='Level' + num, name='Level ' + num, public=False, main_user=user)
+    game = Game(
+        generator="Level" + num, name="Level " + num, public=False, main_user=user
+    )
     try:
         game.save()
     except ValidationError as e:
@@ -167,28 +157,28 @@ def _add_and_return_level(num, user):
 def add_game(request):
     playable_games = request.user.playable_games.all()
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = forms.AddGameForm(playable_games, data=request.POST)
         if form.is_valid():
             game = form.save(commit=False)
-            game.generator = 'Main'
+            game.generator = "Main"
             game.owner = request.user
             game.main_user = request.user
             game.save()
             users = get_users_for_new_game(request)
             if users is not None:
                 game.can_play.add(*users)
-            return redirect('aimmo/play', id=game.id)
+            return redirect("aimmo/play", id=game.id)
     else:
         form = forms.AddGameForm(playable_games)
-    return render(request, 'players/add_game.html', {'form': form})
+    return render(request, "players/add_game.html", {"form": form})
 
 
 def current_avatar_in_game(request, game_id):
     avatar_id, response = get_avatar_id(request, game_id)
 
     if avatar_id:
-        return JsonResponse({'current_avatar_id': avatar_id})
+        return JsonResponse({"current_avatar_id": avatar_id})
     else:
         return response
 
@@ -198,24 +188,34 @@ def get_avatar_id(request, game_id):
     response = None
 
     try:
-        avatar_id = game_renderer.get_avatar_id_from_user(user=request.user, game_id=game_id)
+        avatar_id = game_renderer.get_avatar_id_from_user(
+            user=request.user, game_id=game_id
+        )
     except UserCannotPlayGameException:
-        LOGGER.warning('HTTP 401 returned. User {} unauthorised to play.'.format(request.user.id))
-        response = HttpResponse('User unauthorized to play', status=401)
+        LOGGER.warning(
+            "HTTP 401 returned. User {} unauthorised to play.".format(request.user.id)
+        )
+        response = HttpResponse("User unauthorized to play", status=401)
     except Avatar.DoesNotExist:
-        LOGGER.warning('Avatar does not exist for user {} in game {}'.format(request.user.id, game_id))
-        response = HttpResponse('Avatar does not exist for this user', status=404)
+        LOGGER.warning(
+            "Avatar does not exist for user {} in game {}".format(
+                request.user.id, game_id
+            )
+        )
+        response = HttpResponse("Avatar does not exist for this user", status=404)
     except Exception as e:
-        LOGGER.error('Unknown error occurred while getting connection parameters!')
+        LOGGER.error("Unknown error occurred while getting connection parameters!")
         LOGGER.error(e)
-        response = HttpResponse('Unknown error occurred when getting the current avatar', status=500)
+        response = HttpResponse(
+            "Unknown error occurred when getting the current avatar", status=500
+        )
 
     return avatar_id, response
 
 
 def csrfToken(request):
-    if request.method == 'GET':
+    if request.method == "GET":
         token = get_token(request)
-        return JsonResponse({'csrfToken': token})
+        return JsonResponse({"csrfToken": token})
     else:
         return HttpResponse(status=405)

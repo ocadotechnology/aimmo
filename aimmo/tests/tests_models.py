@@ -3,7 +3,10 @@ from django.test import TestCase
 
 from aimmo import models, app_settings
 
-app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: ('base %s' % game_id, 'path %s' % game_id)
+app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
+    "base %s" % game_id,
+    "path %s" % game_id,
+)
 app_settings.GAME_SERVER_PORT_FUNCTION = lambda game_id: 0
 app_settings.GAME_SERVER_SSL_FLAG = True
 
@@ -11,11 +14,11 @@ app_settings.GAME_SERVER_SSL_FLAG = True
 class TestModels(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.user1 = User.objects.create_user('test', 'test@example.com', 'password')
+        cls.user1 = User.objects.create_user("test", "test@example.com", "password")
         cls.user1.save()
-        cls.user2 = User.objects.create_user('test2', 'test2@example.com', 'password')
+        cls.user2 = User.objects.create_user("test2", "test2@example.com", "password")
         cls.user2.save()
-        cls.game = models.Game(id=1, name='test', public=False)
+        cls.game = models.Game(id=1, name="test", public=False)
         cls.game.save()
 
     def setUp(self):

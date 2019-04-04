@@ -34,33 +34,30 @@
 # copyright notice and these terms. You must not misrepresent the origins of this
 # program; modified versions of the program must be marked as such and not
 # identified as the original program.
-'''aimmo autoconfig'''
+"""aimmo autoconfig"""
 
-DEFAULT_SETTINGS = {
-    'AUTOCONFIG_INDEX_VIEW': 'aimmo/home',
-    'STATIC_URL': '/static/',
-}
+DEFAULT_SETTINGS = {"AUTOCONFIG_INDEX_VIEW": "aimmo/home", "STATIC_URL": "/static/"}
 
 SETTINGS = {
-    'INSTALLED_APPS': [
-        'django.contrib.auth',
-        'django.contrib.messages',
-        'django.contrib.staticfiles',
-        'django_js_reverse',
+    "INSTALLED_APPS": [
+        "django.contrib.auth",
+        "django.contrib.messages",
+        "django.contrib.staticfiles",
+        "django_js_reverse",
     ],
-    'TEMPLATES': [
+    "TEMPLATES": [
         {
-            'BACKEND': 'django.template.backends.django.DjangoTemplates',
-            'APP_DIRS': True,
-            'OPTIONS': {
-                'context_processors': [
-                    'django.template.context_processors.debug',
-                    'django.template.context_processors.request',
-                    'django.contrib.auth.context_processors.auth',
-                    'django.contrib.messages.context_processors.messages',
+            "BACKEND": "django.template.backends.django.DjangoTemplates",
+            "APP_DIRS": True,
+            "OPTIONS": {
+                "context_processors": [
+                    "django.template.context_processors.debug",
+                    "django.template.context_processors.request",
+                    "django.contrib.auth.context_processors.auth",
+                    "django.contrib.messages.context_processors.messages",
                 ]
-            }
+            },
         }
     ],
-    'USE_TZ': True,
+    "USE_TZ": True,
 }

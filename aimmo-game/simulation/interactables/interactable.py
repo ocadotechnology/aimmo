@@ -25,7 +25,7 @@ class _Interactable(object):
     def delete(self):
         self.cell.interactable = None
 
-    def conditions_met(self, game_state: 'GameState') -> 'bool':
+    def conditions_met(self, game_state: "GameState") -> "bool":
         """Apply logical `AND` on all conditions, returns True if all conditions are met."""
         turn_state = TurnState(game_state, self.cell)
         return all([condition(turn_state) for condition in self.conditions])
@@ -50,5 +50,5 @@ class _Interactable(object):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_targets(self) -> 'List[AvatarWrapper]':
+    def get_targets(self) -> "List[AvatarWrapper]":
         raise NotImplementedError()

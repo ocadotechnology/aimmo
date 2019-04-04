@@ -12,18 +12,13 @@ class HealthPickup(_Interactable):
         self.effects.append(HealthEffect)
 
     def get_targets(self):
-        return [
-            self.cell.avatar
-        ]
+        return [self.cell.avatar]
 
     def __repr__(self):
-        return 'HealthPickup(Location={})'.format(self.cell.location)
+        return "HealthPickup(Location={})".format(self.cell.location)
 
     def serialize(self):
         return {
-            'type': 'health',
-            'location': {
-                    'x': self.cell.location.x,
-                    'y': self.cell.location.y,
-            }
+            "type": "health",
+            "location": {"x": self.cell.location.x, "y": self.cell.location.y},
         }

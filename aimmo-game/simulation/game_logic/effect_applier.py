@@ -15,7 +15,7 @@ class EffectApplier:
     where this occurs.
     """
 
-    def apply(self, game_state: 'GameState'):
+    def apply(self, game_state: "GameState"):
         """Apply interactable effects to any avatar that is on a pickup cell."""
         for cell in game_state.world_map.interactable_cells():
             if cell.interactable.conditions_met(game_state):
