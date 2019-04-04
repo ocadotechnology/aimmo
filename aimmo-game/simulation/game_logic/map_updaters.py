@@ -11,7 +11,7 @@ from simulation.location import Location
 
 LOGGER = getLogger(__name__)
 
-MapContext = namedtuple('MapContext', 'num_avatars')
+MapContext = namedtuple("MapContext", "num_avatars")
 
 
 class _MapUpdater:
@@ -25,45 +25,56 @@ class _MapUpdater:
 class ScoreLocationUpdater(_MapUpdater):
     def update(self, world_map, context):
         for cell in world_map.score_cells():
-            if random.random() < world_map.settings['SCORE_DESPAWN_CHANCE']:
+            if random.random() < world_map.settings["SCORE_DESPAWN_CHANCE"]:
                 cell.interactable.delete()
 
         new_num_score_locations = len(list(world_map.score_cells()))
-        target_num_score_locations = int(math.ceil(
-            context.num_avatars *
-            world_map.settings['TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR']
-        ))
-        num_score_locations_to_add = target_num_score_locations - new_num_score_locations
+        target_num_score_locations = int(
+            math.ceil(
+                context.num_avatars
+                * world_map.settings["TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR"]
+            )
+        )
+        num_score_locations_to_add = (
+            target_num_score_locations - new_num_score_locations
+        )
         locations = world_map._spawn_location_finder.get_random_spawn_locations(
-            num_score_locations_to_add)
+            num_score_locations_to_add
+        )
         for cell in locations:
             cell.interactable = ScoreLocation(cell)
 
 
 class PickupUpdater(_MapUpdater):
     def update(self, world_map, context):
-        target_num_pickups = int(math.ceil(
-            context.num_avatars *
-            world_map.settings['TARGET_NUM_PICKUPS_PER_AVATAR']
-        ))
-        max_num_pickups_to_add = target_num_pickups - \
-            len(list(world_map.pickup_cells()))
+        target_num_pickups = int(
+            math.ceil(
+                context.num_avatars
+                * world_map.settings["TARGET_NUM_PICKUPS_PER_AVATAR"]
+            )
+        )
+        max_num_pickups_to_add = target_num_pickups - len(
+            list(world_map.pickup_cells())
+        )
         locations = world_map._spawn_location_finder.get_random_spawn_locations(
-            max_num_pickups_to_add)
+            max_num_pickups_to_add
+        )
         for cell in locations:
-            if random.random() < world_map.settings['PICKUP_SPAWN_CHANCE']:
+            if random.random() < world_map.settings["PICKUP_SPAWN_CHANCE"]:
                 cell.interactable = random.choice(ALL_PICKUPS)(cell)
-                LOGGER.info('Adding new pickup at %s of type %s',
-                            cell, cell.interactable)
+                LOGGER.info(
+                    "Adding new pickup at %s of type %s", cell, cell.interactable
+                )
 
 
 class MapExpander(_MapUpdater):
     def update(self, world_map, context):
         start_size = world_map.num_cells
-        target_num_cells = int(math.ceil(
-            context.num_avatars *
-            world_map.settings['TARGET_NUM_CELLS_PER_AVATAR']
-        ))
+        target_num_cells = int(
+            math.ceil(
+                context.num_avatars * world_map.settings["TARGET_NUM_CELLS_PER_AVATAR"]
+            )
+        )
         num_cells_to_add = target_num_cells - world_map.num_cells
         if num_cells_to_add > 0:
             self._add_outer_layer(world_map)

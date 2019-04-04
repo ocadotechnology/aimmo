@@ -40,7 +40,7 @@ class _Effect(object):
     Base effect class, does nothing on its own.
     """
 
-    def __init__(self, recipient: 'AvatarWrapper', duration=DEFAULT_EFFECT_TIME):
+    def __init__(self, recipient: "AvatarWrapper", duration=DEFAULT_EFFECT_TIME):
         self._recipient = recipient
         self.is_expired = False
         self._time_remaining = duration
@@ -59,7 +59,8 @@ class _Effect(object):
             self._recipient.effects.remove(self)
         except KeyError as e:
             raise KeyError(
-                "The target object does not exist! Cannot remove the effect.")
+                "The target object does not exist! Cannot remove the effect."
+            )
 
 
 class InvulnerabilityEffect(_Effect):

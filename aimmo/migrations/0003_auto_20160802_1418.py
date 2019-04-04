@@ -17,8 +17,10 @@ def migrate_data_forward(apps, schema_editor):
     main_game = Game(pk=1, name="main")
     main_game.save()
 
-    avatars = [Avatar(game=main_game, owner=player.user, code=player.code)
-               for player in Player.objects.all()]
+    avatars = [
+        Avatar(game=main_game, owner=player.user, code=player.code)
+        for player in Player.objects.all()
+    ]
     Avatar.objects.bulk_create(avatars)
 
 
@@ -42,52 +44,79 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('aimmo', '0002_auto_20160601_1914'),
+        ("aimmo", "0002_auto_20160601_1914"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Avatar',
+            name="Avatar",
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.TextField()),
-                ('auth_token', models.CharField(default=aimmo.models.generate_auth_token, max_length=24)),
+                (
+                    "id",
+                    models.AutoField(
+                        verbose_name="ID",
+                        serialize=False,
+                        auto_created=True,
+                        primary_key=True,
+                    ),
+                ),
+                ("code", models.TextField()),
+                (
+                    "auth_token",
+                    models.CharField(
+                        default=aimmo.models.generate_auth_token, max_length=24
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Game',
+            name="Game",
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(max_length=100)),
-                ('auth_token', models.CharField(default=aimmo.models.generate_auth_token, max_length=24)),
-                ('public', models.BooleanField(default=True)),
-                ('can_play', models.ManyToManyField(related_name='playable_games', to=settings.AUTH_USER_MODEL)),
-                ('owner', models.ForeignKey(related_name='owned_games', to=settings.AUTH_USER_MODEL, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        verbose_name="ID",
+                        serialize=False,
+                        auto_created=True,
+                        primary_key=True,
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                (
+                    "auth_token",
+                    models.CharField(
+                        default=aimmo.models.generate_auth_token, max_length=24
+                    ),
+                ),
+                ("public", models.BooleanField(default=True)),
+                (
+                    "can_play",
+                    models.ManyToManyField(
+                        related_name="playable_games", to=settings.AUTH_USER_MODEL
+                    ),
+                ),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        related_name="owned_games",
+                        to=settings.AUTH_USER_MODEL,
+                        null=True,
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='avatar',
-            name='game',
-            field=models.ForeignKey(to='aimmo.Game'),
+            model_name="avatar", name="game", field=models.ForeignKey(to="aimmo.Game")
         ),
         migrations.AddField(
-            model_name='avatar',
-            name='owner',
+            model_name="avatar",
+            name="owner",
             field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
         ),
         migrations.AlterUniqueTogether(
-            name='avatar',
-            unique_together=set([('owner', 'game')]),
+            name="avatar", unique_together=set([("owner", "game")])
         ),
-        migrations.RunPython(
-            migrate_data_forward,
-            migrate_data_backward
-        ),
-        migrations.RemoveField(
-            model_name='player',
-            name='user',
-        ),
-        migrations.DeleteModel(
-            name='Player',
-        ),
+        migrations.RunPython(migrate_data_forward, migrate_data_backward),
+        migrations.RemoveField(model_name="player", name="user"),
+        migrations.DeleteModel(name="Player"),
     ]

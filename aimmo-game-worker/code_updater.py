@@ -9,15 +9,22 @@ import traceback
 from io import StringIO
 
 from RestrictedPython import compile_restricted, utility_builtins
-from RestrictedPython.Guards import (full_write_guard, guarded_setattr,
-                                     safe_builtins, safer_getattr)
+from RestrictedPython.Guards import (
+    full_write_guard,
+    guarded_setattr,
+    safe_builtins,
+    safer_getattr,
+)
 
 import simulation.action as avatar_action
 import simulation.direction as direction
 
 
 def add_actions_to_globals():
-    action_classes = filter(lambda x: x[1].__module__ == "simulation.action", inspect.getmembers(avatar_action, inspect.isclass))
+    action_classes = filter(
+        lambda x: x[1].__module__ == "simulation.action",
+        inspect.getmembers(avatar_action, inspect.isclass),
+    )
 
     for action_class in action_classes:
         restricted_globals[action_class[0]] = action_class[1]
@@ -30,17 +37,17 @@ __metaclass__ = type
 
 restricted_globals = dict(__builtins__=safe_builtins)
 
-restricted_globals['_getattr_'] = _getattr_
-restricted_globals['_setattr_'] = _setattr_
-restricted_globals['_getiter_'] = list
-restricted_globals['_write_'] = _write_
-restricted_globals['__metaclass__'] = __metaclass__
-restricted_globals['__name__'] = "Avatar"
+restricted_globals["_getattr_"] = _getattr_
+restricted_globals["_setattr_"] = _setattr_
+restricted_globals["_getiter_"] = list
+restricted_globals["_write_"] = _write_
+restricted_globals["__metaclass__"] = __metaclass__
+restricted_globals["__name__"] = "Avatar"
 
 # Adds AI:MMO specific modules to the user's environment
 add_actions_to_globals()
-restricted_globals['direction'] = direction
-restricted_globals['random'] = utility_builtins['random']
+restricted_globals["direction"] = direction
+restricted_globals["random"] = utility_builtins["random"]
 
 
 class CodeUpdater:
@@ -77,19 +84,27 @@ class CodeUpdater:
         return new_avatar_code != self.avatar_source_code
 
     def should_update(self, avatar, auto_update, src_code):
-        return (avatar is None or auto_update and self._avatar_src_changed(src_code) or
-                not self.update_successful)
+        return (
+            avatar is None
+            or auto_update
+            and self._avatar_src_changed(src_code)
+            or not self.update_successful
+        )
 
     def _get_new_avatar(self, src_code):
         self.avatar_source_code = src_code
-        module = imp.new_module('avatar')  # Create a temporary module to execute the src_code in
+        module = imp.new_module(
+            "avatar"
+        )  # Create a temporary module to execute the src_code in
         module.__dict__.update(self.globals)
 
         try:
-            byte_code = compile_restricted(src_code, filename='<inline-code>', mode='exec')
+            byte_code = compile_restricted(
+                src_code, filename="<inline-code>", mode="exec"
+            )
             exec(byte_code, self.globals)
         except SyntaxWarning as w:
             pass
 
-        module.__dict__['Avatar'] = self.globals['Avatar']
+        module.__dict__["Avatar"] = self.globals["Avatar"]
         return module.Avatar()

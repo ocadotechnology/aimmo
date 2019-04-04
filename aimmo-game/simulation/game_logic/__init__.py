@@ -3,10 +3,10 @@ from .map_updaters import ScoreLocationUpdater, MapContext, PickupUpdater, MapEx
 from .effect_applier import EffectApplier
 
 __all__ = [
-    'SpawnLocationFinder',
-    'ScoreLocationUpdater',
-    'MapContext',
-    'PickupUpdater',
-    'MapExpander',
-    'EffectApplier'
+    "SpawnLocationFinder",
+    "ScoreLocationUpdater",
+    "MapContext",
+    "PickupUpdater",
+    "MapExpander",
+    "EffectApplier",
 ]

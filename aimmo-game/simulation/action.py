@@ -1,8 +1,11 @@
 from logging import getLogger
 from simulation.direction import Direction
 from simulation.event import (
-    FailedAttackEvent, FailedMoveEvent, MovedEvent, PerformedAttackEvent,
-    ReceivedAttackEvent
+    FailedAttackEvent,
+    FailedMoveEvent,
+    MovedEvent,
+    PerformedAttackEvent,
+    ReceivedAttackEvent,
 )
 
 LOGGER = getLogger(__name__)
@@ -38,13 +41,13 @@ class Action(object):
             self._reject()
 
     def _is_legal(self, world_map):
-        raise NotImplementedError('Abstract method')
+        raise NotImplementedError("Abstract method")
 
     def _apply(self, world_map):
-        raise NotImplementedError('Abstract method')
+        raise NotImplementedError("Abstract method")
 
     def _reject(self):
-        raise NotImplementedError('Abstract method')
+        raise NotImplementedError("Abstract method")
 
 
 class WaitAction(Action):
@@ -116,11 +119,10 @@ class AttackAction(Action):
     def _apply(self, world_map):
         attacked_avatar = world_map.attackable_avatar(self.target_location)
         damage_dealt = 1
-        self.avatar.add_event(PerformedAttackEvent(attacked_avatar,
-                                                   self.target_location,
-                                                   damage_dealt))
-        attacked_avatar.add_event(ReceivedAttackEvent(self.avatar,
-                                                      damage_dealt))
+        self.avatar.add_event(
+            PerformedAttackEvent(attacked_avatar, self.target_location, damage_dealt)
+        )
+        attacked_avatar.add_event(ReceivedAttackEvent(self.avatar, damage_dealt))
         attacked_avatar.damage(damage_dealt)
 
         self.avatar.clear_action()
@@ -137,14 +139,6 @@ class AttackAction(Action):
         self.avatar.clear_action()
 
 
-ACTIONS = {
-    'attack': AttackAction,
-    'move': MoveAction,
-    'wait': WaitAction,
-}
+ACTIONS = {"attack": AttackAction, "move": MoveAction, "wait": WaitAction}
 
-PRIORITIES = {
-    WaitAction: 0,
-    AttackAction: 1,
-    MoveAction: 2,
-}
+PRIORITIES = {WaitAction: 0, AttackAction: 1, MoveAction: 2}

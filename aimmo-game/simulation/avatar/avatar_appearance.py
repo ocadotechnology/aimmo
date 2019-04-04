@@ -1,4 +1,4 @@
-__author__ = 'Dan'
+__author__ = "Dan"
 
 
 class AvatarAppearance:

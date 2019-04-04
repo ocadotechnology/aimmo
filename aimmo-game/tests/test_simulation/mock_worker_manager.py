@@ -22,5 +22,5 @@ class MockWorkerManager(WorkerManager):
         super(MockWorkerManager, self).delete_worker(player_id)
 
     def update_code(self, user):
-        self.updated_workers.append(user['id'])
+        self.updated_workers.append(user["id"])
         super(MockWorkerManager, self).update_code(user)

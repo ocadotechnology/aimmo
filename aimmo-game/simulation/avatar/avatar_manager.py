@@ -11,8 +11,9 @@ class AvatarManager(object):
         self.avatars_by_id = {}
 
     def add_avatar(self, player_id, location):
-        avatar = AvatarWrapper(player_id, location,
-                               AvatarAppearance("#000", "#ddd", "#777", "#fff"))
+        avatar = AvatarWrapper(
+            player_id, location, AvatarAppearance("#000", "#ddd", "#777", "#fff")
+        )
         self.avatars_by_id[player_id] = avatar
         return avatar
 
@@ -36,4 +37,3 @@ class AvatarManager(object):
         """
 
         return [player.serialize() for player in self.avatars]
-

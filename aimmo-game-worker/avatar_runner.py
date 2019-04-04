@@ -8,8 +8,12 @@ import traceback
 from io import StringIO
 
 from RestrictedPython import compile_restricted, utility_builtins
-from RestrictedPython.Guards import (full_write_guard, guarded_setattr,
-                                     safe_builtins, safer_getattr)
+from RestrictedPython.Guards import (
+    full_write_guard,
+    guarded_setattr,
+    safe_builtins,
+    safer_getattr,
+)
 from RestrictedPython.PrintCollector import PrintCollector
 
 import simulation.action as avatar_action
@@ -45,7 +49,7 @@ class AvatarRunner(object):
         self.avatar = avatar
         self.auto_update = auto_update
         self.code_updater = code_updater
-        self.code_updater.globals['_print_'] = log_manager.get_print_collector()
+        self.code_updater.globals["_print_"] = log_manager.get_print_collector()
 
     def process_avatar_turn(self, world_map, avatar_state, src_code):
         avatar_updated = False
@@ -60,10 +64,10 @@ class AvatarRunner(object):
 
         stdout, stderr = output
         output_log = stdout.getvalue()
-        if not stderr.getvalue() == '':
+        if not stderr.getvalue() == "":
             LOGGER.info(stderr.getvalue())
 
-        return {'action': action, 'log': output_log, 'avatar_updated': avatar_updated}
+        return {"action": action, "log": output_log, "avatar_updated": avatar_updated}
 
     def run_users_code(self, world_map, avatar_state, src_code):
         try:
@@ -105,10 +109,10 @@ class AvatarRunner(object):
     def get_only_user_traceback():
         """ If the traceback does not contain any reference to the user code, found by '<inline-code>',
             then this method will just return the full traceback. """
-        traceback_list = traceback.format_exc().split('\n')
+        traceback_list = traceback.format_exc().split("\n")
         start_of_user_traceback = 0
         for i in range(len(traceback_list)):
-            if '<inline-code>' in traceback_list[i]:
+            if "<inline-code>" in traceback_list[i]:
                 start_of_user_traceback = i
                 break
         return traceback_list[start_of_user_traceback:]
@@ -117,5 +121,5 @@ class AvatarRunner(object):
     def print_logs():
         """ Prints out stdout from the users code. """
         if not log_manager.is_empty():
-            print(log_manager.get_logs(), end='')
+            print(log_manager.get_logs(), end="")
             log_manager.clear_logs()

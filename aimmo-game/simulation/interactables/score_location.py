@@ -11,18 +11,13 @@ class ScoreLocation(_Interactable):
         self.effects.append(ScoreEffect)
 
     def get_targets(self):
-        return [
-            self.cell.avatar
-        ]
+        return [self.cell.avatar]
 
     def __repr__(self):
         return f"ScoreLocation(Location={self.cell.location})"
 
     def serialize(self):
         return {
-            'type': 'score',
-            'location': {
-                    'x': self.cell.location.x,
-                    'y': self.cell.location.y,
-            }
+            "type": "score",
+            "location": {"x": self.cell.location.x, "y": self.cell.location.y},
         }

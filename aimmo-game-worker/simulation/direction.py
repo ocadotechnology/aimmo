@@ -1,11 +1,10 @@
 class Direction(object):
-
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
     def __repr__(self):
-        return 'Direction(x={}, y={})'.format(self.x, self.y)
+        return "Direction(x={}, y={})".format(self.x, self.y)
 
     def __eq__(self, other):
         if not isinstance(other, type(self)):
@@ -17,10 +16,7 @@ class Direction(object):
         return not self.__eq__(other)
 
     def serialise(self):
-        return {
-            'x': self.x,
-            'y': self.y,
-        }
+        return {"x": self.x, "y": self.y}
 
 
 NORTH = Direction(0, 1)

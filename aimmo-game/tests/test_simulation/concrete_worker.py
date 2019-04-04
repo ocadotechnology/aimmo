@@ -6,7 +6,7 @@ class ConcreteWorker(Worker):
         super(ConcreteWorker, self).__init__(*args, **kwargs)
 
     def _create_worker(self):
-        return 'http://test'
+        return "http://test"
 
     def remove_worker(self):
         self.kill()

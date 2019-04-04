@@ -8,6 +8,6 @@ class Command(BaseCommand):
 
     # A command must define handle()
     def handle(self, *args, **options):
-        for user in User.objects.filter(username__startswith='zombie-'):
-            self.stdout.write('Deleting %s' % user.get_username())
+        for user in User.objects.filter(username__startswith="zombie-"):
+            self.stdout.write("Deleting %s" % user.get_username())
             user.delete()

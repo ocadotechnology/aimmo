@@ -7,21 +7,25 @@ from simulation.world_map import WorldMap
 
 
 class TestWorldMap(TestCase):
-    AVATAR = {'location': {'x': 0, 'y': 0}, 'health': True, 'score': 3, 'events': []}
+    AVATAR = {"location": {"x": 0, "y": 0}, "health": True, "score": 3, "events": []}
 
     def _generate_cells(self, columns=3, rows=3):
-        cells = [{
-            'location': {'x': x, 'y': y},
-            'habitable': True,
-            'avatar': None,
-            'interactable': None,
-        } for x in range(-columns // 2 + 1, 1 + columns // 2) for y in range(-rows // 2 + 1, 1 + rows // 2)]
+        cells = [
+            {
+                "location": {"x": x, "y": y},
+                "habitable": True,
+                "avatar": None,
+                "interactable": None,
+            }
+            for x in range(-columns // 2 + 1, 1 + columns // 2)
+            for y in range(-rows // 2 + 1, 1 + rows // 2)
+        ]
         return cells
 
     def assertGridSize(self, map, expected_rows, expected_columns=None):
         if expected_columns is None:
             expected_columns = expected_rows
-        self.assertEqual(len(list(map.all_cells())), expected_rows*expected_columns)
+        self.assertEqual(len(list(map.all_cells())), expected_rows * expected_columns)
 
     def assertLocationsEqual(self, actual_cells, expected_locations):
         actual_cells = list(actual_cells)
@@ -35,22 +39,26 @@ class TestWorldMap(TestCase):
 
     def test_all_cells(self):
         map = WorldMap(self._generate_cells())
-        self.assertLocationsEqual(map.all_cells(),
-                                  [Location(x, y) for x in range(-1, 2) for y in range(-1, 2)])
+        self.assertLocationsEqual(
+            map.all_cells(),
+            [Location(x, y) for x in range(-1, 2) for y in range(-1, 2)],
+        )
 
     def test_score_cells(self):
         cells = self._generate_cells()
-        cells[0]['interactable'] = {'score_location': 5}
-        cells[5]['interactable'] = {'score_location': 5}
+        cells[0]["interactable"] = {"score_location": 5}
+        cells[5]["interactable"] = {"score_location": 5}
         map = WorldMap(cells)
         self.assertLocationsEqual(map.score_cells(), (Location(-1, -1), Location(0, 1)))
 
     def test_interactable_cells(self):
         cells = self._generate_cells()
-        cells[0]['interactable'] = {'health_restored': 5}
-        cells[8]['interactable'] = {'health_restored': 2}
+        cells[0]["interactable"] = {"health_restored": 5}
+        cells[8]["interactable"] = {"health_restored": 2}
         map = WorldMap(cells)
-        self.assertLocationsEqual(map.interactable_cells(), (Location(-1, -1), Location(1, 1)))
+        self.assertLocationsEqual(
+            map.interactable_cells(), (Location(-1, -1), Location(1, 1))
+        )
 
     def test_location_is_visible(self):
         map = WorldMap(self._generate_cells())
@@ -105,12 +113,12 @@ class TestWorldMap(TestCase):
 
     def test_cannot_move_to_uninhabitable_cell(self):
         cells = self._generate_cells()
-        cells[0]['habitable'] = False
+        cells[0]["habitable"] = False
         map = WorldMap(cells)
         self.assertFalse(map.can_move_to(Location(-1, -1)))
 
     def test_cannot_move_to_habited_cell(self):
         cells = self._generate_cells()
-        cells[1]['avatar'] = self.AVATAR
+        cells[1]["avatar"] = self.AVATAR
         map = WorldMap(cells)
         self.assertFalse(map.can_move_to(Location(-1, 0)))

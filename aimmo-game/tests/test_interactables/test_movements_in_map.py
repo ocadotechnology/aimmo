@@ -1,9 +1,14 @@
 import asyncio
 from unittest import TestCase
 
-from tests.test_simulation.dummy_avatar import (DeadDummy, MoveEastDummy,
-                                                MoveNorthDummy, MoveSouthDummy,
-                                                MoveWestDummy, WaitDummy)
+from tests.test_simulation.dummy_avatar import (
+    DeadDummy,
+    MoveEastDummy,
+    MoveNorthDummy,
+    MoveSouthDummy,
+    MoveWestDummy,
+    WaitDummy,
+)
 
 from simulation import map_generator
 from simulation.location import Location
@@ -14,25 +19,29 @@ from .mock_world import MockWorld
 
 class TestMovementsInMap(TestCase):
 
-    SETTINGS = {
-        'START_HEIGHT': 50,
-        'START_WIDTH': 50,
-        'OBSTACLE_RATIO': 0,
-    }
+    SETTINGS = {"START_HEIGHT": 50, "START_WIDTH": 50, "OBSTACLE_RATIO": 0}
 
-    def set_up_environment(self, dummy_list=None, location=Location(0, 0),
-                           map_generator_class=map_generator.Main):
+    def set_up_environment(
+        self,
+        dummy_list=None,
+        location=Location(0, 0),
+        map_generator_class=map_generator.Main,
+    ):
         """
         Utility method for testing.
         """
-        self.game = MockWorld(TestMovementsInMap.SETTINGS, dummy_list,
-                              map_generator_class, ConcurrentSimulationRunner)
+        self.game = MockWorld(
+            TestMovementsInMap.SETTINGS,
+            dummy_list,
+            map_generator_class,
+            ConcurrentSimulationRunner,
+        )
         self.game.simulation_runner.add_avatar(player_id=1, location=location)
         self.avatar = self.game.avatar_manager.get_avatar(1)
 
-    def set_up_and_make_movements_in_a_single_direction(self, dummy_list,
-                                                        number_of_movements,
-                                                        spawn=Location(0, 0)):
+    def set_up_and_make_movements_in_a_single_direction(
+        self, dummy_list, number_of_movements, spawn=Location(0, 0)
+    ):
         """
         Template function for repetitive movements in a single direction.
         """
@@ -41,7 +50,11 @@ class TestMovementsInMap(TestCase):
 
         loop = asyncio.get_event_loop()
         for i in range(number_of_movements):
-            loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialized_action()))
+            loop.run_until_complete(
+                self.game.simulation_runner.run_single_turn(
+                    self.game.avatar_manager.get_player_id_to_serialized_action()
+                )
+            )
 
     def test_movement_five_times_in_all_directions(self):
         """
@@ -72,29 +85,33 @@ class TestMovementsInMap(TestCase):
         """
 
         # North boundary.
-        self.set_up_and_make_movements_in_a_single_direction([MoveNorthDummy], 2,
-                                                             Location(0, 25))
+        self.set_up_and_make_movements_in_a_single_direction(
+            [MoveNorthDummy], 2, Location(0, 25)
+        )
 
         self.assertFalse(self.game.game_state.world_map.is_on_map(Location(0, 26)))
         self.assertEqual(self.avatar.location, Location(0, 25))
 
         # South boundary.
-        self.set_up_and_make_movements_in_a_single_direction([MoveSouthDummy], 2,
-                                                             Location(0, -24))
+        self.set_up_and_make_movements_in_a_single_direction(
+            [MoveSouthDummy], 2, Location(0, -24)
+        )
 
         self.assertFalse(self.game.game_state.world_map.is_on_map(Location(0, -25)))
         self.assertEqual(self.avatar.location, Location(0, -24))
 
         # East boundary.
-        self.set_up_and_make_movements_in_a_single_direction([MoveEastDummy], 2,
-                                                             Location(25, 0))
+        self.set_up_and_make_movements_in_a_single_direction(
+            [MoveEastDummy], 2, Location(25, 0)
+        )
 
         self.assertFalse(self.game.game_state.world_map.is_on_map(Location(26, 0)))
         self.assertEqual(self.avatar.location, Location(25, 0))
 
         # West boundary.
-        self.set_up_and_make_movements_in_a_single_direction([MoveWestDummy], 2,
-                                                             Location(-24, 0))
+        self.set_up_and_make_movements_in_a_single_direction(
+            [MoveWestDummy], 2, Location(-24, 0)
+        )
 
         self.assertFalse(self.game.game_state.world_map.is_on_map(Location(-25, 0)))
         self.assertEqual(self.avatar.location, Location(-24, 0))
@@ -111,7 +128,11 @@ class TestMovementsInMap(TestCase):
 
         loop = asyncio.get_event_loop()
         for i in range(2):
-            loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialized_action()))
+            loop.run_until_complete(
+                self.game.simulation_runner.run_single_turn(
+                    self.game.avatar_manager.get_player_id_to_serialized_action()
+                )
+            )
 
         self.assertTrue(self.avatar.location, Location(1, 0))
 
@@ -128,9 +149,11 @@ class TestMovementsInMap(TestCase):
         self.assertEqual(avatar_two.location, Location(3, 0))
         loop = asyncio.get_event_loop()
         for i in range(2):
-            loop.run_until_complete(self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialized_action()
-            ))
+            loop.run_until_complete(
+                self.game.simulation_runner.run_single_turn(
+                    self.game.avatar_manager.get_player_id_to_serialized_action()
+                )
+            )
 
         # Avatar 1 & Avatar 2 only managed to move once.
         self.assertEqual(self.avatar.location, Location(1, 0))
@@ -145,9 +168,11 @@ class TestMovementsInMap(TestCase):
         self.assertEqual(avatar_two.location, Location(4, 0))
 
         for i in range(2):
-            loop.run_until_complete(self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialized_action()
-            ))
+            loop.run_until_complete(
+                self.game.simulation_runner.run_single_turn(
+                    self.game.avatar_manager.get_player_id_to_serialized_action()
+                )
+            )
 
         # Avatar 1 & Avatar 2 managed to only move only once.
         self.assertEqual(self.avatar.location, Location(1, 0))
@@ -160,7 +185,11 @@ class TestMovementsInMap(TestCase):
 
         self.assertEqual(self.avatar.location, Location(0, 0))
         self.assertEqual(avatar_two.location, Location(1, 0))
-        loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialized_action()))
+        loop.run_until_complete(
+            self.game.simulation_runner.run_single_turn(
+                self.game.avatar_manager.get_player_id_to_serialized_action()
+            )
+        )
 
         self.assertEqual(self.avatar.location, Location(0, 0))
         self.assertEqual(avatar_two.location, Location(1, 0))
@@ -174,6 +203,10 @@ class TestMovementsInMap(TestCase):
 
         loop = asyncio.get_event_loop()
         for i in range(5):
-            loop.run_until_complete(self.game.simulation_runner.run_single_turn(self.game.avatar_manager.get_player_id_to_serialized_action()))
+            loop.run_until_complete(
+                self.game.simulation_runner.run_single_turn(
+                    self.game.avatar_manager.get_player_id_to_serialized_action()
+                )
+            )
 
         self.assertEqual(self.avatar.location, Location(0, 0))

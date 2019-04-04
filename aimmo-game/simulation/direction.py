@@ -11,7 +11,7 @@ class Direction:
 
     @property
     def dict(self):
-        return {'x': self.x, 'y': self.y}
+        return {"x": self.x, "y": self.y}
 
     def __eq__(self, other):
         if not isinstance(other, type(self)):
@@ -34,7 +34,7 @@ class Direction:
             return "south"
 
     def __repr__(self):
-        return 'Direction(x={}, y={})'.format(self.x, self.y)
+        return "Direction(x={}, y={})".format(self.x, self.y)
 
 
 NORTH = Direction(0, 1)

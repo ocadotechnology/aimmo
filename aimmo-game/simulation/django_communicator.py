@@ -6,6 +6,7 @@ class DjangoCommunicator(object):
     This class encapsulates the communication between aimmo-game
     and the django server
     """
+
     def __init__(self, django_api_url, completion_url):
         self.django_api_url = django_api_url
         self.completion_url = completion_url
