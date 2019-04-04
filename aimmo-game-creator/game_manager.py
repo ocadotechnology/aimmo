@@ -1,17 +1,16 @@
+import json
 import logging
 import os
 import subprocess
 import time
 from abc import ABCMeta, abstractmethod
-
-import requests
-from eventlet.semaphore import Semaphore
 from concurrent import futures
 from concurrent.futures import ALL_COMPLETED
-import kubernetes
-import docker
-import json
 
+import docker
+import kubernetes
+import requests
+from eventlet.semaphore import Semaphore
 
 LOGGER = logging.getLogger(__name__)
 
@@ -360,11 +359,7 @@ class KubernetesGameManager(GameManager):
 
         for resource in resources.items:
             LOGGER.info("Removing: {}".format(resource.metadata.name))
-            delete_resource_function(
-                resource.metadata.name,
-                K8S_NAMESPACE,
-                kubernetes.client.V1DeleteOptions(),
-            )
+            delete_resource_function(resource.metadata.name, K8S_NAMESPACE)
 
     def create_game(self, game_id, game_data):
         self._create_game_service(game_id)
