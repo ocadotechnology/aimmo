@@ -359,11 +359,7 @@ class KubernetesGameManager(GameManager):
 
         for resource in resources.items:
             LOGGER.info("Removing: {}".format(resource.metadata.name))
-            delete_resource_function(
-                resource.metadata.name,
-                K8S_NAMESPACE,
-                # kubernetes.client.V1DeleteOptions(),
-            )
+            delete_resource_function(resource.metadata.name, K8S_NAMESPACE)
             LOGGER.info("Removed")
 
     def create_game(self, game_id, game_data):
