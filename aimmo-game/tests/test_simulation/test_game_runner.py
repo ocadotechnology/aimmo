@@ -1,12 +1,13 @@
 from json import dumps
-import pytest
-import mock
 
-from .mock_communicator import MockCommunicator
-from .maps import InfiniteMap
+import mock
+import pytest
 from simulation.avatar.avatar_manager import AvatarManager
-from simulation.game_state import GameState
 from simulation.game_runner import GameRunner
+from simulation.game_state import GameState
+
+from .maps import InfiniteMap
+from .mock_communicator import MockCommunicator
 from .mock_worker_manager import MockWorkerManager
 
 
@@ -105,6 +106,14 @@ def test_logs_cleared_at_each_update(game_runner):
 
     assert first_worker.log is None
 
+
+def test_activity_check(game_runner):
+    TIME_UNTIL_CONSIDERED_INACTIVE = 3600 # 1 hour
+    game_runner.activity_timer = 0
+
+    assert not game_runner.activity_check(TIME_UNTIL_CONSIDERED_INACTIVE - 1)
+    assert game_runner.activity_check(TIME_UNTIL_CONSIDERED_INACTIVE)
+    assert game_runner.activity_check(TIME_UNTIL_CONSIDERED_INACTIVE + 1)
 
 @pytest.mark.asyncio
 async def test_remove_avatars(game_runner):
