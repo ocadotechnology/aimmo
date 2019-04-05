@@ -26,6 +26,11 @@ class GameQuerySet(models.QuerySet):
 
 
 class Game(models.Model):
+    RUNNING = "r"
+    STOPPED = "s"
+    PAUSED = "p"
+    STATUS_CHOICES = ((RUNNING, "running"), (STOPPED, "stopped"), (PAUSED, "paused"))
+
     name = models.CharField(max_length=100)
     auth_token = models.CharField(max_length=24, default=generate_auth_token)
     owner = models.ForeignKey(User, blank=True, null=True, related_name="owned_games")
@@ -50,6 +55,7 @@ class Game(models.Model):
     obstacle_ratio = models.FloatField(default=0.1)
     start_height = models.IntegerField(default=31)
     start_width = models.IntegerField(default=31)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=RUNNING)
 
     @property
     def is_active(self):
