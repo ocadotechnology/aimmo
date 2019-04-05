@@ -1,7 +1,6 @@
+from aimmo.models import Game
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
-
-from aimmo.models import Game
 
 
 class AddGameForm(ModelForm):
@@ -29,6 +28,7 @@ class AddGameForm(ModelForm):
             "obstacle_ratio",
             "start_height",
             "start_width",
+            "status",
         ]
 
     def clean(self):
