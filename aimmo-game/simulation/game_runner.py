@@ -10,7 +10,6 @@ from metrics import GAME_TURN_TIME
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.django_communicator import DjangoCommunicator
 from simulation.simulation_runner import ConcurrentSimulationRunner
-from simulation.avatar.avatar_manager import AvatarManager
 from simulation.worker_manager import WorkerManager
 
 LOGGER = logging.getLogger(__name__)
@@ -37,6 +36,7 @@ class GameRunner:
             communicator=self.communicator, game_state=self.game_state
         )
         self._end_turn_callback = lambda: None
+        self.activity_timer = time.time()
 
     def set_end_turn_callback(self, callback_method):
         self._end_turn_callback = callback_method
@@ -79,6 +79,13 @@ class GameRunner:
             self.game_state.get_serialized_game_states_for_workers()
         )
 
+    def activity_check(self, current_time):
+        """Check if 1 hour has passed (measured in seconds)."""
+        LOGGER.info(f'AC: {self.activity_timer}')
+        LOGGER.info(f'current: {current_time}')
+        LOGGER.info(f'elapsed: {self.activity_timer - current_time}')
+        return current_time - self.activity_timer >= 3600
+
     async def update_simulation(self, player_id_to_serialized_actions):
         await self.simulation_runner.run_single_turn(player_id_to_serialized_actions)
         await self._end_turn_callback()
@@ -93,4 +100,14 @@ class GameRunner:
 
     async def run(self):
         while True:
+            if self.game_state.active_users:
+                # If users are still connected, record the current time.
+                self.activity_timer = time.time()
+                self.game_state.status = self.game_state.status_options.RUNNING
+            elif self.activity_check(time.time()):
+                # otherwise check if an hour has passed since a user was connected
+                self.game_state.status = self.game_state.status_options.STOPPED
+
+            LOGGER.info(self.game_state.status)
+            LOGGER.info(self.game_state.active_users)
             await self.update()

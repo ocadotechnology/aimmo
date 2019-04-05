@@ -1,3 +1,4 @@
+from enum import Enum
 from threading import RLock
 
 from simulation.interactables import serialize_interactables
@@ -9,12 +10,19 @@ class GameState:
     """
 
     def __init__(
-        self, world_map, avatar_manager, completion_check_callback=lambda: None
+        self,
+        world_map,
+        avatar_manager,
+        completion_check_callback=lambda: None,
+        active_users=0,
     ):
         self.world_map = world_map
         self.avatar_manager = avatar_manager
         self.main_avatar_id = None
         self._lock = RLock()
+        self.active_users = active_users
+        self.status_options = Enum("Status", "RUNNING PAUSED STOPPED")
+        self.status = self.status_options.RUNNING
 
     def get_main_avatar(self):
         with self._lock:

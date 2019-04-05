@@ -79,6 +79,7 @@ class GameAPI(object):
             LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
             try:
                 del self._socket_session_id_to_player_id[sid]
+                self.game_state.active_users = len(self._socket_session_id_to_player_id)
             except KeyError:
                 pass
 
@@ -101,6 +102,7 @@ class GameAPI(object):
         try:
             avatar_id = int(parsed_qs["avatar_id"][0])
             self._socket_session_id_to_player_id[session_id] = avatar_id
+            self.game_state.active_users = len(self._socket_session_id_to_player_id)
         except ValueError:
             LOGGER.error("Avatar ID could not be casted into an integer")
         except KeyError:
