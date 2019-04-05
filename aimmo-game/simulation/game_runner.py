@@ -81,9 +81,6 @@ class GameRunner:
 
     def activity_check(self, current_time):
         """Check if 1 hour has passed (measured in seconds)."""
-        LOGGER.info(f'AC: {self.activity_timer}')
-        LOGGER.info(f'current: {current_time}')
-        LOGGER.info(f'elapsed: {self.activity_timer - current_time}')
         return current_time - self.activity_timer >= 3600
 
     async def update_simulation(self, player_id_to_serialized_actions):
