@@ -2,16 +2,22 @@ import styled from 'styled-components'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import LogEntries from 'components/LogEntries'
+import ConsoleBar from 'components/ConsoleBar'
 import { connect } from 'react-redux'
+import { MuiThemeProvider } from '@material-ui/core'
+
+export const StyledDiv = styled.section`
+  grid-area: ide-console;
+`
 
 export const StyledConsole = styled.div`
-  grid-area: ide-console;
   color: ${props => props.theme.palette.text.primary};
   background-color: ${props => props.theme.palette.background.default};
   font-family: ${props => props.theme.additionalVariables.typography.code.fontFamily};
   overflow: auto;
   white-space: pre-line;
   padding-bottom: 0px;
+  height: 230px;
 
   ::-webkit-scrollbar {
     background-color: ${props => props.theme.palette.divider};
@@ -40,7 +46,7 @@ export class IDEConsole extends Component {
 
   handleScroll = event => {
     let target = event.target || event.srcElement
-    this.setState({ ...this.state, scrolledToBottom: target.offsetHeight + target.scrollTop === target.scrollHeight })
+    this.setState({...this.state, scrolledToBottom: target.offsetHeight + target.scrollTop === target.scrollHeight})
   }
 
   componentDidMount () {
@@ -61,11 +67,14 @@ export class IDEConsole extends Component {
 
   render () {
     return (
-      <StyledConsole innerRef={ref => { this.consoleRef = ref }}>
-        <LogEntries
-          logs={this.props.logs}
-          lastLogRef={ref => { this.lastLogRef = ref }} />
-      </StyledConsole>
+      <StyledDiv>
+        <ConsoleBar/>
+        <StyledConsole innerRef={ref => { this.consoleRef = ref }}>
+          <LogEntries
+            logs={this.props.logs}
+            lastLogRef={ref => { this.lastLogRef = ref }}/>
+        </StyledConsole>
+      </StyledDiv>
     )
   }
 }
