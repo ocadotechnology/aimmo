@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import LogEntries from 'components/LogEntries'
 import ConsoleBar from 'components/ConsoleBar'
 import { connect } from 'react-redux'
-import { MuiThemeProvider } from '@material-ui/core'
 
 export const StyledDiv = styled.section`
   grid-area: ide-console;
@@ -46,7 +45,7 @@ export class IDEConsole extends Component {
 
   handleScroll = event => {
     let target = event.target || event.srcElement
-    this.setState({...this.state, scrolledToBottom: target.offsetHeight + target.scrollTop === target.scrollHeight})
+    this.setState({ ...this.state, scrolledToBottom: target.offsetHeight + target.scrollTop === target.scrollHeight })
   }
 
   componentDidMount () {
@@ -68,11 +67,11 @@ export class IDEConsole extends Component {
   render () {
     return (
       <StyledDiv>
-        <ConsoleBar/>
+        <ConsoleBar />
         <StyledConsole innerRef={ref => { this.consoleRef = ref }}>
           <LogEntries
             logs={this.props.logs}
-            lastLogRef={ref => { this.lastLogRef = ref }}/>
+            lastLogRef={ref => { this.lastLogRef = ref }} />
         </StyledConsole>
       </StyledDiv>
     )
