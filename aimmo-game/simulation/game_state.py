@@ -20,9 +20,6 @@ class GameState:
         self.avatar_manager = avatar_manager
         self.main_avatar_id = None
         self._lock = RLock()
-        self.active_users = active_users
-        self.status_options = Enum("Status", "RUNNING PAUSED STOPPED")
-        self.status = self.status_options.RUNNING
 
     def get_main_avatar(self):
         with self._lock:

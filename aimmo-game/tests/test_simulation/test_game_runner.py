@@ -107,14 +107,6 @@ def test_logs_cleared_at_each_update(game_runner):
     assert first_worker.log is None
 
 
-def test_activity_check(game_runner):
-    TIME_UNTIL_CONSIDERED_INACTIVE = 3600 # 1 hour
-    game_runner.activity_timer = 0
-
-    assert not game_runner.activity_check(TIME_UNTIL_CONSIDERED_INACTIVE - 1)
-    assert game_runner.activity_check(TIME_UNTIL_CONSIDERED_INACTIVE)
-    assert game_runner.activity_check(TIME_UNTIL_CONSIDERED_INACTIVE + 1)
-
 @pytest.mark.asyncio
 async def test_remove_avatars(game_runner):
     game_runner.communicator.data = RequestMock(3).value

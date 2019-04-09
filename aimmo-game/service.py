@@ -15,6 +15,7 @@ from aiohttp import web
 from aiohttp_wsgi import WSGIHandler
 from prometheus_client import make_wsgi_app
 
+from player_activity_monitor import ActivityMonitor
 from simulation import map_generator
 from simulation.game_runner import GameRunner
 
@@ -22,6 +23,7 @@ app = web.Application()
 cors = aiohttp_cors.setup(app)
 
 socketio_server = socketio.AsyncServer(async_handlers=True)
+activity_monitor = ActivityMonitor()
 
 routes = web.RouteTableDef()
 
@@ -69,6 +71,10 @@ class GameAPI(object):
         async def world_update_on_connect(sid, environ):
             query = environ["QUERY_STRING"]
             self._find_avatar_id_from_query(sid, query)
+            activity_monitor.update_active_users(
+                len(self._socket_session_id_to_player_id)
+            )
+            activity_monitor.check_active_users()
             await self.send_updates()
 
         return world_update_on_connect
@@ -79,7 +85,10 @@ class GameAPI(object):
             LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
             try:
                 del self._socket_session_id_to_player_id[sid]
-                self.game_state.active_users = len(self._socket_session_id_to_player_id)
+                activity_monitor.update_active_users(
+                    len(self._socket_session_id_to_player_id)
+                )
+                activity_monitor.check_active_users()
             except KeyError:
                 pass
 
@@ -90,6 +99,7 @@ class GameAPI(object):
         await self._send_have_avatars_code_updated(player_id_to_worker)
         await self._send_game_state()
         await self._send_logs(player_id_to_worker)
+        await activity_monitor.timer_completed()
 
     def _find_avatar_id_from_query(self, session_id, query_string):
         """
@@ -102,7 +112,6 @@ class GameAPI(object):
         try:
             avatar_id = int(parsed_qs["avatar_id"][0])
             self._socket_session_id_to_player_id[session_id] = avatar_id
-            self.game_state.active_users = len(self._socket_session_id_to_player_id)
         except ValueError:
             LOGGER.error("Avatar ID could not be casted into an integer")
         except KeyError:

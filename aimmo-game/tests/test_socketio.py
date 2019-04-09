@@ -1,13 +1,14 @@
-from unittest import TestCase, mock
+import asyncio
+import os
 import random
 import string
-import os
-import asyncio
-import pytest
-from asynctest import CoroutineMock
+from unittest import TestCase, mock
 
+import pytest
 import service
+from asynctest import CoroutineMock
 from simulation.game_runner import GameRunner
+
 from .test_simulation.mock_worker_manager import MockWorkerManager
 
 
@@ -64,7 +65,11 @@ class TestSocketIO:
     @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
     async def test_socketio_emit_called(self, mocked_socketio, app):
         self.game_api.worker_manager.add_new_worker(1)
-        await self.game_api.register_world_update_on_connect()(self.sid, self.environ)
+
+        asyncio.wait_for(
+            self.game_api.register_world_update_on_connect()(self.sid, self.environ),
+            timeout=5,
+        )
 
         assert mocked_socketio.manager.emit.mockreturn_value.emit.assert_called_once
 
@@ -78,7 +83,10 @@ class TestSocketIO:
         assert len(self.mocked_mappings) == 0
 
         self.game_api.worker_manager.add_new_worker(1)
-        await self.game_api.register_world_update_on_connect()(self.sid, self.environ)
+        asyncio.wait_for(
+            self.game_api.register_world_update_on_connect()(self.sid, self.environ),
+            timeout=5,
+        )
 
         assert len(self.mocked_mappings) == 1
         assert self.sid in self.mocked_mappings
@@ -93,7 +101,10 @@ class TestSocketIO:
         assert len(self.mocked_mappings) == 0
 
         self.game_api.worker_manager.add_new_worker(1)
-        await self.game_api.register_world_update_on_connect()(self.sid, self.environ)
+        asyncio.wait_for(
+            self.game_api.register_world_update_on_connect()(self.sid, self.environ),
+            timeout=5,
+        )
 
         assert len(self.mocked_mappings) == 0
         assert not self.sid in self.mocked_mappings

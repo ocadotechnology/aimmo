@@ -256,10 +256,10 @@
         },
         "python-engineio": {
             "hashes": [
-                "sha256:5bd0a3671365f933b1413aa2ea58bf3ac5acf849c949dfd5192322c7a974a42e",
-                "sha256:b2756ce53076163eb24f59c1d1a903ac72f071ad4fb7b3ef6dab1b1b9ae9a44f"
+                "sha256:a89d2cff7f9b447d37c450c2666101d97043b4b22524bf4efaafcb9784c9f7f4",
+                "sha256:fd14357f0b854de729cc2dba960ceba1d20da973c91f289110807f0bb2f69935"
             ],
-            "version": "==3.5.0"
+            "version": "==3.5.1"
         },
         "python-socketio": {
             "hashes": [
