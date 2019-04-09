@@ -1,24 +1,26 @@
 import styled from 'styled-components'
 import Toolbar from '@material-ui/core/Toolbar/Toolbar'
 import IconButton from '@material-ui/core/IconButton/IconButton'
-import ClearIcon from 'components/icons/Clear'
+import { Typography } from '@material-ui/core'
+import ConsoleIcon from 'components/icons/Console'
 import React, { Component } from 'react'
-import { StyledConsole, StyledDiv } from '../../containers/IDEConsole'
 
 export const ClearToolbar = styled(Toolbar)`
-   background-color: ${props => props.theme.palette.grey['A700']};
-  justify-content: flex-end;
+  height: 40px;
+  width: auto;
+  background-color: ${props => props.theme.palette.grey['A700']};
+`
+
+export const StyledConsoleIcon = styled(ConsoleIcon)`
+  padding-right: ${props => props.theme.spacing.unit}px;
 `
 
 export default class ConsoleBar extends Component {
   render () {
     return (
-      <ClearToolbar>
-        <IconButton
-          aria-label='Clear'
-          color='default'>
-          <ClearIcon/>
-        </IconButton>
+      <ClearToolbar variant='dense' >
+        <StyledConsoleIcon color='disabled' />
+        <Typography variant='body1' color='textSecondary'>Console Log</Typography>
       </ClearToolbar>
     )
   }
