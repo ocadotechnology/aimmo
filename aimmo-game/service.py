@@ -15,15 +15,15 @@ from aiohttp import web
 from aiohttp_wsgi import WSGIHandler
 from prometheus_client import make_wsgi_app
 
-from player_activity_monitor import ActivityMonitor
+from activity_monitor import ActivityMonitor
 from simulation import map_generator
 from simulation.game_runner import GameRunner
 
 app = web.Application()
 cors = aiohttp_cors.setup(app)
 
-socketio_server = socketio.AsyncServer(async_handlers=True)
 activity_monitor = ActivityMonitor()
+socketio_server = socketio.AsyncServer(async_handlers=True)
 
 routes = web.RouteTableDef()
 
@@ -74,7 +74,7 @@ class GameAPI(object):
             activity_monitor.update_active_users(
                 len(self._socket_session_id_to_player_id)
             )
-            activity_monitor.check_active_users()
+            await activity_monitor.check_active_users()
             await self.send_updates()
 
         return world_update_on_connect
@@ -88,7 +88,7 @@ class GameAPI(object):
                 activity_monitor.update_active_users(
                     len(self._socket_session_id_to_player_id)
                 )
-                activity_monitor.check_active_users()
+                await activity_monitor.check_active_users()
             except KeyError:
                 pass
 

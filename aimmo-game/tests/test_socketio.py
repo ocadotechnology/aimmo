@@ -60,15 +60,18 @@ class TestSocketIO:
             game_state=game_runner.game_state, worker_manager=game_runner.worker_manager
         )
 
+    @pytest.mark.asyncio
     @mock.patch("service.app")
     @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
-    async def test_socketio_emit_called(self, mocked_socketio, app):
+    @mock.patch("service.activity_monitor")
+    async def test_socketio_emit_called(self, mocked_socketio, app, event_loop):
         self.game_api.worker_manager.add_new_worker(1)
 
-        await self.game_api.register_world_update_on_connect()(self.sid, self.environ),
+        await self.game_api.register_world_update_on_connect()(self.sid, self.environ)
 
         assert mocked_socketio.manager.emit.mockreturn_value.emit.assert_called_once
 
+    @pytest.mark.asyncio
     @mock.patch("service.app")
     @mock.patch("service.socketio_server.emit", new_callable=CoroutineMock())
     @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
@@ -84,6 +87,7 @@ class TestSocketIO:
         assert self.sid in self.mocked_mappings
         assert int(self.mocked_mappings[self.sid]) == 1
 
+    @pytest.mark.asyncio
     @mock.patch("service.app")
     @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
     async def test_no_match_session_id_to_avatar_id_mapping(self, mocked_socketio, app):
@@ -98,6 +102,7 @@ class TestSocketIO:
         assert len(self.mocked_mappings) == 0
         assert not self.sid in self.mocked_mappings
 
+    @pytest.mark.asyncio
     @mock.patch("service.app")
     @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
     async def test_send_updates_for_one_user(self, mocked_socketio, app):
@@ -118,6 +123,7 @@ class TestSocketIO:
 
             mocked_emit.assert_has_calls([game_state_call, log_call], any_order=True)
 
+    @pytest.mark.asyncio
     @mock.patch("service.app")
     @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
     async def test_no_logs_not_emitted(self, mocked_socketio, app):
@@ -134,6 +140,7 @@ class TestSocketIO:
                 "game-state", {"foo": "bar"}, room=self.sid
             )
 
+    @pytest.mark.asyncio
     @mock.patch("service.app")
     @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
     async def test_empty_logs_not_emitted(self, mocked_socketio, app):
@@ -155,6 +162,7 @@ class TestSocketIO:
                 "game-state", {"foo": "bar"}, room=self.sid
             )
 
+    @pytest.mark.asyncio
     @mock.patch("service.app")
     @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
     async def test_send_updates_for_multiple_users(self, mocked_socketio, app):
@@ -198,6 +206,7 @@ class TestSocketIO:
                 any_order=True,
             )
 
+    @pytest.mark.asyncio
     @mock.patch("service.app")
     @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
     async def test_send_code_changed_flag(self, mocked_socketio, app):
@@ -224,6 +233,7 @@ class TestSocketIO:
                 [user_game_state_call, user_game_code_changed_call], any_order=True
             )
 
+    @pytest.mark.asyncio
     @mock.patch("service.app")
     @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
     async def test_send_false_flag_not_sent(self, mocked_socketio, app):
@@ -243,6 +253,7 @@ class TestSocketIO:
                 "game-state", {"foo": "bar"}, room=self.sid
             )
 
+    @pytest.mark.asyncio
     async def test_remove_session_id_on_disconnect(self):
         self.mocked_mappings[self.sid] = 1
         assert len(self.mocked_mappings) == 1

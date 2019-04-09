@@ -17,21 +17,22 @@ class ActivityMonitor:
         self._status = self.status_options.RUNNING
 
         self.timer_running = False
+        self.timer = None
         self.start_timer()
 
     def start_timer(self):
         if not self.timer_running:
             self.timer_running = True
-            self.timer = asyncio.ensure_future(asyncio.sleep(10))
+            self.timer = asyncio.ensure_future(asyncio.sleep(3600))
 
     def stop_timer(self):
         if self.timer_running:
             self.timer_running = False
             self.timer.cancel()
 
-    def check_active_users(self):
+    async def check_active_users(self):
         if not self.active_users:
-            self.start_timer()
+            await self.start_timer()
         else:
             self.stop_timer()
 
