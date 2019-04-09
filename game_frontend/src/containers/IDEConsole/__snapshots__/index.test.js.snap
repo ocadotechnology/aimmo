@@ -49,7 +49,7 @@ exports[`<StyledConsole /> renders correctly 1`] = `
   overflow: auto;
   white-space: pre-line;
   padding-bottom: 0px;
-  height: 230px;
+  height: 100%;
 }
 
 .c0::-webkit-scrollbar {

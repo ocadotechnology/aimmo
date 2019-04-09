@@ -5,8 +5,6 @@ import ConsoleIcon from 'components/icons/Console'
 import React, { Component } from 'react'
 
 export const ClearToolbar = styled(Toolbar)`
-  height: 40px;
-  width: auto;
   background-color: ${props => props.theme.palette.grey['A700']};
 `
 
@@ -19,7 +17,10 @@ export default class ConsoleBar extends Component {
     return (
       <ClearToolbar variant='dense' >
         <StyledConsoleIcon color='disabled' />
-        <Typography variant='body1' color='textSecondary'>Console Log</Typography>
+        <Typography
+          variant='body1'
+          color='textSecondary'
+        >Console Log</Typography>
       </ClearToolbar>
     )
   }

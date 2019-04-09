@@ -5,7 +5,7 @@ import LogEntries from 'components/LogEntries'
 import ConsoleBar from 'components/ConsoleBar'
 import { connect } from 'react-redux'
 
-export const StyledDiv = styled.section`
+export const IDEConsoleSection = styled.section`
   grid-area: ide-console;
 `
 
@@ -16,7 +16,7 @@ export const StyledConsole = styled.div`
   overflow: auto;
   white-space: pre-line;
   padding-bottom: 0px;
-  height: 230px;
+  height: 100%;
 
   ::-webkit-scrollbar {
     background-color: ${props => props.theme.palette.divider};
@@ -66,14 +66,14 @@ export class IDEConsole extends Component {
 
   render () {
     return (
-      <StyledDiv>
+      <IDEConsoleSection>
         <ConsoleBar />
         <StyledConsole innerRef={ref => { this.consoleRef = ref }}>
           <LogEntries
             logs={this.props.logs}
             lastLogRef={ref => { this.lastLogRef = ref }} />
         </StyledConsole>
-      </StyledDiv>
+      </IDEConsoleSection>
     )
   }
 }

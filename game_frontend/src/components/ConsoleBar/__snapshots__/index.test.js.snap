@@ -2,8 +2,6 @@
 
 exports[`<ClearToolBar /> renders correctly 1`] = `
 .c0 {
-  height: 40px;
-  width: auto;
   background-color: #616161;
 }
 
