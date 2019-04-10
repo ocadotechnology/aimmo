@@ -19,7 +19,7 @@ plugins:
   scss-lint:
     enabled: false
 exclude_patterns:
-  - "*.test.js"
+  - "**/*.test.js"
   - "*/tests/**/*.py"
   - "game/_version.py"
   - "versioneer.py"
