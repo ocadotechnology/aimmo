@@ -22,7 +22,13 @@ from simulation.game_runner import GameRunner
 app = web.Application()
 cors = aiohttp_cors.setup(app)
 
-activity_monitor = ActivityMonitor()
+
+async def callback(self):
+    LOGGER.info("Timer expired! Game marked as STOPPED")
+    # this should trigger the game for deletion, part of (#1011)
+
+
+activity_monitor = ActivityMonitor(callback)
 socketio_server = socketio.AsyncServer(async_handlers=True)
 
 routes = web.RouteTableDef()

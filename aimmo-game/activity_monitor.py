@@ -14,12 +14,6 @@ logging.basicConfig(level=logging.INFO)
 SECONDS_TILL_CONSIDERED_INACTIVE = 3600
 
 
-class StatusOptions(Enum):
-    RUNNING = 1
-    PAUSED = 2
-    STOPPED = 3
-
-
 class ActivityMonitor:
     """
     Keeps track of the number of users currently connected.
@@ -28,14 +22,14 @@ class ActivityMonitor:
     of time, the game is marked as stopped and the pods will be shut down shortly after
     """
 
-    def __init__(self):
+    def __init__(self, callback):
         self.__active_users = 0
-        self.timer = Timer(callback=self.callback)
-        self.status = StatusOptions.RUNNING
+        self.callback = callback
+        self.timer = Timer(SECONDS_TILL_CONSIDERED_INACTIVE, self.callback)
 
     def _start_timer(self):
         if not self.timer.is_running:
-            self.timer = Timer(callback=self.callback)
+            self.timer = Timer(SECONDS_TILL_CONSIDERED_INACTIVE, self.callback)
             self.timer.is_running = True
 
     def _stop_timer(self):
@@ -55,15 +49,6 @@ class ActivityMonitor:
         else:
             self._start_timer()
 
-    async def callback(self):
-        self.status = StatusOptions.STOPPED
-        # this should trigger the game for deletion, part of (#1011)
-
-
-async def default_callback():
-    await asyncio.sleep(0.1)
-    LOGGER.info("Timer has expired")
-
 
 class Timer:
     """
@@ -73,11 +58,7 @@ class Timer:
     callback function is called, this happens asynchronously.
     """
 
-    def __init__(
-        self,
-        timeout: float = SECONDS_TILL_CONSIDERED_INACTIVE,
-        callback: CoroutineType = default_callback,
-    ):
+    def __init__(self, timeout: float, callback: CoroutineType):
         self._timeout = timeout
         self._callback = callback
         self._task = asyncio.ensure_future(self._job())

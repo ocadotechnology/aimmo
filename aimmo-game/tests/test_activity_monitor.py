@@ -1,25 +1,24 @@
 import asyncio
 import time
+from unittest import mock
 
 import pytest
-from activity_monitor import ActivityMonitor, StatusOptions, Timer
+from activity_monitor import ActivityMonitor, Timer
 
 
 @pytest.fixture
 def activity_monitor():
-    return ActivityMonitor()
+    return ActivityMonitor(mock.MagicMock())
 
 
 def test_timer_stops_correctly(activity_monitor):
     assert activity_monitor.active_users == 0
     assert activity_monitor.timer.is_running
-    assert activity_monitor.status == StatusOptions.RUNNING
 
     activity_monitor.active_users = 1
 
     assert activity_monitor.active_users == 1
     assert not activity_monitor.timer.is_running
-    assert activity_monitor.status == StatusOptions.RUNNING
 
 
 def test_timer_starts_correctly(activity_monitor):
@@ -27,31 +26,19 @@ def test_timer_starts_correctly(activity_monitor):
 
     assert activity_monitor.active_users == 2
     assert not activity_monitor.timer.is_running
-    assert activity_monitor.status == StatusOptions.RUNNING
 
     activity_monitor.active_users = 0
 
     assert activity_monitor.active_users == 0
     assert activity_monitor.timer.is_running
-    assert activity_monitor.status == StatusOptions.RUNNING
 
 
 @pytest.mark.asyncio
-async def test_callback_updates_status(activity_monitor):
-    assert activity_monitor.status == StatusOptions.RUNNING
-
-    await activity_monitor.callback()
-
-    assert activity_monitor.status == StatusOptions.STOPPED
-
-
-@pytest.mark.asyncio
-async def test_status_updates_to_stopped_when_timer_expires(activity_monitor):
+async def test_callback_called_when_timer_expires(activity_monitor):
     assert activity_monitor.active_users == 0
     assert activity_monitor.timer.is_running
-    assert activity_monitor.status == StatusOptions.RUNNING
 
     activity_monitor.timer = Timer(timeout=1, callback=activity_monitor.callback)
     await asyncio.sleep(1.2)
 
-    assert activity_monitor.status == StatusOptions.STOPPED
+    activity_monitor.callback.assert_called()
