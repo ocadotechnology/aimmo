@@ -11,6 +11,8 @@ from types import CoroutineType
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
+TIME_TILL_CONSIDERED_INACTIVE = 3600
+
 
 class StatusOptions(Enum):
     RUNNING = 1
@@ -60,7 +62,9 @@ class Timer:
     """
 
     def __init__(
-        self, timeout: float = 3600, callback: CoroutineType = default_callback
+        self,
+        timeout: float = TIME_TILL_CONSIDERED_INACTIVE,
+        callback: CoroutineType = default_callback,
     ):
         self._timeout = timeout
         self._callback = callback
