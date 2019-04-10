@@ -4,7 +4,7 @@ import { Typography } from '@material-ui/core'
 import ConsoleIcon from 'components/icons/Console'
 import React, { Component } from 'react'
 
-export const ClearToolbar = styled(Toolbar)`
+export const StyledConsoleBar = styled(Toolbar)`
   background-color: ${props => props.theme.palette.grey['A700']};
 `
 
@@ -15,13 +15,14 @@ export const StyledConsoleIcon = styled(ConsoleIcon)`
 export default class ConsoleBar extends Component {
   render () {
     return (
-      <ClearToolbar variant='dense' >
+      <StyledConsoleBar variant='dense' >
         <StyledConsoleIcon color='disabled' />
         <Typography
           variant='body1'
-          color='textSecondary'
-        >Console Log</Typography>
-      </ClearToolbar>
+          color='textSecondary'>
+          Console Log
+        </Typography>
+      </StyledConsoleBar>
     )
   }
 }

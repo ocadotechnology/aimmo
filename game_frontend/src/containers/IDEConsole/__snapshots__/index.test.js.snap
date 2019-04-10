@@ -1,21 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<ConsoleBar /> renders correctly 1`] = `
-<Styled(WithStyles(Toolbar))
-  variant="dense"
->
-  <Styled(ConsoleIcon)
-    color="disabled"
-  />
-  <WithStyles(Typography)
-    color="textSecondary"
-    variant="body1"
-  >
-    Console Log
-  </WithStyles(Typography)>
-</Styled(WithStyles(Toolbar))>
-`;
-
 exports[`<IDEConsole /> renders correctly 1`] = `
 <styled.section>
   <ConsoleBar />

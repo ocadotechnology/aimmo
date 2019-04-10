@@ -1,6 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<ClearToolBar /> renders correctly 1`] = `
+exports[`<ConsoleBar /> renders correctly 1`] = `
+<Styled(WithStyles(Toolbar))
+  variant="dense"
+>
+  <Styled(ConsoleIcon)
+    color="disabled"
+  />
+  <WithStyles(Typography)
+    color="textSecondary"
+    variant="body1"
+  >
+    Console Log
+  </WithStyles(Typography)>
+</Styled(WithStyles(Toolbar))>
+`;
+
+exports[`<StyledConsoleBar /> renders correctly 1`] = `
 .c0 {
   background-color: #616161;
 }
@@ -291,22 +307,6 @@ exports[`<ClearToolBar /> renders correctly 1`] = `
     }
   }
 />
-`;
-
-exports[`<ConsoleBar /> renders correctly 1`] = `
-<Styled(WithStyles(Toolbar))
-  variant="dense"
->
-  <Styled(ConsoleIcon)
-    color="disabled"
-  />
-  <WithStyles(Typography)
-    color="textSecondary"
-    variant="body1"
-  >
-    Console Log
-  </WithStyles(Typography)>
-</Styled(WithStyles(Toolbar))>
 `;
 
 exports[`<StyledConsoleIcon /> renders correctly 1`] = `
