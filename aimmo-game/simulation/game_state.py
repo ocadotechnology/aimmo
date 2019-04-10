@@ -10,11 +10,7 @@ class GameState:
     """
 
     def __init__(
-        self,
-        world_map,
-        avatar_manager,
-        completion_check_callback=lambda: None,
-        active_users=0,
+        self, world_map, avatar_manager, completion_check_callback=lambda: None
     ):
         self.world_map = world_map
         self.avatar_manager = avatar_manager

@@ -63,8 +63,7 @@ class TestSocketIO:
     @pytest.mark.asyncio
     @mock.patch("service.app")
     @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
-    @mock.patch("service.activity_monitor")
-    async def test_socketio_emit_called(self, mocked_socketio, app, event_loop):
+    async def test_socketio_emit_called(self, mocked_socketio, app):
         self.game_api.worker_manager.add_new_worker(1)
 
         await self.game_api.register_world_update_on_connect()(self.sid, self.environ)

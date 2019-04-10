@@ -1,7 +1,12 @@
+"""
+Module for keeping track of inactivity for a given game.
+"""
+
 import asyncio
 import logging
 import time
 from enum import Enum
+from types import CoroutineType
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -14,38 +19,53 @@ class StatusOptions(Enum):
 
 
 class ActivityMonitor:
+    """
+    Keeps track of the number of users currently connected.
+
+    If no users are connected (measured by sockets) after a certain length
+    of time, the game is marked as stopped and the pods will be shut down shortly after
+    """
+
     def __init__(self):
         self.active_users = 0
-        self.timer_running = True
         self.timer = Timer(callback=self.callback)
         self.status = StatusOptions.RUNNING
 
     def start_timer(self):
-        if not self.timer_running:
+        if not self.timer.is_running:
             self.timer = Timer(callback=self.callback)
-            self.timer_running = True
+            self.timer.is_running = True
 
     def stop_timer(self):
-        if self.timer_running:
+        if self.timer.is_running:
             self.timer.cancel()
-            self.timer_running = False
+            self.timer.is_running = False
 
     async def callback(self):
-        LOGGER.info("GAME MARKED AS INACTIVE, IT SHOULD NOW SHUTDOWN!")
         self.status = StatusOptions.STOPPED
+        # this should trigger the game for deletion, part of (#1011)
 
 
 async def default_callback():
     await asyncio.sleep(0.1)
-    LOGGER.info("GAME MARKED AS INACTIVE, IT SHOULD NOW SHUTDOWN!")
-    # telling thing to delete game should go here
+    LOGGER.info("Timer has expired")
 
 
 class Timer:
-    def __init__(self, timeout=3600, callback=default_callback):
+    """
+    Generic Timer with callback
+
+    This sleeps for `timeout=X` seconds, after X seconds the
+    callback function is called, this happens asynchronously.
+    """
+
+    def __init__(
+        self, timeout: float = 3600, callback: CoroutineType = default_callback
+    ):
         self._timeout = timeout
         self._callback = callback
         self._task = asyncio.ensure_future(self._job())
+        self.is_running = True
 
     async def _job(self):
         await asyncio.sleep(self._timeout)
