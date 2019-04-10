@@ -15,12 +15,20 @@ from aiohttp import web
 from aiohttp_wsgi import WSGIHandler
 from prometheus_client import make_wsgi_app
 
+from activity_monitor import ActivityMonitor
 from simulation import map_generator
 from simulation.game_runner import GameRunner
 
 app = web.Application()
 cors = aiohttp_cors.setup(app)
 
+
+async def callback(self):
+    LOGGER.info("Timer expired! Game marked as STOPPED")
+    # this should trigger the game for deletion, part of (#1011)
+
+
+activity_monitor = ActivityMonitor(callback)
 socketio_server = socketio.AsyncServer(async_handlers=True)
 
 routes = web.RouteTableDef()
@@ -69,6 +77,7 @@ class GameAPI(object):
         async def world_update_on_connect(sid, environ):
             query = environ["QUERY_STRING"]
             self._find_avatar_id_from_query(sid, query)
+            activity_monitor.active_users = len(self._socket_session_id_to_player_id)
             await self.send_updates()
 
         return world_update_on_connect
@@ -79,6 +88,9 @@ class GameAPI(object):
             LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
             try:
                 del self._socket_session_id_to_player_id[sid]
+                activity_monitor.active_users = len(
+                    self._socket_session_id_to_player_id
+                )
             except KeyError:
                 pass
 
