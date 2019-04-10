@@ -6,6 +6,7 @@ import React, { Component } from 'react'
 
 export const StyledConsoleBar = styled(Toolbar)`
   background-color: ${props => props.theme.palette.grey['A700']};
+  grid-area: console-bar;
 `
 
 export const StyledConsoleIcon = styled(ConsoleIcon)`

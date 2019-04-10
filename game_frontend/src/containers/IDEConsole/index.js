@@ -7,16 +7,20 @@ import { connect } from 'react-redux'
 
 export const IDEConsoleSection = styled.section`
   grid-area: ide-console;
+  display: grid;
+  grid-template-rows: 40px auto;
+  grid-template-areas: "console-bar"
+                        "console-logs";
 `
 
 export const StyledConsole = styled.div`
+  grid-area: console-logs;
   color: ${props => props.theme.palette.text.primary};
   background-color: ${props => props.theme.palette.background.default};
   font-family: ${props => props.theme.additionalVariables.typography.code.fontFamily};
   overflow: auto;
   white-space: pre-line;
   padding-bottom: 0px;
-  height: 100%;
 
   ::-webkit-scrollbar {
     background-color: ${props => props.theme.palette.divider};
