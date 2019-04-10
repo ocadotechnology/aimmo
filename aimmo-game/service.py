@@ -71,10 +71,9 @@ class GameAPI(object):
         async def world_update_on_connect(sid, environ):
             query = environ["QUERY_STRING"]
             self._find_avatar_id_from_query(sid, query)
-            activity_monitor.update_active_users(
-                len(self._socket_session_id_to_player_id)
-            )
-            await activity_monitor.check_active_users()
+            activity_monitor.active_users = len(self._socket_session_id_to_player_id)
+            if activity_monitor.active_users:
+                activity_monitor.stop_timer()
             await self.send_updates()
 
         return world_update_on_connect
@@ -85,10 +84,11 @@ class GameAPI(object):
             LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
             try:
                 del self._socket_session_id_to_player_id[sid]
-                activity_monitor.update_active_users(
-                    len(self._socket_session_id_to_player_id)
+                activity_monitor.active_users = len(
+                    self._socket_session_id_to_player_id
                 )
-                await activity_monitor.check_active_users()
+                if not activity_monitor.active_users:
+                    activity_monitor.start_timer()
             except KeyError:
                 pass
 
@@ -99,7 +99,6 @@ class GameAPI(object):
         await self._send_have_avatars_code_updated(player_id_to_worker)
         await self._send_game_state()
         await self._send_logs(player_id_to_worker)
-        await activity_monitor.timer_completed()
 
     def _find_avatar_id_from_query(self, session_id, query_string):
         """

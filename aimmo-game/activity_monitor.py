@@ -1,6 +1,10 @@
 import asyncio
+import logging
 import time
 from enum import Enum
+
+LOGGER = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 
 class StatusOptions(Enum):
@@ -11,41 +15,41 @@ class StatusOptions(Enum):
 
 class ActivityMonitor:
     def __init__(self):
-        self.status_options = StatusOptions
-
         self.active_users = 0
-        self._status = self.status_options.RUNNING
-
-        self.timer_running = False
-        self.timer = None
-        self.start_timer()
+        self.timer_running = True
+        self.timer = Timer(callback=self.callback)
+        self.status = StatusOptions.RUNNING
 
     def start_timer(self):
         if not self.timer_running:
+            self.timer = Timer(callback=self.callback)
             self.timer_running = True
-            self.timer = asyncio.ensure_future(asyncio.sleep(3600))
 
     def stop_timer(self):
         if self.timer_running:
-            self.timer_running = False
             self.timer.cancel()
+            self.timer_running = False
 
-    async def check_active_users(self):
-        if not self.active_users:
-            await self.start_timer()
-        else:
-            self.stop_timer()
+    async def callback(self):
+        LOGGER.info("GAME MARKED AS INACTIVE, IT SHOULD NOW SHUTDOWN!")
+        self.status = StatusOptions.STOPPED
 
-    async def timer_completed(self):
-        try:
-            await self.timer
-            self._status = self.status_options.STOPPED
-        except asyncio.CancelledError:
-            # CancelledError occurs if the future/task was cancelled before being awaited
-            pass
 
-    def get_status(self) -> StatusOptions:
-        return self._status
+async def default_callback():
+    await asyncio.sleep(0.1)
+    LOGGER.info("GAME MARKED AS INACTIVE, IT SHOULD NOW SHUTDOWN!")
+    # telling thing to delete game should go here
 
-    def update_active_users(self, value: int):
-        self.active_users = value
+
+class Timer:
+    def __init__(self, timeout=3600, callback=default_callback):
+        self._timeout = timeout
+        self._callback = callback
+        self._task = asyncio.ensure_future(self._job())
+
+    async def _job(self):
+        await asyncio.sleep(self._timeout)
+        await self._callback()
+
+    def cancel(self):
+        self._task.cancel()
