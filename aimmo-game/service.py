@@ -72,8 +72,6 @@ class GameAPI(object):
             query = environ["QUERY_STRING"]
             self._find_avatar_id_from_query(sid, query)
             activity_monitor.active_users = len(self._socket_session_id_to_player_id)
-            if activity_monitor.active_users:
-                activity_monitor.stop_timer()
             await self.send_updates()
 
         return world_update_on_connect
@@ -87,8 +85,6 @@ class GameAPI(object):
                 activity_monitor.active_users = len(
                     self._socket_session_id_to_player_id
                 )
-                if not activity_monitor.active_users:
-                    activity_monitor.start_timer()
             except KeyError:
                 pass
 

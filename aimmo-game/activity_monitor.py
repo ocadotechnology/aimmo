@@ -11,7 +11,7 @@ from types import CoroutineType
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-TIME_TILL_CONSIDERED_INACTIVE = 3600
+SECONDS_TILL_CONSIDERED_INACTIVE = 3600
 
 
 class StatusOptions(Enum):
@@ -29,19 +29,31 @@ class ActivityMonitor:
     """
 
     def __init__(self):
-        self.active_users = 0
+        self.__active_users = 0
         self.timer = Timer(callback=self.callback)
         self.status = StatusOptions.RUNNING
 
-    def start_timer(self):
+    def _start_timer(self):
         if not self.timer.is_running:
             self.timer = Timer(callback=self.callback)
             self.timer.is_running = True
 
-    def stop_timer(self):
+    def _stop_timer(self):
         if self.timer.is_running:
             self.timer.cancel()
             self.timer.is_running = False
+
+    @property
+    def active_users(self):
+        return self.__active_users
+
+    @active_users.setter
+    def active_users(self, value: float):
+        self.__active_users = value
+        if self.__active_users:
+            self._stop_timer()
+        else:
+            self._start_timer()
 
     async def callback(self):
         self.status = StatusOptions.STOPPED
@@ -63,7 +75,7 @@ class Timer:
 
     def __init__(
         self,
-        timeout: float = TIME_TILL_CONSIDERED_INACTIVE,
+        timeout: float = SECONDS_TILL_CONSIDERED_INACTIVE,
         callback: CoroutineType = default_callback,
     ):
         self._timeout = timeout

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "aef1bd49b576ffc36e45767e264965973dcc685b59325dcc8ea1069a247cea44"
+            "sha256": "2863d7efd06cc940c6464eb06f9ffd36e7ddec0f70e58982de6a4cf4e7dd821a"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -167,7 +167,7 @@
             "hashes": [
                 "sha256:a933e3bb13da54383f9e8f35dc4f9cb9eb9b3b78c6b36f311254d6d0d92c6c7c"
             ],
-            "index": "pypi",
+            "markers": "python_version < '3.7'",
             "version": "==1.1.0"
         },
         "kubernetes": {
@@ -311,6 +311,15 @@
                 "sha256:d16a0141ec1a18405cd4ce8b4613101da75da0e9a7aec5bdd4fa804d0e0eba73"
             ],
             "version": "==1.12.0"
+        },
+        "typing-extensions": {
+            "hashes": [
+                "sha256:07b2c978670896022a43c4b915df8958bec4a6b84add7f2c87b2b728bda3ba64",
+                "sha256:f3f0e67e1d42de47b5c67c32c9b26641642e9170fe7e292991793705cd5fef7c",
+                "sha256:fb2cd053238d33a8ec939190f30cfd736c00653a85a2919415cecf7dc3d9da71"
+            ],
+            "markers": "python_version < '3.7'",
+            "version": "==3.7.2"
         },
         "urllib3": {
             "hashes": [
