@@ -97,19 +97,23 @@ class GameManager(object):
         try:
             LOGGER.info("Waking up")
             games = requests.get(self.games_url).json()
+            print(games)
         except (requests.RequestException, ValueError) as ex:
             LOGGER.error("Failed to obtain game data")
             LOGGER.exception(ex)
         else:
             games_to_add = {
-                id: games[id] for id in self._data.add_new_games(games.keys())
+                id: games[id]
+                for id in self._data.add_new_games(games.keys())
+                if games[id]["status"] is not "s"
             }
-
+ 
             # Add missing games
             self._parallel_map(self.recreate_game, games_to_add.items())
             # Delete extra games
             known_games = set(games.keys())
-            removed_game_ids = self._data.remove_unknown_games(known_games)
+            stopped_games = set(id for id in games.keys() if games[id]["status"] is "s")
+            removed_game_ids = self._data.remove_unknown_games(known_games).union(stopped_games)
             self._parallel_map(self.delete_game, removed_game_ids)
 
     def get_persistent_state(self, player_id):
