@@ -23,7 +23,7 @@ from simulation.game_runner import GameRunner
 app = web.Application()
 cors = aiohttp_cors.setup(app)
 
-activity_monitor = ActivityMonitor(callback)
+activity_monitor = ActivityMonitor()
 socketio_server = socketio.AsyncServer(async_handlers=True)
 
 routes = web.RouteTableDef()
