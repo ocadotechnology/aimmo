@@ -1,12 +1,10 @@
+from aimmo import views
+from app_settings import preview_user_required
 from django.conf.urls import url
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
-from django.views.generic import TemplateView
-from django.views.generic import RedirectView
+from django.views.generic import RedirectView, TemplateView
 from django_js_reverse.views import urls_js
-
-from aimmo import views
-from app_settings import preview_user_required
 
 HOMEPAGE_REGEX = r"^aimmo/"
 
@@ -46,6 +44,9 @@ urlpatterns = [
     url(r"^api/code/(?P<id>[0-9]+)/$", views.code, name="aimmo/code"),
     url(r"^api/games/$", views.list_games, name="aimmo/games"),
     url(r"^api/games/(?P<id>[0-9]+)/$", views.get_game, name="aimmo/game_details"),
+    url(
+        r"^api/games/(?P<game_id>[0-9]+)/stop", views.stop_game, name="aimmo/stop_game"
+    ),
     url(
         r"^api/games/(?P<game_id>[0-9]+)/connection_parameters/$",
         views.connection_parameters,

@@ -1,21 +1,20 @@
 import cPickle as pickle
+import json
 import logging
 import os
-import json
+from exceptions import UserCannotPlayGameException
 
+from aimmo import forms, game_renderer
+from app_settings import get_users_for_new_game, preview_user_required
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
-from django.shortcuts import redirect, render, get_object_or_404
+from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
+from django.middleware.csrf import get_token
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
-from django.middleware.csrf import get_token
-
 from models import Avatar, Game, LevelAttempt
-from aimmo import forms, game_renderer
-from app_settings import get_users_for_new_game, preview_user_required
-from exceptions import UserCannotPlayGameException
 
 LOGGER = logging.getLogger(__name__)
 
@@ -59,7 +58,11 @@ def code(request, id):
 
 def list_games(request):
     response = {
-        game.pk: {"name": game.name, "settings": json.dumps(game.settings_as_dict())}
+        game.pk: {
+            "name": game.name,
+            "status": game.status,
+            "settings": json.dumps(game.settings_as_dict()),
+        }
         for game in Game.objects.exclude_inactive()
     }
     return JsonResponse(response)
@@ -105,6 +108,13 @@ def mark_game_complete(request, id):
     return HttpResponse("Done!")
 
 
+@csrf_exempt
+def stop_game(request, game_id):
+    game = get_object_or_404(Game, id=game_id)
+    game.status = Game.STOPPED
+    return HttpResponse(status=200)
+
+
 class ProgramView(TemplateView):
     template_name = "players/program.html"
 
@@ -121,6 +131,8 @@ def watch_game(request, id):
     game = get_object_or_404(Game, id=id)
     if not game.can_user_play(request.user):
         raise Http404
+
+    game.status = Game.RUNNING
     return game_renderer.render_game(request, game)
 
 
