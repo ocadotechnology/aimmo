@@ -4,6 +4,7 @@ Module for keeping track of inactivity for a given game.
 
 import asyncio
 import logging
+import os
 import time
 from enum import Enum
 from types import CoroutineType
@@ -22,7 +23,7 @@ class ActivityMonitor:
     of time, the game is marked as stopped and the pods will be shut down shortly after
     """
 
-    def __init__(self, callback: CoroutineType):
+    def __init__(self):
         self.__active_users = 0
         # self.callback = self.callback
         self.timer = Timer(SECONDS_TILL_CONSIDERED_INACTIVE, self.callback)
@@ -51,6 +52,14 @@ class ActivityMonitor:
 
     async def callback(self):
         LOGGER.info("CALLBACK TIME!")
+        api_url = os.environ.get(
+            "GAME_API_URL", "http://localhost:8000/aimmo/api/games/"
+        )
+        stop_url = api_url + "stop"
+        LOGGER.info(stop_url)
+        LOGGER.info("Timer expired! Marking game as STOPPED")
+        return requests.get(stop_url)
+        # this should trigger the game for deletion, part of (#1011)
 
 
 class Timer:
