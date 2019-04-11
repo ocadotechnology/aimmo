@@ -10,6 +10,7 @@ import sys
 from urllib.parse import parse_qs
 
 import aiohttp_cors
+import requests
 import socketio
 from aiohttp import web
 from aiohttp_wsgi import WSGIHandler
@@ -21,12 +22,6 @@ from simulation.game_runner import GameRunner
 
 app = web.Application()
 cors = aiohttp_cors.setup(app)
-
-
-async def callback(self):
-    LOGGER.info("Timer expired! Game marked as STOPPED")
-    # this should trigger the game for deletion, part of (#1011)
-
 
 activity_monitor = ActivityMonitor(callback)
 socketio_server = socketio.AsyncServer(async_handlers=True)

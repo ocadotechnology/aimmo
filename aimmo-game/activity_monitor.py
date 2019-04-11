@@ -11,7 +11,7 @@ from types import CoroutineType
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-SECONDS_TILL_CONSIDERED_INACTIVE = 3600
+SECONDS_TILL_CONSIDERED_INACTIVE = 10
 
 
 class ActivityMonitor:
@@ -22,9 +22,9 @@ class ActivityMonitor:
     of time, the game is marked as stopped and the pods will be shut down shortly after
     """
 
-    def __init__(self, callback):
+    def __init__(self, callback: CoroutineType):
         self.__active_users = 0
-        self.callback = callback
+        # self.callback = self.callback
         self.timer = Timer(SECONDS_TILL_CONSIDERED_INACTIVE, self.callback)
 
     def _start_timer(self):
@@ -48,6 +48,9 @@ class ActivityMonitor:
             self._stop_timer()
         else:
             self._start_timer()
+
+    async def callback(self):
+        LOGGER.info("CALLBACK TIME!")
 
 
 class Timer:
