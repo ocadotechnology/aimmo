@@ -27,13 +27,12 @@ exports[`<IDEConsole /> renders correctly 1`] = `
 
 exports[`<StyledConsole /> renders correctly 1`] = `
 .c0 {
-  grid-area: console-logs;
   color: #fff;
   background-color: #303030;
   font-family: 'Source Code Pro',monospace;
   overflow: auto;
   white-space: pre-line;
-  padding-bottom: 0px;
+  height: 100%;
 }
 
 .c0::-webkit-scrollbar {

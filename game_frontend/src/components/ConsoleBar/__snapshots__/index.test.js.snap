@@ -19,7 +19,6 @@ exports[`<ConsoleBar /> renders correctly 1`] = `
 exports[`<StyledConsoleBar /> renders correctly 1`] = `
 .c0 {
   background-color: #616161;
-  grid-area: console-bar;
 }
 
 <WithStyles(Toolbar)
