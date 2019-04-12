@@ -1,11 +1,10 @@
 import ast
 import json
 
+from aimmo import app_settings, models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
-
-from aimmo import models, app_settings
 
 app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
     "base %s" % game_id,
@@ -187,6 +186,13 @@ class TestViews(TestCase):
             content_type="application/json",
         )
         self.assertEqual(models.Game.objects.get(id=1).static_data, "static")
+
+    def test_stop_game_view(self):
+        c = Client()
+        response = c.get(reverse("aimmo/stop_game", kwargs={"game_id": 1}))
+
+        self.assertTrue(response.status_code == 200)
+        self.assertEqual(models.Game.objects.get(id=1).status, models.Game.STOPPED)
 
     def test_current_avatar_api_for_non_existent_game(self):
         response = self._go_to_page("aimmo/current_avatar_in_game", "game_id", 1)
