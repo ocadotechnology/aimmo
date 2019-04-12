@@ -112,6 +112,7 @@ def mark_game_complete(request, id):
 def stop_game(request, game_id):
     game = get_object_or_404(Game, id=game_id)
     game.status = Game.STOPPED
+    game.save()
     return HttpResponse(status=200)
 
 
@@ -133,6 +134,7 @@ def watch_game(request, id):
         raise Http404
 
     game.status = Game.RUNNING
+    game.save()
     return game_renderer.render_game(request, game)
 
 

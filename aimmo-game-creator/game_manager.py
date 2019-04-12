@@ -46,6 +46,12 @@ class _GameManagerData(object):
                 self._remove_game(u)
             return unknown_games
 
+    def remove_stopped_games(self, stopped_games):
+        with self._lock:
+            for s in stopped_games:
+                self._remove_game(s)
+            return stopped_games
+
     def get_games(self):
         with self._lock:
             for g in self._games:
@@ -107,13 +113,15 @@ class GameManager(object):
                 for id in self._data.add_new_games(games.keys())
                 if games[id]["status"] is not "s"
             }
- 
+            print(games_to_add)
             # Add missing games
             self._parallel_map(self.recreate_game, games_to_add.items())
             # Delete extra games
             known_games = set(games.keys())
             stopped_games = set(id for id in games.keys() if games[id]["status"] is "s")
-            removed_game_ids = self._data.remove_unknown_games(known_games).union(stopped_games)
+            removed_game_ids = self._data.remove_unknown_games(known_games).union(
+                self._data.remove_stopped_games(stopped_games)
+            )
             self._parallel_map(self.delete_game, removed_game_ids)
 
     def get_persistent_state(self, player_id):
@@ -172,7 +180,7 @@ class LocalGameManager(GameManager):
 
     def delete_game(self, game_id):
         if game_id in self.games:
-            self.games[game_id].kill()
+            self.games[game_id].remove(force=True)
             del self.games[game_id]
 
 

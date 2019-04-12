@@ -10,7 +10,6 @@ import sys
 from urllib.parse import parse_qs
 
 import aiohttp_cors
-import requests
 import socketio
 from aiohttp import web
 from aiohttp_wsgi import WSGIHandler

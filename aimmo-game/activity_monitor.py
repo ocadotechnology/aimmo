@@ -12,7 +12,7 @@ from types import CoroutineType
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-SECONDS_TILL_CONSIDERED_INACTIVE = 10
+SECONDS_TILL_CONSIDERED_INACTIVE = 3600
 
 
 class ActivityMonitor:
@@ -51,12 +51,11 @@ class ActivityMonitor:
             self._start_timer()
 
     async def callback(self):
-        LOGGER.info("CALLBACK TIME!")
         api_url = os.environ.get(
             "GAME_API_URL", "http://localhost:8000/aimmo/api/games/"
         )
         stop_url = api_url + "stop"
-        LOGGER.info(stop_url)
+        print(stop_url)
         LOGGER.info("Timer expired! Marking game as STOPPED")
         return requests.get(stop_url)
         # this should trigger the game for deletion, part of (#1011)
