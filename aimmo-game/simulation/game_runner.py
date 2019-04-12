@@ -10,7 +10,6 @@ from metrics import GAME_TURN_TIME
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.django_communicator import DjangoCommunicator
 from simulation.simulation_runner import ConcurrentSimulationRunner
-from simulation.avatar.avatar_manager import AvatarManager
 from simulation.worker_manager import WorkerManager
 
 LOGGER = logging.getLogger(__name__)

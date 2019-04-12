@@ -1,12 +1,13 @@
 from json import dumps
-import pytest
-import mock
 
-from .mock_communicator import MockCommunicator
-from .maps import InfiniteMap
+import mock
+import pytest
 from simulation.avatar.avatar_manager import AvatarManager
-from simulation.game_state import GameState
 from simulation.game_runner import GameRunner
+from simulation.game_state import GameState
+
+from .maps import InfiniteMap
+from .mock_communicator import MockCommunicator
 from .mock_worker_manager import MockWorkerManager
 
 
