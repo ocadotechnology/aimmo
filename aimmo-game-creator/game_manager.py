@@ -113,7 +113,7 @@ class GameManager(object):
                 for id in self._data.add_new_games(games.keys())
                 if games[id]["status"] is not "s"
             }
-            print(games_to_add)
+
             # Add missing games
             self._parallel_map(self.recreate_game, games_to_add.items())
             # Delete extra games

@@ -55,7 +55,6 @@ class ActivityMonitor:
             "GAME_API_URL", "http://localhost:8000/aimmo/api/games/"
         )
         stop_url = api_url + "stop"
-        print(stop_url)
         LOGGER.info("Timer expired! Marking game as STOPPED")
         return requests.get(stop_url)
         # this should trigger the game for deletion, part of (#1011)
