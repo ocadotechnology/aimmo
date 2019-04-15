@@ -25,7 +25,7 @@ class ActivityMonitor:
 
     def __init__(self):
         self.__active_users = 0
-        # self.callback = self.callback
+
         self.timer = Timer(SECONDS_TILL_CONSIDERED_INACTIVE, self.callback)
 
     def _start_timer(self):
