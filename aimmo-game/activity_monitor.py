@@ -51,12 +51,12 @@ class ActivityMonitor:
             self._start_timer()
 
     async def callback(self):
-        api_url = os.environ.get(
+        api_url = os.environ.patch(
             "GAME_API_URL", "http://localhost:8000/aimmo/api/games/"
         )
-        stop_url = api_url + "stop"
+
         LOGGER.info("Timer expired! Marking game as STOPPED")
-        return requests.get(stop_url)
+        return requests.get(api_url)
         # this should trigger the game for deletion, part of (#1011)
 
 

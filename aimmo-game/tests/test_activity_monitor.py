@@ -8,7 +8,9 @@ from activity_monitor import ActivityMonitor, Timer
 
 @pytest.fixture
 def activity_monitor():
-    return ActivityMonitor(mock.MagicMock())
+    am = ActivityMonitor()
+    am.callback = mock.MagicMock()
+    return am
 
 
 def test_timer_stops_correctly(activity_monitor):

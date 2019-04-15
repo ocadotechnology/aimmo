@@ -70,12 +70,17 @@ def list_games(request):
 
 def get_game(request, id):
     game = get_object_or_404(Game, id=id)
-    response = {"main": {"parameters": [], "main_avatar": None, "users": []}}
-    for avatar in game.avatar_set.all():
-        if avatar.owner_id == game.main_user_id:
-            response["main"]["main_avatar"] = avatar.id
-        response["main"]["users"].append({"id": avatar.id, "code": avatar.code})
-    return JsonResponse(response)
+    if request.method == "GET":
+        response = {"main": {"parameters": [], "main_avatar": None, "users": []}}
+        for avatar in game.avatar_set.all():
+            if avatar.owner_id == game.main_user_id:
+                response["main"]["main_avatar"] = avatar.id
+            response["main"]["users"].append({"id": avatar.id, "code": avatar.code})
+        return JsonResponse(response)
+    elif request.method == "PATCH":
+        game.status = Game.STOPPED
+        game.save()
+        return HttpResponse(status=200)
 
 
 def connection_parameters(request, game_id):
@@ -106,14 +111,6 @@ def mark_game_complete(request, id):
     game.static_data = request.body
     game.save()
     return HttpResponse("Done!")
-
-
-@csrf_exempt
-def stop_game(request, game_id):
-    game = get_object_or_404(Game, id=game_id)
-    game.status = Game.STOPPED
-    game.save()
-    return HttpResponse(status=200)
 
 
 class ProgramView(TemplateView):

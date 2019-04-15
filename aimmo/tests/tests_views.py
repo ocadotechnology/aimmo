@@ -187,9 +187,9 @@ class TestViews(TestCase):
         )
         self.assertEqual(models.Game.objects.get(id=1).static_data, "static")
 
-    def test_stop_game_view(self):
+    def test_stop_game(self):
         c = Client()
-        response = c.get(reverse("aimmo/stop_game", kwargs={"game_id": 1}))
+        response = c.patch(reverse("aimmo/game_details", kwargs={"id": 1}))
 
         self.assertTrue(response.status_code == 200)
         self.assertEqual(models.Game.objects.get(id=1).status, models.Game.STOPPED)
