@@ -5,11 +5,12 @@ import asyncio
 import json
 import logging
 import os
-import pickle
+import secrets
 import sys
 from urllib.parse import parse_qs
 
 import aiohttp_cors
+import requests
 import socketio
 from aiohttp import web
 from aiohttp_wsgi import WSGIHandler
@@ -162,6 +163,17 @@ def create_runner(port):
 
 def run_game(port):
     game_runner = create_runner(port)
+
+    response = requests.get(game_runner.communicator.django_api_url + "token/")
+    token = response.json()["token"]
+
+    new_token = secrets.token_urlsafe(nbytes=16)
+    os.environ["token"] = new_token
+    requests.patch(
+        game_runner.communicator.django_api_url + "token/",
+        data={"token": token, "new_token": new_token},
+    )
+
     game_api = GameAPI(
         game_state=game_runner.game_state, worker_manager=game_runner.worker_manager
     )

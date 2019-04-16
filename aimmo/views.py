@@ -13,9 +13,9 @@ from django.views.generic import TemplateView
 from django.middleware.csrf import get_token
 
 from models import Avatar, Game, LevelAttempt
-from aimmo import forms, game_renderer
-from app_settings import get_users_for_new_game, preview_user_required
-from exceptions import UserCannotPlayGameException
+from rest_framework import authentication, permissions
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 LOGGER = logging.getLogger(__name__)
 
@@ -103,6 +103,27 @@ def mark_game_complete(request, id):
     game.static_data = request.body
     game.save()
     return HttpResponse("Done!")
+
+
+class TokenView(APIView):
+    """
+    View to Game tokens, used to prove a request comes from a game.
+    """
+
+    @csrf_exempt
+    def get(self, request, id):
+        game = get_object_or_404(Game, id=id)
+        return Response(data={"token": game.auth_token})
+
+    @csrf_exempt
+    def patch(self, request, id):
+        game = get_object_or_404(Game, id=id)
+        if request.data["token"] == game.auth_token:
+            game.auth_token = request.data["new_token"]
+            game.save()
+            return Response(data="Token Updated!")
+        else:
+            return Response(data="Not autharized to perform this action!", status=401)
 
 
 class ProgramView(TemplateView):

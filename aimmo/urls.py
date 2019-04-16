@@ -47,6 +47,11 @@ urlpatterns = [
     url(r"^api/games/$", views.list_games, name="aimmo/games"),
     url(r"^api/games/(?P<id>[0-9]+)/$", views.get_game, name="aimmo/game_details"),
     url(
+        r"^api/games/(?P<id>[0-9]+)/token/$",
+        views.TokenView.as_view(),
+        name="aimmo/game_token",
+    ),
+    url(
         r"^api/games/(?P<game_id>[0-9]+)/connection_parameters/$",
         views.connection_parameters,
         name="aimmo/connection_parameters",
