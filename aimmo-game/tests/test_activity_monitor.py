@@ -1,16 +1,16 @@
 import asyncio
 import time
-from unittest import mock
 
 import pytest
 from activity_monitor import ActivityMonitor, Timer
+from asynctest import CoroutineMock
 
 
 @pytest.fixture
 def activity_monitor():
-    am = ActivityMonitor()
-    am.callback = mock.MagicMock()
-    return am
+    activity_monitor = ActivityMonitor()
+    activity_monitor.callback = CoroutineMock()
+    return activity_monitor
 
 
 def test_timer_stops_correctly(activity_monitor):
