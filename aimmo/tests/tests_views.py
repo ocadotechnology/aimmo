@@ -1,11 +1,11 @@
 import ast
 import json
 
+from aimmo import app_settings, models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
-
-from aimmo import models, app_settings
+from rest_framework.test import APIRequestFactory
 
 app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
     "base %s" % game_id,
@@ -275,3 +275,60 @@ class TestViews(TestCase):
         self.assertEqual(current_avatar_id, 1)
         self.assertEqual(len(games_api_users), 1)
         self.assertEqual(games_api_users[0]["id"], 1)
+
+    def test_token_view_get_token(self):
+        """
+        Ensures we can make a get request for the token, and
+        that a request with a valid token is also accepted.
+        """
+        token = models.Game.objects.get(id=1).auth_token
+        client = Client()
+        response = client.get(reverse("aimmo/game_token", kwargs={"id": 1}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(token, response.json()["token"])
+
+        response = client.get(
+            reverse("aimmo/game_token", kwargs={"id": 1}), HTTP_TOKEN=token
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(token, response.json()["token"])
+
+    def test_patch_token_with_no_token(self):
+        """
+        Check for 401 when attempting to change game token.
+        """
+        client = Client()
+        token = models.Game.objects.get(id=1).auth_token
+        response = client.patch(reverse("aimmo/game_token", kwargs={"id": 1}))
+        self.assertEqual(response.status_code, 401)
+
+    def test_patch_token_with_incorrect_token(self):
+        """
+        Check for 401 when attempting to change game token (incorrect token provided).
+        """
+        client = Client()
+        token = models.Game.objects.get(id=1).auth_token
+        response = client.patch(
+            reverse("aimmo/game_token", kwargs={"id": 1}),
+            {},
+            content_type="application/json",
+            HTTP_TOKEN="INCORRECT TOKEN",
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_patch_token_with_correct_token(self):
+        """
+        Check for 200 and succeful token change when updating the token (correct token provided).
+        """
+        client = Client()
+        token = models.Game.objects.get(id=1).auth_token
+        new_token = token[::-1]
+        response = client.patch(
+            reverse("aimmo/game_token", kwargs={"id": 1}),
+            json.dumps({"token": new_token}),
+            content_type="application/json",
+            HTTP_TOKEN=token,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(models.Game.objects.get(id=1).auth_token, new_token)
