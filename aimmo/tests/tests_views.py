@@ -293,6 +293,16 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(token, response.json()["token"])
 
+    def test_get_token_multiple_requests(self):
+        token = models.Game.objects.get(id=1).auth_token
+        client = Client()
+        response = client.get(reverse("aimmo/game_token", kwargs={"id": 1}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(token, response.json()["token"])
+
+        response = client.get(reverse("aimmo/game_token", kwargs={"id": 1}))
+        self.assertEqual(response.status_code, 403)
+
     def test_patch_token_with_no_token(self):
         """
         Check for 401 when attempting to change game token.
@@ -300,7 +310,7 @@ class TestViews(TestCase):
         client = Client()
         token = models.Game.objects.get(id=1).auth_token
         response = client.patch(reverse("aimmo/game_token", kwargs={"id": 1}))
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 403)
 
     def test_patch_token_with_incorrect_token(self):
         """
@@ -314,7 +324,7 @@ class TestViews(TestCase):
             content_type="application/json",
             HTTP_TOKEN="INCORRECT TOKEN",
         )
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 403)
 
     def test_patch_token_with_correct_token(self):
         """

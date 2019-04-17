@@ -15,7 +15,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
 from models import Avatar, Game, LevelAttempt
-from rest_framework import authentication, permissions
+from permissions import HasToken
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -112,7 +112,7 @@ class TokenView(APIView):
     View to Game tokens, used to prove a request comes from a game.
     """
 
-    token_requested = False
+    permission_classes = (HasToken,)
 
     @csrf_exempt
     def get(self, request, id):
@@ -122,34 +122,18 @@ class TokenView(APIView):
         they came from the token-holder.
         """
         game = get_object_or_404(Game, id=id)
+        self.check_object_permissions(self.request, game)
 
-        if self.token_requested:
-            has_token = self.check_for_token(request, game)
-
-        if not self.token_requested or has_token:
-            self.token_requested = True
-            return Response(data={"token": game.auth_token})
-        else:
-            return Response(data="Not autharized to perform this action!", status=401)
+        return Response(data={"token": game.auth_token})
 
     @csrf_exempt
     def patch(self, request, id):
         game = get_object_or_404(Game, id=id)
-        if self.check_for_token(request, game):
-            game.auth_token = request.data["token"]
-            game.save()
-            return Response(data="Token Updated!")
-        else:
-            return Response(data="Not autharized to perform this action!", status=401)
+        self.check_object_permissions(self.request, game)
 
-    def check_for_token(self, request, game):
-        try:
-            if request.META["HTTP_TOKEN"] == game.auth_token:
-                return True
-            else:
-                return False
-        except KeyError:
-            return False
+        game.auth_token = request.data["token"]
+        game.save()
+        return Response(data="Token Updated!")
 
 
 class ProgramView(TemplateView):
