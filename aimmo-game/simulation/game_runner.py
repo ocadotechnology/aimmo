@@ -89,6 +89,7 @@ class GameRunner:
                 self.worker_manager.get_player_id_to_serialized_actions()
             )
             self.worker_manager.clear_logs()
+            self.game_state.turn_counter += 1
 
     async def run(self):
         while True:

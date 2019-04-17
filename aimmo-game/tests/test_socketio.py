@@ -13,6 +13,8 @@ from .test_simulation.mock_worker_manager import MockWorkerManager
 
 
 class MockGameState(object):
+    turn_counter = 0
+
     def serialize(self):
         return {"foo": "bar"}
 
@@ -118,7 +120,9 @@ class TestSocketIO:
             await self.game_api.send_updates()
 
             game_state_call = mock.call("game-state", {"foo": "bar"}, room=self.sid)
-            log_call = mock.call("log", "Logs one", room=self.sid)
+            log_call = mock.call(
+                "log", {"message": "Logs one", "turn_count": 0}, room=self.sid
+            )
 
             mocked_emit.assert_has_calls([game_state_call, log_call], any_order=True)
 
@@ -192,8 +196,12 @@ class TestSocketIO:
             user_two_game_state_call = mock.call(
                 "game-state", {"foo": "bar"}, room="differentsid"
             )
-            user_one_log_call = mock.call("log", "Logs one", room=self.sid)
-            user_two_log_call = mock.call("log", "Logs two", room="differentsid")
+            user_one_log_call = mock.call(
+                "log", {"message": "Logs one", "turn_count": 0}, room=self.sid
+            )
+            user_two_log_call = mock.call(
+                "log", {"message": "Logs two", "turn_count": 0}, room="differentsid"
+            )
 
             mocked_emit.assert_has_calls(
                 [

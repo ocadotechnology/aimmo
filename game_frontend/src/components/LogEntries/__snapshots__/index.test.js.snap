@@ -4,16 +4,10 @@ exports[`<LogEntries /> renders correctly with logs 1`] = `
 <styled.ul>
   <styled.li
     innerRef={[Function]}
-    key="1"
-  >
-    hello
-  </styled.li>
+  />
   <styled.li
     innerRef={[Function]}
-    key="2"
-  >
-    bye
-  </styled.li>
+  />
 </styled.ul>
 `;
 

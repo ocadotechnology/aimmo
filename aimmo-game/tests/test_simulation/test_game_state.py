@@ -34,3 +34,7 @@ class TestGameState(TestCase):
         (game_state, avatar, _, _) = self.game_state_with_two_avatars()
         game_state.main_avatar_id = avatar.player_id
         self.assertEqual(game_state.get_main_avatar(), avatar)
+
+    def test_first_turn_count(self):
+        (game_state, _, _, _) = self.game_state_with_two_avatars()
+        self.assertEqual(game_state.turn_counter, 0)
