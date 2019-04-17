@@ -1,12 +1,10 @@
+from aimmo import views
+from app_settings import preview_user_required
 from django.conf.urls import url
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
-from django.views.generic import TemplateView
-from django.views.generic import RedirectView
+from django.views.generic import RedirectView, TemplateView
 from django_js_reverse.views import urls_js
-
-from aimmo import views
-from app_settings import preview_user_required
 
 HOMEPAGE_REGEX = r"^aimmo/"
 

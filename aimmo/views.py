@@ -1,17 +1,19 @@
 import cPickle as pickle
+import json
 import logging
 import os
-import json
+from exceptions import UserCannotPlayGameException
 
+import game_renderer
+from app_settings import preview_user_required
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
-from django.shortcuts import redirect, render, get_object_or_404
+from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
+from django.middleware.csrf import get_token
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
-from django.middleware.csrf import get_token
-
 from models import Avatar, Game, LevelAttempt
 from rest_framework import authentication, permissions
 from rest_framework.response import Response
@@ -110,20 +112,44 @@ class TokenView(APIView):
     View to Game tokens, used to prove a request comes from a game.
     """
 
+    token_requested = False
+
     @csrf_exempt
     def get(self, request, id):
+        """
+        After the inital token request, we need to check where the 
+        request comes from. So for subsequent requests we verify that
+        they came from the token-holder.
+        """
         game = get_object_or_404(Game, id=id)
-        return Response(data={"token": game.auth_token})
+
+        if self.token_requested:
+            has_token = self.check_for_token(request, game)
+
+        if not self.token_requested or has_token:
+            self.token_requested = True
+            return Response(data={"token": game.auth_token})
+        else:
+            return Response(data="Not autharized to perform this action!", status=401)
 
     @csrf_exempt
     def patch(self, request, id):
         game = get_object_or_404(Game, id=id)
-        if request.data["token"] == game.auth_token:
-            game.auth_token = request.data["new_token"]
+        if self.check_for_token(request, game):
+            game.auth_token = request.data["token"]
             game.save()
             return Response(data="Token Updated!")
         else:
             return Response(data="Not autharized to perform this action!", status=401)
+
+    def check_for_token(self, request, game):
+        try:
+            if request.META["HTTP_TOKEN"] == game.auth_token:
+                return True
+            else:
+                return False
+        except KeyError:
+            return False
 
 
 class ProgramView(TemplateView):
