@@ -22,18 +22,6 @@ class HasToken(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         return self.check_for_token(request, obj)
 
-    def handle_get(self, request, obj):
-        if not self.token_requested:
-            self.token_requested = True
-            print(self.token_requested)
-            return True
-        else:
-            return self.check_for_token(request, obj)
-
-    def handle_request(self, request, obj):
-        self.handle_get = self.handle_request
-        return self.check_for_token(request, obj)
-
     def check_for_token(self, request, obj):
         try:
             return obj.auth_token == "" or request.META["HTTP_TOKEN"] == obj.auth_token
