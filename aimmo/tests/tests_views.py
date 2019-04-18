@@ -276,7 +276,7 @@ class TestViews(TestCase):
         self.assertEqual(len(games_api_users), 1)
         self.assertEqual(games_api_users[0]["id"], 1)
 
-    def test_token_view_get_token(self):
+    def test_token_view_get_token_multiple_requests(self):
         """
         Ensures we can make a get request for the token, and
         that a request with a valid token is also accepted.
@@ -287,21 +287,30 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(token, response.json()["token"])
 
-        response = client.get(
-            reverse("aimmo/game_token", kwargs={"id": 1}), HTTP_TOKEN=token
-        )
+        # Token starts as empty, as long as it is empty, we can make more GET requests
+        response = client.get(reverse("aimmo/game_token", kwargs={"id": 1}))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(token, response.json()["token"])
 
-    def test_get_token_multiple_requests(self):
+    def test_get_token_after_token_set(self):
         token = models.Game.objects.get(id=1).auth_token
         client = Client()
         response = client.get(reverse("aimmo/game_token", kwargs={"id": 1}))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(token, response.json()["token"])
 
-        response = client.get(reverse("aimmo/game_token", kwargs={"id": 1}))
-        self.assertEqual(response.status_code, 403)
+        new_token = "aaaaaaaaaaa"
+        response = client.patch(
+            reverse("aimmo/game_token", kwargs={"id": 1}),
+            json.dumps({"token": new_token}),
+            content_type="application/json",
+        )
+
+        # Token starts as empty, as long as it is empty, we can make more GET requests
+        response = client.get(
+            reverse("aimmo/game_token", kwargs={"id": 1}), HTTP_TOKEN=new_token
+        )
+        self.assertEqual(response.status_code, 200)
 
     def test_patch_token_with_no_token(self):
         """

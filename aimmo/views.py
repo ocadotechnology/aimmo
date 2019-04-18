@@ -130,10 +130,12 @@ class TokenView(APIView):
     def patch(self, request, id):
         game = get_object_or_404(Game, id=id)
         self.check_object_permissions(self.request, game)
-
-        game.auth_token = request.data["token"]
-        game.save()
-        return Response(data="Token Updated!")
+        try:
+            game.auth_token = request.data["token"]
+            game.save()
+            return Response(data="Token Updated!")
+        except KeyError:
+            return Response(data="Not Authorized!", status=403)
 
 
 class ProgramView(TemplateView):
