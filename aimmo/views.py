@@ -117,7 +117,7 @@ class TokenView(APIView):
     @csrf_exempt
     def get(self, request, id):
         """
-        After the inital token request, we need to check where the 
+        After the inital token request, we need to check where the
         request comes from. So for subsequent requests we verify that
         they came from the token-holder.
         """
