@@ -78,7 +78,7 @@ class GameAPI(object):
             query = environ["QUERY_STRING"]
             self._find_avatar_id_from_query(sid, query)
             activity_monitor.active_users = len(self._socket_session_id_to_player_id)
-            await self.send_updates(should_send_logs=False)
+            await self.send_updates(on_connect=True)
 
         return world_update_on_connect
 
@@ -96,11 +96,11 @@ class GameAPI(object):
 
         return remove_session_id_from_mappings
 
-    async def send_updates(self, should_send_logs=True):
+    async def send_updates(self, on_connect=False):
         player_id_to_worker = self.worker_manager.player_id_to_worker
         await self._send_have_avatars_code_updated(player_id_to_worker)
         await self._send_game_state()
-        if should_send_logs:
+        if not on_connect:
             await self._send_logs(player_id_to_worker)
 
     def _find_avatar_id_from_query(self, session_id, query_string):
@@ -132,10 +132,7 @@ class GameAPI(object):
             if should_send_logs(avatar_logs):
                 await socketio_server.emit(
                     "log",
-                    {
-                        "message": avatar_logs,
-                        "turn_count": self.game_state.turn_counter,
-                    },
+                    {"message": avatar_logs, "turn_count": self.game_state.turn_count},
                     room=sid,
                 )
 

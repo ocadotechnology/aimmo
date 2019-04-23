@@ -13,7 +13,7 @@ from .test_simulation.mock_worker_manager import MockWorkerManager
 
 
 class MockGameState(object):
-    turn_counter = 0
+    turn_count = 0
 
     def serialize(self):
         return {"foo": "bar"}

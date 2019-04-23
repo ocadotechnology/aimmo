@@ -15,7 +15,7 @@ class GameState:
         self.world_map = world_map
         self.avatar_manager = avatar_manager
         self.main_avatar_id = None
-        self.turn_counter = 0
+        self.turn_count = 0
         self._lock = RLock()
 
     def get_main_avatar(self):
