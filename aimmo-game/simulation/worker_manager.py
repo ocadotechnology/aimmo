@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import os
 import time
@@ -61,18 +62,21 @@ class WorkerManager(object):
         self.player_id_to_worker[player["id"]].code = player["code"]
 
     def add_new_worker(self, player_id):
-        raise
         self.player_id_to_worker[player_id] = self.worker_class(player_id, self.port)
 
-    def _parallel_map(self, func, iterable_args):
+    async def _parallel_map(self, func, iterable_args):
+        loop = asyncio.get_event_loop()
         with futures.ThreadPoolExecutor() as executor:
-            results = executor.map(func, iterable_args)
+            futurez = (
+                loop.run_in_executor(executor, func, args) for args in iterable_args
+            )
+            results = await asyncio.gather(*futurez)
 
-    def add_workers(self, users_to_add):
-        self._parallel_map(self.add_new_worker, users_to_add)
+    async def add_workers(self, users_to_add):
+        await self._parallel_map(self.add_new_worker, users_to_add)
 
-    def delete_workers(self, players_to_delete):
-        self._parallel_map(self.delete_worker, players_to_delete)
+    async def delete_workers(self, players_to_delete):
+        await self._parallel_map(self.delete_worker, players_to_delete)
 
     def delete_worker(self, player_id):
         if player_id in self.player_id_to_worker:
@@ -80,5 +84,5 @@ class WorkerManager(object):
             del self.player_id_to_worker[player_id]
             worker.remove_worker()
 
-    def update_worker_codes(self, players):
-        self._parallel_map(self.update_code, players)
+    async def update_worker_codes(self, players):
+        await self._parallel_map(self.update_code, players)
