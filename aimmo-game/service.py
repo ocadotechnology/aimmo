@@ -166,7 +166,7 @@ def create_runner(port):
 def run_game(port):
     game_runner = create_runner(port)
 
-    generate_game_token()
+    _generate_game_token()
 
     game_api = GameAPI(
         game_state=game_runner.game_state, worker_manager=game_runner.worker_manager
@@ -175,7 +175,7 @@ def run_game(port):
     asyncio.ensure_future(game_runner.run())
 
 
-def generate_game_token(num_bytes=NUM_BYTES_FOR_TOKEN_GENERATOR):
+def _generate_game_token(num_bytes=NUM_BYTES_FOR_TOKEN_GENERATOR):
     new_token = secrets.token_urlsafe(nbytes=num_bytes)
     os.environ["TOKEN"] = new_token
     requests.patch(
