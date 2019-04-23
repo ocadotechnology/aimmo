@@ -23,6 +23,8 @@ from simulation.game_runner import GameRunner
 app = web.Application()
 cors = aiohttp_cors.setup(app)
 
+NUM_BYTES_FOR_TOKEN_GENERATOR = 16
+
 
 async def callback(self):
     LOGGER.info("Timer expired! Game marked as STOPPED")
@@ -164,17 +166,21 @@ def create_runner(port):
 def run_game(port):
     game_runner = create_runner(port)
 
-    new_token = secrets.token_urlsafe(nbytes=16)
-    os.environ["TOKEN"] = new_token
-    requests.patch(
-        game_runner.communicator.django_api_url + "token/", data={"token": new_token}
-    )
+    generate_game_token()
 
     game_api = GameAPI(
         game_state=game_runner.game_state, worker_manager=game_runner.worker_manager
     )
     game_runner.set_end_turn_callback(game_api.send_updates)
     asyncio.ensure_future(game_runner.run())
+
+
+def generate_game_token(num_bytes=NUM_BYTES_FOR_TOKEN_GENERATOR):
+    new_token = secrets.token_urlsafe(nbytes=num_bytes)
+    os.environ["TOKEN"] = new_token
+    requests.patch(
+        game_runner.communicator.django_api_url + "token/", data={"token": new_token}
+    )
 
 
 if __name__ == "__main__":
