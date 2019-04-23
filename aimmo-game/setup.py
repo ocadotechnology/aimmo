@@ -16,7 +16,6 @@ setup(
         "aiohttp-wsgi",
         "eventlet",
         "python-socketio==4.0.0",
-        "cryptography",
         "requests",
         "six",
         "kubernetes",

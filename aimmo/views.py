@@ -9,13 +9,13 @@ from app_settings import preview_user_required
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
-from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
 from models import Avatar, Game, LevelAttempt
 from permissions import HasToken
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -107,7 +107,7 @@ def mark_game_complete(request, id):
     return HttpResponse("Done!")
 
 
-class TokenView(APIView):
+class GameTokenView(APIView):
     """
     View to Game tokens, used to prove a request comes from a game.
     """
@@ -135,7 +135,7 @@ class TokenView(APIView):
             game.save()
             return Response(data="Token Updated!")
         except KeyError:
-            return Response(data="Not Authorized!", status=403)
+            return Response(status=status.HTTP_403_FORBIDDEN)
 
 
 class ProgramView(TemplateView):

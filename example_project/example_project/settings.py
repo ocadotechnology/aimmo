@@ -38,7 +38,6 @@
 import os
 import subprocess
 
-from django_autoconfig import autoconfig
 
 ALLOWED_HOSTS = ["*"]
 
@@ -121,5 +120,7 @@ try:
     from example_project.local_settings import *  # pylint: disable=E0611
 except ImportError:
     pass
+
+from django_autoconfig import autoconfig
 
 autoconfig.configure_settings(globals())

@@ -5,6 +5,7 @@ from aimmo import app_settings, models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
+from rest_framework import status
 from rest_framework.test import APIRequestFactory
 
 app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
@@ -284,19 +285,19 @@ class TestViews(TestCase):
         token = models.Game.objects.get(id=1).auth_token
         client = Client()
         response = client.get(reverse("aimmo/game_token", kwargs={"id": 1}))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(token, response.json()["token"])
 
         # Token starts as empty, as long as it is empty, we can make more GET requests
         response = client.get(reverse("aimmo/game_token", kwargs={"id": 1}))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(token, response.json()["token"])
 
     def test_get_token_after_token_set(self):
         token = models.Game.objects.get(id=1).auth_token
         client = Client()
         response = client.get(reverse("aimmo/game_token", kwargs={"id": 1}))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(token, response.json()["token"])
 
         new_token = "aaaaaaaaaaa"
@@ -310,7 +311,7 @@ class TestViews(TestCase):
         response = client.get(
             reverse("aimmo/game_token", kwargs={"id": 1}), HTTP_TOKEN=new_token
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_patch_token_with_no_token(self):
         """
@@ -319,7 +320,7 @@ class TestViews(TestCase):
         client = Client()
         token = models.Game.objects.get(id=1).auth_token
         response = client.patch(reverse("aimmo/game_token", kwargs={"id": 1}))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_patch_token_with_incorrect_token(self):
         """
@@ -333,11 +334,11 @@ class TestViews(TestCase):
             content_type="application/json",
             HTTP_TOKEN="INCORRECT TOKEN",
         )
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_patch_token_with_correct_token(self):
         """
-        Check for 200 and succeful token change when updating the token (correct token provided).
+        Check for 200 and successful token change when updating the token (correct token provided).
         """
         client = Client()
         token = models.Game.objects.get(id=1).auth_token
@@ -349,5 +350,5 @@ class TestViews(TestCase):
             HTTP_TOKEN=token,
         )
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(models.Game.objects.get(id=1).auth_token, new_token)

@@ -46,7 +46,7 @@ urlpatterns = [
     url(r"^api/games/(?P<id>[0-9]+)/$", views.get_game, name="aimmo/game_details"),
     url(
         r"^api/games/(?P<id>[0-9]+)/token/$",
-        views.TokenView.as_view(),
+        views.GameTokenView.as_view(),
         name="aimmo/game_token",
     ),
     url(
