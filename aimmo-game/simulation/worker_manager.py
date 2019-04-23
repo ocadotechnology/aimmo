@@ -61,6 +61,7 @@ class WorkerManager(object):
         self.player_id_to_worker[player["id"]].code = player["code"]
 
     def add_new_worker(self, player_id):
+        raise
         self.player_id_to_worker[player_id] = self.worker_class(player_id, self.port)
 
     def _parallel_map(self, func, iterable_args):
