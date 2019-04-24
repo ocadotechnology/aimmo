@@ -160,7 +160,7 @@ class LocalGameManager(GameManager):
 
         self.games[game_id] = client.containers.run(
             name="aimmo-game-{}".format(game_id),
-            image="ocadotechnology/aimmo-game:test",
+            image="dent50cent/aimmo-game:test",
             **template
         )
         game_url = "http://{}:{}".format(self.host, port)
@@ -213,7 +213,7 @@ class KubernetesGameManager(GameManager):
                     ),
                 )
             ],
-            image="ocadotechnology/aimmo-game:{}".format(
+            image="dent50cent/aimmo-game:{}".format(
                 os.environ.get("IMAGE_SUFFIX", "latest")
             ),
             ports=[kubernetes.client.V1ContainerPort(container_port=5000)],
