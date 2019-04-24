@@ -45,7 +45,7 @@ class LocalWorker(Worker):
         template["environment"]["PORT"] = port
         self.client.containers.run(
             name="aimmo-{}-worker-{}".format(self.game_id, self.player_id),
-            image="dent50cent/aimmo-game-worker:test",
+            image="ocadotechnology/aimmo-game-worker:test",
             ports={f"{port}/tcp": port},
             **template,
         )
