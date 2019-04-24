@@ -56,4 +56,4 @@ class LocalWorker(Worker):
         return worker_url
 
     def remove_worker(self):
-        self.kill()
+        del self

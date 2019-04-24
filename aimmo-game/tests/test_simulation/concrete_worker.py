@@ -9,4 +9,4 @@ class ConcreteWorker(Worker):
         return "http://test"
 
     def remove_worker(self):
-        self.kill()
+        del self
