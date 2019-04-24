@@ -2,8 +2,10 @@ import asyncio
 import logging
 import os
 import time
+from asyncio import Future
 from concurrent import futures
 from threading import Thread
+from typing import Tuple
 
 from eventlet.semaphore import Semaphore
 
@@ -67,10 +69,10 @@ class WorkerManager(object):
     async def _parallel_map(self, func, iterable_args):
         loop = asyncio.get_event_loop()
         with futures.ThreadPoolExecutor() as executor:
-            futurez = (
+            workers: Tuple[Future] = (
                 loop.run_in_executor(executor, func, args) for args in iterable_args
             )
-            results = await asyncio.gather(*futurez)
+            await asyncio.gather(*workers)
 
     async def add_workers(self, users_to_add):
         await self._parallel_map(self.add_new_worker, users_to_add)

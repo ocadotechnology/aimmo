@@ -4,6 +4,7 @@ import logging
 import os
 
 import docker
+from docker.models.containers import Container
 
 from .worker import Worker
 
@@ -23,7 +24,7 @@ class LocalWorker(Worker):
     def __init__(self, *args, **kwargs):
         self.game_id = os.environ.get("GAME_ID", 0)
         self.client = docker.from_env()
-        self.container = None
+        self.container: Container = None
         super(LocalWorker, self).__init__(*args, **kwargs)
 
     @staticmethod
