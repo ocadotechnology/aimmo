@@ -27,8 +27,9 @@ class HasToken(permissions.BasePermission):
 
     def check_for_token(self, request, obj):
         try:
-            return obj.auth_token == "" or request.META["HTTP_TOKEN"] == obj.auth_token
-        except KeyError:
-            return False
-        except AttributeError:
+            return (
+                obj.auth_token == ""
+                or request.META["HTTP_GAME_TOKEN"] == obj.auth_token
+            )
+        except (KeyError, AttributeError):
             return False

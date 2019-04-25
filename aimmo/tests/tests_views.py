@@ -309,7 +309,7 @@ class TestViews(TestCase):
 
         # Token starts as empty, as long as it is empty, we can make more GET requests
         response = client.get(
-            reverse("aimmo/game_token", kwargs={"id": 1}), HTTP_TOKEN=new_token
+            reverse("aimmo/game_token", kwargs={"id": 1}), HTTP_GAME_TOKEN=new_token
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -332,7 +332,7 @@ class TestViews(TestCase):
             reverse("aimmo/game_token", kwargs={"id": 1}),
             {},
             content_type="application/json",
-            HTTP_TOKEN="INCORRECT TOKEN",
+            HTTP_GAME_TOKEN="INCORRECT TOKEN",
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -347,7 +347,7 @@ class TestViews(TestCase):
             reverse("aimmo/game_token", kwargs={"id": 1}),
             json.dumps({"token": new_token}),
             content_type="application/json",
-            HTTP_TOKEN=token,
+            HTTP_GAME_TOKEN=token,
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)

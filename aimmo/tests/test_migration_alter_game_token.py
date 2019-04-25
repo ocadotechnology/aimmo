@@ -1,7 +1,7 @@
 from base_test_migration import MigrationTestCase
 
 
-class TestMigrationAlterToken(MigrationTestCase):
+class TestMigrationAlterGameToken(MigrationTestCase):
 
     start_migration = "0009_add_game_status"
     dest_migration = "0010_alter_game_token"

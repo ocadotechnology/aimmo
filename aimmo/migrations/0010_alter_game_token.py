@@ -5,16 +5,14 @@ from __future__ import unicode_literals
 from django.db import migrations, models
 
 
-class Migration(migrations.Migration):
+class AlterGameToken(migrations.Migration):
 
-    dependencies = [
-        ('aimmo', '0009_add_game_status'),
-    ]
+    dependencies = [("aimmo", "0009_add_game_status")]
 
     operations = [
         migrations.AlterField(
-            model_name='game',
-            name='auth_token',
+            model_name="game",
+            name="auth_token",
             field=models.CharField(blank=True, max_length=24),
-        ),
+        )
     ]
