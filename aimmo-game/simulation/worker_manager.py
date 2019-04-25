@@ -1,6 +1,6 @@
 import logging
 import os
-import time
+import asyncio
 from concurrent import futures
 from threading import Thread
 
@@ -38,14 +38,11 @@ class WorkerManager(object):
                 for (player_id, worker) in self.player_id_to_worker.items()
             ]
 
-        def timed_process_for_worker_turn_requests(duration):
-            threads = prepare_request_threads()
-
-            [thread.setDaemon(True) for thread in threads]
-            [thread.start() for thread in threads]
-            time.sleep(duration)
-
-        timed_process_for_worker_turn_requests(2)
+        async def timed_process_for_worker_turn_requests(duration):
+            async with prepare_request_threads() as threads:
+                [thread.setDaemon(True) for thread in threads]
+                [thread.start() for thread in threads]
+                await asyncio.sleep(duration)
 
     def get_player_id_to_serialized_actions(self):
         return {
