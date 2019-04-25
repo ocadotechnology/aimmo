@@ -96,9 +96,10 @@ async def test_changed_code(game_runner):
         assert game_runner.worker_manager.get_code(i) in "changed %s" % i
 
 
-def test_logs_cleared_at_each_update(game_runner):
+@pytest.mark.asyncio
+async def test_logs_cleared_at_each_update(game_runner):
     game_runner.communicator.data = RequestMock(3).value
-    game_runner.update_workers()
+    await game_runner.update_workers()
     first_worker = game_runner.worker_manager.player_id_to_worker[0]
     first_worker.log = "test logs"
 

@@ -61,17 +61,17 @@ class GameRunner:
     def update_main_user(self, game_metadata):
         self.game_state.main_avatar_id = game_metadata["main_avatar"]
 
-    def update_workers(self):
+    async def update_workers(self):
         game_metadata = self.communicator.get_game_metadata()["main"]
 
         users_to_add = self.get_users_to_add(game_metadata)
         users_to_delete = self.get_users_to_delete(game_metadata)
 
-        self.worker_manager.add_workers(users_to_add)
-        self.worker_manager.delete_workers(users_to_delete)
+        await self.worker_manager.add_workers(users_to_add)
+        await self.worker_manager.delete_workers(users_to_delete)
         self.simulation_runner.add_avatars(users_to_add)
         self.simulation_runner.delete_avatars(users_to_delete)
-        self.worker_manager.update_worker_codes(game_metadata["users"])
+        await self.worker_manager.update_worker_codes(game_metadata["users"])
 
         self.update_main_user(game_metadata)
         self.worker_manager.fetch_all_worker_data(
@@ -84,7 +84,7 @@ class GameRunner:
 
     async def update(self):
         with GAME_TURN_TIME():
-            self.update_workers()
+            await self.update_workers()
             await self.update_simulation(
                 self.worker_manager.get_player_id_to_serialized_actions()
             )
