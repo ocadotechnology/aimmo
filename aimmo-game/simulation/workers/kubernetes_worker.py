@@ -103,7 +103,7 @@ class KubernetesWorker(Worker):
         raise EnvironmentError("Could not start worker %s." % player_id)
 
     def _create_worker(self):
-        pod_obj = self.make_pod(self.player_id)
+        pod_obj = self.make_pod()
         LOGGER.info("Making new workers pod: {}".format(pod_obj.metadata.name))
         pod = self.api.create_namespaced_pod(namespace=K8S_NAMESPACE, body=pod_obj)
         pod_name = pod.metadata.name
