@@ -74,7 +74,7 @@ class GameRunner:
         await self.worker_manager.update_worker_codes(game_metadata["users"])
 
         self.update_main_user(game_metadata)
-        self.worker_manager.fetch_all_worker_data(
+        await self.worker_manager.fetch_all_worker_data(
             self.game_state.get_serialized_game_states_for_workers()
         )
 

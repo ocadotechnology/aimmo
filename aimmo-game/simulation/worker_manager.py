@@ -26,7 +26,7 @@ class WorkerManager(object):
     def get_code(self, player_id):
         return self.player_id_to_worker[player_id].code
 
-    def fetch_all_worker_data(self, player_id_to_game_state):
+    async def fetch_all_worker_data(self, player_id_to_game_state):
         """
         Creates a thread for each worker to send a request for their data. After
         a set duration these threads will close, giving a consistent turn time.
@@ -40,11 +40,12 @@ class WorkerManager(object):
                 for (player_id, worker) in self.player_id_to_worker.items()
             ]
 
-        async def timed_process_for_worker_turn_requests(duration):
-            async with prepare_request_threads() as threads:
-                [thread.setDaemon(True) for thread in threads]
-                [thread.start() for thread in threads]
-                await asyncio.sleep(duration)
+        async def timed_process_for_worker_turn_requests():
+            threads = prepare_request_threads()
+            [thread.setDaemon(True) for thread in threads]
+            [thread.start() for thread in threads]
+
+        await timed_process_for_worker_turn_requests()
 
     def get_player_id_to_serialized_actions(self):
         return {
