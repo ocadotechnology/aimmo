@@ -16,11 +16,9 @@ class HasToken(permissions.BasePermission):
     Used to verify that an incoming request has permission
     to access a given object from the models.
 
-    This is done on a per object basis. the object must have an `auth_token`
+    This is done on a per object basis. The object must have an `auth_token`
     attribute to be used with this permission class.
     """
-
-    token_requested = False
 
     def has_object_permission(self, request, view, obj):
         return self.check_for_token(request, obj)
