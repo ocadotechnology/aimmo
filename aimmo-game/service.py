@@ -16,6 +16,7 @@ from aiohttp_wsgi import WSGIHandler
 from prometheus_client import make_wsgi_app
 
 from activity_monitor import ActivityMonitor
+from authentication import generate_game_token
 from simulation import map_generator
 from simulation.game_runner import GameRunner
 

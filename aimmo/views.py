@@ -133,7 +133,7 @@ class GameTokenView(APIView):
         try:
             game.auth_token = request.data["token"]
             game.save()
-            return Response(data="Token Updated!")
+            return Response(status=status.HTTP_200_OK)
         except KeyError:
             return Response(status=status.HTTP_403_FORBIDDEN)
 

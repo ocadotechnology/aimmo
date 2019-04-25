@@ -11,7 +11,7 @@ def default_preview_user(view_func):
     return wrapped
 
 
-class HasToken(permissions.BasePermission):
+class GameHasToken(permissions.BasePermission):
     """
     Used to verify that an incoming request has permission
     to access a given object from the models.
