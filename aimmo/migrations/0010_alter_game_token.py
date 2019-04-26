@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from django.db import migrations, models
 
 
-class AlterGameToken(migrations.Migration):
+class Migration(migrations.Migration):
 
     dependencies = [("aimmo", "0009_add_game_status")]
 
