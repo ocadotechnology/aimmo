@@ -32,7 +32,7 @@ class Game(models.Model):
     STATUS_CHOICES = ((RUNNING, "running"), (STOPPED, "stopped"), (PAUSED, "paused"))
 
     name = models.CharField(max_length=100)
-    auth_token = models.CharField(max_length=24, default=generate_auth_token)
+    auth_token = models.CharField(max_length=24, blank=True)
     owner = models.ForeignKey(User, blank=True, null=True, related_name="owned_games")
     public = models.BooleanField(default=False)
     can_play = models.ManyToManyField(User, related_name="playable_games")
