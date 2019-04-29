@@ -4,6 +4,7 @@ import logging
 import os
 
 import docker
+from docker.models.containers import Container
 
 from .worker import Worker
 
@@ -23,6 +24,7 @@ class LocalWorker(Worker):
     def __init__(self, *args, **kwargs):
         self.game_id = os.environ.get("GAME_ID", 0)
         self.client = docker.from_env()
+        self.container: Container = None
         super(LocalWorker, self).__init__(*args, **kwargs)
 
     @staticmethod
@@ -43,7 +45,7 @@ class LocalWorker(Worker):
         )
         template["environment"]["DATA_URL"] = data_url
         template["environment"]["PORT"] = port
-        self.client.containers.run(
+        self.container = self.client.containers.run(
             name="aimmo-{}-worker-{}".format(self.game_id, self.player_id),
             image="ocadotechnology/aimmo-game-worker:test",
             ports={f"{port}/tcp": port},
@@ -56,4 +58,4 @@ class LocalWorker(Worker):
         return worker_url
 
     def remove_worker(self):
-        self.kill()
+        self.container.kill()
