@@ -51,8 +51,9 @@ class ActivityMonitor:
             self._start_timer()
 
     async def callback(self):
-        api_url = os.environ.patch(
-            "GAME_API_URL", "http://localhost:8000/aimmo/api/games/"
+        token_url = (
+            os.environ.get("GAME_API_URL", "http://localhost:8000/aimmo/api/games/")
+            + "/token"
         )
 
         LOGGER.info("Timer expired! Marking game as STOPPED")
