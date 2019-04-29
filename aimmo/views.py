@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
 from models import Avatar, Game, LevelAttempt
-from permissions import HasToken
+from permissions import HasGameToken
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
