@@ -7,14 +7,10 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('aimmo', '0007_auto_20180515_1300'),
-    ]
+    dependencies = [("aimmo", "0007_auto_20180515_1300")]
 
     operations = [
         migrations.AlterField(
-            model_name='game',
-            name='public',
-            field=models.BooleanField(default=False),
-        ),
+            model_name="game", name="public", field=models.BooleanField(default=False)
+        )
     ]

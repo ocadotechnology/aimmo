@@ -72,7 +72,7 @@ def start_game_creator():
         'tty': True,
         'environment': {
             'FLASK_ENV': 'development',
-            'WORKER_MANAGER': 'local'
+            'WORKER': 'local'
         },
         'volumes': {
             '/var/run/docker.sock': {'bind': '/var/run/docker.sock', 'mode': 'rw'}

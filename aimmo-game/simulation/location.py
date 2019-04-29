@@ -13,7 +13,7 @@ class Location(object):
         return Location(self.x - direction.x, self.y - direction.y)
 
     def __repr__(self):
-        return 'Location({}, {})'.format(self.x, self.y)
+        return "Location({}, {})".format(self.x, self.y)
 
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
@@ -24,5 +24,5 @@ class Location(object):
     def __hash__(self):
         return hash((self.x, self.y))
 
-    def serialise(self):
-        return {'x': self.x, 'y': self.y}
+    def serialize(self):
+        return {"x": self.x, "y": self.y}

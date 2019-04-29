@@ -1,36 +1,43 @@
-
-
 from collections import defaultdict
 
-from simulation.location import Location
 from simulation.cell import Cell
-from simulation.world_map import WorldMap
 from simulation.game_logic import SpawnLocationFinder
+from simulation.interactables.score_location import ScoreLocation
+from simulation.location import Location
+from simulation.world_map import WorldMap
 
 
 class MockPickup(object):
-    def __init__(self, name='', cell=None):
-        self.applied_to = None
+    def __init__(self, name="", cell=None, target=None):
+        self.applied_to = target
         self.name = name
         self.cell = None
 
-    def apply(self, avatar):
-        self.applied_to = avatar
+    def apply(self):
         if self.cell:
-            self.cell.pickup = None
+            self.cell.interactable = None
 
-    def serialise(self):
-        return {'name': self.name}
+    def conditions_met(self, world_map):
+        return True
+
+    def serialize(self):
+        return {"name": self.name}
 
 
 class MockCell(Cell):
-    def __init__(self, location=Location(0, 0), habitable=True, generates_score=False,
-                 avatar=None, pickup=None, name=None, actions=[]):
+    def __init__(
+        self,
+        location=Location(0, 0),
+        habitable=True,
+        avatar=None,
+        interactable=None,
+        name=None,
+        actions=[],
+    ):
         self.location = location
         self.habitable = habitable
-        self.generates_score = generates_score
         self.avatar = avatar
-        self.pickup = pickup
+        self.interactable = interactable
         self.name = name
         self.actions = actions
         self.partially_fogged = False
@@ -64,11 +71,11 @@ class InfiniteMap(WorldMap):
 
     @property
     def num_rows(self):
-        return float('inf')
+        return float("inf")
 
     @property
     def num_cols(self):
-        return float('inf')
+        return float("inf")
 
 
 class EmptyMap(WorldMap):
@@ -90,7 +97,9 @@ class EmptyMap(WorldMap):
 
 class ScoreOnOddColumnsMap(InfiniteMap):
     def get_cell(self, location):
-        default_cell = Cell(location, generates_score=(location.x % 2 == 1))
+        default_cell = Cell(location)
+        if location.x % 2 == 1:
+            default_cell.interactable = ScoreLocation(default_cell)
         return self._cell_cache.setdefault(location, default_cell)
 
 
@@ -116,5 +125,5 @@ class PickupMap(WorldMap):
 
     def get_cell(self, location):
         cell = Cell(location)
-        cell.pickup = self._pickup
+        cell.interactable = self._pickup
         return cell

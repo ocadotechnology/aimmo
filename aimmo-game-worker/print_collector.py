@@ -2,6 +2,7 @@ class LogManager(object):
     """ Wrapper for the PrintCollector which allows logs to have
         state. The class definition for the PrintCollector is
         passed into the globals for the user's code before execution. """
+
     def __init__(self):
         class PrintCollector(object):
             """ Collect written text, and return it when called. """
@@ -14,13 +15,13 @@ class LogManager(object):
                 print_collector.logs.append(text)
 
             def __call__(print_collector):
-                return ''.join(print_collector.logs)
+                return "".join(print_collector.logs)
 
             def _call_print(print_collector, *objects, **kwargs):
-                if kwargs.get('file', None) is None:
-                    kwargs['file'] = print_collector
+                if kwargs.get("file", None) is None:
+                    kwargs["file"] = print_collector
                 else:
-                    print_collector._getattr_(kwargs['file'], 'write')
+                    print_collector._getattr_(kwargs["file"], "write")
 
                 print(*objects, **kwargs)
 
@@ -31,7 +32,7 @@ class LogManager(object):
         return self.print_collector
 
     def get_logs(self):
-        return ''.join(self.logs)
+        return "".join(self.logs)
 
     def is_empty(self):
         return self.logs == []

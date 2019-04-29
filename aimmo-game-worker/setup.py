@@ -4,20 +4,14 @@ import sys
 import os
 
 
-withcoverage = os.environ.get('WITH_COVERAGE')
+withcoverage = os.environ.get("WITH_COVERAGE")
 
 setup(
-    name='aimmo-game-worker',
+    name="aimmo-game-worker",
     packages=find_packages(),
     include_package_data=True,
-    install_requires=[
-        'flask',
-        'requests'
-    ],
-    tests_require=[
-        'httmock',
-        'mock'
-    ],
-    test_suite='tests',
+    install_requires=["flask", "requests"],
+    tests_require=["httmock", "mock"],
+    test_suite="tests",
     zip_safe=False,
 )

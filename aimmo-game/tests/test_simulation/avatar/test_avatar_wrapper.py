@@ -6,7 +6,8 @@ from httmock import HTTMock
 
 from simulation.avatar import avatar_wrapper
 from simulation.location import Location
-from simulation.worker import Worker
+from tests.test_simulation.concrete_worker import ConcreteWorker
+
 
 class MockEffect(object):
     def __init__(self, avatar):
@@ -40,30 +41,28 @@ class ActionRequest(object):
         self.options = options
 
     def __call__(self, url, request):
-        return json.dumps({'action': {'action_type': 'test', 'options': self.options}})
+        return json.dumps({"action": {"action_type": "test", "options": self.options}})
 
 
 def InvalidJSONRequest(url, request):
-    return 'EXCEPTION'
+    return "EXCEPTION"
 
 
 def NonExistentActionRequest(url, request):
-    return json.dumps({'action': {'action_type': 'fake', 'option': {}}})
+    return json.dumps({"action": {"action_type": "fake", "option": {}}})
 
 
-avatar_wrapper.ACTIONS = {
-    'test': MockAction
-}
+avatar_wrapper.ACTIONS = {"test": MockAction}
 
 
 class TestAvatarWrapper(TestCase):
     def setUp(self):
         global actions_created
         actions_created = []
-        self.worker = Worker(worker_url='http://test')
-        self.avatar = avatar_wrapper.AvatarWrapper(player_id=None,
-                                                   initial_location=None,
-                                                   avatar_appearance=None)
+        self.worker = ConcreteWorker(1, 0)
+        self.avatar = avatar_wrapper.AvatarWrapper(
+            player_id=None, initial_location=None, avatar_appearance=None
+        )
 
     def take_turn(self, request_mock=None):
         if request_mock is None:
@@ -75,12 +74,12 @@ class TestAvatarWrapper(TestCase):
     def test_bad_action_data_given(self):
         request_mock = InvalidJSONRequest
         self.take_turn(request_mock)
-        self.assertEqual(actions_created, [], 'No action should have been applied')
+        self.assertEqual(actions_created, [], "No action should have been applied")
 
     def test_non_existant_action(self):
         request_mock = NonExistentActionRequest
         self.take_turn(request_mock)
-        self.assertEqual(actions_created, [], 'No action should have been applied')
+        self.assertEqual(actions_created, [], "No action should have been applied")
 
     def add_effects(self, num=2):
         effects = []
@@ -129,8 +128,8 @@ class TestAvatarWrapper(TestCase):
         self.assertEqual(self.avatar.score, 0)
 
     def test_avatar_dies_location(self):
-        self.avatar.die('test')
-        self.assertEqual(self.avatar.location, 'test')
+        self.avatar.die("test")
+        self.assertEqual(self.avatar.location, "test")
 
     def test_damage_applied(self):
         self.avatar.health = 10

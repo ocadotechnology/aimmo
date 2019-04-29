@@ -1,14 +1,13 @@
 from base64 import urlsafe_b64encode
 from os import urandom
 
+from aimmo import app_settings
 from django.contrib.auth.models import User
 from django.db import models
 
-from aimmo import app_settings
-
-GAME_GENERATORS = [
-    ('Main', 'Open World'),  # Default
-] + [('Level%s' % i, 'Level %s' % i) for i in xrange(1, app_settings.MAX_LEVEL+1)]
+GAME_GENERATORS = [("Main", "Open World")] + [  # Default
+    ("Level%s" % i, "Level %s" % i) for i in xrange(1, app_settings.MAX_LEVEL + 1)
+]
 
 
 def generate_auth_token():
@@ -27,18 +26,27 @@ class GameQuerySet(models.QuerySet):
 
 
 class Game(models.Model):
+    RUNNING = "r"
+    STOPPED = "s"
+    PAUSED = "p"
+    STATUS_CHOICES = ((RUNNING, "running"), (STOPPED, "stopped"), (PAUSED, "paused"))
+
     name = models.CharField(max_length=100)
     auth_token = models.CharField(max_length=24, default=generate_auth_token)
-    owner = models.ForeignKey(User, blank=True, null=True, related_name='owned_games')
+    owner = models.ForeignKey(User, blank=True, null=True, related_name="owned_games")
     public = models.BooleanField(default=False)
-    can_play = models.ManyToManyField(User, related_name='playable_games')
+    can_play = models.ManyToManyField(User, related_name="playable_games")
     completed = models.BooleanField(default=False)
-    main_user = models.ForeignKey(User, blank=True, null=True, related_name='games_for_user')
+    main_user = models.ForeignKey(
+        User, blank=True, null=True, related_name="games_for_user"
+    )
     objects = GameQuerySet.as_manager()
     static_data = models.TextField(blank=True, null=True)
 
     # Game config
-    generator = models.CharField(max_length=20, choices=GAME_GENERATORS, default=GAME_GENERATORS[0][0])
+    generator = models.CharField(
+        max_length=20, choices=GAME_GENERATORS, default=GAME_GENERATORS[0][0]
+    )
     target_num_cells_per_avatar = models.FloatField(default=16)
     target_num_score_locations_per_avatar = models.FloatField(default=0.5)
     score_despawn_chance = models.FloatField(default=0.05)
@@ -47,6 +55,7 @@ class Game(models.Model):
     obstacle_ratio = models.FloatField(default=0.1)
     start_height = models.IntegerField(default=31)
     start_width = models.IntegerField(default=31)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=RUNNING)
 
     @property
     def is_active(self):
@@ -83,7 +92,7 @@ class Avatar(models.Model):
     auth_token = models.CharField(max_length=24, default=generate_auth_token)
 
     class Meta:
-        unique_together = ('owner', 'game')
+        unique_together = ("owner", "game")
 
 
 class LevelAttempt(models.Model):
@@ -92,4 +101,4 @@ class LevelAttempt(models.Model):
     game = models.OneToOneField(Game)
 
     class Meta:
-        unique_together = ('level_number', 'user')
+        unique_together = ("level_number", "user")

@@ -11,8 +11,9 @@ class AvatarManager(object):
         self.avatars_by_id = {}
 
     def add_avatar(self, player_id, location):
-        avatar = AvatarWrapper(player_id, location,
-                               AvatarAppearance("#000", "#ddd", "#777", "#fff"))
+        avatar = AvatarWrapper(
+            player_id, location, AvatarAppearance("#000", "#ddd", "#777", "#fff")
+        )
         self.avatars_by_id[player_id] = avatar
         return avatar
 
@@ -30,10 +31,9 @@ class AvatarManager(object):
     def active_avatars(self):
         return self.avatars[:]
 
-    def serialise_players(self):
+    def serialize_players(self):
         """
         To be called on a required update of players in the front-end of the game.
         """
 
-        return [player.serialise() for player in self.avatars]
-
+        return [player.serialize() for player in self.avatars]

@@ -1,36 +1,38 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<IDEConsole /> renders correctly 1`] = `
-<styled.div
-  innerRef={[Function]}
->
-  <LogEntries
-    lastLogRef={[Function]}
-    logs={
-      Array [
-        Object {
-          "log": "hello",
-          "timestamp": "1",
-        },
-        Object {
-          "log": "bye",
-          "timestamp": "2",
-        },
-      ]
-    }
-  />
-</styled.div>
+<styled.section>
+  <ConsoleBar />
+  <styled.div
+    innerRef={[Function]}
+  >
+    <LogEntries
+      lastLogRef={[Function]}
+      logs={
+        Array [
+          Object {
+            "log": "hello",
+            "timestamp": "1",
+          },
+          Object {
+            "log": "bye",
+            "timestamp": "2",
+          },
+        ]
+      }
+    />
+  </styled.div>
+</styled.section>
 `;
 
 exports[`<StyledConsole /> renders correctly 1`] = `
 .c0 {
-  grid-area: ide-console;
   color: #fff;
   background-color: #303030;
   font-family: 'Source Code Pro',monospace;
   overflow: auto;
   white-space: pre-line;
-  padding-bottom: 0px;
+  height: 100%;
 }
 
 .c0::-webkit-scrollbar {

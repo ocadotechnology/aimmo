@@ -18,9 +18,9 @@ export default class LogEntries extends Component {
     const lastLogEntry = this.props.logs[this.props.logs.length - 1]
     const logEntries = this.props.logs.map(logEntry =>
       <LogEntry
-        key={logEntry.timestamp}
+        key={logEntry.turn_count}
         innerRef={this.setLastLogEntryRef(logEntry, lastLogEntry)}>
-        {logEntry.log}
+        {logEntry.message}
       </LogEntry>
     )
     return logEntries
@@ -28,7 +28,7 @@ export default class LogEntries extends Component {
 
   setLastLogEntryRef (logEntry, lastLogEntry) {
     return node => {
-      if (logEntry.timestamp === lastLogEntry.timestamp) {
+      if (logEntry.turn_count === lastLogEntry.turn_count) {
         this.props.lastLogRef(node)
       }
     }
@@ -46,8 +46,8 @@ export default class LogEntries extends Component {
 LogEntries.propTypes = {
   logs: PropTypes.arrayOf(
     PropTypes.shape({
-      timestamp: PropTypes.int,
-      log: PropTypes.string
+      turn_count: PropTypes.int,
+      message: PropTypes.string
     })),
   lastLogRef: PropTypes.func
 }
