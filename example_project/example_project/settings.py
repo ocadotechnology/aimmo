@@ -35,19 +35,19 @@
 # program; modified versions of the program must be marked as such and not
 # identified as the original program.
 """Django settings for example_project project."""
+import os
 import subprocess
 
-import os
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 DEBUG = True
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',  # Add 'postgresql_psycopg2', 'mysql',
-                                                 # 'sqlite3' or 'oracle'.
-        'NAME': os.path.join(os.path.abspath(os.path.dirname(__file__)), 'db.sqlite3'),
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",  # Add 'postgresql_psycopg2', 'mysql',
+        # 'sqlite3' or 'oracle'.
+        "NAME": os.path.join(os.path.abspath(os.path.dirname(__file__)), "db.sqlite3"),
         # Or path to database file if using sqlite3.
     }
 }
@@ -55,71 +55,58 @@ DATABASES = {
 USE_I18N = True
 USE_L10N = True
 
-TIME_ZONE = 'Europe/London'
-LANGUAGE_CODE = 'en-gb'
-STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static')
-STATIC_URL = '/static/'
-SECRET_KEY = 'not-a-secret'
+TIME_ZONE = "Europe/London"
+LANGUAGE_CODE = "en-gb"
+STATIC_ROOT = os.path.join(os.path.dirname(__file__), "static")
+STATIC_URL = "/static/"
+SECRET_KEY = "not-a-secret"
 
-ROOT_URLCONF = 'django_autoconfig.autourlconf'
+ROOT_URLCONF = "django_autoconfig.autourlconf"
 
-WSGI_APPLICATION = 'example_project.wsgi.application'
+WSGI_APPLICATION = "example_project.wsgi.application"
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'aimmo',
-    'django_forms_bootstrap',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "aimmo",
+    "django_forms_bootstrap",
 )
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler'
-        },
-    },
-    'loggers': {
-        'views': {
-            'handlers': ['console'],
-            'level': 'DEBUG'
-        },
-    }
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {"require_debug_false": {"()": "django.utils.log.RequireDebugFalse"}},
+    "handlers": {"console": {"level": "DEBUG", "class": "logging.StreamHandler"}},
+    "loggers": {"views": {"handlers": ["console"], "level": "DEBUG"}},
 }
 
-LOGIN_URL = '/aimmo/accounts/login/'
+LOGIN_URL = "/aimmo/accounts/login/"
 
-LOGIN_REDIRECT_URL = '/aimmo/'
+LOGIN_REDIRECT_URL = "/aimmo/"
 
 MIDDLEWARE = [
-   'django.contrib.sessions.middleware.SessionMiddleware',
-   'django.middleware.locale.LocaleMiddleware',
-   'django.middleware.common.CommonMiddleware',
-   'django.middleware.csrf.CsrfViewMiddleware',
-   'django.contrib.auth.middleware.AuthenticationMiddleware',
-   'django.contrib.messages.middleware.MessageMiddleware',
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
 ]
 
 
 def get_game_url_base_and_path(game):
-    if os.environ.get('AIMMO_MODE', '') == 'minikube':
-        output = subprocess.check_output([os.environ['MINIKUBE_PATH'], 'service',
-                                          'game-%s' % game, '--url'])
-        return 'local.aimmo.codeforlife.education', '/game-%s' % game
+    if os.environ.get("AIMMO_MODE", "") == "minikube":
+        output = subprocess.check_output(
+            [os.environ["MINIKUBE_PATH"], "service", "game-%s" % game, "--url"]
+        )
+        return "local.aimmo.codeforlife.education", "/game-%s" % game
     else:
-        return 'localhost', ''
+        return "localhost", ""
 
 
 def get_game_port(game):
-    if os.environ.get('AIMMO_MODE', '') == 'minikube':
+    if os.environ.get("AIMMO_MODE", "") == "minikube":
         return 0
 
     return 6001 + int(game) * 1000
@@ -135,4 +122,5 @@ except ImportError:
     pass
 
 from django_autoconfig import autoconfig
+
 autoconfig.configure_settings(globals())

@@ -6,7 +6,7 @@ import NavigationBar from 'components/NavigationBar'
 
 export const GamePageLayout = styled.div`
   display: grid;
-  grid-template: auto 1fr 250px / 1fr 1fr;
+  grid-template: auto 1fr 290px / 1fr 1fr;
   grid-template-areas: "navigation-bar navigation-bar"
                        "ide-editor game-view"
                        "ide-console game-view";

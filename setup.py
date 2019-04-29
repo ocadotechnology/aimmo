@@ -13,6 +13,7 @@ setup(
         "django-autoconfig >= 0.3.6, < 1.0.0",
         "django-forms-bootstrap",
         "django-js-reverse",
+        "djangorestframework>=3.8.2, < 3.9.0",
         "eventlet",
         "flask",
         "flask-socketio",
