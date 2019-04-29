@@ -112,7 +112,7 @@ class GameTokenView(APIView):
     View to Game tokens, used to prove a request comes from a game.
     """
 
-    permission_classes = (HasToken,)
+    permission_classes = (GameHasToken,)
 
     @csrf_exempt
     def get(self, request, id):
