@@ -1,11 +1,12 @@
 import ast
 import json
 
+from aimmo import app_settings, models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
-
-from aimmo import models, app_settings
+from rest_framework import status
+from rest_framework.test import APIRequestFactory
 
 app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
     "base %s" % game_id,
@@ -275,3 +276,79 @@ class TestViews(TestCase):
         self.assertEqual(current_avatar_id, 1)
         self.assertEqual(len(games_api_users), 1)
         self.assertEqual(games_api_users[0]["id"], 1)
+
+    def test_token_view_get_token_multiple_requests(self):
+        """
+        Ensures we can make a get request for the token, and
+        that a request with a valid token is also accepted.
+        """
+        token = models.Game.objects.get(id=1).auth_token
+        client = Client()
+        response = client.get(reverse("aimmo/game_token", kwargs={"id": 1}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(token, response.json()["token"])
+
+        # Token starts as empty, as long as it is empty, we can make more GET requests
+        response = client.get(reverse("aimmo/game_token", kwargs={"id": 1}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(token, response.json()["token"])
+
+    def test_get_token_after_token_set(self):
+        token = models.Game.objects.get(id=1).auth_token
+        client = Client()
+        response = client.get(reverse("aimmo/game_token", kwargs={"id": 1}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(token, response.json()["token"])
+
+        new_token = "aaaaaaaaaaa"
+        response = client.patch(
+            reverse("aimmo/game_token", kwargs={"id": 1}),
+            json.dumps({"token": new_token}),
+            content_type="application/json",
+        )
+
+        # Token starts as empty, as long as it is empty, we can make more GET requests
+        response = client.get(
+            reverse("aimmo/game_token", kwargs={"id": 1}), HTTP_GAME_TOKEN=new_token
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_patch_token_with_no_token(self):
+        """
+        Check for 401 when attempting to change game token.
+        """
+        client = Client()
+        token = models.Game.objects.get(id=1).auth_token
+        response = client.patch(reverse("aimmo/game_token", kwargs={"id": 1}))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_patch_token_with_incorrect_token(self):
+        """
+        Check for 401 when attempting to change game token (incorrect token provided).
+        """
+        client = Client()
+        token = models.Game.objects.get(id=1).auth_token
+        response = client.patch(
+            reverse("aimmo/game_token", kwargs={"id": 1}),
+            {},
+            content_type="application/json",
+            HTTP_GAME_TOKEN="INCORRECT TOKEN",
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_patch_token_with_correct_token(self):
+        """
+        Check for 200 and successful token change when updating the token (correct token provided).
+        """
+        client = Client()
+        token = models.Game.objects.get(id=1).auth_token
+        new_token = token[::-1]
+        response = client.patch(
+            reverse("aimmo/game_token", kwargs={"id": 1}),
+            json.dumps({"token": new_token}),
+            content_type="application/json",
+            HTTP_GAME_TOKEN=token,
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(models.Game.objects.get(id=1).auth_token, new_token)

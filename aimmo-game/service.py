@@ -5,17 +5,18 @@ import asyncio
 import json
 import logging
 import os
-import pickle
 import sys
 from urllib.parse import parse_qs
 
 import aiohttp_cors
+import requests
 import socketio
 from aiohttp import web
 from aiohttp_wsgi import WSGIHandler
 from prometheus_client import make_wsgi_app
 
 from activity_monitor import ActivityMonitor
+from authentication import generate_game_token
 from simulation import map_generator
 from simulation.game_runner import GameRunner
 
@@ -167,6 +168,9 @@ def create_runner(port):
 
 def run_game(port):
     game_runner = create_runner(port)
+
+    generate_game_token()
+
     game_api = GameAPI(
         game_state=game_runner.game_state, worker_manager=game_runner.worker_manager
     )

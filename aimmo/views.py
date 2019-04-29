@@ -1,21 +1,23 @@
 import cPickle as pickle
+import json
 import logging
 import os
-import json
+from exceptions import UserCannotPlayGameException
 
+import game_renderer
+from app_settings import preview_user_required
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
-from django.shortcuts import redirect, render, get_object_or_404
+from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
-from django.middleware.csrf import get_token
-
 from models import Avatar, Game, LevelAttempt
-from aimmo import forms, game_renderer
-from app_settings import get_users_for_new_game, preview_user_required
-from exceptions import UserCannotPlayGameException
+from permissions import GameHasToken
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 LOGGER = logging.getLogger(__name__)
 
@@ -103,6 +105,37 @@ def mark_game_complete(request, id):
     game.static_data = request.body
     game.save()
     return HttpResponse("Done!")
+
+
+class GameTokenView(APIView):
+    """
+    View to Game tokens, used to prove a request comes from a game.
+    """
+
+    permission_classes = (GameHasToken,)
+
+    @csrf_exempt
+    def get(self, request, id):
+        """
+        After the inital token request, we need to check where the
+        request comes from. So for subsequent requests we verify that
+        they came from the token-holder.
+        """
+        game = get_object_or_404(Game, id=id)
+        self.check_object_permissions(self.request, game)
+
+        return Response(data={"token": game.auth_token})
+
+    @csrf_exempt
+    def patch(self, request, id):
+        game = get_object_or_404(Game, id=id)
+        self.check_object_permissions(self.request, game)
+        try:
+            game.auth_token = request.data["token"]
+            game.save()
+            return Response(status=status.HTTP_200_OK)
+        except KeyError:
+            return Response(status=status.HTTP_403_FORBIDDEN)
 
 
 class ProgramView(TemplateView):
