@@ -4,8 +4,6 @@ from unittest.mock import patch
 import pytest
 from authentication import generate_game_token
 
-# import requests
-
 
 @patch("requests.patch")
 def test_token_generation_non_empty(mock_patch):
