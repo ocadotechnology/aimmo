@@ -18,6 +18,7 @@ from permissions import GameHasToken
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet
 
 LOGGER = logging.getLogger(__name__)
 
@@ -69,6 +70,10 @@ def list_games(request):
         for game in Game.objects.exclude_inactive()
     }
     return JsonResponse(response)
+
+
+class GameViewSet(ViewSet):
+    pass
 
 
 def get_game(request, id):
