@@ -163,7 +163,7 @@ def create_runner(port):
 def run_game(port):
     game_runner = create_runner(port)
 
-    generate_game_token()
+    generate_game_token(game_runner.communicator.django_api_url)
 
     game_api = GameAPI(
         game_state=game_runner.game_state, worker_manager=game_runner.worker_manager
