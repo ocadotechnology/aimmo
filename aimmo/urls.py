@@ -43,7 +43,11 @@ urlpatterns = [
     url(r"^api/csrf_token", views.csrfToken, name="aimmo/csrf_token"),
     url(r"^api/code/(?P<id>[0-9]+)/$", views.code, name="aimmo/code"),
     url(r"^api/games/$", views.list_games, name="aimmo/games"),
-    url(r"^api/games/(?P<id>[0-9]+)/$", views.get_game, name="aimmo/game_details"),
+    url(
+        r"^api/games/(?P<id>[0-9]+)/$",
+        views.GameView.as_view(),
+        name="aimmo/game_details",
+    ),
     url(
         r"^api/games/(?P<id>[0-9]+)/token/$",
         views.GameTokenView.as_view(),

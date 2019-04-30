@@ -72,23 +72,32 @@ def list_games(request):
     return JsonResponse(response)
 
 
-class GameViewSet(ViewSet):
-    pass
+class GameView(APIView):
+    """
+    View set for listing all users currently playing the given game
+    """
 
+    permission_classes = (GameHasToken,)
 
-def get_game(request, id):
-    game = get_object_or_404(Game, id=id)
-    if request.method == "GET":
-        response = {"main": {"parameters": [], "main_avatar": None, "users": []}}
-        for avatar in game.avatar_set.all():
-            if avatar.owner_id == game.main_user_id:
-                response["main"]["main_avatar"] = avatar.id
-            response["main"]["users"].append({"id": avatar.id, "code": avatar.code})
-        return JsonResponse(response)
-    elif request.method == "PATCH":
+    def get(self, request, id):
+        game = get_object_or_404(Game, id=id)
+        data = self.serialize_users(game)
+        return JsonResponse(data)
+
+    def patch(self, request, pk=None):
+        game = Game.objects.filter(id=pk)
+        self.check_object_permissions(self.request, game)
         game.status = Game.STOPPED
         game.save()
-        return HttpResponse(status=200)
+        return HttpResponse(status=status.HTTP_200_OK)
+
+    def serialize_users(self, game):
+        users = {"main_avatar": None, "users": []}
+        for avatar in game.avatar_set.all():
+            if avatar.owner_id == game.main_user_id:
+                users["main_avatar"] = avatar.id
+            users["users"].append({"id": avatar.id, "code": avatar.code})
+        return users
 
 
 def connection_parameters(request, game_id):
