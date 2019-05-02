@@ -179,6 +179,10 @@ class LocalGameManager(GameManager):
 
     def delete_game(self, game_id):
         if game_id in self.games:
+            client = docker.from_env()
+            workers = client.containers.list(filters={'name': f'aimmo-{game_id}-'})
+            for worker in workers:
+                worker.remove(force=True)
             self.games[game_id].remove(force=True)
             del self.games[game_id]
 

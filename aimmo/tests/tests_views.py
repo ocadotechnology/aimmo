@@ -20,15 +20,12 @@ class TestViews(TestCase):
     CODE = "class Avatar: pass"
 
     EXPECTED_GAMES = {
-        "main": {
-            "parameters": [],
-            "main_avatar": 1,
-            "users": [
-                {"id": 1, "code": CODE},
-                {"id": 2, "code": "test2"},
-                {"id": 3, "code": "test3"},
-            ],
-        }
+        "main_avatar": 1,
+        "users": [
+            {"id": 1, "code": CODE},
+            {"id": 2, "code": "test2"},
+            {"id": 3, "code": "test3"},
+        ],
     }
 
     @classmethod
@@ -190,11 +187,15 @@ class TestViews(TestCase):
         self.assertEqual(models.Game.objects.get(id=1).static_data, "static")
 
     def test_stop_game(self):
+        game = models.Game.objects.get(id=1)
         c = Client()
-        response = c.patch(reverse("aimmo/game_details", kwargs={"id": 1}))
+        response = c.patch(
+            reverse("aimmo/game_details", kwargs={"id": 1}),
+            HTTP_GAME_TOKEN=game.auth_token,
+        )
 
         self.assertTrue(response.status_code == 200)
-        self.assertEqual(models.Game.objects.get(id=1).status, models.Game.STOPPED)
+        self.assertEqual(game.status, models.Game.STOPPED)
 
     def test_current_avatar_api_for_non_existent_game(self):
         response = self._go_to_page("aimmo/current_avatar_in_game", "game_id", 1)
@@ -278,7 +279,7 @@ class TestViews(TestCase):
         current_avatar_id = ast.literal_eval(current_avatar_api_response.content)[
             "current_avatar_id"
         ]
-        games_api_users = json.loads(games_api_response.content)["main"]["users"]
+        games_api_users = json.loads(games_api_response.content)["users"]
 
         self.assertEqual(current_avatar_id, 1)
         self.assertEqual(len(games_api_users), 1)

@@ -9,10 +9,12 @@ import time
 from enum import Enum
 from types import CoroutineType
 
+import aiohttp
+
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-SECONDS_TILL_CONSIDERED_INACTIVE = 3600
+SECONDS_TILL_CONSIDERED_INACTIVE = 10
 
 
 class ActivityMonitor:
@@ -23,9 +25,9 @@ class ActivityMonitor:
     of time, the game is marked as stopped and the pods will be shut down shortly after
     """
 
-    def __init__(self):
+    def __init__(self, callback):
         self.__active_users = 0
-
+        self.callback = callback
         self.timer = Timer(SECONDS_TILL_CONSIDERED_INACTIVE, self.callback)
 
     def _start_timer(self):
@@ -49,15 +51,6 @@ class ActivityMonitor:
             self._stop_timer()
         else:
             self._start_timer()
-
-    async def callback(self):
-        api_url = os.environ.get(
-            "GAME_API_URL", "http://localhost:8000/aimmo/api/games/"
-        )
-
-        LOGGER.info("Timer expired! Marking game as STOPPED")
-        return requests.patch(api_url, HTTP_GAME_TOKEN=os.environ["TOKEN"])
-        # this should trigger the game for deletion, part of (#1011)
 
 
 class Timer:

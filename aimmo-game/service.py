@@ -8,6 +8,7 @@ import os
 import sys
 from urllib.parse import parse_qs
 
+import aiohttp
 import aiohttp_cors
 import requests
 import socketio
@@ -23,7 +24,20 @@ from simulation.game_runner import GameRunner
 app = web.Application()
 cors = aiohttp_cors.setup(app)
 
-activity_monitor = ActivityMonitor()
+
+async def callback(self):
+    LOGGER.info("Timer expired! Marking game as STOPPED")
+    api_url = os.environ.get("GAME_API_URL", "http://localhost:8000/aimmo/api/games/")
+    async with aiohttp.ClientSession() as session:
+        async with session.patch(
+            api_url, headers={"Game-token": os.environ["TOKEN"]}
+        ) as response:
+            return response
+
+    return None
+
+
+activity_monitor = ActivityMonitor(callback)
 socketio_server = socketio.AsyncServer(async_handlers=True)
 
 routes = web.RouteTableDef()
