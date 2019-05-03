@@ -25,9 +25,8 @@ class ActivityMonitor:
     of time, the game is marked as stopped and the pods will be shut down shortly after
     """
 
-    def __init__(self, callback):
+    def __init__(self,):
         self.__active_users = 0
-        self.callback = callback
         self.timer = Timer(SECONDS_TILL_CONSIDERED_INACTIVE, self.callback)
 
     def _start_timer(self):
@@ -52,10 +51,23 @@ class ActivityMonitor:
         else:
             self._start_timer()
 
+    async def callback(self):
+        LOGGER.info("Timer expired! Marking game as STOPPED")
+        api_url = os.environ.get(
+            "GAME_API_URL", "http://localhost:8000/aimmo/api/games/"
+        )
+        async with aiohttp.ClientSession() as session:
+            async with session.patch(
+                api_url, headers={"Game-token": os.environ["TOKEN"]}
+            ) as response:
+                return response
+
+        return None
+
 
 class Timer:
     """
-    Generic Timer with callback
+    Generic Timer with callback.
 
     This sleeps for `timeout=X` seconds, after X seconds the
     callback function is called, this happens asynchronously.
