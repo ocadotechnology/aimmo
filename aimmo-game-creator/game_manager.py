@@ -6,6 +6,7 @@ import time
 from abc import ABCMeta, abstractmethod
 from concurrent import futures
 from concurrent.futures import ALL_COMPLETED
+from enum import Enum
 
 import docker
 import kubernetes
@@ -57,6 +58,10 @@ class _GameManagerData(object):
             for g in self._games:
                 yield g
 
+class GameStatus(Enum):
+    RUNNING = 'r'
+    PAUSED = 'p'
+    STOPPED = 's'
 
 class GameManager(object):
     """Methods of this class must be thread safe unless explicitly stated"""
@@ -110,14 +115,14 @@ class GameManager(object):
             games_to_add = {
                 id: games[id]
                 for id in self._data.add_new_games(games.keys())
-                if games[id]["status"] is not "s"
+                if games[id]["status"] is not GameStatus.STOPPED
             }
 
             # Add missing games
             self._parallel_map(self.recreate_game, games_to_add.items())
             # Delete extra games
             known_games = set(games.keys())
-            stopped_games = set(id for id in games.keys() if games[id]["status"] is "s")
+            stopped_games = set(id for id in games.keys() if games[id]["status"] is GameStatus.STOPPED)
             removed_game_ids = self._data.remove_unknown_games(known_games).union(
                 self._data.remove_stopped_games(stopped_games)
             )
