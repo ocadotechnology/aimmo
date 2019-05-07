@@ -121,13 +121,4 @@ def run(
         except NameError:
             pass
 
-        server.wait()
-        from aimmo.models import Game
-
-        games = Game.objects.all()
-        for game in games:
-            if game.status == Game.RUNNING:
-                game.auth_token = ""
-                game.save()
-
     return PROCESSES

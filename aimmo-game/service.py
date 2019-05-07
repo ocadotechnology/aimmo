@@ -5,12 +5,12 @@ import asyncio
 import json
 import logging
 import os
+import signal
 import sys
 from urllib.parse import parse_qs
 
 import aiohttp
 import aiohttp_cors
-import requests
 import socketio
 from aiohttp import web
 from aiohttp_wsgi import WSGIHandler
@@ -186,6 +186,11 @@ def run_game(port):
     asyncio.ensure_future(game_runner.run())
 
 
+async def on_shutdown(app):
+    pass
+    # shutdown process for the game/pod/container
+
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     host = sys.argv[1]
@@ -204,5 +209,6 @@ if __name__ == "__main__":
     wsgi_handler = WSGIHandler(make_wsgi_app())
     app.add_routes([web.get("/{path_info:metrics}", wsgi_handler)])
 
+    app.on_shutdown.append(on_shutdown)
     LOGGER.info("starting the server")
     web.run_app(app, host=host, port=port)

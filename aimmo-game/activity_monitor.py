@@ -6,7 +6,6 @@ import asyncio
 import logging
 import os
 import time
-from enum import Enum
 from types import CoroutineType
 
 import aiohttp
@@ -58,7 +57,9 @@ class ActivityMonitor:
         )
         async with aiohttp.ClientSession() as session:
             async with session.patch(
-                api_url, headers={"Game-token": os.environ["TOKEN"]}
+                api_url,
+                json={"status": "s"},
+                headers={"Game-token": os.environ["TOKEN"]},
             ) as response:
                 return response
 

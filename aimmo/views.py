@@ -6,8 +6,7 @@ from exceptions import UserCannotPlayGameException
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.http import (Http404, HttpResponse, HttpResponseForbidden,
-                         JsonResponse)
+from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
@@ -92,8 +91,8 @@ class GameView(APIView):
     def patch(self, request, id):
         game = get_object_or_404(Game, id=id)
         self.check_object_permissions(self.request, game)
-        print("Perm granted")
-        game.status = Game.STOPPED
+        game.status = request.data["status"]
+        print(request.data["status"])
         game.auth_token = ""
         game.save()
         return HttpResponse(status=status.HTTP_200_OK)
@@ -145,7 +144,6 @@ class GameTokenView(APIView):
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     permission_classes = (GameHasToken,)
 
-    # @csrf_exempt
     def get(self, request, id):
         """
         After the inital token request, we need to check where the
@@ -157,7 +155,6 @@ class GameTokenView(APIView):
 
         return Response(data={"token": game.auth_token})
 
-    # @csrf_exempt
     def patch(self, request, id):
         game = get_object_or_404(Game, id=id)
         self.check_object_permissions(self.request, game)
