@@ -16,7 +16,7 @@ from aiohttp import web
 from aiohttp_wsgi import WSGIHandler
 from prometheus_client import make_wsgi_app
 
-from activity_monitor import ActivityMonitor
+from activity_monitor import ActivityMonitor, StatusOptions
 from authentication import generate_game_token
 from simulation import map_generator
 from simulation.game_runner import GameRunner
@@ -25,19 +25,8 @@ app = web.Application()
 cors = aiohttp_cors.setup(app)
 
 
-async def callback(self):
-    LOGGER.info("Timer expired! Marking game as STOPPED")
-    api_url = os.environ.get("GAME_API_URL", "http://localhost:8000/aimmo/api/games/")
-    async with aiohttp.ClientSession() as session:
-        async with session.patch(
-            api_url, headers={"Game-token": os.environ["TOKEN"]}
-        ) as response:
-            return response
-
-    return None
-
-
 activity_monitor = ActivityMonitor()
+activity_monitor.active_users = 0
 socketio_server = socketio.AsyncServer(async_handlers=True)
 
 routes = web.RouteTableDef()
@@ -187,8 +176,15 @@ def run_game(port):
 
 
 async def on_shutdown(app):
-    pass
-    # shutdown process for the game/pod/container
+    token_url = (
+        os.environ.get("GAME_API_URL", "http://localhost:8000/aimmo/api/games/")
+        + "/token/"
+    )
+    async with aiohttp.ClientSession() as session:
+        async with session.patch(
+            token, json={"token": ""}, headers={"Game-token": os.environ["TOKEN"]}
+        ) as response:
+            return response
 
 
 if __name__ == "__main__":

@@ -92,7 +92,6 @@ class GameView(APIView):
         game = get_object_or_404(Game, id=id)
         self.check_object_permissions(self.request, game)
         game.status = request.data["status"]
-        print(request.data["status"])
         game.auth_token = ""
         game.save()
         return HttpResponse(status=status.HTTP_200_OK)

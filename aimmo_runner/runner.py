@@ -121,4 +121,6 @@ def run(
         except NameError:
             pass
 
+        server.wait()
+
     return PROCESSES

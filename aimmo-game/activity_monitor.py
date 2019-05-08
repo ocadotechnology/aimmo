@@ -6,6 +6,7 @@ import asyncio
 import logging
 import os
 import time
+from enum import Enum
 from types import CoroutineType
 
 import aiohttp
@@ -14,6 +15,15 @@ LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 SECONDS_TILL_CONSIDERED_INACTIVE = 10
+
+
+class StatusOptions(Enum):
+    RUNNING = "r"
+    PAUSED = "p"
+    STOPPED = "s"
+
+    def __str__(self):
+        return self.value
 
 
 class ActivityMonitor:
@@ -56,12 +66,14 @@ class ActivityMonitor:
             "GAME_API_URL", "http://localhost:8000/aimmo/api/games/"
         )
         async with aiohttp.ClientSession() as session:
+            print("got ma session")
             async with session.patch(
                 api_url,
-                json={"status": "s"},
+                data={"status": StatusOptions.STOPPED},
                 headers={"Game-token": os.environ["TOKEN"]},
             ) as response:
-                return response
+                print('got ma response')
+                print(response)
 
         return None
 
