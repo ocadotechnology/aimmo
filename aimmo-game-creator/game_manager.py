@@ -58,10 +58,12 @@ class _GameManagerData(object):
             for g in self._games:
                 yield g
 
+
 class GameStatus(Enum):
     RUNNING = 'r'
     PAUSED = 'p'
     STOPPED = 's'
+
 
 class GameManager(object):
     """Methods of this class must be thread safe unless explicitly stated"""
