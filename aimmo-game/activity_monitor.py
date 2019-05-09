@@ -35,13 +35,16 @@ class ActivityMonitor:
     """
 
     def __init__(self,):
-        self.__active_users = 0
-        self.timer = Timer(SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped)
+        self.timer = Timer(
+            SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
+        )
         self.active_users = 0
 
     def _start_timer(self):
         if not self.timer.is_running:
-            self.timer = Timer(SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped)
+            self.timer = Timer(
+                SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
+            )
             self.timer.is_running = True
 
     def _stop_timer(self):
@@ -72,9 +75,11 @@ class ActivityMonitor:
                 data={"status": StatusOptions.STOPPED},
                 headers={"Game-token": os.environ["TOKEN"]},
             ) as response:
-                print(response)
+                pass
 
-        return None
+        if response.status_code != 200:
+            self._stop_timer()
+            self._start_timer()
 
 
 class Timer:
