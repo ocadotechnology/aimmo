@@ -14,7 +14,7 @@ import aiohttp
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-SECONDS_TILL_CONSIDERED_INACTIVE = 10
+SECONDS_TILL_CONSIDERED_INACTIVE = 3600
 
 
 class StatusOptions(Enum):
