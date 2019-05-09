@@ -26,7 +26,6 @@ cors = aiohttp_cors.setup(app)
 
 
 activity_monitor = ActivityMonitor()
-activity_monitor.active_users = 0
 socketio_server = socketio.AsyncServer(async_handlers=True)
 
 routes = web.RouteTableDef()
