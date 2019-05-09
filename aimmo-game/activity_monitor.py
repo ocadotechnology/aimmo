@@ -36,11 +36,12 @@ class ActivityMonitor:
 
     def __init__(self,):
         self.__active_users = 0
-        self.timer = Timer(SECONDS_TILL_CONSIDERED_INACTIVE, self.callback)
+        self.timer = Timer(SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped)
+        self.active_users = 0
 
     def _start_timer(self):
         if not self.timer.is_running:
-            self.timer = Timer(SECONDS_TILL_CONSIDERED_INACTIVE, self.callback)
+            self.timer = Timer(SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped)
             self.timer.is_running = True
 
     def _stop_timer(self):
@@ -60,19 +61,17 @@ class ActivityMonitor:
         else:
             self._start_timer()
 
-    async def callback(self):
+    async def change_status_to_stopped(self):
         LOGGER.info("Timer expired! Marking game as STOPPED")
         api_url = os.environ.get(
             "GAME_API_URL", "http://localhost:8000/aimmo/api/games/"
         )
         async with aiohttp.ClientSession() as session:
-            print("got ma session")
             async with session.patch(
                 api_url,
                 data={"status": StatusOptions.STOPPED},
                 headers={"Game-token": os.environ["TOKEN"]},
             ) as response:
-                print('got ma response')
                 print(response)
 
         return None

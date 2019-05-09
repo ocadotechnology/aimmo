@@ -196,7 +196,6 @@ class TestViews(TestCase):
             content_type="application/json",
             HTTP_GAME_TOKEN=game.auth_token,
         )
-        
         self.assertTrue(response.status_code == 200)
         self.assertEqual(game.status, models.Game.STOPPED)
 
