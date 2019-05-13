@@ -22,9 +22,6 @@ class StatusOptions(Enum):
     PAUSED = "p"
     STOPPED = "s"
 
-    def __str__(self):
-        return self.value
-
 
 class ActivityMonitor:
     """
@@ -41,16 +38,14 @@ class ActivityMonitor:
         self.active_users = 0
 
     def _start_timer(self):
-        if not self.timer.is_running:
+        if not self.timer.cancelled():
             self.timer = Timer(
                 SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
             )
-            self.timer.is_running = True
 
     def _stop_timer(self):
-        if self.timer.is_running:
+        if self.timer.cancelled():
             self.timer.cancel()
-            self.timer.is_running = False
 
     @property
     def active_users(self):
@@ -72,7 +67,7 @@ class ActivityMonitor:
         async with aiohttp.ClientSession() as session:
             async with session.patch(
                 api_url,
-                data={"status": StatusOptions.STOPPED},
+                data={"status": StatusOptions.STOPPED.value},
                 headers={"Game-token": os.environ["TOKEN"]},
             ) as response:
                 pass
@@ -94,7 +89,6 @@ class Timer:
         self._timeout = timeout
         self._callback = callback
         self._task = asyncio.ensure_future(self._job())
-        self.is_running = True
 
     async def _job(self):
         await asyncio.sleep(self._timeout)
@@ -102,3 +96,6 @@ class Timer:
 
     def cancel(self):
         self._task.cancel()
+
+    def cancelled(self):
+        return self._task.cancelled()

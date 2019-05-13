@@ -175,6 +175,11 @@ def run_game(port):
 
 
 async def on_shutdown(app):
+    """
+    Sends a request to clear the token, this will happen when the pod aiohttp server recieves a shutdown signal.
+
+    allows the game to re-verify itself after it's been shutdown
+    """
     token_url = (
         os.environ.get("GAME_API_URL", "http://localhost:8000/aimmo/api/games/")
         + "/token/"
