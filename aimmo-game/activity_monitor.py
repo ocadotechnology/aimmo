@@ -70,11 +70,8 @@ class ActivityMonitor:
                 data={"status": StatusOptions.STOPPED.value},
                 headers={"Game-token": os.environ["TOKEN"]},
             ) as response:
-                pass
-
-        if response.status_code != 200:
-            self._stop_timer()
-            self._start_timer()
+                if response.status_code != 200:
+                    LOGGER.error('Game could not be stopped')
 
 
 class Timer:
