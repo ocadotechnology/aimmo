@@ -39,14 +39,12 @@ class ActivityMonitor:
         self.active_users = 0
 
     def _start_timer(self):
-        if not self.timer.cancelled():
-            self.timer = Timer(
-                SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
-            )
+        self.timer = Timer(
+            SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
+        )
 
     def _stop_timer(self):
-        if self.timer.cancelled():
-            self.timer.cancel()
+        self.timer.cancel()
 
     @property
     def active_users(self):
@@ -94,6 +92,3 @@ class Timer:
 
     def cancel(self):
         self._task.cancel()
-
-    def cancelled(self):
-        return self._task.cancelled()
