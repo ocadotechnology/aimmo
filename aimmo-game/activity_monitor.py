@@ -10,6 +10,7 @@ from enum import Enum
 from types import CoroutineType
 
 import aiohttp
+from requests import codes
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -70,8 +71,8 @@ class ActivityMonitor:
                 data={"status": StatusOptions.STOPPED.value},
                 headers={"Game-token": os.environ["TOKEN"]},
             ) as response:
-                if response.status_code != 200:
-                    LOGGER.error('Game could not be stopped')
+                if response.status_code != codes["ok"]:
+                    LOGGER.error("Game could not be stopped")
 
 
 class Timer:
