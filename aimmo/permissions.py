@@ -11,6 +11,11 @@ def default_preview_user(view_func):
     return wrapped
 
 
+class CsrfExemptSessionAuthentication(authentication.SessionAuthentication):
+    def enforce_csrf(self, request):
+        return False
+
+
 class GameHasToken(permissions.BasePermission):
     """
     Used to verify that an incoming request has permission
@@ -19,6 +24,9 @@ class GameHasToken(permissions.BasePermission):
     This is done on a per object basis. The object must have an `auth_token`
     attribute to be used with this permission class.
     """
+
+    def has_permission(self, request, view):
+        return True
 
     def has_object_permission(self, request, view, obj):
         return self.check_for_token(request, obj)

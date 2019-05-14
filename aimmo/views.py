@@ -4,20 +4,24 @@ import logging
 import os
 from exceptions import UserCannotPlayGameException
 
-import game_renderer
-from app_settings import preview_user_required
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
+from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
-from models import Avatar, Game, LevelAttempt
-from permissions import GameHasToken
 from rest_framework import status
+from rest_framework.authentication import BasicAuthentication
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+import forms
+import game_renderer
+from app_settings import get_users_for_new_game, preview_user_required
+from models import Avatar, Game, LevelAttempt
+from permissions import CsrfExemptSessionAuthentication, GameHasToken
 
 LOGGER = logging.getLogger(__name__)
 
@@ -61,20 +65,44 @@ def code(request, id):
 
 def list_games(request):
     response = {
-        game.pk: {"name": game.name, "settings": json.dumps(game.settings_as_dict())}
+        game.pk: {
+            "name": game.name,
+            "status": game.status,
+            "settings": json.dumps(game.settings_as_dict()),
+        }
         for game in Game.objects.exclude_inactive()
     }
     return JsonResponse(response)
 
 
-def get_game(request, id):
-    game = get_object_or_404(Game, id=id)
-    response = {"main": {"parameters": [], "main_avatar": None, "users": []}}
-    for avatar in game.avatar_set.all():
-        if avatar.owner_id == game.main_user_id:
-            response["main"]["main_avatar"] = avatar.id
-        response["main"]["users"].append({"id": avatar.id, "code": avatar.code})
-    return JsonResponse(response)
+class GameView(APIView):
+    """
+    View set for listing all users currently playing the given game
+    """
+
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+    permission_classes = (GameHasToken,)
+
+    def get(self, request, id):
+        game = get_object_or_404(Game, id=id)
+        data = self.serialize_users(game)
+        return JsonResponse(data)
+
+    def patch(self, request, id):
+        game = get_object_or_404(Game, id=id)
+        self.check_object_permissions(self.request, game)
+        game.status = request.data["status"]
+        game.auth_token = ""
+        game.save()
+        return HttpResponse(status=status.HTTP_200_OK)
+
+    def serialize_users(self, game):
+        users = {"main_avatar": None, "users": []}
+        for avatar in game.avatar_set.all():
+            if avatar.owner_id == game.main_user_id:
+                users["main_avatar"] = avatar.id
+            users["users"].append({"id": avatar.id, "code": avatar.code})
+        return users
 
 
 def connection_parameters(request, game_id):
@@ -112,9 +140,9 @@ class GameTokenView(APIView):
     View to Game tokens, used to prove a request comes from a game.
     """
 
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     permission_classes = (GameHasToken,)
 
-    @csrf_exempt
     def get(self, request, id):
         """
         After the inital token request, we need to check where the
@@ -126,7 +154,6 @@ class GameTokenView(APIView):
 
         return Response(data={"token": game.auth_token})
 
-    @csrf_exempt
     def patch(self, request, id):
         game = get_object_or_404(Game, id=id)
         self.check_object_permissions(self.request, game)
@@ -154,6 +181,9 @@ def watch_game(request, id):
     game = get_object_or_404(Game, id=id)
     if not game.can_user_play(request.user):
         raise Http404
+
+    game.status = Game.RUNNING
+    game.save()
     return game_renderer.render_game(request, game)
 
 

@@ -6,6 +6,7 @@ import time
 from abc import ABCMeta, abstractmethod
 from concurrent import futures
 from concurrent.futures import ALL_COMPLETED
+from enum import Enum
 
 import docker
 import kubernetes
@@ -46,10 +47,22 @@ class _GameManagerData(object):
                 self._remove_game(u)
             return unknown_games
 
+    def remove_stopped_games(self, stopped_games):
+        with self._lock:
+            for s in stopped_games:
+                self._remove_game(s)
+            return stopped_games
+
     def get_games(self):
         with self._lock:
             for g in self._games:
                 yield g
+
+
+class GameStatus(Enum):
+    RUNNING = 'r'
+    PAUSED = 'p'
+    STOPPED = 's'
 
 
 class GameManager(object):
@@ -102,14 +115,19 @@ class GameManager(object):
             LOGGER.exception(ex)
         else:
             games_to_add = {
-                id: games[id] for id in self._data.add_new_games(games.keys())
+                id: games[id]
+                for id in self._data.add_new_games(games.keys())
+                if games[id]["status"] is not GameStatus.STOPPED
             }
 
             # Add missing games
             self._parallel_map(self.recreate_game, games_to_add.items())
             # Delete extra games
             known_games = set(games.keys())
-            removed_game_ids = self._data.remove_unknown_games(known_games)
+            stopped_games = set(id for id in games.keys() if games[id]["status"] is GameStatus.STOPPED)
+            removed_game_ids = self._data.remove_unknown_games(known_games).union(
+                self._data.remove_stopped_games(stopped_games)
+            )
             self._parallel_map(self.delete_game, removed_game_ids)
 
     def get_persistent_state(self, player_id):
@@ -168,7 +186,11 @@ class LocalGameManager(GameManager):
 
     def delete_game(self, game_id):
         if game_id in self.games:
-            self.games[game_id].kill()
+            client = docker.from_env()
+            workers = client.containers.list(filters={'name': f'aimmo-{game_id}-'})
+            for worker in workers:
+                worker.remove(force=True)
+            self.games[game_id].remove(force=True)
             del self.games[game_id]
 
 
