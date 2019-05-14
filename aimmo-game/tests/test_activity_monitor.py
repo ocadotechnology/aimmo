@@ -18,31 +18,28 @@ def event_loop():
     return asyncio.get_event_loop()
 
 
-def iterate_event_loop(event_loop):
-    """Force event loop to move to the next iteration."""
-    event_loop.run_until_complete(asyncio.sleep(0.00001))
-
-
-def test_timer_stops_correctly(activity_monitor, event_loop):
+@pytest.mark.asyncio
+async def test_timer_stops_correctly(activity_monitor, event_loop):
     assert activity_monitor.active_users == 0
     assert not activity_monitor.timer.cancelled()
 
     activity_monitor.active_users = 1
-    iterate_event_loop(event_loop)
+    await asyncio.sleep(0.00001)
 
     assert activity_monitor.active_users == 1
     assert activity_monitor.timer.cancelled()
 
 
-def test_timer_starts_correctly(activity_monitor, event_loop):
+@pytest.mark.asyncio
+async def test_timer_starts_correctly(activity_monitor, event_loop):
     activity_monitor.active_users = 2
-    iterate_event_loop(event_loop)
+    await asyncio.sleep(0.00001)
 
     assert activity_monitor.active_users == 2
     assert activity_monitor.timer.cancelled()
 
     activity_monitor.active_users = 0
-    iterate_event_loop(event_loop)
+    await asyncio.sleep(0.00001)
 
     assert activity_monitor.active_users == 0
     assert not activity_monitor.timer.cancelled()
