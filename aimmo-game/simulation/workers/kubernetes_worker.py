@@ -52,7 +52,7 @@ class KubernetesWorker(Worker):
                 client.V1EnvVar(name="PORT", value="5000"),
             ],
             name="aimmo-game-worker",
-            image="dent50cent/aimmo-game-worker:%s"
+            image="ocadotechnology/aimmo-game-worker:%s"
             % os.environ.get("IMAGE_SUFFIX", "latest"),
             ports=[client.V1ContainerPort(container_port=5000, protocol="TCP")],
             resources=client.V1ResourceRequirements(
