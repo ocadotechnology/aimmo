@@ -70,7 +70,7 @@ class ActivityMonitor:
                 headers={"Game-token": os.environ["TOKEN"]},
             ) as response:
                 if response.status_code != codes["ok"]:
-                    LOGGER.error("Game could not be stopped")
+                    LOGGER.error(f"Game could not be stopped. {response}")
 
 
 class Timer:
@@ -92,3 +92,6 @@ class Timer:
 
     def cancel(self):
         self._task.cancel()
+
+    def cancelled(self):
+        return self._task.cancelled()
