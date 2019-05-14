@@ -124,7 +124,7 @@ class GameManager(object):
             self._parallel_map(self.recreate_game, games_to_add.items())
             # Delete extra games
             known_games = set(games.keys())
-            stopped_games = set(id for id in games.keys() if games[id]["status"] is GameStatus.STOPPED)
+            stopped_games = set(id for id in games.keys() if games[id]["status"] == GameStatus.STOPPED.value)
             removed_game_ids = self._data.remove_unknown_games(known_games).union(
                 self._data.remove_stopped_games(stopped_games)
             )

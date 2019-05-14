@@ -15,7 +15,7 @@ from requests import codes
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-SECONDS_TILL_CONSIDERED_INACTIVE = 3600
+SECONDS_TILL_CONSIDERED_INACTIVE = 10
 
 
 class StatusOptions(Enum):
@@ -69,7 +69,7 @@ class ActivityMonitor:
                 data={"status": StatusOptions.STOPPED.value},
                 headers={"Game-token": os.environ["TOKEN"]},
             ) as response:
-                if response.status_code != codes["ok"]:
+                if response.status != codes["ok"]:
                     LOGGER.error(f"Game could not be stopped. {response}")
 
 
