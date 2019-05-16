@@ -60,9 +60,9 @@ class _GameManagerData(object):
 
 
 class GameStatus(Enum):
-    RUNNING = 'r'
-    PAUSED = 'p'
-    STOPPED = 's'
+    RUNNING = "r"
+    PAUSED = "p"
+    STOPPED = "s"
 
 
 class GameManager(object):
@@ -117,14 +117,18 @@ class GameManager(object):
             games_to_add = {
                 id: games[id]
                 for id in self._data.add_new_games(games.keys())
-                if games[id]["status"] is not GameStatus.STOPPED
+                if games[id]["status"] is not GameStatus.STOPPED.value
             }
 
             # Add missing games
             self._parallel_map(self.recreate_game, games_to_add.items())
             # Delete extra games
             known_games = set(games.keys())
-            stopped_games = set(id for id in games.keys() if games[id]["status"] == GameStatus.STOPPED.value)
+            stopped_games = set(
+                id
+                for id in games.keys()
+                if games[id]["status"] == GameStatus.STOPPED.value
+            )
             removed_game_ids = self._data.remove_unknown_games(known_games).union(
                 self._data.remove_stopped_games(stopped_games)
             )
@@ -179,7 +183,7 @@ class LocalGameManager(GameManager):
         self.games[game_id] = client.containers.run(
             name="aimmo-game-{}".format(game_id),
             image="ocadotechnology/aimmo-game:test",
-            **template
+            **template,
         )
         game_url = "http://{}:{}".format(self.host, port)
         LOGGER.info("Game started - {}, listening at {}".format(game_id, game_url))
@@ -187,7 +191,7 @@ class LocalGameManager(GameManager):
     def delete_game(self, game_id):
         if game_id in self.games:
             client = docker.from_env()
-            workers = client.containers.list(filters={'name': f'aimmo-{game_id}-'})
+            workers = client.containers.list(filters={"name": f"aimmo-{game_id}-"})
             for worker in workers:
                 worker.remove(force=True)
             self.games[game_id].remove(force=True)
