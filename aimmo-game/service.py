@@ -186,7 +186,7 @@ async def on_shutdown(app):
     )
     async with aiohttp.ClientSession() as session:
         async with session.patch(
-            token, json={"token": ""}, headers={"Game-token": os.environ["TOKEN"]}
+            token_url, json={"token": ""}, headers={"Game-token": os.environ["TOKEN"]}
         ) as response:
             return response
 
