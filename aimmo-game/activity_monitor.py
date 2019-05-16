@@ -55,7 +55,6 @@ class ActivityMonitor:
     @active_users.setter
     def active_users(self, value: float):
         self.__active_users = value
-        print(f"{self.__active_users} LOOK AT MY ACTIVE USERS YOU PLEB!")
         if self.__active_users:
             self._stop_timer()
         else:
