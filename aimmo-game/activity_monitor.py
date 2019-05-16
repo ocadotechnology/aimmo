@@ -15,7 +15,7 @@ from requests import codes
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-SECONDS_TILL_CONSIDERED_INACTIVE = 24
+SECONDS_TILL_CONSIDERED_INACTIVE = 3600
 
 
 class StatusOptions(Enum):
@@ -33,15 +33,17 @@ class ActivityMonitor:
     """
 
     def __init__(self,):
+        self.__active_users = 0
         self.timer = Timer(
             SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
         )
         self.active_users = 0
 
     def _start_timer(self):
-        self.timer = Timer(
-            SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
-        )
+        if self.timer.cancelled():
+            self.timer = Timer(
+                SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
+            )
 
     def _stop_timer(self):
         self.timer.cancel()
@@ -92,7 +94,6 @@ class Timer:
         await self._callback()
 
     def cancel(self):
-        self._callback.cancel()
         self._task.cancel()
 
     def cancelled(self):
