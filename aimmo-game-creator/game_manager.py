@@ -117,7 +117,7 @@ class GameManager(object):
             games_to_add = {
                 id: games[id]
                 for id in self._data.add_new_games(games.keys())
-                if games[id]["status"] is not GameStatus.STOPPED.value
+                if games[id]["status"] != GameStatus.STOPPED.value
             }
 
             # Add missing games
