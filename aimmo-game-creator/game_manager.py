@@ -183,8 +183,8 @@ class LocalGameManager(GameManager):
 
         self.games[game_id] = client.containers.run(
             name="aimmo-game-{}".format(game_id),
-            image="dent50cent/aimmo-game:test",
-            **template
+            image="ocadotechnology/aimmo-game:test",
+            **template,
         )
         game_url = "http://{}:{}".format(self.host, port)
         LOGGER.info("Game started - {}, listening at {}".format(game_id, game_url))
@@ -240,7 +240,7 @@ class KubernetesGameManager(GameManager):
                     ),
                 )
             ],
-            image="dent50cent/aimmo-game:{}".format(
+            image="ocadotechnology/aimmo-game:{}".format(
                 os.environ.get("IMAGE_SUFFIX", "latest")
             ),
             ports=[kubernetes.client.V1ContainerPort(container_port=5000)],

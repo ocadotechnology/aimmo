@@ -20,7 +20,7 @@ spec:
       serviceAccountName: game-creator
       containers:
       - name: aimmo-game-creator
-        image: dent50cent/aimmo-game-creator:latest
+        image: ocadotechnology/aimmo-game-creator:latest
         ports:
         - containerPort: 80
         env:
