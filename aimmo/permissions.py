@@ -44,7 +44,7 @@ class GameHasToken(permissions.BasePermission):
 class DummyIsPreviewUser(permissions.BasePermission):
     """
     Used to verify that an incoming request is made by a user
-    that's authorised to access/change an AIMMO game 
+    that's authorised to access/change an AIMMO game
     """
 
     def has_permission(self, request, view):
