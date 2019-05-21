@@ -208,7 +208,6 @@ class LocalGameManager(GameManager):
             del self.games[game_id]
 
 
-
 class KubernetesGameManager(GameManager):
     """Manages games running on Kubernetes cluster"""
 
