@@ -16,10 +16,12 @@ from rest_framework import status
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import mixins
+from rest_framework import viewsets
 
 import forms
 import game_renderer
-from app_settings import get_users_for_new_game, preview_user_required
+from app_settings import get_users_for_new_game, preview_user_required, IsPreviewUser
 from models import Avatar, Game, LevelAttempt
 from permissions import CsrfExemptSessionAuthentication, GameHasToken
 
@@ -75,7 +77,7 @@ def list_games(request):
     return JsonResponse(response)
 
 
-class GameView(APIView):
+class GameUsersView(APIView):
     """
     View set for listing all users currently playing the given game
     """
@@ -103,6 +105,12 @@ class GameView(APIView):
                 users["main_avatar"] = avatar.id
             users["users"].append({"id": avatar.id, "code": avatar.code})
         return users
+
+
+class GameViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):
+
+    queryset = Game.objects.all()
+    permission_classes = (IsPreviewUser,)
 
 
 def connection_parameters(request, game_id):

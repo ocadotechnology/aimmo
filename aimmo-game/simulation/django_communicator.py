@@ -12,7 +12,7 @@ class DjangoCommunicator(object):
         self.completion_url = completion_url
 
     def get_game_metadata(self):
-        return requests.get(self.django_api_url).json()
+        return requests.get(f"{self.django_api_url}users").json()
 
     def mark_game_complete(self, data=None):
         return requests.post(requests.post(self.completion_url, json=data))

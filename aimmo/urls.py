@@ -45,9 +45,14 @@ urlpatterns = [
     url(r"^api/code/(?P<id>[0-9]+)/$", views.code, name="aimmo/code"),
     url(r"^api/games/$", views.list_games, name="aimmo/games"),
     url(
-        r"^api/games/(?P<id>[0-9]+)/$",
-        views.GameView.as_view(),
+        r"^api/games/(?P<pk>[0-9]+)/$",
+        views.GameViewSet.as_view({"delete": "destroy"}),
         name="aimmo/game_details",
+    ),
+    url(
+        r"^api/games/(?P<id>[0-9]+)/users/$",
+        views.GameUsersView.as_view(),
+        name="aimmo/game_user_details",
     ),
     url(
         r"^api/games/(?P<id>[0-9]+)/token/$",
@@ -79,16 +84,3 @@ urlpatterns = [
         RedirectView.as_view(url="/static/unity/%(resource)s", permanent=False),
     ),
 ]
-
-
-def clean_slate_protocol():
-    from models import Game
-
-    games = Game.objects.all()
-
-    for game in games:
-        game.auth_token = ""
-        game.save()
-
-
-clean_slate_protocol()

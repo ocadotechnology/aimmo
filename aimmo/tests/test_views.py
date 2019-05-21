@@ -147,11 +147,11 @@ class TestViews(TestCase):
         models.Avatar(owner=user2, code="test2", pk=2, game=self.game).save()
         models.Avatar(owner=user3, code="test3", pk=3, game=self.game).save()
         c = Client()
-        response = c.get(reverse("aimmo/game_details", kwargs={"id": 1}))
+        response = c.get(reverse("aimmo/game_user_details", kwargs={"id": 1}))
         self.assertJSONEqual(response.content, self.EXPECTED_GAMES)
 
     def test_games_api_for_non_existent_game(self):
-        response = self._go_to_page("aimmo/game_details", "id", 5)
+        response = self._go_to_page("aimmo/game_user_details", "id", 5)
         self.assertEqual(response.status_code, 404)
 
     def _run_mark_complete_test(self, request_method, game_id, success_expected):
@@ -191,7 +191,7 @@ class TestViews(TestCase):
         game = models.Game.objects.get(id=1)
         c = Client()
         response = c.patch(
-            reverse("aimmo/game_details", kwargs={"id": 1}),
+            reverse("aimmo/game_user_details", kwargs={"id": 1}),
             json.dumps({"status": models.Game.STOPPED}),
             content_type="application/json",
             HTTP_GAME_TOKEN=game.auth_token,
@@ -277,7 +277,9 @@ class TestViews(TestCase):
         current_avatar_api_response = client.get(
             reverse("aimmo/current_avatar_in_game", kwargs={"game_id": 1})
         )
-        games_api_response = client.get(reverse("aimmo/game_details", kwargs={"id": 1}))
+        games_api_response = client.get(
+            reverse("aimmo/game_user_details", kwargs={"id": 1})
+        )
 
         current_avatar_id = ast.literal_eval(current_avatar_api_response.content)[
             "current_avatar_id"
@@ -363,3 +365,20 @@ class TestViews(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(models.Game.objects.get(id=1).auth_token, new_token)
+
+    def test_delete_game(self):
+        """
+        Check for 204 when deleting a game
+        """
+        user = self.user
+        models.Avatar(owner=user, code=self.CODE, game=self.game).save()
+        client = self.login()
+
+        game2 = models.Game(id=2, name="test", public=True)
+        game2.save()
+
+        response = client.delete(
+            reverse("aimmo/game_details", kwargs={"pk": self.game.id})
+        )
+        self.assertEquals(response.status_code, 204)
+        self.assertEquals(len(models.Game.objects.all()), 1)
