@@ -1,10 +1,11 @@
-from aimmo import views
-from app_settings import preview_user_required
 from django.conf.urls import url
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.views.generic import RedirectView, TemplateView
 from django_js_reverse.views import urls_js
+
+from aimmo import views
+from app_settings import preview_user_required
 
 HOMEPAGE_REGEX = r"^aimmo/"
 
@@ -43,7 +44,11 @@ urlpatterns = [
     url(r"^api/csrf_token", views.csrfToken, name="aimmo/csrf_token"),
     url(r"^api/code/(?P<id>[0-9]+)/$", views.code, name="aimmo/code"),
     url(r"^api/games/$", views.list_games, name="aimmo/games"),
-    url(r"^api/games/(?P<id>[0-9]+)/$", views.get_game, name="aimmo/game_details"),
+    url(
+        r"^api/games/(?P<id>[0-9]+)/$",
+        views.GameView.as_view(),
+        name="aimmo/game_details",
+    ),
     url(
         r"^api/games/(?P<id>[0-9]+)/token/$",
         views.GameTokenView.as_view(),
@@ -74,3 +79,16 @@ urlpatterns = [
         RedirectView.as_view(url="/static/unity/%(resource)s", permanent=False),
     ),
 ]
+
+
+def clean_slate_protocol():
+    from models import Game
+
+    games = Game.objects.all()
+
+    for game in games:
+        game.auth_token = ""
+        game.save()
+
+
+clean_slate_protocol()

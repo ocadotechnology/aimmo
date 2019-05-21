@@ -5,17 +5,18 @@ import asyncio
 import json
 import logging
 import os
+import signal
 import sys
 from urllib.parse import parse_qs
 
+import aiohttp
 import aiohttp_cors
-import requests
 import socketio
 from aiohttp import web
 from aiohttp_wsgi import WSGIHandler
 from prometheus_client import make_wsgi_app
 
-from activity_monitor import ActivityMonitor
+from activity_monitor import ActivityMonitor, StatusOptions
 from authentication import generate_game_token
 from simulation import map_generator
 from simulation.game_runner import GameRunner
@@ -24,12 +25,7 @@ app = web.Application()
 cors = aiohttp_cors.setup(app)
 
 
-async def callback(self):
-    LOGGER.info("Timer expired! Game marked as STOPPED")
-    # this should trigger the game for deletion, part of (#1011)
-
-
-activity_monitor = ActivityMonitor(callback)
+activity_monitor = ActivityMonitor()
 socketio_server = socketio.AsyncServer(async_handlers=True)
 
 routes = web.RouteTableDef()
@@ -178,6 +174,23 @@ def run_game(port):
     asyncio.ensure_future(game_runner.run())
 
 
+async def on_shutdown(app):
+    """
+    Sends a request to clear the token, this will happen when the pod aiohttp server recieves a shutdown signal.
+
+    allows the game to re-verify itself after it's been shutdown
+    """
+    token_url = (
+        os.environ.get("GAME_API_URL", "http://localhost:8000/aimmo/api/games/")
+        + "/token/"
+    )
+    async with aiohttp.ClientSession() as session:
+        async with session.patch(
+            token, json={"token": ""}, headers={"Game-token": os.environ["TOKEN"]}
+        ) as response:
+            return response
+
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     host = sys.argv[1]
@@ -196,5 +209,6 @@ if __name__ == "__main__":
     wsgi_handler = WSGIHandler(make_wsgi_app())
     app.add_routes([web.get("/{path_info:metrics}", wsgi_handler)])
 
+    app.on_shutdown.append(on_shutdown)
     LOGGER.info("starting the server")
     web.run_app(app, host=host, port=port)
