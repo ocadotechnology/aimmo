@@ -17,7 +17,7 @@ from aiohttp_wsgi import WSGIHandler
 from prometheus_client import make_wsgi_app
 
 from activity_monitor import ActivityMonitor, StatusOptions
-from authentication import generate_game_token
+from authentication import get_game_token
 from simulation import map_generator
 from simulation.game_runner import GameRunner
 
@@ -165,7 +165,7 @@ def create_runner(port):
 def run_game(port):
     game_runner = create_runner(port)
 
-    generate_game_token(game_runner.communicator.django_api_url)
+    get_game_token(game_runner.communicator.django_api_url)
 
     game_api = GameAPI(
         game_state=game_runner.game_state, worker_manager=game_runner.worker_manager

@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import secrets
 import subprocess
 import time
 from abc import ABCMeta, abstractmethod
@@ -12,6 +13,7 @@ import docker
 import kubernetes
 import requests
 from eventlet.semaphore import Semaphore
+from kubernetes.client.rest import ApiException
 
 LOGGER = logging.getLogger(__name__)
 
@@ -75,6 +77,10 @@ class GameManager(object):
         self._data = _GameManagerData()
         self.games_url = games_url
         super(GameManager, self).__init__()
+
+    def _generate_game_token(self):
+        NUM_BYTES_FOR_TOKEN_GENERATOR = 16
+        return secrets.token_urlsafe(nbytes=NUM_BYTES_FOR_TOKEN_GENERATOR)
 
     @abstractmethod
     def create_game(self, game_id, game_data):
@@ -160,6 +166,7 @@ class LocalGameManager(GameManager):
 
     def __init__(self, *args, **kwargs):
         self.games = {}
+        self.tokens = {}
         super(LocalGameManager, self).__init__(*args, **kwargs)
 
     def create_game(self, game_id, game_data):
@@ -177,7 +184,9 @@ class LocalGameManager(GameManager):
         port = str(6001 + int(game_id) * 1000)
         client = docker.from_env()
 
+        self.tokens[game_id] = self._generate_game_token()
         template = json.loads(os.environ.get("CONTAINER_TEMPLATE", "{}"))
+        template["environment"]["TOKEN"] = self.tokens[game_id]
         setup_container_environment_variables(template, game_data)
         template["ports"] = {"{}/tcp".format(port): ("0.0.0.0", port)}
 
@@ -197,6 +206,7 @@ class LocalGameManager(GameManager):
                 worker.remove(force=True)
             self.games[game_id].remove(force=True)
             del self.games[game_id]
+
 
 
 class KubernetesGameManager(GameManager):
@@ -325,6 +335,24 @@ class KubernetesGameManager(GameManager):
         service = self._make_service(game_id)
         self.api.create_namespaced_service(K8S_NAMESPACE, service)
 
+    def _make_secret(self, game_id):
+        data = {"token": self._generate_game_token()}
+        metadata = kubernetes.client.V1ObjectMeta(
+            name=KubernetesGameManager._create_game_name(game_id) + "-token",
+            namespace=K8S_NAMESPACE,
+        )
+        return kubernetes.client.V1Secret(data=data, metadata=metadata)
+
+    def _create_game_secret(self, game_id):
+        try:
+            secrect = self.api.read_namespaced_secret(
+                KubernetesGameManager._create_game_name(game_id) + "-token",
+                K8S_NAMESPACE,
+            )
+        except ApiException:
+            body = self._make_secret(game_id)
+            self.api.create_namespaced_secret(K8S_NAMESPACE, body)
+
     def _add_path_to_ingress(self, game_id):
         backend = kubernetes.client.V1beta1IngressBackend(
             KubernetesGameManager._create_game_name(game_id), 80
@@ -389,6 +417,7 @@ class KubernetesGameManager(GameManager):
             delete_resource_function(resource.metadata.name, K8S_NAMESPACE)
 
     def create_game(self, game_id, game_data):
+        self._create_game_secret(game_id)
         self._create_game_service(game_id)
         self._create_game_rc(game_id, game_data)
         self._add_path_to_ingress(game_id)

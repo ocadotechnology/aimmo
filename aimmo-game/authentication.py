@@ -1,13 +1,18 @@
 import os
-import secrets
 
+import kubernetes
 import requests
 
-NUM_BYTES_FOR_TOKEN_GENERATOR = 16
 
-
-def generate_game_token(django_api_url, num_bytes=NUM_BYTES_FOR_TOKEN_GENERATOR):
+def get_game_token(django_api_url):
     """Generate a random token for the game."""
-    new_token = secrets.token_urlsafe(nbytes=num_bytes)
-    os.environ["TOKEN"] = new_token
-    requests.patch(django_api_url + "token/", data={"token": new_token})
+    if os.environ["WORKER"] == "kubernetes":
+        api = kubernetes.client.CoreV1Api()
+        game_id = os.environ.get("GAME_ID")
+
+        secret = v1.read_namespaced_secret(f"game-{game_id}-token", "default")
+        os.environ["TOKEN"] = secret.data["token"]
+
+        
+
+    requests.patch(django_api_url + "token/", data={"token": os.environ["TOKEN"]})
