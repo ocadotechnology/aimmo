@@ -3,6 +3,8 @@ import yaml
 
 
 class TokenSecretCreator:
+    """Creates a kubernetes secret to store a games token."""
+
     def __init__(self, name: str, namespace: str, data: dict):
         self.name = name
         self.namespace = namespace
@@ -12,6 +14,7 @@ class TokenSecretCreator:
         self.create_secret()
 
     def create_secret(self):
+        """Loads a template file, fills in the needed data, and creates the k8s object."""
         with open("kube_templates/game_token.yaml", "r") as f:
             template = yaml.safe_load(f)
 
