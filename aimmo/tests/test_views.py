@@ -337,7 +337,7 @@ class TestViews(TestCase):
 
     def test_patch_token_with_incorrect_token(self):
         """
-        Check for 401 when attempting to change game token (incorrect token provided).
+        Check for 403 when attempting to change game token (incorrect token provided).
         """
         client = Client()
         token = models.Game.objects.get(id=1).auth_token
@@ -370,15 +370,25 @@ class TestViews(TestCase):
         """
         Check for 204 when deleting a game
         """
-        user = self.user
-        models.Avatar(owner=user, code=self.CODE, game=self.game).save()
         client = self.login()
 
         game2 = models.Game(id=2, name="test", public=True)
         game2.save()
 
-        response = client.delete(
-            reverse("aimmo/game_details", kwargs={"pk": self.game.id})
-        )
+        response = client.delete(reverse("game-detail", kwargs={"pk": self.game.id}))
         self.assertEquals(response.status_code, 204)
         self.assertEquals(len(models.Game.objects.all()), 1)
+
+    def test_delete_non_existent_game(self):
+        c = self.login()
+        response = c.delete(reverse("game-detail", kwargs={"pk": 2}))
+        self.assertEqual(response.status_code, 404)
+
+    def test_delete_for_unauthorized_user(self):
+        """
+        Check for 403 when attempting to delete a game without being authorized
+        """
+        self._make_game_private()
+        c = self.login()
+        response = c.delete(reverse("game-detail", kwargs={"pk": self.game.id}))
+        self.assertEqual(response.status_code, 403)

@@ -21,9 +21,14 @@ from rest_framework import viewsets
 
 import forms
 import game_renderer
-from app_settings import get_users_for_new_game, preview_user_required, IsPreviewUser
+from app_settings import (
+    get_users_for_new_game,
+    preview_user_required,
+    IsPreviewUser,
+    IsTeacher,
+)
 from models import Avatar, Game, LevelAttempt
-from permissions import CsrfExemptSessionAuthentication, GameHasToken
+from permissions import CsrfExemptSessionAuthentication, GameHasToken, CanUserPlay
 
 LOGGER = logging.getLogger(__name__)
 
@@ -65,18 +70,6 @@ def code(request, id):
         return JsonResponse({"code": avatar.code})
 
 
-def list_games(request):
-    response = {
-        game.pk: {
-            "name": game.name,
-            "status": game.status,
-            "settings": json.dumps(game.settings_as_dict()),
-        }
-        for game in Game.objects.exclude_inactive()
-    }
-    return JsonResponse(response)
-
-
 class GameUsersView(APIView):
     """
     View set for listing all users currently playing the given game
@@ -110,7 +103,29 @@ class GameUsersView(APIView):
 class GameViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):
 
     queryset = Game.objects.all()
-    permission_classes = (IsPreviewUser,)
+    permission_classes = (IsPreviewUser, IsTeacher, CanUserPlay)
+
+    def list(self, request):
+        response = {
+            game.pk: {
+                "name": game.name,
+                "status": game.status,
+                "settings": json.dumps(game.settings_as_dict()),
+            }
+            for game in Game.objects.exclude_inactive()
+        }
+        return JsonResponse(response)
+
+    def retrieve(self, request, pk=None):
+        game = get_object_or_404(Game, id=pk)
+        response = {
+            game.pk: {
+                "name": game.name,
+                "status": game.status,
+                "settings": json.dumps(game.settings_as_dict()),
+            }
+        }
+        return JsonResponse(response)
 
 
 def connection_parameters(request, game_id):

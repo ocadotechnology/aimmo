@@ -1,15 +1,24 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.views.generic import RedirectView, TemplateView
 from django_js_reverse.views import urls_js
+from rest_framework import routers
 
 from aimmo import views
 from app_settings import preview_user_required
 
 HOMEPAGE_REGEX = r"^aimmo/"
 
+
+router = routers.SimpleRouter()
+router.register(
+    r"games", views.GameViewSet
+)  # creates ^games/$ as game-list and ^games/{pk}/$ as game-detail
+
+
 urlpatterns = [
+    url(r"^api/", include(router.urls)),
     url(
         r"^$",
         login_required(
@@ -43,12 +52,6 @@ urlpatterns = [
     ),
     url(r"^api/csrf_token", views.csrfToken, name="aimmo/csrf_token"),
     url(r"^api/code/(?P<id>[0-9]+)/$", views.code, name="aimmo/code"),
-    url(r"^api/games/$", views.list_games, name="aimmo/games"),
-    url(
-        r"^api/games/(?P<pk>[0-9]+)/$",
-        views.GameViewSet.as_view({"delete": "destroy"}),
-        name="aimmo/game_details",
-    ),
     url(
         r"^api/games/(?P<id>[0-9]+)/users/$",
         views.GameUsersView.as_view(),
