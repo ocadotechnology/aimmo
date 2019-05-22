@@ -71,10 +71,6 @@ def code(request, id):
 
 
 class GameUsersView(APIView):
-    """
-    View set for listing all users currently playing the given game
-    """
-
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     permission_classes = (GameHasToken,)
 
@@ -101,7 +97,6 @@ class GameUsersView(APIView):
 
 
 class GameViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):
-
     queryset = Game.objects.all()
     permission_classes = (IsPreviewUser, IsTeacher, CanUserPlay)
 
