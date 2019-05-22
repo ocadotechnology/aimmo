@@ -348,7 +348,7 @@ class KubernetesGameManager(GameManager):
         name = KubernetesGameManager._create_game_name(game_id) + "-token"
         data = {"token": self._generate_game_token()}
         try:
-            secrect = self.api.read_namespaced_secret(name, K8S_NAMESPACE)
+            secret = self.api.read_namespaced_secret(name, K8S_NAMESPACE)
         except ApiException:
             TokenSecretCreator(name, K8S_NAMESPACE, data)
 
