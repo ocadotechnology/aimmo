@@ -16,3 +16,10 @@ class DjangoCommunicator(object):
 
     def mark_game_complete(self, data=None):
         return requests.post(requests.post(self.completion_url, json=data))
+
+    def patch_game(self, data):
+        return requests.patch(
+            self.django_api_url + "token/",
+            headers={"Game-token": os.environ["TOKEN"]},
+            data=data,
+        )

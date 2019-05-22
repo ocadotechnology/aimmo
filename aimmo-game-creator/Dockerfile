@@ -1,6 +1,5 @@
 FROM python:3.6 as builder
 LABEL Author='codeforlife@ocado.com'
-# RUN apk add --no-cache gcc musl-dev python-dev libffi-dev openssl-dev
 RUN pip install pipenv
 COPY ["Pipfile", "Pipfile.lock", "setup.py", "./"]
 ENV PIP_NO_CACHE_DIR=false

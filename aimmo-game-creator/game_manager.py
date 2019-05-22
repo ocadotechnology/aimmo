@@ -15,6 +15,8 @@ import requests
 from eventlet.semaphore import Semaphore
 from kubernetes.client.rest import ApiException
 
+from create_kube_components import TokenSecretCreator
+
 LOGGER = logging.getLogger(__name__)
 
 K8S_NAMESPACE = "default"
@@ -342,23 +344,13 @@ class KubernetesGameManager(GameManager):
         service = self._make_service(game_id)
         self.api.create_namespaced_service(K8S_NAMESPACE, service)
 
-    def _make_secret(self, game_id):
-        data = {"token": self._generate_game_token()}
-        metadata = kubernetes.client.V1ObjectMeta(
-            name=KubernetesGameManager._create_game_name(game_id) + "-token",
-            namespace=K8S_NAMESPACE,
-        )
-        return kubernetes.client.V1Secret(data=data, metadata=metadata)
-
     def _create_game_secret(self, game_id):
+        name = KubernetesGameManager._create_game_name(game_id) + "-token"
+        data = {"token": self._generate_game_token()}
         try:
-            secrect = self.api.read_namespaced_secret(
-                KubernetesGameManager._create_game_name(game_id) + "-token",
-                K8S_NAMESPACE,
-            )
+            secrect = self.api.read_namespaced_secret(name, K8S_NAMESPACE)
         except ApiException:
-            body = self._make_secret(game_id)
-            self.api.create_namespaced_secret(K8S_NAMESPACE, body)
+            TokenSecretCreator(name, K8S_NAMESPACE, data)
 
     def _add_path_to_ingress(self, game_id):
         backend = kubernetes.client.V1beta1IngressBackend(
