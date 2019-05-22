@@ -152,7 +152,6 @@ class GameTokenView(APIView):
         """
         game = get_object_or_404(Game, id=id)
         self.check_object_permissions(self.request, game)
-        print(game.auth_token)
         return Response(data={"token": game.auth_token})
 
     def patch(self, request, id):

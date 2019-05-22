@@ -15,7 +15,7 @@ from requests import codes
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-SECONDS_TILL_CONSIDERED_INACTIVE = 3600
+SECONDS_TILL_CONSIDERED_INACTIVE = 10
 
 
 class StatusOptions(Enum):
@@ -32,8 +32,7 @@ class ActivityMonitor:
     of time, the game is marked as stopped and the pods will be shut down shortly after
     """
 
-    def __init__(self,):
-        self.__active_users = 0
+    def __init__(self):
         self.timer = Timer(
             SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
         )
