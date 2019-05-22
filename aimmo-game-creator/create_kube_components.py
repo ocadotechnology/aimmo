@@ -20,7 +20,7 @@ class TokenSecretCreator:
 
             template["metadata"]["name"] = self.name
             template["metadata"]["namespace"] = self.namespace
-            template["data"]["token"] = data["token"]
+            template["data"]["token"] = self.data["token"]
 
             metadata = kubernetes.client.V1ObjectMeta(template["metadata"])
             data = template["data"]
