@@ -116,7 +116,6 @@ class GameManager(object):
         try:
             LOGGER.info("Waking up")
             games = requests.get(self.games_url).json()
-            print(games)
         except (requests.RequestException, ValueError) as ex:
             LOGGER.error("Failed to obtain game data")
             LOGGER.exception(ex)
@@ -166,7 +165,9 @@ class LocalGameManager(GameManager):
 
     def __init__(self, *args, **kwargs):
         self.games = {}
-        self.tokens = {}
+        with open("/tokens/local_tokens.json", "r") as f:
+            self.tokens = json.loads(f.read())
+
         super(LocalGameManager, self).__init__(*args, **kwargs)
 
     def create_game(self, game_id, game_data):
@@ -183,8 +184,11 @@ class LocalGameManager(GameManager):
         assert game_id not in self.games
         port = str(6001 + int(game_id) * 1000)
         client = docker.from_env()
+        if not self.tokens[game_id]:
+            self.tokens[game_id] = self._generate_game_token()
+        with open("/tokens/local_tokens.json", "w+") as f:
+            f.write(json.dumps(self.tokens))
 
-        self.tokens[game_id] = self._generate_game_token()
         template = json.loads(os.environ.get("CONTAINER_TEMPLATE", "{}"))
         template["environment"]["TOKEN"] = self.tokens[game_id]
         setup_container_environment_variables(template, game_data)

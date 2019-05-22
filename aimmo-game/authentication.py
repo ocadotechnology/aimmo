@@ -13,4 +13,8 @@ def get_game_token(django_api_url):
         secret = v1.read_namespaced_secret(f"game-{game_id}-token", "default")
         os.environ["TOKEN"] = secret.data["token"]
 
-    requests.patch(django_api_url + "token/", data={"token": os.environ["TOKEN"]})
+    requests.patch(
+        django_api_url + "token/",
+        headers={"Game-token": os.environ["TOKEN"]},
+        data={"token": os.environ["TOKEN"]},
+    )
