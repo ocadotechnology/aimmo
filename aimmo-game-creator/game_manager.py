@@ -346,10 +346,10 @@ class KubernetesGameManager(GameManager):
 
     def _create_game_secret(self, game_id):
         name = KubernetesGameManager._create_game_name(game_id) + "-token"
-        data = {"token": self._generate_game_token()}
         try:
             secret = self.api.read_namespaced_secret(name, K8S_NAMESPACE)
         except ApiException:
+            data = {"token": self._generate_game_token()}
             TokenSecretCreator(name, K8S_NAMESPACE, data)
 
     def _add_path_to_ingress(self, game_id):
