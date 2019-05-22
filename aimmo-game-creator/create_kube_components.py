@@ -25,5 +25,5 @@ class TokenSecretCreator:
             metadata = kubernetes.client.V1ObjectMeta(template["metadata"])
             data = template["data"]
 
-            body = kubernetes.client.V1Secret(data=data, metadata=metadata)
+            body = kubernetes.client.V1Secret(template)
             self.api.create_namespaced_secret(self.namespace, body)
