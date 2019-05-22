@@ -18,6 +18,7 @@ from kubernetes.client.rest import ApiException
 LOGGER = logging.getLogger(__name__)
 
 K8S_NAMESPACE = "default"
+NUM_BYTES_FOR_TOKEN_GENERATOR = 16
 
 
 class _GameManagerData(object):
@@ -79,7 +80,6 @@ class GameManager(object):
         super(GameManager, self).__init__()
 
     def _generate_game_token(self):
-        NUM_BYTES_FOR_TOKEN_GENERATOR = 16
         return secrets.token_urlsafe(nbytes=NUM_BYTES_FOR_TOKEN_GENERATOR)
 
     @abstractmethod
@@ -165,8 +165,8 @@ class LocalGameManager(GameManager):
 
     def __init__(self, *args, **kwargs):
         self.games = {}
-        with open("/tokens/local_tokens.json", "r") as f:
-            self.tokens = json.loads(f.read())
+        with open("/tokens/local_tokens.json", "r") as file:
+            self.tokens = json.loads(file.read())
 
         super(LocalGameManager, self).__init__(*args, **kwargs)
 
@@ -184,11 +184,8 @@ class LocalGameManager(GameManager):
         assert game_id not in self.games
         port = str(6001 + int(game_id) * 1000)
         client = docker.from_env()
-        if not self.tokens[game_id]:
-            self.tokens[game_id] = self._generate_game_token()
-        with open("/tokens/local_tokens.json", "w+") as f:
-            f.write(json.dumps(self.tokens))
 
+        self.check_token(game_id)
         template = json.loads(os.environ.get("CONTAINER_TEMPLATE", "{}"))
         template["environment"]["TOKEN"] = self.tokens[game_id]
         setup_container_environment_variables(template, game_data)
@@ -210,6 +207,13 @@ class LocalGameManager(GameManager):
                 worker.remove(force=True)
             self.games[game_id].remove(force=True)
             del self.games[game_id]
+
+    def check_token(self, game_id):
+        if not self.tokens[game_id]:
+            self.tokens[game_id] = self._generate_game_token()
+
+        with open("/tokens/local_tokens.json", "w+") as file:
+            file.write(json.dumps(self.tokens))
 
 
 class KubernetesGameManager(GameManager):
