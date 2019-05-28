@@ -1,5 +1,6 @@
 from base64 import urlsafe_b64encode
 from os import urandom
+import json
 
 from aimmo import app_settings
 from django.contrib.auth.models import User
@@ -56,6 +57,7 @@ class Game(models.Model):
     start_height = models.IntegerField(default=31)
     start_width = models.IntegerField(default=31)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=RUNNING)
+    settings = {}
 
     @property
     def is_active(self):
@@ -81,6 +83,7 @@ class Game(models.Model):
         }
 
     def save(self, *args, **kwargs):
+        self.settings = json.dumps(self.settings_as_dict())
         super(Game, self).full_clean()
         super(Game, self).save(*args, **kwargs)
 

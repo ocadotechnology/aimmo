@@ -9,6 +9,8 @@ from rest_framework.test import APIRequestFactory
 
 from aimmo import app_settings, models
 
+from aimmo.serializers import GameSerializer
+
 app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
     "base %s" % game_id,
     "path %s" % game_id,
@@ -392,3 +394,13 @@ class TestViews(TestCase):
         c = self.login()
         response = c.delete(reverse("game-detail", kwargs={"pk": self.game.id}))
         self.assertEqual(response.status_code, 403)
+
+    def test_game_serializer_settings(self):
+        """
+        Check that the serializer gets the correct settings data from the game
+        """
+        client = self.login()
+
+        serializer = GameSerializer(self.game)
+
+        self.assertEquals(self.game.settings, serializer.data["settings"])
