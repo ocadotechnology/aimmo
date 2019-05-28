@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.utils.module_loading import import_string
-from permissions import default_preview_user, DummyIsPreviewUser, DummyIsTeacher
+from permissions import default_preview_user, DummyPermission
 from django.contrib.auth.models import User
 
 #: URL function for locating the game server, takes one parameter `game`
@@ -48,7 +48,7 @@ def get_aimmo_preview_user_class():
     """
     if IS_PREVIEW_USER_AIMMO_CLASS:
         return import_string(IS_PREVIEW_USER_AIMMO_CLASS)
-    return DummyIsPreviewUser
+    return DummyPermission
 
 
 def get_teacher_class():
@@ -60,7 +60,7 @@ def get_teacher_class():
     """
     if IS_TEACHER_CLASS:
         return import_string(IS_TEACHER_CLASS)
-    return DummyIsTeacher
+    return DummyPermission
 
 
 preview_user_required = get_aimmo_preview_user_decorator()

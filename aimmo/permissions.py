@@ -42,20 +42,9 @@ class GameHasToken(permissions.BasePermission):
             return False
 
 
-class DummyIsPreviewUser(permissions.BasePermission):
+class DummyPermission(permissions.BasePermission):
     """
-    Used to verify that an incoming request is made by a user
-    that's authorised to access/change an AIMMO game
-    """
-
-    def has_permission(self, request, view):
-        return True
-
-
-class DummyIsTeacher(permissions.BasePermission):
-    """
-    Used to verify that an incoming request is made by a user
-    that's authorised to access/change an AIMMO game
+    Used to mock general permissions
     """
 
     def has_permission(self, request, view):

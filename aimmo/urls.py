@@ -12,9 +12,7 @@ HOMEPAGE_REGEX = r"^aimmo/"
 
 
 router = routers.SimpleRouter()
-router.register(
-    r"games", views.GameViewSet
-)  # creates ^games/$ as game-list and ^games/{pk}/$ as game-detail
+router.register(r"games", views.GameViewSet)
 
 
 urlpatterns = [
