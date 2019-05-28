@@ -15,7 +15,7 @@ import requests
 from eventlet.semaphore import Semaphore
 from kubernetes.client.rest import ApiException
 
-from create_kube_components import TokenSecretCreator
+from kube_components import TokenSecretCreator
 
 LOGGER = logging.getLogger(__name__)
 

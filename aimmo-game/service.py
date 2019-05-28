@@ -23,6 +23,8 @@ from simulation.game_runner import GameRunner
 
 app = web.Application()
 cors = aiohttp_cors.setup(app)
+clean_token = None
+close_session = None
 
 
 activity_monitor = ActivityMonitor()
@@ -165,7 +167,10 @@ def create_runner(port):
 def run_game(port):
     game_runner = create_runner(port)
 
-    initialize_game_token(game_runner.communicator)
+    asyncio.ensure_future(initialize_game_token(game_runner.communicator))
+
+    clean_token = cleanup_creator(game_runner.communicator)
+    close_session = game_runner.communicator.close_session
 
     game_api = GameAPI(
         game_state=game_runner.game_state, worker_manager=game_runner.worker_manager
@@ -174,21 +179,11 @@ def run_game(port):
     asyncio.ensure_future(game_runner.run())
 
 
-async def on_shutdown(app):
-    """
-    Send a request to clear the token, this will happen when the pod aiohttp server recieves a shutdown signal.
+def cleanup_creator(communicator):
+    async def shutdown(app):
+        communicator.patch_token({"token": ""})
 
-    allows the game to re-verify itself after it's been shutdown
-    """
-    token_url = (
-        os.environ.get("GAME_API_URL", "http://localhost:8000/aimmo/api/games/")
-        + "/token/"
-    )
-    async with aiohttp.ClientSession() as session:
-        async with session.patch(
-            token_url, json={"token": ""}, headers={"Game-token": os.environ["TOKEN"]}
-        ) as response:
-            return response
+    return shutdown
 
 
 if __name__ == "__main__":
@@ -209,6 +204,8 @@ if __name__ == "__main__":
     wsgi_handler = WSGIHandler(make_wsgi_app())
     app.add_routes([web.get("/{path_info:metrics}", wsgi_handler)])
 
-    app.on_shutdown.append(on_shutdown)
+    app.on_shutdown.append(clean_token)
+    app.on_shutdown.append(close_session)
+
     LOGGER.info("starting the server")
     web.run_app(app, host=host, port=port)

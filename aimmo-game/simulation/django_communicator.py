@@ -1,5 +1,6 @@
 import os
 
+import aiohttp
 import requests
 
 
@@ -10,8 +11,10 @@ class DjangoCommunicator(object):
     """
 
     def __init__(self, django_api_url, completion_url):
+        self.session = aiohttp.ClientSession()
         self.django_api_url = django_api_url
         self.completion_url = completion_url
+        self.token_url = self.django_api_url + "token/"
 
     def get_game_metadata(self):
         return requests.get(self.django_api_url).json()
@@ -19,9 +22,17 @@ class DjangoCommunicator(object):
     def mark_game_complete(self, data=None):
         return requests.post(requests.post(self.completion_url, json=data))
 
-    def patch_game(self, data):
-        return requests.patch(
-            self.django_api_url + "token/",
-            headers={"Game-token": os.environ["TOKEN"]},
-            data=data,
+    async def patch_token(self, data):
+        response = await self.session.patch(
+            self.token_url, headers={"Game-token": os.environ["TOKEN"]}, json=data
         )
+        return response
+
+    async def patch_game(self, data):
+        response = await self.session.patch(
+            self.token_url, headers={"Game-token": os.environ["TOKEN"]}, json=data
+        )
+        return response
+
+    def close_session(self, app):
+        self.session.close()
