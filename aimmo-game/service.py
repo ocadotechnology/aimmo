@@ -23,8 +23,6 @@ from simulation.game_runner import GameRunner
 
 app = web.Application()
 cors = aiohttp_cors.setup(app)
-clean_token = None
-close_session = None
 
 
 activity_monitor = ActivityMonitor()
@@ -169,21 +167,17 @@ def run_game(port):
 
     asyncio.ensure_future(initialize_game_token(game_runner.communicator))
 
-    clean_token = cleanup_creator(game_runner.communicator)
-    close_session = game_runner.communicator.close_session
+    async def clean_token(app):
+        communicator.patch_token({"token": ""})
+
+    app.on_shutdown.append(clean_token)
+    app.on_shutdown.append(game_runner.communicator.close_session)
 
     game_api = GameAPI(
         game_state=game_runner.game_state, worker_manager=game_runner.worker_manager
     )
     game_runner.set_end_turn_callback(game_api.send_updates)
     asyncio.ensure_future(game_runner.run())
-
-
-def cleanup_creator(communicator):
-    async def shutdown(app):
-        communicator.patch_token({"token": ""})
-
-    return shutdown
 
 
 if __name__ == "__main__":
@@ -203,9 +197,6 @@ if __name__ == "__main__":
 
     wsgi_handler = WSGIHandler(make_wsgi_app())
     app.add_routes([web.get("/{path_info:metrics}", wsgi_handler)])
-
-    app.on_shutdown.append(clean_token)
-    app.on_shutdown.append(close_session)
 
     LOGGER.info("starting the server")
     web.run_app(app, host=host, port=port)
