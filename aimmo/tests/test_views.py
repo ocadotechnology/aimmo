@@ -394,13 +394,3 @@ class TestViews(TestCase):
         c = self.login()
         response = c.delete(reverse("game-detail", kwargs={"pk": self.game.id}))
         self.assertEqual(response.status_code, 403)
-
-    def test_game_serializer_settings(self):
-        """
-        Check that the serializer gets the correct settings data from the game
-        """
-        client = self.login()
-
-        serializer = GameSerializer(self.game)
-
-        self.assertEquals(self.game.settings, serializer.data["settings"])
