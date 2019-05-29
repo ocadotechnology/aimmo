@@ -3,7 +3,6 @@ LABEL Author='codeforlife@ocado.com'
 
 RUN pip install pipenv
 COPY ["Pipfile", "Pipfile.lock", "setup.py", "./"]
-ENV PIP_NO_CACHE_DIR=false
 RUN pipenv install --system --deploy
 
 FROM python:3.6-alpine as base
