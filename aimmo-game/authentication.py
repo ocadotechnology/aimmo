@@ -5,7 +5,7 @@ import requests
 
 
 async def initialize_game_token(communicator):
-    """Get game token and stores it somewhere accesible."""
+    """Get game token and store it somewhere accessible."""
     if os.environ["WORKER"] == "kubernetes":
         api = kubernetes.client.CoreV1Api()
         game_id = os.environ.get("GAME_ID")
