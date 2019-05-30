@@ -1,12 +1,7 @@
-coverage:
-  precision: 2
-  round: down
-  range: "70...90"
-
 comment:
   layout: "reach, diff, flags, files"
   behavior: new
   require_changes: false
   require_base: no
   require_head: yes
-  branches: !master, !develop
+  branches: !master, !development
