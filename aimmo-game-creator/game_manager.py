@@ -225,6 +225,7 @@ class KubernetesGameManager(GameManager):
         kubernetes.config.load_incluster_config()
         self.extension_api = kubernetes.client.ExtensionsV1beta1Api()
         self.api = kubernetes.client.CoreV1Api()
+        self.secret_creator = TokenSecretCreator()
 
         super(KubernetesGameManager, self).__init__(*args, **kwargs)
         self._create_ingress_paths_for_existing_games()
@@ -350,7 +351,7 @@ class KubernetesGameManager(GameManager):
             secret = self.api.read_namespaced_secret(name, K8S_NAMESPACE)
         except ApiException:
             data = {"token": self._generate_game_token()}
-            TokenSecretCreator(name, K8S_NAMESPACE, data)
+            self.secret_creator.create_secret(name, K8S_NAMESPACE, data)
 
     def _add_path_to_ingress(self, game_id):
         backend = kubernetes.client.V1beta1IngressBackend(

@@ -166,11 +166,9 @@ def run_game(port):
     async def clean_token(app):
         communicator.patch_token({"token": ""})
 
-        
     game_runner = create_runner(port)
 
     asyncio.ensure_future(initialize_game_token(game_runner.communicator))
-
 
     app.on_shutdown.append(clean_token)
     app.on_shutdown.append(game_runner.communicator.close_session)
