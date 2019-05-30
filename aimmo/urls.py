@@ -79,16 +79,3 @@ urlpatterns = [
         RedirectView.as_view(url="/static/unity/%(resource)s", permanent=False),
     ),
 ]
-
-
-def clean_slate_protocol():
-    from models import Game
-
-    games = Game.objects.all()
-
-    for game in games:
-        game.auth_token = ""
-        game.save()
-
-
-clean_slate_protocol()

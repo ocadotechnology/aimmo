@@ -17,7 +17,7 @@ from aiohttp_wsgi import WSGIHandler
 from prometheus_client import make_wsgi_app
 
 from activity_monitor import ActivityMonitor, StatusOptions
-from authentication import generate_game_token
+from authentication import initialize_game_token
 from simulation import map_generator
 from simulation.game_runner import GameRunner
 
@@ -163,32 +163,21 @@ def create_runner(port):
 
 
 def run_game(port):
+    async def clean_token(app):
+        communicator.patch_token({"token": ""})
+
     game_runner = create_runner(port)
 
-    generate_game_token(game_runner.communicator.django_api_url)
+    asyncio.ensure_future(initialize_game_token(game_runner.communicator))
+
+    app.on_shutdown.append(clean_token)
+    app.on_shutdown.append(game_runner.communicator.close_session)
 
     game_api = GameAPI(
         game_state=game_runner.game_state, worker_manager=game_runner.worker_manager
     )
     game_runner.set_end_turn_callback(game_api.send_updates)
     asyncio.ensure_future(game_runner.run())
-
-
-async def on_shutdown(app):
-    """
-    Sends a request to clear the token, this will happen when the pod aiohttp server recieves a shutdown signal.
-
-    allows the game to re-verify itself after it's been shutdown
-    """
-    token_url = (
-        os.environ.get("GAME_API_URL", "http://localhost:8000/aimmo/api/games/")
-        + "/token/"
-    )
-    async with aiohttp.ClientSession() as session:
-        async with session.patch(
-            token, json={"token": ""}, headers={"Game-token": os.environ["TOKEN"]}
-        ) as response:
-            return response
 
 
 if __name__ == "__main__":
@@ -209,6 +198,5 @@ if __name__ == "__main__":
     wsgi_handler = WSGIHandler(make_wsgi_app())
     app.add_routes([web.get("/{path_info:metrics}", wsgi_handler)])
 
-    app.on_shutdown.append(on_shutdown)
     LOGGER.info("starting the server")
     web.run_app(app, host=host, port=port)

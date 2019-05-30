@@ -6,7 +6,8 @@ from exceptions import UserCannotPlayGameException
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
+from django.http import (Http404, HttpResponse, HttpResponseForbidden,
+                         JsonResponse)
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
@@ -151,7 +152,6 @@ class GameTokenView(APIView):
         """
         game = get_object_or_404(Game, id=id)
         self.check_object_permissions(self.request, game)
-
         return Response(data={"token": game.auth_token})
 
     def patch(self, request, id):
