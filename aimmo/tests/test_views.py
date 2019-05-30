@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
 from rest_framework import status
 from rest_framework.test import APIRequestFactory
+from django.http import JsonResponse
 
 from aimmo import app_settings, models
 
@@ -394,3 +395,17 @@ class TestViews(TestCase):
         c = self.login()
         response = c.delete(reverse("game-detail", kwargs={"pk": self.game.id}))
         self.assertEqual(response.status_code, 403)
+
+    def test_game_serializer_settings(self):
+        """
+        Check that the serializer gets the correct settings data from the game
+        """
+        client = self.login()
+
+        serializer = GameSerializer(self.game)
+        json_game_settings = JsonResponse(self.game.settings_as_dict())
+
+        self.assertEquals(
+            json_game_settings.content, serializer.data["settings"].content
+        )
+
