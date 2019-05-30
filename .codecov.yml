@@ -1,7 +1,7 @@
 comment:
   layout: "reach, diff, flags, files"
-  behavior: default
+  behavior: new
   require_changes: false
   require_base: no
   require_head: yes
-  branches: !master, !development
+  branches: !master
