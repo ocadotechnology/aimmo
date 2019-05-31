@@ -6,8 +6,11 @@ from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
 from rest_framework import status
 from rest_framework.test import APIRequestFactory
+from django.http import JsonResponse
 
 from aimmo import app_settings, models
+
+from aimmo.serializers import GameSerializer
 
 app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
     "base %s" % game_id,
@@ -147,11 +150,11 @@ class TestViews(TestCase):
         models.Avatar(owner=user2, code="test2", pk=2, game=self.game).save()
         models.Avatar(owner=user3, code="test3", pk=3, game=self.game).save()
         c = Client()
-        response = c.get(reverse("aimmo/game_details", kwargs={"id": 1}))
+        response = c.get(reverse("aimmo/game_user_details", kwargs={"id": 1}))
         self.assertJSONEqual(response.content, self.EXPECTED_GAMES)
 
     def test_games_api_for_non_existent_game(self):
-        response = self._go_to_page("aimmo/game_details", "id", 5)
+        response = self._go_to_page("aimmo/game_user_details", "id", 5)
         self.assertEqual(response.status_code, 404)
 
     def _run_mark_complete_test(self, request_method, game_id, success_expected):
@@ -191,7 +194,7 @@ class TestViews(TestCase):
         game = models.Game.objects.get(id=1)
         c = Client()
         response = c.patch(
-            reverse("aimmo/game_details", kwargs={"id": 1}),
+            reverse("aimmo/game_user_details", kwargs={"id": 1}),
             json.dumps({"status": models.Game.STOPPED}),
             content_type="application/json",
             HTTP_GAME_TOKEN=game.auth_token,
@@ -277,7 +280,9 @@ class TestViews(TestCase):
         current_avatar_api_response = client.get(
             reverse("aimmo/current_avatar_in_game", kwargs={"game_id": 1})
         )
-        games_api_response = client.get(reverse("aimmo/game_details", kwargs={"id": 1}))
+        games_api_response = client.get(
+            reverse("aimmo/game_user_details", kwargs={"id": 1})
+        )
 
         current_avatar_id = ast.literal_eval(current_avatar_api_response.content)[
             "current_avatar_id"
@@ -335,7 +340,7 @@ class TestViews(TestCase):
 
     def test_patch_token_with_incorrect_token(self):
         """
-        Check for 401 when attempting to change game token (incorrect token provided).
+        Check for 403 when attempting to change game token (incorrect token provided).
         """
         client = Client()
         token = models.Game.objects.get(id=1).auth_token
@@ -363,3 +368,44 @@ class TestViews(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(models.Game.objects.get(id=1).auth_token, new_token)
+
+    def test_delete_game(self):
+        """
+        Check for 204 when deleting a game
+        """
+        client = self.login()
+
+        game2 = models.Game(id=2, name="test", public=True)
+        game2.save()
+
+        response = client.delete(reverse("game-detail", kwargs={"pk": self.game.id}))
+        self.assertEquals(response.status_code, 204)
+        self.assertEquals(len(models.Game.objects.all()), 1)
+
+    def test_delete_non_existent_game(self):
+        c = self.login()
+        response = c.delete(reverse("game-detail", kwargs={"pk": 2}))
+        self.assertEqual(response.status_code, 404)
+
+    def test_delete_for_unauthorized_user(self):
+        """
+        Check for 403 when attempting to delete a game without being authorized
+        """
+        self._make_game_private()
+        c = self.login()
+        response = c.delete(reverse("game-detail", kwargs={"pk": self.game.id}))
+        self.assertEqual(response.status_code, 403)
+
+    def test_game_serializer_settings(self):
+        """
+        Check that the serializer gets the correct settings data from the game
+        """
+        client = self.login()
+
+        serializer = GameSerializer(self.game)
+        json_game_settings = JsonResponse(self.game.settings_as_dict())
+
+        self.assertEquals(
+            json_game_settings.content, serializer.data["settings"].content
+        )
+
