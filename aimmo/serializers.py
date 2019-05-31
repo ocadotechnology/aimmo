@@ -9,4 +9,3 @@ class GameSerializer(serializers.Serializer):
 
     def get_settings_as_json(self, game):
         return JsonResponse(game.settings_as_dict())
-
