@@ -26,6 +26,9 @@ class MockCommunicator(object):
     def mark_game_complete(self):
         return {}
 
+    def patch_game(self, data):
+        return data
+
     def change_code(self, avatar_id, new_code):
         users = self.data["users"]
         for i in range(len(users)):

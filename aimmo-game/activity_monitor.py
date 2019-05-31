@@ -32,16 +32,17 @@ class ActivityMonitor:
     of time, the game is marked as stopped and the pods will be shut down shortly after
     """
 
-    def __init__(self,):
+    def __init__(self):
         self.timer = Timer(
             SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
         )
         self.active_users = 0
 
     def _start_timer(self):
-        self.timer = Timer(
-            SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
-        )
+        if self.timer.cancelled():
+            self.timer = Timer(
+                SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
+            )
 
     def _stop_timer(self):
         self.timer.cancel()
@@ -69,7 +70,7 @@ class ActivityMonitor:
                 data={"status": StatusOptions.STOPPED.value},
                 headers={"Game-token": os.environ["TOKEN"]},
             ) as response:
-                if response.status_code != codes["ok"]:
+                if response.status != codes["ok"]:
                     LOGGER.error(f"Game could not be stopped. {response}")
 
 
