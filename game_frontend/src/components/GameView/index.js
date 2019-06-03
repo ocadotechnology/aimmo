@@ -33,7 +33,7 @@ export const LoadingText = styled(Typography)`
 `
 
 export default class GameView extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     unityContent.on('loaded', this.unityContentLoaded)
   }
@@ -47,7 +47,11 @@ export default class GameView extends Component {
       return (
         <LoadingBackgroundOverlay>
           <StyledCircularProgress color='inherit' />
-          <LoadingText variant='subheading' color='inherit'>Building game world...</LoadingText>
+          <LoadingText
+            variant='subheading'
+            color='inherit'>
+            Building game world...
+          </LoadingText>
         </LoadingBackgroundOverlay>
       )
     }
@@ -63,7 +67,7 @@ export default class GameView extends Component {
     )
   }
 
-  render () {
+  render() {
     return (
       <GameViewLayout>
         {this.renderLoadingScreen(this.props.gameDataLoaded)}
