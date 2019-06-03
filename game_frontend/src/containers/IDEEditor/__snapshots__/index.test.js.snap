@@ -15,10 +15,12 @@ exports[`<IDEEditor /> matches snapshot 1`] = `
     minLines={null}
     mode="python"
     name="ace_editor"
+    navigateToFileEnd={true}
     onChange={null}
     onLoad={[MockFunction]}
     onPaste={null}
     onScroll={null}
+    placeholder={null}
     readOnly={false}
     scrollMargin={
       Array [
