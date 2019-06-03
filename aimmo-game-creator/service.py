@@ -20,6 +20,7 @@ if __name__ == "__main__":
     if not os.path.exists("/tokens"):
         os.makedirs("/tokens")
 
-    open("/tokens/local_tokens.json", "w").close()
+    with open("/tokens/local_tokens.json", "w+") as f:
+        f.write("{}")
 
     main()
