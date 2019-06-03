@@ -32,6 +32,30 @@ class TestViews(TestCase):
         ],
     }
 
+    EXPECTED_GAME_DETAIL = {
+        "1": {
+            "name": "test",
+            "status": "r",
+            "settings": {
+                "TARGET_NUM_CELLS_PER_AVATAR": 16,
+                "START_HEIGHT": 31,
+                "GENERATOR": "Main",
+                "TARGET_NUM_PICKUPS_PER_AVATAR": 1.2,
+                "SCORE_DESPAWN_CHANCE": 0.05,
+                "START_WIDTH": 31,
+                "PICKUP_SPAWN_CHANCE": 0.1,
+                "OBSTACLE_RATIO": 0.1,
+                "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5
+
+            }
+        }
+    }
+
+    EXPECTED_GAME_LIST = {
+        "1": EXPECTED_GAME_DETAIL["1"],
+        "2": EXPECTED_GAME_DETAIL["1"]
+    }
+
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user("test", "test@example.com", "password")
@@ -403,9 +427,24 @@ class TestViews(TestCase):
         client = self.login()
 
         serializer = GameSerializer(self.game)
-        json_game_settings = JsonResponse(self.game.settings_as_dict())
 
-        self.assertEquals(
-            json_game_settings.content, serializer.data["settings"].content
-        )
+        self.assertEquals(self.game.settings_as_dict(), serializer.data["settings"])
 
+    def test_list_all_games(self):
+        self.game.main_user = self.user
+        self.game.save()
+        
+        game2 = models.Game(id=2, name="test", public=True)
+        game2.save()
+
+        c = Client()
+        response = c.get(reverse("game-list"))
+        self.assertJSONEqual(response.content, self.EXPECTED_GAME_LIST)
+
+    def test_list_game_detail(self):
+        self.game.main_user = self.user
+        self.game.save() 
+
+        c = Client()
+        response = c.get(reverse("game-detail", kwargs={"pk": self.game.id}))
+        self.assertJSONEqual(response.content, self.EXPECTED_GAME_DETAIL)
