@@ -33,28 +33,22 @@ class TestViews(TestCase):
     }
 
     EXPECTED_GAME_DETAIL = {
-        "1": {
-            "name": "test",
-            "status": "r",
-            "settings": {
-                "TARGET_NUM_CELLS_PER_AVATAR": 16,
-                "START_HEIGHT": 31,
-                "GENERATOR": "Main",
-                "TARGET_NUM_PICKUPS_PER_AVATAR": 1.2,
-                "SCORE_DESPAWN_CHANCE": 0.05,
-                "START_WIDTH": 31,
-                "PICKUP_SPAWN_CHANCE": 0.1,
-                "OBSTACLE_RATIO": 0.1,
-                "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5
-
-            }
-        }
+        "name": "test",
+        "status": "r",
+        "settings": {
+            "TARGET_NUM_CELLS_PER_AVATAR": 16,
+            "START_HEIGHT": 31,
+            "GENERATOR": "Main",
+            "TARGET_NUM_PICKUPS_PER_AVATAR": 1.2,
+            "SCORE_DESPAWN_CHANCE": 0.05,
+            "START_WIDTH": 31,
+            "PICKUP_SPAWN_CHANCE": 0.1,
+            "OBSTACLE_RATIO": 0.1,
+            "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5,
+        },
     }
 
-    EXPECTED_GAME_LIST = {
-        "1": EXPECTED_GAME_DETAIL["1"],
-        "2": EXPECTED_GAME_DETAIL["1"]
-    }
+    EXPECTED_GAME_LIST = [EXPECTED_GAME_DETAIL, EXPECTED_GAME_DETAIL]
 
     @classmethod
     def setUpTestData(cls):
@@ -433,7 +427,7 @@ class TestViews(TestCase):
     def test_list_all_games(self):
         self.game.main_user = self.user
         self.game.save()
-        
+
         game2 = models.Game(id=2, name="test", public=True)
         game2.save()
 
@@ -443,7 +437,7 @@ class TestViews(TestCase):
 
     def test_list_game_detail(self):
         self.game.main_user = self.user
-        self.game.save() 
+        self.game.save()
 
         c = Client()
         response = c.get(reverse("game-detail", kwargs={"pk": self.game.id}))
