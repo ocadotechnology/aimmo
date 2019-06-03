@@ -6,8 +6,7 @@ from exceptions import UserCannotPlayGameException
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.http import (Http404, HttpResponse, HttpResponseForbidden,
-                         JsonResponse)
+from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
@@ -97,7 +96,12 @@ class GameUsersView(APIView):
         return users
 
 
-class GameViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):
+class GameViewSet(
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet,
+):
     queryset = Game.objects.all()
     permission_classes = (IsPreviewUser, IsTeacher, CanUserPlay)
     serializer_class = GameSerializer

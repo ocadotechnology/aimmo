@@ -44,6 +44,7 @@ SETTINGS = {
         "django.contrib.messages",
         "django.contrib.staticfiles",
         "django_js_reverse",
+        "rest_framework",
     ],
     "TEMPLATES": [
         {
