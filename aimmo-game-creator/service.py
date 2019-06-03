@@ -16,4 +16,10 @@ def main():
 
 
 if __name__ == "__main__":
+    # Create a place to store game tokens for local mode.
+    if not os.path.exists("/tokens"):
+        os.makedirs("/tokens")
+
+    open("/tokens/local_tokens.json", "w").close()
+
     main()
