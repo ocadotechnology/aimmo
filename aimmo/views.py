@@ -6,8 +6,7 @@ from exceptions import UserCannotPlayGameException
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.http import (Http404, HttpResponse, HttpResponseForbidden,
-                         JsonResponse)
+from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
@@ -106,19 +105,6 @@ class GameViewSet(
     queryset = Game.objects.all()
     permission_classes = (IsPreviewUser, IsTeacher, CanUserPlay)
     serializer_class = GameSerializer
-
-    def list(self, request):
-        response = {}
-        for game in Game.objects:
-            serializer = GameSerializer(game)
-            response[game.pk] = serializer.data
-        return JsonResponse(response)
-
-    def retrieve(self, request, pk=None):
-        game = get_object_or_404(Game, id=pk)
-        serializer = GameSerializer(game)
-        response = {game.pk: serializer.data}
-        return JsonResponse(response)
 
 
 def connection_parameters(request, game_id):
