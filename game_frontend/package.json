@@ -8,6 +8,7 @@
   "license": "MIT",
   "private": false,
   "devDependencies": {
+    "@babel/preset-env": "^7.4.5",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.13.2",
     "enzyme-to-json": "^3.3.5",
@@ -26,7 +27,7 @@
     "@material-ui/core": "^1.0.0",
     "@material-ui/icons": "^2.0.1",
     "@material-ui/lab": "^1.0.0-alpha.9",
-    "babel-plugin-module-resolver": "^3.1.1",
+    "babel-plugin-module-resolver": "^3.2.0",
     "parcel-bundler": "^1.10.3",
     "react": "^16.6.3",
     "react-ace": "^6.1.0",
