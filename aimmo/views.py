@@ -97,10 +97,28 @@ class GameUsersView(APIView):
         return users
 
 
-class GameViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):
+class GameViewSet(
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet,
+):
     queryset = Game.objects.all()
     permission_classes = (IsPreviewUser, IsTeacher, CanUserPlay)
     serializer_class = GameSerializer
+
+    def list(self, request):
+        response = {}
+        for game in Game.objects.exclude_inactive():
+            serializer = GameSerializer(game)
+            response[game.pk] = serializer.data
+        return JsonResponse(response)
+
+    def retrieve(self, request, pk=None):
+        game = get_object_or_404(Game, id=pk)
+        serializer = GameSerializer(game)
+        response = {game.pk: serializer.data}
+        return JsonResponse(response)
 
 
 def connection_parameters(request, game_id):
