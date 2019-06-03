@@ -109,7 +109,7 @@ class GameViewSet(
 
     def list(self, request):
         response = {}
-        for game in Game.objects.exclude_inactive():
+        for game in Game.objects:
             serializer = GameSerializer(game)
             response[game.pk] = serializer.data
         return JsonResponse(response)
