@@ -151,7 +151,6 @@ class GameAPI(object):
 
 
 def create_runner(port):
-    print(os.environ["settings"])
     settings = json.loads(os.environ["settings"])
     generator = getattr(map_generator, settings["GENERATOR"])(settings)
     return GameRunner(

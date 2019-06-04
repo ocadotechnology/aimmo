@@ -215,8 +215,7 @@ class LocalGameManager(GameManager):
             if not self.tokens[game_id]:
                 self.tokens[game_id] = self._generate_game_token()
         except KeyError:
-            self.tokens[game_id] = self._generate_game_token()
-
+            self.tokens[game_id] = ""
 
         with open("/tokens/local_tokens.json", "w+") as file:
             file.write(json.dumps(self.tokens))

@@ -1,4 +1,4 @@
-from django.conf.urls import url, include
+from django.conf.urls import include, url
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.views.generic import RedirectView, TemplateView
@@ -16,7 +16,6 @@ router.register(r"games", views.GameViewSet)
 
 
 urlpatterns = [
-    url(r"^api/", include(router.urls)),
     url(
         r"^$",
         login_required(
@@ -84,4 +83,5 @@ urlpatterns = [
         r"^watch/(?P<id>[0-9]+)/(?P<resource>.[0-9A-Za-z/.]+)$",
         RedirectView.as_view(url="/static/unity/%(resource)s", permanent=False),
     ),
+    url(r"^api/", include(router.urls)),
 ]
