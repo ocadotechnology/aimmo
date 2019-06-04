@@ -6,8 +6,7 @@ from exceptions import UserCannotPlayGameException
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.http import (Http404, HttpResponse, HttpResponseForbidden,
-                         JsonResponse)
+from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
@@ -20,11 +19,14 @@ from rest_framework.views import APIView
 
 import forms
 import game_renderer
-from app_settings import (IsPreviewUser, IsTeacher, get_users_for_new_game,
-                          preview_user_required)
+from app_settings import (
+    IsPreviewUser,
+    IsTeacher,
+    get_users_for_new_game,
+    preview_user_required,
+)
 from models import Avatar, Game, LevelAttempt
-from permissions import (CanUserPlay, CsrfExemptSessionAuthentication,
-                         GameHasToken)
+from permissions import CanUserPlay, CsrfExemptSessionAuthentication, GameHasToken
 from serializers import GameSerializer
 
 LOGGER = logging.getLogger(__name__)
@@ -234,7 +236,6 @@ def add_game(request):
             return redirect("aimmo/play", id=game.id)
     else:
         form = forms.AddGameForm(playable_games)
-    print("acsoibnacnioaefnoiaefoin")
     return render(request, "players/add_game.html", {"form": form})
 
 

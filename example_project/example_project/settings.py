@@ -38,7 +38,6 @@
 import os
 import subprocess
 
-from django_autoconfig import autoconfig
 
 ALLOWED_HOSTS = ["*"]
 
@@ -119,5 +118,7 @@ try:
 except ImportError:
     pass
 
+
+from django_autoconfig import autoconfig
 
 autoconfig.configure_settings(globals())
