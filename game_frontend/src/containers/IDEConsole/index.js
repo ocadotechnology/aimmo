@@ -30,7 +30,7 @@ export const StyledConsole = styled.div`
   ::-webkit-scrollbar-thumb {
     background: ${props => props.theme.palette.grey['A200']};
     border-radius: 100px;
-    border: ${props => props.theme.spacing.unit / 4}px solid transparent;
+    border: ${props => props.theme.spacing(0.25)}px solid transparent;
     background-clip: content-box;
   }
 `

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 
 export const LogEntry = styled.li`
   list-style: none;
-  padding: ${props => props.theme.spacing.unit}px;
+  padding: ${props => props.theme.spacing()}px;
 `
 
 export const StyledLogEntries = styled.ul`
