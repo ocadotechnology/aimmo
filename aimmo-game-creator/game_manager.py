@@ -124,7 +124,7 @@ class GameManager(object):
         else:
             games_to_add = {
                 id: games[id]
-                for id in self._data.add_new_games(games.keys())
+                for id in self._data.add_new_games(games)
                 if games[id]["status"] != GameStatus.STOPPED.value
             }
 
@@ -211,8 +211,11 @@ class LocalGameManager(GameManager):
             del self.games[game_id]
 
     def check_token(self, game_id):
-        if not self.tokens[game_id]:
-            self.tokens[game_id] = self._generate_game_token()
+        try:
+            if not self.tokens[game_id]:
+                self.tokens[game_id] = self._generate_game_token()
+        except KeyError:
+            self.tokens[game_id] = ""
 
         with open("/tokens/local_tokens.json", "w+") as file:
             file.write(json.dumps(self.tokens))
