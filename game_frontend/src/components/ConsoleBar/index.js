@@ -9,7 +9,7 @@ export const StyledConsoleBar = styled(Toolbar)`
 `
 
 export const StyledConsoleIcon = styled(ConsoleIcon)`
-  padding-right: ${props => props.theme.spacing.unit}px;
+  padding-right: ${props => props.theme.spacing()}px;
 `
 
 export default class ConsoleBar extends Component {

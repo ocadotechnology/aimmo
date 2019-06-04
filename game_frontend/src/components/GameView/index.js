@@ -29,11 +29,11 @@ export const StyledCircularProgress = styled(CircularProgress)`
 `
 
 export const LoadingText = styled(Typography)`
-  padding-top: ${props => props.theme.spacing.unit * 2}px;
+  padding-top: ${props => props.theme.spacing(2)}px;
 `
 
 export default class GameView extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     unityContent.on('loaded', this.unityContentLoaded)
   }
@@ -48,7 +48,7 @@ export default class GameView extends Component {
         <LoadingBackgroundOverlay>
           <StyledCircularProgress color='inherit' />
           <LoadingText
-            variant='subheading'
+            variant='subtitle1'
             color='inherit'>
             Building game world...
           </LoadingText>
@@ -57,21 +57,21 @@ export default class GameView extends Component {
     }
   }
 
-  renderUnityView = (unityContent, gameDataLoaded) => {
-    return (
-      <StyledUnity
-        gameDataLoaded={gameDataLoaded}
-        unityContent={unityContent}
-        height='100%'
-        width='100%' />
-    )
-  }
+  // renderUnityView = (unityContent, gameDataLoaded) => {
+  //   return (
+  //     <StyledUnity
+  //       gameDataLoaded={gameDataLoaded}
+  //       unityContent={unityContent}
+  //       height='100%'
+  //       width='100%' />
+  //   )
+  // }
 
-  render() {
+  render () {
     return (
       <GameViewLayout>
         {this.renderLoadingScreen(this.props.gameDataLoaded)}
-        {this.renderUnityView(unityContent, this.props.gameDataLoaded)}
+        {/* {this.renderUnityView(unityContent, this.props.gameDataLoaded)} */}
       </GameViewLayout>
     )
   }

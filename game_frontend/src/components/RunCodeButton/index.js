@@ -1,26 +1,26 @@
 import styled from 'styled-components'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Button from '@material-ui/core/Button'
+import Fab from '@material-ui/core/Fab'
 import PlayIcon from 'components/icons/Play'
 import BugIcon from 'components/icons/Bug'
 import { CircularProgress } from '@material-ui/core'
 import CheckCircle from 'components/icons/CheckCircle'
 
 export const MarginedPlayIcon = styled(PlayIcon)`
-  margin-right: ${props => props.theme.spacing.unit}px;
+  margin-right: ${props => props.theme.spacing()}px;
 `
 
 export const MarginedCircularProgress = styled(CircularProgress)`
-  margin-right: ${props => props.theme.spacing.unit}px;
+  margin-right: ${props => props.theme.spacing()}px;
 `
 
 export const MarginedCheckCircle = styled(CheckCircle)`
-  margin-right: ${props => props.theme.spacing.unit}px;
+  margin-right: ${props => props.theme.spacing()}px;
 `
 
 export const MarginedBugIcon = styled(BugIcon)`
-  margin-right: ${props => props.theme.spacing.unit}px;
+  margin-right: ${props => props.theme.spacing()}px;
 `
 
 export const RunCodeButtonStatus = Object.freeze({
@@ -95,16 +95,16 @@ export default class RunCodeButton extends Component {
 
   render () {
     return (
-      <Button
+      <Fab
         color='secondary'
         className={this.props.className}
         disabled={this.shouldButtonBeDisabled()}
         aria-label='Run Code'
-        variant='extendedFab'
+        variant='extended'
         id='post-code-button'
         onClick={this.shouldButtonBeClickable() ? this.props.whenClicked : () => { }}>
         {this.renderContent(this.props.runCodeButtonStatus.status)}
-      </Button>
+      </Fab>
     )
   }
 }
