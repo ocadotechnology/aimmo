@@ -1,6 +1,7 @@
 from functools import wraps
 
 from rest_framework import authentication, permissions
+from django.shortcuts import get_object_or_404
 
 
 def default_preview_user(view_func):
@@ -39,3 +40,25 @@ class GameHasToken(permissions.BasePermission):
             )
         except (KeyError, AttributeError):
             return False
+
+
+class DummyPermission(permissions.BasePermission):
+    """
+    Used to mock general permissions
+    """
+
+    def has_permission(self, request, view):
+        return True
+
+
+class CanUserPlay(permissions.BasePermission):
+    """
+    Used to verify that an incoming request is made by a user
+    that's authorised to play an AIMMO game
+    """
+
+    def has_permission(self, request, view):
+        return True
+
+    def has_object_permission(self, request, view, obj):
+        return obj.can_user_play(request.user)
