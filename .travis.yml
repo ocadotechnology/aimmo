@@ -18,7 +18,7 @@ stages:
   - name: release
     if: branch = master OR branch = development
   - name: deploy
-    if: tag IS present
+    if: tag IS present OR DEV_BUILD
 jobs:
   include:
     - stage: Test
@@ -125,19 +125,7 @@ jobs:
             repo: ocadotechnology/aimmo
             branch: master
     - stage: Deploy
-    - name: Build game
-      script:
-        - docker build ocadotechnology/aimmo-game:test aimmo-game/
-        - docker push ocadotechnology/aimmo-game:test
-    - name: Build game creator
-      script:
-        - docker build ocadotechnology/aimmo-game-creator:test aimmo-game-creator/
-        - docker push ocadotechnology/aimmo-game-creator:test
-    - name: Build game worker
-      script:
-        - docker build ocadotechnology/aimmo-game-worker:test aimmo-game-worker/
-        - docker push ocadotechnology/aimmo-game-worker:test
-    - name: Bundle frontend
+      name: Bundle frontend
       env:
         - NODE_ENV=production
       before_install:
@@ -161,7 +149,19 @@ jobs:
           on:
             repo: ocadotechnology/aimmo
             tags: true
-    - name: Notify Semaphore
+    - name: "Build game"
+      script:
+        - docker build ocadotechnology/aimmo-game:test aimmo-game/
+        - docker push ocadotechnology/aimmo-game:test
+    - name: "Build game creator"
+      script:
+        - docker build ocadotechnology/aimmo-game-creator:test aimmo-game-creator/
+        - docker push ocadotechnology/aimmo-game-creator:test
+    - name: "Build game worker"
+      script:
+        - docker build ocadotechnology/aimmo-game-worker:test aimmo-game-worker/
+        - docker push ocadotechnology/aimmo-game-worker:test
+    - stage: Notify Semaphore
       script:
         - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}"
 
