@@ -19,6 +19,8 @@ stages:
     if: branch = master OR branch = development
   - name: deploy
     if: tag IS present OR DEV_BUILD
+  - name: Notify Semaphore
+    if: tag IS present
 jobs:
   include:
     - stage: Test
