@@ -57,21 +57,21 @@ export default class GameView extends Component {
     }
   }
 
-  // renderUnityView = (unityContent, gameDataLoaded) => {
-  //   return (
-  //     <StyledUnity
-  //       gameDataLoaded={gameDataLoaded}
-  //       unityContent={unityContent}
-  //       height='100%'
-  //       width='100%' />
-  //   )
-  // }
+  renderUnityView = (unityContent, gameDataLoaded) => {
+    return (
+      <StyledUnity
+        gameDataLoaded={gameDataLoaded}
+        unityContent={unityContent}
+        height='100%'
+        width='100%' />
+    )
+  }
 
   render () {
     return (
       <GameViewLayout>
         {this.renderLoadingScreen(this.props.gameDataLoaded)}
-        {/* {this.renderUnityView(unityContent, this.props.gameDataLoaded)} */}
+        {this.renderUnityView(unityContent, this.props.gameDataLoaded)}
       </GameViewLayout>
     )
   }
