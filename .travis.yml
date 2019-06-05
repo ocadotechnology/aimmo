@@ -153,15 +153,15 @@ jobs:
             tags: true
     - name: "Build game"
       script:
-        - docker build ocadotechnology/aimmo-game:test aimmo-game/
+        - docker build -t ocadotechnology/aimmo-game:test aimmo-game/
         - docker push ocadotechnology/aimmo-game:test
     - name: "Build game creator"
       script:
-        - docker build ocadotechnology/aimmo-game-creator:test aimmo-game-creator/
+        - docker build -t ocadotechnology/aimmo-game-creator:test aimmo-game-creator/
         - docker push ocadotechnology/aimmo-game-creator:test
     - name: "Build game worker"
       script:
-        - docker build ocadotechnology/aimmo-game-worker:test aimmo-game-worker/
+        - docker build -t ocadotechnology/aimmo-game-worker:test aimmo-game-worker/
         - docker push ocadotechnology/aimmo-game-worker:test
     - stage: Notify Semaphore
       script:
