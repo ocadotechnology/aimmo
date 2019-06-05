@@ -154,14 +154,17 @@ jobs:
     - name: "Build game"
       script:
         - docker build -t ocadotechnology/aimmo-game:test aimmo-game/
+        - docker login -u DOCKER_USER -p DOCKER_PASSWORD
         - docker push ocadotechnology/aimmo-game:test
     - name: "Build game creator"
       script:
         - docker build -t ocadotechnology/aimmo-game-creator:test aimmo-game-creator/
+        - docker login -u DOCKER_USER -p DOCKER_PASSWORD
         - docker push ocadotechnology/aimmo-game-creator:test
     - name: "Build game worker"
       script:
         - docker build -t ocadotechnology/aimmo-game-worker:test aimmo-game-worker/
+        - docker login -u DOCKER_USER -p DOCKER_PASSWORD
         - docker push ocadotechnology/aimmo-game-worker:test
     - stage: Notify Semaphore
       script:
