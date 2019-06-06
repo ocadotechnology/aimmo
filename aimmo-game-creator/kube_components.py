@@ -1,12 +1,13 @@
 import kubernetes
 import yaml
+from kubernetes.client.rest import ApiException
 
 
 class TokenSecretCreator:
     """Creates a kubernetes secret to store a games token."""
 
-    def __init__(self):
-        self.api = kubernetes.client.CoreV1Api()
+    def __init__(self, api):
+        self.api = api
 
     def load_template(self, name: str, namespace: str, data: dict):
         """Loads a template file, fills in the needed data."""
@@ -27,4 +28,7 @@ class TokenSecretCreator:
         data = template["data"]
 
         body = kubernetes.client.V1Secret(template)
-        self.api.create_namespaced_secret(namespace, body)
+        try:
+            self.api.create_namespaced_secret(namespace, body)
+        except ApiException:
+            self.api.patch_namespaced_secret(name, namespace, body)
