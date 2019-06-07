@@ -4,8 +4,23 @@ import os
 
 from game_manager import GAME_MANAGERS
 
-logging.basicConfig(level=logging.DEBUG)
 
-LOGGER = logging.Logger()
+def main():
+    logging.basicConfig(level=logging.DEBUG)
+    game_manager_class = GAME_MANAGERS[os.environ.get("GAME_MANAGER", "local")]
+    host = os.environ.get("LOCALHOST_IP", "localhost")
+    game_manager = game_manager_class(
+        os.environ.get("GAME_API_URL", "http://{}:8000/aimmo/api/games/".format(host))
+    )
+    game_manager.run()
 
-LOGGER.critical("I SHOULD PRINT OUT AND NOTHING ELSE")
+
+if __name__ == "__main__":
+    # Create a place to store game tokens for local mode.
+    if not os.path.exists("/tokens"):
+        os.makedirs("/tokens")
+
+    with open("/tokens/local_tokens.json", "w+") as f:
+        f.write("{}")
+
+    main()
