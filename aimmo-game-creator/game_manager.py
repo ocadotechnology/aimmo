@@ -118,8 +118,8 @@ class GameManager(object):
         try:
             LOGGER.info("Waking up")
             games = requests.get(self.games_url).json()
-            print(games)
-            print(self._data.add_new_games(games))
+            LOGGER.info(games)
+            LOGGER.info(self._data.add_new_games(games))
         except (requests.RequestException, ValueError) as ex:
             LOGGER.error("Failed to obtain game data")
             LOGGER.exception(ex)
