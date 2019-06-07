@@ -119,16 +119,13 @@ class GameManager(object):
             LOGGER.info("Waking up")
             games = requests.get(self.games_url).json()
             LOGGER.info(games)
-            LOGGER.info("asdvohialbjkadfshjoi")
         except (requests.RequestException, ValueError) as ex:
             LOGGER.error("Failed to obtain game data")
             LOGGER.exception(ex)
         else:
-            LOGGER.info(games)
-            LOGGER.info("hiusdfghiouas")
             games_to_add = {
                 id: games[id]
-                for id in self._data.add_new_games(games)
+                for id, _ in self._data.add_new_games(games)
                 if games[id]["status"] != GameStatus.STOPPED.value
             }
 
