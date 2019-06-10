@@ -121,15 +121,13 @@ class GameManager(object):
         except (requests.RequestException, ValueError) as ex:
             LOGGER.error("Failed to obtain game data")
             LOGGER.exception(ex)
-        
-        try:
+        else:
+            LOGGER.info(games)
             games_to_add = {
                 id: games[id]
                 for id in self._data.add_new_games(games)
                 if games[id]["status"] != GameStatus.STOPPED.value
             }
-        except KeyError:
-            LOGGER.info(f"could not parse response: {games}")
 
             # Add missing games
             self._parallel_map(self.recreate_game, games_to_add.items())
