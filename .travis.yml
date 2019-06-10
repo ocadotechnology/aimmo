@@ -15,7 +15,7 @@ git:
 stages:
   - name: test
   - name: release
-    if: branch = master OR branch = development
+    # if: branch = master OR branch = development
   - name: deploy
     # if: tag IS present
   - name: Notify Semaphore
