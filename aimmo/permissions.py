@@ -62,3 +62,16 @@ class CanUserPlay(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return obj.can_user_play(request.user)
+
+
+class CanViewGames(permissions.BasePermission):
+    """
+    Used to verify that an incoming request is made by a user
+    that's authorised to view AIMMO games or by a game itself
+    """
+
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        else:
+            return IsPreviewUser and IsTeacher and CanUserPlay(request.user)

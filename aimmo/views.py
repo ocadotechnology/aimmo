@@ -19,14 +19,9 @@ from rest_framework.views import APIView
 
 import forms
 import game_renderer
-from app_settings import (
-    IsPreviewUser,
-    IsTeacher,
-    get_users_for_new_game,
-    preview_user_required,
-)
+from app_settings import get_users_for_new_game, preview_user_required
 from models import Avatar, Game, LevelAttempt
-from permissions import CanUserPlay, CsrfExemptSessionAuthentication, GameHasToken
+from permissions import CsrfExemptSessionAuthentication, GameHasToken, CanViewGames
 from serializers import GameSerializer
 
 LOGGER = logging.getLogger(__name__)
@@ -97,7 +92,7 @@ class GameUsersView(APIView):
 
 class GameViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):
     queryset = Game.objects.all()
-    permission_classes = (IsPreviewUser, IsTeacher, CanUserPlay)
+    permission_class = CanViewGames
     serializer_class = GameSerializer
 
     def list(self, request):
@@ -105,6 +100,12 @@ class GameViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):
         for game in Game.objects.exclude_inactive():
             serializer = GameSerializer(game)
             response[game.pk] = serializer.data
+        return JsonResponse(response)
+
+    def retrieve(self, request, pk):
+        game = get_object_or_404(Game, id=pk)
+        serializer = GameSerializer(game)
+        response = serializer.data
         return JsonResponse(response)
 
 
