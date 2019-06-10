@@ -97,6 +97,7 @@ class GameUsersView(APIView):
 
 class GameViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):
     queryset = Game.objects.all()
+    authentication_classes = (CsrfExemptSessionAuthentication,)
     # permission_classes = (IsPreviewUser, IsTeacher, CanUserPlay)
     serializer_class = GameSerializer
 
