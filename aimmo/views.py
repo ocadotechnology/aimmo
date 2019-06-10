@@ -106,6 +106,7 @@ class GameViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):
         for game in Game.objects.exclude_inactive():
             serializer = GameSerializer(game)
             response[game.pk] = serializer.data
+            response[game.pk]["status"] = game.status
         return JsonResponse(response)
 
 
