@@ -12,16 +12,21 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
-from rest_framework import mixins, status, viewsets
+from rest_framework import mixins, status, viewsets, permissions
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 import forms
 import game_renderer
-from app_settings import get_users_for_new_game, preview_user_required
+from app_settings import (
+    get_users_for_new_game,
+    preview_user_required,
+    IsPreviewUser,
+    IsTeacher,
+)
 from models import Avatar, Game, LevelAttempt
-from permissions import CsrfExemptSessionAuthentication, GameHasToken, CanViewGames
+from permissions import CsrfExemptSessionAuthentication, CanUserPlay, GameHasToken
 from serializers import GameSerializer
 
 LOGGER = logging.getLogger(__name__)
@@ -90,9 +95,26 @@ class GameUsersView(APIView):
         return users
 
 
-class GameViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):
+class CanDeleteGame(permissions.BasePermission):
+    """
+    Used to verify that an incoming request is made by a user
+    that's authorised to view AIMMO games or by a game itself
+    """
+
+    def has_permission(self, request, view):
+        return True
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        else:
+            can_play = CanUserPlay().has_object_permission(request, view, obj)
+            return IsPreviewUser and IsTeacher and can_play
+
+
+class GameViewSet(viewsets.GenericViewSet):
     queryset = Game.objects.all()
-    permission_class = CanViewGames
+    permission_classes = (CanViewGames,)
     serializer_class = GameSerializer
 
     def list(self, request):
@@ -104,9 +126,18 @@ class GameViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):
 
     def retrieve(self, request, pk):
         game = get_object_or_404(Game, id=pk)
+        self.check_object_permissions(request, game)
         serializer = GameSerializer(game)
         response = serializer.data
         return JsonResponse(response)
+
+    def destroy(self, request, pk):
+        game = get_object_or_404(Game, id=pk)
+        self.check_object_permissions(request, game)
+
+        game.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 def connection_parameters(request, game_id):
