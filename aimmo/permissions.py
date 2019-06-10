@@ -73,5 +73,12 @@ class CanViewGames(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
-        else:
-            return IsPreviewUser and IsTeacher and CanUserPlay(request.user)
+        return False
+
+    def has_object_permission(self, request, view, obj):
+        can_play = CanUserPlay()
+        return (
+            IsPreviewUser
+            and IsTeacher
+            and can_play.has_object_permission(request, view, obj)
+        )
