@@ -19,8 +19,8 @@ export const IDEEditorLayout = styled.div`
 export const PositionedRunCodeButton = styled(RunCodeButton)`
   && {
     position: absolute;
-    right: ${props => props.theme.spacing.unit * 3}px;
-    bottom: ${props => props.theme.spacing.unit * 3}px;
+    right: ${props => props.theme.spacing(3)}px;
+    bottom: ${props => props.theme.spacing(3)}px;
     z-index: 5;
   }
 `
@@ -91,4 +91,4 @@ const mapDispatchToProps = {
   postCode: editorActions.postCodeRequest
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTheme()(IDEEditor))
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme(IDEEditor))
