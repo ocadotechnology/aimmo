@@ -114,7 +114,7 @@ class CanDeleteGame(permissions.BasePermission):
 
 class GameViewSet(viewsets.GenericViewSet):
     queryset = Game.objects.all()
-    permission_classes = (CanViewGames,)
+    permission_classes = (CanDeleteGame,)
     serializer_class = GameSerializer
 
     def list(self, request):
