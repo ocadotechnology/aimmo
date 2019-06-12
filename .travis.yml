@@ -17,7 +17,7 @@ stages:
   - name: release
     if: branch = master OR branch = development
   - name: deploy
-    # if: tag IS present
+    if: tag IS present
   - name: Notify Semaphore
     if: tag IS present
 jobs:
