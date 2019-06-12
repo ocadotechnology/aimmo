@@ -5,7 +5,6 @@ else
     export BRANCH="$TRAVIS_BRANCH"
 fi
 
-
 if [ "$BRANCH" = "development" ]
 then
     git tag "$(cat version.txt).b$TRAVIS_BUILD_NUMBER"

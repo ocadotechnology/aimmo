@@ -152,19 +152,19 @@ jobs:
             tags: true
     - name: "Build game"
       script:
-        - docker build --no-cache -t ocadotechnology/aimmo-game:$(cat version.txt) aimmo-game/
+        - docker build --no-cache -t ocadotechnology/aimmo-game:$(cat version.txt).b$TRAVIS_BUILD_NUMBER aimmo-game/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
-        - docker push ocadotechnology/aimmo-game:$(cat version.txt)
+        - docker push ocadotechnology/aimmo-game:$(cat version.txt).b$TRAVIS_BUILD_NUMBER
     - name: "Build game creator"
       script:
-        - docker build --no-cache -t ocadotechnology/aimmo-game-creator:$(cat version.txt) aimmo-game-creator/
+        - docker build --no-cache -t ocadotechnology/aimmo-game-creator:$(cat version.txt).b$TRAVIS_BUILD_NUMBER aimmo-game-creator/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
-        - docker push ocadotechnology/aimmo-game-creator:$(cat version.txt)
+        - docker push ocadotechnology/aimmo-game-creator:$(cat version.txt).b$TRAVIS_BUILD_NUMBER
     - name: "Build game worker"
       script:
-        - docker build --no-cache -t ocadotechnology/aimmo-game-worker:$(cat version.txt) aimmo-game-worker/
+        - docker build --no-cache -t ocadotechnology/aimmo-game-worker:$(cat version.txt).b$TRAVIS_BUILD_NUMBER aimmo-game-worker/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
-        - docker push ocadotechnology/aimmo-game-worker:$(cat version.txt)
+        - docker push ocadotechnology/aimmo-game-worker:$(cat version.txt).b$TRAVIS_BUILD_NUMBER
     - stage: Notify Semaphore
       script:
         - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}"
