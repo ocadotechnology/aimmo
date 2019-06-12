@@ -10,6 +10,8 @@ import { darkTheme } from 'theme'
 import { Provider } from 'react-redux'
 import configureStore from './redux/store'
 
+import ReactGA from 'react-ga'
+
 import GamePage from './components/GamePage'
 import { RunCodeButtonStatus } from 'components/RunCodeButton'
 
@@ -18,6 +20,13 @@ WebFont.load({
     id: 'mrl4ieu'
   }
 })
+
+ReactGA.initialize('UA-49883146-1', {
+  debug: true,
+  testMode: process.env.NODE_ENV === 'test'
+})
+
+ReactGA.pageview(`/aimmo/play/${getGameIDFromURL()}`)
 
 const initialState = {
   editor: {

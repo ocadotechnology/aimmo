@@ -1,7 +1,8 @@
 import actions from './actions'
+import { actions as analyticActions } from 'redux/features/Analytics'
 import types from './types'
 import { Scheduler, of } from 'rxjs'
-import { map, mergeMap, catchError, debounceTime } from 'rxjs/operators'
+import { map, mergeMap, catchError, debounceTime, mapTo } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
 const backgroundScheduler = Scheduler.async
@@ -37,6 +38,12 @@ const postCodeEpic = (action$, state$, { api }) =>
       }))
     )
 
+const postCodeAnalyticsEpic = action$ =>
+  action$.pipe(
+    ofType(types.POST_CODE_REQUEST),
+    mapTo(analyticActions.sendAnalyticsEvent('Kurono', 'Click', 'Run Code'))
+  )
+
 const changeCodeEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
   action$.pipe(
     ofType(types.KEY_PRESSED),
@@ -47,5 +54,6 @@ const changeCodeEpic = (action$, state$, dependencies, scheduler = backgroundSch
 export default {
   getCodeEpic,
   postCodeEpic,
-  changeCodeEpic
+  changeCodeEpic,
+  postCodeAnalyticsEpic
 }
