@@ -1,0 +1,7 @@
+const SEND_ANALYTICS_EVENT = 'features/Analytics/SEND_ANALYTICS_EVENT'
+const ANALYTICS_EVENT_SENT = 'features/Analytics/ANALYTICS_EVENT_SENT'
+
+export default {
+  SEND_ANALYTICS_EVENT,
+  ANALYTICS_EVENT_SENT
+}
