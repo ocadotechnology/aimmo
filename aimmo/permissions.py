@@ -46,7 +46,7 @@ class CanUserPlay(permissions.BasePermission):
         return obj.can_user_play(request.user)
 
 
-class CanDeleteGame(permissions.BasePermission):
+class CanDeleteGameOrReadOnly(permissions.BasePermission):
     """
     Used to verify that an incoming request is made by a user
     that's authorised to delete or view an AIMMO game

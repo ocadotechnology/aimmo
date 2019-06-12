@@ -21,7 +21,11 @@ import forms
 import game_renderer
 from app_settings import get_users_for_new_game, preview_user_required
 from models import Avatar, Game, LevelAttempt
-from permissions import CsrfExemptSessionAuthentication, CanDeleteGame, GameHasToken
+from permissions import (
+    CsrfExemptSessionAuthentication,
+    CanDeleteGameOrReadOnly,
+    GameHasToken,
+)
 from serializers import GameSerializer
 
 LOGGER = logging.getLogger(__name__)
@@ -90,9 +94,11 @@ class GameUsersView(APIView):
         return users
 
 
-class GameViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.DestroyModelMixin):
+class GameViewSet(
+    viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.DestroyModelMixin
+):
     queryset = Game.objects.all()
-    permission_classes = (CanDeleteGame,)
+    permission_classes = (CanDeleteGameOrReadOnly,)
     serializer_class = GameSerializer
 
     def list(self, request):
