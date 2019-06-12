@@ -1,20 +1,29 @@
 {
   "presets": [
-    ["@babel/preset-env", {
-      "useBuiltIns": "entry"
-    }],
+    [
+      "@babel/preset-env",
+      {
+        "useBuiltIns": "entry"
+      }
+    ],
     "@babel/preset-react"
   ],
   "plugins": [
-    ["module-resolver", {
-      "cwd": "babelrc",
-      "root": ["./src"],
-      "alias": {
-        "features": "./src/redux/features",
-        "theme": "./src/theme",
-        "api": "./src/redux/api"
+    [
+      "module-resolver",
+      {
+        "cwd": "babelrc",
+        "root": [
+          "./src"
+        ],
+        "alias": {
+          "features": "./src/redux/features",
+          "theme": "./src/theme",
+          "api": "./src/redux/api",
+          "testHelpers": "./src/testHelpers"
+        }
       }
-    }],
+    ],
     "@babel/plugin-proposal-class-properties"
   ]
 }
