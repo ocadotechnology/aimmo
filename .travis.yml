@@ -152,17 +152,17 @@ jobs:
             tags: true
     - name: "Build game"
       script:
-        - docker build --no-cache -t ocadotechnology/aimmo-game:dev aimmo-game/
+        - docker build --no-cache -t ocadotechnology/aimmo-game:$(cat version.txt) aimmo-game/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
         - docker push ocadotechnology/aimmo-game:$(cat version.txt)
     - name: "Build game creator"
       script:
-        - docker build --no-cache -t ocadotechnology/aimmo-game-creator:dev aimmo-game-creator/
+        - docker build --no-cache -t ocadotechnology/aimmo-game-creator:$(cat version.txt) aimmo-game-creator/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
         - docker push ocadotechnology/aimmo-game-creator:$(cat version.txt)
     - name: "Build game worker"
       script:
-        - docker build --no-cache -t ocadotechnology/aimmo-game-worker:dev aimmo-game-worker/
+        - docker build --no-cache -t ocadotechnology/aimmo-game-worker:$(cat version.txt) aimmo-game-worker/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
         - docker push ocadotechnology/aimmo-game-worker:$(cat version.txt)
     - stage: Notify Semaphore
