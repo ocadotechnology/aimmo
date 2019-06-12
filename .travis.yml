@@ -14,6 +14,7 @@ git:
   depth: 9999999 # Building untagged builds needs enough depth to get the latest tag
 stages:
   - name: test
+    if: NOT tag IS present
   - name: release
     if: branch = master OR branch = development
   - name: deploy
