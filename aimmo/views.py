@@ -19,14 +19,9 @@ from rest_framework.views import APIView
 
 import forms
 import game_renderer
-from app_settings import (
-    get_users_for_new_game,
-    preview_user_required,
-    IsPreviewUser,
-    IsTeacher,
-)
+from app_settings import get_users_for_new_game, preview_user_required
 from models import Avatar, Game, LevelAttempt
-from permissions import CsrfExemptSessionAuthentication, CanUserPlay, GameHasToken
+from permissions import CsrfExemptSessionAuthentication, CanDeleteGame, GameHasToken
 from serializers import GameSerializer
 
 LOGGER = logging.getLogger(__name__)
@@ -93,23 +88,6 @@ class GameUsersView(APIView):
                 users["main_avatar"] = avatar.id
             users["users"].append({"id": avatar.id, "code": avatar.code})
         return users
-
-
-class CanDeleteGame(permissions.BasePermission):
-    """
-    Used to verify that an incoming request is made by a user
-    that's authorised to view AIMMO games or by a game itself
-    """
-
-    def has_permission(self, request, view):
-        return True
-
-    def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        else:
-            can_play = CanUserPlay().has_object_permission(request, view, obj)
-            return IsPreviewUser and IsTeacher and can_play
 
 
 class GameViewSet(viewsets.GenericViewSet):

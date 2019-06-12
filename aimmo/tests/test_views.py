@@ -426,3 +426,9 @@ class TestViews(TestCase):
         c = Client()
         response = c.get(reverse("game-list"))
         self.assertJSONEqual(response.content, self.EXPECTED_GAME_LIST)
+
+    def test_view_one_game(self):
+        client = self.login()
+
+        response = client.get(reverse("game-detail", kwargs={"pk": self.game.id}))
+        self.assertEquals(response.status_code, 200)
