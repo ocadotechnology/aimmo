@@ -154,17 +154,17 @@ jobs:
       script:
         - docker build --no-cache -t ocadotechnology/aimmo-game:dev aimmo-game/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
-        - docker push ocadotechnology/aimmo-game:dev
+        - docker push ocadotechnology/aimmo-game:$(cat version.txt)
     - name: "Build game creator"
       script:
         - docker build --no-cache -t ocadotechnology/aimmo-game-creator:dev aimmo-game-creator/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
-        - docker push ocadotechnology/aimmo-game-creator:dev
+        - docker push ocadotechnology/aimmo-game-creator:$(cat version.txt)
     - name: "Build game worker"
       script:
         - docker build --no-cache -t ocadotechnology/aimmo-game-worker:dev aimmo-game-worker/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
-        - docker push ocadotechnology/aimmo-game-worker:dev
+        - docker push ocadotechnology/aimmo-game-worker:$(cat version.txt)
     - stage: Notify Semaphore
       script:
         - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}"
