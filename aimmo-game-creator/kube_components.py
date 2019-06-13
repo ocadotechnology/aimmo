@@ -6,7 +6,7 @@ from kubernetes.client.rest import ApiException
 class TokenSecretCreator:
     """Creates a kubernetes secret to store a games token."""
 
-    def __init__(self, api):
+    def __init__(self):
         kubernetes.config.load_incluster_config()
         self.api = kubernetes.client.CoreV1Api()
 
