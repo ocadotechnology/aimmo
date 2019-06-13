@@ -230,7 +230,7 @@ class KubernetesGameManager(GameManager):
         kubernetes.config.load_incluster_config()
         self.extension_api = kubernetes.client.ExtensionsV1beta1Api()
         self.api = kubernetes.client.CoreV1Api()
-        self.secret_creator = TokenSecretCreator(self.api)
+        self.secret_creator = TokenSecretCreator()
 
         super(KubernetesGameManager, self).__init__(*args, **kwargs)
         self._create_ingress_paths_for_existing_games()
