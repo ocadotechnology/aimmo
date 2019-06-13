@@ -6,7 +6,7 @@ from kubernetes.client.rest import ApiException
 class TokenSecretCreator:
     """Creates a kubernetes secret to store a games token."""
 
-    def __init__(self):
+    def __init__(self, api):
         kubernetes.config.load_incluster_config()
         self.api = kubernetes.client.CoreV1Api()
 
@@ -28,7 +28,7 @@ class TokenSecretCreator:
         metadata = kubernetes.client.V1ObjectMeta(template["metadata"])
         data = template["data"]
 
-        body = kubernetes.client.V1Secret(template)
+        body = kubernetes.client.V1Secret(**template)
         try:
             self.api.create_namespaced_secret(namespace, body)
         except ApiException:
