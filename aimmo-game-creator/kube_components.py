@@ -5,7 +5,7 @@ import kubernetes
 import yaml
 from kubernetes.client.rest import ApiException
 
-LOGGER = logging.Logger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 class TokenSecretCreator:
@@ -22,7 +22,7 @@ class TokenSecretCreator:
 
             template["metadata"]["name"] = name
             template["metadata"]["namespace"] = namespace
-            template["data"]["token"] = base64.b64encode(data["token"].encode())
+            template["data"]["token"] = data["token"]
 
             return template
 
@@ -31,8 +31,9 @@ class TokenSecretCreator:
         template = self.load_template(name, namespace, data)
 
         template["metadata"] = kubernetes.client.V1ObjectMeta(template["metadata"])
-
+        LOGGER.debug(f"Your template sir: {template}")
         body = kubernetes.client.V1Secret(**template)
+        LOGGER.debug(f"every body, yeah! {body}")
         try:
             self.api.create_namespaced_secret(namespace, body)
         except ApiException:
