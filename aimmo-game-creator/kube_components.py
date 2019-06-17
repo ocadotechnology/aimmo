@@ -20,9 +20,12 @@ class TokenSecretCreator:
         template = {}
 
         template["kind"] = "Secret"
+
         template["metadata"] = {}
         template["metadata"]["name"] = name
         template["metadata"]["namespace"] = namespace
+
+        template["string_data"] = {}
         template["string_data"]["token"] = data["token"]
 
         return template
