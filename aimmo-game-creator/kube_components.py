@@ -22,7 +22,7 @@ class TokenSecretCreator:
 
             template["metadata"]["name"] = name
             template["metadata"]["namespace"] = namespace
-            template["data"]["token"] = base64.b64encode(data["token"])
+            template["data"]["token"] = base64.b64encode(data["token"].encode())
 
             return template
 
