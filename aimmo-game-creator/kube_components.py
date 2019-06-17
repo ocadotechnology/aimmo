@@ -29,16 +29,10 @@ class TokenSecretCreator:
         """Creates the k8s object."""
         template = self.load_template(name, namespace, data)
 
-        metadata = kubernetes.client.V1ObjectMeta(template["metadata"])
-        data = template["data"]
-
-        LOGGER.debug("----------------------------")
-        LOGGER.debug(metadata)
-        LOGGER.debug(data)
+        template["metadata"] = kubernetes.client.V1ObjectMeta(template["metadata"])
 
         body = kubernetes.client.V1Secret(**template)
-        LOGGER.debug(body)
-        LOGGER.debug("----------------------------")
+        LOGGER.debug(f"Secret object to create: {body}")
         try:
             self.api.create_namespaced_secret(namespace, body)
         except ApiException:
