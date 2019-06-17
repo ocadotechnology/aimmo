@@ -1,5 +1,0 @@
-kind: Secret
-metadata:
-  name: GenericSecret
-stringData:
-  token: string
