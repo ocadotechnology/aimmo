@@ -17,14 +17,11 @@ class TokenSecretCreator:
 
     def create_secret(self, name: str, namespace: str, data: dict):
         """Creates the k8s object."""
-        template = {}
-        template["kind"] = "Secret"
-        template["string_data"] = data
-        template["metadata"] = kubernetes.client.V1ObjectMeta(
-            name=name, namespace=namespace
+        body = kubernetes.client.V1Secret(
+            kind="Secret",
+            string_data=data,
+            metadata=kubernetes.client.V1ObjectMeta(name=name, namespace=namespace),
         )
-
-        body = kubernetes.client.V1Secret(**template)
 
         try:
             self.api.create_namespaced_secret(namespace, body)
