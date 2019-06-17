@@ -1,3 +1,4 @@
+import base64
 import logging
 
 import kubernetes
@@ -21,7 +22,7 @@ class TokenSecretCreator:
 
             template["metadata"]["name"] = name
             template["metadata"]["namespace"] = namespace
-            template["data"]["token"] = data["token"]
+            template["data"]["token"] = base64.b64encode(data["token"])
 
             return template
 
@@ -32,7 +33,6 @@ class TokenSecretCreator:
         template["metadata"] = kubernetes.client.V1ObjectMeta(template["metadata"])
 
         body = kubernetes.client.V1Secret(**template)
-        LOGGER.debug(f"Secret object to create: {body}")
         try:
             self.api.create_namespaced_secret(namespace, body)
         except ApiException:
