@@ -15,13 +15,16 @@ class TokenSecretCreator:
         kubernetes.config.load_incluster_config()
         self.api = kubernetes.client.CoreV1Api()
 
-    def create_secret(self, name: str, namespace: str, data: dict):
-        """Creates the k8s object."""
-        body = kubernetes.client.V1Secret(
+    def create_secret_object(self, name: str, namespace: str, data: dict):
+        return kubernetes.client.V1Secret(
             kind="Secret",
             string_data=data,
             metadata=kubernetes.client.V1ObjectMeta(name=name, namespace=namespace),
         )
+
+    def create_secret(self, name: str, namespace: str, data: dict):
+        """Creates the k8s object."""
+        body = self.create_secret_object(name, namespace, data)
 
         try:
             self.api.create_namespaced_secret(namespace, body)
