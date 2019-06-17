@@ -5,6 +5,7 @@ import secrets
 import subprocess
 import time
 from abc import ABCMeta, abstractmethod
+from base64 import b64encode
 from concurrent import futures
 from concurrent.futures import ALL_COMPLETED
 from enum import Enum
@@ -82,7 +83,9 @@ class GameManager(object):
         super(GameManager, self).__init__()
 
     def _generate_game_token(self):
-        return secrets.token_urlsafe(nbytes=NUM_BYTES_FOR_TOKEN_GENERATOR)
+        return b64encode(
+            secrets.token_urlsafe(nbytes=NUM_BYTES_FOR_TOKEN_GENERATOR).encode("utf-8")
+        )
 
     @abstractmethod
     def create_game(self, game_id, game_data):
