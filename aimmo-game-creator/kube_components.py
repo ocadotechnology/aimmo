@@ -20,7 +20,7 @@ class TokenSecretCreator:
         template = {}
 
         template["kind"] = "Secret"
-
+        template["metadata"] = {}
         template["metadata"]["name"] = name
         template["metadata"]["namespace"] = namespace
         template["string_data"]["token"] = data["token"]
@@ -31,7 +31,7 @@ class TokenSecretCreator:
         """Creates the k8s object."""
         template = self.load_template(name, namespace, data)
 
-        template["metadata"] = kubernetes.client.V1ObjectMeta(template["metadata"])
+        template["metadata"] = kubernetes.client.V1ObjectMeta(**template["metadata"])
         LOGGER.debug(f"Your template sir: {template}")
         body = kubernetes.client.V1Secret(**template)
         LOGGER.debug(f"every body, yeah! {body}")
