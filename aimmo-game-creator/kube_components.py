@@ -1,6 +1,10 @@
+import logging
+
 import kubernetes
 import yaml
 from kubernetes.client.rest import ApiException
+
+LOGGER = logging.Logger(__name__)
 
 
 class TokenSecretCreator:
@@ -28,7 +32,13 @@ class TokenSecretCreator:
         metadata = kubernetes.client.V1ObjectMeta(template["metadata"])
         data = template["data"]
 
+        LOGGER.debug("----------------------------")
+        LOGGER.debug(metadata)
+        LOGGER.debug(data)
+
         body = kubernetes.client.V1Secret(**template)
+        LOGGER.debug(body)
+        LOGGER.debug("----------------------------")
         try:
             self.api.create_namespaced_secret(namespace, body)
         except ApiException:
