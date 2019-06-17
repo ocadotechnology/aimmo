@@ -16,15 +16,16 @@ class TokenSecretCreator:
         self.api = kubernetes.client.CoreV1Api()
 
     def load_template(self, name: str, namespace: str, data: dict):
-        """Loads a template file, fills in the needed data."""
-        with open("kube_templates/game_token.yaml", "r") as f:
-            template = yaml.safe_load(f)
+        """Creates the template dict, fills in the needed data."""
+        template = {}
 
-            template["metadata"]["name"] = name
-            template["metadata"]["namespace"] = namespace
-            template["data"]["token"] = data["token"]
+        template["kind"] = "Secret"
 
-            return template
+        template["metadata"]["name"] = name
+        template["metadata"]["namespace"] = namespace
+        template["string_data"]["token"] = data["token"]
+
+        return template
 
     def create_secret(self, name: str, namespace: str, data: dict):
         """Creates the k8s object."""
