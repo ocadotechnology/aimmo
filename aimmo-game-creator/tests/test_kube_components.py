@@ -15,7 +15,7 @@ class TestKubeComponents(TestCase):
 
     def test_secret_is_loaded_and_data_is_added_correctly(self):
         """
-        Ensures the yaml secret contains the correct string to be replaced.
+        Ensures the secret object is created correctly with the correct data filled in.
         """
         self.assertIsNotNone(self.secret.metadata)
         self.assertIsNotNone(self.secret.string_data)
