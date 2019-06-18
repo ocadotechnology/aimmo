@@ -19,7 +19,9 @@ class TokenSecretCreator:
         return kubernetes.client.V1Secret(
             kind="Secret",
             string_data=data,
-            metadata=kubernetes.client.V1ObjectMeta(name=name, namespace=namespace),
+            metadata=kubernetes.client.V1ObjectMeta(
+                name=name, namespace=namespace, labels={"game-id": name.split("-")[1]}
+            ),
         )
 
     def create_secret(self, name: str, namespace: str, data: dict):

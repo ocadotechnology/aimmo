@@ -405,6 +405,10 @@ class KubernetesGameManager(GameManager):
                 self.api.list_namespaced_service,
                 self.api.delete_namespaced_service,
             ),
+            "Secret": (
+                self.api.list_namespaced_secret,
+                self.api.delete_namespaced_secret,
+            ),
         }
 
         list_resource_function, delete_resource_function = resource_functions[
@@ -434,6 +438,7 @@ class KubernetesGameManager(GameManager):
         self._remove_resources(game_id, "ReplicationController")
         self._remove_resources(game_id, "Pod")
         self._remove_resources(game_id, "Service")
+        self._remove_resources(game_id, "Secret")
 
 
 GAME_MANAGERS = {"local": LocalGameManager, "kubernetes": KubernetesGameManager}
