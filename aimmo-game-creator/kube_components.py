@@ -1,8 +1,6 @@
-import base64
 import logging
 
 import kubernetes
-import yaml
 from kubernetes.client.rest import ApiException
 
 LOGGER = logging.getLogger(__name__)
