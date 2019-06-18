@@ -65,9 +65,7 @@ def get_aimmo_preview_user_class():
 
     :return: A permission class
     """
-    if IS_PREVIEW_USER_AIMMO_CLASS:
-        return import_string(IS_PREVIEW_USER_AIMMO_CLASS)
-    return DummyPermission
+    return True
 
 
 def get_teacher_class():
