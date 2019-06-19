@@ -95,6 +95,7 @@ class GameUsersView(APIView):
 
 
 class GameViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     queryset = Game.objects.all()
     permission_classes = (CanDeleteGameOrReadOnly,)
     serializer_class = GameSerializer
@@ -109,8 +110,6 @@ class GameViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
     def destroy(self, request, pk):
         game = get_object_or_404(Game, id=pk)
         self.check_object_permissions(request, game)
-
-        print("HYSTERICAL DELETE")
 
         game.delete()
 
