@@ -110,6 +110,8 @@ class GameViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
         game = get_object_or_404(Game, id=pk)
         self.check_object_permissions(request, game)
 
+        print("HYSTERICAL DELETE")
+
         game.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
