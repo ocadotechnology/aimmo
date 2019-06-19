@@ -11,12 +11,12 @@ from app_settings import preview_user_required
 HOMEPAGE_REGEX = r"^aimmo/"
 
 
-router = routers.SimpleRouter()
-router.register(r"games", views.GameViewSet)
+# router = routers.SimpleRouter()
+# router.register(r"games", views.GameViewSet)
 
 
 urlpatterns = [
-    url(r"^api/", include(router.urls)),
+    # url(r"^api/", include(router.urls)),
     url(
         r"^$",
         login_required(
@@ -50,6 +50,12 @@ urlpatterns = [
     ),
     url(r"^api/csrf_token", views.csrfToken, name="aimmo/csrf_token"),
     url(r"^api/code/(?P<id>[0-9]+)/$", views.code, name="aimmo/code"),
+    url(r"^api/games/$", views.GameListView.as_view(), name="aimmo/game_list"),
+    url(
+        r"^api/games/(?P<id>[0-9]+)/$",
+        views.GameView.as_view(),
+        name="aimmo/game_detail",
+    ),
     url(
         r"^api/games/(?P<id>[0-9]+)/users/$",
         views.GameUsersView.as_view(),

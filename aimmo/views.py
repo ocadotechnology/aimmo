@@ -94,26 +94,52 @@ class GameUsersView(APIView):
         return users
 
 
-class GameViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
+# class GameViewSet(
+#     viewsets.GenericViewSet, mixins.DestroyModelMixin, mixins.RetrieveModelMixin
+# ):
+#     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+#     queryset = Game.objects.all()
+#     permission_classes = (CanDeleteGameOrReadOnly,)
+#     serializer_class = GameSerializer
+
+#     def list(self, request):
+#         response = {}
+#         for game in Game.objects.exclude_inactive():
+#             serializer = GameSerializer(game)
+#             response[game.pk] = serializer.data
+#         return JsonResponse(response)
+
+
+class GameView(APIView):
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     queryset = Game.objects.all()
     permission_classes = (CanDeleteGameOrReadOnly,)
     serializer_class = GameSerializer
 
-    def list(self, request):
+    def get(self, request, id):
+        game = get_object_or_404(Game, id=id)
+        serializer = GameSerializer(game)
+        return JsonResponse(serializer.data)
+
+    def delete(self, request, id):
+        game = get_object_or_404(Game, id=id)
+        self.check_object_permissions(request, game)
+        game.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class GameListView(APIView):
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+    queryset = Game.objects.all()
+    permission_classes = (CanDeleteGameOrReadOnly,)
+    serializer_class = GameSerializer
+
+    def get(self, request):
         response = {}
         for game in Game.objects.exclude_inactive():
             serializer = GameSerializer(game)
             response[game.pk] = serializer.data
         return JsonResponse(response)
-
-    def destroy(self, request, pk):
-        game = get_object_or_404(Game, id=pk)
-        self.check_object_permissions(request, game)
-
-        game.delete()
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 def connection_parameters(request, game_id):
