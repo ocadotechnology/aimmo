@@ -13,7 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
 from rest_framework import mixins, status, viewsets, permissions
-from rest_framework.authentication import BasicAuthentication
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -97,11 +97,7 @@ class GameUsersView(APIView):
 class GameViewSet(
     viewsets.GenericViewSet, mixins.DestroyModelMixin, mixins.RetrieveModelMixin
 ):
-    authentication_classes = (
-        CsrfExemptSessionAuthentication,
-        BasicAuthentication,
-        SessionAuthentication,
-    )
+    authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication)
     queryset = Game.objects.all()
     permission_classes = (CanDeleteGameOrReadOnly,)
     serializer_class = GameSerializer
