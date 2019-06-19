@@ -5,6 +5,7 @@ import secrets
 import subprocess
 import time
 from abc import ABCMeta, abstractmethod
+from base64 import b64encode
 from concurrent import futures
 from concurrent.futures import ALL_COMPLETED
 from enum import Enum
@@ -118,6 +119,7 @@ class GameManager(object):
         try:
             LOGGER.info("Waking up")
             games = requests.get(self.games_url).json()
+            LOGGER.debug(f"Recieved Games: {games}")
         except (requests.RequestException, ValueError) as ex:
             LOGGER.error("Failed to obtain game data")
             LOGGER.exception(ex)
@@ -402,6 +404,10 @@ class KubernetesGameManager(GameManager):
                 self.api.list_namespaced_service,
                 self.api.delete_namespaced_service,
             ),
+            "Secret": (
+                self.api.list_namespaced_secret,
+                self.api.delete_namespaced_secret,
+            ),
         }
 
         list_resource_function, delete_resource_function = resource_functions[
@@ -431,6 +437,7 @@ class KubernetesGameManager(GameManager):
         self._remove_resources(game_id, "ReplicationController")
         self._remove_resources(game_id, "Pod")
         self._remove_resources(game_id, "Service")
+        self._remove_resources(game_id, "Secret")
 
 
 GAME_MANAGERS = {"local": LocalGameManager, "kubernetes": KubernetesGameManager}

@@ -12,21 +12,20 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
-from rest_framework import mixins, status, viewsets
+from rest_framework import mixins, status, viewsets, permissions
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 import forms
 import game_renderer
-from app_settings import (
-    IsPreviewUser,
-    IsTeacher,
-    get_users_for_new_game,
-    preview_user_required,
-)
+from app_settings import get_users_for_new_game, preview_user_required
 from models import Avatar, Game, LevelAttempt
-from permissions import CanUserPlay, CsrfExemptSessionAuthentication, GameHasToken
+from permissions import (
+    CsrfExemptSessionAuthentication,
+    CanDeleteGameOrReadOnly,
+    GameHasToken,
+)
 from serializers import GameSerializer
 
 LOGGER = logging.getLogger(__name__)
@@ -95,9 +94,11 @@ class GameUsersView(APIView):
         return users
 
 
-class GameViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):
+class GameViewSet(
+    viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.DestroyModelMixin
+):
     queryset = Game.objects.all()
-    permission_classes = (IsPreviewUser, IsTeacher, CanUserPlay)
+    permission_classes = (CanDeleteGameOrReadOnly,)
     serializer_class = GameSerializer
 
     def list(self, request):
