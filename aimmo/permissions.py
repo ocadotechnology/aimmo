@@ -61,7 +61,6 @@ class CanDeleteGameOrReadOnly(permissions.BasePermission):
         else:
             can_play = CanUserPlay().has_object_permission(request, view, obj)
             return (
-                IsPreviewUser().has_permission(request, view)
                 and IsTeacher().has_permission(request, view)
                 and can_play
             )
