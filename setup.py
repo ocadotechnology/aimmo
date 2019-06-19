@@ -31,6 +31,6 @@ setup(
         "kubernetes == 5.0.0",
         "PyYAML == 4.2b1",
     ],
-    version=versioneer.get_version(),
+    version="0.25.0",
     zip_safe=False,
 )
