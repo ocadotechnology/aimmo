@@ -111,7 +111,7 @@ class GameViewSet(
         for game in Game.objects.exclude_inactive():
             serializer = GameSerializer(game)
             response[game.pk] = serializer.data
-        return JsonResponse(response)
+        return Response(response)
 
 
 def connection_parameters(request, game_id):
