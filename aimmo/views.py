@@ -94,9 +94,7 @@ class GameUsersView(APIView):
         return users
 
 
-class GameViewSet(
-    viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.DestroyModelMixin
-):
+class GameViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
     queryset = Game.objects.all()
     permission_classes = (CanDeleteGameOrReadOnly,)
     serializer_class = GameSerializer
@@ -107,6 +105,14 @@ class GameViewSet(
             serializer = GameSerializer(game)
             response[game.pk] = serializer.data
         return JsonResponse(response)
+
+    def destroy(self, request, pk):
+        game = get_object_or_404(Game, id=pk)
+        self.check_object_permissions(request, game)
+
+        game.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 def connection_parameters(request, game_id):

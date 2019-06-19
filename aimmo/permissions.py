@@ -1,6 +1,6 @@
 from rest_framework import authentication, permissions
 from django.shortcuts import get_object_or_404
-from app_settings import IsTeacher, IsPreviewUser, CanDelete
+from app_settings import CanDelete
 
 
 class CsrfExemptSessionAuthentication(authentication.SessionAuthentication):
