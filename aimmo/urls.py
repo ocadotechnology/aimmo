@@ -16,7 +16,6 @@ router.register(r"games", views.GameViewSet)
 
 
 urlpatterns = [
-    url(r"^api/", include(router.urls)),
     url(
         r"^$",
         login_required(
@@ -75,6 +74,7 @@ urlpatterns = [
         views.current_avatar_in_game,
         name="aimmo/current_avatar_in_game",
     ),
+    url(r"^api/", include(router.urls)),
     url(
         r"^jsreverse/$", urls_js, name="aimmo/js_reverse"
     ),  # TODO: Pull request to make django_js_reverse.urls
