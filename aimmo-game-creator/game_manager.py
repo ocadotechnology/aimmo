@@ -5,6 +5,7 @@ import secrets
 import subprocess
 import time
 from abc import ABCMeta, abstractmethod
+from base64 import b64encode
 from concurrent import futures
 from concurrent.futures import ALL_COMPLETED
 from enum import Enum
@@ -229,7 +230,7 @@ class KubernetesGameManager(GameManager):
         kubernetes.config.load_incluster_config()
         self.extension_api = kubernetes.client.ExtensionsV1beta1Api()
         self.api = kubernetes.client.CoreV1Api()
-        self.secret_creator = TokenSecretCreator(self.api)
+        self.secret_creator = TokenSecretCreator()
 
         super(KubernetesGameManager, self).__init__(*args, **kwargs)
         self._create_ingress_paths_for_existing_games()
@@ -403,6 +404,10 @@ class KubernetesGameManager(GameManager):
                 self.api.list_namespaced_service,
                 self.api.delete_namespaced_service,
             ),
+            "Secret": (
+                self.api.list_namespaced_secret,
+                self.api.delete_namespaced_secret,
+            ),
         }
 
         list_resource_function, delete_resource_function = resource_functions[
@@ -432,6 +437,7 @@ class KubernetesGameManager(GameManager):
         self._remove_resources(game_id, "ReplicationController")
         self._remove_resources(game_id, "Pod")
         self._remove_resources(game_id, "Service")
+        self._remove_resources(game_id, "Secret")
 
 
 GAME_MANAGERS = {"local": LocalGameManager, "kubernetes": KubernetesGameManager}

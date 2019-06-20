@@ -14,6 +14,7 @@ git:
   depth: 9999999 # Building untagged builds needs enough depth to get the latest tag
 stages:
   - name: test
+    if: NOT tag IS present
   - name: release
     if: branch = master OR branch = development
   - name: deploy
@@ -150,17 +151,17 @@ jobs:
           on:
             repo: ocadotechnology/aimmo
             tags: true
-    - name: "Build game"
+    - name: "Build and push game image"
       script:
         - docker build --no-cache -t ocadotechnology/aimmo-game:${TRAVIS_TAG} aimmo-game/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
         - docker push ocadotechnology/aimmo-game:${TRAVIS_TAG}
-    - name: "Build game creator"
+    - name: "Build and push game creator image"
       script:
         - docker build --no-cache -t ocadotechnology/aimmo-game-creator:${TRAVIS_TAG} aimmo-game-creator/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
         - docker push ocadotechnology/aimmo-game-creator:${TRAVIS_TAG}
-    - name: "Build game worker"
+    - name: "Build and push game worker image"
       script:
         - docker build --no-cache -t ocadotechnology/aimmo-game-worker:${TRAVIS_TAG} aimmo-game-worker/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
