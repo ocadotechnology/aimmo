@@ -1,6 +1,6 @@
 from rest_framework import authentication, permissions
 from django.shortcuts import get_object_or_404
-from app_settings import IsTeacher, IsPreviewUser
+from app_settings import CanDelete
 
 
 class CsrfExemptSessionAuthentication(authentication.SessionAuthentication):
@@ -60,8 +60,4 @@ class CanDeleteGameOrReadOnly(permissions.BasePermission):
             return True
         else:
             can_play = CanUserPlay().has_object_permission(request, view, obj)
-            return (
-                IsPreviewUser().has_permission(request, view)
-                and IsTeacher().has_permission(request, view)
-                and can_play
-            )
+            return CanDelete().has_permission(request, view) and can_play
