@@ -1,21 +1,32 @@
 import cPickle as pickle
+import json
 import logging
 import os
-import json
+from exceptions import UserCannotPlayGameException
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
-from django.shortcuts import redirect, render, get_object_or_404
+from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
+from django.middleware.csrf import get_token
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
-from django.middleware.csrf import get_token
+from rest_framework import mixins, permissions, status, viewsets
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from models import Avatar, Game, LevelAttempt
-from aimmo import forms, game_renderer
+import forms
+import game_renderer
 from app_settings import get_users_for_new_game, preview_user_required
-from exceptions import UserCannotPlayGameException
+from models import Avatar, Game, LevelAttempt
+from permissions import (
+    CanDeleteGameOrReadOnly,
+    CsrfExemptSessionAuthentication,
+    GameHasToken,
+)
+from serializers import GameSerializer
 
 LOGGER = logging.getLogger(__name__)
 
@@ -57,22 +68,49 @@ def code(request, id):
         return JsonResponse({"code": avatar.code})
 
 
-def list_games(request):
-    response = {
-        game.pk: {"name": game.name, "settings": json.dumps(game.settings_as_dict())}
-        for game in Game.objects.exclude_inactive()
-    }
-    return JsonResponse(response)
+class GameUsersView(APIView):
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+    permission_classes = (GameHasToken,)
+
+    def get(self, request, id):
+        game = get_object_or_404(Game, id=id)
+        data = self.serialize_users(game)
+        return JsonResponse(data)
+
+    def patch(self, request, id):
+        game = get_object_or_404(Game, id=id)
+        self.check_object_permissions(self.request, game)
+        game.status = request.data["status"]
+        game.auth_token = ""
+        game.save()
+        return HttpResponse(status=status.HTTP_200_OK)
+
+    def serialize_users(self, game):
+        users = {"main_avatar": None, "users": []}
+        for avatar in game.avatar_set.all():
+            if avatar.owner_id == game.main_user_id:
+                users["main_avatar"] = avatar.id
+            users["users"].append({"id": avatar.id, "code": avatar.code})
+        return users
 
 
-def get_game(request, id):
-    game = get_object_or_404(Game, id=id)
-    response = {"main": {"parameters": [], "main_avatar": None, "users": []}}
-    for avatar in game.avatar_set.all():
-        if avatar.owner_id == game.main_user_id:
-            response["main"]["main_avatar"] = avatar.id
-        response["main"]["users"].append({"id": avatar.id, "code": avatar.code})
-    return JsonResponse(response)
+class GameViewSet(
+    viewsets.GenericViewSet,
+    mixins.DestroyModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+):
+    authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication)
+    queryset = Game.objects.all()
+    permission_classes = (CanDeleteGameOrReadOnly,)
+    serializer_class = GameSerializer
+
+    def list(self, request):
+        response = {}
+        for game in Game.objects.exclude_inactive():
+            serializer = GameSerializer(game)
+            response[game.pk] = serializer.data
+        return Response(response)
 
 
 def connection_parameters(request, game_id):
@@ -105,6 +143,35 @@ def mark_game_complete(request, id):
     return HttpResponse("Done!")
 
 
+class GameTokenView(APIView):
+    """
+    View to Game tokens, used to prove a request comes from a game.
+    """
+
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+    permission_classes = (GameHasToken,)
+
+    def get(self, request, id):
+        """
+        After the inital token request, we need to check where the
+        request comes from. So for subsequent requests we verify that
+        they came from the token-holder.
+        """
+        game = get_object_or_404(Game, id=id)
+        self.check_object_permissions(self.request, game)
+        return Response(data={"token": game.auth_token})
+
+    def patch(self, request, id):
+        game = get_object_or_404(Game, id=id)
+        self.check_object_permissions(self.request, game)
+        try:
+            game.auth_token = request.data["token"]
+            game.save()
+            return Response(status=status.HTTP_200_OK)
+        except KeyError:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+
 class ProgramView(TemplateView):
     template_name = "players/program.html"
 
@@ -121,6 +188,9 @@ def watch_game(request, id):
     game = get_object_or_404(Game, id=id)
     if not game.can_user_play(request.user):
         raise Http404
+
+    game.status = Game.RUNNING
+    game.save()
     return game_renderer.render_game(request, game)
 
 

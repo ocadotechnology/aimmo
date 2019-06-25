@@ -11,7 +11,7 @@ metadata:
   name: game-creator
 rules:
 - apiGroups: [""] # "" indicates the core API group
-  resources: ["replicationcontrollers", "pods", "services"]
+  resources: ["replicationcontrollers", "pods", "services", "secrets"]
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 - apiGroups: ["extensions"]
   resources: ["ingresses"]

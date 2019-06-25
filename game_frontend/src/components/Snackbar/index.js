@@ -52,7 +52,7 @@ export class Snackbar extends Component {
     const { type } = this.props
     const Icon = Snackbar.iconVariants[type]
     return styled(Icon)`
-      margin-right: ${props => props.theme.spacing.unit}px;
+      margin-right: ${props => props.theme.spacing()}px;
     `
   }
 
@@ -82,4 +82,4 @@ export class Snackbar extends Component {
   }
 }
 
-export default withTheme()(Snackbar)
+export default withTheme(Snackbar)

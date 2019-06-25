@@ -18,17 +18,12 @@ class RequestMock(object):
 
     def _generate_response(self, num_users):
         return {
-            "main": {
-                "parameters": [],
-                "main_avatar": None,
-                "users": [
-                    {"id": i, "code": "code for %s" % i} for i in range(num_users)
-                ],
-            }
+            "main_avatar": None,
+            "users": [{"id": i, "code": "code for %s" % i} for i in range(num_users)],
         }
 
     def change_code(self, id, new_code):
-        users = self.value["main"]["users"]
+        users = self.value["users"]
         for i in range(len(users)):
             if users[i]["id"] == id:
                 users[i]["code"] = new_code
@@ -112,7 +107,7 @@ async def test_logs_cleared_at_each_update(game_runner):
 async def test_remove_avatars(game_runner):
     game_runner.communicator.data = RequestMock(3).value
     await game_runner.update()
-    del game_runner.communicator.data["main"]["users"][1]
+    del game_runner.communicator.data["users"][1]
     await game_runner.update()
 
     for i in range(3):
@@ -122,3 +117,11 @@ async def test_remove_avatars(game_runner):
         else:
             assert i in game_runner.worker_manager.final_workers
             assert i in game_runner.game_state.avatar_manager.avatars_by_id
+
+
+@pytest.mark.asyncio
+async def test_turn_increment(game_runner):
+    game_runner.communicator.data = RequestMock(3).value
+    assert game_runner.game_state.turn_count == 0
+    await game_runner.update()
+    assert game_runner.game_state.turn_count == 1

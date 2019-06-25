@@ -6,7 +6,7 @@ import createShallowWithTheme from 'testHelpers/createShallow'
 describe('<LogEntries />', () => {
   it('renders correctly with logs', () => {
     const tree = createShallowWithTheme(
-      <LogEntries logs={[{ timestamp: '1', log: 'hello' }, { timestamp: 2, log: 'bye' }]} />,
+      <LogEntries logs={[{ turn_count: 0, message: 'hello' }, { turn_count: 1, message: 'bye' }]} />,
       'dark'
     )
     expect(tree).toMatchSnapshot()

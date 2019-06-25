@@ -5,17 +5,19 @@ import asyncio
 import json
 import logging
 import os
-import pickle
+import signal
 import sys
 from urllib.parse import parse_qs
 
+import aiohttp
 import aiohttp_cors
 import socketio
 from aiohttp import web
 from aiohttp_wsgi import WSGIHandler
 from prometheus_client import make_wsgi_app
 
-from activity_monitor import ActivityMonitor
+from activity_monitor import ActivityMonitor, StatusOptions
+from authentication import initialize_game_token
 from simulation import map_generator
 from simulation.game_runner import GameRunner
 
@@ -23,12 +25,7 @@ app = web.Application()
 cors = aiohttp_cors.setup(app)
 
 
-async def callback(self):
-    LOGGER.info("Timer expired! Game marked as STOPPED")
-    # this should trigger the game for deletion, part of (#1011)
-
-
-activity_monitor = ActivityMonitor(callback)
+activity_monitor = ActivityMonitor()
 socketio_server = socketio.AsyncServer(async_handlers=True)
 
 routes = web.RouteTableDef()
@@ -78,7 +75,7 @@ class GameAPI(object):
             query = environ["QUERY_STRING"]
             self._find_avatar_id_from_query(sid, query)
             activity_monitor.active_users = len(self._socket_session_id_to_player_id)
-            await self.send_updates()
+            await self.send_updates(on_connect=True)
 
         return world_update_on_connect
 
@@ -96,11 +93,12 @@ class GameAPI(object):
 
         return remove_session_id_from_mappings
 
-    async def send_updates(self):
+    async def send_updates(self, on_connect=False):
         player_id_to_worker = self.worker_manager.player_id_to_worker
         await self._send_have_avatars_code_updated(player_id_to_worker)
         await self._send_game_state()
-        await self._send_logs(player_id_to_worker)
+        if not on_connect:
+            await self._send_logs(player_id_to_worker)
 
     def _find_avatar_id_from_query(self, session_id, query_string):
         """
@@ -129,7 +127,11 @@ class GameAPI(object):
         for sid, player_id in socket_session_id_to_player_id_copy.items():
             avatar_logs = player_id_to_workers[player_id].log
             if should_send_logs(avatar_logs):
-                await socketio_server.emit("log", avatar_logs, room=sid)
+                await socketio_server.emit(
+                    "log",
+                    {"message": avatar_logs, "turn_count": self.game_state.turn_count},
+                    room=sid,
+                )
 
     async def _send_game_state(self):
         serialized_game_state = self.game_state.serialize()
@@ -162,6 +164,11 @@ def create_runner(port):
 
 def run_game(port):
     game_runner = create_runner(port)
+
+    asyncio.ensure_future(initialize_game_token(game_runner.communicator))
+
+    app.on_shutdown.append(game_runner.communicator.close_session)
+
     game_api = GameAPI(
         game_state=game_runner.game_state, worker_manager=game_runner.worker_manager
     )

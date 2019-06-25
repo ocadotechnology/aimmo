@@ -62,7 +62,7 @@ class GameRunner:
         self.game_state.main_avatar_id = game_metadata["main_avatar"]
 
     async def update_workers(self):
-        game_metadata = self.communicator.get_game_metadata()["main"]
+        game_metadata = self.communicator.get_game_metadata()
 
         users_to_add = self.get_users_to_add(game_metadata)
         users_to_delete = self.get_users_to_delete(game_metadata)
@@ -89,6 +89,7 @@ class GameRunner:
                 self.worker_manager.get_player_id_to_serialized_actions()
             )
             self.worker_manager.clear_logs()
+            self.game_state.turn_count += 1
 
     async def run(self):
         while True:

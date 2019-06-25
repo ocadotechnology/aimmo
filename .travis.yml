@@ -14,13 +14,16 @@ git:
   depth: 9999999 # Building untagged builds needs enough depth to get the latest tag
 stages:
   - name: test
+    if: NOT tag IS present
   - name: release
     if: branch = master OR branch = development
   - name: deploy
     if: tag IS present
+  - name: Notify Semaphore
+    if: tag IS present
 jobs:
   include:
-    - stage: test
+    - stage: Test
       name: "Python Tests"
       env:
         - NODE_ENV=production
@@ -101,7 +104,7 @@ jobs:
         - yarn test --coverage
       after_success:
         - bash <(curl -s https://codecov.io/bash)
-    - stage: release
+    - stage: Release
       script:
         - bash tag_release_on_travis.sh
       deploy:
@@ -123,7 +126,8 @@ jobs:
           on:
             repo: ocadotechnology/aimmo
             branch: master
-    - stage: deploy
+    - stage: Deploy
+      name: Bundle frontend
       env:
         - NODE_ENV=production
       before_install:
@@ -147,5 +151,22 @@ jobs:
           on:
             repo: ocadotechnology/aimmo
             tags: true
-      after_deploy:
+    - name: "Build and push game image"
+      script:
+        - docker build --no-cache -t ocadotechnology/aimmo-game:${TRAVIS_TAG} aimmo-game/
+        - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
+        - docker push ocadotechnology/aimmo-game:${TRAVIS_TAG}
+    - name: "Build and push game creator image"
+      script:
+        - docker build --no-cache -t ocadotechnology/aimmo-game-creator:${TRAVIS_TAG} aimmo-game-creator/
+        - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
+        - docker push ocadotechnology/aimmo-game-creator:${TRAVIS_TAG}
+    - name: "Build and push game worker image"
+      script:
+        - docker build --no-cache -t ocadotechnology/aimmo-game-worker:${TRAVIS_TAG} aimmo-game-worker/
+        - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
+        - docker push ocadotechnology/aimmo-game-worker:${TRAVIS_TAG}
+    - stage: Notify Semaphore
+      script:
         - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}"
+

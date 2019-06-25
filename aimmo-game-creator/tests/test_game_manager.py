@@ -3,9 +3,8 @@ from __future__ import absolute_import
 import unittest
 from json import dumps
 
-from httmock import HTTMock
-
 from game_manager import GameManager
+from httmock import HTTMock
 
 
 class ConcreteGameManager(GameManager):
@@ -39,6 +38,7 @@ class RequestMock(object):
         return {
             str(i): {
                 "name": "Game {}".format(i),
+                "status": "r",
                 "settings": {"test": i, "test2": "Settings {}".format(i)},
             }
             for i in range(num_games)
