@@ -31,21 +31,35 @@ class WorkerManager(object):
         Creates a thread for each worker to send a request for their data. After
         a set duration these threads will close, giving a consistent turn time.
         """
-
-        def prepare_request_threads():
-            return [
-                Thread(
-                    target=worker.fetch_data, args=(player_id_to_game_state[player_id],)
+        worker_game_states = []
+        for player_id in player_id_to_game_state.keys():
+            worker_game_states.append(
+                (
+                    self.player_id_to_worker[player_id],
+                    player_id_to_game_state[player_id],
                 )
-                for (player_id, worker) in self.player_id_to_worker.items()
-            ]
+            )
 
-        async def timed_process_for_worker_turn_requests():
-            threads = prepare_request_threads()
-            [thread.setDaemon(True) for thread in threads]
-            [thread.start() for thread in threads]
+        requests = []
+        for worker, game_state in worker_game_states:
+            requests.append(worker.fetch_data(game_state))
 
-        await timed_process_for_worker_turn_requests()
+        results = await asyncio.wait_for(asyncio.gather(*requests), 2)
+
+        # def prepare_request_threads():
+        #     return [
+        #         Thread(
+        #             target=worker.fetch_data, args=(player_id_to_game_state[player_id],)
+        #         )
+        #         for (player_id, worker) in self.player_id_to_worker.items()
+        #     ]
+
+        # async def timed_process_for_worker_turn_requests():
+        #     threads = prepare_request_threads()
+        #     [thread.setDaemon(True) for thread in threads]
+        #     [thread.start() for thread in threads]
+
+        # await timed_process_for_worker_turn_requests()
 
     def get_player_id_to_serialized_actions(self):
         return {
