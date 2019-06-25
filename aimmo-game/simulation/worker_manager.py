@@ -46,21 +46,6 @@ class WorkerManager(object):
 
         results = await asyncio.wait_for(asyncio.gather(*requests), 2)
 
-        # def prepare_request_threads():
-        #     return [
-        #         Thread(
-        #             target=worker.fetch_data, args=(player_id_to_game_state[player_id],)
-        #         )
-        #         for (player_id, worker) in self.player_id_to_worker.items()
-        #     ]
-
-        # async def timed_process_for_worker_turn_requests():
-        #     threads = prepare_request_threads()
-        #     [thread.setDaemon(True) for thread in threads]
-        #     [thread.start() for thread in threads]
-
-        # await timed_process_for_worker_turn_requests()
-
     def get_player_id_to_serialized_actions(self):
         return {
             player_id: self.player_id_to_worker[player_id].serialized_action
