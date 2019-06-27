@@ -33,14 +33,10 @@ class WorkerManager(object):
         Creates a thread for each worker to send a request for their data. After
         a set duration these threads will close, giving a consistent turn time.
         """
-        worker_game_states = []
-        for player_id in player_id_to_game_state.keys():
-            worker_game_states.append(
-                (
-                    self.player_id_to_worker[player_id],
-                    player_id_to_game_state[player_id],
-                )
-            )
+        worker_game_states = [
+            (self.player_id_to_worker[player_id], player_id_to_game_state[player_id])
+            for player_id in player_id_to_game_state.keys()
+        ]
 
         requests = []
         for worker, game_state in worker_game_states:
