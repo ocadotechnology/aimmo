@@ -38,9 +38,9 @@ class WorkerManager(object):
             for player_id in player_id_to_game_state.keys()
         ]
 
-        requests = []
-        for worker, game_state in worker_game_states:
-            requests.append(worker.fetch_data(game_state))
+        requests = [
+            worker.fetch_data(game_state) for worker, game_state in worker_game_states
+        ]
 
         await asyncio.sleep(TURN_TIME_LOWER_BOUND_SECONDS)
         return asyncio.wait_for(
