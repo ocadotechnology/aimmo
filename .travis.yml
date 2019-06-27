@@ -18,7 +18,7 @@ stages:
   - name: release
     if: branch = master OR branch = development
   - name: deploy
-    # if: tag IS present
+    if: tag IS present
   - name: Notify Semaphore
     if: tag IS present
 jobs:
@@ -153,19 +153,19 @@ jobs:
             tags: true
     - name: "Build and push game image"
       script:
-        - docker build --no-cache -t ocadotechnology/aimmo-game:dev aimmo-game/
+        - docker build --no-cache -t ocadotechnology/aimmo-game:${TRAVIS_TAG} aimmo-game/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
-        - docker push ocadotechnology/aimmo-game:dev
+        - docker push ocadotechnology/aimmo-game:${TRAVIS_TAG}
     - name: "Build and push game creator image"
       script:
-        - docker build --no-cache -t ocadotechnology/aimmo-game-creator:dev aimmo-game-creator/
+        - docker build --no-cache -t ocadotechnology/aimmo-game-creator:${TRAVIS_TAG} aimmo-game-creator/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
-        - docker push ocadotechnology/aimmo-game-creator:dev
+        - docker push ocadotechnology/aimmo-game-creator:${TRAVIS_TAG}
     - name: "Build and push game worker image"
       script:
-        - docker build --no-cache -t ocadotechnology/aimmo-game-worker:dev aimmo-game-worker/
+        - docker build --no-cache -t ocadotechnology/aimmo-game-worker:${TRAVIS_TAG} aimmo-game-worker/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
-        - docker push ocadotechnology/aimmo-game-worker:dev
+        - docker push ocadotechnology/aimmo-game-worker:${TRAVIS_TAG}
     - stage: Notify Semaphore
       script:
         - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}"
