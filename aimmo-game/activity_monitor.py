@@ -15,7 +15,7 @@ from requests import codes
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-SECONDS_TILL_CONSIDERED_INACTIVE = 30
+SECONDS_TILL_CONSIDERED_INACTIVE = 3600
 
 
 class StatusOptions(Enum):
