@@ -1,7 +1,10 @@
+import logging
 import os
 
 import kubernetes
 import requests
+
+LOGGER = logging.getLogger(__name__)
 
 
 async def initialize_game_token(communicator):
@@ -13,5 +16,6 @@ async def initialize_game_token(communicator):
 
         secret = api.read_namespaced_secret(f"game-{game_id}-token", "default")
         os.environ["TOKEN"] = secret.data["token"]
+        LOGGER.info("Token set!")
 
     await communicator.patch_token({"token": os.environ["TOKEN"]})

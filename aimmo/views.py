@@ -95,10 +95,7 @@ class GameUsersView(APIView):
 
 
 class GameViewSet(
-    viewsets.GenericViewSet,
-    mixins.DestroyModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet, mixins.DestroyModelMixin, mixins.RetrieveModelMixin
 ):
     authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication)
     queryset = Game.objects.all()
@@ -111,6 +108,19 @@ class GameViewSet(
             serializer = GameSerializer(game)
             response[game.pk] = serializer.data
         return Response(response)
+
+    def partial_update(self, request, pk=None):
+        game = get_object_or_404(Game, id=pk)
+        self.check_object_permissions(request, game)
+
+        for key in request.data.keys():
+            if getattr(game, key, None):
+                setattr(game, key, request.data[key])
+
+        game.save()
+        serializer = GameSerializer(game)
+
+        return Response(data=serializer.data)
 
 
 def connection_parameters(request, game_id):
