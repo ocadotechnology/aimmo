@@ -64,7 +64,6 @@ class ActivityMonitor:
         api_url = os.environ.get(
             "GAME_API_URL", "http://localhost:8000/aimmo/api/games/"
         )
-        LOGGER.info(os.environ["TOKEN"])
         async with aiohttp.ClientSession() as session:
             async with session.patch(
                 api_url,

@@ -113,7 +113,10 @@ class GameViewSet(
         game = get_object_or_404(Game, id=pk)
         self.check_object_permissions(request, game)
 
-        game.status = request.data["status"]
+        for key in request.data.keys():
+            if getattr(game, key, None):
+                setattr(game, key, request.data[key])
+
         game.save()
         serializer = GameSerializer(game)
 
