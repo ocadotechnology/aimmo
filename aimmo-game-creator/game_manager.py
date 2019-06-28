@@ -268,6 +268,7 @@ class KubernetesGameManager(GameManager):
             image="ocadotechnology/aimmo-game:{}".format(
                 os.environ.get("IMAGE_SUFFIX", "latest")
             ),
+            image_pull_policy='Always',
             ports=[kubernetes.client.V1ContainerPort(container_port=5000)],
             name="aimmo-game",
             resources=kubernetes.client.V1ResourceRequirements(
