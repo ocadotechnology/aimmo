@@ -9,9 +9,7 @@ LOGGER = logging.getLogger(__name__)
 
 async def initialize_game_token(communicator):
     """Get game token and store it somewhere accessible."""
-    LOGGER.info("############################################################")
     if os.environ["WORKER"] == "kubernetes":
-        LOGGER.info("############################################################")
         kubernetes.config.load_incluster_config()
         api = kubernetes.client.CoreV1Api()
         game_id = os.environ.get("GAME_ID")
