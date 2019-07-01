@@ -3,13 +3,12 @@ import json
 
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.http import JsonResponse
 from django.test import Client, TestCase
 from rest_framework import status
 from rest_framework.test import APIRequestFactory
-from django.http import JsonResponse
 
 from aimmo import app_settings, models
-
 from aimmo.serializers import GameSerializer
 
 app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
@@ -200,16 +199,35 @@ class TestViews(TestCase):
 
     def test_stop_game(self):
         game = models.Game.objects.get(id=1)
+        game.auth_token = 'tokenso lorenzo'
+        game.save()
         c = Client()
+
         response = c.patch(
-            reverse("aimmo/game_user_details", kwargs={"id": 1}),
+            reverse("game-detail", kwargs={"pk": 1}),
             json.dumps({"status": models.Game.STOPPED}),
             content_type="application/json",
             HTTP_GAME_TOKEN=game.auth_token,
         )
         game = models.Game.objects.get(id=1)
-        self.assertTrue(response.status_code == 200)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(game.status, models.Game.STOPPED)
+
+    def test_stop_game_no_token(self):
+        game = models.Game.objects.get(id=1)
+        game.auth_token = 'tokenso lorenzo'
+        game.save()
+        c = Client()
+
+        response = c.patch(
+            reverse("game-detail", kwargs={"pk": 1}),
+            json.dumps({"status": models.Game.STOPPED}),
+            content_type="application/json",
+        )
+        game = models.Game.objects.get(id=1)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(game.status, models.Game.RUNNING)
+    
 
     def test_current_avatar_api_for_non_existent_game(self):
         response = self._go_to_page("aimmo/current_avatar_in_game", "game_id", 1)
