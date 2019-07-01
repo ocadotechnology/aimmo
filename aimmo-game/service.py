@@ -165,8 +165,12 @@ def create_runner(port):
 def run_game(port):
     game_runner = create_runner(port)
 
+    def clean_token(self, app):
+        game_runner.communicator.patch_token(data={"token": ""})
+
     asyncio.ensure_future(initialize_game_token(game_runner.communicator))
 
+    app.on_shutdown.append(clean_token)
     app.on_shutdown.append(game_runner.communicator.close_session)
 
     game_api = GameAPI(
