@@ -62,7 +62,7 @@ class GameRunner:
         self.game_state.main_avatar_id = game_metadata["main_avatar"]
 
     async def update_workers(self):
-        game_metadata = self.communicator.get_game_metadata()["main"]
+        game_metadata = self.communicator.get_game_metadata()
 
         users_to_add = self.get_users_to_add(game_metadata)
         users_to_delete = self.get_users_to_delete(game_metadata)

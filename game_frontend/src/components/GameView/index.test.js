@@ -1,7 +1,9 @@
 /* eslint-env jest */
 import React from 'react'
-import GameView, { GameViewLayout, StyledUnity, LoadingBackgroundOverlay, StyledCircularProgress } from 'components/GameView'
+import GameView, { GameViewLayout, StyledUnity, LoadingBackgroundOverlay, StyledCircularProgress, LoadingText } from 'components/GameView'
 import { shallow } from 'enzyme/build/index'
+import createShallowWithTheme from 'testHelpers/createShallow'
+
 jest.mock('api/unity')
 
 describe('<GameView />', () => {
@@ -59,6 +61,13 @@ describe('<StyledCircularProgress />', () => {
 describe('<LoadingBackgroundOverlay />', () => {
   it('matches snapshot', () => {
     const component = shallow(<LoadingBackgroundOverlay />)
+    expect(component).toMatchSnapshot()
+  })
+})
+
+describe('<LoadingText />', () => {
+  it('matches snapshot', () => {
+    const component = createShallowWithTheme(<LoadingText />)
     expect(component).toMatchSnapshot()
   })
 })

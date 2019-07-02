@@ -1,12 +1,15 @@
 import ast
 import json
 
-from aimmo import app_settings, models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.http import JsonResponse
 from django.test import Client, TestCase
 from rest_framework import status
 from rest_framework.test import APIRequestFactory
+
+from aimmo import app_settings, models
+from aimmo.serializers import GameSerializer
 
 app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
     "base %s" % game_id,
@@ -20,16 +23,21 @@ class TestViews(TestCase):
     CODE = "class Avatar: pass"
 
     EXPECTED_GAMES = {
-        "main": {
-            "parameters": [],
-            "main_avatar": 1,
-            "users": [
-                {"id": 1, "code": CODE},
-                {"id": 2, "code": "test2"},
-                {"id": 3, "code": "test3"},
-            ],
-        }
+        "main_avatar": 1,
+        "users": [
+            {"id": 1, "code": CODE},
+            {"id": 2, "code": "test2"},
+            {"id": 3, "code": "test3"},
+        ],
     }
+
+    EXPECTED_GAME_DETAIL = {
+        "name": "test",
+        "status": "r",
+        "settings": '{"TARGET_NUM_CELLS_PER_AVATAR": 16.0, "START_HEIGHT": 31, "GENERATOR": "Main", "TARGET_NUM_PICKUPS_PER_AVATAR": 1.2, "SCORE_DESPAWN_CHANCE": 0.05, "START_WIDTH": 31, "PICKUP_SPAWN_CHANCE": 0.1, "OBSTACLE_RATIO": 0.1, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
+    }
+
+    EXPECTED_GAME_LIST = {"1": EXPECTED_GAME_DETAIL, "2": EXPECTED_GAME_DETAIL}
 
     @classmethod
     def setUpTestData(cls):
@@ -149,11 +157,11 @@ class TestViews(TestCase):
         models.Avatar(owner=user2, code="test2", pk=2, game=self.game).save()
         models.Avatar(owner=user3, code="test3", pk=3, game=self.game).save()
         c = Client()
-        response = c.get(reverse("aimmo/game_details", kwargs={"id": 1}))
+        response = c.get(reverse("aimmo/game_user_details", kwargs={"id": 1}))
         self.assertJSONEqual(response.content, self.EXPECTED_GAMES)
 
     def test_games_api_for_non_existent_game(self):
-        response = self._go_to_page("aimmo/game_details", "id", 5)
+        response = self._go_to_page("aimmo/game_user_details", "id", 5)
         self.assertEqual(response.status_code, 404)
 
     def _run_mark_complete_test(self, request_method, game_id, success_expected):
@@ -188,6 +196,38 @@ class TestViews(TestCase):
             content_type="application/json",
         )
         self.assertEqual(models.Game.objects.get(id=1).static_data, "static")
+
+    def test_stop_game(self):
+        game = models.Game.objects.get(id=1)
+        game.auth_token = 'tokenso lorenzo'
+        game.save()
+        c = Client()
+
+        response = c.patch(
+            reverse("game-detail", kwargs={"pk": 1}),
+            json.dumps({"status": models.Game.STOPPED}),
+            content_type="application/json",
+            HTTP_GAME_TOKEN=game.auth_token,
+        )
+        game = models.Game.objects.get(id=1)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(game.status, models.Game.STOPPED)
+
+    def test_stop_game_no_token(self):
+        game = models.Game.objects.get(id=1)
+        game.auth_token = 'tokenso lorenzo'
+        game.save()
+        c = Client()
+
+        response = c.patch(
+            reverse("game-detail", kwargs={"pk": 1}),
+            json.dumps({"status": models.Game.STOPPED}),
+            content_type="application/json",
+        )
+        game = models.Game.objects.get(id=1)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(game.status, models.Game.RUNNING)
+    
 
     def test_current_avatar_api_for_non_existent_game(self):
         response = self._go_to_page("aimmo/current_avatar_in_game", "game_id", 1)
@@ -266,12 +306,14 @@ class TestViews(TestCase):
         current_avatar_api_response = client.get(
             reverse("aimmo/current_avatar_in_game", kwargs={"game_id": 1})
         )
-        games_api_response = client.get(reverse("aimmo/game_details", kwargs={"id": 1}))
+        games_api_response = client.get(
+            reverse("aimmo/game_user_details", kwargs={"id": 1})
+        )
 
         current_avatar_id = ast.literal_eval(current_avatar_api_response.content)[
             "current_avatar_id"
         ]
-        games_api_users = json.loads(games_api_response.content)["main"]["users"]
+        games_api_users = json.loads(games_api_response.content)["users"]
 
         self.assertEqual(current_avatar_id, 1)
         self.assertEqual(len(games_api_users), 1)
@@ -324,7 +366,7 @@ class TestViews(TestCase):
 
     def test_patch_token_with_incorrect_token(self):
         """
-        Check for 401 when attempting to change game token (incorrect token provided).
+        Check for 403 when attempting to change game token (incorrect token provided).
         """
         client = Client()
         token = models.Game.objects.get(id=1).auth_token
@@ -352,3 +394,59 @@ class TestViews(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(models.Game.objects.get(id=1).auth_token, new_token)
+
+    def test_delete_game(self):
+        """
+        Check for 204 when deleting a game
+        """
+        client = self.login()
+
+        game2 = models.Game(id=2, name="test", public=True)
+        game2.save()
+
+        response = client.delete(reverse("game-detail", kwargs={"pk": self.game.id}))
+        self.assertEquals(response.status_code, 204)
+        self.assertEquals(len(models.Game.objects.all()), 1)
+
+    def test_delete_non_existent_game(self):
+        c = self.login()
+        response = c.delete(reverse("game-detail", kwargs={"pk": 2}))
+        self.assertEqual(response.status_code, 404)
+
+    def test_delete_for_unauthorized_user(self):
+        """
+        Check for 403 when attempting to delete a game without being authorized
+        """
+        self._make_game_private()
+        c = self.login()
+        response = c.delete(reverse("game-detail", kwargs={"pk": self.game.id}))
+        self.assertEqual(response.status_code, 403)
+
+    def test_game_serializer_settings(self):
+        """
+        Check that the serializer gets the correct settings data from the game
+        """
+        client = self.login()
+
+        serializer = GameSerializer(self.game)
+
+        self.assertEquals(
+            json.dumps(self.game.settings_as_dict()), serializer.data["settings"]
+        )
+
+    def test_list_all_games(self):
+        self.game.main_user = self.user
+        self.game.save()
+
+        game2 = models.Game(id=2, name="test", public=True)
+        game2.save()
+
+        c = Client()
+        response = c.get(reverse("game-list"))
+        self.assertJSONEqual(response.content, self.EXPECTED_GAME_LIST)
+
+    def test_view_one_game(self):
+        client = self.login()
+
+        response = client.get(reverse("game-detail", kwargs={"pk": self.game.id}))
+        self.assertEquals(response.status_code, 200)

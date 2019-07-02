@@ -1,0 +1,15 @@
+coverage:
+  precision: 2
+  round: down
+  range: "70...100"
+
+fixes:
+  - "aimmo-game-creator/::"
+
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: new
+  require_changes: false
+  require_base: no
+  require_head: yes
+  branches: !master, !development

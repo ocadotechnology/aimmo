@@ -97,9 +97,6 @@ MIDDLEWARE = [
 
 def get_game_url_base_and_path(game):
     if os.environ.get("AIMMO_MODE", "") == "minikube":
-        output = subprocess.check_output(
-            [os.environ["MINIKUBE_PATH"], "service", "game-%s" % game, "--url"]
-        )
         return "local.aimmo.codeforlife.education", "/game-%s" % game
     else:
         return "localhost", ""
@@ -120,6 +117,7 @@ try:
     from example_project.local_settings import *  # pylint: disable=E0611
 except ImportError:
     pass
+
 
 from django_autoconfig import autoconfig
 

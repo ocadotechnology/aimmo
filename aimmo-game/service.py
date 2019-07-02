@@ -5,18 +5,19 @@ import asyncio
 import json
 import logging
 import os
+import signal
 import sys
 from urllib.parse import parse_qs
 
+import aiohttp
 import aiohttp_cors
-import requests
 import socketio
 from aiohttp import web
 from aiohttp_wsgi import WSGIHandler
 from prometheus_client import make_wsgi_app
 
-from activity_monitor import ActivityMonitor
-from authentication import generate_game_token
+from activity_monitor import ActivityMonitor, StatusOptions
+from authentication import initialize_game_token
 from simulation import map_generator
 from simulation.game_runner import GameRunner
 
@@ -24,12 +25,7 @@ app = web.Application()
 cors = aiohttp_cors.setup(app)
 
 
-async def callback(self):
-    LOGGER.info("Timer expired! Game marked as STOPPED")
-    # this should trigger the game for deletion, part of (#1011)
-
-
-activity_monitor = ActivityMonitor(callback)
+activity_monitor = ActivityMonitor()
 socketio_server = socketio.AsyncServer(async_handlers=True)
 
 routes = web.RouteTableDef()
@@ -169,7 +165,13 @@ def create_runner(port):
 def run_game(port):
     game_runner = create_runner(port)
 
-    generate_game_token(game_runner.communicator.django_api_url)
+    def clean_token(self, app):
+        game_runner.communicator.patch_token(data={"token": ""})
+
+    asyncio.ensure_future(initialize_game_token(game_runner.communicator))
+
+    app.on_shutdown.append(clean_token)
+    app.on_shutdown.append(game_runner.communicator.close_session)
 
     game_api = GameAPI(
         game_state=game_runner.game_state, worker_manager=game_runner.worker_manager
