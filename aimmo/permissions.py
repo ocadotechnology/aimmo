@@ -1,5 +1,6 @@
-from rest_framework import authentication, permissions
 from django.shortcuts import get_object_or_404
+from rest_framework import authentication, permissions
+
 from app_settings import CanDelete
 
 
@@ -58,6 +59,8 @@ class CanDeleteGameOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
+        elif request.method == "PATCH":
+            return GameHasToken().has_object_permission(request, view, obj)
         else:
             can_play = CanUserPlay().has_object_permission(request, view, obj)
             return CanDelete().has_permission(request, view) and can_play
