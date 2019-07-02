@@ -4,7 +4,7 @@ This document will show you how to create new google analytics events for Kurono
 
 Google analytics events in React+Redux are done through the use of Epics. Epics are functions which take a stream of actions and return another stream of actions.
 
-This means that if you're looking to a new analytics event you will need to find what action relates to what you are measuring. Below is an example used to measure how often the "Run code" button is pressed in the code editor.
+This means that if you're looking to add new analytics event you will need to find what action relates to what you are measuring. Below is an example used to measure how often the "Run code" button is pressed in the code editor.
 
 ```Javascript
 const postCodeAnalyticsEpic = action$ =>
