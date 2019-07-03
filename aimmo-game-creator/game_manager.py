@@ -83,7 +83,10 @@ class GameManager(object):
         super(GameManager, self).__init__()
 
     def _generate_game_token(self):
-        return secrets.token_urlsafe(nbytes=NUM_BYTES_FOR_TOKEN_GENERATOR)
+        token = secrets.token_urlsafe(nbytes=NUM_BYTES_FOR_TOKEN_GENERATOR)
+        if len(token) > 24:
+            token = token[1:24]
+        return token
 
     @abstractmethod
     def create_game(self, game_id, game_data):
