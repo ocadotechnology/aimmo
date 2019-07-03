@@ -44,9 +44,7 @@ def build_docker_images(minikube=None, build_target=None):
         path = os.path.join(BASE_DIR, dir)
         tag = "ocadotechnology/%s:test" % dir
         print("Building %s..." % tag)
-        client.images.build(
-            path=path, tag=tag, encoding="gzip", target=build_target, nocache=True
-        )
+        client.images.build(path=path, tag=tag, encoding="gzip", target=build_target)
 
 
 def delete_containers():

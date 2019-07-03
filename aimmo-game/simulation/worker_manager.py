@@ -11,7 +11,7 @@ from eventlet.semaphore import Semaphore
 from simulation.workers import WORKER
 
 LOGGER = logging.getLogger(__name__)
-WORKER_TIMEOUT_TIME_SECONDS = 0.5
+WORKER_TIMEOUT_TIME_SECONDS = 1
 
 
 class WorkerManager(object):
