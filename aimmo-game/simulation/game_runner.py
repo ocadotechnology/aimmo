@@ -93,8 +93,6 @@ class GameRunner:
 
     async def run(self):
         while True:
-            start = time.time()
-            turn = self.update()
+            turn = asyncio.ensure_future(self.update())
             await asyncio.sleep(TURN_TIME)
             await turn
-            LOGGER.info(f"LOOK AT ME I'M A TIME THINGY {time.time() - start}")
