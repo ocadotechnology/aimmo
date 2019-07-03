@@ -94,3 +94,4 @@ class GameRunner:
     async def run(self):
         while True:
             await self.update()
+            await asyncio.sleep(TURN_TIME)

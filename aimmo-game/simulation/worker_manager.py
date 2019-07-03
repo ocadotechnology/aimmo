@@ -11,8 +11,7 @@ from eventlet.semaphore import Semaphore
 from simulation.workers import WORKER
 
 LOGGER = logging.getLogger(__name__)
-TURN_TIME_LOWER_BOUND_SECONDS = 1.5
-TURN_TIME_UPPER_BOUND_SECONDS = 2
+WORKER_TIMEOUT_TIME_SECONDS = 0.5
 
 
 class WorkerManager(object):
@@ -42,11 +41,7 @@ class WorkerManager(object):
             worker.fetch_data(game_state) for worker, game_state in worker_game_states
         ]
 
-        await asyncio.sleep(TURN_TIME_LOWER_BOUND_SECONDS)
-        return asyncio.wait_for(
-            asyncio.gather(*requests),
-            TURN_TIME_UPPER_BOUND_SECONDS - TURN_TIME_LOWER_BOUND_SECONDS,
-        )
+        return asyncio.wait_for(asyncio.gather(*requests), WORKER_TIMEOUT_TIME_SECONDS)
 
     def get_player_id_to_serialized_actions(self):
         return {
