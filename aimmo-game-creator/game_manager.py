@@ -24,6 +24,7 @@ K8S_NAMESPACE = "default"
 NUM_BYTES_FOR_TOKEN_GENERATOR = 16
 TOKEN_MAX_LENGTH = 24
 
+
 class _GameManagerData(object):
     """This class is thread safe"""
 
