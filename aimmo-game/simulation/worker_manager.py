@@ -1,7 +1,6 @@
 import asyncio
 import logging
 import os
-import time
 from asyncio import Future
 from concurrent import futures
 from threading import Thread
@@ -12,6 +11,7 @@ from eventlet.semaphore import Semaphore
 from simulation.workers import WORKER
 
 LOGGER = logging.getLogger(__name__)
+WORKER_TIMEOUT_TIME_SECONDS = 1
 
 
 class WorkerManager(object):
@@ -27,28 +27,21 @@ class WorkerManager(object):
     def get_code(self, player_id):
         return self.player_id_to_worker[player_id].code
 
-    def fetch_all_worker_data(self, player_id_to_game_state):
+    async def fetch_all_worker_data(self, player_id_to_game_state):
         """
         Creates a thread for each worker to send a request for their data. After
         a set duration these threads will close, giving a consistent turn time.
         """
+        worker_game_states = [
+            (self.player_id_to_worker[player_id], player_id_to_game_state[player_id])
+            for player_id in player_id_to_game_state.keys()
+        ]
 
-        def prepare_request_threads():
-            return [
-                Thread(
-                    target=worker.fetch_data, args=(player_id_to_game_state[player_id],)
-                )
-                for (player_id, worker) in self.player_id_to_worker.items()
-            ]
+        requests = [
+            worker.fetch_data(game_state) for worker, game_state in worker_game_states
+        ]
 
-        def timed_process_for_worker_turn_requests(duration):
-            threads = prepare_request_threads()
-
-            [thread.setDaemon(True) for thread in threads]
-            [thread.start() for thread in threads]
-            time.sleep(duration)
-
-        timed_process_for_worker_turn_requests(2)
+        return asyncio.wait_for(asyncio.gather(*requests), WORKER_TIMEOUT_TIME_SECONDS)
 
     def get_player_id_to_serialized_actions(self):
         return {
