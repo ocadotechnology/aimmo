@@ -3,6 +3,7 @@ import os
 
 import kubernetes
 import requests
+from requests import codes
 
 LOGGER = logging.getLogger(__name__)
 
@@ -18,4 +19,6 @@ async def initialize_game_token(communicator):
         os.environ["TOKEN"] = secret.data["token"]
         LOGGER.info("Token set!")
 
-    await communicator.patch_token({"token": os.environ["TOKEN"]})
+    response = await communicator.patch_token({"token": os.environ["TOKEN"]})
+    if response.status != codes["ok"]:
+        LOGGER.error(response)

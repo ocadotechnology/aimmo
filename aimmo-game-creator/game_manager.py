@@ -22,6 +22,7 @@ LOGGER = logging.getLogger(__name__)
 
 K8S_NAMESPACE = "default"
 NUM_BYTES_FOR_TOKEN_GENERATOR = 16
+TOKEN_MAX_LENGTH = 24
 
 
 class _GameManagerData(object):
@@ -83,7 +84,10 @@ class GameManager(object):
         super(GameManager, self).__init__()
 
     def _generate_game_token(self):
-        return secrets.token_urlsafe(nbytes=NUM_BYTES_FOR_TOKEN_GENERATOR)
+        token = secrets.token_urlsafe(nbytes=NUM_BYTES_FOR_TOKEN_GENERATOR)
+        if len(token) > TOKEN_MAX_LENGTH:  # Max length of the auth_token field in the models
+            token = token[0:TOKEN_MAX_LENGTH]
+        return token
 
     @abstractmethod
     def create_game(self, game_id, game_data):

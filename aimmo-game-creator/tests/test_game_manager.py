@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import unittest
 from json import dumps
 
-from game_manager import GameManager
+from game_manager import TOKEN_MAX_LENGTH, GameManager
 from httmock import HTTMock
 
 
@@ -96,3 +96,8 @@ class TestGameManager(unittest.TestCase):
             self.assertEqual(
                 self.game_manager.added_games[str(i)]["name"], "Game {}".format(i)
             )
+
+    def test_token_generation(self):
+        token = self.game_manager._generate_game_token()
+        self.assertTrue(isinstance(token, str))
+        self.assertLessEqual(len(token), TOKEN_MAX_LENGTH)
