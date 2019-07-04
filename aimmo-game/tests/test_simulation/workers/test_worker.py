@@ -1,9 +1,13 @@
-import mock
+import asyncio
 from unittest import TestCase
+
+import pytest
+from aioresponses import aioresponses
 from requests import Response
-from simulation.workers.worker import Worker
 from tests.test_simulation.concrete_worker import ConcreteWorker
 
+import mock
+from simulation.workers.worker import Worker
 
 DEFAULT_RESPONSE_CONTENT = (
     b'{"action": "test_action",' b'"log": "test_log",' b'"avatar_updated": "True"}'
@@ -23,55 +27,58 @@ def construct_test_response(status_code=200, response_content=DEFAULT_RESPONSE_C
     return post_response
 
 
-class TestWorker(TestCase):
-    def setUp(self):
-        self.worker = ConcreteWorker(1, 0)
+@pytest.fixture
+def worker():
+    return ConcreteWorker(1, 0)
 
-    @mock.patch(
-        "simulation.workers.worker.requests.post",
-        return_value=construct_test_response(),
+
+@pytest.fixture
+def mock_aioresponse():
+    with aioresponses() as mocked:
+        yield mocked
+
+
+@pytest.mark.asyncio
+async def test_fetch_data_fetches_correct_response(mock_aioresponse, worker):
+    mock_aioresponse.post(
+        "http://test/turn/", status=200, body=DEFAULT_RESPONSE_CONTENT
     )
-    def test_fetch_data_fetches_correct_response(self, mocked_post):
-        self.worker.fetch_data(state_view={})
+    await asyncio.ensure_future(worker.fetch_data(state_view={}))
 
-        mocked_post.assert_called_once()
-        self.assertEqual(self.worker.serialized_action, "test_action")
-        self.assertEqual(self.worker.log, "test_log")
-        self.assertEqual(self.worker.has_code_updated, "True")
+    assert worker.serialized_action == "test_action"
+    assert worker.log == "test_log"
+    assert worker.has_code_updated == "True"
 
-    def test_setting_defaults_works_correctly(self):
-        self.worker.log = "test_log_fake"
-        self.worker.serialised_action = "test_action_fake"
-        self.worker.has_code_updated = "test_avatar_updated_fake"
 
-        self.worker._set_defaults()
+def test_setting_defaults_works_correctly(worker):
+    worker.log = "test_log_fake"
+    worker.serialised_action = "test_action_fake"
+    worker.has_code_updated = "test_avatar_updated_fake"
 
-        self.assertIsNone(self.worker.serialized_action)
-        self.assertIsNone(self.worker.log)
-        self.assertFalse(self.worker.has_code_updated)
+    worker._set_defaults()
 
-    @mock.patch(
-        "simulation.workers.worker.requests.post",
-        return_value=construct_test_response(status_code=500),
+    assert worker.serialized_action is None
+    assert worker.log is None
+    assert worker.has_code_updated is False
+
+
+@pytest.mark.asyncio
+async def test_fetch_data_cannot_connect_to_worker(mock_aioresponse, worker, mocker):
+    mocker.patch.object(target=Worker, attribute="_set_defaults")
+    mock_aioresponse.post(
+        "http://test/turn/", status=500, body=MISSING_KEY_RESPONSE_CONTENT
     )
-    @mock.patch.object(target=Worker, attribute="_set_defaults")
-    def test_fetch_data_cannot_connect_to_worker(
-        self, mocked_set_defaults, mocked_post
-    ):
-        self.worker.fetch_data(state_view={})
+    await asyncio.ensure_future(worker.fetch_data(state_view={}))
 
-        mocked_post.assert_called_once()
-        mocked_set_defaults.assert_called_once()
+    worker._set_defaults.assert_called_once()
 
-    @mock.patch(
-        "simulation.workers.worker.requests.post",
-        return_value=construct_test_response(
-            response_content=MISSING_KEY_RESPONSE_CONTENT
-        ),
+
+@pytest.mark.asyncio
+async def test_missing_key_in_worker_data(mock_aioresponse, worker, mocker):
+    mocker.patch.object(target=Worker, attribute="_set_defaults")
+    mock_aioresponse.post(
+        "http://test/turn/", status=200, body=MISSING_KEY_RESPONSE_CONTENT
     )
-    @mock.patch.object(target=Worker, attribute="_set_defaults")
-    def test_missing_key_in_worker_data(self, mocked_set_defaults, mocked_post):
-        self.worker.fetch_data(state_view={})
+    await asyncio.ensure_future(worker.fetch_data(state_view={}))
 
-        mocked_post.assert_called_once()
-        mocked_set_defaults.assert_called_once()
+    worker._set_defaults.assert_called_once()
