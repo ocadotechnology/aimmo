@@ -6,7 +6,7 @@ from simulation.interactables.interactable import _Interactable
 class DamageBoostPickup(_Interactable):
     def __init__(self, cell):
         super(DamageBoostPickup, self).__init__(cell)
-        self.temporary = True
+        self.delete_after_effects_applied = True
 
         self.conditions.append(avatar_on_cell)
         self.effects.append(DamageBoostEffect)
