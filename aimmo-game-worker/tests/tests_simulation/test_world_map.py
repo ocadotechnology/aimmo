@@ -46,15 +46,15 @@ class TestWorldMap(TestCase):
 
     def test_score_cells(self):
         cells = self._generate_cells()
-        cells[0]["interactable"] = {"score_location": 5}
-        cells[5]["interactable"] = {"score_location": 5}
+        cells[0]["interactable"] = {"type": "score"}
+        cells[8]["interactable"] = {"type": "score"}
         map = WorldMap(cells)
-        self.assertLocationsEqual(map.score_cells(), (Location(-1, -1), Location(0, 1)))
+        self.assertLocationsEqual(map.score_cells(), (Location(-1, -1), Location(1, 1)))
 
     def test_interactable_cells(self):
         cells = self._generate_cells()
-        cells[0]["interactable"] = {"health_restored": 5}
-        cells[8]["interactable"] = {"health_restored": 2}
+        cells[0]["interactable"] = {"type": "health"}
+        cells[8]["interactable"] = {"type": "damage_boost"}
         map = WorldMap(cells)
         self.assertLocationsEqual(
             map.interactable_cells(), (Location(-1, -1), Location(1, 1))

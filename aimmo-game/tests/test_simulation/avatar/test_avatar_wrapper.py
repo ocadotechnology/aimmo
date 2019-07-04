@@ -1,12 +1,14 @@
 from __future__ import absolute_import
 
+import asyncio
 import json
 from unittest import TestCase
-from httmock import HTTMock
 
+from tests.test_simulation.concrete_worker import ConcreteWorker
+
+from httmock import HTTMock
 from simulation.avatar import avatar_wrapper
 from simulation.location import Location
-from tests.test_simulation.concrete_worker import ConcreteWorker
 
 
 class MockEffect(object):
@@ -68,7 +70,8 @@ class TestAvatarWrapper(TestCase):
         if request_mock is None:
             request_mock = ActionRequest()
         with HTTMock(request_mock):
-            worker_data = self.worker.fetch_data(None)
+
+            worker_data = asyncio.ensure_future(self.worker.fetch_data(None))
             self.avatar.decide_action(worker_data)
 
     def test_bad_action_data_given(self):

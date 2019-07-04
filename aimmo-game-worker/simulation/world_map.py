@@ -53,17 +53,17 @@ class WorldMap(object):
     def pickup_cells(self):
         return [
             cell
-            for cell in self.interactable_cells
-            if "damage_boost" in cell.interactable.values()
-            or "invulnerability" in c.interactable.values()
-            or "health" in c.interactable.values()
+            for cell in self.interactable_cells()
+            if "damage_boost" == cell.interactable["type"]
+            or "invulnerability" == cell.interactable["type"]
+            or "health" == cell.interactable["type"]
         ]
 
     def score_cells(self):
         return [
             cell
             for cell in self.interactable_cells()
-            if "score" in cell.interactable.values()
+            if "score" == cell.interactable["type"]
         ]
 
     def partially_fogged_cells(self):
