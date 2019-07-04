@@ -1,6 +1,8 @@
+import json
 import logging
 
 import requests
+from aiohttp import ClientResponseError, ClientSession
 
 LOGGER = logging.getLogger(__name__)
 
@@ -28,15 +30,15 @@ class Worker(object):
 
     async def fetch_data(self, state_view):
         try:
-            code_and_options = {"code": self.code, "options": {}, "state": None}
-            data = {**state_view, **code_and_options}
-            response = requests.post(f"{self.url}/turn/", json=data)
-            response.raise_for_status()
-            data = response.json()
-            self.serialized_action = data["action"]
-            self.log = data["log"]
-            self.has_code_updated = data["avatar_updated"]
-        except requests.exceptions.ConnectionError:
+            async with ClientSession(raise_for_status=True) as session:
+                code_and_options = {"code": self.code, "options": {}, "state": None}
+                data = {**state_view, **code_and_options}
+                response = await session.post(f"{self.url}/turn/", json=data)
+                data = await response.json()
+                self.serialized_action = data["action"]
+                self.log = data["log"]
+                self.has_code_updated = data["avatar_updated"]
+        except ClientResponseError:
             LOGGER.info("Could not connect to worker, probably not ready yet")
             self._set_defaults()
         except KeyError as e:
