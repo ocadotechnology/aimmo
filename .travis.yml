@@ -59,7 +59,7 @@ jobs:
       install:
         - pip install codecov
       script:
-        - docker run -it -p 5000:5000 ocadotechnology/aimmo-game:test
+        - docker run -it -p 5000:5000 ocadotechnology/aimmo-game:test python setup.py test
       after_success:
         # Get the coverage data from the container
         - read CONTAINERID <<< $(docker ps --all -q | head -1)
@@ -73,7 +73,7 @@ jobs:
       install:
         - pip install codecov
       script:
-        - docker run -it -p 5000:5000 ocadotechnology/aimmo-game-creator:test
+        - docker run -it -p 5000:5000 ocadotechnology/aimmo-game-creator:test python setup.py test
       after_success:
         # Get the coverage data from the container
         - read CONTAINERID <<< $(docker ps --all -q | head -1)
@@ -87,7 +87,7 @@ jobs:
       install:
         - pip install codecov
       script:
-        - docker run -it -p 5000:5000 ocadotechnology/aimmo-game-worker:test
+        - docker run -it -p 5000:5000 ocadotechnology/aimmo-game-worker:test python setup.py test
       after_success:
         # Get the coverage data from the container
         - read CONTAINERID <<< $(docker ps --all -q | head -1)
