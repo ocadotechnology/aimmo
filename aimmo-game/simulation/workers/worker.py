@@ -26,7 +26,7 @@ class Worker(object):
     def remove_worker(self):
         raise NotImplementedError
 
-    def fetch_data(self, state_view):
+    async def fetch_data(self, state_view):
         try:
             code_and_options = {"code": self.code, "options": {}, "state": None}
             data = {**state_view, **code_and_options}

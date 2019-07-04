@@ -198,5 +198,7 @@ if __name__ == "__main__":
     wsgi_handler = WSGIHandler(make_wsgi_app())
     app.add_routes([web.get("/{path_info:metrics}", wsgi_handler)])
 
+    logging.getLogger("socketio").setLevel(logging.ERROR)
+    logging.getLogger("engineio").setLevel(logging.ERROR)
     LOGGER.info("starting the server")
     web.run_app(app, host=host, port=port)
