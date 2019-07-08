@@ -19,7 +19,7 @@ async def initialize_game_token(communicator):
         LOGGER.info(f"SSSSH, IT'S A SECRET: {secret}")
         LOGGER.info(f"data: {secret.data}")
         os.environ["TOKEN"] = secret.data["token"]
-        LOGGER.info(f"MIEN TOKENSHAFEN: {os.environ["TOKEN"]}")
+        LOGGER.info(f"MIEN TOKENSHAFEN: {os.environ['TOKEN']}")
         LOGGER.info("Token set!")
 
     response = await communicator.patch_token({"token": os.environ["TOKEN"]})
