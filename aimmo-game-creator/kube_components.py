@@ -18,7 +18,9 @@ class TokenSecretCreator:
             kind="Secret",
             string_data=data,
             metadata=kubernetes.client.V1ObjectMeta(
-                name=name, namespace=namespace, labels={"game_id": name.split("-")[1]}
+                name=name,
+                namespace=namespace,
+                labels={"game_id": name.split("-")[1], "app": "aimmo"},
             ),
         )
 
