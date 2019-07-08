@@ -1,3 +1,4 @@
+import base64
 import logging
 import os
 
@@ -18,7 +19,7 @@ async def initialize_game_token(communicator):
         secret = api.read_namespaced_secret(f"game-{game_id}-token", "default")
         LOGGER.info(f"SSSSH, IT'S A SECRET: {secret}")
         LOGGER.info(f"data: {secret.data}")
-        os.environ["TOKEN"] = secret.data["token"]
+        os.environ["TOKEN"] = str(base64.b64decode(secret.data["token"]))
         LOGGER.info(f"MIEN TOKENSHAFEN: {os.environ['TOKEN']}")
         LOGGER.info("Token set!")
 
