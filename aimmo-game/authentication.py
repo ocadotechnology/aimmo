@@ -17,7 +17,7 @@ async def initialize_game_token(communicator):
         game_id = os.environ.get("GAME_ID")
 
         secret = api.read_namespaced_secret(f"game-{game_id}-token", "default")
-        os.environ["TOKEN"] = secret.data["token"]
+        os.environ["TOKEN"] = str(base64.b64decode(secret.data["token"]))
         LOGGER.info("Token set!")
 
     response = await communicator.patch_token({"token": os.environ["TOKEN"]})
