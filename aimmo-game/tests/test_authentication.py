@@ -12,8 +12,8 @@ TOKEN_MAX_LENGTH = 24
 @pytest.fixture
 def secret():
     """
-    Gives a kubernetes secret object similar to the one recieved by the game when
-    retreiving its secret. The token is randomly generated as it would be in practice,
+    Gives a kubernetes secret object similar to the one received by the game when
+    retrieving its secret. The token is randomly generated as it would be in practice,
     uses less bytes to prevent random test failure.
     """
     test_token = encode(secrets.token_urlsafe(nbytes=12).encode("utf-8"))
