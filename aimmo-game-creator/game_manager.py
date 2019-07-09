@@ -85,8 +85,8 @@ class GameManager(object):
 
     def _generate_game_token(self):
         token = secrets.token_urlsafe(nbytes=NUM_BYTES_FOR_TOKEN_GENERATOR)
-        if len(token) > TOKEN_MAX_LENGTH:  # Max length of the auth_token field in the models
-            token = token[0:TOKEN_MAX_LENGTH]
+        # Max length of the auth_token field in the models
+        token = token[:TOKEN_MAX_LENGTH] if len(token) > TOKEN_MAX_LENGTH else token
         return token
 
     @abstractmethod
