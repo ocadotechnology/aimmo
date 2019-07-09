@@ -43,15 +43,19 @@
     "shelljs": "^0.8.3",
     "socket.io-client": "^2.1.1",
     "styled-components": "^3.4.10",
-    "webfontloader": "^1.6.28"
+    "webfontloader": "^1.6.28",
+    "snyk": "^1.192.4"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "jest": {
     "testEnvironment": "node"
   },
   "standard": {
     "parser": "babel-eslint"
-  }
+  },
+  "snyk": true
 }
