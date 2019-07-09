@@ -43,7 +43,7 @@ class Worker(object):
             LOGGER.info("Could not connect to worker, probably not ready yet")
             self._set_defaults()
         except CancelledError as e:
-            LOGGER.error("Worker took too long to responc: {}".format(e))
+            LOGGER.error("Worker took too long to respond: {}".format(e))
             self._set_defaults()
         except KeyError as e:
             LOGGER.error("Missing key in data from worker: {}".format(e))
