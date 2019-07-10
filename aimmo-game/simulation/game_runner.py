@@ -21,7 +21,7 @@ class GameRunner:
     def __init__(
         self,
         game_state_generator,
-        django_api_url,
+        communicator: DjangoCommunicator,
         port,
         worker_manager_class=WorkerManager,
     ):
@@ -29,9 +29,7 @@ class GameRunner:
 
         self.worker_manager = worker_manager_class(port=port)
         self.game_state = game_state_generator(AvatarManager())
-        self.communicator = DjangoCommunicator(
-            django_api_url=django_api_url, completion_url=django_api_url + "complete/"
-        )
+        self.communicator = communicator
         self.simulation_runner = ConcurrentSimulationRunner(
             communicator=self.communicator, game_state=self.game_state
         )

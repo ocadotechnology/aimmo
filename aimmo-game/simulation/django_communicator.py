@@ -30,7 +30,7 @@ class DjangoCommunicator(object):
 
     async def patch_game(self, data):
         response = await self.session.patch(
-            self.token_url, headers={"Game-token": os.environ["TOKEN"]}, json=data
+            self.django_api_url, headers={"Game-token": os.environ["TOKEN"]}, json=data
         )
         return response
 

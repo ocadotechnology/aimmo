@@ -2,13 +2,16 @@ import asyncio
 import time
 
 import pytest
+
 from activity_monitor import ActivityMonitor, Timer
 from asynctest import CoroutineMock
+
+from .test_simulation.mock_communicator import MockCommunicator
 
 
 @pytest.fixture
 def activity_monitor():
-    activity_monitor = ActivityMonitor()
+    activity_monitor = ActivityMonitor(MockCommunicator())
     activity_monitor.callback = CoroutineMock()
     return activity_monitor
 
