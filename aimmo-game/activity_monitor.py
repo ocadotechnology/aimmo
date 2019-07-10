@@ -32,12 +32,12 @@ class ActivityMonitor:
     of time, the game is marked as stopped and the pods will be shut down shortly after
     """
 
-    def __init__(self, communicator):
+    def __init__(self, django_communicator):
         self.timer = Timer(
             SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
         )
         self.active_users = 0
-        self.communicator = communicator
+        self.django_communicator = django_communicator
 
     def _start_timer(self):
         if self.timer.cancelled():
@@ -62,10 +62,9 @@ class ActivityMonitor:
 
     async def change_status_to_stopped(self):
         LOGGER.info("Timer expired! Marking game as STOPPED")
-        api_url = os.environ.get(
-            "GAME_API_URL", "http://localhost:8000/aimmo/api/games/"
+        await self.django_communicator.patch_game(
+            {"status": StatusOptions.STOPPED.value}
         )
-        self.communicator.patch_game({"status": StatusOptions.STOPPED.value})
 
         if response.status != codes["ok"]:
             LOGGER.error(f"Game could not be stopped. {response}")
