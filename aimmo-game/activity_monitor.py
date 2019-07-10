@@ -8,6 +8,7 @@ import os
 import time
 from enum import Enum
 from types import CoroutineType
+from typing import TYPE_CHECKING, List
 
 import aiohttp
 from requests import codes
