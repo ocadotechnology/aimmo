@@ -19,13 +19,20 @@ from prometheus_client import make_wsgi_app
 from activity_monitor import ActivityMonitor, StatusOptions
 from authentication import initialize_game_token
 from simulation import map_generator
+from simulation.django_communicator import DjangoCommunicator
 from simulation.game_runner import GameRunner
 
 app = web.Application()
 cors = aiohttp_cors.setup(app)
 
+django_api_url = os.environ.get(
+    "GAME_API_URL", "http://localhost:8000/aimmo/api/games/"
+)
+communicator = DjangoCommunicator(
+    django_api_url=django_api_url, completion_url=django_api_url + "complete/"
+)
 
-activity_monitor = ActivityMonitor()
+activity_monitor = ActivityMonitor(communicator)
 socketio_server = socketio.AsyncServer(async_handlers=True)
 
 routes = web.RouteTableDef()
@@ -155,9 +162,7 @@ def create_runner(port):
     generator = getattr(map_generator, settings["GENERATOR"])(settings)
     return GameRunner(
         game_state_generator=generator.get_game_state,
-        django_api_url=os.environ.get(
-            "GAME_API_URL", "http://localhost:8000/aimmo/api/games/"
-        ),
+        communicator=communicator,
         port=port,
     )
 

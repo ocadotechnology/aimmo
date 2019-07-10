@@ -32,11 +32,12 @@ class ActivityMonitor:
     of time, the game is marked as stopped and the pods will be shut down shortly after
     """
 
-    def __init__(self):
+    def __init__(self, communicator):
         self.timer = Timer(
             SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
         )
         self.active_users = 0
+        self.communicator = communicator
 
     def _start_timer(self):
         if self.timer.cancelled():
@@ -64,14 +65,10 @@ class ActivityMonitor:
         api_url = os.environ.get(
             "GAME_API_URL", "http://localhost:8000/aimmo/api/games/"
         )
-        async with aiohttp.ClientSession() as session:
-            async with session.patch(
-                api_url,
-                data={"status": StatusOptions.STOPPED.value},
-                headers={"Game-token": os.environ["TOKEN"]},
-            ) as response:
-                if response.status != codes["ok"]:
-                    LOGGER.error(f"Game could not be stopped. {response}")
+        self.communicator.patch_game({"status": StatusOptions.STOPPED.value})
+
+        if response.status != codes["ok"]:
+            LOGGER.error(f"Game could not be stopped. {response}")
 
 
 class Timer:
