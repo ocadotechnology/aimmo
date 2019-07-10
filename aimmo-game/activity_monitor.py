@@ -12,6 +12,9 @@ from types import CoroutineType
 import aiohttp
 from requests import codes
 
+if TYPE_CHECKING:
+    from simulation.django_communicator import DjangoCommunicator
+
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
@@ -32,7 +35,7 @@ class ActivityMonitor:
     of time, the game is marked as stopped and the pods will be shut down shortly after
     """
 
-    def __init__(self, django_communicator):
+    def __init__(self, django_communicator: DjangoCommunicator):
         self.timer = Timer(
             SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
         )
