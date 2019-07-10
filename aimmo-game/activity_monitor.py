@@ -35,7 +35,7 @@ class ActivityMonitor:
     of time, the game is marked as stopped and the pods will be shut down shortly after
     """
 
-    def __init__(self, django_communicator: DjangoCommunicator):
+    def __init__(self, django_communicator: "DjangoCommunicator"):
         self.timer = Timer(
             SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
         )
