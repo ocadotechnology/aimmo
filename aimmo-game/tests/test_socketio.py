@@ -5,10 +5,12 @@ import string
 from unittest import TestCase, mock
 
 import pytest
+
 import service
 from asynctest import CoroutineMock
 from simulation.game_runner import GameRunner
 
+from .test_simulation.mock_communicator import MockCommunicator
 from .test_simulation.mock_worker_manager import MockWorkerManager
 
 
@@ -54,7 +56,7 @@ class TestSocketIO:
     def create_game_api(self, app, docker_from_env):
         game_runner = GameRunner(
             game_state_generator=lambda avatar_manager: MockGameState(),
-            django_api_url="http://test",
+            communicator=MockCommunicator(),
             port="0000",
             worker_manager_class=MockWorkerManager,
         )
