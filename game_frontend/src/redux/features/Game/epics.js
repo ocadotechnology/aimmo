@@ -4,6 +4,7 @@ import { editorTypes } from 'features/Editor'
 import { Scheduler, of } from 'rxjs'
 import { map, mergeMap, catchError, switchMap, first, mapTo, timeout, ignoreElements } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
+import { actions as analyticActions } from 'redux/features/Analytics'
 
 const backgroundScheduler = Scheduler.async
 
@@ -35,6 +36,15 @@ const gameLoadedEpic = action$ => action$.pipe(
       first(),
       mapTo(actions.gameDataLoaded())
     )
+  )
+)
+
+const gameLoadedAnalyticsEventEpic = action$ => action$.pipe(
+  ofType(types.SOCKET_CONNECT_TO_GAME_REQUEST),
+  start_time = Date.now(),
+  switchMap(() => action$.pipe(
+    ofType(types.GAME_DATA_LOADED),
+    analyticActions.sendAnalyticsEvent('Kurono', 'Load', 'Game view', Date.now() - start_time, true))
   )
 )
 
