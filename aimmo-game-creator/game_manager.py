@@ -274,7 +274,7 @@ class KubernetesGameManager(GameManager):
             image="ocadotechnology/aimmo-game:{}".format(
                 os.environ.get("IMAGE_SUFFIX", "latest")
             ),
-            image_pull_policy='Never' if os.environ['USE_MINIKUBE'] else 'Always',
+            image_pull_policy='Never' if 'USE_MINIKUBE' in os.environ else 'Always',
             ports=[kubernetes.client.V1ContainerPort(container_port=5000)],
             name="aimmo-game",
             resources=kubernetes.client.V1ResourceRequirements(
