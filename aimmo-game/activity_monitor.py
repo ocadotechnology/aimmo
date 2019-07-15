@@ -66,7 +66,7 @@ class ActivityMonitor:
 
     async def change_status_to_stopped(self):
         LOGGER.info("Timer expired! Marking game as STOPPED")
-        await self.django_communicator.patch_game(
+        response = await self.django_communicator.patch_game(
             {"status": StatusOptions.STOPPED.value}
         )
 
