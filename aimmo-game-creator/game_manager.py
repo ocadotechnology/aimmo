@@ -254,8 +254,6 @@ class KubernetesGameManager(GameManager):
         return "game-{}".format(game_id)
 
     def _make_rc(self, environment_variables, game_id):
-    
-
         container = kubernetes.client.V1Container(
             env=[
                 kubernetes.client.V1EnvVar(name=env_name, value=env_value)
