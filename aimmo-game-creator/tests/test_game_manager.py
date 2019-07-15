@@ -101,3 +101,12 @@ class TestGameManager(unittest.TestCase):
         token = self.game_manager._generate_game_token()
         self.assertTrue(isinstance(token, str))
         self.assertLessEqual(len(token), TOKEN_MAX_LENGTH)
+
+    def test_make_rc(self):
+        game_rc = KubernetesGameManager._make_rc(None, None, 1)
+
+        self.assertTrue(game_rc["spec"])
+        self.assertTrue(game_rc["template"])
+        self.assertTrue(
+            game_rc["spec"]["template"]["spec"]["containers"]["env"]["USING_MINIKUBE"]
+        )

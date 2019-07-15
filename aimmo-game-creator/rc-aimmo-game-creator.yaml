@@ -31,6 +31,8 @@ spec:
           value: REPLACE_ME
         - name: GAME_MANAGER
           value: kubernetes
+        - name: USING_MINIKUBE
+          value: "true"
         securityContext:
           capabilities:
             drop:
