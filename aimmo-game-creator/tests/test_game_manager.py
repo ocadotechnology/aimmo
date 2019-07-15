@@ -104,7 +104,7 @@ class TestGameManager(unittest.TestCase):
 
     def test_make_rc(self):
         # _make_rc is not being called as an instance method here so "self" has to explicitly be passed through
-        game_rc = KubernetesGameManager._make_rc(None, None, 1)
+        game_rc = KubernetesGameManager._make_rc(None, {}, 1)
 
         self.assertTrue(game_rc["spec"])
         self.assertTrue(game_rc["template"])
