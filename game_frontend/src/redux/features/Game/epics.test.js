@@ -304,7 +304,7 @@ describe('avatarUpdatingTimeoutEpic', () => {
 })
 
 describe('gameLoadedIntervalEpic', () => {
-  it('it measure the time taken for the game to load and sends a corresponding analytic event', () => {
+  it('measures the time taken for the game to load and sends a corresponding analytic event', () => {
     const testScheduler = createTestScheduler()
 
     testScheduler.run(({ hot, cold, expectObservable }) => {
@@ -316,7 +316,7 @@ describe('gameLoadedIntervalEpic', () => {
       const output$ = epics.gameLoadedInvteralEpic(action$, state$, {}, testScheduler)
 
       expectObservable(output$).toBe('-------b-', {
-        b: analyticActions.sendAnalyticsEvent('Kurono', 'Load', 'Game view', 7, true)
+        b: analyticActions.sendAnalyticsEvent('Kurono', 'Load', 'Game', 7, true)
       })
     })
   })

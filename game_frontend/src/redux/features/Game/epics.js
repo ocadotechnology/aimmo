@@ -44,7 +44,7 @@ const gameLoadedInvteralEpic = (action$, state$, dependencies, scheduler = backg
     ofType(types.GAME_DATA_LOADED),
     timeInterval(scheduler),
     map(timeInterval =>
-      analyticActions.sendAnalyticsEvent('Kurono', 'Load', 'Game view', timeInterval.interval, true)
+      analyticActions.sendAnalyticsEvent('Kurono', 'Load', 'Game', timeInterval.interval, true)
     )
   )
 
