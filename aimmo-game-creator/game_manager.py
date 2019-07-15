@@ -254,6 +254,8 @@ class KubernetesGameManager(GameManager):
         return "game-{}".format(game_id)
 
     def _make_rc(self, environment_variables, game_id):
+    
+
         container = kubernetes.client.V1Container(
             env=[
                 kubernetes.client.V1EnvVar(name=env_name, value=env_value)
@@ -272,7 +274,7 @@ class KubernetesGameManager(GameManager):
             image="ocadotechnology/aimmo-game:{}".format(
                 os.environ.get("IMAGE_SUFFIX", "latest")
             ),
-            image_pull_policy='Always',
+            image_pull_policy='Never' if os.environ['USE_MINIKUBE'] else 'Always',
             ports=[kubernetes.client.V1ContainerPort(container_port=5000)],
             name="aimmo-game",
             resources=kubernetes.client.V1ResourceRequirements(
