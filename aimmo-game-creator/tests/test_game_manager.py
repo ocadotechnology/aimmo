@@ -106,9 +106,12 @@ class TestGameManager(unittest.TestCase):
         # _make_rc is not being called as an instance method here so "self" has to explicitly be passed through
         game_rc = KubernetesGameManager._make_rc(None, {"USE_MINIKUBE": "true"}, 1)
 
-        self.assertTrue(game_rc.spec)
-        self.assertTrue(game_rc.metadata)
-        self.assertTrue(game_rc.spec.template.spec.containers[0].env["USING_MINIKUBE"])
         self.assertEqual(
             game_rc.spec.template.spec.containers[0].image_pull_policy, "Never"
+        )
+
+        game_rc = KubernetesGameManager._make_rc(None, {}, 1)
+
+        self.assertEqual(
+            game_rc.spec.template.spec.containers[0].image_pull_policy, "Always"
         )
