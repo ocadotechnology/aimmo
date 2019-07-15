@@ -2,8 +2,9 @@ import actions from './actions'
 import types from './types'
 import { editorTypes } from 'features/Editor'
 import { Scheduler, of } from 'rxjs'
-import { map, mergeMap, catchError, switchMap, first, mapTo, timeout, ignoreElements } from 'rxjs/operators'
+import { map, mergeMap, catchError, switchMap, first, mapTo, timeout, ignoreElements, timeInterval } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
+import { actions as analyticActions } from 'redux/features/Analytics'
 
 const backgroundScheduler = Scheduler.async
 
@@ -37,6 +38,15 @@ const gameLoadedEpic = action$ => action$.pipe(
     )
   )
 )
+
+const gameLoadedInvteralEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
+  action$.pipe(
+    ofType(types.GAME_DATA_LOADED),
+    timeInterval(scheduler),
+    map(timeInterval =>
+      analyticActions.sendAnalyticsEvent('Kurono', 'Load', 'Game', timeInterval.interval, true)
+    )
+  )
 
 const connectToGameEpic = (action$, state$, { api: { socket, unity } }) => action$.pipe(
   ofType(types.CONNECTION_PARAMETERS_RECEIVED),
@@ -81,5 +91,6 @@ export default {
   gameLoadedEpic,
   sendGameStateEpic,
   sendAvatarIDEpic,
-  avatarUpdatingTimeoutEpic
+  avatarUpdatingTimeoutEpic,
+  gameLoadedInvteralEpic
 }
