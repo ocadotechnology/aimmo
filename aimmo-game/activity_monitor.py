@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-SECONDS_TILL_CONSIDERED_INACTIVE = 3600
+SECONDS_TILL_CONSIDERED_INACTIVE = 30
 
 
 class StatusOptions(Enum):

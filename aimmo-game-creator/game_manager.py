@@ -431,6 +431,7 @@ class KubernetesGameManager(GameManager):
             delete_resource_function(resource.metadata.name, K8S_NAMESPACE)
 
     def create_game(self, game_id, game_data):
+        LOGGER.info(os.environ)
         is_minikube = "USE_MINIKUBE" in os.environ
         self._create_game_secret(game_id)
         self._create_game_service(game_id)
