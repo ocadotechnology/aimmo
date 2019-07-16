@@ -253,7 +253,7 @@ class KubernetesGameManager(GameManager):
         """
         return "game-{}".format(game_id)
 
-    def _make_rc(self, environment_variables, game_id):
+    def _make_rc(self, environment_variables, game_id, is_minikube):
         container = kubernetes.client.V1Container(
             env=[
                 kubernetes.client.V1EnvVar(name=env_name, value=env_value)
@@ -272,7 +272,7 @@ class KubernetesGameManager(GameManager):
             image="ocadotechnology/aimmo-game:{}".format(
                 os.environ.get("IMAGE_SUFFIX", "latest")
             ),
-            image_pull_policy='Never' if 'USE_MINIKUBE' in environment_variables else 'Always',
+            image_pull_policy="Never" if is_minikube else "Always",
             ports=[kubernetes.client.V1ContainerPort(container_port=5000)],
             name="aimmo-game",
             resources=kubernetes.client.V1ResourceRequirements(
@@ -317,7 +317,7 @@ class KubernetesGameManager(GameManager):
             spec=rc_manifest, metadata=rc_metadata
         )
 
-    def _create_game_rc(self, game_id, environment_variables):
+    def _create_game_rc(self, game_id, environment_variables, is_minikube):
         environment_variables[
             "SOCKETIO_RESOURCE"
         ] = KubernetesGameManager._create_game_name(game_id)
@@ -328,7 +328,7 @@ class KubernetesGameManager(GameManager):
         environment_variables["WORKER"] = "kubernetes"
         environment_variables["EXTERNAL_PORT"] = "5000"
 
-        rc = self._make_rc(environment_variables, game_id)
+        rc = self._make_rc(environment_variables, game_id, is_minikube)
         self.api.create_namespaced_replication_controller(K8S_NAMESPACE, rc)
 
     def _make_service(self, game_id):
@@ -431,9 +431,10 @@ class KubernetesGameManager(GameManager):
             delete_resource_function(resource.metadata.name, K8S_NAMESPACE)
 
     def create_game(self, game_id, game_data):
+        is_minikube = "USE_MINIKUBE" in os.environ
         self._create_game_secret(game_id)
         self._create_game_service(game_id)
-        self._create_game_rc(game_id, game_data)
+        self._create_game_rc(game_id, game_data, is_minikube)
         self._add_path_to_ingress(game_id)
         LOGGER.info("Game started - {}".format(game_id))
 

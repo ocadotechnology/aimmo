@@ -104,13 +104,12 @@ class TestGameManager(unittest.TestCase):
 
     def test_make_rc_image_policy(self):
         # _make_rc is not being called as an instance method here so "self" has to explicitly be passed through
-        game_rc = KubernetesGameManager._make_rc(None, {"USE_MINIKUBE": "true"}, 1)
-
+        game_rc = KubernetesGameManager._make_rc(None, {}, 1, True)
         self.assertEqual(
             game_rc.spec.template.spec.containers[0].image_pull_policy, "Never"
         )
 
-        game_rc = KubernetesGameManager._make_rc(None, {}, 1)
+        game_rc = KubernetesGameManager._make_rc(None, {}, 1, False)
 
         self.assertEqual(
             game_rc.spec.template.spec.containers[0].image_pull_policy, "Always"
