@@ -321,3 +321,23 @@ describe('gameLoadedIntervalEpic', () => {
     })
   })
 })
+
+describe('codeUpdatingIntervalEpic', () => {
+  it('measures the time taken for users code to update successfully and sends a corresponding analytic event', () => {
+    const testScheduler = createTestScheduler()
+
+    testScheduler.run(({ hot, cold, expectObservable }) => {
+      const action$ = hot('--a----b-', {
+        a: editorActions.postCodeRequest(),
+        b: actions.socketFeedbackAvatarUpdatedSuccess()
+      })
+
+      const state$ = null
+      const output$ = epics.gameLoadedInvteralEpic(action$, state$, {}, testScheduler)
+
+      expectObservable(output$).toBe('-------c-', {
+        c: analyticActions.sendAnalyticsEvent('Kurono', 'Update', 'User code', 5, true)
+      })
+    })
+  })
+})

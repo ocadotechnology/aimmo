@@ -85,6 +85,22 @@ const avatarUpdatingTimeoutEpic = (action$, state$, dependencies, scheduler = ba
   )
 )
 
+const codeUpdatingIntervalEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
+  action$.pipe(
+    ofType(editorTypes.POST_CODE_REQUEST),
+    timeInterval(scheduler),
+    switchMap(() =>
+      action$.pipe(
+        ofType(types.SOCKET_FEEDBACK_AVATAR_UPDATED_SUCCESS, types.SOCKET_FEEDBACK_AVATAR_UPDATED_TIMEOUT),
+        first(),
+        timeInterval(scheduler),
+        map(timeInterval =>
+          analyticActions.sendAnalyticsEvent('Kurono', 'Update', 'User code', timeInterval.interval, true)
+        )
+      )
+    )
+  )
+
 export default {
   getConnectionParametersEpic,
   connectToGameEpic,
@@ -92,5 +108,6 @@ export default {
   sendGameStateEpic,
   sendAvatarIDEpic,
   avatarUpdatingTimeoutEpic,
-  gameLoadedInvteralEpic
+  gameLoadedInvteralEpic,
+  codeUpdatingIntervalEpic
 }
