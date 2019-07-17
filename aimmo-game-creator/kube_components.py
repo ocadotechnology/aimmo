@@ -31,4 +31,6 @@ class TokenSecretCreator:
         try:
             self.api.create_namespaced_secret(namespace, body)
         except ApiException:
-            LOGGER.info("Either we already have a secret, or something has gone wrong.")
+            LOGGER.debug(
+                "Either we already have a secret, or something has gone wrong."
+            )

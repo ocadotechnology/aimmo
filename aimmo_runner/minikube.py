@@ -13,6 +13,7 @@ from docker_scripts import build_docker_images
 from shell_api import BASE_DIR, create_test_bin, run_command
 
 MINIKUBE_EXECUTABLE = "minikube"
+TIME_FOR_COMPONENTS_TO_DELETE = 5
 
 
 def get_ip():
@@ -24,7 +25,6 @@ def get_ip():
     os_name = platform.system()
     if os_name == "Darwin":
         return "192.168.99.1"
-        # return socket.gethostbyname(socket.gethostname())
 
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -130,7 +130,8 @@ def restart_pods(game_creator_yaml, ingress_yaml):
     extensions_api_instance = kubernetes.client.ExtensionsV1beta1Api()
 
     delete_components(api_instance, extensions_api_instance)
-    time.sleep(5)
+    time.sleep(TIME_FOR_COMPONENTS_TO_DELETE)
+
     extensions_api_instance.create_namespaced_ingress("default", ingress_yaml)
     api_instance.create_namespaced_replication_controller(
         body=game_creator_yaml, namespace="default"
