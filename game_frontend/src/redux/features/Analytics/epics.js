@@ -23,5 +23,6 @@ const sendToGoogleAnalyticsTimingEventEpic = action$ =>
   )
 
 export default {
-  sendToGoogleAnalyticsEpic
+  sendToGoogleAnalyticsEpic,
+  sendToGoogleAnalyticsTimingEventEpic
 }

@@ -313,7 +313,7 @@ describe('gameLoadedIntervalEpic', () => {
       })
 
       const state$ = null
-      const output$ = epics.gameLoadedInvteralEpic(action$, state$, {}, testScheduler)
+      const output$ = epics.gameLoadedIntervalEpic(action$, state$, {}, testScheduler)
 
       expectObservable(output$).toBe('-------b-', {
         b: analyticActions.sendAnalyticsEvent('Kurono', 'Load', 'Game', 7, true)
@@ -333,7 +333,7 @@ describe('codeUpdatingIntervalEpic', () => {
       })
 
       const state$ = null
-      const output$ = epics.gameLoadedInvteralEpic(action$, state$, {}, testScheduler)
+      const output$ = epics.codeUpdatingIntervalEpic(action$, state$, {}, testScheduler)
 
       expectObservable(output$).toBe('-------c-', {
         c: analyticActions.sendAnalyticsEvent('Kurono', 'Update', 'User code', 5, true)
