@@ -87,12 +87,16 @@ const avatarUpdatingTimeoutEpic = (action$, state$, dependencies, scheduler = ba
 
 const codeUpdatingIntervalEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
   action$.pipe(
-    ofType(editorTypes.POST_CODE_REQUEST, types.SOCKET_FEEDBACK_AVATAR_UPDATED_SUCCESS, types.SOCKET_FEEDBACK_AVATAR_UPDATED_TIMEOUT),
+    ofType(editorTypes.POST_CODE_REQUEST),
     timeInterval(scheduler),
-    ofType(types.SOCKET_FEEDBACK_AVATAR_UPDATED_SUCCESS, types.SOCKET_FEEDBACK_AVATAR_UPDATED_TIMEOUT),
-    first(),
-    map(timeInterval =>
-      analyticActions.sendAnalyticsTimingEvent('Kurono', 'Update', 'User code', timeInterval.interval)
+    switchMap(() =>
+      action$.pipe(
+        ofType(types.SOCKET_FEEDBACK_AVATAR_UPDATED_SUCCESS, types.SOCKET_FEEDBACK_AVATAR_UPDATED_TIMEOUT),
+        timeInterval(scheduler),
+        map(timeInterval =>
+          analyticActions.sendAnalyticsTimingEvent('Kurono', 'Update', 'User code', timeInterval.interval)
+        )
+      )
     )
   )
 

@@ -336,7 +336,7 @@ describe('codeUpdatingIntervalEpic', () => {
       const output$ = epics.codeUpdatingIntervalEpic(action$, state$, {}, testScheduler)
 
       expectObservable(output$).toBe('-------c-', {
-        c: analyticActions.sendAnalyticsEvent('Kurono', 'Update', 'User code', 5, true)
+        c: analyticActions.sendAnalyticsTimingEvent('Kurono', 'Update', 'User code', 5, true)
       })
     })
   })
