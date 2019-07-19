@@ -13,6 +13,16 @@ const sendToGoogleAnalyticsEpic = action$ =>
     mapTo(actions.analyticsEventSent())
   )
 
+const sendToGoogleAnalyticsTimingEventEpic = action$ =>
+  action$.pipe(
+    ofType(types.SEND_ANALYTICS_TIMING_EVENT),
+    tap(action =>
+      ReactGA.timing(action.payload)
+    ),
+    mapTo(actions.analyticsTimingEventSent())
+  )
+
 export default {
-  sendToGoogleAnalyticsEpic
+  sendToGoogleAnalyticsEpic,
+  sendToGoogleAnalyticsTimingEventEpic
 }

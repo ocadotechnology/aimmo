@@ -39,12 +39,12 @@ const gameLoadedEpic = action$ => action$.pipe(
   )
 )
 
-const gameLoadedInvteralEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
+const gameLoadedIntervalEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
   action$.pipe(
     ofType(types.GAME_DATA_LOADED),
     timeInterval(scheduler),
     map(timeInterval =>
-      analyticActions.sendAnalyticsEvent('Kurono', 'Load', 'Game', timeInterval.interval, true)
+      analyticActions.sendAnalyticsTimingEvent('Kurono', 'Load', 'Game', timeInterval.interval)
     )
   )
 
@@ -85,6 +85,20 @@ const avatarUpdatingTimeoutEpic = (action$, state$, dependencies, scheduler = ba
   )
 )
 
+const codeUpdatingIntervalEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
+  action$.pipe(
+    ofType(editorTypes.POST_CODE_REQUEST),
+    switchMap(() =>
+      action$.pipe(
+        ofType(types.SOCKET_FEEDBACK_AVATAR_UPDATED_SUCCESS, types.SOCKET_FEEDBACK_AVATAR_UPDATED_TIMEOUT),
+        timeInterval(scheduler),
+        map(timeInterval =>
+          analyticActions.sendAnalyticsTimingEvent('Kurono', 'Update', 'User code', timeInterval.interval)
+        )
+      )
+    )
+  )
+
 export default {
   getConnectionParametersEpic,
   connectToGameEpic,
@@ -92,5 +106,6 @@ export default {
   sendGameStateEpic,
   sendAvatarIDEpic,
   avatarUpdatingTimeoutEpic,
-  gameLoadedInvteralEpic
+  gameLoadedIntervalEpic,
+  codeUpdatingIntervalEpic
 }

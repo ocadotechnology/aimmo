@@ -313,10 +313,31 @@ describe('gameLoadedIntervalEpic', () => {
       })
 
       const state$ = null
-      const output$ = epics.gameLoadedInvteralEpic(action$, state$, {}, testScheduler)
+      const output$ = epics.gameLoadedIntervalEpic(action$, state$, {}, testScheduler)
 
       expectObservable(output$).toBe('-------b-', {
-        b: analyticActions.sendAnalyticsEvent('Kurono', 'Load', 'Game', 7, true)
+        b: analyticActions.sendAnalyticsTimingEvent('Kurono', 'Load', 'Game', 7)
+      })
+    })
+  })
+})
+
+describe('codeUpdatingIntervalEpic', () => {
+  it('measures the time taken for users code to update successfully and sends a corresponding analytic event', () => {
+    const testScheduler = createTestScheduler()
+
+    testScheduler.run(({ hot, cold, expectObservable }) => {
+      const action$ = hot('--a-b--a--b-', {
+        a: editorActions.postCodeRequest(),
+        b: actions.socketFeedbackAvatarUpdatedSuccess()
+      })
+
+      const state$ = null
+      const output$ = epics.codeUpdatingIntervalEpic(action$, state$, {}, testScheduler)
+
+      expectObservable(output$).toBe('----c-----d-', {
+        c: analyticActions.sendAnalyticsTimingEvent('Kurono', 'Update', 'User code', 2, true),
+        d: analyticActions.sendAnalyticsTimingEvent('Kurono', 'Update', 'User code', 3, true)
       })
     })
   })
