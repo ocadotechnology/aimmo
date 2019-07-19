@@ -327,7 +327,7 @@ describe('codeUpdatingIntervalEpic', () => {
     const testScheduler = createTestScheduler()
 
     testScheduler.run(({ hot, cold, expectObservable }) => {
-      const action$ = hot('--a----b-', {
+      const action$ = hot('--a-b--a--b-', {
         a: editorActions.postCodeRequest(),
         b: actions.socketFeedbackAvatarUpdatedSuccess()
       })
@@ -335,8 +335,9 @@ describe('codeUpdatingIntervalEpic', () => {
       const state$ = null
       const output$ = epics.codeUpdatingIntervalEpic(action$, state$, {}, testScheduler)
 
-      expectObservable(output$).toBe('-------c-', {
-        c: analyticActions.sendAnalyticsTimingEvent('Kurono', 'Update', 'User code', 5, true)
+      expectObservable(output$).toBe('----c-----d-', {
+        c: analyticActions.sendAnalyticsTimingEvent('Kurono', 'Update', 'User code', 2, true),
+        d: analyticActions.sendAnalyticsTimingEvent('Kurono', 'Update', 'User code', 3, true)
       })
     })
   })

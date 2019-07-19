@@ -88,7 +88,6 @@ const avatarUpdatingTimeoutEpic = (action$, state$, dependencies, scheduler = ba
 const codeUpdatingIntervalEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
   action$.pipe(
     ofType(editorTypes.POST_CODE_REQUEST),
-    timeInterval(scheduler),
     switchMap(() =>
       action$.pipe(
         ofType(types.SOCKET_FEEDBACK_AVATAR_UPDATED_SUCCESS, types.SOCKET_FEEDBACK_AVATAR_UPDATED_TIMEOUT),
