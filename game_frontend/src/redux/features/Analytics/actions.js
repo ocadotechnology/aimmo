@@ -28,6 +28,7 @@ const analyticsEventSent = () => ({
 const analyticsTimingEventSent = () => ({
   type: types.ANALYTICS_TIMING_EVENT_SENT
 })
+
 export default {
   sendAnalyticsEvent,
   analyticsEventSent,

@@ -2,7 +2,7 @@ import actions from './actions'
 import types from './types'
 import { editorTypes } from 'features/Editor'
 import { Scheduler, of } from 'rxjs'
-import { map, mergeMap, catchError, switchMap, first, mapTo, timeout, ignoreElements, timeInterval, filter } from 'rxjs/operators'
+import { map, mergeMap, catchError, switchMap, first, mapTo, timeout, ignoreElements, timeInterval } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 import { actions as analyticActions } from 'redux/features/Analytics'
 
@@ -44,7 +44,7 @@ const gameLoadedIntervalEpic = (action$, state$, dependencies, scheduler = backg
     ofType(types.GAME_DATA_LOADED),
     timeInterval(scheduler),
     map(timeInterval =>
-      analyticActions.sendAnalyticsEvent('Kurono', 'Load', 'Game', timeInterval.interval, true)
+      analyticActions.sendAnalyticsTimingEvent('Kurono', 'Load', 'Game', timeInterval.interval)
     )
   )
 
