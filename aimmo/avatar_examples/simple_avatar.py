@@ -1,3 +1,2 @@
-class Avatar:
-    def next_turn(self, world_state, avatar_state):
-        return MoveAction(direction.NORTH)
+def next_turn(world_state, avatar_state):
+    return MoveAction(direction.NORTH)
