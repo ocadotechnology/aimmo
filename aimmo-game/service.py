@@ -57,6 +57,14 @@ class GameAPI(object):
         self.register_healthcheck()
         app.add_routes(routes)
 
+    def update_active_users(self):
+        if "/" in socketio_server.manager.rooms.keys():
+            activity_monitor.active_users = len(
+                socketio_server.manager.rooms["/"][None].keys()
+            )
+        else:
+            activity_monitor.active_users = 0
+
     def register_healthcheck(self):
         @routes.get("/game-{game_id}")
         async def healthcheck(request):
@@ -83,7 +91,7 @@ class GameAPI(object):
         async def world_update_on_connect(sid, environ):
             query = environ["QUERY_STRING"]
             self._find_avatar_id_from_query(sid, query)
-            activity_monitor.active_users = len(self._socket_session_id_to_player_id)
+            self.update_active_users()
             await self.send_updates(on_connect=True)
 
         return world_update_on_connect
@@ -94,9 +102,7 @@ class GameAPI(object):
             LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
             try:
                 del self._socket_session_id_to_player_id[sid]
-                activity_monitor.active_users = len(
-                    self._socket_session_id_to_player_id
-                )
+                self.update_active_users()
             except KeyError:
                 pass
 
@@ -106,6 +112,7 @@ class GameAPI(object):
         player_id_to_worker = self.worker_manager.player_id_to_worker
         await self._send_have_avatars_code_updated(player_id_to_worker)
         await self._send_game_state()
+        LOGGER.info(socketio_server.manager.rooms["/"][None])
         if not on_connect:
             await self._send_logs(player_id_to_worker)
 
@@ -172,9 +179,9 @@ def create_runner(port):
 def run_game(port):
     game_runner = create_runner(port)
 
-    async def clean_token(app):
+    def clean_token(app):
         LOGGER.info("Cleaning token!")
-        await game_runner.communicator.patch_token(data={"token": ""})
+        game_runner.communicator.patch_token(data={"token": ""})
 
     asyncio.ensure_future(initialize_game_token(game_runner.communicator))
 
