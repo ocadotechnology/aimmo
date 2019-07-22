@@ -294,3 +294,38 @@ def next_turn(world_map, avatar_state):
             world_map={}, avatar_state={}, src_code=avatar
         )
         self.assertFalse("SyntaxWarning" in response["log"])
+
+    def test_safe_getitem(self):
+        avatar1 = """
+def next_turn(world_map, avatar_state):
+    mylist = [i for i in range(10)]
+    mylist[0]
+    mylist[4]
+    return MoveAction(direction.NORTH)
+                 """
+
+        avatar2 = """
+def next_turn(world_map, avatar_state):
+    mylist = {i:i for i in range(10)}
+    mylist[0]
+    mylist[4]
+    return MoveAction(direction.NORTH)
+                 """
+
+        runner = AvatarRunner(code_updater=CodeUpdater())
+        response = runner.process_avatar_turn(
+            world_map={}, avatar_state={}, src_code=avatar1
+        )
+        self.assertTrue("Error" not in response["log"])
+        self.assertEqual(
+            {"action_type": "move", "options": {"direction": NORTH}}, response["action"]
+        )
+
+        runner = AvatarRunner(code_updater=CodeUpdater())
+        response = runner.process_avatar_turn(
+            world_map={}, avatar_state={}, src_code=avatar2
+        )
+        self.assertTrue("Error" not in response["log"])
+        self.assertEqual(
+            {"action_type": "move", "options": {"direction": NORTH}}, response["action"]
+        )
