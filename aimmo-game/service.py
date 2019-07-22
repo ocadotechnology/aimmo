@@ -112,7 +112,6 @@ class GameAPI(object):
         player_id_to_worker = self.worker_manager.player_id_to_worker
         await self._send_have_avatars_code_updated(player_id_to_worker)
         await self._send_game_state()
-        LOGGER.info(socketio_server.manager.rooms["/"][None])
         if not on_connect:
             await self._send_logs(player_id_to_worker)
 
