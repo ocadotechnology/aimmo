@@ -17,7 +17,9 @@ app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
 )
 app_settings.GAME_SERVER_PORT_FUNCTION = lambda game_id: 0
 app_settings.GAME_SERVER_SSL_FLAG = True
-
+DEFAULT_CODE = """def next_turn(world_state, avatar_state):
+    return MoveAction(direction.NORTH)
+"""
 
 class TestViews(TestCase):
     CODE = "class Avatar: pass"
@@ -97,7 +99,7 @@ class TestViews(TestCase):
         c = self.login()
         response = c.get(reverse("aimmo/code", kwargs={"id": 1}))
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(json.loads(response.content)["code"].startswith("class Avatar"))
+        self.assertEqual(DEFAULT_CODE, json.loads(response.content)["code"])
 
     def test_retrieve_code(self):
         models.Avatar(owner=self.user, code=self.CODE, game=self.game).save()
