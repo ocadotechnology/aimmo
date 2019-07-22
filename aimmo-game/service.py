@@ -170,9 +170,9 @@ def create_runner(port):
 def run_game(port):
     game_runner = create_runner(port)
 
-    def clean_token(app):
+    async def clean_token(app):
         LOGGER.info("Cleaning token!")
-        game_runner.communicator.patch_token(data={"token": ""})
+        await game_runner.communicator.patch_token(data={"token": ""})
 
     asyncio.ensure_future(initialize_game_token(game_runner.communicator))
 
