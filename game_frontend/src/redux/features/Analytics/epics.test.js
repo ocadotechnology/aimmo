@@ -14,6 +14,7 @@ const createTestScheduler = (frameTimeFactor = 10) => {
 
 describe('sendToGoogleAnalyticsEpic', () => {
   it('sends an event to google analytics correctly', () => {
+    ReactGA.testModeAPI.resetCalls()
     const testScheduler = createTestScheduler()
 
     testScheduler.run(({ hot, cold, expectObservable }) => {
@@ -30,7 +31,6 @@ describe('sendToGoogleAnalyticsEpic', () => {
     })
 
     expect(ReactGA.testModeAPI.calls).toEqual([
-      ['create', 'foo', 'auto'],
       ['send',
         {
           'eventAction': 'Test Action',
@@ -41,5 +41,36 @@ describe('sendToGoogleAnalyticsEpic', () => {
           'nonInteraction': false
         }]
     ])
+  })
+})
+
+describe('sendToGoogleAnalyticsTimingEventEpic', () => {
+  it('sends an event to google analytics correctly', () => {
+    ReactGA.testModeAPI.resetCalls()
+    const testScheduler = createTestScheduler()
+
+    testScheduler.run(({ hot, cold, expectObservable }) => {
+      const action$ = hot('--a--', {
+        a: actions.sendAnalyticsTimingEvent('Test Category', 'Test Action', 'Test Label', 5)
+      })
+
+      const state$ = null
+      const output$ = epics.sendToGoogleAnalyticsTimingEventEpic(action$, state$, {}, testScheduler)
+
+      expectObservable(output$).toBe('--b--', {
+        b: actions.analyticsTimingEventSent()
+      })
+    })
+
+    expect(ReactGA.testModeAPI.calls).toEqual([
+      ['send',
+        {
+          'timingVar': 'Test Action',
+          'timingCategory': 'Test Category',
+          'timingLabel': 'Test Label',
+          'timingValue': 5,
+          'hitType': 'timing'
+        }
+      ]])
   })
 })
