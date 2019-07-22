@@ -45,10 +45,13 @@ logging.basicConfig(level=logging.INFO)
 
 class GameAPI(object):
     def __init__(self, game_state, worker_manager):
-        self._socket_session_id_to_player_id = {}
         self.register_endpoints()
         self.worker_manager = worker_manager
         self.game_state = game_state
+
+    async def async_map(self, func, iterable_args):
+        futures = [func(*arg) for arg in iterable_args]
+        await asyncio.gather(*futures)
 
     def register_endpoints(self):
         self.register_player_data_view()
@@ -85,30 +88,31 @@ class GameAPI(object):
         @socketio_server.on("connect")
         async def world_update_on_connect(sid, environ):
             query = environ["QUERY_STRING"]
-            self._find_avatar_id_from_query(sid, query)
+            avatar_id = self._find_avatar_id_from_query(sid, query)
+            socketio_server.save_session(sid, {"id": avatar_id})
             self.update_active_users()
-            await self.send_updates(on_connect=True)
+            await self.send_updates(sid)
 
         return world_update_on_connect
 
     def register_remove_session_id_from_mappings(self):
         @socketio_server.on("disconnect")
         async def remove_session_id_from_mappings(sid):
+            await asyncio.sleep(3)
             LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
-            try:
-                del self._socket_session_id_to_player_id[sid]
-                self.update_active_users()
-            except KeyError:
-                pass
+            self.update_active_users()
+            LOGGER.info()
 
         return remove_session_id_from_mappings
 
-    async def send_updates(self, on_connect=False):
-        player_id_to_worker = self.worker_manager.player_id_to_worker
-        await self._send_have_avatars_code_updated(player_id_to_worker)
-        await self._send_game_state()
-        if not on_connect:
-            await self._send_logs(player_id_to_worker)
+    async def send_updates(self, sid):
+        await self._send_have_avatars_code_updated(sid)
+        await self._send_game_state(sid)
+        await self._send_logs(sid)
+
+    async def send_updates_to_all(self):
+        socket_ids = socketio_server.manager.get_participants("/", None)
+        await self.async_map(self.send_updates, socket_ids)
 
     def _find_avatar_id_from_query(self, session_id, query_string):
         """
@@ -120,44 +124,37 @@ class GameAPI(object):
 
         try:
             avatar_id = int(parsed_qs["avatar_id"][0])
-            self._socket_session_id_to_player_id[session_id] = avatar_id
+            return avatar_id
         except ValueError:
             LOGGER.error("Avatar ID could not be casted into an integer")
         except KeyError:
             LOGGER.error("No avatar ID found. User may not be authorised ")
             LOGGER.error("query_string: " + query_string)
 
-    async def _send_logs(self, player_id_to_workers):
+    async def _send_logs(self, sid):
         def should_send_logs(logs):
             return bool(logs)
 
-        socket_session_id_to_player_id_copy = (
-            self._socket_session_id_to_player_id.copy()
-        )
-        for sid, player_id in socket_session_id_to_player_id_copy.items():
-            avatar_logs = player_id_to_workers[player_id].log
-            if should_send_logs(avatar_logs):
-                await socketio_server.emit(
-                    "log",
-                    {"message": avatar_logs, "turn_count": self.game_state.turn_count},
-                    room=sid,
-                )
+        session_data = await socketio_server.get_session(sid)
+        worker = self.worker_manager.player_id_to_worker(session_data["id"])
+        avatar_logs = worker.log
 
-    async def _send_game_state(self):
+        if should_send_logs(logs):
+            await socketio_server.emit(
+                "log",
+                {"message": avatar_logs, "turn_count": self.game_state.turn_count},
+                room=sid,
+            )
+
+    async def _send_game_state(self, sid):
         serialized_game_state = self.game_state.serialize()
-        socket_session_id_to_player_id_copy = (
-            self._socket_session_id_to_player_id.copy()
-        )
-        for sid, player_id in socket_session_id_to_player_id_copy.items():
-            await socketio_server.emit("game-state", serialized_game_state, room=sid)
+        await socketio_server.emit("game-state", serialized_game_state, room=sid)
 
-    async def _send_have_avatars_code_updated(self, player_id_to_workers):
-        socket_session_id_to_player_id_copy = (
-            self._socket_session_id_to_player_id.copy()
-        )
-        for sid, player_id in socket_session_id_to_player_id_copy.items():
-            if player_id_to_workers[player_id].has_code_updated:
-                await socketio_server.emit("feedback-avatar-updated", {}, room=sid)
+    async def _send_have_avatars_code_updated(self, sid):
+        session_data = await socketio_server.get_session(sid)
+        worker = self.worker_manager.player_id_to_worker(session_data["id"])
+        if worker.has_code_updated:
+            await socketio_server.emit("feedback-avatar-updated", {}, room=sid)
 
 
 def create_runner(port):
@@ -185,7 +182,7 @@ def run_game(port):
     game_api = GameAPI(
         game_state=game_runner.game_state, worker_manager=game_runner.worker_manager
     )
-    game_runner.set_end_turn_callback(game_api.send_updates)
+    game_runner.set_end_turn_callback(game_api.send_updates_to_all)
     asyncio.ensure_future(game_runner.run())
 
 
