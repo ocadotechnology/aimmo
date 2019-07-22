@@ -35,4 +35,4 @@ class DjangoCommunicator(object):
         return response
 
     async def close_session(self, app):
-        self.session.close()
+        await self.session.close()
