@@ -58,12 +58,7 @@ class GameAPI(object):
         app.add_routes(routes)
 
     def update_active_users(self):
-        if "/" in socketio_server.manager.rooms.keys():
-            activity_monitor.active_users = len(
-                socketio_server.manager.rooms["/"][None].keys()
-            )
-        else:
-            activity_monitor.active_users = 0
+        activity_monitor.active_users = len(socketio_server.eio.sockets)
 
     def register_healthcheck(self):
         @routes.get("/game-{game_id}")
