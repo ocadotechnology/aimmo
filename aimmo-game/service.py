@@ -33,7 +33,9 @@ communicator = DjangoCommunicator(
 )
 
 activity_monitor = ActivityMonitor(communicator)
-socketio_server = socketio.AsyncServer(async_handlers=True)
+socketio_server = socketio.AsyncServer(
+    client_manager=socketio.AsyncManager(), async_handlers=True
+)
 
 routes = web.RouteTableDef()
 
