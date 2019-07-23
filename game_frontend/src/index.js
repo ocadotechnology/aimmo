@@ -22,7 +22,7 @@ WebFont.load({
 })
 
 ReactGA.initialize('UA-49883146-1', {
-  debug: true,
+  debug: false,
   testMode: process.env.NODE_ENV === 'test'
 })
 
