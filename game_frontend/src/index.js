@@ -12,7 +12,7 @@ import configureStore from './redux/store'
 
 import ReactGA from 'react-ga'
 
-import GamePage from './components/GamePage'
+import GamePage from 'components/GamePage'
 import { RunCodeButtonStatus } from 'components/RunCodeButton'
 
 WebFont.load({

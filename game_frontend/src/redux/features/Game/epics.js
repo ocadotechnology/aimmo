@@ -17,17 +17,6 @@ const getConnectionParametersEpic = (action$, state$, { api: { get } }) => actio
   )
 )
 
-const sendGameStateEpic = (action$, state$, { api: { unity } }) => action$.pipe(
-  ofType(types.SOCKET_GAME_STATE_RECEIVED),
-  map(action => actions.unityEvent(
-    'ReceiveGameUpdate',
-    JSON.stringify(action.payload.gameState),
-    actions.sendGameStateSuccess(),
-    actions.sendGameStateFail
-  )),
-  unity.sendExternalEvent(unity.emitToUnity)
-)
-
 const gameLoadedEpic = action$ => action$.pipe(
   ofType(types.SOCKET_CONNECT_TO_GAME_REQUEST),
   switchMap(() =>
@@ -48,7 +37,7 @@ const gameLoadedIntervalEpic = (action$, state$, dependencies, scheduler = backg
     )
   )
 
-const connectToGameEpic = (action$, state$, { api: { socket, unity } }) => action$.pipe(
+const connectToGameEpic = (action$, state$, { api: { socket } }) => action$.pipe(
   ofType(types.CONNECTION_PARAMETERS_RECEIVED),
   socket.connectToGame(),
   socket.startListeners(),
@@ -57,17 +46,6 @@ const connectToGameEpic = (action$, state$, { api: { socket, unity } }) => actio
     payload: error,
     error: true
   }))
-)
-
-const sendAvatarIDEpic = (action$, state$, { api: { unity } }) => action$.pipe(
-  ofType(types.CONNECTION_PARAMETERS_RECEIVED),
-  map(action => actions.unityEvent(
-    'SetCurrentAvatarID',
-    parseInt(action.payload.parameters['avatar_id']),
-    actions.unitySendAvatarIDSuccess(),
-    actions.unitySendAvatarIDFail
-  )),
-  unity.sendExternalEvent(unity.emitToUnity)
 )
 
 const avatarUpdatingTimeoutEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) => action$.pipe(
@@ -103,8 +81,6 @@ export default {
   getConnectionParametersEpic,
   connectToGameEpic,
   gameLoadedEpic,
-  sendGameStateEpic,
-  sendAvatarIDEpic,
   avatarUpdatingTimeoutEpic,
   gameLoadedIntervalEpic,
   codeUpdatingIntervalEpic

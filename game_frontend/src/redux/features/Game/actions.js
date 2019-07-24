@@ -30,36 +30,12 @@ const socketGameStateReceived = gameState => (
   }
 )
 
-const unityEvent = (unityEvent, unityData, successAction, failAction) => (
-  {
-    type: types.UNITY_EVENT,
-    payload: {
-      unityEvent,
-      unityData,
-      successAction,
-      failAction
-    }
-  }
-)
-
 const connectionParametersReceived = parameters => (
   {
     type: types.CONNECTION_PARAMETERS_RECEIVED,
     payload: {
       parameters
     }
-  }
-)
-
-const unitySendAvatarIDSuccess = () => (
-  {
-    type: types.UNITY_SEND_AVATAR_ID_SUCCESS
-  }
-)
-
-const unitySendAvatarIDFail = () => (
-  {
-    type: types.UNITY_SEND_AVATAR_ID_FAIL
   }
 )
 
@@ -96,10 +72,7 @@ export default {
   sendGameStateFail,
   sendGameStateSuccess,
   socketGameStateReceived,
-  unityEvent,
   connectionParametersReceived,
-  unitySendAvatarIDSuccess,
-  unitySendAvatarIDFail,
   socketFeedbackAvatarUpdatedSuccess,
   socketFeedbackAvatarUpdatedTimeout,
   snackbarShown,
