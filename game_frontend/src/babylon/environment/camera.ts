@@ -54,6 +54,12 @@ export default class Camera implements GameNode {
             if (delta) {
                 this.zoom_factor += delta / 10
 
+                if (this.zoom_factor + this.frustum >= ZOOM_UPPER_BOUND) {
+                    this.zoom_factor = ZOOM_UPPER_BOUND - this.frustum
+                } else if (this.zoom_factor + this.frustum <= ZOOM_LOWER_BOUND) {
+                    this.zoom_factor = ZOOM_LOWER_BOUND - this.frustum
+                }
+
                 this.computeCameraView(canvas)
                 this.updatePanningSensibility()
             }
@@ -61,7 +67,7 @@ export default class Camera implements GameNode {
     }
 
     updatePanningSensibility() {
-        this.object.panningSensibility = -6 * this.frustum + 130
+        this.object.panningSensibility = -4 * (this.frustum + this.zoom_factor) + 130
     }
 
     computeCameraView(canvas: HTMLCanvasElement): void {
@@ -69,8 +75,8 @@ export default class Camera implements GameNode {
         view.normalize()
 
         this.object.orthoTop = (this.frustum + this.zoom_factor) * view.y
-        this.object.orthoBottom = (-this.frustum + this.zoom_factor) * view.y
-        this.object.orthoLeft = (-this.frustum + this.zoom_factor) * view.x
+        this.object.orthoBottom = -(this.frustum + this.zoom_factor) * view.y
+        this.object.orthoLeft = -(this.frustum + this.zoom_factor) * view.x
         this.object.orthoRight = (this.frustum + this.zoom_factor) * view.x
     }
 
