@@ -50,8 +50,11 @@ export default class Camera implements GameNode {
                 delta = -event.detail
             }
             if (delta) {
-                if (this.frustum + (delta / 10) > ZOOM_LOWER_BOUND &&
-                    this.frustum + (delta / 10) < ZOOM_UPPER_BOUND) {
+                if (this.frustum + (delta / 10) <= ZOOM_LOWER_BOUND) {
+                    this.frustum = ZOOM_LOWER_BOUND
+                } else if (this.frustum + (delta / 10) >= ZOOM_UPPER_BOUND) {
+                    this.frustum = ZOOM_UPPER_BOUND
+                } else {
                     this.frustum += delta / 10
                 }
 
