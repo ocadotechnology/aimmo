@@ -31,6 +31,7 @@ setup(
         "docker",
         "aiohttp",
         "aiohttp_cors",
+        "socketIO-client",
     ],
     test_suite="tests",
     zip_safe=False,

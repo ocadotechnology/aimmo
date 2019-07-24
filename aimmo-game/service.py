@@ -22,25 +22,53 @@ from simulation import map_generator
 from simulation.django_communicator import DjangoCommunicator
 from simulation.game_runner import GameRunner
 
-app = web.Application()
-cors = aiohttp_cors.setup(app)
-
 django_api_url = os.environ.get(
     "GAME_API_URL", "http://localhost:8000/aimmo/api/games/"
 )
+
 communicator = DjangoCommunicator(
     django_api_url=django_api_url, completion_url=django_api_url + "complete/"
 )
-
 activity_monitor = ActivityMonitor(communicator)
-socketio_server = socketio.AsyncServer(
-    client_manager=socketio.AsyncManager(), async_handlers=True
-)
 
 routes = web.RouteTableDef()
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
+
+
+def app_setup():
+    async def clean_token(app):
+        LOGGER.info("Cleaning token!")
+        await communicator.patch_token(data={"token": ""})
+
+    app = web.Application()
+
+    wsgi_handler = WSGIHandler(make_wsgi_app())
+    app.add_routes([web.get("/{path_info:metrics}", wsgi_handler)])
+
+    app.on_shutdown.append(clean_token)
+    app.on_shutdown.append(communicator.close_session)
+
+    return app
+
+
+def socketIO_setup(app):
+    socket_server = socketio.AsyncServer(
+        client_manager=socketio.AsyncManager(), async_handlers=True
+    )
+
+    socket_server.attach(
+        app, socketio_path=os.environ.get("SOCKETIO_RESOURCE", "socket.io")
+    )
+
+    return socket_server
+
+
+app = app_setup()
+cors = aiohttp_cors.setup(app)
+
+socketio_server = socketIO_setup(app)
 
 
 class GameAPI(object):
@@ -50,7 +78,7 @@ class GameAPI(object):
         self.game_state = game_state
 
     async def async_map(self, func, iterable_args):
-        futures = [func(*arg) for arg in iterable_args]
+        futures = [func(arg) for arg in iterable_args]
         await asyncio.gather(*futures)
 
     def register_endpoints(self):
@@ -59,6 +87,9 @@ class GameAPI(object):
         self.register_remove_session_id_from_mappings()
         self.register_healthcheck()
         app.add_routes(routes)
+
+    def open_connections(self):
+        return socketio_server.eio.sockets
 
     def update_active_users(self):
         activity_monitor.active_users = len(socketio_server.eio.sockets)
@@ -89,7 +120,7 @@ class GameAPI(object):
         async def world_update_on_connect(sid, environ):
             query = environ["QUERY_STRING"]
             avatar_id = self._find_avatar_id_from_query(sid, query)
-            socketio_server.save_session(sid, {"id": avatar_id})
+            await socketio_server.save_session(sid, {"id": avatar_id})
             self.update_active_users()
             await self.send_updates(sid)
 
@@ -98,10 +129,8 @@ class GameAPI(object):
     def register_remove_session_id_from_mappings(self):
         @socketio_server.on("disconnect")
         async def remove_session_id_from_mappings(sid):
-            await asyncio.sleep(3)
             LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
             self.update_active_users()
-            LOGGER.info()
 
         return remove_session_id_from_mappings
 
@@ -111,8 +140,11 @@ class GameAPI(object):
         await self._send_logs(sid)
 
     async def send_updates_to_all(self):
-        socket_ids = socketio_server.manager.get_participants("/", None)
-        await self.async_map(self.send_updates, socket_ids)
+        try:
+            socket_ids = socketio_server.manager.get_participants("/", None)
+            await self.async_map(self.send_updates, socket_ids)
+        except KeyError:
+            LOGGER.error("No open socket connections")
 
     def _find_avatar_id_from_query(self, session_id, query_string):
         """
@@ -128,7 +160,7 @@ class GameAPI(object):
         except ValueError:
             LOGGER.error("Avatar ID could not be casted into an integer")
         except KeyError:
-            LOGGER.error("No avatar ID found. User may not be authorised ")
+            LOGGER.error("No avatar ID found. User may not be authorised")
             LOGGER.error("query_string: " + query_string)
 
     async def _send_logs(self, sid):
@@ -136,10 +168,10 @@ class GameAPI(object):
             return bool(logs)
 
         session_data = await socketio_server.get_session(sid)
-        worker = self.worker_manager.player_id_to_worker(session_data["id"])
+        worker = self.worker_manager.player_id_to_worker[session_data["id"]]
         avatar_logs = worker.log
 
-        if should_send_logs(logs):
+        if should_send_logs(avatar_logs):
             await socketio_server.emit(
                 "log",
                 {"message": avatar_logs, "turn_count": self.game_state.turn_count},
@@ -152,7 +184,7 @@ class GameAPI(object):
 
     async def _send_have_avatars_code_updated(self, sid):
         session_data = await socketio_server.get_session(sid)
-        worker = self.worker_manager.player_id_to_worker(session_data["id"])
+        worker = self.worker_manager.player_id_to_worker[session_data["id"]]
         if worker.has_code_updated:
             await socketio_server.emit("feedback-avatar-updated", {}, room=sid)
 
@@ -170,15 +202,6 @@ def create_runner(port):
 def run_game(port):
     game_runner = create_runner(port)
 
-    async def clean_token(app):
-        LOGGER.info("Cleaning token!")
-        await game_runner.communicator.patch_token(data={"token": ""})
-
-    asyncio.ensure_future(initialize_game_token(game_runner.communicator))
-
-    app.on_shutdown.append(clean_token)
-    app.on_shutdown.append(game_runner.communicator.close_session)
-
     game_api = GameAPI(
         game_state=game_runner.game_state, worker_manager=game_runner.worker_manager
     )
@@ -190,19 +213,13 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     host = sys.argv[1]
 
-    socketio_server.attach(
-        app, socketio_path=os.environ.get("SOCKETIO_RESOURCE", "socket.io")
-    )
-
     if os.environ["WORKER"] == "local":
         port = int(os.environ["EXTERNAL_PORT"])
     else:
         port = int(sys.argv[2])
 
+    asyncio.ensure_future(initialize_game_token(communicator))
     run_game(port)
-
-    wsgi_handler = WSGIHandler(make_wsgi_app())
-    app.add_routes([web.get("/{path_info:metrics}", wsgi_handler)])
 
     logging.getLogger("socketio").setLevel(logging.ERROR)
     logging.getLogger("engineio").setLevel(logging.ERROR)
