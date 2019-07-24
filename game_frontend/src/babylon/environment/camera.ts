@@ -7,10 +7,12 @@ const ZOOM_UPPER_BOUND = 15
 export default class Camera implements GameNode {
     object: any;
     frustum: number;
+    zoom_factor: number;
 
     onSceneMount(scene: BABYLON.Scene, canvas: HTMLCanvasElement, engine: BABYLON.Engine): void {
         const camera = new BABYLON.ArcRotateCamera('camera1', 0, 0.785, 50, BABYLON.Vector3.Zero(), scene)
         this.frustum = 7.5
+        this.zoom_factor = 0
         this.object = camera
 
         camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA
@@ -50,13 +52,7 @@ export default class Camera implements GameNode {
                 delta = -event.detail
             }
             if (delta) {
-                if (this.frustum + (delta / 10) <= ZOOM_LOWER_BOUND) {
-                    this.frustum = ZOOM_LOWER_BOUND
-                } else if (this.frustum + (delta / 10) >= ZOOM_UPPER_BOUND) {
-                    this.frustum = ZOOM_UPPER_BOUND
-                } else {
-                    this.frustum += delta / 10
-                }
+                this.zoom_factor += delta / 10
 
                 this.computeCameraView(canvas)
                 this.updatePanningSensibility()
@@ -72,10 +68,10 @@ export default class Camera implements GameNode {
         const view = new BABYLON.Vector2(canvas.width, canvas.height)
         view.normalize()
 
-        this.object.orthoTop = this.frustum * view.y
-        this.object.orthoBottom = -this.frustum * view.y
-        this.object.orthoLeft = -this.frustum * view.x
-        this.object.orthoRight = this.frustum * view.x
+        this.object.orthoTop = (this.frustum + this.zoom_factor) * view.y
+        this.object.orthoBottom = (-this.frustum + this.zoom_factor) * view.y
+        this.object.orthoLeft = (-this.frustum + this.zoom_factor) * view.x
+        this.object.orthoRight = (this.frustum + this.zoom_factor) * view.x
     }
 
     onGameStateUpdate(): void { }
