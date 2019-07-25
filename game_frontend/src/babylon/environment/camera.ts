@@ -43,7 +43,6 @@ export default class Camera implements GameNode {
 
     addZoomListener(scene: BABYLON.Scene, canvas: HTMLCanvasElement) {
         scene.onPrePointerObservable.add((pointerInfo, eventState) => {
-            // console.log(pointerInfo);
             var event = pointerInfo.event
             var delta = 0
             if (event.wheelDelta) {
