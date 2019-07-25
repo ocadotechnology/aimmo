@@ -37,7 +37,7 @@ activity_monitor = ActivityMonitor(communicator)
 routes = web.RouteTableDef()
 
 
-def app_setup():
+def app_setup(should_clean_token=True):
     async def clean_token(app):
         LOGGER.info("Cleaning token!")
         await communicator.patch_token(data={"token": ""})
@@ -47,15 +47,19 @@ def app_setup():
     wsgi_handler = WSGIHandler(make_wsgi_app())
     app.add_routes([web.get("/{path_info:metrics}", wsgi_handler)])
 
-    app.on_shutdown.append(clean_token)
+    if should_clean_token:
+        app.on_shutdown.append(clean_token)
+
     app.on_shutdown.append(communicator.close_session)
 
     return app
 
 
-def socketIO_setup(app):
+def socketIO_setup(
+    app, client_manager_class=socketio.AsyncManager, async_handlers=True
+):
     socket_server = socketio.AsyncServer(
-        client_manager=socketio.AsyncManager(), async_handlers=True
+        client_manager=client_manager_class(), async_handlers=async_handlers
     )
 
     socket_server.attach(
@@ -72,7 +76,8 @@ socketio_server = socketIO_setup(app)
 
 
 class GameAPI(object):
-    def __init__(self, game_state, worker_manager):
+    def __init__(self, game_state, worker_manager, app=app):
+        self.app = app
         self.register_endpoints()
         self.worker_manager = worker_manager
         self.game_state = game_state
@@ -86,7 +91,7 @@ class GameAPI(object):
         self.register_world_update_on_connect()
         self.register_remove_session_id_from_mappings()
         self.register_healthcheck()
-        app.add_routes(routes)
+        self.app.add_routes(routes)
 
     def open_connections(self):
         try:
