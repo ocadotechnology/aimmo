@@ -38,7 +38,7 @@ exports[`<IDEEditor /> matches snapshot 1`] = `
         "enableSnippets": true,
         "fontFamily": "'Source Code Pro', monospace",
         "showLineNumbers": true,
-        "tabSize": 2,
+        "tabSize": 4,
       }
     }
     showGutter={true}
