@@ -22,6 +22,9 @@ from simulation import map_generator
 from simulation.django_communicator import DjangoCommunicator
 from simulation.game_runner import GameRunner
 
+LOGGER = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
 django_api_url = os.environ.get(
     "GAME_API_URL", "http://localhost:8000/aimmo/api/games/"
 )
@@ -32,9 +35,6 @@ communicator = DjangoCommunicator(
 activity_monitor = ActivityMonitor(communicator)
 
 routes = web.RouteTableDef()
-
-LOGGER = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 
 def app_setup():
@@ -89,7 +89,10 @@ class GameAPI(object):
         app.add_routes(routes)
 
     def open_connections(self):
-        return socketio_server.eio.sockets
+        try:
+            return socketio_server.manager.get_participants("/", None)
+        except KeyError:
+            return None
 
     def update_active_users(self):
         activity_monitor.active_users = len(socketio_server.eio.sockets)
