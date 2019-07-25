@@ -18,6 +18,13 @@ Architecture of the project. How things are structured, what components exist, e
     - [Workers](architecture/workers/README.md)
     - [UI](architecture/ui/README.md)
 
+### Babylon
+
+Babylon side of the project. Game engine and structure.
+- [Babylon](babylon/README.md)
+    - [Game Node](babylon/gamenode/README.md)
+    - [Structure](babylon/structure/README.md)
+
 
 ### Infrastucture
 
