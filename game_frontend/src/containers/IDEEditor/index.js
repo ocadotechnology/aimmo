@@ -36,7 +36,7 @@ export class IDEEditor extends PureComponent {
       enableLiveAutocompletion: true,
       enableSnippets: true,
       showLineNumbers: true,
-      tabSize: 2,
+      tabSize: 4,
       fontFamily: this.props.theme.additionalVariables.typography.code.fontFamily
     }
   }
