@@ -22,10 +22,10 @@ babylon
 │
 └── interfaces.ts
 ```
-`interfaces.ts` contains the typing (interfaces) for objects specific to our project, such as [GameNode](../typings/README.md#GameNode).
+`interfaces.ts` contains the typing (interfaces) for objects specific to our project, such as [GameNode](../gamenode/README.md#GameNode).
 
 We split the remaining elements of the game into two folders: 
 * **environment**: The elements of the game that make up the world, such as camera, light and terrain
 * **entities**: These populate the game world, and cover elements such as obstacles, avatars, and interactables.
 
-All classes in these folders implement the [GameNode](../typings/README.md#GameNode) interface.
+All classes in these folders implement the [GameNode](../gamenode/README.md#GameNode) interface.

@@ -10,6 +10,6 @@ This section describes the way Babylon is used as the game engine for Kurono.
 
 How the project is organised and split into its different parts.
 
-[Typings](typings/README.md)
+[Game Node](gamenode/README.md)
 
-Explains the use of typescript and the `GameNode` object.
+Explains the `GameNode` object.
