@@ -1,7 +1,7 @@
-import { Engine, Scene } from 'babylonjs'
+import { Engine, Scene, TransformNode } from 'babylonjs'
 
 export interface GameNode {
     object: any
     onSceneMount(scene: Scene, canvas: HTMLCanvasElement, engine: Engine): void
-    onGameStateUpdate(): void
+    onGameStateUpdate(gameState: any, onTerrainNode: TransformNode): void
 }

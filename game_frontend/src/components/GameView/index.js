@@ -2,21 +2,35 @@ import styled from 'styled-components'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Environment from '../../babylon/environment'
+import Entities from '../../babylon/entities'
 
 export const GameViewLayout = styled.div`
   grid-area: game-view;
 `
 
 export default class GameView extends Component {
-  componentDidMount () {
+  constructor(props) {
+    super(props)
+    this.props.connectToGame()
+  }
+
+  componentDidMount() {
     this.environment = new Environment(this.canvas)
     this.environment.setup()
+    this.entities = new Entities(this.canvas, this.environment.engine, this.environment.scene)
+    this.entities.onSceneMount()
 
     // Resize the babylon engine when the window is resized
     window.addEventListener('resize', this.environment.windowResized)
   }
 
-  componentWillUnmount () {
+  componentDidUpdate() {
+    if (this.props.gameState) {
+      this.entities.onGameStateUpdate(this.props.gameState, this.environment.terrain.onTerrainNode)
+    }
+  }
+
+  componentWillUnmount() {
     window.removeEventListener('resize', this.environment.windowResized)
   }
 
@@ -26,7 +40,7 @@ export default class GameView extends Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <GameViewLayout>
         <canvas
@@ -40,5 +54,6 @@ export default class GameView extends Component {
 
 GameView.propTypes = {
   connectToGame: PropTypes.func,
-  gameDataLoaded: PropTypes.bool
+  gameDataLoaded: PropTypes.bool,
+  gameState: PropTypes.object
 }
