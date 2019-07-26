@@ -3,10 +3,14 @@ import os
 import random
 import string
 import socketio
+import logging
 from unittest import TestCase, mock
 from aiohttp import web
+from aiohttp_wsgi import WSGIHandler
+from prometheus_client import make_wsgi_app
 
 import pytest
+import time
 
 import service
 from asynctest import CoroutineMock
@@ -37,6 +41,11 @@ class MockedSocketIOServer(mock.MagicMock):
         return decorator
 
 
+class AsyncMock(mock.MagicMock):
+    async def __call__(self, *args, **kwargs):
+        return super(AsyncMock, self).__call__(*args, **kwargs)
+
+
 class TestSocketIO:
     def setup_method(self, method):
         os.environ["GAME_ID"] = "1"
@@ -55,7 +64,7 @@ class TestSocketIO:
 
     # @mock.patch("docker.from_env")
     # @mock.patch("service.app")
-    def create_game_api(self, app):
+    def create_game_api(self, app, socketio_server):
         game_runner = GameRunner(
             game_state_generator=lambda avatar_manager: MockGameState(),
             communicator=MockCommunicator(),
@@ -63,75 +72,34 @@ class TestSocketIO:
             worker_manager_class=MockWorkerManager,
         )
         return service.GameAPI(
-            game_state=game_runner.game_state, worker_manager=game_runner.worker_manager
+            game_state=game_runner.game_state, worker_manager=game_runner.worker_manager,
+            web_app=app, socketio_server2=socketio_server
         )
 
-    # @pytest.mark.asyncio
     async def test_socketio_emit_called(self, aiohttp_client, loop):
-        async def hello(request):
-            print("did I get here?")
-            return web.Response(text="Hello, world")
-
         app = service.app_setup(should_clean_token=False)
         socketio_server = service.socketIO_setup(app, async_handlers=False)
-        game_api = self.create_game_api(app)
-        # service.app = app
-        # app = web.Application()
-        app.router.add_get("/game-1", hello)
-
-        # server = await aiohttp_server(app)
-
-        # game_api.worker_manager.add_new_worker(1)
-
-        # socketio_client = socketio.Client(logger=True, reconnection=False)
+        socketio_client = socketio.AsyncClient(reconnection=False)
+        game_api = self.create_game_api(app, socketio_server)
         client = await aiohttp_client(app)
-        print(f"http://{client.server.host}:{client.server.port}")
 
-        # socketio_client.connect(
-        #     f"http://{server.host}:{server.port}", transports=["polling"]
-        # )
-        resp = await client.get("/game-1")
-        text = await resp.text()
-        print(text)
+        logging.getLogger("socketio").setLevel(logging.ERROR)
+        logging.getLogger("engineio").setLevel(logging.ERROR)
 
-        assert False
+        game_api.worker_manager.add_new_worker(1)
 
-        # self.game_api.worker_manager.add_new_worker(1)
+        mocked_emit = CoroutineMock()
+        socketio_server.emit = mocked_emit
 
-        # await self.game_api.register_world_update_on_connect()(self.sid, self.environ)
+        await socketio_client.connect(
+            f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb", transports=["polling"]
+        )
 
-        # assert mocked_socketio.manager.emit.mockreturn_value.emit.assert_called_once
+        game_state_call = mock.call("game-state", {"foo": "bar"}, room=self.sid)
 
-    @pytest.mark.asyncio
-    @mock.patch("service.app")
-    @mock.patch("service.socketio_server.emit", new_callable=CoroutineMock())
-    @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
-    async def test_matched_session_id_to_avatar_id_mapping(
-        self, mocked_socketio, mocked_emit, app
-    ):
-        assert len(self.mocked_mappings) == 0
+        mocked_emit.assert_awaited()
 
-        self.game_api.worker_manager.add_new_worker(1)
-        await self.game_api.register_world_update_on_connect()(self.sid, self.environ),
 
-        assert len(self.mocked_mappings) == 1
-        assert self.sid in self.mocked_mappings
-        assert int(self.mocked_mappings[self.sid]) == 1
-
-    @pytest.mark.asyncio
-    @mock.patch("service.app")
-    @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
-    async def test_no_match_session_id_to_avatar_id_mapping(self, mocked_socketio, app):
-        self.environ["QUERY_STRING"] = "corrupted!@$%string123"
-
-        assert len(self.mocked_mappings) == 0
-
-        self.game_api.worker_manager.add_new_worker(1)
-
-        await self.game_api.register_world_update_on_connect()(self.sid, self.environ),
-
-        assert len(self.mocked_mappings) == 0
-        assert not self.sid in self.mocked_mappings
 
     @pytest.mark.asyncio
     @mock.patch("service.app")

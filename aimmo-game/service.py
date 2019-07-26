@@ -34,8 +34,6 @@ communicator = DjangoCommunicator(
 )
 activity_monitor = ActivityMonitor(communicator)
 
-routes = web.RouteTableDef()
-
 
 def app_setup(should_clean_token=True):
     async def clean_token(app):
@@ -76,8 +74,12 @@ socketio_server = socketIO_setup(app)
 
 
 class GameAPI(object):
-    def __init__(self, game_state, worker_manager, app=app):
-        self.app = app
+
+    routes = web.RouteTableDef()
+
+    def __init__(self, game_state, worker_manager, web_app=app, socketio_server2=socketio_server):
+        self.app = web_app
+        self.socketio_server = socketio_server2
         self.register_endpoints()
         self.worker_manager = worker_manager
         self.game_state = game_state
@@ -91,26 +93,26 @@ class GameAPI(object):
         self.register_world_update_on_connect()
         self.register_remove_session_id_from_mappings()
         self.register_healthcheck()
-        self.app.add_routes(routes)
+        self.app.add_routes(self.routes)
 
     def open_connections(self):
         try:
-            return socketio_server.manager.get_participants("/", None)
+            return self.socketio_server.manager.get_participants("/", None)
         except KeyError:
             return None
 
     def update_active_users(self):
-        activity_monitor.active_users = len(socketio_server.eio.sockets)
+        activity_monitor.active_users = len(self.socketio_server.eio.sockets)
 
     def register_healthcheck(self):
-        @routes.get("/game-{game_id}")
+        @self.routes.get("/game-{game_id}")
         async def healthcheck(request):
             return web.Response(text="HEALTHY")
 
         return healthcheck
 
     def register_player_data_view(self):
-        @routes.get("/player/{player_id}")
+        @self.routes.get("/player/{player_id}")
         async def player_data(request: web.Request):
             player_id = int(request.match_info["player_id"])
             return web.json_response(
@@ -124,19 +126,20 @@ class GameAPI(object):
         return player_data
 
     def register_world_update_on_connect(self):
-        @socketio_server.on("connect")
+        @self.socketio_server.on("connect")
         async def world_update_on_connect(sid, environ):
             query = environ["QUERY_STRING"]
             avatar_id = self._find_avatar_id_from_query(sid, query)
-            await socketio_server.save_session(sid, {"id": avatar_id})
+            await self.socketio_server.save_session(sid, {"id": avatar_id})
             self.update_active_users()
             await self.send_updates(sid)
 
         return world_update_on_connect
 
     def register_remove_session_id_from_mappings(self):
-        @socketio_server.on("disconnect")
+        @self.socketio_server.on("disconnect")
         async def remove_session_id_from_mappings(sid):
+            print(f"This is a disconnect: {sid}")
             LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
             self.update_active_users()
 
@@ -144,12 +147,15 @@ class GameAPI(object):
 
     async def send_updates(self, sid):
         await self._send_have_avatars_code_updated(sid)
+        print("avatars code updated")
         await self._send_game_state(sid)
+        print("game state sent")
         await self._send_logs(sid)
+        print("logs sent")
 
     async def send_updates_to_all(self):
         try:
-            socket_ids = socketio_server.manager.get_participants("/", None)
+            socket_ids = self.socketio_server.manager.get_participants("/", None)
             await self.async_map(self.send_updates, socket_ids)
         except KeyError:
             LOGGER.error("No open socket connections")
@@ -175,12 +181,12 @@ class GameAPI(object):
         def should_send_logs(logs):
             return bool(logs)
 
-        session_data = await socketio_server.get_session(sid)
+        session_data = await self.socketio_server.get_session(sid)
         worker = self.worker_manager.player_id_to_worker[session_data["id"]]
         avatar_logs = worker.log
 
         if should_send_logs(avatar_logs):
-            await socketio_server.emit(
+            await self.socketio_server.emit(
                 "log",
                 {"message": avatar_logs, "turn_count": self.game_state.turn_count},
                 room=sid,
@@ -188,13 +194,13 @@ class GameAPI(object):
 
     async def _send_game_state(self, sid):
         serialized_game_state = self.game_state.serialize()
-        await socketio_server.emit("game-state", serialized_game_state, room=sid)
+        await self.socketio_server.emit("game-state", serialized_game_state, room=sid)
 
     async def _send_have_avatars_code_updated(self, sid):
-        session_data = await socketio_server.get_session(sid)
+        session_data = await self.socketio_server.get_session(sid)
         worker = self.worker_manager.player_id_to_worker[session_data["id"]]
         if worker.has_code_updated:
-            await socketio_server.emit("feedback-avatar-updated", {}, room=sid)
+            await self.socketio_server.emit("feedback-avatar-updated", {}, room=sid)
 
 
 def create_runner(port):
@@ -232,4 +238,5 @@ if __name__ == "__main__":
     logging.getLogger("socketio").setLevel(logging.ERROR)
     logging.getLogger("engineio").setLevel(logging.ERROR)
     LOGGER.info("starting the server")
+    LOGGER.info(app.router)
     web.run_app(app, host=host, port=port)
