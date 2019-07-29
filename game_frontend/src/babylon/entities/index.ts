@@ -1,5 +1,6 @@
 import { Scene, Engine, TransformNode } from 'babylonjs'
 import Obstacles from './obstacles'
+import arrayDiff from '../../babylon/helpers'
 
 export default class Entities {
     scene: Scene
@@ -15,13 +16,18 @@ export default class Entities {
     }
 
 
-    onSceneMount(): void {
+    onSceneMount(scene: Scene, canvas: HTMLCanvasElement, engine: Engine, onTerrainNode: TransformNode): void {
         this.obstacles = new Obstacles()
 
-        this.obstacles.onSceneMount(this.scene)
+        this.obstacles.onSceneMount(this.scene, canvas, engine, onTerrainNode)
     }
 
-    onGameStateUpdate(gameState: any, onTerrainNode: TransformNode): void {
-        this.obstacles.onGameStateUpdate(gameState, onTerrainNode)
+    onGameStateUpdate(prevGameState: any, currGameState: any): void {
+        var prevObstacleList = []
+        if (prevGameState) {
+            prevObstacleList = prevGameState.obstacles
+        }
+        const obstacleDiff = arrayDiff(prevObstacleList, currGameState.obstacles)
+        this.obstacles.onGameStateUpdate(obstacleDiff)
     }
 }
