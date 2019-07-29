@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Environment from '../../babylon/environment'
-import Entities from '../../babylon/entities'
+import EntityManager from '../../babylon/entities'
 
 export const GameViewLayout = styled.div`
   grid-area: game-view;
@@ -17,7 +17,7 @@ export default class GameView extends Component {
   componentDidMount() {
     this.environment = new Environment(this.canvas)
     this.environment.setup()
-    this.entities = new Entities(this.canvas, this.environment.engine, this.environment.scene)
+    this.entities = new EntityManager(this.canvas, this.environment.engine, this.environment.scene)
     this.entities.onSceneMount(this.environment.scene, this.environment.canvas, this.environment.engine, this.environment.terrain.onTerrainNode)
 
     // Resize the babylon engine when the window is resized

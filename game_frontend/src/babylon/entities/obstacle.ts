@@ -1,7 +1,7 @@
 import { GameNode } from '../interfaces'
 import * as BABYLON from 'babylonjs'
 
-export default class Obstacles implements GameNode {
+export default class Obstacle implements GameNode {
     object: any
     scene: BABYLON.Scene
     obstacleNode: BABYLON.Mesh

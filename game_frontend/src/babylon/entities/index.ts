@@ -1,13 +1,13 @@
 import { Scene, Engine, TransformNode } from 'babylonjs'
-import Obstacles from './obstacles'
+import Obstacle from './obstacle'
 import arrayDiff from '../../babylon/helpers'
 
-export default class Entities {
+export default class EntityManager {
     scene: Scene
     engine: Engine
     canvas: HTMLCanvasElement
 
-    obstacles: Obstacles
+    obstacles: Obstacle
 
     constructor(canvas: HTMLCanvasElement, engine: Engine, scene: Scene) {
         this.canvas = canvas
@@ -17,7 +17,7 @@ export default class Entities {
 
 
     onSceneMount(scene: Scene, canvas: HTMLCanvasElement, engine: Engine, onTerrainNode: TransformNode): void {
-        this.obstacles = new Obstacles()
+        this.obstacles = new Obstacle()
 
         this.obstacles.onSceneMount(this.scene, canvas, engine, onTerrainNode)
     }
