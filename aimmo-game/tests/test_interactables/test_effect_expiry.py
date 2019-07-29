@@ -192,4 +192,3 @@ class TestEffectExpiry:
 
         assert len(self.avatar.effects) == 0
         assert self.avatar.resistance == 0
-

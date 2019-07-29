@@ -1,22 +1,19 @@
 #!/usr/bin/env python
 
-import ast
 import asyncio
 import json
 import logging
 import os
-import signal
 import sys
 from urllib.parse import parse_qs
 
-import aiohttp
 import aiohttp_cors
 import socketio
 from aiohttp import web
 from aiohttp_wsgi import WSGIHandler
 from prometheus_client import make_wsgi_app
 
-from activity_monitor import ActivityMonitor, StatusOptions
+from activity_monitor import ActivityMonitor
 from authentication import initialize_game_token
 from simulation import map_generator
 from simulation.django_communicator import DjangoCommunicator
@@ -35,15 +32,16 @@ communicator = DjangoCommunicator(
 activity_monitor = ActivityMonitor(communicator)
 
 
-def app_setup(should_clean_token=True):
-    async def clean_token(app):
+def app_setup(should_clean_token=True, should_start_prometheus=True):
+    async def clean_token():
         LOGGER.info("Cleaning token!")
         await communicator.patch_token(data={"token": ""})
 
     app = web.Application()
 
-    wsgi_handler = WSGIHandler(make_wsgi_app())
-    app.add_routes([web.get("/{path_info:metrics}", wsgi_handler)])
+    if should_start_prometheus:
+        wsgi_handler = WSGIHandler(make_wsgi_app())
+        app.add_routes([web.get("/{path_info:metrics}", wsgi_handler)])
 
     if should_clean_token:
         app.on_shutdown.append(clean_token)
@@ -77,7 +75,9 @@ class GameAPI(object):
 
     routes = web.RouteTableDef()
 
-    def __init__(self, game_state, worker_manager, web_app=app, socketio_server2=socketio_server):
+    def __init__(
+        self, game_state, worker_manager, web_app=app, socketio_server2=socketio_server
+    ):
         self.app = web_app
         self.socketio_server = socketio_server2
         self.register_endpoints()
@@ -147,11 +147,8 @@ class GameAPI(object):
 
     async def send_updates(self, sid):
         await self._send_have_avatars_code_updated(sid)
-        print("avatars code updated")
         await self._send_game_state(sid)
-        print("game state sent")
         await self._send_logs(sid)
-        print("logs sent")
 
     async def send_updates_to_all(self):
         try:
