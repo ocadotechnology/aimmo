@@ -4,14 +4,11 @@ Module for keeping track of inactivity for a given game.
 
 import asyncio
 import logging
-import os
-import time
 from enum import Enum
-from types import CoroutineType
-from typing import TYPE_CHECKING, List
 
-import aiohttp
 from requests import codes
+from types import CoroutineType
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from simulation.django_communicator import DjangoCommunicator
