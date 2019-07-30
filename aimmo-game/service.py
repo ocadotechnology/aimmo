@@ -132,7 +132,6 @@ class GameAPI(object):
             query = environ["QUERY_STRING"]
             avatar_id = self._find_avatar_id_from_query(sid, query)
             await self.socketio_server.save_session(sid, {"id": avatar_id})
-            self.update_active_users()
             await self.send_updates(sid)
 
         return world_update_on_connect
@@ -141,7 +140,6 @@ class GameAPI(object):
         @self.socketio_server.on("disconnect")
         async def remove_session_id_from_mappings(sid):
             LOGGER.info("Socket disconnected for session id: {}. ".format(sid))
-            self.update_active_users()
 
         return remove_session_id_from_mappings
 
@@ -156,6 +154,7 @@ class GameAPI(object):
             await self.async_map(self.send_updates, socket_ids)
         except KeyError:
             LOGGER.error("No open socket connections")
+        self.update_active_users()
 
     def _find_avatar_id_from_query(self, session_id, query_string):
         """
