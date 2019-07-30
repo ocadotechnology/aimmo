@@ -1,16 +1,10 @@
-import { Scene, Engine } from 'babylonjs'
-import Camera from './camera'
-import Light from './light'
-import Terrain from './terrain'
+import { Scene, Engine, TransformNode, Vector3 } from 'babylonjs'
 
-export default class Environment {
+export default class EnvironmentRenderer {
     scene: Scene
     engine: Engine
     canvas: HTMLCanvasElement
-
-    camera: Camera
-    light: Light
-    terrain: Terrain
+    onTerrainNode: TransformNode
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas
@@ -27,13 +21,8 @@ export default class Environment {
 
         this.scene = new Scene(this.engine)
 
-        this.camera = new Camera()
-        this.light = new Light()
-        this.terrain = new Terrain()
-
-        this.camera.setup(this)
-        this.light.setup(this)
-        this.terrain.setup(this)
+        this.onTerrainNode = new TransformNode('On Terrain', this.scene)
+        this.onTerrainNode.position = new Vector3(0.5, 0, 0.5)
 
         this.engine.runRenderLoop(() => {
             this.scene.render()
@@ -42,6 +31,6 @@ export default class Environment {
 
     windowResized = () => {
         this.engine.resize()
-        this.camera.computeCameraView(this.canvas)
     }
 }
+

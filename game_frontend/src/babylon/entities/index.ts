@@ -1,30 +1,29 @@
-import { Scene, Engine } from 'babylonjs'
 import Obstacle from './obstacle'
-import diff from '../../babylon/helpers'
-import Environment from '../../babylon/environment'
+import diff from '../diff'
+import EnvironmentRenderer from '../environment'
 
 export default class EntityManager {
-    environment: Environment
+    environmentRenderer: EnvironmentRenderer
 
     obstacles: Obstacle
 
-    constructor(environment: Environment) {
-        this.environment = environment
+    constructor(environmentRenderer: EnvironmentRenderer) {
+        this.environmentRenderer = environmentRenderer
     }
 
 
     setup(): void {
         this.obstacles = new Obstacle()
 
-        this.obstacles.setup(this.environment)
+        this.obstacles.setup(this.environmentRenderer)
     }
 
-    onGameStateUpdate(prevGameState: any, currGameState: any): void {
-        var prevObstacleList = []
-        if (prevGameState) {
-            prevObstacleList = prevGameState.obstacles
+    onGameStateUpdate(previousGameState: any, currentGameState: any): void {
+        var previousObstacleList = []
+        if (previousGameState) {
+            previousObstacleList = previousGameState.obstacles
         }
-        const obstacleDiff = diff(prevObstacleList, currGameState.obstacles)
+        const obstacleDiff = diff(previousObstacleList, currentGameState.obstacles)
         this.obstacles.onGameStateUpdate(obstacleDiff)
     }
 }

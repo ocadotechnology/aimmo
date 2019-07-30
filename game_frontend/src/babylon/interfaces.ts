@@ -1,7 +1,7 @@
-import Environment from './environment';
+import EnvironmentRenderer from './environment';
 
 export interface GameNode {
     object: any
-    setup(environment: Environment): void
+    setup(environmentRenderer: EnvironmentRenderer): void
     onGameStateUpdate(gameState: any): void
 }

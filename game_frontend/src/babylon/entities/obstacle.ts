@@ -1,17 +1,17 @@
 import { GameNode } from '../interfaces'
 import * as BABYLON from 'babylonjs'
-import { ADD, DELETE } from '../helpers'
-import Environment from '../../babylon/environment'
+import { EDIT, DELETE } from '../diff'
+import EnvironmentRenderer from '../environment'
 
 export default class Obstacle implements GameNode {
     object: any
     scene: BABYLON.Scene
     obstacleNode: BABYLON.TransformNode
 
-    setup(environment: Environment): void {
-        this.scene = environment.scene
-        this.obstacleNode = new BABYLON.TransformNode('Obstacle Parent', environment.scene)
-        this.obstacleNode.parent = environment.terrain.onTerrainNode
+    setup(environmentRenderer: EnvironmentRenderer): void {
+        this.scene = environmentRenderer.scene
+        this.obstacleNode = new BABYLON.TransformNode('Obstacle Parent', environmentRenderer.scene)
+        this.obstacleNode.parent = environmentRenderer.onTerrainNode
     }
 
     onGameStateUpdate(obstacleDiff: any): void {
@@ -27,8 +27,17 @@ export default class Obstacle implements GameNode {
                 )
                 toDelete[0].dispose()
             }
+            // Edit an obstacle (move it)
+            else if (obstacle.updateType === EDIT) {
+                const toEdit = this.obstacleNode.getChildMeshes(true,
+                    function (node): boolean {
+                        return node.name === `obstacle: ${updatedObstacle}`
+                    }
+                )
+                toEdit[0].position = new BABYLON.Vector3(obstacle.object.location.x, 0, obstacle.object.location.y)
+            }
             // Add an obstacle
-            else if (obstacle.updateType === ADD) {
+            else {
                 // Create mesh
                 const box = BABYLON.MeshBuilder.CreateBox(`obstacle: ${updatedObstacle}`, { height: 1 }, this.scene)
 
@@ -41,15 +50,6 @@ export default class Obstacle implements GameNode {
                 box.parent = this.obstacleNode
                 box.position = new BABYLON.Vector3(obstacle.object.location.x, 0.5, obstacle.object.location.y)
                 box.setPivotMatrix(BABYLON.Matrix.Translation(0, -0.5, 0))
-            }
-            // Edit an obstacle (move it)
-            else {
-                const toEdit = this.obstacleNode.getChildMeshes(true,
-                    function (node): boolean {
-                        return node.name === `obstacle: ${updatedObstacle}`
-                    }
-                )
-                toEdit[0].position = new BABYLON.Vector3(obstacle.object.location.x, 0, obstacle.object.location.y)
             }
         }
     }
