@@ -1,5 +1,6 @@
 import { GameNode } from '../interfaces'
 import * as BABYLON from 'babylonjs'
+import Environment from '../../babylon/environment'
 
 const ZOOM_LOWER_BOUND = 5
 const ZOOM_UPPER_BOUND = 15
@@ -9,8 +10,8 @@ export default class Camera implements GameNode {
     frustum: number;
     zoom_factor: number;
 
-    onSceneMount(scene: BABYLON.Scene, canvas: HTMLCanvasElement, engine: BABYLON.Engine): void {
-        const camera = new BABYLON.ArcRotateCamera('camera1', 0, 0.785, 50, BABYLON.Vector3.Zero(), scene)
+    setup(environment: Environment): void {
+        const camera = new BABYLON.ArcRotateCamera('camera1', 0, 0.785, 50, BABYLON.Vector3.Zero(), environment.scene)
         this.frustum = 7.5
         this.zoom_factor = 0
         this.object = camera
@@ -34,11 +35,11 @@ export default class Camera implements GameNode {
 
         camera.setTarget(BABYLON.Vector3.Zero())
 
-        camera.attachControl(canvas, true, false, 0)
+        camera.attachControl(environment.canvas, true, false, 0)
 
-        this.computeCameraView(canvas)
+        this.computeCameraView(environment.canvas)
 
-        this.addZoomListener(scene, canvas)
+        this.addZoomListener(environment.scene, environment.canvas)
     }
 
     addZoomListener(scene: BABYLON.Scene, canvas: HTMLCanvasElement) {

@@ -1,4 +1,11 @@
-export default function arrayDiff(previous: Array<any>, current: Array<any>): Array<any> {
+import { isEqual } from 'lodash';
+
+
+export const ADD = "A"
+export const DELETE = "D"
+export const EDIT = "E"
+
+export default function diff(previous: Array<any>, current: Array<any>): Array<any> {
     let createDiffObject = function (element: any, type: string) {
         return { object: element, updateType: type }
     }
@@ -8,19 +15,19 @@ export default function arrayDiff(previous: Array<any>, current: Array<any>): Ar
     // If there is no previous array, simply tell them to add everything in the new one.
     if (!previous.length) {
         for (let element of current)
-            finalDiff.push(createDiffObject(element, "A"))
+            finalDiff.push(createDiffObject(element, ADD))
         return finalDiff
     }
 
     // Goes through every differing element, if the index exists in both lists, mark as Edit.
     // If the element only exists in the previous list, mark as a delete.
     for (let index in previous) {
-        if (!isEquivalent(previous[index], current[index])) {
+        if (!isEqual(previous[index], current[index])) {
             if (previous[index] != current[index] && current[index] !== undefined) {
-                finalDiff.push(createDiffObject(current[index], "E"))
+                finalDiff.push(createDiffObject(current[index], EDIT))
             }
             else {
-                finalDiff.push(createDiffObject(previous[index], "D"))
+                finalDiff.push(createDiffObject(previous[index], DELETE))
             }
         }
     }

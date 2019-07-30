@@ -1,25 +1,22 @@
-import { Scene, Engine, TransformNode } from 'babylonjs'
+import { Scene, Engine } from 'babylonjs'
 import Obstacle from './obstacle'
-import arrayDiff from '../../babylon/helpers'
+import diff from '../../babylon/helpers'
+import Environment from '../../babylon/environment'
 
 export default class EntityManager {
-    scene: Scene
-    engine: Engine
-    canvas: HTMLCanvasElement
+    environment: Environment
 
     obstacles: Obstacle
 
-    constructor(canvas: HTMLCanvasElement, engine: Engine, scene: Scene) {
-        this.canvas = canvas
-        this.engine = engine
-        this.scene = scene
+    constructor(environment: Environment) {
+        this.environment = environment
     }
 
 
-    onSceneMount(scene: Scene, canvas: HTMLCanvasElement, engine: Engine, onTerrainNode: TransformNode): void {
+    setup(): void {
         this.obstacles = new Obstacle()
 
-        this.obstacles.onSceneMount(this.scene, canvas, engine, onTerrainNode)
+        this.obstacles.setup(this.environment)
     }
 
     onGameStateUpdate(prevGameState: any, currGameState: any): void {
@@ -27,7 +24,7 @@ export default class EntityManager {
         if (prevGameState) {
             prevObstacleList = prevGameState.obstacles
         }
-        const obstacleDiff = arrayDiff(prevObstacleList, currGameState.obstacles)
+        const obstacleDiff = diff(prevObstacleList, currGameState.obstacles)
         this.obstacles.onGameStateUpdate(obstacleDiff)
     }
 }

@@ -17,8 +17,8 @@ export default class GameView extends Component {
   componentDidMount() {
     this.environment = new Environment(this.canvas)
     this.environment.setup()
-    this.entities = new EntityManager(this.canvas, this.environment.engine, this.environment.scene)
-    this.entities.onSceneMount(this.environment.scene, this.environment.canvas, this.environment.engine, this.environment.terrain.onTerrainNode)
+    this.entities = new EntityManager(this.environment)
+    this.entities.setup()
 
     // Resize the babylon engine when the window is resized
     window.addEventListener('resize', this.environment.windowResized)

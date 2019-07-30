@@ -31,9 +31,9 @@ export default class Environment {
         this.light = new Light()
         this.terrain = new Terrain()
 
-        this.camera.onSceneMount(this.scene, this.canvas, this.engine)
-        this.light.onSceneMount(this.scene, this.canvas, this.engine)
-        this.terrain.onSceneMount(this.scene, this.canvas, this.engine)
+        this.camera.setup(this)
+        this.light.setup(this)
+        this.terrain.setup(this)
 
         this.engine.runRenderLoop(() => {
             this.scene.render()

@@ -18,7 +18,7 @@ babylon
 │   ├── index.ts
 │   ├── obstacle.ts
 │   ├── avatar.ts
-│   └── interactables.ts
+│   └── interactable.ts
 │
 └── interfaces.ts
 ```
