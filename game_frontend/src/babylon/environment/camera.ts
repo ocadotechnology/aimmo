@@ -3,6 +3,10 @@ import * as BABYLON from 'babylonjs'
 
 const ZOOM_LOWER_BOUND = 5
 const ZOOM_UPPER_BOUND = 15
+const ZOOM_COEFFICIENT = 20
+
+const PANNING_SENSITITY = 4
+const MAXIMUM_PANNING_SENSIBILITY = 130
 
 export default class Camera implements GameNode {
     object: any;
@@ -42,16 +46,16 @@ export default class Camera implements GameNode {
     }
 
     addZoomListener(scene: BABYLON.Scene, canvas: HTMLCanvasElement) {
-        scene.onPrePointerObservable.add((pointerInfo, eventState) => {
-            var event = pointerInfo.event instanceof WheelEvent ? pointerInfo.event : undefined
+        scene.onPrePointerObservable.add(pointerInfo => {
+            const event = pointerInfo.event instanceof WheelEvent ? pointerInfo.event : undefined
             if (event) {
-                var delta = 0
+                let delta = 0
                 if (event.deltaY) {
                     delta = event.deltaY
                 }
 
                 if (delta) {
-                    this.zoom_factor += delta / 20
+                    this.zoom_factor += delta / ZOOM_COEFFICIENT
 
                     if (this.zoom_factor + this.frustum >= ZOOM_UPPER_BOUND) {
                         this.zoom_factor = ZOOM_UPPER_BOUND - this.frustum
@@ -67,7 +71,7 @@ export default class Camera implements GameNode {
     }
 
     updatePanningSensibility() {
-        this.object.panningSensibility = -4 * (this.frustum + this.zoom_factor) + 130
+        this.object.panningSensibility = -PANNING_SENSITITY * (this.frustum + this.zoom_factor) + MAXIMUM_PANNING_SENSIBILITY
     }
 
     computeCameraView(canvas: HTMLCanvasElement): void {
