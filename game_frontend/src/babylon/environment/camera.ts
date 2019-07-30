@@ -43,24 +43,25 @@ export default class Camera implements GameNode {
 
     addZoomListener(scene: BABYLON.Scene, canvas: HTMLCanvasElement) {
         scene.onPrePointerObservable.add((pointerInfo, eventState) => {
-            var event = pointerInfo.event
-            var delta = 0
-            if (event.wheelDelta) {
-                delta = event.wheelDelta
-            } else if (event.detail) {
-                delta = -event.detail
-            }
-            if (delta) {
-                this.zoom_factor += delta / 20
-
-                if (this.zoom_factor + this.frustum >= ZOOM_UPPER_BOUND) {
-                    this.zoom_factor = ZOOM_UPPER_BOUND - this.frustum
-                } else if (this.zoom_factor + this.frustum <= ZOOM_LOWER_BOUND) {
-                    this.zoom_factor = ZOOM_LOWER_BOUND - this.frustum
+            var event = pointerInfo.event instanceof WheelEvent ? pointerInfo.event : undefined
+            if (event) {
+                var delta = 0
+                if (event.deltaY) {
+                    delta = event.deltaY
                 }
 
-                this.computeCameraView(canvas)
-                this.updatePanningSensibility()
+                if (delta) {
+                    this.zoom_factor += delta / 20
+
+                    if (this.zoom_factor + this.frustum >= ZOOM_UPPER_BOUND) {
+                        this.zoom_factor = ZOOM_UPPER_BOUND - this.frustum
+                    } else if (this.zoom_factor + this.frustum <= ZOOM_LOWER_BOUND) {
+                        this.zoom_factor = ZOOM_LOWER_BOUND - this.frustum
+                    }
+
+                    this.computeCameraView(canvas)
+                    this.updatePanningSensibility()
+                }
             }
         }, BABYLON.PointerEventTypes.POINTERWHEEL, false)
     }
