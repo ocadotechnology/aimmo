@@ -32,40 +32,41 @@ communicator = DjangoCommunicator(
 activity_monitor = ActivityMonitor(communicator)
 
 
-def app_setup(should_clean_token=True, should_start_prometheus=True):
+def setup_application(should_clean_token=True):
     async def clean_token():
         LOGGER.info("Cleaning token!")
         await communicator.patch_token(data={"token": ""})
 
-    app = web.Application()
-
-    if should_start_prometheus:
-        wsgi_handler = WSGIHandler(make_wsgi_app())
-        app.add_routes([web.get("/{path_info:metrics}", wsgi_handler)])
+    application = web.Application()
 
     if should_clean_token:
-        app.on_shutdown.append(clean_token)
+        application.on_shutdown.append(clean_token)
 
-    app.on_shutdown.append(communicator.close_session)
+    application.on_shutdown.append(communicator.close_session)
 
-    return app
+    return application
+
+
+def setup_prometheus():
+    wsgi_handler = WSGIHandler(make_wsgi_app())
+    app.add_routes([web.get("/{path_info:metrics}", wsgi_handler)])
 
 
 def socketIO_setup(
-    app, client_manager_class=socketio.AsyncManager, async_handlers=True
+    application, client_manager_class=socketio.AsyncManager, async_handlers=True
 ):
     socket_server = socketio.AsyncServer(
         client_manager=client_manager_class(), async_handlers=async_handlers
     )
 
     socket_server.attach(
-        app, socketio_path=os.environ.get("SOCKETIO_RESOURCE", "socket.io")
+        application, socketio_path=os.environ.get("SOCKETIO_RESOURCE", "socket.io")
     )
 
     return socket_server
 
 
-app = app_setup()
+app = setup_application()
 cors = aiohttp_cors.setup(app)
 
 socketio_server = socketIO_setup(app)
@@ -76,10 +77,10 @@ class GameAPI(object):
     routes = web.RouteTableDef()
 
     def __init__(
-        self, game_state, worker_manager, web_app=app, socketio_server2=socketio_server
+        self, game_state, worker_manager, application=app, server=socketio_server
     ):
-        self.app = web_app
-        self.socketio_server = socketio_server2
+        self.app = application
+        self.socketio_server = server
         self.register_endpoints()
         self.worker_manager = worker_manager
         self.game_state = game_state
@@ -139,8 +140,7 @@ class GameAPI(object):
     def register_remove_session_id_from_mappings(self):
         @self.socketio_server.on("disconnect")
         async def remove_session_id_from_mappings(sid):
-            print(f"This is a disconnect: {sid}")
-            LOGGER.info("Socket disconnected for session id:{}. ".format(sid))
+            LOGGER.info("Socket disconnected for session id: {}. ".format(sid))
             self.update_active_users()
 
         return remove_session_id_from_mappings
@@ -232,8 +232,9 @@ if __name__ == "__main__":
     asyncio.ensure_future(initialize_game_token(communicator))
     run_game(port)
 
+    setup_prometheus()
+
     logging.getLogger("socketio").setLevel(logging.ERROR)
     logging.getLogger("engineio").setLevel(logging.ERROR)
     LOGGER.info("starting the server")
-    LOGGER.info(app.router)
     web.run_app(app, host=host, port=port)

@@ -39,7 +39,7 @@ def sid():
 
 @pytest.fixture
 def app():
-    return service.app_setup(should_clean_token=False, should_start_prometheus=False)
+    return service.setup_application(should_clean_token=False, should_start_prometheus=False)
 
 
 @pytest.fixture
