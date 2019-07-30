@@ -39,7 +39,7 @@ def sid():
 
 @pytest.fixture
 def app():
-    return service.setup_application(should_clean_token=False, should_start_prometheus=False)
+    return service.setup_application(should_clean_token=False)
 
 
 @pytest.fixture
@@ -58,8 +58,8 @@ def game_api(app, socketio_server, game_id):
     return service.GameAPI(
         game_state=game_runner.game_state,
         worker_manager=game_runner.worker_manager,
-        web_app=app,
-        socketio_server2=socketio_server,
+        application=app,
+        server=socketio_server,
     )
 
 
