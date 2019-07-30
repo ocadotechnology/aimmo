@@ -8,7 +8,7 @@ export const GameViewLayout = styled.div`
 `
 
 export default class GameView extends Component {
-  componentDidMount () {
+  componentDidMount() {
     this.environment = new Environment(this.canvas)
     this.environment.setup()
 
@@ -16,7 +16,7 @@ export default class GameView extends Component {
     window.addEventListener('resize', this.environment.windowResized)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     window.removeEventListener('resize', this.environment.windowResized)
   }
 
@@ -26,9 +26,10 @@ export default class GameView extends Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <GameViewLayout>
+        <img src="/static/images/compass.svg" />
         <canvas
           style={{ width: '100%', height: '100%' }}
           ref={this.onCanvasLoaded}
