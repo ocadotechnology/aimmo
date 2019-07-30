@@ -44,7 +44,7 @@ def app():
 
 @pytest.fixture
 def socketio_server(app):
-    return service.socketIO_setup(app, async_handlers=False)
+    return service.setup_socketIO_server(app, async_handlers=False)
 
 
 @pytest.fixture

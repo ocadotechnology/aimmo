@@ -52,7 +52,7 @@ def setup_prometheus():
     app.add_routes([web.get("/{path_info:metrics}", wsgi_handler)])
 
 
-def socketIO_setup(
+def setup_socketIO_server(
     application, client_manager_class=socketio.AsyncManager, async_handlers=True
 ):
     socket_server = socketio.AsyncServer(
@@ -69,7 +69,7 @@ def socketIO_setup(
 app = setup_application()
 cors = aiohttp_cors.setup(app)
 
-socketio_server = socketIO_setup(app)
+socketio_server = setup_socketIO_server(app)
 
 
 class GameAPI(object):
