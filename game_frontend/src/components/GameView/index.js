@@ -31,8 +31,8 @@ export default class GameView extends Component {
       <GameViewLayout>
         <img src="/static/images/compass.png" style={{
           position: "absolute",
-          bottom: "10px",
-          left: "10px",
+          bottom: "2%",
+          left: "51%",
           zIndex: 100000
         }} />
         <canvas
