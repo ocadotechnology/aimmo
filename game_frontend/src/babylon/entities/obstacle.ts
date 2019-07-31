@@ -8,13 +8,13 @@ export default class Obstacle implements GameNode {
   scene: BABYLON.Scene
   obstacleNode: BABYLON.TransformNode
 
-  setup(environment: Environment): void {
+  setup (environment: Environment): void {
     this.scene = environment.scene
     this.obstacleNode = new BABYLON.TransformNode('Obstacle Parent', environment.scene)
     this.obstacleNode.parent = environment.onTerrainNode
   }
 
-  onGameStateUpdate(obstacleDiff: DiffResult): void {
+  onGameStateUpdate (obstacleDiff: DiffResult): void {
     for (let obstacle of obstacleDiff.deleteList) {
       this.deleteObstacle(obstacleDiff.deleteList.indexOf(obstacle))
     }
@@ -26,7 +26,7 @@ export default class Obstacle implements GameNode {
     }
   }
 
-  deleteObstacle(index: any): void {
+  deleteObstacle (index: any): void {
     const toDelete = this.obstacleNode.getChildMeshes(true,
       function (node): boolean {
         return node.name === `obstacle: ${index}`
@@ -35,7 +35,7 @@ export default class Obstacle implements GameNode {
     toDelete[0].dispose()
   }
 
-  editObstacle(index: any, obstacle: any): void {
+  editObstacle (index: any, obstacle: any): void {
     const toEdit = this.obstacleNode.getChildMeshes(true,
       function (node): boolean {
         return node.name === `obstacle: ${index}`
@@ -44,7 +44,7 @@ export default class Obstacle implements GameNode {
     toEdit[0].position = new BABYLON.Vector3(obstacle.location.x, 0, obstacle.location.y)
   }
 
-  addObstacle(index: any, obstacle: any): void {
+  addObstacle (index: any, obstacle: any): void {
     // Create mesh
     const box = BABYLON.MeshBuilder.CreateBox(`obstacle: ${index}`, { height: 1 }, this.scene)
 
