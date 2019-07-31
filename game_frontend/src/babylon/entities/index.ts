@@ -1,21 +1,21 @@
 import Obstacle from './obstacle'
 import diff from '../diff'
-import EnvironmentRenderer from '../environment'
+import Environment from '../environment/environment';
 
 export default class EntityManager {
-    environmentRenderer: EnvironmentRenderer
+    environment: Environment
 
     obstacles: Obstacle
 
-    constructor(environmentRenderer: EnvironmentRenderer) {
-        this.environmentRenderer = environmentRenderer
+    constructor(environment: Environment) {
+        this.environment = environment
     }
 
 
     setup(): void {
         this.obstacles = new Obstacle()
 
-        this.obstacles.setup(this.environmentRenderer)
+        this.obstacles.setup(this.environment)
     }
 
     onGameStateUpdate(previousGameState: any, currentGameState: any): void {

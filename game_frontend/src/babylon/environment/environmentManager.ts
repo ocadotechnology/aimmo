@@ -1,28 +1,28 @@
 import Camera from './camera'
 import Light from './light'
 import Terrain from './terrain'
-import EnvironmentRenderer from '.';
+import Environment from './environment';
 
 export default class EnvironmentManager {
     camera: Camera
     light: Light
     terrain: Terrain
-    environmentRenderer: EnvironmentRenderer
+    environment: Environment
 
-    setup(environmentRenderer: EnvironmentRenderer): void {
-        this.environmentRenderer = environmentRenderer
+    setup(environment: Environment): void {
+        this.environment = environment
 
         this.camera = new Camera()
         this.light = new Light()
         this.terrain = new Terrain()
 
-        this.camera.setup(environmentRenderer)
-        this.light.setup(environmentRenderer)
-        this.terrain.setup(environmentRenderer)
+        this.camera.setup(environment)
+        this.light.setup(environment)
+        this.terrain.setup(environment)
     }
 
     windowResized = () => {
-        this.camera.computeCameraView(this.environmentRenderer.canvas)
+        this.camera.computeCameraView(this.environment.canvas)
     }
 }
 

@@ -1,36 +1,20 @@
-import { Scene, Engine, TransformNode, Vector3 } from 'babylonjs'
+import Environment from '../environment/environment';
 
-export default class EnvironmentRenderer {
-    scene: Scene
-    engine: Engine
-    canvas: HTMLCanvasElement
-    onTerrainNode: TransformNode
+export default class SceneRenderer {
+    environment: Environment
 
-    constructor(canvas: HTMLCanvasElement) {
-        this.canvas = canvas
+    constructor(environment: Environment) {
+        this.environment = environment
     }
 
-
     setup(): void {
-        this.engine = new Engine(
-            this.canvas,
-            true,
-            {},
-            true
-        )
-
-        this.scene = new Scene(this.engine)
-
-        this.onTerrainNode = new TransformNode('On Terrain', this.scene)
-        this.onTerrainNode.position = new Vector3(0.5, 0, 0.5)
-
-        this.engine.runRenderLoop(() => {
-            this.scene.render()
+        this.environment.engine.runRenderLoop(() => {
+            this.environment.scene.render()
         })
     }
 
     windowResized = () => {
-        this.engine.resize()
+        this.environment.engine.resize()
     }
 }
 

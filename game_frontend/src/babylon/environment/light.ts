@@ -1,13 +1,13 @@
 import { GameNode } from '../interfaces'
 import { HemisphericLight, Vector3 } from 'babylonjs'
-import EnvironmentRenderer from '.'
+import Environment from '../environment/environment';
 
 
 export default class Light implements GameNode {
     object: any;
 
-    setup(environmentRenderer: EnvironmentRenderer): void {
-        const light = new HemisphericLight('light1', new Vector3(0, 1, 0), environmentRenderer.scene)
+    setup(environment: Environment): void {
+        const light = new HemisphericLight('light1', new Vector3(0, 1, 0), environment.scene)
         this.object = light
 
         light.intensity = 1.45
