@@ -7,23 +7,22 @@ export default class EntityManager {
 
     obstacles: Obstacle
 
-    constructor(environment: Environment) {
-        this.environment = environment
+    constructor (environment: Environment) {
+      this.environment = environment
     }
 
+    setup (): void {
+      this.obstacles = new Obstacle()
 
-    setup(): void {
-        this.obstacles = new Obstacle()
-
-        this.obstacles.setup(this.environment)
+      this.obstacles.setup(this.environment)
     }
 
-    onGameStateUpdate(previousGameState: any, currentGameState: any): void {
-        var previousObstacleList = []
-        if (previousGameState) {
-            previousObstacleList = previousGameState.obstacles
-        }
-        const obstacleDiff = diff(previousObstacleList, currentGameState.obstacles)
-        this.obstacles.onGameStateUpdate(obstacleDiff)
+    onGameStateUpdate (previousGameState: any, currentGameState: any): void {
+      var previousObstacleList = []
+      if (previousGameState) {
+        previousObstacleList = previousGameState.obstacles
+      }
+      const obstacleDiff = diff(previousObstacleList, currentGameState.obstacles)
+      this.obstacles.onGameStateUpdate(obstacleDiff)
     }
 }
