@@ -5,13 +5,14 @@ const ZOOM_LOWER_BOUND = 5
 const ZOOM_UPPER_BOUND = 15
 const ZOOM_COEFFICIENT = 20
 
-const PANNING_SENSITITY = 4
+const PANNING_SENSITITY = 6
 const MAXIMUM_PANNING_SENSIBILITY = 130
 
 export default class Camera implements GameNode {
-    object: any;
-    frustum: number;
-    zoom_factor: number;
+    object: any
+    frustum: number
+    zoom_factor: number
+    view: BABYLON.Vector2
 
     onSceneMount(scene: BABYLON.Scene, canvas: HTMLCanvasElement, engine: BABYLON.Engine): void {
         const camera = new BABYLON.ArcRotateCamera('camera1', 0, 0.785, 50, BABYLON.Vector3.Zero(), scene)
@@ -30,8 +31,7 @@ export default class Camera implements GameNode {
         camera.lowerBetaLimit = Math.PI / 4
         camera.upperRadiusLimit = 50
         camera.lowerRadiusLimit = 50
-        camera.panningInertia = 0.2
-        camera.panningSensibility = 40
+        camera.panningInertia = 0
         camera.angularSensibilityX = 20
         camera.angularSensibilityY = 20
         camera.panningDistanceLimit = 20
@@ -41,6 +41,7 @@ export default class Camera implements GameNode {
         camera.attachControl(canvas, true, false, 0)
 
         this.computeCameraView(canvas)
+        this.updatePanningSensibility()
 
         this.addZoomListener(scene, canvas)
     }
@@ -71,17 +72,19 @@ export default class Camera implements GameNode {
     }
 
     updatePanningSensibility() {
-        this.object.panningSensibility = -PANNING_SENSITITY * (this.frustum + this.zoom_factor) + MAXIMUM_PANNING_SENSIBILITY
+        this.object.panningSensibility = -PANNING_SENSITITY
+            * (this.frustum + this.zoom_factor)
+            + MAXIMUM_PANNING_SENSIBILITY
     }
 
     computeCameraView(canvas: HTMLCanvasElement): void {
-        const view = new BABYLON.Vector2(canvas.width, canvas.height)
-        view.normalize()
+        this.view = new BABYLON.Vector2(canvas.width, canvas.height)
+        this.view.normalize()
 
-        this.object.orthoTop = (this.frustum + this.zoom_factor) * view.y
-        this.object.orthoBottom = -(this.frustum + this.zoom_factor) * view.y
-        this.object.orthoLeft = -(this.frustum + this.zoom_factor) * view.x
-        this.object.orthoRight = (this.frustum + this.zoom_factor) * view.x
+        this.object.orthoTop = (this.frustum + this.zoom_factor) * this.view.y
+        this.object.orthoBottom = -(this.frustum + this.zoom_factor) * this.view.y
+        this.object.orthoLeft = -(this.frustum + this.zoom_factor) * this.view.x
+        this.object.orthoRight = (this.frustum + this.zoom_factor) * this.view.x
     }
 
     onGameStateUpdate(): void { }
