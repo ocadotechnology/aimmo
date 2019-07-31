@@ -17,7 +17,7 @@ describe('diff', () => {
 
     var difference = diff(previous, current)
 
-    expect(difference).toEqual({ addList: [{ 3: 'c', originalIndex: '2' }], deleteList: [], editList: [] })
+    expect(difference).toEqual({ addList: [{ 3: 'c', id: '2' }], deleteList: [], editList: [] })
   })
 
   it('returns add changes if initial array is empty', () => {
@@ -26,7 +26,7 @@ describe('diff', () => {
 
     var difference = diff(previous, current)
 
-    expect(difference).toEqual({ addList: [{ 1: 'a', originalIndex: '0' }, { 2: 'b', originalIndex: '1' }], deleteList: [], editList: [] })
+    expect(difference).toEqual({ addList: [{ 1: 'a', id: '0' }, { 2: 'b', id: '1' }], deleteList: [], editList: [] })
   })
 
   it('returns delete changes if elements have been removed', () => {
@@ -35,7 +35,7 @@ describe('diff', () => {
 
     var difference = diff(previous, current)
 
-    expect(difference).toEqual({ addList: [], deleteList: [{ 2: 'b', originalIndex: '1' }], editList: [] })
+    expect(difference).toEqual({ addList: [], deleteList: [{ 2: 'b', id: '1' }], editList: [] })
   })
 
   it('returns edit changes if elements have been changed', () => {
@@ -44,6 +44,6 @@ describe('diff', () => {
 
     var difference = diff(previous, current)
 
-    expect(difference).toEqual({ addList: [], deleteList: [], editList: [{ 2: 'c', originalIndex: '1' }] })
+    expect(difference).toEqual({ addList: [], deleteList: [], editList: [{ 2: 'c', id: '1' }] })
   })
 })
