@@ -2,6 +2,17 @@
 
 exports[`<GameView /> matches snapshot 1`] = `
 <styled.div>
+  <img
+    src="/static/images/compass.svg"
+    style={
+      Object {
+        "bottom": "1%",
+        "left": "51%",
+        "position": "absolute",
+        "zIndex": 100000,
+      }
+    }
+  />
   <canvas
     style={
       Object {
