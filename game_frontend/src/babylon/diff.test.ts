@@ -2,48 +2,48 @@
 import diff from './diff'
 
 describe('diff', () => {
-  it('returns nothing if arrays are equal', () => {
-    var previous = [1, 2, 3, 4, 5]
-    var current = [1, 2, 3, 4, 5]
+    it('returns nothing if arrays are equal', () => {
+        var previous = [{ 1: 'a' }, { 2: 'b' }]
+        var current = [{ 1: 'a' }, { 2: 'b' }]
 
-    var difference = diff(previous, current)
+        var difference = diff(previous, current)
 
-    expect(difference).toEqual({ addList: [], deleteList: [], editList: [] })
-  })
+        expect(difference).toEqual({ addList: [], deleteList: [], editList: [] })
+    })
 
-  it('returns add changes if elements have been added', () => {
-    var previous = [1, 2, 3]
-    var current = [1, 2, 3, 4]
+    it('returns add changes if elements have been added', () => {
+        var previous = [{ 1: 'a' }, { 2: 'b' }]
+        var current = [{ 1: 'a' }, { 2: 'b' }, { 3: 'c' }]
 
-    var difference = diff(previous, current)
+        var difference = diff(previous, current)
 
-    expect(difference).toEqual({ addList: [4], deleteList: [], editList: [] })
-  })
+        expect(difference).toEqual({ addList: [{ 3: 'c', originalIndex: '2' }], deleteList: [], editList: [] })
+    })
 
-  it('returns add changes if initial array is empty', () => {
-    var previous = []
-    var current = [1, 2]
+    it('returns add changes if initial array is empty', () => {
+        var previous = []
+        var current = [{ 1: 'a' }, { 2: 'b' }]
 
-    var difference = diff(previous, current)
+        var difference = diff(previous, current)
 
-    expect(difference).toEqual({ addList: [1, 2], deleteList: [], editList: [] })
-  })
+        expect(difference).toEqual({ addList: [{ 1: 'a', originalIndex: '0' }, { 2: 'b', originalIndex: '1' }], deleteList: [], editList: [] })
+    })
 
-  it('returns delete changes if elements have been removed', () => {
-    var previous = [1, 2]
-    var current = [1]
+    it('returns delete changes if elements have been removed', () => {
+        var previous = [{ 1: 'a' }, { 2: 'b' }]
+        var current = [{ 1: 'a' }]
 
-    var difference = diff(previous, current)
+        var difference = diff(previous, current)
 
-    expect(difference).toEqual({ addList: [], deleteList: [2], editList: [] })
-  })
+        expect(difference).toEqual({ addList: [], deleteList: [{ 2: 'b', originalIndex: '1' }], editList: [] })
+    })
 
-  it('returns edit changes if elements have been changed', () => {
-    var previous = [{ 1: 'a' }, { 2: 'b' }]
-    var current = [{ 1: 'a' }, { 2: 'c' }]
+    it('returns edit changes if elements have been changed', () => {
+        var previous = [{ 1: 'a' }, { 2: 'b' }]
+        var current = [{ 1: 'a' }, { 2: 'c' }]
 
-    var difference = diff(previous, current)
+        var difference = diff(previous, current)
 
-    expect(difference).toEqual({ addList: [], deleteList: [], editList: [{ 2: 'c' }] })
-  })
+        expect(difference).toEqual({ addList: [], deleteList: [], editList: [{ 2: 'c', originalIndex: '1' }] })
+    })
 })
