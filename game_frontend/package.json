@@ -63,7 +63,7 @@
     ]
   },
   "scripts": {
-    "lint-typescript": "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin src/babylon/**/*.ts",
+    "lint-typescript": "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin **/*.ts",
     "test": "jest"
   }
 }
