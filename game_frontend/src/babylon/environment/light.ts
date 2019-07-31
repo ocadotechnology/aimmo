@@ -1,6 +1,6 @@
 import { GameNode } from '../interfaces'
 import { HemisphericLight, Vector3 } from 'babylonjs'
-import Environment from '../environment/environment';
+import Environment from '../environment/environment'
 
 
 export default class Light implements GameNode {

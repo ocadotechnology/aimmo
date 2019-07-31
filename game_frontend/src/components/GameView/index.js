@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import EntityManager from '../../babylon/entities'
 import SceneRenderer from '../../babylon/environment'
 import EnvironmentManager from '../../babylon/environment/environmentManager'
-import Environment from '../../babylon/environment/environment';
+import Environment from '../../babylon/environment/environment'
 
 export const GameViewLayout = styled.div`
   grid-area: game-view;

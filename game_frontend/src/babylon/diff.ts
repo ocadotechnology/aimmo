@@ -36,8 +36,23 @@ export default function diff(previous: Array<any>, current: Array<any>): Array<a
     // previous as an add.
     if (previous.length - current.length < 0) {
         for (let leftovers = previous.length; leftovers < current.length; leftovers++) {
-            finalDiff.push(createDiffObject(current[leftovers], "A"))
+            finalDiff.push(createDiffObject(current[leftovers], ADD))
         }
     }
-    return finalDiff
+
+    return orderDiff(finalDiff)
+}
+
+function orderDiff(diff: Array<any>): Array<any> {
+    const toAdd = diff.filter(function (item: any): boolean {
+        return (item.updateType === ADD)
+    })
+    const toDelete = diff.filter(function (item: any): boolean {
+        return (item.updateType === DELETE)
+    })
+    const toEdit = diff.filter(function (item: any): boolean {
+        return (item.updateType === EDIT)
+    })
+
+    return toDelete.concat(toEdit.concat(toAdd))
 }

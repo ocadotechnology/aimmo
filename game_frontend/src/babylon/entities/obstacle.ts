@@ -1,6 +1,6 @@
 import { GameNode } from '../interfaces'
 import * as BABYLON from 'babylonjs'
-import { ADD, EDIT, DELETE } from '../diff'
+import { EDIT, DELETE } from '../diff'
 import Environment from '../environment/environment';
 
 export default class Obstacle implements GameNode {
@@ -15,29 +15,20 @@ export default class Obstacle implements GameNode {
     }
 
     onGameStateUpdate(obstacleDiff: any): void {
-        const toAdd = obstacleDiff.filter(function (item: any): boolean {
-            return (item.updateType === ADD)
-        })
-        const toDelete = obstacleDiff.filter(function (item: any): boolean {
-            return (item.updateType === DELETE)
-        })
-        const toEdit = obstacleDiff.filter(function (item: any): boolean {
-            return (item.updateType === EDIT)
-        })
-
-
-        // Delete obstacles
-        for (let obstacle of toDelete)
-            this.deleteObstacle(obstacleDiff.indexOf(obstacle))
-
-        // Edit obstacles
-        for (let obstacle of toEdit)
-            this.editObstacle(obstacleDiff.indexOf(obstacle), obstacle)
-
-
-        // Add obstacles
-        for (let obstacle of toAdd)
-            this.addObstacle(obstacleDiff.indexOf(obstacle), obstacle)
+        for (let obstacle of obstacleDiff) {
+            // Delete obstacles
+            if (obstacle.updateType === DELETE) {
+                this.deleteObstacle(obstacleDiff.indexOf(obstacle))
+            }
+            // Edit obstacles
+            else if (obstacle.updateType === EDIT) {
+                this.editObstacle(obstacleDiff.indexOf(obstacle), obstacle)
+            }
+            // Add obstacles
+            else {
+                this.addObstacle(obstacleDiff.indexOf(obstacle), obstacle)
+            }
+        }
     }
 
     deleteObstacle(index: any): void {
