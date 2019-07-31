@@ -56,9 +56,14 @@
     "webfontloader": "^1.6.28"
   },
   "standard": {
-    "parser": "babel-eslint"
+    "parser": "babel-eslint",
+    "globals": [
+      "HTMLCanvasElement",
+      "WheelEvent"
+    ]
   },
   "scripts": {
+    "lint-typescript": "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin src/babylon/**/*.ts",
     "test": "jest"
   }
 }
