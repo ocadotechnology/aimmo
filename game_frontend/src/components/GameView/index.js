@@ -29,7 +29,12 @@ export default class GameView extends Component {
   render() {
     return (
       <GameViewLayout>
-        <img src="/static/images/compass.svg" />
+        <img src="/static/images/compass.png" style={{
+          position: "absolute",
+          bottom: "10px",
+          left: "10px",
+          zIndex: 100000
+        }} />
         <canvas
           style={{ width: '100%', height: '100%' }}
           ref={this.onCanvasLoaded}
