@@ -8,42 +8,42 @@ describe('diff', () => {
 
         var difference = diff(previous, current)
 
-        expect(difference).toEqual([])
+        expect(difference).toEqual({ addList: [], deleteList: [], editList: [] })
     })
 
-    it('returns A type changes if elements have been added', () => {
+    it('returns add changes if elements have been added', () => {
         var previous = [1, 2, 3]
         var current = [1, 2, 3, 4]
 
         var difference = diff(previous, current)
 
-        expect(difference).toEqual([{ object: 4, updateType: "A" }])
+        expect(difference).toEqual({ addList: [4], deleteList: [], editList: [] })
     })
 
-    it('returns A type changes if initial array is empty', () => {
+    it('returns add changes if initial array is empty', () => {
         var previous = []
         var current = [1, 2]
 
         var difference = diff(previous, current)
 
-        expect(difference).toEqual([{ object: 1, updateType: "A" }, { object: 2, updateType: "A" }])
+        expect(difference).toEqual({ addList: [1, 2], deleteList: [], editList: [] })
     })
 
-    it('returns D type changes if elements have been removed', () => {
+    it('returns delete changes if elements have been removed', () => {
         var previous = [1, 2]
         var current = [1]
 
         var difference = diff(previous, current)
 
-        expect(difference).toEqual([{ object: 2, updateType: "D" }])
+        expect(difference).toEqual({ addList: [], deleteList: [2], editList: [] })
     })
 
-    it('returns E type changes if elements have been changed', () => {
+    it('returns edit changes if elements have been changed', () => {
         var previous = [{ 1: "a" }, { 2: "b" }]
         var current = [{ 1: "a" }, { 2: "c" }]
 
         var difference = diff(previous, current)
 
-        expect(difference).toEqual([{ object: { 2: "c" }, updateType: "E" }])
+        expect(difference).toEqual({ addList: [], deleteList: [], editList: [{ 2: "c" }] })
     })
 })

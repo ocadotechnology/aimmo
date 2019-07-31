@@ -5,54 +5,48 @@ export const ADD = "A"
 export const DELETE = "D"
 export const EDIT = "E"
 
-export default function diff(previous: Array<any>, current: Array<any>): Array<any> {
-    let createDiffObject = function (element: any, type: string) {
-        return { object: element, updateType: type }
+export class DiffResult {
+    addList: Array<any>
+    deleteList: Array<any>
+    editList: Array<any>
+
+    constructor(toAdd: Array<any>, toDelete: Array<any>, toEdit: Array<any>) {
+        this.addList = toAdd
+        this.deleteList = toDelete
+        this.editList = toEdit
     }
+}
 
-    var finalDiff = []
+export default function diff(previous: Array<any>, current: Array<any>): any {
+    var diffResult = new DiffResult([], [], [])
 
-    // If there is no previous array, simply tell them to add everything in the new one.
+    // If there is no previous array, simply tell them to add everything in a new one.
     if (!previous.length) {
         for (let element of current)
-            finalDiff.push(createDiffObject(element, ADD))
-        return finalDiff
+            diffResult.addList.push(element)
+        return diffResult
     }
 
-    // Goes through every differing element, if the index exists in both lists, mark as Edit.
-    // If the element only exists in the previous list, mark as a delete.
+    // Goes through every differing element, if the index exists in both lists, add to Edit.
+    // If the element only exists in the previous list, add to Delete.
     for (let index in previous) {
         if (!isEqual(previous[index], current[index])) {
             if (previous[index] != current[index] && current[index] !== undefined) {
-                finalDiff.push(createDiffObject(current[index], EDIT))
+                diffResult.editList.push(current[index])
             }
             else {
-                finalDiff.push(createDiffObject(previous[index], DELETE))
+                diffResult.deleteList.push(previous[index])
             }
         }
     }
 
-    // If our current is longer than our previous, mark everything in current that's not in
-    // previous as an add.
+    // If our current is longer than our previous, add everything in current that's not in
+    // previous to add.
     if (previous.length - current.length < 0) {
         for (let leftovers = previous.length; leftovers < current.length; leftovers++) {
-            finalDiff.push(createDiffObject(current[leftovers], ADD))
+            diffResult.addList.push(current[leftovers])
         }
     }
 
-    return orderDiff(finalDiff)
-}
-
-function orderDiff(diff: Array<any>): Array<any> {
-    const toAdd = diff.filter(function (item: any): boolean {
-        return (item.updateType === ADD)
-    })
-    const toDelete = diff.filter(function (item: any): boolean {
-        return (item.updateType === DELETE)
-    })
-    const toEdit = diff.filter(function (item: any): boolean {
-        return (item.updateType === EDIT)
-    })
-
-    return toDelete.concat(toEdit.concat(toAdd))
+    return diffResult
 }
