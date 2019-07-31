@@ -29,7 +29,7 @@ export default class GameView extends Component {
   render() {
     return (
       <GameViewLayout>
-        <img src="/static/images/compass.png" style={{
+        <img src="/static/images/compass.svg" style={{
           position: "absolute",
           bottom: "1%",
           left: "51%",
