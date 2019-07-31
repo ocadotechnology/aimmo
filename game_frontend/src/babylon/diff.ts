@@ -5,15 +5,15 @@ export const DELETE = 'D'
 export const EDIT = 'E'
 
 export class DiffResult {
-    addList: Array<any>
-    deleteList: Array<any>
-    editList: Array<any>
+  addList: Array<any>
+  deleteList: Array<any>
+  editList: Array<any>
 
-    constructor (toAdd: Array<any>, toDelete: Array<any>, toEdit: Array<any>) {
-      this.addList = toAdd
-      this.deleteList = toDelete
-      this.editList = toEdit
-    }
+  constructor (toAdd: Array<any>, toDelete: Array<any>, toEdit: Array<any>) {
+    this.addList = toAdd
+    this.deleteList = toDelete
+    this.editList = toEdit
+  }
 }
 
 export default function diff (previous: Array<any>, current: Array<any>): any {
@@ -24,7 +24,7 @@ export default function diff (previous: Array<any>, current: Array<any>): any {
     for (let [index, element] of Object.entries(current)) {
       diffResult.addList.push({
         ...element,
-        originalIndex: index
+        id: index
       })
     }
     return diffResult
@@ -37,12 +37,12 @@ export default function diff (previous: Array<any>, current: Array<any>): any {
       if (previous[index] !== current[index] && current[index] !== undefined) {
         diffResult.editList.push({
           ...current[index],
-          originalIndex: index
+          id: index
         })
       } else {
         diffResult.deleteList.push({
           ...element,
-          originalIndex: index
+          id: index
         })
       }
     }
@@ -55,7 +55,7 @@ export default function diff (previous: Array<any>, current: Array<any>): any {
       if (+index >= previous.length) {
         diffResult.addList.push({
           ...element,
-          originalIndex: index
+          id: index
         })
       }
     }
