@@ -7,6 +7,7 @@ import actions from './actions'
 import { actions as editorActions } from 'features/Editor'
 import api from 'api'
 import { delay, mapTo } from 'rxjs/operators'
+import { actions as analyticActions } from 'redux/features/Analytics'
 
 const deepEquals = (actual, expected) =>
   expect(actual).toEqual(expected)
@@ -298,6 +299,46 @@ describe('avatarUpdatingTimeoutEpic', () => {
       const output$ = epics.avatarUpdatingTimeoutEpic(action$, state$, {}, testScheduler)
 
       expectObservable(output$).toBe('----', {})
+    })
+  })
+})
+
+describe('gameLoadedIntervalEpic', () => {
+  it('measures the time taken for the game to load and sends a corresponding analytic event', () => {
+    const testScheduler = createTestScheduler()
+
+    testScheduler.run(({ hot, cold, expectObservable }) => {
+      const action$ = hot('-------a-', {
+        a: actions.gameDataLoaded()
+      })
+
+      const state$ = null
+      const output$ = epics.gameLoadedIntervalEpic(action$, state$, {}, testScheduler)
+
+      expectObservable(output$).toBe('-------b-', {
+        b: analyticActions.sendAnalyticsTimingEvent('Kurono', 'Load', 'Game', 7)
+      })
+    })
+  })
+})
+
+describe('codeUpdatingIntervalEpic', () => {
+  it('measures the time taken for users code to update successfully and sends a corresponding analytic event', () => {
+    const testScheduler = createTestScheduler()
+
+    testScheduler.run(({ hot, cold, expectObservable }) => {
+      const action$ = hot('--a-b--a--b-', {
+        a: editorActions.postCodeRequest(),
+        b: actions.socketFeedbackAvatarUpdatedSuccess()
+      })
+
+      const state$ = null
+      const output$ = epics.codeUpdatingIntervalEpic(action$, state$, {}, testScheduler)
+
+      expectObservable(output$).toBe('----c-----d-', {
+        c: analyticActions.sendAnalyticsTimingEvent('Kurono', 'Update', 'User code', 2, true),
+        d: analyticActions.sendAnalyticsTimingEvent('Kurono', 'Update', 'User code', 3, true)
+      })
     })
   })
 })

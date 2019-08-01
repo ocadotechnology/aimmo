@@ -30,6 +30,10 @@ def add_actions_to_globals():
         restricted_globals[action_class[0]] = action_class[1]
 
 
+def safe_getitem(l, idx):
+    return l[idx]
+
+
 _getattr_ = safer_getattr
 _setattr_ = guarded_setattr
 _write_ = full_write_guard
@@ -43,6 +47,8 @@ restricted_globals["_getiter_"] = list
 restricted_globals["_write_"] = _write_
 restricted_globals["__metaclass__"] = __metaclass__
 restricted_globals["__name__"] = "Avatar"
+restricted_globals["_getitem_"] = safe_getitem
+
 
 # Adds AI:MMO specific modules to the user's environment
 add_actions_to_globals()
@@ -96,7 +102,6 @@ class CodeUpdater:
         module = imp.new_module(
             "avatar"
         )  # Create a temporary module to execute the src_code in
-        module.__dict__.update(self.globals)
 
         try:
             byte_code = compile_restricted(
@@ -106,5 +111,5 @@ class CodeUpdater:
         except SyntaxWarning as w:
             pass
 
-        module.__dict__["Avatar"] = self.globals["Avatar"]
-        return module.Avatar()
+        module.__dict__.update(self.globals)
+        return module

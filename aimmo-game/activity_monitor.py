@@ -4,13 +4,14 @@ Module for keeping track of inactivity for a given game.
 
 import asyncio
 import logging
-import os
-import time
 from enum import Enum
-from types import CoroutineType
 
-import aiohttp
 from requests import codes
+from types import CoroutineType
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from simulation.django_communicator import DjangoCommunicator
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -32,19 +33,22 @@ class ActivityMonitor:
     of time, the game is marked as stopped and the pods will be shut down shortly after
     """
 
-    def __init__(self):
+    def __init__(self, django_communicator: "DjangoCommunicator"):
         self.timer = Timer(
             SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
         )
         self.active_users = 0
+        self.django_communicator = django_communicator
 
     def _start_timer(self):
         if self.timer.cancelled():
+            LOGGER.info("No socket connections found. Timer started!")
             self.timer = Timer(
                 SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
             )
 
     def _stop_timer(self):
+        LOGGER.info("Cancelling timer!")
         self.timer.cancel()
 
     @property
@@ -61,17 +65,12 @@ class ActivityMonitor:
 
     async def change_status_to_stopped(self):
         LOGGER.info("Timer expired! Marking game as STOPPED")
-        api_url = os.environ.get(
-            "GAME_API_URL", "http://localhost:8000/aimmo/api/games/"
+        response = await self.django_communicator.patch_game(
+            {"status": StatusOptions.STOPPED.value}
         )
-        async with aiohttp.ClientSession() as session:
-            async with session.patch(
-                api_url,
-                data={"status": StatusOptions.STOPPED.value},
-                headers={"Game-token": os.environ["TOKEN"]},
-            ) as response:
-                if response.status != codes["ok"]:
-                    LOGGER.error(f"Game could not be stopped. {response}")
+
+        if response.status != codes["ok"]:
+            LOGGER.error(f"Game could not be stopped. {response}")
 
 
 class Timer:

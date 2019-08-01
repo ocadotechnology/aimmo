@@ -1,7 +1,6 @@
-import json
 import logging
+from asyncio import CancelledError
 
-import requests
 from aiohttp import ClientResponseError, ClientSession
 
 LOGGER = logging.getLogger(__name__)
@@ -40,6 +39,9 @@ class Worker(object):
                 self.has_code_updated = data["avatar_updated"]
         except ClientResponseError:
             LOGGER.info("Could not connect to worker, probably not ready yet")
+            self._set_defaults()
+        except CancelledError as e:
+            LOGGER.error("Worker took too long to respond: {}".format(e))
             self._set_defaults()
         except KeyError as e:
             LOGGER.error("Missing key in data from worker: {}".format(e))

@@ -1,7 +1,8 @@
 from json import dumps
 
-import mock
 import pytest
+
+import mock
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.game_runner import GameRunner
 from simulation.game_state import GameState
@@ -42,11 +43,10 @@ def game_runner():
     game_runner = GameRunner(
         game_state_generator=lambda avatar_manager: game_state,
         port="0000",
-        django_api_url="http://test",
+        communicator=MockCommunicator(),
         worker_manager_class=MockWorkerManager,
     )
 
-    game_runner.communicator = MockCommunicator()
     game_runner.set_end_turn_callback(mock_callback)
     return game_runner
 

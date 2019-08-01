@@ -1,15 +1,18 @@
-import asyncio
+import os
 import os
 import random
 import string
-from unittest import TestCase, mock
+from unittest import mock
 
 import pytest
-import service
-from asynctest import CoroutineMock
-from simulation.game_runner import GameRunner
+import socketio
 
+import service
+from simulation.game_runner import GameRunner
+from .test_simulation.mock_communicator import MockCommunicator
 from .test_simulation.mock_worker_manager import MockWorkerManager
+
+TIME_TO_PROCESS_SOME_EVENT_LOOP = 0.1
 
 
 class MockGameState(object):
@@ -19,255 +22,228 @@ class MockGameState(object):
         return {"foo": "bar"}
 
 
-class MockedSocketIOServer(mock.MagicMock):
-    """ Decorator function that just returns the function. Needed because we decorate
-        functions in the GameAPI."""
-
-    def on(self, event):
-        def decorator(func):
-            def wrapper(*args, **kwargs):
-                func(*args, **kwargs)
-
-            return wrapper
-
-        return decorator
+@pytest.fixture
+def game_id():
+    os.environ["GAME_ID"] = "1"
+    yield
+    del os.environ["GAME_ID"]
 
 
-class TestSocketIO:
-    def setup_method(self, method):
-        os.environ["GAME_ID"] = "1"
-        self.environ = {"QUERY_STRING": "avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"}
-        self.game_api = self.create_game_api()
-        self.mocked_mappings = self.game_api._socket_session_id_to_player_id
-        self.sid = "".join(
-            random.choice(
-                string.ascii_uppercase + string.ascii_lowercase + string.digits
-            )
-            for _ in range(19)
-        )
+@pytest.fixture
+def sid():
+    return "".join(
+        random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)
+        for _ in range(19)
+    )
 
-    def teardown_method(self, method):
-        del os.environ["GAME_ID"]
 
-    @mock.patch("docker.from_env")
-    @mock.patch("service.app")
-    def create_game_api(self, app, docker_from_env):
-        game_runner = GameRunner(
-            game_state_generator=lambda avatar_manager: MockGameState(),
-            django_api_url="http://test",
-            port="0000",
-            worker_manager_class=MockWorkerManager,
-        )
-        return service.GameAPI(
-            game_state=game_runner.game_state, worker_manager=game_runner.worker_manager
-        )
+@pytest.fixture
+def app():
+    return service.setup_application(should_clean_token=False)
 
-    @pytest.mark.asyncio
-    @mock.patch("service.app")
-    @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
-    async def test_socketio_emit_called(self, mocked_socketio, app):
-        self.game_api.worker_manager.add_new_worker(1)
 
-        await self.game_api.register_world_update_on_connect()(self.sid, self.environ)
+@pytest.fixture
+def socketio_server(app):
+    return service.setup_socketIO_server(app, async_handlers=False)
 
-        assert mocked_socketio.manager.emit.mockreturn_value.emit.assert_called_once
 
-    @pytest.mark.asyncio
-    @mock.patch("service.app")
-    @mock.patch("service.socketio_server.emit", new_callable=CoroutineMock())
-    @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
-    async def test_matched_session_id_to_avatar_id_mapping(
-        self, mocked_socketio, mocked_emit, app
-    ):
-        assert len(self.mocked_mappings) == 0
+@pytest.fixture
+def game_api(app, socketio_server, game_id):
+    game_runner = GameRunner(
+        game_state_generator=lambda avatar_manager: MockGameState(),
+        communicator=MockCommunicator(),
+        port="0000",
+        worker_manager_class=MockWorkerManager,
+    )
+    return service.GameAPI(
+        game_state=game_runner.game_state,
+        worker_manager=game_runner.worker_manager,
+        application=app,
+        server=socketio_server,
+    )
 
-        self.game_api.worker_manager.add_new_worker(1)
-        await self.game_api.register_world_update_on_connect()(self.sid, self.environ),
 
-        assert len(self.mocked_mappings) == 1
-        assert self.sid in self.mocked_mappings
-        assert int(self.mocked_mappings[self.sid]) == 1
+@pytest.fixture
+def client(app, aiohttp_client, loop):
+    return loop.run_until_complete(aiohttp_client(app))
 
-    @pytest.mark.asyncio
-    @mock.patch("service.app")
-    @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
-    async def test_no_match_session_id_to_avatar_id_mapping(self, mocked_socketio, app):
-        self.environ["QUERY_STRING"] = "corrupted!@$%string123"
 
-        assert len(self.mocked_mappings) == 0
+async def test_socketio_emit_called(game_api, socketio_server, client, loop):
+    socketio_client = socketio.AsyncClient(reconnection=False)
+    mock_game_state_listener = mock.MagicMock()
 
-        self.game_api.worker_manager.add_new_worker(1)
+    game_api.worker_manager.add_new_worker(1)
 
-        await self.game_api.register_world_update_on_connect()(self.sid, self.environ),
+    socketio_client.on("game-state", mock_game_state_listener)
 
-        assert len(self.mocked_mappings) == 0
-        assert not self.sid in self.mocked_mappings
+    await socketio_client.connect(
+        f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
+    )
 
-    @pytest.mark.asyncio
-    @mock.patch("service.app")
-    @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
-    async def test_send_updates_for_one_user(self, mocked_socketio, app):
-        self.mocked_mappings[self.sid] = 1
-        self.game_api.worker_manager.add_new_worker(self.mocked_mappings[self.sid])
-        worker = self.game_api.worker_manager.player_id_to_worker[
-            self.mocked_mappings[self.sid]
-        ]
-        worker.log = "Logs one"
+    await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
+    await socketio_client.disconnect()
 
-        with mock.patch(
-            "service.socketio_server.emit", new=CoroutineMock()
-        ) as mocked_emit:
-            await self.game_api.send_updates()
+    mock_game_state_listener.assert_called_once()
 
-            game_state_call = mock.call("game-state", {"foo": "bar"}, room=self.sid)
-            log_call = mock.call(
-                "log", {"message": "Logs one", "turn_count": 0}, room=self.sid
-            )
 
-            mocked_emit.assert_has_calls([game_state_call, log_call], any_order=True)
+async def test_send_updates_for_one_user(game_api, client, socketio_server, loop):
+    socketio_client = socketio.AsyncClient(reconnection=False)
+    mock_log_listener = mock.MagicMock()
 
-    @pytest.mark.asyncio
-    @mock.patch("service.app")
-    @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
-    async def test_no_logs_not_emitted(self, mocked_socketio, app):
-        """ If there are no logs for an avatar, no logs should be emitted. """
-        self.mocked_mappings[self.sid] = 1
-        self.game_api.worker_manager.add_new_worker(self.mocked_mappings[self.sid])
+    game_api.worker_manager.add_new_worker(1)
 
-        with mock.patch(
-            "service.socketio_server.emit", new=CoroutineMock()
-        ) as mocked_emit:
-            await self.game_api.send_updates()
+    socketio_client.on("log", mock_log_listener)
 
-            mocked_emit.assert_called_once_with(
-                "game-state", {"foo": "bar"}, room=self.sid
-            )
+    worker = game_api.worker_manager.player_id_to_worker[1]
+    worker.log = "Logs one"
 
-    @pytest.mark.asyncio
-    @mock.patch("service.app")
-    @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
-    async def test_empty_logs_not_emitted(self, mocked_socketio, app):
-        """ If the logs are an empty sting, no logs should be emitted. """
-        self.mocked_mappings[self.sid] = 1
+    await socketio_client.connect(
+        f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
+    )
 
-        self.game_api.worker_manager.add_new_worker(self.mocked_mappings[self.sid])
-        worker = self.game_api.worker_manager.player_id_to_worker[
-            self.mocked_mappings[self.sid]
-        ]
-        worker.logs = ""
+    await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
+    await socketio_client.disconnect()
 
-        with mock.patch(
-            "service.socketio_server.emit", new=CoroutineMock()
-        ) as mocked_emit:
-            await self.game_api.send_updates()
+    mock_log_listener.assert_has_calls(
+        [mock.call({"message": "Logs one", "turn_count": 0})]
+    )
 
-            mocked_emit.assert_called_once_with(
-                "game-state", {"foo": "bar"}, room=self.sid
-            )
 
-    @pytest.mark.asyncio
-    @mock.patch("service.app")
-    @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
-    async def test_send_updates_for_multiple_users(self, mocked_socketio, app):
-        self.mocked_mappings[self.sid] = 1
-        self.mocked_mappings["differentsid"] = 2
+async def test_no_logs_not_emitted(game_api, client, socketio_server, loop):
+    """ If there are no logs for an avatar, no logs should be emitted. """
+    socketio_client = socketio.AsyncClient(reconnection=False)
+    mock_log_listener = mock.MagicMock()
 
-        self.game_api.worker_manager.add_new_worker(self.mocked_mappings[self.sid])
-        self.game_api.worker_manager.add_new_worker(
-            self.mocked_mappings["differentsid"]
-        )
-        worker_one = self.game_api.worker_manager.player_id_to_worker[
-            self.mocked_mappings[self.sid]
-        ]
-        worker_two = self.game_api.worker_manager.player_id_to_worker[
-            self.mocked_mappings["differentsid"]
-        ]
-        worker_one.log = "Logs one"
-        worker_two.log = "Logs two"
+    game_api.worker_manager.add_new_worker(1)
 
-        with mock.patch(
-            "service.socketio_server.emit", new=CoroutineMock()
-        ) as mocked_emit:
-            await self.game_api.send_updates()
+    socketio_client.on("log", mock_log_listener)
 
-            user_one_game_state_call = mock.call(
-                "game-state", {"foo": "bar"}, room=self.sid
-            )
-            user_two_game_state_call = mock.call(
-                "game-state", {"foo": "bar"}, room="differentsid"
-            )
-            user_one_log_call = mock.call(
-                "log", {"message": "Logs one", "turn_count": 0}, room=self.sid
-            )
-            user_two_log_call = mock.call(
-                "log", {"message": "Logs two", "turn_count": 0}, room="differentsid"
-            )
+    await socketio_client.connect(
+        f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
+    )
 
-            mocked_emit.assert_has_calls(
-                [
-                    user_one_game_state_call,
-                    user_two_game_state_call,
-                    user_one_log_call,
-                    user_two_log_call,
-                ],
-                any_order=True,
-            )
+    await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
+    await socketio_client.disconnect()
 
-    @pytest.mark.asyncio
-    @mock.patch("service.app")
-    @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
-    async def test_send_code_changed_flag(self, mocked_socketio, app):
-        self.mocked_mappings[self.sid] = 1
-        self.game_api.worker_manager.add_new_worker(self.mocked_mappings[self.sid])
-        worker = self.game_api.worker_manager.player_id_to_worker[
-            self.mocked_mappings[self.sid]
-        ]
-        worker.has_code_updated = True
+    mock_log_listener.assert_not_called()
 
-        with mock.patch(
-            "service.socketio_server.emit", new=CoroutineMock()
-        ) as mocked_emit:
-            await self.game_api.send_updates()
 
-            user_game_state_call = mock.call(
-                "game-state", {"foo": "bar"}, room=self.sid
-            )
-            user_game_code_changed_call = mock.call(
-                "feedback-avatar-updated", {}, room=self.sid
-            )
+async def test_empty_logs_not_emitted(game_api, client, socketio_server, loop):
+    """ If the logs are an empty sting, no logs should be emitted. """
+    socketio_client = socketio.AsyncClient(reconnection=False)
+    mock_log_listener = mock.MagicMock()
 
-            mocked_emit.assert_has_calls(
-                [user_game_state_call, user_game_code_changed_call], any_order=True
-            )
+    game_api.worker_manager.add_new_worker(1)
 
-    @pytest.mark.asyncio
-    @mock.patch("service.app")
-    @mock.patch("service.socketio_server", new_callable=MockedSocketIOServer)
-    async def test_send_false_flag_not_sent(self, mocked_socketio, app):
-        self.mocked_mappings[self.sid] = 1
-        self.game_api.worker_manager.add_new_worker(self.mocked_mappings[self.sid])
-        worker = self.game_api.worker_manager.player_id_to_worker[
-            self.mocked_mappings[self.sid]
-        ]
-        worker.has_code_updated = False
+    socketio_client.on("log", mock_log_listener)
 
-        with mock.patch(
-            "service.socketio_server.emit", new=CoroutineMock()
-        ) as mocked_emit:
-            await self.game_api.send_updates()
+    worker = game_api.worker_manager.player_id_to_worker[1]
+    worker.log = ""
 
-            mocked_emit.assert_called_once_with(
-                "game-state", {"foo": "bar"}, room=self.sid
-            )
+    await socketio_client.connect(
+        f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
+    )
 
-    @pytest.mark.asyncio
-    async def test_remove_session_id_on_disconnect(self):
-        self.mocked_mappings[self.sid] = 1
-        assert len(self.mocked_mappings) == 1
-        assert self.sid in self.mocked_mappings
-        assert self.mocked_mappings[self.sid] == 1
+    await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
+    await socketio_client.disconnect()
 
-        await self.game_api.register_remove_session_id_from_mappings()(sid=self.sid)
+    mock_log_listener.assert_not_called()
 
-        assert self.sid not in self.mocked_mappings
-        assert len(self.mocked_mappings) == 0
+
+async def test_send_updates_for_multiple_users(game_api, client, socketio_server, loop):
+    socketio_client = socketio.AsyncClient(reconnection=False)
+    socketio_client2 = socketio.AsyncClient(reconnection=False)
+    mock_log_listener = mock.MagicMock()
+    mock_log_listener2 = mock.MagicMock()
+
+    game_api.worker_manager.add_new_worker(1)
+    game_api.worker_manager.add_new_worker(2)
+
+    socketio_client.on("log", mock_log_listener)
+    socketio_client2.on("log", mock_log_listener2)
+
+    worker = game_api.worker_manager.player_id_to_worker[1]
+    worker2 = game_api.worker_manager.player_id_to_worker[2]
+    worker.log = "Logs one"
+    worker2.log = "Logs two"
+
+    await socketio_client.connect(
+        f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
+    )
+
+    await socketio_client2.connect(
+        f"http://{client.server.host}:{client.server.port}?avatar_id=2&EIO=3&transport=polling&t=MJhoMgb"
+    )
+
+    await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
+    await socketio_client.disconnect()
+    await socketio_client2.disconnect()
+
+    mock_log_listener.assert_has_calls(
+        [mock.call({"message": "Logs one", "turn_count": 0})]
+    )
+    mock_log_listener2.assert_has_calls(
+        [mock.call({"message": "Logs two", "turn_count": 0})]
+    )
+
+
+async def test_send_code_changed_flag(game_api, client, socketio_server, loop):
+    socketio_client = socketio.AsyncClient(reconnection=False)
+    mock_avatar_updated_listener = mock.MagicMock()
+
+    game_api.worker_manager.add_new_worker(1)
+
+    socketio_client.on("feedback-avatar-updated", mock_avatar_updated_listener)
+
+    worker = game_api.worker_manager.player_id_to_worker[1]
+    worker.has_code_updated = True
+
+    await socketio_client.connect(
+        f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
+    )
+
+    await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
+    await socketio_client.disconnect()
+
+    mock_avatar_updated_listener.assert_called_once()
+
+
+async def test_send_false_flag_not_sent(game_api, client, socketio_server, loop):
+    socketio_client = socketio.AsyncClient(reconnection=False)
+    mock_avatar_updated_listener = mock.MagicMock()
+
+    game_api.worker_manager.add_new_worker(1)
+
+    socketio_client.on("feedback-avatar-updated", mock_avatar_updated_listener)
+
+    worker = game_api.worker_manager.player_id_to_worker[1]
+    worker.has_code_updated = False
+
+    await socketio_client.connect(
+        f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
+    )
+
+    await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
+    await socketio_client.disconnect()
+
+    mock_avatar_updated_listener.assert_not_called()
+
+
+async def test_remove_session_id_on_disconnect(game_api, client, socketio_server, loop):
+    socketio_client = socketio.AsyncClient(reconnection=False)
+
+    game_api.worker_manager.add_new_worker(1)
+
+    await socketio_client.connect(
+        f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
+    )
+
+    await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
+
+    assert len(socketio_server.eio.sockets) == 1
+
+    await socketio_client.disconnect()
+
+    await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
+
+    assert len(socketio_server.eio.sockets) == 0
