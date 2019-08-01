@@ -147,9 +147,12 @@ class GameAPI(object):
         return remove_session_id_from_mappings
 
     async def send_updates(self, sid):
-        await self._send_have_avatars_code_updated(sid)
-        await self._send_game_state(sid)
-        await self._send_logs(sid)
+        try:
+            await self._send_have_avatars_code_updated(sid)
+            await self._send_game_state(sid)
+            await self._send_logs(sid)
+        except KeyError:
+            LOGGER.error(f"Failed to send updates. No worker for player in session {sid}")
 
     async def send_updates_to_all(self):
         try:
@@ -181,18 +184,15 @@ class GameAPI(object):
             return bool(logs)
 
         session_data = await self.socketio_server.get_session(sid)
-        try:
-            worker = self.worker_manager.player_id_to_worker[session_data["id"]]
-            avatar_logs = worker.log
+        worker = self.worker_manager.player_id_to_worker[session_data["id"]]
+        avatar_logs = worker.log
 
-            if should_send_logs(avatar_logs):
-                await self.socketio_server.emit(
-                    "log",
-                    {"message": avatar_logs, "turn_count": self.game_state.turn_count},
-                    room=sid,
-                )
-        except KeyError:
-            LOGGER.error(f"Failed to send logs. No worker for player in session {sid}")
+        if should_send_logs(avatar_logs):
+            await self.socketio_server.emit(
+                "log",
+                {"message": avatar_logs, "turn_count": self.game_state.turn_count},
+                room=sid,
+            )
 
     async def _send_game_state(self, sid):
         serialized_game_state = self.game_state.serialize()
@@ -200,14 +200,9 @@ class GameAPI(object):
 
     async def _send_have_avatars_code_updated(self, sid):
         session_data = await self.socketio_server.get_session(sid)
-        try:
-            worker = self.worker_manager.player_id_to_worker[session_data["id"]]
-            if worker.has_code_updated:
-                await self.socketio_server.emit("feedback-avatar-updated", {}, room=sid)
-        except KeyError:
-            LOGGER.error(
-                f"Failed to send code updated notification. No worker for player in session {sid}"
-            )
+        worker = self.worker_manager.player_id_to_worker[session_data["id"]]
+        if worker.has_code_updated:
+            await self.socketio_server.emit("feedback-avatar-updated", {}, room=sid)
 
 
 def create_runner(port):
