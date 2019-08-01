@@ -1,23 +1,44 @@
 import styled from 'styled-components'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Environment from '../../babylon/environment'
+import EntityManager from '../../babylon/entities'
+import SceneRenderer from '../../babylon/environment'
+import EnvironmentManager from '../../babylon/environment/environmentManager'
+import Environment from '../../babylon/environment/environment'
 
 export const GameViewLayout = styled.div`
   grid-area: game-view;
 `
 
 export default class GameView extends Component {
-  componentDidMount () {
+  constructor(props) {
+    super(props)
+    this.props.connectToGame()
+  }
+
+  componentDidMount() {
     this.environment = new Environment(this.canvas)
     this.environment.setup()
 
+    this.sceneRenderer = new SceneRenderer(this.environment)
+    this.sceneRenderer.setup()
+
+    this.environmentManager = new EnvironmentManager()
+    this.environmentManager.setup(this.environment)
+
+    this.entities = new EntityManager(this.environment)
+    this.entities.setup()
+
     // Resize the babylon engine when the window is resized
-    window.addEventListener('resize', this.environment.windowResized)
+    window.addEventListener('resize', this.sceneRenderer.windowResized)
   }
 
-  componentWillUnmount () {
-    window.removeEventListener('resize', this.environment.windowResized)
+  componentDidUpdate(prevProps) {
+    this.entities.onGameStateUpdate(prevProps.gameState, this.props.gameState)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.sceneRenderer.windowResized)
   }
 
   onCanvasLoaded = canvas => {
@@ -26,7 +47,7 @@ export default class GameView extends Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <GameViewLayout>
         <canvas
@@ -40,5 +61,6 @@ export default class GameView extends Component {
 
 GameView.propTypes = {
   connectToGame: PropTypes.func,
-  gameDataLoaded: PropTypes.bool
+  gameDataLoaded: PropTypes.bool,
+  gameState: PropTypes.object
 }
