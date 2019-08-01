@@ -11,6 +11,7 @@ babylon
 ├── environment
 │   ├── index.ts
 │   ├── camera.ts
+│   ├── environment.ts
 │   ├── environmentManager.ts
 │   ├── light.ts
 │   └── terrain.ts
