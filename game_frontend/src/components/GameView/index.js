@@ -7,11 +7,11 @@ export const GameViewLayout = styled.div`
   grid-area: game-view;
 `
 
-export const StyledSVG = styled.img`
-  position: ${props => props.theme.additionalVariables.compass.position};
-  bottom: ${props => props.theme.additionalVariables.compass.bottom};
-  left: ${props => props.theme.additionalVariables.compass.left};
-  z-index: ${props => props.theme.additionalVariables.compass.zIndex};
+export const Compass = styled.img`
+  position: absolute;
+  bottom: 1%;
+  left: 51%;
+  z-index: 100000;
 `
 
 export default class GameView extends Component {
@@ -36,7 +36,7 @@ export default class GameView extends Component {
   render() {
     return (
       <GameViewLayout>
-        <StyledSVG src="/static/images/compass.svg" />
+        <Compass src="/static/images/compass.svg" />
         <canvas
           style={{ width: '100%', height: '100%' }}
           ref={this.onCanvasLoaded}

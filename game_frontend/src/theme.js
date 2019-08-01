@@ -18,12 +18,6 @@ const additionalVariables = {
   },
   snackbar: {
     borderRadius: '6px'
-  },
-  compass: {
-    position: 'absolute',
-    bottom: '1%',
-    left: '51%',
-    zIndex: 100000
   }
 }
 
