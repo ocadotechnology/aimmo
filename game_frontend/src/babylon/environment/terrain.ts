@@ -1,22 +1,22 @@
 import { GameNode } from '../interfaces'
-import { Mesh, Color3, Scene, Engine, StandardMaterial, Texture } from 'babylonjs'
+import * as BABYLON from 'babylonjs'
+import Environment from '../environment/environment'
 
 export default class Terrain implements GameNode {
     object: any;
 
-    onSceneMount(scene: Scene, canvas: HTMLCanvasElement, engine: Engine): void {
-        const ground = Mesh.CreateTiledGround('terrain', -15, -15, 16, 16, { w: 31, h: 31 }, { w: 1, h: 1 }, scene)
-        this.object = ground
+    setup (environment: Environment): void {
+      const ground = BABYLON.Mesh.CreateTiledGround('terrain', -15, -15, 16, 16, { w: 31, h: 31 }, { w: 1, h: 1 }, environment.scene)
+      this.object = ground
 
-        const mat = new StandardMaterial('Terrain', scene)
-        mat.useReflectionOverAlpha = false
-        mat.diffuseTexture = new Texture('/static/images/terrain_future.jpg', scene)
-        mat.diffuseTexture.level = 1.2
-        mat.specularColor = new Color3(0, 0, 0)
-        mat.ambientColor = Color3.White()
-        ground.material = mat
+      const mat = new BABYLON.StandardMaterial('Terrain', environment.scene)
+      mat.useReflectionOverAlpha = false
+      mat.diffuseTexture = new BABYLON.Texture('/static/images/terrain_future.jpg', environment.scene)
+      mat.diffuseTexture.level = 1.2
+      mat.specularColor = new BABYLON.Color3(0, 0, 0)
+      mat.ambientColor = BABYLON.Color3.White()
+      ground.material = mat
     }
 
-
-    onGameStateUpdate(): void { }
+    onGameStateUpdate (): void { }
 }

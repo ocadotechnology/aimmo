@@ -18,7 +18,7 @@ export class Game extends Component {
     showSnackbar: this.props.showSnackbar
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.showSnackbar !== this.props.showSnackbar) {
       this.setState({
         showSnackbar: nextProps.showSnackbar
@@ -31,12 +31,13 @@ export class Game extends Component {
     this.props.snackbarShown()
   }
 
-  render () {
+  render() {
     return (
       <Fragment>
         <GameView
           connectToGame={this.props.connectToGame}
           gameDataLoaded={this.props.gameDataLoaded}
+          gameState={this.props.gameState}
         />
         <Snackbar
           type='success'
@@ -59,7 +60,8 @@ const mapDispatchToProps = {
 const mapStateToProps = state => ({
   showSnackbar: state.game.showSnackbar,
   snackbarMessage: state.game.snackbarMessage,
-  gameDataLoaded: state.game.gameDataLoaded
+  gameDataLoaded: state.game.gameDataLoaded,
+  gameState: state.game.gameState
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game)

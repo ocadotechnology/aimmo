@@ -1,7 +1,7 @@
-import { Engine, Scene } from 'babylonjs'
+import Environment from './environment/environment'
 
 export interface GameNode {
-    object: any
-    onSceneMount(scene: Scene, canvas: HTMLCanvasElement, engine: Engine): void
-    onGameStateUpdate(): void
+    object: any;
+    setup(environment: Environment): void;
+    onGameStateUpdate(gameState: any): void;
 }
