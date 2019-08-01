@@ -17,7 +17,7 @@ describe('diff', () => {
 
     var difference = diff(previous, current)
 
-    expect(difference).toEqual({ addList: [{ id: '2', value: { 3: 'c', } }], deleteList: [], editList: [] })
+    expect(difference).toEqual({ addList: [{ id: '2', value: { 3: 'c' } }], deleteList: [], editList: [] })
   })
 
   it('returns add changes if initial array is empty', () => {
