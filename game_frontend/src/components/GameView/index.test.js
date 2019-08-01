@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import React from 'react'
-import GameView, { GameViewLayout } from 'components/GameView'
+import GameView, { GameViewLayout, Compass } from 'components/GameView'
 import { shallow } from 'enzyme/build/index'
 
 describe('<GameView />', () => {
@@ -18,6 +18,13 @@ describe('<GameView />', () => {
 describe('<GameViewLayout />', () => {
   it('matches snapshot', () => {
     const tree = shallow(<GameViewLayout />)
+    expect(tree).toMatchSnapshot()
+  })
+})
+
+describe('<Compass />', () => {
+  it('matches snapshot', () => {
+    const tree = shallow(<Compass />)
     expect(tree).toMatchSnapshot()
   })
 })

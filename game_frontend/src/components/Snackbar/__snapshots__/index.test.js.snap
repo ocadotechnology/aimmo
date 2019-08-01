@@ -15,12 +15,6 @@ exports[`<Snackbar /> renders correctly with type=error 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
-        "compass": Object {
-          "bottom": "1%",
-          "left": "51%",
-          "position": "absolute",
-          "zIndex": 100000,
-        },
         "snackbar": Object {
           "borderRadius": "6px",
         },
@@ -339,12 +333,6 @@ exports[`<Snackbar /> renders correctly with type=info 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
-        "compass": Object {
-          "bottom": "1%",
-          "left": "51%",
-          "position": "absolute",
-          "zIndex": 100000,
-        },
         "snackbar": Object {
           "borderRadius": "6px",
         },
@@ -663,12 +651,6 @@ exports[`<Snackbar /> renders correctly with type=success 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
-        "compass": Object {
-          "bottom": "1%",
-          "left": "51%",
-          "position": "absolute",
-          "zIndex": 100000,
-        },
         "snackbar": Object {
           "borderRadius": "6px",
         },
@@ -982,12 +964,6 @@ exports[`<Snackbar /> renders correctly with type=warning 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
-        "compass": Object {
-          "bottom": "1%",
-          "left": "51%",
-          "position": "absolute",
-          "zIndex": 100000,
-        },
         "snackbar": Object {
           "borderRadius": "6px",
         },
@@ -1321,12 +1297,6 @@ exports[`<StyledSnackbarContent /> renders correctly 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
-        "compass": Object {
-          "bottom": "1%",
-          "left": "51%",
-          "position": "absolute",
-          "zIndex": 100000,
-        },
         "snackbar": Object {
           "borderRadius": "6px",
         },

@@ -26,12 +26,6 @@ exports[`<StyledConsoleBar /> renders correctly 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
-        "compass": Object {
-          "bottom": "1%",
-          "left": "51%",
-          "position": "absolute",
-          "zIndex": 100000,
-        },
         "snackbar": Object {
           "borderRadius": "6px",
         },
@@ -335,12 +329,6 @@ exports[`<StyledConsoleIcon /> renders correctly 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
-        "compass": Object {
-          "bottom": "1%",
-          "left": "51%",
-          "position": "absolute",
-          "zIndex": 100000,
-        },
         "snackbar": Object {
           "borderRadius": "6px",
         },

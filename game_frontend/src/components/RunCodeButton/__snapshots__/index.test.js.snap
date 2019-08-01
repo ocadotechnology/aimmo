@@ -10,12 +10,6 @@ exports[`<MarginedBugIcon /> matches snapshot 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
-        "compass": Object {
-          "bottom": "1%",
-          "left": "51%",
-          "position": "absolute",
-          "zIndex": 100000,
-        },
         "snackbar": Object {
           "borderRadius": "6px",
         },
@@ -320,12 +314,6 @@ exports[`<MarginedCheckCircle /> matches snapshot 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
-        "compass": Object {
-          "bottom": "1%",
-          "left": "51%",
-          "position": "absolute",
-          "zIndex": 100000,
-        },
         "snackbar": Object {
           "borderRadius": "6px",
         },
@@ -630,12 +618,6 @@ exports[`<MarginedCircularProgress /> matches snapshot 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
-        "compass": Object {
-          "bottom": "1%",
-          "left": "51%",
-          "position": "absolute",
-          "zIndex": 100000,
-        },
         "snackbar": Object {
           "borderRadius": "6px",
         },
@@ -940,12 +922,6 @@ exports[`<MarginedPlayIcon /> matches snapshot 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
-        "compass": Object {
-          "bottom": "1%",
-          "left": "51%",
-          "position": "absolute",
-          "zIndex": 100000,
-        },
         "snackbar": Object {
           "borderRadius": "6px",
         },

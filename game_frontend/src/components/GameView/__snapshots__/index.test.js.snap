@@ -1,5 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`<Compass /> matches snapshot 1`] = `
+.c0 {
+  position: absolute;
+  bottom: 1%;
+  left: 51%;
+  z-index: 100000;
+}
+
+<img
+  className="c0"
+/>
+`;
+
 exports[`<GameView /> matches snapshot 1`] = `
 <styled.div>
   <styled.img
