@@ -42,11 +42,13 @@ class ActivityMonitor:
 
     def _start_timer(self):
         if self.timer.cancelled():
+            LOGGER.info("No socket connections found. Timer started!")
             self.timer = Timer(
                 SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
             )
 
     def _stop_timer(self):
+        LOGGER.info("Cancelling timer!")
         self.timer.cancel()
 
     @property

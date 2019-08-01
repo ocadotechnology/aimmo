@@ -33,7 +33,7 @@ activity_monitor = ActivityMonitor(communicator)
 
 
 def setup_application(should_clean_token=True):
-    async def clean_token():
+    async def clean_token(app):
         LOGGER.info("Cleaning token!")
         await communicator.patch_token(data={"token": ""})
 
@@ -96,14 +96,16 @@ class GameAPI(object):
         self.register_healthcheck()
         self.app.add_routes(self.routes)
 
-    def open_connections(self):
+    def open_connections_number(self):
         try:
-            return self.socketio_server.manager.get_participants("/", None)
+            return len(
+                [x for x in self.socketio_server.manager.get_participants("/", None)]
+            )
         except KeyError:
-            return None
+            return 0
 
     def update_active_users(self):
-        activity_monitor.active_users = len(self.socketio_server.eio.sockets)
+        activity_monitor.active_users = self.open_connections_number()
 
     def register_healthcheck(self):
         @self.routes.get("/game-{game_id}")
@@ -129,6 +131,7 @@ class GameAPI(object):
     def register_world_update_on_connect(self):
         @self.socketio_server.on("connect")
         async def world_update_on_connect(sid, environ):
+            LOGGER.info(f"Socket connected for session id: {sid}")
             query = environ["QUERY_STRING"]
             avatar_id = self._find_avatar_id_from_query(sid, query)
             await self.socketio_server.save_session(sid, {"id": avatar_id})
@@ -178,15 +181,18 @@ class GameAPI(object):
             return bool(logs)
 
         session_data = await self.socketio_server.get_session(sid)
-        worker = self.worker_manager.player_id_to_worker[session_data["id"]]
-        avatar_logs = worker.log
+        try:
+            worker = self.worker_manager.player_id_to_worker[session_data["id"]]
+            avatar_logs = worker.log
 
-        if should_send_logs(avatar_logs):
-            await self.socketio_server.emit(
-                "log",
-                {"message": avatar_logs, "turn_count": self.game_state.turn_count},
-                room=sid,
-            )
+            if should_send_logs(avatar_logs):
+                await self.socketio_server.emit(
+                    "log",
+                    {"message": avatar_logs, "turn_count": self.game_state.turn_count},
+                    room=sid,
+                )
+        except KeyError:
+            LOGGER.error(f"Failed to send logs. No worker for player in session {sid}")
 
     async def _send_game_state(self, sid):
         serialized_game_state = self.game_state.serialize()
@@ -194,9 +200,14 @@ class GameAPI(object):
 
     async def _send_have_avatars_code_updated(self, sid):
         session_data = await self.socketio_server.get_session(sid)
-        worker = self.worker_manager.player_id_to_worker[session_data["id"]]
-        if worker.has_code_updated:
-            await self.socketio_server.emit("feedback-avatar-updated", {}, room=sid)
+        try:
+            worker = self.worker_manager.player_id_to_worker[session_data["id"]]
+            if worker.has_code_updated:
+                await self.socketio_server.emit("feedback-avatar-updated", {}, room=sid)
+        except KeyError:
+            LOGGER.error(
+                f"Failed to send code updated notification. No worker for player in session {sid}"
+            )
 
 
 def create_runner(port):
