@@ -2,10 +2,10 @@
 
 exports[`<Compass /> matches snapshot 1`] = `
 .c0 {
-  position: absolute;
-  bottom: 1%;
-  left: 51%;
-  z-index: 100000;
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 8px;
+  padding-left: 8px;
 }
 
 <img
@@ -15,9 +15,6 @@ exports[`<Compass /> matches snapshot 1`] = `
 
 exports[`<GameView /> matches snapshot 1`] = `
 <styled.div>
-  <styled.img
-    src="/static/images/compass.svg"
-  />
   <canvas
     style={
       Object {
@@ -25,6 +22,9 @@ exports[`<GameView /> matches snapshot 1`] = `
         "width": "100%",
       }
     }
+  />
+  <styled.img
+    src="/static/images/compass.svg"
   />
 </styled.div>
 `;

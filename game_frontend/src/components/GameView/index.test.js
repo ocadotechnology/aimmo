@@ -2,6 +2,7 @@
 import React from 'react'
 import GameView, { GameViewLayout, Compass } from 'components/GameView'
 import { shallow } from 'enzyme/build/index'
+import createShallowWithTheme from 'testHelpers/createShallow'
 
 describe('<GameView />', () => {
   it('matches snapshot', () => {
@@ -24,7 +25,7 @@ describe('<GameViewLayout />', () => {
 
 describe('<Compass />', () => {
   it('matches snapshot', () => {
-    const tree = shallow(<Compass />)
+    const tree = createShallowWithTheme(<Compass />)
     expect(tree).toMatchSnapshot()
   })
 })
