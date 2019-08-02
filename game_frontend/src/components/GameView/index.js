@@ -11,10 +11,9 @@ export const GameViewLayout = styled.div`
 `
 
 export const Compass = styled.img`
-  position: absolute;
-  bottom: 1%;
-  left: 51%;
-  z-index: 100000;
+  position: sticky;
+  bottom: ${props => props.theme.spacing()}px;
+  padding-left: ${props => props.theme.spacing()}px;
 `
 
 export default class GameView extends Component {
@@ -22,7 +21,7 @@ export default class GameView extends Component {
     super(props)
     this.props.connectToGame()
   }
-  
+
   componentDidMount() {
     this.environment = new Environment(this.canvas)
     this.environment.setup()
@@ -57,11 +56,11 @@ export default class GameView extends Component {
   render() {
     return (
       <GameViewLayout>
-        <Compass src="/static/images/compass.svg" />
         <canvas
           style={{ width: '100%', height: '100%' }}
           ref={this.onCanvasLoaded}
         />
+        <Compass src="/static/images/compass.svg" />
       </GameViewLayout>
     )
   }
