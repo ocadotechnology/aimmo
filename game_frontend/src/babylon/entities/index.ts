@@ -31,7 +31,6 @@ export default class EntityManager {
 
     const obstacleDiff = diff(previousObstacleList, currentGameState.obstacles)
     const avatarDiff = diff(previousAvaterList, currentGameState.players)
-    console.log(currentGameState.players)
     this.obstacles.onGameStateUpdate(obstacleDiff)
     this.avatars.onGameStateUpdate(avatarDiff)
   }

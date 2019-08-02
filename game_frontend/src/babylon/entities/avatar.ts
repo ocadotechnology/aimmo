@@ -2,6 +2,7 @@ import { GameNode } from '../interfaces'
 import * as BABYLON from 'babylonjs'
 import Environment from '../environment/environment'
 import { DiffResult, DiffItem } from '../diff'
+import setOrientation from '../orientation'
 
 export default class Avatar implements GameNode {
     object: any
@@ -18,20 +19,28 @@ export default class Avatar implements GameNode {
       for (let avatar of avatarDiff.deleteList) {
         this.removeAvatar(avatar)
       }
-      for (let avatar of avatarDiff.addList) {
-        this.addAvatar(avatar)
-      }
       for (let avatar of avatarDiff.editList) {
         this.animateAvatar(avatar)
       }
+      for (let avatar of avatarDiff.addList) {
+        this.addAvatar(avatar)
+      }
     }
 
-    removeAvatar (avatar: DiffItem): void { }
+    removeAvatar (avatar: DiffItem): void {
+      const toDelete = this.AvatarNode.getChildMeshes(true,
+        function (node): boolean {
+          return node.name === `obstacle: ${avatar.value.id}`
+        }
+      )
+      toDelete[0].dispose()
+    }
 
     addAvatar (avatar: DiffItem): void {
       // import Dee
       BABYLON.SceneLoader.ImportMesh(`Dee`, '/static/models/', 'dee.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
         var dee = meshes[0]
+        dee.name = `Avatar ${avatar.value.id}`
         dee.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1)
         dee.computeBonesUsingShaders = false
         var shaderMaterial = new BABYLON.ShaderMaterial('shader', this.scene, '/static/models/toonshader',
@@ -43,9 +52,28 @@ export default class Avatar implements GameNode {
         dee.material = shaderMaterial
         dee.parent = this.AvatarNode
         dee.position = new BABYLON.Vector3(avatar.value.location.x, 0, avatar.value.location.y)
-        this.object = dee
+        setOrientation(dee, avatar.value.orientation)
+        // Check if the avatar is for the player loading the page (somehow)
+        // this.attachMarker(dee)
       })
     }
 
-    animateAvatar (avatar: DiffItem): void { }
+    animateAvatar (avatar: DiffItem): void {
+      const toEdit = this.AvatarNode.getChildMeshes(true,
+        function (node): boolean {
+          return node.name === `Avatar: ${avatar.value.id}`
+        }
+      )
+      console.log(toEdit)
+      let dee = toEdit[0]
+      setOrientation(dee, avatar.value.orientation)
+    }
+
+    attachMarker (avatarMesh: any): void {
+      // Load marker mesh.
+
+      // Apply marker texture.
+
+      // Make Parent node the given avatar.
+    }
 }
