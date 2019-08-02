@@ -1,28 +1,38 @@
 import Obstacle from './obstacle'
 import diff from '../diff'
 import Environment from '../environment/environment'
+import Avatar from './avatar'
 
 export default class EntityManager {
-    environment: Environment
+  environment: Environment
 
-    obstacles: Obstacle
+  obstacles: Obstacle
+  avatars: Avatar
 
-    constructor (environment: Environment) {
-      this.environment = environment
+  constructor (environment: Environment) {
+    this.environment = environment
+  }
+
+  setup (): void {
+    this.obstacles = new Obstacle()
+    this.avatars = new Avatar()
+
+    this.obstacles.setup(this.environment)
+    this.avatars.setup(this.environment)
+  }
+
+  onGameStateUpdate (previousGameState: any, currentGameState: any): void {
+    var previousObstacleList = []
+    var previousAvaterList = []
+    if (previousGameState) {
+      previousObstacleList = previousGameState.obstacles
+      previousAvaterList = previousGameState.players
     }
 
-    setup (): void {
-      this.obstacles = new Obstacle()
-
-      this.obstacles.setup(this.environment)
-    }
-
-    onGameStateUpdate (previousGameState: any, currentGameState: any): void {
-      var previousObstacleList = []
-      if (previousGameState) {
-        previousObstacleList = previousGameState.obstacles
-      }
-      const obstacleDiff = diff(previousObstacleList, currentGameState.obstacles)
-      this.obstacles.onGameStateUpdate(obstacleDiff)
-    }
+    const obstacleDiff = diff(previousObstacleList, currentGameState.obstacles)
+    const avatarDiff = diff(previousAvaterList, currentGameState.players)
+    console.log(currentGameState.players)
+    this.obstacles.onGameStateUpdate(obstacleDiff)
+    this.avatars.onGameStateUpdate(avatarDiff)
+  }
 }
