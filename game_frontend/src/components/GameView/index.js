@@ -34,7 +34,7 @@ export default class GameView extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    this.entities.onGameStateUpdate(prevProps.gameState, this.props.gameState)
+      this.entities.onGameStateUpdate(prevProps.gameState, this.props.gameState)
   }
 
   componentWillUnmount() {

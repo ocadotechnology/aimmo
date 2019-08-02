@@ -48,32 +48,69 @@ export default class Interactable implements GameNode {
         var model = ''
         var texture = ''
 
-        if (interactable.value['type'] === 'damage_boost') {
-            model = 'damage.babylon'
-            texture = '/static/babylon/interactable/damage_text.jpg'
-        }
+        model = `${interactable.value['type']}.babylon`
+        texture = `/static/babylon/interactables/${interactable.value['type']}_text.png`
 
-        else if (interactable.value['type'] === 'invulnerability') {
-            model = 'damage.babylon' // TODO change
-            texture = '/static/babylon/interactable/damage_text.jpg'
-        }
+        const material = new BABYLON.StandardMaterial(interactable.value['type'], this.scene)
+        material.specularColor = new BABYLON.Color3(0, 0, 0)
+        material.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5)
+        material.diffuseTexture = new BABYLON.Texture(texture, this.scene)
 
-        else {
-            model = 'damage.babylon' // TODO change
-            texture = '/static/babylon/interactable/damage_text.jpg'
-        }
+        var frameRate = 5
 
-        BABYLON.SceneLoader.ImportMesh(`interactable: ${interactable.id}`, '/static/babylon/interactables/', model, this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
+        var rotationAnim = this.createRotation(frameRate)
+        var slideAnim = this.createSlide(frameRate)
+
+        BABYLON.SceneLoader.ImportMesh(interactable.value['type'], '/static/babylon/interactables/', model, this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
             var newInteractable = meshes[0]
-            const material = new BABYLON.StandardMaterial(interactable.value['type'], this.scene)
-            material.diffuseTexture = new BABYLON.Texture(texture, this.scene)
+            newInteractable.name = `interactable: ${interactable.id}`
+            
             newInteractable.material = material
 
             newInteractable.parent = this.interactableNode
             newInteractable.position = new BABYLON.Vector3(interactable.value.location.x, 0.5, interactable.value.location.y)
-            newInteractable.setPivotMatrix(BABYLON.Matrix.Translation(0, -0.5, 0))
 
-            // this.scene.beginAnimation(skeletons[0], 0, 21, true)
+            if (interactable.value['type'] !== 'score')
+                this.scene.beginDirectAnimation(newInteractable, [rotationAnim, slideAnim], 0, 2 * frameRate, true)
         })
+    }
+
+    createRotation(frameRate: number) : BABYLON.Animation {
+        var rotationAnim = new BABYLON.Animation('interactable rotation', 'rotation.y', frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
+        var keyFramesR = []
+
+        keyFramesR.push({
+            frame: 0,
+            value: 0
+        })
+        keyFramesR.push({
+            frame: frameRate,
+            value: Math.PI
+        })
+        keyFramesR.push({
+            frame: 2 * frameRate,
+            value: 2 * Math.PI
+        })
+
+        rotationAnim.setKeys(keyFramesR)
+
+        return rotationAnim
+    }
+
+    createSlide(frameRate: number) : BABYLON.Animation {
+        var slideAnim = new BABYLON.Animation('interactable translation', 'position.y', frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
+        var keyFramesR = []
+
+
+        for (let i = 0; i <= 2 * frameRate; i++) {
+            keyFramesR.push({
+                frame: i,
+                value: 0.2 * Math.sin(Math.PI * (i / frameRate)) - 0.1
+            })
+        }
+
+        slideAnim.setKeys(keyFramesR)
+
+        return slideAnim
     }
 }
