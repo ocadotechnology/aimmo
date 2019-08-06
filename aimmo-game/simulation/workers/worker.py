@@ -1,8 +1,6 @@
-import json
 import logging
 from asyncio import CancelledError
 
-import requests
 from aiohttp import ClientResponseError, ClientSession
 
 LOGGER = logging.getLogger(__name__)

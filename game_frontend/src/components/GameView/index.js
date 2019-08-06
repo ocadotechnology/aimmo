@@ -10,6 +10,12 @@ export const GameViewLayout = styled.div`
   grid-area: game-view;
 `
 
+export const Compass = styled.img`
+  position: sticky;
+  bottom: ${props => props.theme.spacing()}px;
+  padding-left: ${props => props.theme.spacing()}px;
+`
+
 export default class GameView extends Component {
   constructor(props) {
     super(props)
@@ -54,6 +60,7 @@ export default class GameView extends Component {
           style={{ width: '100%', height: '100%' }}
           ref={this.onCanvasLoaded}
         />
+        <Compass src="/static/images/compass.svg" />
       </GameViewLayout>
     )
   }

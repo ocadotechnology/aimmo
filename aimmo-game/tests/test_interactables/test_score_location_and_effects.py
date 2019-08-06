@@ -26,7 +26,7 @@ def test_data():
     return game, cell
 
 
-def test_score_location_increase_score_of_avatar(test_data):
+async def test_score_location_increase_score_of_avatar(test_data, loop):
     """
     Avatar spawns at the origin (0,0) and should have a score of 0. Moves
     EAST to (1,0) and should automatically then receive an effect that will
@@ -40,11 +40,8 @@ def test_score_location_increase_score_of_avatar(test_data):
         "location": {"x": cell.location.x, "y": cell.location.y},
     }
 
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(
-        game.simulation_runner.run_single_turn(
-            game.avatar_manager.get_player_id_to_serialized_action()
-        )
+    await game.simulation_runner.run_single_turn(
+        game.avatar_manager.get_player_id_to_serialized_action()
     )
 
     assert cell.avatar is game.avatar_manager.get_avatar(1)
@@ -52,7 +49,7 @@ def test_score_location_increase_score_of_avatar(test_data):
     assert len(cell.avatar.effects) is 1
 
 
-def test_score_locations_persist_and_keep_giving_score_effects(test_data):
+async def test_score_locations_persist_and_keep_giving_score_effects(test_data, loop):
     """
     Checks if score can be increased more than once. First moved from ORIGIN to 1,0 ->
     then is given some score, remains in place due to an obstacle, then next turn
@@ -61,18 +58,16 @@ def test_score_locations_persist_and_keep_giving_score_effects(test_data):
     game, cell = test_data
     loop = asyncio.get_event_loop()
     cell.interactable = ScoreLocation(cell)
-    loop.run_until_complete(
-        game.simulation_runner.run_single_turn(
-            game.avatar_manager.get_player_id_to_serialized_action()
-        )
+
+    await game.simulation_runner.run_single_turn(
+        game.avatar_manager.get_player_id_to_serialized_action()
     )
+
     assert cell.avatar is game.avatar_manager.get_avatar(1)
     assert cell.avatar.score is 1
 
-    loop.run_until_complete(
-        game.simulation_runner.run_single_turn(
-            game.avatar_manager.get_player_id_to_serialized_action()
-        )
+    await game.simulation_runner.run_single_turn(
+        game.avatar_manager.get_player_id_to_serialized_action()
     )
 
     assert cell.avatar.score is 2

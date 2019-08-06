@@ -1,5 +1,4 @@
 import asyncio
-from unittest import TestCase
 
 import pytest
 from aioresponses import aioresponses
