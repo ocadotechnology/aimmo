@@ -1,6 +1,6 @@
 import { GameNode } from '../interfaces'
 import * as BABYLON from 'babylonjs'
-import Environment from '../environment/environment'
+import { Environment } from '../environment/environment'
 import { DiffResult } from '../diff'
 
 export default class Obstacle implements GameNode {
