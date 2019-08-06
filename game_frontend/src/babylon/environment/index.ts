@@ -8,13 +8,6 @@ export default class SceneRenderer {
     }
 
     setup (): void {
-      this.environment.scene.debugLayer.show({
-        overlay: true,
-        globalRoot: document.getElementById('root'),
-        // embedMode: true,
-        showInspector: true
-      })
-
       this.environment.engine.runRenderLoop(() => {
         this.environment.scene.render()
       })
@@ -22,7 +15,5 @@ export default class SceneRenderer {
 
     windowResized = () => {
       this.environment.engine.resize()
-      document.getElementById('scene-explorer-host').style.setProperty('z-index', '100000')
-      document.getElementById('inspector-host').style.setProperty('z-index', '100000')
     }
 }
