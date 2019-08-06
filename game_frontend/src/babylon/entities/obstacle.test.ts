@@ -18,23 +18,83 @@ class MockEnvironment implements Environment {
     }
 }
 
+let environment
+let obstacle
+
+beforeEach(() => {
+  environment = new MockEnvironment()
+  obstacle = new Obstacle()
+
+  obstacle.setup(environment)
+
+  addInitialObstacle()
+})
+
+function addInitialObstacle() {
+  const addList = [{ id: '0', value: {
+      "location": {"x": 10, "y": 10},
+      "width": 1,
+      "height": 1,
+      "type": "wall",
+      "orientation": "north" }
+  }]
+  const diffResult = new DiffResult(addList, [], [])
+  obstacle.onGameStateUpdate(diffResult)
+}
+
 describe('obstacle', () => {
   it('adds an Obstacle parent node', () => {
-    // Given
-    const environment = new MockEnvironment()
-    const obstacle = new Obstacle()
+    const terrainNodeDescendants = environment.onTerrainNode.getChildren()
 
-    // When
-    obstacle.setup(environment)
-    // const addList = []
-    // const removeList = []
-    // const editList = []
-    // const diffResult = new DiffResult(addList, removeList, editList)
-    // obstacle.onGameStateUpdate(diffResult)
-
-    // Then
-    const terrainNodeDescendants = environment.onTerrainNode.getDescendants()
     expect(terrainNodeDescendants.length).toBe(1)
     expect(terrainNodeDescendants[0].name).toBe('Obstacle Parent')
+  })
+
+  it('adds an obstacle', () => {
+    const obstacles = obstacle.obstacleNode.getChildren()
+
+    expect(obstacles.length).toBe(1)
+  })
+
+  it('deletes an obstacle', () => {
+    let obstacles = obstacle.obstacleNode.getChildren()
+
+    expect(obstacles.length).toBe(1)
+
+    const removeList = [{ id: '0', value: {
+      "location": {"x": 10, "y": 10},
+      "width": 1,
+      "height": 1,
+      "type": "wall",
+      "orientation": "north" }
+    }]
+    const diffResult = new DiffResult([], removeList, [])
+    obstacle.onGameStateUpdate(diffResult)
+
+    obstacles = obstacle.obstacleNode.getChildren()
+
+    expect(obstacles.length).toBe(0)
+  })
+
+  it('edits an obstacle', () => {
+    let obstacles = obstacle.obstacleNode.getChildren()
+
+    expect(obstacles.length).toBe(1)
+    expect(obstacles[0].position).toEqual({x: 10, y: 0.5, z: 10})
+
+    const editList = [{ id: '0', value: {
+      "location": {"x": -7, "y": 2},
+      "width": 1,
+      "height": 1,
+      "type": "wall",
+      "orientation": "north" }
+    }]
+    const diffResult = new DiffResult([], [], editList)
+    obstacle.onGameStateUpdate(diffResult)
+
+    obstacles = obstacle.obstacleNode.getChildren()
+
+    expect(obstacles.length).toBe(1)
+    expect(obstacles[0].position).toEqual({x: -7, y: 0.5, z: 2})
   })
 })

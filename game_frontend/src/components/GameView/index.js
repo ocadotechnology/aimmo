@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import EntityManager from 'babylon/entities'
-import SceneRenderer from 'babylon/environment'
-import EnvironmentManager from 'babylon/environment/environmentManager'
-import { StandardEnvironment } from 'babylon/environment/environment'
+import EntityManager from '../../babylon/entities'
+import SceneRenderer from '../../babylon/environment'
+import EnvironmentManager from '../../babylon/environment/environmentManager'
+import { StandardEnvironment } from '../../babylon/environment/environment'
 
 export const GameViewLayout = styled.div`
   grid-area: game-view;
