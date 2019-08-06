@@ -30,13 +30,14 @@ beforeEach(() => {
   addInitialObstacle()
 })
 
-function addInitialObstacle() {
-  const addList = [{ id: '0', value: {
-      "location": {"x": 10, "y": 10},
-      "width": 1,
-      "height": 1,
-      "type": "wall",
-      "orientation": "north" }
+function addInitialObstacle () {
+  const addList = [{ id: '0',
+    value: {
+      'location': { 'x': 10, 'y': 10 },
+      'width': 1,
+      'height': 1,
+      'type': 'wall',
+      'orientation': 'north' }
   }]
   const diffResult = new DiffResult(addList, [], [])
   obstacle.onGameStateUpdate(diffResult)
@@ -61,12 +62,13 @@ describe('obstacle', () => {
 
     expect(obstacles.length).toBe(1)
 
-    const removeList = [{ id: '0', value: {
-      "location": {"x": 10, "y": 10},
-      "width": 1,
-      "height": 1,
-      "type": "wall",
-      "orientation": "north" }
+    const removeList = [{ id: '0',
+      value: {
+        'location': { 'x': 10, 'y': 10 },
+        'width': 1,
+        'height': 1,
+        'type': 'wall',
+        'orientation': 'north' }
     }]
     const diffResult = new DiffResult([], removeList, [])
     obstacle.onGameStateUpdate(diffResult)
@@ -80,14 +82,15 @@ describe('obstacle', () => {
     let obstacles = obstacle.obstacleNode.getChildren()
 
     expect(obstacles.length).toBe(1)
-    expect(obstacles[0].position).toEqual({x: 10, y: 0.5, z: 10})
+    expect(obstacles[0].position).toEqual({ x: 10, y: 0.5, z: 10 })
 
-    const editList = [{ id: '0', value: {
-      "location": {"x": -7, "y": 2},
-      "width": 1,
-      "height": 1,
-      "type": "wall",
-      "orientation": "north" }
+    const editList = [{ id: '0',
+      value: {
+        'location': { 'x': -7, 'y': 2 },
+        'width': 1,
+        'height': 1,
+        'type': 'wall',
+        'orientation': 'north' }
     }]
     const diffResult = new DiffResult([], [], editList)
     obstacle.onGameStateUpdate(diffResult)
@@ -95,6 +98,6 @@ describe('obstacle', () => {
     obstacles = obstacle.obstacleNode.getChildren()
 
     expect(obstacles.length).toBe(1)
-    expect(obstacles[0].position).toEqual({x: -7, y: 0.5, z: 2})
+    expect(obstacles[0].position).toEqual({ x: -7, y: 0.5, z: 2 })
   })
 })
