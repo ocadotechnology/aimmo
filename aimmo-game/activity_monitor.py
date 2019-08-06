@@ -4,14 +4,11 @@ Module for keeping track of inactivity for a given game.
 
 import asyncio
 import logging
-import os
-import time
 from enum import Enum
-from types import CoroutineType
-from typing import TYPE_CHECKING, List
 
-import aiohttp
 from requests import codes
+from types import CoroutineType
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from simulation.django_communicator import DjangoCommunicator
@@ -45,11 +42,13 @@ class ActivityMonitor:
 
     def _start_timer(self):
         if self.timer.cancelled():
+            LOGGER.info("No socket connections found. Timer started!")
             self.timer = Timer(
                 SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
             )
 
     def _stop_timer(self):
+        LOGGER.info("Cancelling timer!")
         self.timer.cancel()
 
     @property
