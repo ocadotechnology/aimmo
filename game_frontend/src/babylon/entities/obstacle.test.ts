@@ -1,25 +1,10 @@
 /* eslint-env jest */
-import * as BABYLON from 'babylonjs'
-import { Environment } from 'babylon/environment/environment'
+import { MockEnvironment } from '../environment/environment.test'
 import Obstacle from './obstacle'
 import { DiffResult } from '../diff'
 
-class MockEnvironment implements Environment {
-    scene: BABYLON.Scene;
-    engine: BABYLON.Engine;
-    onTerrainNode: BABYLON.TransformNode;
-
-    constructor () {
-      this.engine = new BABYLON.NullEngine()
-      this.scene = new BABYLON.Scene(this.engine)
-
-      this.onTerrainNode = new BABYLON.TransformNode('On Terrain', this.scene)
-      this.onTerrainNode.position = new BABYLON.Vector3(0.5, 0, 0.5)
-    }
-}
-
-let environment
-let obstacle
+let environment: MockEnvironment
+let obstacle: Obstacle
 
 beforeEach(() => {
   environment = new MockEnvironment()
@@ -27,13 +12,13 @@ beforeEach(() => {
 
   obstacle.setup(environment)
 
-  addInitialObstacle()
+  addInitialObstacle('0', 10, 10)
 })
 
-function addInitialObstacle () {
-  const addList = [{ id: '0',
+function addInitialObstacle (id: string, posX: number, posY: number) {
+  const addList = [{ id: id,
     value: {
-      'location': { 'x': 10, 'y': 10 },
+      'location': { 'x': posX, 'y': posY },
       'width': 1,
       'height': 1,
       'type': 'wall',
@@ -44,11 +29,11 @@ function addInitialObstacle () {
 }
 
 describe('obstacle', () => {
-  it('adds an Obstacle parent node', () => {
-    const terrainNodeDescendants = environment.onTerrainNode.getChildren()
+  it('adds an Obstacles node', () => {
+    const terrainNodeChildren = environment.onTerrainNode.getChildren()
 
-    expect(terrainNodeDescendants.length).toBe(1)
-    expect(terrainNodeDescendants[0].name).toBe('Obstacle Parent')
+    expect(terrainNodeChildren.length).toBe(1)
+    expect(terrainNodeChildren[0].name).toBe('Obstacles')
   })
 
   it('adds an obstacle', () => {
@@ -62,7 +47,7 @@ describe('obstacle', () => {
 
     expect(obstacles.length).toBe(1)
 
-    const removeList = [{ id: '0',
+    const deleteList = [{ id: '0',
       value: {
         'location': { 'x': 10, 'y': 10 },
         'width': 1,
@@ -70,7 +55,7 @@ describe('obstacle', () => {
         'type': 'wall',
         'orientation': 'north' }
     }]
-    const diffResult = new DiffResult([], removeList, [])
+    const diffResult = new DiffResult([], deleteList, [])
     obstacle.onGameStateUpdate(diffResult)
 
     obstacles = obstacle.obstacleNode.getChildren()
@@ -99,5 +84,48 @@ describe('obstacle', () => {
 
     expect(obstacles.length).toBe(1)
     expect(obstacles[0].position).toEqual({ x: -7, y: 0.5, z: 2 })
+  })
+
+  it('adds, edits and delete obstacles on same update', () => {
+    addInitialObstacle('1', 15, 15)
+
+    let obstacles = obstacle.obstacleNode.getChildren()
+
+    expect(obstacles.length).toBe(2)
+    expect(obstacles[0].position).toEqual({ x: 10, y: 0.5, z: 10 })
+    expect(obstacles[1].position).toEqual({ x: 15, y: 0.5, z: 15 })
+
+    const addList = [{ id: '2',
+      value: {
+        'location': { 'x': 15, 'y': 15 },
+        'width': 1,
+        'height': 1,
+        'type': 'wall',
+        'orientation': 'north' }
+    }]
+    const editList = [{ id: '1',
+      value: {
+        'location': { 'x': 10, 'y': 10 },
+        'width': 1,
+        'height': 1,
+        'type': 'wall',
+        'orientation': 'north' }
+    }]
+    const deleteList = [{ id: '0',
+      value: {
+        'location': { 'x': 10, 'y': 10 },
+        'width': 1,
+        'height': 1,
+        'type': 'wall',
+        'orientation': 'north' }
+    }]
+    const diffResult = new DiffResult(addList, deleteList, editList)
+    obstacle.onGameStateUpdate(diffResult)
+
+    obstacles = obstacle.obstacleNode.getChildren()
+
+    expect(obstacles.length).toBe(2)
+    expect(obstacles[0].position).toEqual({ x: 10, y: 0.5, z: 10 })
+    expect(obstacles[1].position).toEqual({ x: 15, y: 0.5, z: 15 })
   })
 })

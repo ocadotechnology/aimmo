@@ -10,7 +10,7 @@ export default class Obstacle implements GameNode {
 
   setup (environment: Environment): void {
     this.scene = environment.scene
-    this.obstacleNode = new BABYLON.TransformNode('Obstacle Parent', environment.scene)
+    this.obstacleNode = new BABYLON.TransformNode('Obstacles', environment.scene)
     this.obstacleNode.parent = environment.onTerrainNode
   }
 
