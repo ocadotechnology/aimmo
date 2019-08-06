@@ -1,18 +1,18 @@
 import Obstacle from './obstacle'
 import diff from '../diff'
 import Environment from '../environment/environment'
-import Interactable from './interactable';
+import Interactable from './interactable'
 
 export default class EntityManager {
   environment: Environment
   obstacles: Obstacle
   interactables: Interactable
 
-  constructor(environment: Environment) {
+  constructor (environment: Environment) {
     this.environment = environment
   }
 
-  setup(): void {
+  setup (): void {
     this.obstacles = new Obstacle()
     this.interactables = new Interactable()
 
@@ -20,7 +20,7 @@ export default class EntityManager {
     this.interactables.setup(this.environment)
   }
 
-  onGameStateUpdate(previousGameState: any, currentGameState: any): void {
+  onGameStateUpdate (previousGameState: any, currentGameState: any): void {
     var previousObstacleList = []
     var previousInteractableList = []
 
