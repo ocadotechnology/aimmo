@@ -1,0 +1,78 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`obstacle adds an obstacle 1`] = `
+Object {
+  "name": "obstacle: 0",
+  "position": e {
+    "x": 10,
+    "y": 0.5,
+    "z": 10,
+  },
+}
+`;
+
+exports[`obstacle adds, edits and delete obstacles on same update 1`] = `
+Object {
+  "name": "obstacle: 0",
+  "position": e {
+    "x": 10,
+    "y": 0.5,
+    "z": 10,
+  },
+}
+`;
+
+exports[`obstacle adds, edits and delete obstacles on same update 2`] = `
+Object {
+  "name": "obstacle: 1",
+  "position": e {
+    "x": 15,
+    "y": 0.5,
+    "z": 15,
+  },
+}
+`;
+
+exports[`obstacle adds, edits and delete obstacles on same update 3`] = `
+Object {
+  "name": "obstacle: 1",
+  "position": e {
+    "x": 10,
+    "y": 0.5,
+    "z": 10,
+  },
+}
+`;
+
+exports[`obstacle adds, edits and delete obstacles on same update 4`] = `
+Object {
+  "name": "obstacle: 2",
+  "position": e {
+    "x": 15,
+    "y": 0.5,
+    "z": 15,
+  },
+}
+`;
+
+exports[`obstacle edits an obstacle 1`] = `
+Object {
+  "name": "obstacle: 0",
+  "position": e {
+    "x": 10,
+    "y": 0.5,
+    "z": 10,
+  },
+}
+`;
+
+exports[`obstacle edits an obstacle 2`] = `
+Object {
+  "name": "obstacle: 0",
+  "position": e {
+    "x": -7,
+    "y": 0.5,
+    "z": 2,
+  },
+}
+`;

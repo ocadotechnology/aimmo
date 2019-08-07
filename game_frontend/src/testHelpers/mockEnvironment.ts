@@ -1,5 +1,5 @@
 import * as BABYLON from 'babylonjs'
-import { Environment } from './environment'
+import { Environment } from '../babylon/environment/environment'
 
 export class MockEnvironment implements Environment {
   scene: BABYLON.Scene;
@@ -14,10 +14,3 @@ export class MockEnvironment implements Environment {
     this.onTerrainNode.position = new BABYLON.Vector3(0.5, 0, 0.5)
   }
 }
-
-describe('the environment', () => {
-  it('loads', () => {
-    const environment = new MockEnvironment()
-    expect(environment).toMatchSnapshot()
-  })
-})

@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { MockEnvironment } from '../environment/environment.test'
+import { MockEnvironment } from '../../testHelpers/mockEnvironment'
 import Obstacle from './obstacle'
 import { DiffResult } from '../diff'
 
@@ -11,25 +11,32 @@ beforeEach(() => {
   obstacle = new Obstacle()
 
   obstacle.setup(environment)
-
-  addInitialObstacle('0', 10, 10)
 })
 
-function addInitialObstacle (id: string, posX: number, posY: number) {
-  const addList = [{ id: id,
-    value: {
-      'location': { 'x': posX, 'y': posY },
-      'width': 1,
-      'height': 1,
-      'type': 'wall',
-      'orientation': 'north' }
-  }]
-  const diffResult = new DiffResult(addList, [], [])
-  obstacle.onGameStateUpdate(diffResult)
+function obstacleList (positionDict) {
+  let list = []
+
+  for (let [index, position] of Object.entries(positionDict)) {
+    list.push({
+      id: index,
+      value: {
+        'location': { 'x': position[0], 'y': position[1] },
+        'width': 1,
+        'height': 1,
+        'type': 'wall',
+        'orientation': 'north'
+      }
+    })
+  }
+  return list
 }
 
 describe('obstacle', () => {
   it('adds an Obstacles node', () => {
+    const addList = obstacleList({ '0': [10, 10] })
+    const diffResult = new DiffResult(addList, [], [])
+    obstacle.onGameStateUpdate(diffResult)
+
     const terrainNodeChildren = environment.onTerrainNode.getChildren()
 
     expect(terrainNodeChildren.length).toBe(1)
@@ -37,25 +44,27 @@ describe('obstacle', () => {
   })
 
   it('adds an obstacle', () => {
+    const addList = obstacleList({ '0': [10, 10] })
+    const diffResult = new DiffResult(addList, [], [])
+    obstacle.onGameStateUpdate(diffResult)
+
     const obstacles = obstacle.obstacleNode.getChildren()
 
     expect(obstacles.length).toBe(1)
+    expect({ name: obstacles[0].name, position: obstacles[0].position }).toMatchSnapshot()
   })
 
   it('deletes an obstacle', () => {
+    const addList = obstacleList({ '0': [10, 10] })
+    let diffResult = new DiffResult(addList, [], [])
+    obstacle.onGameStateUpdate(diffResult)
+
     let obstacles = obstacle.obstacleNode.getChildren()
 
     expect(obstacles.length).toBe(1)
 
-    const deleteList = [{ id: '0',
-      value: {
-        'location': { 'x': 10, 'y': 10 },
-        'width': 1,
-        'height': 1,
-        'type': 'wall',
-        'orientation': 'north' }
-    }]
-    const diffResult = new DiffResult([], deleteList, [])
+    const deleteList = obstacleList({ '0': [10, 10] })
+    diffResult = new DiffResult([], deleteList, [])
     obstacle.onGameStateUpdate(diffResult)
 
     obstacles = obstacle.obstacleNode.getChildren()
@@ -64,68 +73,46 @@ describe('obstacle', () => {
   })
 
   it('edits an obstacle', () => {
+    const addList = obstacleList({ '0': [10, 10] })
+    let diffResult = new DiffResult(addList, [], [])
+    obstacle.onGameStateUpdate(diffResult)
+
     let obstacles = obstacle.obstacleNode.getChildren()
 
     expect(obstacles.length).toBe(1)
-    expect(obstacles[0].position).toEqual({ x: 10, y: 0.5, z: 10 })
+    expect({ name: obstacles[0].name, position: obstacles[0].position }).toMatchSnapshot()
 
-    const editList = [{ id: '0',
-      value: {
-        'location': { 'x': -7, 'y': 2 },
-        'width': 1,
-        'height': 1,
-        'type': 'wall',
-        'orientation': 'north' }
-    }]
-    const diffResult = new DiffResult([], [], editList)
+    const editList = obstacleList({ '0': [-7, 2] })
+    diffResult = new DiffResult([], [], editList)
     obstacle.onGameStateUpdate(diffResult)
 
     obstacles = obstacle.obstacleNode.getChildren()
 
     expect(obstacles.length).toBe(1)
-    expect(obstacles[0].position).toEqual({ x: -7, y: 0.5, z: 2 })
+    expect({ name: obstacles[0].name, position: obstacles[0].position }).toMatchSnapshot()
   })
 
   it('adds, edits and delete obstacles on same update', () => {
-    addInitialObstacle('1', 15, 15)
+    let addList = obstacleList({ '0': [10, 10], '1': [15, 15] })
+    let diffResult = new DiffResult(addList, [], [])
+    obstacle.onGameStateUpdate(diffResult)
 
     let obstacles = obstacle.obstacleNode.getChildren()
 
     expect(obstacles.length).toBe(2)
-    expect(obstacles[0].position).toEqual({ x: 10, y: 0.5, z: 10 })
-    expect(obstacles[1].position).toEqual({ x: 15, y: 0.5, z: 15 })
+    expect({ name: obstacles[0].name, position: obstacles[0].position }).toMatchSnapshot()
+    expect({ name: obstacles[1].name, position: obstacles[1].position }).toMatchSnapshot()
 
-    const addList = [{ id: '2',
-      value: {
-        'location': { 'x': 15, 'y': 15 },
-        'width': 1,
-        'height': 1,
-        'type': 'wall',
-        'orientation': 'north' }
-    }]
-    const editList = [{ id: '1',
-      value: {
-        'location': { 'x': 10, 'y': 10 },
-        'width': 1,
-        'height': 1,
-        'type': 'wall',
-        'orientation': 'north' }
-    }]
-    const deleteList = [{ id: '0',
-      value: {
-        'location': { 'x': 10, 'y': 10 },
-        'width': 1,
-        'height': 1,
-        'type': 'wall',
-        'orientation': 'north' }
-    }]
-    const diffResult = new DiffResult(addList, deleteList, editList)
+    addList = obstacleList({ '2': [15, 15] })
+    const editList = obstacleList({ '1': [10, 10] })
+    const deleteList = obstacleList({ '0': [10, 10] })
+    diffResult = new DiffResult(addList, deleteList, editList)
     obstacle.onGameStateUpdate(diffResult)
 
     obstacles = obstacle.obstacleNode.getChildren()
 
     expect(obstacles.length).toBe(2)
-    expect(obstacles[0].position).toEqual({ x: 10, y: 0.5, z: 10 })
-    expect(obstacles[1].position).toEqual({ x: 15, y: 0.5, z: 15 })
+    expect({ name: obstacles[0].name, position: obstacles[0].position }).toMatchSnapshot()
+    expect({ name: obstacles[1].name, position: obstacles[1].position }).toMatchSnapshot()
   })
 })
