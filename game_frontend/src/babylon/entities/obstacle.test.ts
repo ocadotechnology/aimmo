@@ -33,10 +33,6 @@ function obstacleList (positionDict) {
 
 describe('obstacle', () => {
   it('adds an Obstacles node', () => {
-    const addList = obstacleList({ '0': [10, 10] })
-    const diffResult = new DiffResult(addList, [], [])
-    obstacle.onGameStateUpdate(diffResult)
-
     const terrainNodeChildren = environment.onTerrainNode.getChildren()
 
     expect(terrainNodeChildren.length).toBe(1)
