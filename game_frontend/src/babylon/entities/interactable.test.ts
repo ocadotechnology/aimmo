@@ -19,7 +19,7 @@ class MockEnvironment implements Environment {
 
     dummyMeshImport (meshName: string, filePath: string, fileName: string, scene: BABYLON.Scene, onSuccess: Function): void {
       const meshes = []
-      meshes [0] = BABYLON.MeshBuilder.CreateBox("", { height: 1 }, this.scene)
+      meshes[0] = BABYLON.MeshBuilder.CreateBox('', { height: 1 }, this.scene)
 
       onSuccess(meshes, [], [], [])
     }
@@ -94,7 +94,7 @@ describe('interactable', () => {
         }
       }
     }
-    const interactable1 = 
+    const interactable1 =
     {
       id: 1,
       value: {
@@ -117,7 +117,7 @@ describe('interactable', () => {
 
     addList = []
     deleteList = [interactable1]
-    
+
     diffResult = new DiffResult(addList, deleteList, editList)
     interactable.onGameStateUpdate(diffResult)
 
@@ -146,7 +146,7 @@ describe('interactable', () => {
 
     // When
     interactable.setup(environment)
-    
+
     var diffResult = new DiffResult(addList, deleteList, editList)
     interactable.onGameStateUpdate(diffResult)
 
@@ -157,12 +157,12 @@ describe('interactable', () => {
 
     addList = []
     editList = [interactable0]
-    
+
     diffResult = new DiffResult(addList, deleteList, editList)
     interactable.onGameStateUpdate(diffResult)
 
     // Then
-    var interactableNodeChildren = interactable.interactableNode.getChildMeshes()
+    interactableNodeChildren = interactable.interactableNode.getChildMeshes()
     expect(interactableNodeChildren[0].position).toEqual(new BABYLON.Vector3(2, 0.5, 1))
   })
 })

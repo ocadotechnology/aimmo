@@ -2,7 +2,7 @@ import { GameNode } from '../interfaces'
 import * as BABYLON from 'babylonjs'
 import { Environment } from '../environment/environment'
 import { DiffResult } from '../diff'
-import { hoveringFloat , hoveringRotation } from '../animations'
+import { hoveringFloat, hoveringRotation } from '../animations'
 
 export default class Interactable implements GameNode {
     object: any
@@ -10,11 +10,10 @@ export default class Interactable implements GameNode {
     interactableNode: BABYLON.TransformNode
     importMesh: Function
 
-    constructor(importMesh?: Function) {
+    constructor (importMesh?: Function) {
       if (importMesh) {
         this.importMesh = importMesh
-      }
-      else {
+      } else {
         this.importMesh = BABYLON.SceneLoader.ImportMesh
       }
     }
