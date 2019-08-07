@@ -4,6 +4,7 @@ import { Environment } from '../babylon/environment/environment'
 export class MockEnvironment implements Environment {
   scene: BABYLON.Scene;
   engine: BABYLON.Engine;
+  canvas?: HTMLCanvasElement;
   onTerrainNode: BABYLON.TransformNode;
 
   constructor () {
