@@ -14,3 +14,10 @@ export class MockEnvironment implements Environment {
     this.onTerrainNode.position = new BABYLON.Vector3(0.5, 0, 0.5)
   }
 }
+
+describe('the environment', () => {
+  it('loads', () => {
+    const environment = new MockEnvironment()
+    expect(environment).toMatchSnapshot()
+  })
+})
