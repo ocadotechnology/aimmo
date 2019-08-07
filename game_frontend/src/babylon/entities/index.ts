@@ -1,6 +1,7 @@
 import Obstacle from './obstacle'
 import diff from '../diff'
 import { Environment } from '../environment/environment'
+import Interactable from './interactable'
 
 export default class EntityManager {
   environment: Environment

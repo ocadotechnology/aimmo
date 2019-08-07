@@ -1,12 +1,23 @@
 import { GameNode } from '../interfaces'
 import * as BABYLON from 'babylonjs'
-import Environment from '../environment/environment'
+import { Environment } from '../environment/environment'
 import { DiffResult } from '../diff'
+import { hoveringFloat , hoveringRotation } from '../animations'
 
 export default class Interactable implements GameNode {
     object: any
     scene: BABYLON.Scene
     interactableNode: BABYLON.TransformNode
+    importMesh: Function
+
+    constructor(importMesh?: Function) {
+      if (importMesh) {
+        this.importMesh = importMesh
+      }
+      else {
+        this.importMesh = BABYLON.SceneLoader.ImportMesh
+      }
+    }
 
     setup (environment: Environment): void {
       this.scene = environment.scene
@@ -41,15 +52,15 @@ export default class Interactable implements GameNode {
           return node.name === `interactable: ${interactable.id}`
         }
       )
-      toEdit[0].position = new BABYLON.Vector3(interactable.value.location.x, 0, interactable.value.location.y)
+      toEdit[0].position = new BABYLON.Vector3(interactable.value.location.x, 0.5, interactable.value.location.y)
     }
 
     addInteractable (interactable: any): void {
       var model = ''
       var texture = ''
 
-      model = `${interactable.value['type']}.babylon`
-      texture = `/static/babylon/interactables/${interactable.value['type']}_text.png`
+      model = `model_${interactable.value['type']}.babylon`
+      texture = `/static/babylon/interactables/interactable_${interactable.value['type']}.png`
 
       const material = new BABYLON.StandardMaterial(interactable.value['type'], this.scene)
       material.specularColor = new BABYLON.Color3(0, 0, 0)
@@ -58,10 +69,10 @@ export default class Interactable implements GameNode {
 
       var frameRate = 5
 
-      var rotationAnim = this.createRotation(frameRate)
-      var slideAnim = this.createSlide(frameRate)
+      var rotationAnimation = hoveringRotation(frameRate)
+      var slideAnimation = hoveringFloat(frameRate)
 
-      BABYLON.SceneLoader.ImportMesh(interactable.value['type'], '/static/babylon/interactables/', model, this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
+      this.importMesh(interactable.value['type'], '/static/babylon/interactables/', model, this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
         var newInteractable = meshes[0]
         newInteractable.name = `interactable: ${interactable.id}`
 
@@ -70,45 +81,7 @@ export default class Interactable implements GameNode {
         newInteractable.parent = this.interactableNode
         newInteractable.position = new BABYLON.Vector3(interactable.value.location.x, 0.5, interactable.value.location.y)
 
-        if (interactable.value['type'] !== 'score') { this.scene.beginDirectAnimation(newInteractable, [rotationAnim, slideAnim], 0, 2 * frameRate, true) }
+        if (interactable.value['type'] !== 'score') { this.scene.beginDirectAnimation(newInteractable, [rotationAnimation, slideAnimation], 0, 2 * frameRate, true) }
       })
-    }
-
-    createRotation (frameRate: number) : BABYLON.Animation {
-      var rotationAnim = new BABYLON.Animation('interactable rotation', 'rotation.y', frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
-      var keyFramesR = []
-
-      keyFramesR.push({
-        frame: 0,
-        value: 0
-      })
-      keyFramesR.push({
-        frame: frameRate,
-        value: Math.PI
-      })
-      keyFramesR.push({
-        frame: 2 * frameRate,
-        value: 2 * Math.PI
-      })
-
-      rotationAnim.setKeys(keyFramesR)
-
-      return rotationAnim
-    }
-
-    createSlide (frameRate: number) : BABYLON.Animation {
-      var slideAnim = new BABYLON.Animation('interactable translation', 'position.y', frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
-      var keyFramesR = []
-
-      for (let i = 0; i <= 2 * frameRate; i++) {
-        keyFramesR.push({
-          frame: i,
-          value: 0.2 * Math.sin(Math.PI * (i / frameRate)) - 0.1
-        })
-      }
-
-      slideAnim.setKeys(keyFramesR)
-
-      return slideAnim
     }
 }
