@@ -47,7 +47,7 @@ describe('obstacle', () => {
     const obstacles = obstacle.obstacleNode.getChildren()
 
     expect(obstacles.length).toBe(1)
-    expect({ name: obstacles[0].name, position: obstacles[0].position }).toMatchSnapshot()
+    expect(obstacles[0].position).toEqual({ x: 10, y: 0.5, z: 10 })
   })
 
   it('deletes an obstacle', () => {
@@ -76,7 +76,7 @@ describe('obstacle', () => {
     let obstacles = obstacle.obstacleNode.getChildren()
 
     expect(obstacles.length).toBe(1)
-    expect({ name: obstacles[0].name, position: obstacles[0].position }).toMatchSnapshot()
+    expect(obstacles[0].position).toEqual({ x: 10, y: 0.5, z: 10 })
 
     const editList = obstacleList({ '0': [-7, 2] })
     diffResult = new DiffResult([], [], editList)
@@ -85,7 +85,7 @@ describe('obstacle', () => {
     obstacles = obstacle.obstacleNode.getChildren()
 
     expect(obstacles.length).toBe(1)
-    expect({ name: obstacles[0].name, position: obstacles[0].position }).toMatchSnapshot()
+    expect(obstacles[0].position).toEqual({ x: -7, y: 0.5, z: 2 })
   })
 
   it('adds, edits and delete obstacles on same update', () => {
@@ -96,8 +96,8 @@ describe('obstacle', () => {
     let obstacles = obstacle.obstacleNode.getChildren()
 
     expect(obstacles.length).toBe(2)
-    expect({ name: obstacles[0].name, position: obstacles[0].position }).toMatchSnapshot()
-    expect({ name: obstacles[1].name, position: obstacles[1].position }).toMatchSnapshot()
+    expect(obstacles[0].position).toEqual({ x: 10, y: 0.5, z: 10 })
+    expect(obstacles[1].position).toEqual({ x: 15, y: 0.5, z: 15 })
 
     addList = obstacleList({ '2': [15, 15] })
     const editList = obstacleList({ '1': [10, 10] })
@@ -108,7 +108,7 @@ describe('obstacle', () => {
     obstacles = obstacle.obstacleNode.getChildren()
 
     expect(obstacles.length).toBe(2)
-    expect({ name: obstacles[0].name, position: obstacles[0].position }).toMatchSnapshot()
-    expect({ name: obstacles[1].name, position: obstacles[1].position }).toMatchSnapshot()
+    expect(obstacles[0].position).toEqual({ x: 10, y: 0.5, z: 10 })
+    expect(obstacles[1].position).toEqual({ x: 15, y: 0.5, z: 15 })
   })
 })
