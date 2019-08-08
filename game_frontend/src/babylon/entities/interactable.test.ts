@@ -25,7 +25,7 @@ function dummyImportMesh (meshName: string, filePath: string, fileName: string, 
   onSuccess(meshes, [], [], [])
 }
 
-function createInteractableList(numberOfInteractables: number, interactableType: string) : any{
+function createInteractableList (numberOfInteractables: number, interactableType: string) : any {
   var list = []
   for (let i = 0; i < numberOfInteractables; i++) {
     list[i] = {
@@ -33,7 +33,7 @@ function createInteractableList(numberOfInteractables: number, interactableType:
       value: {
         type: interactableType,
         location: {
-          x: i, 
+          x: i,
           y: i
         }
       }

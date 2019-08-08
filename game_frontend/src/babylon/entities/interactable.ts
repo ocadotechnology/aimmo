@@ -2,7 +2,7 @@ import { GameNode } from '../interfaces'
 import * as BABYLON from 'babylonjs'
 import { Environment } from '../environment/environment'
 import { DiffResult } from '../diff'
-import { hoveringFloat, rotationAnimation } from '../animations'
+import { bobbingAnimation, rotationAnimation } from '../animations'
 
 export default class Interactable implements GameNode {
     object: any
@@ -65,7 +65,7 @@ export default class Interactable implements GameNode {
       var frameRate = 5
 
       var rotation = rotationAnimation(frameRate)
-      var translation = hoveringFloat(frameRate)
+      var translation = bobbingAnimation(frameRate)
 
       this.importMesh(interactable.value['type'], '/static/babylon/interactables/', model, this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
         var newInteractable = meshes[0]

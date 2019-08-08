@@ -1,6 +1,6 @@
 import * as BABYLON from 'babylonjs'
 
-// Creates an animation that rotates an object around the y axis 
+// Creates an animation that rotates an object around the y axis
 export function rotationAnimation (frameRate: number) : BABYLON.Animation {
   var rotation = new BABYLON.Animation('rotation', 'rotation.y', frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
   var keyFramesR = []
@@ -24,8 +24,8 @@ export function rotationAnimation (frameRate: number) : BABYLON.Animation {
 }
 
 // Creates an animation that moves an object up and down across the y axis
-export function hoveringFloat (frameRate: number) : BABYLON.Animation {
-  var slideAnimation = new BABYLON.Animation('translation', 'position.y', frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
+export function bobbingAnimation (frameRate: number) : BABYLON.Animation {
+  var bobbing = new BABYLON.Animation('translation', 'position.y', frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
   var keyFramesR = []
 
   for (let i = 0; i <= 2 * frameRate; i++) {
@@ -35,7 +35,7 @@ export function hoveringFloat (frameRate: number) : BABYLON.Animation {
     })
   }
 
-  slideAnimation.setKeys(keyFramesR)
+  bobbing.setKeys(keyFramesR)
 
-  return slideAnimation
+  return bobbing
 }
