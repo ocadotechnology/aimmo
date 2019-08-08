@@ -10,7 +10,7 @@ export default class Obstacle implements GameNode {
 
   setup (environment: Environment): void {
     this.scene = environment.scene
-    this.obstacleNode = new BABYLON.TransformNode('Obstacle Parent', environment.scene)
+    this.obstacleNode = new BABYLON.TransformNode('Obstacles', environment.scene)
     this.obstacleNode.parent = environment.onTerrainNode
   }
 
@@ -41,7 +41,7 @@ export default class Obstacle implements GameNode {
         return node.name === `obstacle: ${obstacle.id}`
       }
     )
-    toEdit[0].position = new BABYLON.Vector3(obstacle.value.location.x, 0, obstacle.value.location.y)
+    toEdit[0].position = new BABYLON.Vector3(obstacle.value.location.x, 0.5, obstacle.value.location.y)
   }
 
   addObstacle (obstacle: any): void {
@@ -56,6 +56,5 @@ export default class Obstacle implements GameNode {
     // Set parent and relative position
     box.parent = this.obstacleNode
     box.position = new BABYLON.Vector3(obstacle.value.location.x, 0.5, obstacle.value.location.y)
-    box.setPivotMatrix(BABYLON.Matrix.Translation(0, -0.5, 0))
   }
 }

@@ -11,6 +11,7 @@ export default class Interactable implements GameNode {
     scene: BABYLON.Scene
     interactableNode: BABYLON.TransformNode
     importMesh: Function
+    materials: any
 
     constructor (importMesh: Function = BABYLON.SceneLoader.ImportMesh) {
       this.importMesh = importMesh
@@ -20,6 +21,13 @@ export default class Interactable implements GameNode {
       this.scene = environment.scene
       this.interactableNode = new BABYLON.TransformNode('Interactables', environment.scene)
       this.interactableNode.parent = environment.onTerrainNode
+
+      this.materials = {
+        'damage_boost': this.createMaterial('damage_boost'),
+        'health': this.createMaterial('health'),
+        'invulnerability': this.createMaterial('invlnerability'),
+        'score': this.createMaterial('score')
+      }
     }
 
     onGameStateUpdate (interactableDiff: DiffResult): void {
@@ -32,6 +40,17 @@ export default class Interactable implements GameNode {
       for (let interactable of interactableDiff.addList) {
         this.addInteractable(interactable)
       }
+    }
+
+    createMaterial (interactableType: string) : BABYLON.StandardMaterial {
+      const texture = `/static/babylon/interactables/interactable_${interactableType}.png`
+
+      const material = new BABYLON.StandardMaterial(interactableType, this.scene)
+      material.specularColor = new BABYLON.Color3(0, 0, 0)
+      material.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5)
+      material.diffuseTexture = new BABYLON.Texture(texture, this.scene)
+
+      return material
     }
 
     deleteInteractable (index: any): void {
@@ -58,21 +77,14 @@ export default class Interactable implements GameNode {
 
     addInteractable (interactable: any): void {
       var model = ''
-      var texture = ''
 
       model = `model_${interactable.value['type']}.babylon`
-      texture = `/static/babylon/interactables/interactable_${interactable.value['type']}.png`
-
-      const material = new BABYLON.StandardMaterial(interactable.value['type'], this.scene)
-      material.specularColor = new BABYLON.Color3(0, 0, 0)
-      material.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5)
-      material.diffuseTexture = new BABYLON.Texture(texture, this.scene)
 
       this.importMesh(interactable.value['type'], '/static/babylon/interactables/', model, this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
         var newInteractable = meshes[0]
         newInteractable.name = `interactable: ${interactable.id}`
 
-        newInteractable.material = material
+        newInteractable.material = this.materials[interactable.value.type]
 
         newInteractable.parent = this.interactableNode
         newInteractable.position = new BABYLON.Vector3(interactable.value.location.x, 0, interactable.value.location.y)

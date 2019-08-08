@@ -13,8 +13,8 @@ export const MAX_KEYFRAMES_PER_SECOND = 24
   *     rotationAnimation(5, 'interactable')
   */
 export function rotationAnimation (objectType: string) : BABYLON.Animation {
-  var rotation = new BABYLON.Animation(`${objectType} rotation`, 'rotation.y', 1, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
-  var keyFrames = []
+  let rotation = new BABYLON.Animation(`${objectType} rotation`, 'rotation.y', 1, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
+  let keyFrames = []
 
   keyFrames.push({
     frame: 0,
@@ -44,8 +44,8 @@ export function rotationAnimation (objectType: string) : BABYLON.Animation {
   *     bobbingAnimation(5, 'interactable')
   */
 export function bobbingAnimation (objectType: string) : BABYLON.Animation {
-  var bobbing = new BABYLON.Animation(`${objectType} bobbing`, 'position.y', 1, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
-  var keyFrames = []
+  let bobbing = new BABYLON.Animation(`${objectType} bobbing`, 'position.y', 1, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
+  let keyFrames = []
 
   keyFrames.push({
     frame: 0,
