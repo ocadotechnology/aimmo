@@ -1,7 +1,7 @@
 import Camera from './camera'
 import Light from './light'
 import Terrain from './terrain'
-import Environment from './environment'
+import { Environment } from './environment'
 
 export default class EnvironmentManager {
     camera: Camera

@@ -1,6 +1,6 @@
 import { GameNode } from '../interfaces'
 import * as BABYLON from 'babylonjs'
-import Environment from '../environment/environment'
+import { Environment } from './environment'
 
 export default class Terrain implements GameNode {
     object: any;
