@@ -32,7 +32,9 @@ export default class Obstacle implements GameNode {
         return node.name === `obstacle: ${index}`
       }
     )
-    toDelete[0].dispose()
+    if (toDelete.length > 0) {
+      toDelete[0].dispose()
+    }
   }
 
   editObstacle (obstacle: any): void {
@@ -41,7 +43,9 @@ export default class Obstacle implements GameNode {
         return node.name === `obstacle: ${obstacle.id}`
       }
     )
-    toEdit[0].position = new BABYLON.Vector3(obstacle.value.location.x, 0.5, obstacle.value.location.y)
+    if (toEdit.length > 0) {
+      toEdit[0].position = new BABYLON.Vector3(obstacle.value.location.x, 0.5, obstacle.value.location.y)
+    }
   }
 
   addObstacle (obstacle: any): void {

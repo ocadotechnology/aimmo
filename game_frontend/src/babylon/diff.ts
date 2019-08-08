@@ -60,6 +60,5 @@ export default function diff (previous: Array<any>, current: Array<any>): any {
       }
     }
   }
-
   return diffResult
 }
