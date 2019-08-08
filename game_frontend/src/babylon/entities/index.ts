@@ -28,17 +28,17 @@ export default class EntityManager {
   onGameStateUpdate (previousGameState: any, currentGameState: any): void {
     var previousObstacleList = []
     var previousInteractableList = []
-    var previousAvaterList = []
+    var previousAvatarList = []
 
     if (previousGameState) {
       previousObstacleList = previousGameState.obstacles
       previousInteractableList = previousGameState.interactables
-      previousAvaterList = previousGameState.players
+      previousAvatarList = previousGameState.players
     }
 
     const obstacleDiff = diff(previousObstacleList, currentGameState.obstacles)
     const interactableDiff = diff(previousInteractableList, currentGameState.interactables)
-    const avatarDiff = diff(previousAvaterList, currentGameState.players)
+    const avatarDiff = diff(previousAvatarList, currentGameState.players)
 
     this.obstacles.onGameStateUpdate(obstacleDiff)
     this.interactables.onGameStateUpdate(interactableDiff)
