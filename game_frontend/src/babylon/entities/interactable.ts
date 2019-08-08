@@ -53,7 +53,7 @@ export default class Interactable implements GameNode {
         }
       )
       if (toEdit.length > 0){
-        toEdit[0].position = new BABYLON.Vector3(interactable.value.location.x, 0.5, interactable.value.location.y)
+        toEdit[0].position = new BABYLON.Vector3(interactable.value.location.x, 0, interactable.value.location.y)
       }
     }
 
@@ -76,7 +76,7 @@ export default class Interactable implements GameNode {
         newInteractable.material = material
 
         newInteractable.parent = this.interactableNode
-        newInteractable.position = new BABYLON.Vector3(interactable.value.location.x, 0.5, interactable.value.location.y)
+        newInteractable.position = new BABYLON.Vector3(interactable.value.location.x, 0, interactable.value.location.y)
 
         if (interactable.value['type'] !== 'score') { this.scene.beginDirectAnimation(newInteractable, animation, 0, 2 * frameRate, true) }
       })
