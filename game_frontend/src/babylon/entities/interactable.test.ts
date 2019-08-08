@@ -132,4 +132,61 @@ describe('interactable', () => {
     interactableNodeChildren = interactable.interactableNode.getChildMeshes()
     expect(interactableNodeChildren[0].position).toEqual(new BABYLON.Vector3(2, 0.5, 0))
   })
+
+  it('adds, removes and edits interactables on a new Interactable at the same time', () => {
+    // Given
+    const environment = new MockEnvironment()
+    const interactable = new Interactable(dummyImportMesh)
+    const list = createInteractableList(4, 'score')
+    var addList = list.slice(0, 3)
+    var deleteList = []
+    var editList = []
+
+    // When
+    interactable.setup(environment)
+
+    var diffResult = new DiffResult(addList, deleteList, editList)
+    interactable.onGameStateUpdate(diffResult)
+
+    addList = [list[3]]
+    deleteList = [list[2]]
+    editList = [list[0]]
+    editList[0].value.location.x = 2
+
+    diffResult = new DiffResult(addList, deleteList, editList)
+    interactable.onGameStateUpdate(diffResult)
+
+    // Then
+    const interactableNodeChildren = interactable.interactableNode.getChildMeshes()
+    expect(interactableNodeChildren.length).toBe(3)
+    expect(interactableNodeChildren[0].position).toEqual(new BABYLON.Vector3(2, 0.5, 0))
+  })
+
+  it('removes and edits the same object from an Interactable at the same time', () => {
+    // Given
+    const environment = new MockEnvironment()
+    const interactable = new Interactable(dummyImportMesh)
+    var addList = createInteractableList(1, 'score')
+    var deleteList = []
+    var editList = []
+
+    // When
+    interactable.setup(environment)
+
+    var diffResult = new DiffResult(addList, deleteList, editList)
+    interactable.onGameStateUpdate(diffResult)
+
+    deleteList = [addList[0]]
+    editList = [addList[0]]
+    editList[0].value.location.x = 2
+
+    addList = []
+
+    diffResult = new DiffResult(addList, deleteList, editList)
+    interactable.onGameStateUpdate(diffResult)
+
+    // Then
+    const interactableNodeChildren = interactable.interactableNode.getChildMeshes()
+    expect(interactableNodeChildren.length).toBe(0)
+  })
 })
