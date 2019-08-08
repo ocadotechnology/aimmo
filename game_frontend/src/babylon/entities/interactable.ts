@@ -2,7 +2,7 @@ import { GameNode } from '../interfaces'
 import * as BABYLON from 'babylonjs'
 import { Environment } from '../environment/environment'
 import { DiffResult } from '../diff'
-import { hoveringFloat, hoveringRotation } from '../animations'
+import { hoveringFloat, rotationAnimation } from '../animations'
 
 export default class Interactable implements GameNode {
     object: any
@@ -10,17 +10,13 @@ export default class Interactable implements GameNode {
     interactableNode: BABYLON.TransformNode
     importMesh: Function
 
-    constructor (importMesh?: Function) {
-      if (importMesh) {
-        this.importMesh = importMesh
-      } else {
-        this.importMesh = BABYLON.SceneLoader.ImportMesh
-      }
+    constructor (importMesh: Function = BABYLON.SceneLoader.ImportMesh) {
+      this.importMesh = importMesh
     }
 
     setup (environment: Environment): void {
       this.scene = environment.scene
-      this.interactableNode = new BABYLON.TransformNode('Interactable Parent', environment.scene)
+      this.interactableNode = new BABYLON.TransformNode('Interactables', environment.scene)
       this.interactableNode.parent = environment.onTerrainNode
     }
 
@@ -68,8 +64,8 @@ export default class Interactable implements GameNode {
 
       var frameRate = 5
 
-      var rotationAnimation = hoveringRotation(frameRate)
-      var slideAnimation = hoveringFloat(frameRate)
+      var rotation = rotationAnimation(frameRate)
+      var translation = hoveringFloat(frameRate)
 
       this.importMesh(interactable.value['type'], '/static/babylon/interactables/', model, this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
         var newInteractable = meshes[0]
@@ -80,7 +76,7 @@ export default class Interactable implements GameNode {
         newInteractable.parent = this.interactableNode
         newInteractable.position = new BABYLON.Vector3(interactable.value.location.x, 0.5, interactable.value.location.y)
 
-        if (interactable.value['type'] !== 'score') { this.scene.beginDirectAnimation(newInteractable, [rotationAnimation, slideAnimation], 0, 2 * frameRate, true) }
+        if (interactable.value['type'] !== 'score') { this.scene.beginDirectAnimation(newInteractable, [rotation, translation], 0, 2 * frameRate, true) }
       })
     }
 }
