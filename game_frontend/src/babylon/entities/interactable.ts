@@ -25,7 +25,7 @@ export default class Interactable implements GameNode {
       this.materials = {
         'damage_boost': this.createMaterial('damage_boost'),
         'health': this.createMaterial('health'),
-        'invulnerability': this.createMaterial('invlnerability'),
+        'invulnerability': this.createMaterial('invulnerability'),
         'score': this.createMaterial('score')
       }
     }
