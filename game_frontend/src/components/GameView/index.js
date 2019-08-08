@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import EntityManager from '../../babylon/entities'
 import SceneRenderer from '../../babylon/environment'
 import EnvironmentManager from '../../babylon/environment/environmentManager'
-import Environment from '../../babylon/environment/environment'
+import { StandardEnvironment } from '../../babylon/environment/environment'
 
 export const GameViewLayout = styled.div`
   grid-area: game-view;
@@ -17,13 +17,13 @@ export const Compass = styled.img`
 `
 
 export default class GameView extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.props.connectToGame()
   }
 
-  componentDidMount() {
-    this.environment = new Environment(this.canvas)
+  componentDidMount () {
+    this.environment = new StandardEnvironment(this.canvas)
     this.environment.setup()
 
     this.sceneRenderer = new SceneRenderer(this.environment)
@@ -39,11 +39,11 @@ export default class GameView extends Component {
     window.addEventListener('resize', this.sceneRenderer.windowResized)
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate (prevProps) {
     this.entities.onGameStateUpdate(prevProps.gameState, this.props.gameState)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     window.removeEventListener('resize', this.sceneRenderer.windowResized)
   }
 
@@ -53,14 +53,14 @@ export default class GameView extends Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <GameViewLayout>
         <canvas
           style={{ width: '100%', height: '100%' }}
           ref={this.onCanvasLoaded}
         />
-        <Compass src="/static/images/compass.svg" />
+        <Compass src='/static/images/compass.svg' />
       </GameViewLayout>
     )
   }
