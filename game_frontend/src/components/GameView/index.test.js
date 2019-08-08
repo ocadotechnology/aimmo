@@ -1,7 +1,8 @@
 /* eslint-env jest */
 import React from 'react'
-import GameView, { GameViewLayout } from 'components/GameView'
+import GameView, { GameViewLayout, Compass } from 'components/GameView'
 import { shallow } from 'enzyme/build/index'
+import createShallowWithTheme from 'testHelpers/createShallow'
 
 describe('<GameView />', () => {
   it('matches snapshot', () => {
@@ -18,6 +19,13 @@ describe('<GameView />', () => {
 describe('<GameViewLayout />', () => {
   it('matches snapshot', () => {
     const tree = shallow(<GameViewLayout />)
+    expect(tree).toMatchSnapshot()
+  })
+})
+
+describe('<Compass />', () => {
+  it('matches snapshot', () => {
+    const tree = createShallowWithTheme(<Compass />)
     expect(tree).toMatchSnapshot()
   })
 })
