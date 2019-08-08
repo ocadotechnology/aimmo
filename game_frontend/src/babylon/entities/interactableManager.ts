@@ -25,7 +25,7 @@ export default class InteractableManager implements GameNode, DiffHandling {
       this.materials = {
         'damage_boost': this.createMaterial('damage_boost'),
         'health': this.createMaterial('health'),
-        'invulnerability': this.createMaterial('invlnerability'),
+        'invulnerability': this.createMaterial('invulnerability'),
         'score': this.createMaterial('score')
       }
     }
@@ -89,7 +89,9 @@ export default class InteractableManager implements GameNode, DiffHandling {
         newInteractable.parent = this.interactableNode
         newInteractable.position = new BABYLON.Vector3(interactable.value.location.x, 0, interactable.value.location.y)
 
-        if (interactable.value['type'] !== 'score') { this.scene.beginDirectAnimation(newInteractable, animation, 0, MAX_KEYFRAMES_PER_SECOND, true) }
+        if (interactable.value['type'] !== 'score') {
+          this.scene.beginDirectAnimation(newInteractable, animation, 0, MAX_KEYFRAMES_PER_SECOND, true)
+        }
       })
     }
 }
