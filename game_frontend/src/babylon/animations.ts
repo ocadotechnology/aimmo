@@ -44,24 +44,45 @@ export function rotationAnimation (objectType: string) : BABYLON.Animation {
   *     bobbingAnimation(5, 'interactable')
   */
 export function bobbingAnimation (objectType: string) : BABYLON.Animation {
-  let bobbing = new BABYLON.Animation(`${objectType} bobbing`, 'position.y', 1, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
-  let keyFrames = []
-
-  keyFrames.push({
-    frame: 0,
-    value: -0.15
-  })
-  keyFrames.push({
-    frame: 1,
-    value: 0.15
-  })
-  keyFrames.push({
-    frame: 2,
-    value: -0.15
-  })
+  const bobbing = new BABYLON.Animation(`${objectType} bobbing`, 'position.y', 1, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
+  const keyFrames = [
+    {
+      frame: 0,
+      value: -0.15
+    },
+    {
+      frame: 1,
+      value: 0.15
+    },
+    {
+      frame: 2,
+      value: -0.15
+    }
+  ]
 
   bobbing.setKeys(keyFrames)
   bobbing.setEasingFunction(new BABYLON.SineEase())
 
   return bobbing
+}
+
+export function createMoveAnimation (fromPosition: BABYLON.Vector3, toPosition: BABYLON.Vector3): BABYLON.Animation {
+  let move = new BABYLON.Animation('move', 'position', 1, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT)
+  const keyFrames = [
+    {
+      frame: 0,
+      value: fromPosition
+    },
+    {
+      frame: 1,
+      value: toPosition
+    }
+  ]
+
+  move.setKeys(keyFrames)
+  const easingFunction = new BABYLON.QuadraticEase()
+  easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT)
+  move.setEasingFunction(easingFunction)
+
+  return move
 }
