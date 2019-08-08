@@ -1,9 +1,10 @@
 import * as BABYLON from 'babylonjs'
 
+export const MAX_KEYFRAMES_PER_SECOND = 24
+
 /**
   * This function creates an animation that rotates an object around the y axis
   *
-  * @param {number} frameRate - duration of half the animation, in frames
   * @param {string} objectType - the type of object the animation is created for
   * @return {BABYLON.Animation} A Babylon JS animation object
   *
@@ -11,8 +12,8 @@ import * as BABYLON from 'babylonjs'
   *
   *     rotationAnimation(5, 'interactable')
   */
-export function rotationAnimation (frameRate: number, objectType: string) : BABYLON.Animation {
-  var rotation = new BABYLON.Animation(`${objectType} rotation`, 'rotation.y', frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
+export function rotationAnimation (objectType: string) : BABYLON.Animation {
+  var rotation = new BABYLON.Animation(`${objectType} rotation`, 'rotation.y', 1, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
   var keyFrames = []
 
   keyFrames.push({
@@ -20,11 +21,11 @@ export function rotationAnimation (frameRate: number, objectType: string) : BABY
     value: 0
   })
   keyFrames.push({
-    frame: frameRate,
+    frame: 1,
     value: Math.PI
   })
   keyFrames.push({
-    frame: 2 * frameRate,
+    frame: 2,
     value: 2 * Math.PI
   })
 
@@ -35,7 +36,6 @@ export function rotationAnimation (frameRate: number, objectType: string) : BABY
 /**
   *  Creates an animation that moves an object up and down across the y axis
   *
-  * @param {number} frameRate - duration of half the animation, in frames
   * @param {string} objectType - the type of object the animation is created for
   * @return {BABYLON.Animation} A Babylon JS animation object
   *
@@ -43,18 +43,25 @@ export function rotationAnimation (frameRate: number, objectType: string) : BABY
   *
   *     bobbingAnimation(5, 'interactable')
   */
-export function bobbingAnimation (frameRate: number, objectType: string) : BABYLON.Animation {
-  var bobbing = new BABYLON.Animation(`${objectType} bobbing`, 'position.y', frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
+export function bobbingAnimation (objectType: string) : BABYLON.Animation {
+  var bobbing = new BABYLON.Animation(`${objectType} bobbing`, 'position.y', 1, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
   var keyFrames = []
 
-  for (let i = 0; i <= 2 * frameRate; i++) {
-    keyFrames.push({
-      frame: i,
-      value: 0.2 * Math.sin(Math.PI * (i / frameRate))
-    })
-  }
+  keyFrames.push({
+    frame: 0,
+    value: -0.15
+  })
+  keyFrames.push({
+    frame: 1,
+    value: 0.15
+  })
+  keyFrames.push({
+    frame: 2,
+    value: -0.15
+  })
 
   bobbing.setKeys(keyFrames)
+  bobbing.setEasingFunction(new BABYLON.SineEase())
 
   return bobbing
 }

@@ -2,10 +2,9 @@ import { GameNode } from '../interfaces'
 import * as BABYLON from 'babylonjs'
 import { Environment } from '../environment/environment'
 import { DiffResult } from '../diff'
-import { bobbingAnimation, rotationAnimation } from '../animations'
+import { bobbingAnimation, rotationAnimation, MAX_KEYFRAMES_PER_SECOND } from '../animations'
 
-const frameRate = 5
-const animation = [rotationAnimation(frameRate, 'interactable'), bobbingAnimation(frameRate, 'interactable')]
+const animation = [rotationAnimation('interactable'), bobbingAnimation('interactable')]
 
 export default class Interactable implements GameNode {
     object: any
@@ -41,7 +40,7 @@ export default class Interactable implements GameNode {
           return node.name === `interactable: ${index}`
         }
       )
-      if (toDelete.length > 0){
+      if (toDelete.length > 0) {
         toDelete[0].dispose()
       }
     }
@@ -52,7 +51,7 @@ export default class Interactable implements GameNode {
           return node.name === `interactable: ${interactable.id}`
         }
       )
-      if (toEdit.length > 0){
+      if (toEdit.length > 0) {
         toEdit[0].position = new BABYLON.Vector3(interactable.value.location.x, 0, interactable.value.location.y)
       }
     }
@@ -78,7 +77,7 @@ export default class Interactable implements GameNode {
         newInteractable.parent = this.interactableNode
         newInteractable.position = new BABYLON.Vector3(interactable.value.location.x, 0, interactable.value.location.y)
 
-        if (interactable.value['type'] !== 'score') { this.scene.beginDirectAnimation(newInteractable, animation, 0, 2 * frameRate, true) }
+        if (interactable.value['type'] !== 'score') { this.scene.beginDirectAnimation(newInteractable, animation, 0, MAX_KEYFRAMES_PER_SECOND, true) }
       })
     }
 }
