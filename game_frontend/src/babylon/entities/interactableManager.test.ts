@@ -1,15 +1,15 @@
 /* eslint-env jest */
 import * as BABYLON from 'babylonjs'
-import Interactable from './interactable'
+import InteractableManager from './interactableManager'
 import { DiffResult } from '../diff'
 import { MockEnvironment } from '../../testHelpers/mockEnvironment'
 
 let environment: MockEnvironment
-let interactable: Interactable
+let interactable: InteractableManager
 
 beforeEach(() => {
   environment = new MockEnvironment()
-  interactable = new Interactable(dummyImportMesh)
+  interactable = new InteractableManager(dummyImportMesh)
 
   interactable.setup(environment)
 })
@@ -52,7 +52,7 @@ describe('interactable', () => {
     const editList = []
 
     const diffResult = new DiffResult(addList, deleteList, editList)
-    interactable.onGameStateUpdate(diffResult)
+    interactable.handleDifferences(diffResult)
 
     const interactableNodeDescendants = interactable.interactableNode.getDescendants()
     expect(interactableNodeDescendants.length).toBe(2)
@@ -64,13 +64,13 @@ describe('interactable', () => {
     const editList = []
 
     var diffResult = new DiffResult(addList, deleteList, editList)
-    interactable.onGameStateUpdate(diffResult)
+    interactable.handleDifferences(diffResult)
 
     deleteList = [addList[1]]
     addList = []
 
     diffResult = new DiffResult(addList, deleteList, editList)
-    interactable.onGameStateUpdate(diffResult)
+    interactable.handleDifferences(diffResult)
 
     const interactableNodeDescendants = interactable.interactableNode.getChildMeshes()
     expect(interactableNodeDescendants.length).toBe(1)
@@ -82,7 +82,7 @@ describe('interactable', () => {
     var editList = []
 
     var diffResult = new DiffResult(addList, deleteList, editList)
-    interactable.onGameStateUpdate(diffResult)
+    interactable.handleDifferences(diffResult)
 
     var interactableNodeChildren = interactable.interactableNode.getChildMeshes()
     expect(interactableNodeChildren[0].position).toEqual(new BABYLON.Vector3(0, 0, 0))
@@ -93,7 +93,7 @@ describe('interactable', () => {
     addList = []
 
     diffResult = new DiffResult(addList, deleteList, editList)
-    interactable.onGameStateUpdate(diffResult)
+    interactable.handleDifferences(diffResult)
 
     interactableNodeChildren = interactable.interactableNode.getChildMeshes()
     expect(interactableNodeChildren[0].position).toEqual(new BABYLON.Vector3(2, 0, 0))
@@ -106,7 +106,7 @@ describe('interactable', () => {
     var editList = []
 
     var diffResult = new DiffResult(addList, deleteList, editList)
-    interactable.onGameStateUpdate(diffResult)
+    interactable.handleDifferences(diffResult)
 
     addList = [list[3]]
     deleteList = [list[2]]
@@ -114,7 +114,7 @@ describe('interactable', () => {
     editList[0].value.location.x = 2
 
     diffResult = new DiffResult(addList, deleteList, editList)
-    interactable.onGameStateUpdate(diffResult)
+    interactable.handleDifferences(diffResult)
 
     const interactableNodeChildren = interactable.interactableNode.getChildMeshes()
     expect(interactableNodeChildren.length).toBe(3)
@@ -129,7 +129,7 @@ describe('interactable', () => {
     interactable.setup(environment)
 
     var diffResult = new DiffResult(addList, deleteList, editList)
-    interactable.onGameStateUpdate(diffResult)
+    interactable.handleDifferences(diffResult)
 
     deleteList = [addList[0]]
     editList = [addList[0]]
@@ -138,7 +138,7 @@ describe('interactable', () => {
     addList = []
 
     diffResult = new DiffResult(addList, deleteList, editList)
-    interactable.onGameStateUpdate(diffResult)
+    interactable.handleDifferences(diffResult)
 
     const interactableNodeChildren = interactable.interactableNode.getChildMeshes()
     expect(interactableNodeChildren.length).toBe(0)

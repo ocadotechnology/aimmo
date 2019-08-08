@@ -1,9 +1,9 @@
-import { GameNode } from '../interfaces'
+import { GameNode, DiffHandling } from '../interfaces'
 import * as BABYLON from 'babylonjs'
 import { Environment } from '../environment/environment'
 import { DiffResult } from '../diff'
 
-export default class Obstacle implements GameNode {
+export default class ObstacleManager implements GameNode, DiffHandling {
   object: any
   scene: BABYLON.Scene
   obstacleNode: BABYLON.TransformNode
@@ -14,14 +14,14 @@ export default class Obstacle implements GameNode {
     this.obstacleNode.parent = environment.onTerrainNode
   }
 
-  onGameStateUpdate (obstacleDiff: DiffResult): void {
-    for (let obstacle of obstacleDiff.deleteList) {
+  handleDifferences (differences: DiffResult): void {
+    for (let obstacle of differences.deleteList) {
       this.deleteObstacle(obstacle.id)
     }
-    for (let obstacle of obstacleDiff.editList) {
+    for (let obstacle of differences.editList) {
       this.editObstacle(obstacle)
     }
-    for (let obstacle of obstacleDiff.addList) {
+    for (let obstacle of differences.addList) {
       this.addObstacle(obstacle)
     }
   }

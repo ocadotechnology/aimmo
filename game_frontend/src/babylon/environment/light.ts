@@ -11,6 +11,4 @@ export default class Light implements GameNode {
 
       light.intensity = 1.45
     }
-
-    onGameStateUpdate (): void { }
 }

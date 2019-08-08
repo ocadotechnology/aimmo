@@ -17,6 +17,4 @@ export default class Terrain implements GameNode {
       mat.ambientColor = BABYLON.Color3.White()
       ground.material = mat
     }
-
-    onGameStateUpdate (): void { }
 }

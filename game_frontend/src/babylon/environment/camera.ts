@@ -87,6 +87,4 @@ export default class Camera implements GameNode {
       this.object.orthoLeft = -(this.frustum + this.zoomFactor) * this.view.x
       this.object.orthoRight = (this.frustum + this.zoomFactor) * this.view.x
     }
-
-    onGameStateUpdate (): void { }
 }

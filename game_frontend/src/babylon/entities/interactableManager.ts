@@ -1,4 +1,4 @@
-import { GameNode } from '../interfaces'
+import { GameNode, DiffHandling } from '../interfaces'
 import * as BABYLON from 'babylonjs'
 import { Environment } from '../environment/environment'
 import { DiffResult } from '../diff'
@@ -6,7 +6,7 @@ import { bobbingAnimation, rotationAnimation, MAX_KEYFRAMES_PER_SECOND } from '.
 
 const animation = [rotationAnimation('interactable'), bobbingAnimation('interactable')]
 
-export default class Interactable implements GameNode {
+export default class InteractableManager implements GameNode, DiffHandling {
     object: any
     scene: BABYLON.Scene
     interactableNode: BABYLON.TransformNode
@@ -30,14 +30,14 @@ export default class Interactable implements GameNode {
       }
     }
 
-    onGameStateUpdate (interactableDiff: DiffResult): void {
-      for (let interactable of interactableDiff.deleteList) {
+    handleDifferences (differences: DiffResult): void {
+      for (let interactable of differences.deleteList) {
         this.deleteInteractable(interactable.id)
       }
-      for (let interactable of interactableDiff.editList) {
+      for (let interactable of differences.editList) {
         this.editInteractable(interactable)
       }
-      for (let interactable of interactableDiff.addList) {
+      for (let interactable of differences.addList) {
         this.addInteractable(interactable)
       }
     }

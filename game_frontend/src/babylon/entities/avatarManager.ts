@@ -1,10 +1,10 @@
-import { GameNode } from '../interfaces'
+import { GameNode, DiffHandling } from '../interfaces'
 import * as BABYLON from 'babylonjs'
-import Environment from '../environment/environment'
+import { Environment } from '../environment/environment'
 import { DiffResult, DiffItem } from '../diff'
 import setOrientation from '../orientation'
 
-export default class Avatar implements GameNode {
+export default class AvatarManager implements GameNode, DiffHandling {
     object: any
     scene: BABYLON.Scene
     AvatarNode: BABYLON.TransformNode
@@ -15,14 +15,14 @@ export default class Avatar implements GameNode {
       this.AvatarNode.parent = environment.onTerrainNode
     }
 
-    onGameStateUpdate (avatarDiff: DiffResult): void {
-      for (let avatar of avatarDiff.deleteList) {
+    handleDifferences (differences: DiffResult): void {
+      for (let avatar of differences.deleteList) {
         this.removeAvatar(avatar)
       }
-      for (let avatar of avatarDiff.editList) {
+      for (let avatar of differences.editList) {
         this.animateAvatar(avatar)
       }
-      for (let avatar of avatarDiff.addList) {
+      for (let avatar of differences.addList) {
         this.addAvatar(avatar)
       }
     }
