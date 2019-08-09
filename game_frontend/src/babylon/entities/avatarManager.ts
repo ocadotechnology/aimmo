@@ -9,11 +9,15 @@ export default class AvatarManager implements GameNode, DiffHandling {
   object: any
   scene: BABYLON.Scene
   avatarNode: BABYLON.TransformNode
+  markerMaterial : BABYLON.StandardMaterial
 
   setup (environment: Environment): void {
     this.scene = environment.scene
     this.avatarNode = new BABYLON.TransformNode('Avatars', environment.scene)
     this.avatarNode.parent = environment.onTerrainNode
+
+    this.markerMaterial = new BABYLON.StandardMaterial('avatar marker', this.scene)
+    this.markerMaterial.diffuseTexture = new BABYLON.Texture('/static/models/avatar_marker.png', this.scene)
   }
 
   handleDifferences (differences: DiffResult): void {
@@ -56,7 +60,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
       setOrientation(dee, avatar.value.orientation)
 
       // Check if the avatar is for the player loading the page (somehow)
-      // this.attachMarker(dee)
+      this.attachMarker(dee, avatar)
     })
   }
 
@@ -75,11 +79,21 @@ export default class AvatarManager implements GameNode, DiffHandling {
     setOrientation(dee, avatar.value.orientation)
   }
 
-  attachMarker (avatarMesh: any): void {
+  attachMarker (avatarMesh: any, avatar: any): void {
     // Load marker mesh.
+    BABYLON.SceneLoader.ImportMesh('avatar_marker', '/static/models/', 'model_avatar_marker.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
+      var marker = meshes[0]
 
-    // Apply marker texture.
+      marker.material = this.markerMaterial
 
-    // Make Parent node the given avatar.
+      // TODO: see which avatar is active
+      var avatarToMark = this.avatarNode.getChildMeshes(true,
+        function (node): boolean {
+          return node.name === `avatar: ${avatar.value.id}`
+        }
+      )[0]
+      marker.parent = avatarToMark
+      marker.position = new BABYLON.Vector3(avatar.value.location.x, 2, avatar.value.location.y)
+    })
   }
 }
