@@ -68,7 +68,6 @@ export default class AvatarManager implements GameNode, DiffHandling {
     const toPosition = new BABYLON.Vector3(avatar.value.location.x, 0, avatar.value.location.y)
     const moveAnimation = createMoveAnimation(avatarToAnimate.position, toPosition)
     this.scene.beginDirectAnimation(avatarToAnimate, [moveAnimation], 0, MAX_KEYFRAMES_PER_SECOND, false, 1)
-    // console.log(avatarToAnimate)
     let dee = avatarToAnimate
 
     setOrientation(dee, avatar.value.orientation)
