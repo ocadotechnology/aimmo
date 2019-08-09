@@ -91,6 +91,6 @@ export function createWalkAnimation(mesh: BABYLON.AbstractMesh, scene: BABYLON.S
   // Load animation
   var runningRange = mesh.skeleton.getAnimationRange('runAnimation')
   if (runningRange){
-    scene.beginAnimation(mesh.skeleton, runningRange.from, runningRange.to, false)
+    scene.beginAnimation(mesh.skeleton, 10, 35, false)
   }
 }
