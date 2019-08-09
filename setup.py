@@ -4,7 +4,7 @@ import sys
 
 from setuptools import find_packages, setup
 
-with open('portal/__init__.py', 'r') as fd:
+with open('aimmo/__init__.py', 'r') as fd:
     version = re.search(
         r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
         fd.read(),
