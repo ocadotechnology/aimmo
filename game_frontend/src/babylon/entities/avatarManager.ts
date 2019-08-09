@@ -86,14 +86,8 @@ export default class AvatarManager implements GameNode, DiffHandling {
 
       marker.material = this.markerMaterial
 
-      // TODO: see which avatar is active
-      var avatarToMark = this.avatarNode.getChildMeshes(true,
-        function (node): boolean {
-          return node.name === `avatar: ${avatar.value.id}`
-        }
-      )[0]
-      marker.parent = avatarToMark
-      marker.position = new BABYLON.Vector3(avatar.value.location.x, 2, avatar.value.location.y)
+      marker.parent = avatarMesh
+      marker.position = new BABYLON.Vector3(avatar.value.location.x, 6, avatar.value.location.y)
     })
   }
 }
