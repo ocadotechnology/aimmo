@@ -87,10 +87,10 @@ export function createMoveAnimation (fromPosition: BABYLON.Vector3, toPosition: 
   return move
 }
 
-export function createWalkAnimation(mesh: BABYLON.AbstractMesh, scene: BABYLON.Scene) {
+export function createWalkAnimation (mesh: BABYLON.AbstractMesh, scene: BABYLON.Scene) {
   // Load animation
   var runningRange = mesh.skeleton.getAnimationRange('runAnimation')
-  if (runningRange){
+  if (runningRange) {
     scene.beginAnimation(mesh.skeleton, 10, 35, false)
   }
 }
