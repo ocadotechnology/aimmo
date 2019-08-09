@@ -3,7 +3,7 @@ import * as BABYLON from 'babylonjs'
 import { Environment } from '../environment/environment'
 import { DiffResult, DiffItem } from '../diff'
 import setOrientation from '../orientation'
-import { createMoveAnimation, MAX_KEYFRAMES_PER_SECOND } from '../animations'
+import { createMoveAnimation, createWalkAnimation, MAX_KEYFRAMES_PER_SECOND } from '../animations'
 
 export default class AvatarManager implements GameNode, DiffHandling {
   object: any
@@ -54,6 +54,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
       dee.parent = this.avatarNode
       dee.position = new BABYLON.Vector3(avatar.value.location.x, 0, avatar.value.location.y)
       setOrientation(dee, avatar.value.orientation)
+
       // Check if the avatar is for the player loading the page (somehow)
       // this.attachMarker(dee)
     })
@@ -69,6 +70,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
     const moveAnimation = createMoveAnimation(avatarToAnimate.position, toPosition)
     this.scene.beginDirectAnimation(avatarToAnimate, [moveAnimation], 0, MAX_KEYFRAMES_PER_SECOND, false, 1)
     let dee = avatarToAnimate
+    createWalkAnimation(dee, this.scene)
 
     setOrientation(dee, avatar.value.orientation)
   }
