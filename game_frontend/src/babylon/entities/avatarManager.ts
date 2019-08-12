@@ -87,7 +87,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
       marker.material = this.markerMaterial
 
       marker.parent = avatarMesh
-      marker.position = new BABYLON.Vector3(avatar.value.location.x, 6, avatar.value.location.y)
+      marker.position = new BABYLON.Vector3(0, 12, 0)
     })
   }
 }
