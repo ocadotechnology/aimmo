@@ -16,7 +16,7 @@ stages:
   - name: test
     if: NOT tag IS present
   - name: release
-    if: branch = master OR branch = development
+    if: (branch = master OR branch = development) AND (NOT type IN (pull_request))
   - name: deploy
     if: tag IS present AND (NOT type IN (pull_request))
   - name: Notify Semaphore
@@ -106,7 +106,7 @@ jobs:
         - bash <(curl -s https://codecov.io/bash)
     - stage: Release
       script:
-        - bash tag_release_on_travis.sh
+        - python version_updater.py ${DEPLOY_TO_DEV} ${TRAVIS_BUILD_NUMBER} ${TRAVIS_PULL_REQUEST_BRANCH} ${TRAVIS_BRANCH}
       deploy:
         - provider: releases
           api_key:
