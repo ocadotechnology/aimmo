@@ -5,16 +5,12 @@ from semantic_release.history import set_new_version
 from aimmo import __version__
 
 parser = argparse.ArgumentParser(description="Update version based on branch.")
-parser.add_argument("DEPLOY_TO_DEV", type=bool, help="True if build to dev")
-parser.add_argument("TRAVIS_BUILD_NUMBER", type=int, help="Travis build number")
+parser.add_argument("DEPLOY_TO_DEV", help="True if build to dev")
+parser.add_argument("TRAVIS_BUILD_NUMBER", help="Travis build number")
 parser.add_argument(
-    "TRAVIS_PULL_REQUEST_BRANCH",
-    type=basestring,
-    help="The name of the PR branch, otherwise empty",
+    "TRAVIS_PULL_REQUEST_BRANCH", help="The name of the PR branch, otherwise empty"
 )
-parser.add_argument(
-    "TRAVIS_BRANCH", type=basestring, help="Name of the branch the build is on"
-)
+parser.add_argument("TRAVIS_BRANCH", help="Name of the branch the build is on")
 
 args = parser.parse_args()
 
