@@ -1,6 +1,5 @@
 import argparse
-
-from semantic_release.history import set_new_version
+from subprocess import PIPE, Popen
 
 from aimmo import __version__
 
@@ -20,4 +19,6 @@ else:
     if BRANCH == "development":
         version = __version__ + ".b" + args.TRAVIS_BUILD_NUMBER
 
-set_new_version(version)
+tag_command = "git tag {}".format(version)
+
+Popen(tag_command, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True).communicate()
