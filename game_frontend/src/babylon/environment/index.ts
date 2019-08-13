@@ -11,7 +11,7 @@ export default class SceneRenderer {
     this.environment.engine.runRenderLoop(() => {
       this.environment.scene.render()
     })
-    this.showDebugLayer()
+    // this.showDebugLayer()
   }
 
   showDebugLayer (): void {
