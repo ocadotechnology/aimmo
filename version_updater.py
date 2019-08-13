@@ -19,13 +19,6 @@ else:
     if BRANCH == "development":
         version = __version__ + ".b" + args.TRAVIS_BUILD_NUMBER
 
-command = """
-if [ "$BRANCH" = "development" ]
-then
-    git tag {}.b$TRAVIS_BUILD_NUMBER"
-else
-    git tag {}
-fi
-""".format(version, version)
+tag_command = "git tag {}".format(version)
 
-Popen(command, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True).communicate()
+Popen(tag_command, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True).communicate()
