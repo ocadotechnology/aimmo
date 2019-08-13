@@ -8,26 +8,35 @@ First, we will look at the file structure for the babylon part of the game page:
 ```
 babylon
 │
-├── environment
+├── entities
+│   ├── avatarManager.test.ts
+│   ├── avatarManager.ts
 │   ├── index.ts
+│   ├── interactableManager.test.ts
+│   ├── obstacleManager.test.ts
+│   └── obstacleManager.ts
+│
+├── environment
+│   ├── camera.test.ts
 │   ├── camera.ts
 │   ├── environment.ts
 │   ├── environmentManager.ts
+│   ├── index.ts
+│   ├── light.test.ts
 │   ├── light.ts
 │   └── terrain.ts
 │
-├── entities
-│   ├── index.ts
-│   ├── obstacle.ts
-│   ├── avatar.ts
-│   └── interactable.ts
-│
-└── interfaces.ts
+├── animation.ts
+├── diff.test.ts
+├── diff.ts
+├── interfaces.test.ts
+├── interfaces.ts
+└── orientation.ts
 ```
-`interfaces.ts` contains the typing (interfaces) for objects specific to our project, such as [GameNode](../gamenode/README.md#GameNode).
+`interfaces.ts` contains the typing (interfaces) for objects specific to our project, such as [GameNode](../gamenode/README.md#GameNode), [DiffHandling](../diff/README.md##DiffHandling) and [DiffProcessor](../diff/README.md##DiffProcessor)
 
 We split the remaining elements of the game into two folders: 
-* **environment**: The elements of the game that make up the world, such as camera, light and terrain, as well as the renderer.
 * **entities**: These populate the game world, and cover elements such as obstacles, avatars, and interactables.
+* **environment**: The elements of the game that make up the world, such as camera, light and terrain, as well as the renderer.
 
-All classes in these folders implement the [GameNode](../gamenode/README.md#GameNode) interface.
+All classes in these folders implement the [GameNode](../gamenode/README.md#GameNode) interface. Entities also implement the [DiffHandling](../diff/README.md#DiffHandling) interface.

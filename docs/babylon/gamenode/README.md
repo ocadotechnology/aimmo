@@ -5,13 +5,11 @@
 ```Typescript
 export interface GameNode {
     object: any
-    onSceneMount(scene: Scene, canvas: HTMLCanvasElement, engine: Engine): void
-    onGameStateUpdate(): void
+    setup(environment: Environment): void
 }
 ```
 
 * `object` should contain the Babylon component, such as the camera, terrain, or engine. 
-* `onSceneMount` is where the component should be created with all the initial settings, see the `onSceneMount` example for the camera above. This gets called once, when the webpage is loaded. The function must be defined as shown in the code snippet above.
-* `onGameStateUpdate` is where the component gets updated according to changes in the game state. This gets called whenever a new game state is received from the server. Again, the function must be defined as shown in the code snippet above.
+* `setup` is where the component should be created with its initial settings, which it gets from the `environment` parameter.
 
->Remember to set `this.object` in `onSceneMount`
+>Remember to set `this.object` in `setup`

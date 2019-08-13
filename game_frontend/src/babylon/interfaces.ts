@@ -20,14 +20,14 @@ export class DiffProcessor {
   }
 
   handleDifferences (differences: DiffResult): void {
-    for (let avatar of differences.deleteList) {
-      this.handler.delete(avatar)
+    for (let entity of differences.deleteList) {
+      this.handler.delete(entity)
     }
-    for (let avatar of differences.editList) {
-      this.handler.edit(avatar)
+    for (let entity of differences.editList) {
+      this.handler.edit(entity)
     }
-    for (let avatar of differences.addList) {
-      this.handler.add(avatar)
+    for (let entity of differences.addList) {
+      this.handler.add(entity)
     }
   }
 }
