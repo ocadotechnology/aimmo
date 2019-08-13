@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import diff from './diff'
+import { diff } from './diff'
 
 describe('diff', () => {
   it('returns nothing if arrays are equal', () => {

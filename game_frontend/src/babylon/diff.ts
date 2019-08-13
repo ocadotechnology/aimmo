@@ -25,7 +25,7 @@ export class DiffResult {
     }
 }
 
-export default function diff (previous: Array<any>, current: Array<any>): DiffResult {
+export function diff (previous: Array<any>, current: Array<any>): DiffResult {
   var diffResult = new DiffResult([], [], [])
 
   // If there is no previous array, simply tell them to add everything in a new one.
