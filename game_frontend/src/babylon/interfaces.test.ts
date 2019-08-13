@@ -93,5 +93,4 @@ describe('Diff processor', () => {
       return isEqual(element, 5)
     })).toBeUndefined()
   })
-  })
 })
