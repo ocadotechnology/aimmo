@@ -5,8 +5,8 @@ export const DELETE = 'D'
 export const EDIT = 'E'
 
 export class DiffItem {
-  readonly id: string;
-  readonly value: any;
+  id: string;
+  value: any;
 
   constructor (id: string, value: any) {
     this.id = id
@@ -25,7 +25,7 @@ export class DiffResult {
     }
 }
 
-export default function diff (previous: Array<any>, current: Array<any>): DiffResult {
+export function diff (previous: Array<any>, current: Array<any>): DiffResult {
   var diffResult = new DiffResult([], [], [])
 
   // If there is no previous array, simply tell them to add everything in a new one.

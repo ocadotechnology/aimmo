@@ -1,7 +1,7 @@
+/* eslint-env jest */
 import { DiffProcessor, DiffHandling } from './interfaces'
-import { DiffItem, DiffResult } from './diff'
+import { DiffItem, diff } from './diff'
 import isEqual from 'lodash.isequal'
-import diff from './diff'
 
 class DummyHandler implements DiffHandling {
   items: Array<any>;
