@@ -106,6 +106,7 @@ jobs:
         - bash <(curl -s https://codecov.io/bash)
     - stage: Release
       script:
+        - pip install python-semantic-release==3.11.2
         - python version_updater.py ${DEPLOY_TO_DEV} ${TRAVIS_BUILD_NUMBER} ${TRAVIS_PULL_REQUEST_BRANCH} ${TRAVIS_BRANCH}
       deploy:
         - provider: releases
@@ -143,7 +144,6 @@ jobs:
         - popd
         - git config --global user.name "semantic-release (via TravisCI)"
         - git config --global user.email "semantic-release@travis"
-        - pip install python-semantic-release==3.11.2
         - semantic-release publish
     - name: "Build and push game image"
       script:
