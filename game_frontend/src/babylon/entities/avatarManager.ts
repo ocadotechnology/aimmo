@@ -12,6 +12,11 @@ export default class AvatarManager implements GameNode, DiffHandling {
   markerMaterial : BABYLON.StandardMaterial
   currentAvatarID: number
   gameStateProcessor: DiffProcessor
+  importMesh: Function
+
+  constructor (importMesh: Function = BABYLON.SceneLoader.ImportMesh) {
+    this.importMesh = importMesh
+  }
 
   setup (environment: Environment): void {
     this.gameStateProcessor = new DiffProcessor(this)
@@ -35,7 +40,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
 
   add (avatar: DiffItem): void {
     // import Dee
-    BABYLON.SceneLoader.ImportMesh(`Dee`, '/static/models/', 'dee.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
+    this.importMesh(`Dee`, '/static/models/', 'dee.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
       var dee = meshes[0]
       dee.name = `avatar: ${avatar.value.id}`
       dee.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1)
@@ -51,7 +56,6 @@ export default class AvatarManager implements GameNode, DiffHandling {
       dee.position = new BABYLON.Vector3(avatar.value.location.x, 0, avatar.value.location.y)
       setOrientation(dee, avatar.value.orientation)
 
-      console.log(this.currentAvatarID)
       if (avatar.value.id === this.currentAvatarID) {
         this.attachMarker(dee, avatar)
       }
@@ -64,18 +68,21 @@ export default class AvatarManager implements GameNode, DiffHandling {
         return node.name === `avatar: ${avatar.value.id}`
       }
     )[0]
-    const toPosition = new BABYLON.Vector3(avatar.value.location.x, 0, avatar.value.location.y)
-    const moveAnimation = createMoveAnimation(avatarToAnimate.position, toPosition)
-    this.scene.beginDirectAnimation(avatarToAnimate, [moveAnimation], 0, MAX_KEYFRAMES_PER_SECOND, false, 1)
-    let dee = avatarToAnimate
-    createWalkAnimation(dee, this.scene)
 
-    setOrientation(dee, avatar.value.orientation)
+    if (avatarToAnimate.skeleton !== null) {
+      const toPosition = new BABYLON.Vector3(avatar.value.location.x, 0, avatar.value.location.y)
+      const moveAnimation = createMoveAnimation(avatarToAnimate.position, toPosition)
+      this.scene.beginDirectAnimation(avatarToAnimate, [moveAnimation], 0, MAX_KEYFRAMES_PER_SECOND, false, 1)
+      let dee = avatarToAnimate
+      createWalkAnimation(dee, this.scene)
+
+      setOrientation(dee, avatar.value.orientation)
+    }
   }
 
   attachMarker (avatarMesh: any, avatar: any): void {
     // Load marker mesh.
-    BABYLON.SceneLoader.ImportMesh('avatar_marker', '/static/models/', 'model_avatar_marker.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
+    this.importMesh('avatar_marker', '/static/models/', 'model_avatar_marker.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
       var marker = meshes[0]
 
       marker.material = this.markerMaterial

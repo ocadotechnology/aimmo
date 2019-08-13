@@ -3,6 +3,7 @@ import * as BABYLON from 'babylonjs'
 import InteractableManager from './interactableManager'
 import { DiffItem } from '../diff'
 import { MockEnvironment } from '../../testHelpers/mockEnvironment'
+import dummyImportMesh from '../../testHelpers/dummyImportMesh'
 
 let environment: MockEnvironment
 let interactable: InteractableManager
@@ -13,13 +14,6 @@ beforeEach(() => {
 
   interactable.setup(environment)
 })
-
-function dummyImportMesh (meshName: string, filePath: string, fileName: string, scene: BABYLON.Scene, onSuccess: Function): void {
-  const meshes = []
-  meshes[0] = BABYLON.MeshBuilder.CreateBox('', { height: 1 }, this.scene)
-
-  onSuccess(meshes, [], [], [])
-}
 
 function interactableDiffItem (index: string, type: string, location: {x: number, y: number}) {
   return new DiffItem(index, {
