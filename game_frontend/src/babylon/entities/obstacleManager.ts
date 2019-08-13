@@ -1,32 +1,24 @@
-import { GameNode, DiffHandling } from '../interfaces'
+import { GameNode, DiffHandling, DiffProcessor } from '../interfaces'
 import * as BABYLON from 'babylonjs'
 import { Environment } from '../environment/environment'
-import { DiffResult } from '../diff'
+import { DiffItem } from '../diff'
 
 export default class ObstacleManager implements GameNode, DiffHandling {
   object: any
   scene: BABYLON.Scene
   obstacleNode: BABYLON.TransformNode
+  gameStateProcessor: DiffProcessor
 
   setup (environment: Environment): void {
+    this.gameStateProcessor = new DiffProcessor(this)
+
     this.scene = environment.scene
     this.obstacleNode = new BABYLON.TransformNode('Obstacles', environment.scene)
     this.obstacleNode.parent = environment.onTerrainNode
   }
 
-  handleDifferences (differences: DiffResult): void {
-    for (let obstacle of differences.deleteList) {
-      this.deleteObstacle(obstacle.id)
-    }
-    for (let obstacle of differences.editList) {
-      this.editObstacle(obstacle)
-    }
-    for (let obstacle of differences.addList) {
-      this.addObstacle(obstacle)
-    }
-  }
-
-  deleteObstacle (index: any): void {
+  delete (obstacle: DiffItem): void {
+    const index = obstacle.id
     const toDelete = this.obstacleNode.getChildMeshes(true,
       function (node): boolean {
         return node.name === `obstacle: ${index}`
@@ -37,7 +29,7 @@ export default class ObstacleManager implements GameNode, DiffHandling {
     }
   }
 
-  editObstacle (obstacle: any): void {
+  update (obstacle: DiffItem): void {
     const toEdit = this.obstacleNode.getChildMeshes(true,
       function (node): boolean {
         return node.name === `obstacle: ${obstacle.id}`
@@ -48,7 +40,7 @@ export default class ObstacleManager implements GameNode, DiffHandling {
     }
   }
 
-  addObstacle (obstacle: any): void {
+  add (obstacle: DiffItem): void {
     // Create mesh
     const box = BABYLON.MeshBuilder.CreateBox(`obstacle: ${obstacle.id}`, { height: 1 }, this.scene)
 

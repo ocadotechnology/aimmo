@@ -1,7 +1,7 @@
-import { GameNode, DiffHandling } from '../interfaces'
+import { GameNode, DiffHandling, DiffProcessor } from '../interfaces'
 import * as BABYLON from 'babylonjs'
 import { Environment } from '../environment/environment'
-import { DiffResult, DiffItem } from '../diff'
+import { DiffItem } from '../diff'
 import setOrientation from '../orientation'
 import { createMoveAnimation, createWalkAnimation, MAX_KEYFRAMES_PER_SECOND } from '../animations'
 
@@ -10,8 +10,12 @@ export default class AvatarManager implements GameNode, DiffHandling {
   scene: BABYLON.Scene
   avatarNode: BABYLON.TransformNode
   markerMaterial : BABYLON.StandardMaterial
+  currentAvatarID: number
+  gameStateProcessor: DiffProcessor
 
   setup (environment: Environment): void {
+    this.gameStateProcessor = new DiffProcessor(this)
+
     this.scene = environment.scene
     this.avatarNode = new BABYLON.TransformNode('Avatars', environment.scene)
     this.avatarNode.parent = environment.onTerrainNode
@@ -20,19 +24,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
     this.markerMaterial.diffuseTexture = new BABYLON.Texture('/static/models/avatar_marker.png', this.scene)
   }
 
-  handleDifferences (differences: DiffResult): void {
-    for (let avatar of differences.deleteList) {
-      this.removeAvatar(avatar)
-    }
-    for (let avatar of differences.editList) {
-      this.animateAvatar(avatar)
-    }
-    for (let avatar of differences.addList) {
-      this.addAvatar(avatar)
-    }
-  }
-
-  removeAvatar (avatar: DiffItem): void {
+  delete (avatar: DiffItem): void {
     const toDelete = this.avatarNode.getChildMeshes(true,
       function (node): boolean {
         return node.name === `avatar: ${avatar.value.id}`
@@ -41,7 +33,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
     toDelete[0].dispose()
   }
 
-  addAvatar (avatar: DiffItem): void {
+  add (avatar: DiffItem): void {
     // import Dee
     BABYLON.SceneLoader.ImportMesh(`Dee`, '/static/models/', 'dee.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
       var dee = meshes[0]
@@ -59,12 +51,14 @@ export default class AvatarManager implements GameNode, DiffHandling {
       dee.position = new BABYLON.Vector3(avatar.value.location.x, 0, avatar.value.location.y)
       setOrientation(dee, avatar.value.orientation)
 
-      // Check if the avatar is for the player loading the page (somehow)
-      this.attachMarker(dee, avatar)
+      console.log(this.currentAvatarID)
+      if (avatar.value.id === this.currentAvatarID) {
+        this.attachMarker(dee, avatar)
+      }
     })
   }
 
-  animateAvatar (avatar: DiffItem): void {
+  update (avatar: DiffItem): void {
     const avatarToAnimate = this.avatarNode.getChildMeshes(true,
       function (node): boolean {
         return node.name === `avatar: ${avatar.value.id}`
@@ -89,5 +83,9 @@ export default class AvatarManager implements GameNode, DiffHandling {
       marker.parent = avatarMesh
       marker.position = new BABYLON.Vector3(0, 12, 0)
     })
+  }
+
+  setCurrentAvatarID (avatarID: number) {
+    this.currentAvatarID = avatarID
   }
 }

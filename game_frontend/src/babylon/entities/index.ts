@@ -40,8 +40,12 @@ export default class EntityManager {
     const interactableDiff = diff(previousInteractableList, currentGameState.interactables)
     const avatarDiff = diff(previousAvatarList, currentGameState.players)
 
-    this.obstacles.handleDifferences(obstacleDiff)
-    this.interactables.handleDifferences(interactableDiff)
-    this.avatars.handleDifferences(avatarDiff)
+    this.obstacles.gameStateProcessor.handleDifferences(obstacleDiff)
+    this.interactables.gameStateProcessor.handleDifferences(interactableDiff)
+    this.avatars.gameStateProcessor.handleDifferences(avatarDiff)
+  }
+
+  setCurrentAvatarID (avatarID: number): void {
+    this.avatars.setCurrentAvatarID(avatarID)
   }
 }

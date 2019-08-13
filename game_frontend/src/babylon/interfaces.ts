@@ -1,5 +1,5 @@
 import { Environment } from './environment/environment'
-import { DiffResult } from './diff'
+import { DiffResult, DiffItem } from './diff'
 
 export interface GameNode {
     object: any;
@@ -7,5 +7,27 @@ export interface GameNode {
 }
 
 export interface DiffHandling {
-    handleDifferences(differences: DiffResult): void;
+    add(item: DiffItem): void;
+    update(item: DiffItem): void;
+    delete(item: DiffItem): void;
+}
+
+export class DiffProcessor {
+  handler: DiffHandling
+
+  constructor (handler: DiffHandling) {
+    this.handler = handler
+  }
+
+  handleDifferences (differences: DiffResult): void {
+    for (let avatar of differences.deleteList) {
+      this.handler.delete(avatar)
+    }
+    for (let avatar of differences.editList) {
+      this.handler.update(avatar)
+    }
+    for (let avatar of differences.addList) {
+      this.handler.add(avatar)
+    }
+  }
 }

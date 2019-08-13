@@ -40,7 +40,16 @@ export default class GameView extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    this.entities.onGameStateUpdate(prevProps.gameState, this.props.gameState)
+    if (this.props.gameState !== undefined) {
+      this.entities.onGameStateUpdate(prevProps.gameState, this.props.gameState)
+    }
+    this.updateCurrentAvatarID(prevProps)
+  }
+
+  updateCurrentAvatarID (prevProps) {
+    if (prevProps.currentAvatarID !== this.props.currentAvatarID) {
+      this.entities.setCurrentAvatarID(this.props.currentAvatarID)
+    }
   }
 
   componentWillUnmount () {
@@ -69,5 +78,6 @@ export default class GameView extends Component {
 GameView.propTypes = {
   connectToGame: PropTypes.func,
   gameDataLoaded: PropTypes.bool,
-  gameState: PropTypes.object
+  gameState: PropTypes.object,
+  currentAvatarID: PropTypes.number
 }

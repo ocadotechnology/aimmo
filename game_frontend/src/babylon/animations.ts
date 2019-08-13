@@ -48,15 +48,15 @@ export function bobbingAnimation (objectType: string) : BABYLON.Animation {
   const keyFrames = [
     {
       frame: 0,
-      value: -0.15
+      value: 0
     },
     {
       frame: 1,
-      value: 0.15
+      value: 0.3
     },
     {
       frame: 2,
-      value: -0.15
+      value: 0
     }
   ]
 

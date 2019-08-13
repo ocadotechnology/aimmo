@@ -1,34 +1,26 @@
 /* eslint-env jest */
 import { MockEnvironment } from '../../testHelpers/mockEnvironment'
 import ObstacleManager from './obstacleManager'
-import { DiffResult } from '../diff'
+import { DiffItem } from '../diff'
 
 let environment: MockEnvironment
-let obstacle: ObstacleManager
+let obstacles: ObstacleManager
 
 beforeEach(() => {
   environment = new MockEnvironment()
-  obstacle = new ObstacleManager()
+  obstacles = new ObstacleManager()
 
-  obstacle.setup(environment)
+  obstacles.setup(environment)
 })
 
-function obstacleList (positionDict) {
-  let list = []
-
-  for (let [index, position] of Object.entries(positionDict)) {
-    list.push({
-      id: index,
-      value: {
-        'location': { 'x': position[0], 'y': position[1] },
-        'width': 1,
-        'height': 1,
-        'type': 'wall',
-        'orientation': 'north'
-      }
-    })
-  }
-  return list
+function obstacleDiffItem (index: string, location: {x: number, y: number}) {
+  return new DiffItem(index, {
+    location: { x: location.x, y: location.y },
+    width: 1,
+    height: 1,
+    type: 'wall',
+    orientation: 'north'
+  })
 }
 
 describe('obstacle', () => {
@@ -40,75 +32,70 @@ describe('obstacle', () => {
   })
 
   it('adds an obstacle', () => {
-    const addList = obstacleList({ '0': [10, 10] })
-    const diffResult = new DiffResult(addList, [], [])
-    obstacle.handleDifferences(diffResult)
+    const obstacle = obstacleDiffItem('1', { x: 0, y: 0 })
+    obstacles.add(obstacle)
 
-    const obstacles = obstacle.obstacleNode.getChildMeshes()
+    const meshes = obstacles.obstacleNode.getChildMeshes()
 
-    expect(obstacles.length).toBe(1)
-    expect(obstacles[0].position).toEqual({ x: 10, y: 0.5, z: 10 })
+    expect(meshes.length).toBe(1)
+    expect(meshes[0].position).toEqual({ x: 0, y: 0.5, z: 0 })
   })
 
   it('deletes an obstacle', () => {
-    const addList = obstacleList({ '0': [10, 10] })
-    let diffResult = new DiffResult(addList, [], [])
-    obstacle.handleDifferences(diffResult)
+    const obstacle = obstacleDiffItem('1', { x: 0, y: 0 })
+    obstacles.add(obstacle)
 
-    let obstacles = obstacle.obstacleNode.getChildMeshes()
+    let meshes = obstacles.obstacleNode.getChildMeshes()
 
-    expect(obstacles.length).toBe(1)
+    expect(meshes.length).toBe(1)
 
-    const deleteList = obstacleList({ '0': [10, 10] })
-    diffResult = new DiffResult([], deleteList, [])
-    obstacle.handleDifferences(diffResult)
+    obstacles.delete(obstacle)
 
-    obstacles = obstacle.obstacleNode.getChildMeshes()
+    meshes = obstacles.obstacleNode.getChildMeshes()
 
-    expect(obstacles.length).toBe(0)
+    expect(meshes.length).toBe(0)
   })
 
-  it('edits an obstacle', () => {
-    const addList = obstacleList({ '0': [10, 10] })
-    let diffResult = new DiffResult(addList, [], [])
-    obstacle.handleDifferences(diffResult)
+  it('updates an obstacle', () => {
+    const obstacle = obstacleDiffItem('1', { x: 0, y: 0 })
+    obstacles.add(obstacle)
 
-    let obstacles = obstacle.obstacleNode.getChildMeshes()
+    let meshes = obstacles.obstacleNode.getChildMeshes()
 
-    expect(obstacles.length).toBe(1)
-    expect(obstacles[0].position).toEqual({ x: 10, y: 0.5, z: 10 })
+    expect(meshes.length).toBe(1)
+    expect(meshes[0].position).toEqual({ x: 0, y: 0.5, z: 0 })
 
-    const editList = obstacleList({ '0': [-7, 2] })
-    diffResult = new DiffResult([], [], editList)
-    obstacle.handleDifferences(diffResult)
+    const updatedObstacle = obstacleDiffItem('1', { x: 1, y: 1 })
 
-    obstacles = obstacle.obstacleNode.getChildMeshes()
+    obstacles.update(updatedObstacle)
 
-    expect(obstacles.length).toBe(1)
-    expect(obstacles[0].position).toEqual({ x: -7, y: 0.5, z: 2 })
+    meshes = obstacles.obstacleNode.getChildMeshes()
+
+    expect(meshes.length).toBe(1)
+    expect(meshes[0].position).toEqual({ x: 1, y: 0.5, z: 1 })
   })
 
-  it('adds, edits and delete obstacles on same update', () => {
-    let addList = obstacleList({ '0': [10, 10], '1': [15, 15] })
-    let diffResult = new DiffResult(addList, [], [])
-    obstacle.handleDifferences(diffResult)
+  // it('adds, edits and delete obstacles on same update', () => {
+  //   let addList = obstacleList({ '0': [10, 10], '1': [15, 15] })
+  //   let diffResult = new DiffResult(addList, [], [])
+  //   obstacle.handleDifferences(diffResult)
 
-    let obstacles = obstacle.obstacleNode.getChildMeshes()
+  //   let obstacles = obstacle.obstacleNode.getChildMeshes()
 
-    expect(obstacles.length).toBe(2)
-    expect(obstacles[0].position).toEqual({ x: 10, y: 0.5, z: 10 })
-    expect(obstacles[1].position).toEqual({ x: 15, y: 0.5, z: 15 })
+  //   expect(obstacles.length).toBe(2)
+  //   expect(obstacles[0].position).toEqual({ x: 10, y: 0.5, z: 10 })
+  //   expect(obstacles[1].position).toEqual({ x: 15, y: 0.5, z: 15 })
 
-    addList = obstacleList({ '2': [15, 15] })
-    const editList = obstacleList({ '1': [10, 10] })
-    const deleteList = obstacleList({ '0': [10, 10] })
-    diffResult = new DiffResult(addList, deleteList, editList)
-    obstacle.handleDifferences(diffResult)
+  //   addList = obstacleList({ '2': [15, 15] })
+  //   const editList = obstacleList({ '1': [10, 10] })
+  //   const deleteList = obstacleList({ '0': [10, 10] })
+  //   diffResult = new DiffResult(addList, deleteList, editList)
+  //   obstacle.handleDifferences(diffResult)
 
-    obstacles = obstacle.obstacleNode.getChildMeshes()
+  //   obstacles = obstacle.obstacleNode.getChildMeshes()
 
-    expect(obstacles.length).toBe(2)
-    expect(obstacles[0].position).toEqual({ x: 10, y: 0.5, z: 10 })
-    expect(obstacles[1].position).toEqual({ x: 15, y: 0.5, z: 15 })
-  })
+  //   expect(obstacles.length).toBe(2)
+  //   expect(obstacles[0].position).toEqual({ x: 10, y: 0.5, z: 10 })
+  //   expect(obstacles[1].position).toEqual({ x: 15, y: 0.5, z: 15 })
+  // })
 })

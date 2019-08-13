@@ -1,7 +1,7 @@
-import { GameNode, DiffHandling } from '../interfaces'
+import { GameNode, DiffHandling, DiffProcessor } from '../interfaces'
 import * as BABYLON from 'babylonjs'
 import { Environment } from '../environment/environment'
-import { DiffResult } from '../diff'
+import { DiffItem } from '../diff'
 import { bobbingAnimation, rotationAnimation, MAX_KEYFRAMES_PER_SECOND } from '../animations'
 
 const animation = [rotationAnimation('interactable'), bobbingAnimation('interactable')]
@@ -12,33 +12,23 @@ export default class InteractableManager implements GameNode, DiffHandling {
     interactableNode: BABYLON.TransformNode
     importMesh: Function
     materials: any
+    gameStateProcessor: DiffProcessor
 
     constructor (importMesh: Function = BABYLON.SceneLoader.ImportMesh) {
       this.importMesh = importMesh
     }
 
     setup (environment: Environment): void {
+      this.gameStateProcessor = new DiffProcessor(this)
+
       this.scene = environment.scene
       this.interactableNode = new BABYLON.TransformNode('Interactables', environment.scene)
       this.interactableNode.parent = environment.onTerrainNode
-
       this.materials = {
         'damage_boost': this.createMaterial('damage_boost'),
         'health': this.createMaterial('health'),
         'invulnerability': this.createMaterial('invulnerability'),
         'score': this.createMaterial('score')
-      }
-    }
-
-    handleDifferences (differences: DiffResult): void {
-      for (let interactable of differences.deleteList) {
-        this.deleteInteractable(interactable.id)
-      }
-      for (let interactable of differences.editList) {
-        this.editInteractable(interactable)
-      }
-      for (let interactable of differences.addList) {
-        this.addInteractable(interactable)
       }
     }
 
@@ -53,7 +43,8 @@ export default class InteractableManager implements GameNode, DiffHandling {
       return material
     }
 
-    deleteInteractable (index: any): void {
+    delete (interactable: DiffItem): void {
+      const index = interactable.id
       const toDelete = this.interactableNode.getChildMeshes(true,
         function (node): boolean {
           return node.name === `interactable: ${index}`
@@ -64,7 +55,7 @@ export default class InteractableManager implements GameNode, DiffHandling {
       }
     }
 
-    editInteractable (interactable: any): void {
+    update (interactable: DiffItem): void {
       const toEdit = this.interactableNode.getChildMeshes(true,
         function (node): boolean {
           return node.name === `interactable: ${interactable.id}`
@@ -75,7 +66,7 @@ export default class InteractableManager implements GameNode, DiffHandling {
       }
     }
 
-    addInteractable (interactable: any): void {
+    add (interactable: DiffItem): void {
       var model = ''
 
       model = `model_${interactable.value['type']}.babylon`

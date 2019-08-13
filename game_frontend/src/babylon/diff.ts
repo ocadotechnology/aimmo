@@ -5,8 +5,8 @@ export const DELETE = 'D'
 export const EDIT = 'E'
 
 export class DiffItem {
-  id: string;
-  value: any;
+  readonly id: string;
+  readonly value: any;
 
   constructor (id: string, value: any) {
     this.id = id
