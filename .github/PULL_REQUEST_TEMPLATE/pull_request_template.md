@@ -20,7 +20,3 @@
 
 - [ ] My change requires a change to the documentation.
 - [ ] I have updated the documentation accordingly.
-- [ ] I have updated the version.txt file
-
-<!--- There should be a version.txt file in the root of the project, -->
-<!--- please don't forget to update the version number according to the guidelines for semantic versioning. -->
