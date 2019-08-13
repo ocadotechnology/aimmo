@@ -67,7 +67,7 @@ describe('obstacle', () => {
 
     const updatedObstacle = obstacleDiffItem('1', { x: 1, y: 1 })
 
-    obstacles.update(updatedObstacle)
+    obstacles.edit(updatedObstacle)
 
     meshes = obstacles.obstacleNode.getChildMeshes()
 

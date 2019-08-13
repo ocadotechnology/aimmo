@@ -66,11 +66,11 @@ describe('avatar', () => {
 
     const updatedAvatar = avatarDiffItem('1', 'east', { x: 1, y: 0 })
 
-    avatars.update(updatedAvatar)
+    avatars.edit(updatedAvatar)
     avatarNodeDescendants = avatars.avatarNode.getDescendants()
     expect(avatarNodeDescendants.length).toEqual(1)
     expect(avatarNodeDescendants[0].position).toEqual(new BABYLON.Vector3(0, 0, 0))
 
-    avatars.update(avatar)
+    avatars.edit(avatar)
   })
 })

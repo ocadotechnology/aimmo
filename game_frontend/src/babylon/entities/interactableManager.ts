@@ -55,7 +55,7 @@ export default class InteractableManager implements GameNode, DiffHandling {
       }
     }
 
-    update (interactable: DiffItem): void {
+    edit (interactable: DiffItem): void {
       const toEdit = this.interactableNode.getChildMeshes(true,
         function (node): boolean {
           return node.name === `interactable: ${interactable.id}`

@@ -8,7 +8,7 @@ export interface GameNode {
 
 export interface DiffHandling {
     add(item: DiffItem): void;
-    update(item: DiffItem): void;
+    edit(item: DiffItem): void;
     delete(item: DiffItem): void;
 }
 
@@ -24,7 +24,7 @@ export class DiffProcessor {
       this.handler.delete(avatar)
     }
     for (let avatar of differences.editList) {
-      this.handler.update(avatar)
+      this.handler.edit(avatar)
     }
     for (let avatar of differences.addList) {
       this.handler.add(avatar)

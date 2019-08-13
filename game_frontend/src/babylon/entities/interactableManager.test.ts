@@ -73,7 +73,7 @@ describe('interactable', () => {
 
     const updatedInteractableItem = interactableDiffItem('1', 'score', { x: 1, y: 0 })
 
-    interactable.update(updatedInteractableItem)
+    interactable.edit(updatedInteractableItem)
 
     interactableNodeChildren = interactable.interactableNode.getChildMeshes()
     expect(interactableNodeChildren[0].position).toEqual(new BABYLON.Vector3(1, 0, 0))

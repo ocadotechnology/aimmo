@@ -29,7 +29,7 @@ export default class ObstacleManager implements GameNode, DiffHandling {
     }
   }
 
-  update (obstacle: DiffItem): void {
+  edit (obstacle: DiffItem): void {
     const toEdit = this.obstacleNode.getChildMeshes(true,
       function (node): boolean {
         return node.name === `obstacle: ${obstacle.id}`

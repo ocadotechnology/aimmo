@@ -62,7 +62,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
     })
   }
 
-  update (avatar: DiffItem): void {
+  edit (avatar: DiffItem): void {
     const avatarToAnimate = this.avatarNode.getChildMeshes(true,
       function (node): boolean {
         return node.name === `avatar: ${avatar.value.id}`
