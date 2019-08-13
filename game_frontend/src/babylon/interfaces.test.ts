@@ -13,7 +13,7 @@ class DummyHandler implements DiffHandling {
     this.items.push(item.value)
   }
 
-  update (item: DiffItem): void {
+  edit (item: DiffItem): void {
     this.items[parseInt(item.id)] = item.value
   }
 

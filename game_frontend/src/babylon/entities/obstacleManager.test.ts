@@ -74,28 +74,4 @@ describe('obstacle', () => {
     expect(meshes.length).toBe(1)
     expect(meshes[0].position).toEqual({ x: 1, y: 0.5, z: 1 })
   })
-
-  // it('adds, edits and delete obstacles on same update', () => {
-  //   let addList = obstacleList({ '0': [10, 10], '1': [15, 15] })
-  //   let diffResult = new DiffResult(addList, [], [])
-  //   obstacle.handleDifferences(diffResult)
-
-  //   let obstacles = obstacle.obstacleNode.getChildMeshes()
-
-  //   expect(obstacles.length).toBe(2)
-  //   expect(obstacles[0].position).toEqual({ x: 10, y: 0.5, z: 10 })
-  //   expect(obstacles[1].position).toEqual({ x: 15, y: 0.5, z: 15 })
-
-  //   addList = obstacleList({ '2': [15, 15] })
-  //   const editList = obstacleList({ '1': [10, 10] })
-  //   const deleteList = obstacleList({ '0': [10, 10] })
-  //   diffResult = new DiffResult(addList, deleteList, editList)
-  //   obstacle.handleDifferences(diffResult)
-
-  //   obstacles = obstacle.obstacleNode.getChildMeshes()
-
-  //   expect(obstacles.length).toBe(2)
-  //   expect(obstacles[0].position).toEqual({ x: 10, y: 0.5, z: 10 })
-  //   expect(obstacles[1].position).toEqual({ x: 15, y: 0.5, z: 15 })
-  // })
 })
