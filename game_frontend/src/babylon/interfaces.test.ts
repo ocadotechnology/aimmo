@@ -1,5 +1,5 @@
 import { DiffProcessor, DiffHandling } from './interfaces'
-import { DiffItem, DiffResult } from './diff'
+import { DiffItem } from './diff'
 import isEqual from 'lodash.isequal'
 import diff from './diff'
 
