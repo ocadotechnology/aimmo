@@ -107,7 +107,7 @@ jobs:
     - stage: Release
       script:
         - pip install python-semantic-release==3.11.2
-        - python version_updater.py ${DEPLOY_TO_DEV} ${TRAVIS_BUILD_NUMBER} ${TRAVIS_PULL_REQUEST_BRANCH} ${TRAVIS_BRANCH}
+        - python version_updater.py ${DEPLOY_TO_DEV} ${TRAVIS_BUILD_NUMBER} ${TRAVIS_BRANCH}
       deploy:
         - provider: releases
           api_key:
