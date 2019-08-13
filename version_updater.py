@@ -6,7 +6,7 @@ from aimmo import __version__
 
 parser = argparse.ArgumentParser(description="Update version based on branch.")
 parser.add_argument("DEPLOY_TO_DEV", type=bool, help="True if build to dev")
-parser.add_argument("TRAVIS_BUILD_NUMBER", type=basestring, help="Travis build number")
+parser.add_argument("TRAVIS_BUILD_NUMBER", type=int, help="Travis build number")
 parser.add_argument(
     "TRAVIS_PULL_REQUEST_BRANCH",
     type=basestring,
