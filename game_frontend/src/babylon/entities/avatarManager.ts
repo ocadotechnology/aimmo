@@ -40,7 +40,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
 
   add (avatar: DiffItem): void {
     // import Dee
-    this.importMesh(`Dee`, '/static/models/', 'dee.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
+    this.importMesh(`dee`, '/static/models/', 'dee.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
       var dee = meshes[0]
       dee.name = `avatar: ${avatar.value.id}`
       dee.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1)
@@ -50,7 +50,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
           attributes: ['position', 'normal', 'uv'],
           uniforms: ['world', 'worldView', 'worldViewProjection', 'view', 'projection']
         })
-      shaderMaterial.setTexture('textureSampler', new BABYLON.Texture('/static/models/DEE.png', this.scene))
+      shaderMaterial.setTexture('textureSampler', new BABYLON.Texture('/static/models/dee.png', this.scene))
       dee.material = shaderMaterial
       dee.parent = this.avatarNode
       dee.position = new BABYLON.Vector3(avatar.value.location.x, 0, avatar.value.location.y)
