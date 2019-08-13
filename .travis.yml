@@ -16,7 +16,7 @@ stages:
   - name: test
     if: NOT tag IS present
   - name: release
-    if: branch = master OR branch = development
+    if: (branch = master OR branch = development) AND (NOT type IN (pull_request))
   - name: deploy
     if: tag IS present AND (NOT type IN (pull_request))
   - name: Notify Semaphore

@@ -11,8 +11,8 @@ parser.add_argument("TRAVIS_BRANCH", help="Name of the branch the build is on")
 args = parser.parse_args()
 version = __version__
 
-if args.DEPLOY_TO_DEV:
-    version = __version__ + "dev" + args.TRAVIS_BUILD_NUMBER
+if args.DEPLOY_TO_DEV == "true":
+    version = __version__ + ".dev" + args.TRAVIS_BUILD_NUMBER
 else:
     BRANCH = args.TRAVIS_BRANCH
 
