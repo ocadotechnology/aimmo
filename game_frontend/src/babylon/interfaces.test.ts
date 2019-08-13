@@ -1,3 +1,4 @@
+/* eslint-env jest */
 import { DiffProcessor, DiffHandling } from './interfaces'
 import { DiffItem, diff } from './diff'
 import isEqual from 'lodash.isequal'
