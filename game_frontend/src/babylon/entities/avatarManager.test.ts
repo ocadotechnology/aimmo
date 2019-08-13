@@ -35,7 +35,7 @@ describe('avatar', () => {
     expect(terrainNodeDescendants[0].name).toBe('Avatars')
   })
 
-  it('adds an avatar to a new Interactable', () => {
+  it('adds an avatar', () => {
     const avatar = avatarDiffItem('1', 'east', { x: 0, y: 0 })
 
     avatars.add(avatar)
@@ -56,7 +56,7 @@ describe('avatar', () => {
     expect(avatarNodeDescendants.length).toEqual(0)
   })
 
-  it('edits interactable from an Interactable', () => {
+  it('updates existing avatars', () => {
     const avatar = avatarDiffItem('1', 'east', { x: 0, y: 0 })
 
     avatars.add(avatar)
