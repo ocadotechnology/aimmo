@@ -51,7 +51,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" style="padding: 10px;" href="/aimmo">
+                    <a class="navbar-brand" style="padding: 10px;" href="/kurono">
                       <img style="height: 30px" src="/static/images/kurono_logo.svg" alt="Kurono">
                     </a>
                 </div>
@@ -59,10 +59,10 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li class="dropdown {% block nav-watch-class %}{% endblock %}"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Play<span class="caret"></span></a>
-                            {% game_dropdown_list 'aimmo/play' %}
+                            {% game_dropdown_list 'kurono/play' %}
                         </li>
-                        <li class="{% block nav-statistics-class %}{% endblock %}"><a href="{% url 'aimmo/statistics' %}">Statistics</a></li>
-                        <li><a href="{% url 'aimmo/logout' %}">Logout</a></li>
+                        <li class="{% block nav-statistics-class %}{% endblock %}"><a href="{% url 'kurono/statistics' %}">Statistics</a></li>
+                        <li><a href="{% url 'kurono/logout' %}">Logout</a></li>
                     </ul>
                 </div>
             </div>
@@ -78,7 +78,7 @@
         {# Latest compiled and minified JavaScript #}
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-        <script src="{% url 'aimmo/js_reverse' %}" type="text/javascript"></script>
+        <script src="{% url 'kurono/js_reverse' %}" type="text/javascript"></script>
 
         {# HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries #}
         <!--[if lt IE 9]>

@@ -26,7 +26,7 @@ ReactGA.initialize('UA-49883146-1', {
   testMode: process.env.NODE_ENV === 'test'
 })
 
-ReactGA.pageview(`/aimmo/play/${getGameIDFromURL()}`)
+ReactGA.pageview(`/kurono/play/${getGameIDFromURL()}`)
 
 const initialState = {
   editor: {

@@ -9,7 +9,7 @@ exports[`<NavigationBar /> renders correctly 1`] = `
       <WithStyles(ForwardRef(IconButton))
         aria-label="Close"
         color="inherit"
-        href="/aimmo"
+        href="/kurono"
       >
         <CloseIcon />
       </WithStyles(ForwardRef(IconButton))>

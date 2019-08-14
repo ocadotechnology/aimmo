@@ -21,7 +21,7 @@ export default class NavigationBar extends Component {
           position='sticky'>
           <CloseToolbar>
             <IconButton
-              href='/aimmo'
+              href='/kurono'
               aria-label='Close'
               color='inherit'>
               <CloseIcon />

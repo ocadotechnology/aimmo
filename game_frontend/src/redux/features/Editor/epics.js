@@ -27,7 +27,7 @@ const postCodeEpic = (action$, state$, { api }) =>
     .pipe(
       ofType(types.POST_CODE_REQUEST),
       api.post(
-        `/aimmo/api/code/${state$.value.game.connectionParameters.game_id}/`,
+        `/kurono/api/code/${state$.value.game.connectionParameters.game_id}/`,
         () => ({ code: state$.value.editor.code.code })
       ),
       map(response => actions.postCodeReceived()),

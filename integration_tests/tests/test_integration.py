@@ -42,7 +42,7 @@ class TestIntegration(unittest.TestCase):
         
         Server gets killed at the end of the test.
         """
-        url_string = 'aimmo/login'
+        url_string = 'kurono/login'
         delete_old_database()
 
         os.chdir(runner.ROOT_DIR_LOCATION)

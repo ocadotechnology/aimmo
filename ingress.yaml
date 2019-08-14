@@ -6,7 +6,7 @@ metadata:
     kubernetes.io/ingress.class: nginx
 spec:
   rules:
-    - host: local.aimmo.codeforlife.education
+    - host: local.kurono.codeforlife.education
       http:
         paths:
             - backend:
