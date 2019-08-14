@@ -17,7 +17,7 @@ export interface DiffHandling {
 }
 
 /**
- * calls the add, edit, and remove methods of its handler on a given `DiffResult`.
+ * Calls the add, edit, and remove methods of its handler on a given `DiffResult`.
  * Makes sure these methods happen in a certain order. (remove -> edit -> add)
  */
 export class DiffProcessor {

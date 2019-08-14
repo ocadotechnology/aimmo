@@ -58,17 +58,15 @@ describe('AvatarManager', () => {
     const avatar = avatarDiffItem('1', 'east', { x: 0, y: 0 })
 
     avatars.add(avatar)
-    let avatarNodeDescendants = avatars.avatarNode.getDescendants()
+    let avatarNodeDescendants = avatars.avatarNode.getChildMeshes()
     expect(avatarNodeDescendants.length).toEqual(1)
     expect(avatarNodeDescendants[0].position).toEqual(new BABYLON.Vector3(0, 0, 0))
 
     const updatedAvatar = avatarDiffItem('1', 'east', { x: 1, y: 0 })
 
     avatars.edit(updatedAvatar)
-    avatarNodeDescendants = avatars.avatarNode.getDescendants()
+    avatarNodeDescendants = avatars.avatarNode.getChildMeshes()
     expect(avatarNodeDescendants.length).toEqual(1)
-    expect(avatarNodeDescendants[0].position).toEqual(new BABYLON.Vector3(0, 0, 0))
-
-    avatars.edit(avatar)
+    expect(avatarNodeDescendants[0].position).toEqual(new BABYLON.Vector3(1, 0, 0))
   })
 })

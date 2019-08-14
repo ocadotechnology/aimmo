@@ -25,8 +25,16 @@ export default class AvatarManager implements GameNode, DiffHandling {
     this.avatarNode = new BABYLON.TransformNode('Avatars', environment.scene)
     this.avatarNode.parent = environment.onTerrainNode
 
+    this.setupMarkerMaterial()
+    this.setupShaderMaterial()
+  }
+
+  setupMarkerMaterial (): void{
     this.markerMaterial = new BABYLON.StandardMaterial('avatar marker', this.scene)
     this.markerMaterial.diffuseTexture = new BABYLON.Texture('/static/models/avatar_marker.png', this.scene)
+  }
+
+  setupShaderMaterial (): void {
     this.shaderMaterial = new BABYLON.ShaderMaterial('Avatar shader', this.scene, '/static/models/toonshader',
       {
         attributes: ['position', 'normal', 'uv'],
@@ -69,14 +77,17 @@ export default class AvatarManager implements GameNode, DiffHandling {
       }
     )[0]
 
+    const toPosition = new BABYLON.Vector3(avatar.value.location.x, 0, avatar.value.location.y)
+
     if (avatarToAnimate.skeleton !== null) {
-      const toPosition = new BABYLON.Vector3(avatar.value.location.x, 0, avatar.value.location.y)
       const moveAnimation = createMoveAnimation(avatarToAnimate.position, toPosition)
       this.scene.beginDirectAnimation(avatarToAnimate, [moveAnimation], 0, MAX_KEYFRAMES_PER_SECOND, false, 1)
       let dee = avatarToAnimate
       createWalkAnimation(dee, this.scene)
 
       setOrientation(dee, avatar.value.orientation)
+    } else {
+      avatarToAnimate.position = toPosition
     }
   }
 
