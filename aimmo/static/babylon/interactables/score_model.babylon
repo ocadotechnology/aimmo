@@ -1,7 +1,7 @@
 {"producer":{"name":"Blender","version":"2.78 (sub 0)","exporter_version":"5.6.4","file":"score.babylon"},
 "autoClear":true,"clearColor":[0.0509,0.0509,0.0509],"ambientColor":[0,0,0],"gravity":[0,-9.81,0],
 "materials":[{"name":"score.score","id":"score.score","ambient":[0,0,0],"diffuse":[0.8,0.8,0.8],"specular":[1,1,1],"emissive":[0,0,0],"specularPower":64,"alpha":1,"backFaceCulling":true,"checkReadyOnlyOnce":false,"maxSimultaneousLights":4, 
-"diffuseTexture":{"name":"interactable_score.png","level":1,"hasAlpha":0,"coordinatesMode":0,"uOffset":0,"vOffset":0,"uScale":1,"vScale":1,"uAng":0,"vAng":0,"wAng":0,"wrapU":0,"wrapV":0,"coordinatesIndex":0}}],
+"diffuseTexture":{"name":"score_texture.png","level":1,"hasAlpha":0,"coordinatesMode":0,"uOffset":0,"vOffset":0,"uScale":1,"vScale":1,"uAng":0,"vAng":0,"wAng":0,"wrapU":0,"wrapV":0,"coordinatesIndex":0}}],
 "multiMaterials":[],
 "skeletons":[],
 "meshes":[{"name":"score","id":"score","materialId":"score.score","billboardMode":0,"position":[0,0,0],"rotation":[0,0,0],"scaling":[1,1,1],"isVisible":true,"freezeWorldMatrix":false,"isEnabled":true,"checkCollisions":false,"receiveShadows":false,"pickable":true,"tags":""
