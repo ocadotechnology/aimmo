@@ -10,9 +10,7 @@ let interactable: InteractableManager
 
 beforeEach(() => {
   environment = new MockEnvironment()
-  interactable = new InteractableManager(dummyImportMesh)
-
-  interactable.setup(environment)
+  interactable = new InteractableManager(environment, dummyImportMesh)
 })
 
 function interactableDiffItem (index: string, type: string, location: {x: number, y: number}) {

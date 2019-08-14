@@ -9,7 +9,7 @@ export default class ObstacleManager implements GameNode, DiffHandling {
   obstacleNode: BABYLON.TransformNode
   gameStateProcessor: DiffProcessor
 
-  setup (environment: Environment): void {
+  constructor (environment: Environment) {
     this.gameStateProcessor = new DiffProcessor(this)
 
     this.scene = environment.scene

@@ -8,9 +8,7 @@ let obstacles: ObstacleManager
 
 beforeEach(() => {
   environment = new MockEnvironment()
-  obstacles = new ObstacleManager()
-
-  obstacles.setup(environment)
+  obstacles = new ObstacleManager(environment)
 })
 
 function obstacleDiffItem (index: string, location: {x: number, y: number}) {

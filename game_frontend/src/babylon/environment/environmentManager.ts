@@ -9,16 +9,12 @@ export default class EnvironmentManager {
     terrain: Terrain
     environment: Environment
 
-    setup (environment: Environment): void {
+    constructor (environment: Environment): void {
       this.environment = environment
 
-      this.camera = new Camera()
-      this.light = new Light()
-      this.terrain = new Terrain()
-
-      this.camera.setup(environment)
-      this.light.setup(environment)
-      this.terrain.setup(environment)
+      this.camera = new Camera(environment)
+      this.light = new Light(environment)
+      this.terrain = new Terrain(environment)
     }
 
     windowResized = () => {

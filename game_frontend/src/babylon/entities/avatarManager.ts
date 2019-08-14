@@ -17,11 +17,8 @@ export default class AvatarManager implements GameNode, DiffHandling {
   importMesh: Function
   shaderMaterial: BABYLON.ShaderMaterial
 
-  constructor (importMesh: Function = BABYLON.SceneLoader.ImportMesh) {
+  constructor (environment: Environment, importMesh: Function = BABYLON.SceneLoader.ImportMesh) {
     this.importMesh = importMesh
-  }
-
-  setup (environment: Environment): void {
     this.gameStateProcessor = new DiffProcessor(this)
 
     this.scene = environment.scene
@@ -29,7 +26,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
     this.avatarNode.parent = environment.onTerrainNode
 
     this.markerMaterial = new BABYLON.StandardMaterial('avatar marker', this.scene)
-    this.markerMaterial.diffuseTexture = new BABYLON.Texture('/static/models/arrow.png', this.scene)
+    this.markerMaterial.diffuseTexture = new BABYLON.Texture('/static/models/avatar_marker.png', this.scene)
     this.shaderMaterial = new BABYLON.ShaderMaterial('Avatar shader', this.scene, '/static/models/toonshader',
       {
         attributes: ['position', 'normal', 'uv'],

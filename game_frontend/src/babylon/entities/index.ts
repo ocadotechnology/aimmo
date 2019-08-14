@@ -13,16 +13,9 @@ export default class EntityManager {
 
   constructor (environment: Environment) {
     this.environment = environment
-  }
-
-  setup (): void {
-    this.obstacles = new ObstacleManager()
-    this.interactables = new InteractableManager()
-    this.avatars = new AvatarManager()
-
-    this.obstacles.setup(this.environment)
-    this.interactables.setup(this.environment)
-    this.avatars.setup(this.environment)
+    this.obstacles = new ObstacleManager(this.environment)
+    this.interactables = new InteractableManager(this.environment)
+    this.avatars = new AvatarManager(this.environment)
   }
 
   onGameStateUpdate (previousGameState: any, currentGameState: any): void {

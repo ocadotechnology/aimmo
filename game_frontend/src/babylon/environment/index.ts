@@ -5,9 +5,7 @@ export default class SceneRenderer {
 
   constructor (environment: Environment) {
     this.environment = environment
-  }
 
-  setup (): void {
     this.environment.engine.runRenderLoop(() => {
       this.environment.scene.render()
     })

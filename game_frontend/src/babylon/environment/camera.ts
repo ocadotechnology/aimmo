@@ -15,7 +15,7 @@ export default class Camera implements GameNode {
     zoomFactor: number
     view: BABYLON.Vector2
 
-    setup (environment: Environment): void {
+    constructor (environment: Environment) {
       const camera = new BABYLON.ArcRotateCamera('camera1', 0, 0.785, 50, BABYLON.Vector3.Zero(), environment.scene)
       this.frustum = 7.5
       this.zoomFactor = 0

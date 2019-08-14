@@ -10,9 +10,7 @@ let avatars: AvatarManager
 
 beforeEach(() => {
   environment = new MockEnvironment()
-  avatars = new AvatarManager(dummyImportMesh)
-
-  avatars.setup(environment)
+  avatars = new AvatarManager(environment, dummyImportMesh)
 })
 
 function avatarDiffItem (index: string, orientation: string, location: {x: number, y: number}) {

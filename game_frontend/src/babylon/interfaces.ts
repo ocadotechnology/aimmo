@@ -1,9 +1,10 @@
-import { Environment } from './environment/environment'
 import { DiffResult, DiffItem } from './diff'
 
+/***
+ * An interface for implementing the objects that are part of the game world.
+ */
 export interface GameNode {
     object: any;
-    setup(environment: Environment): void;
 }
 
 /**

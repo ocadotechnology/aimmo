@@ -5,7 +5,7 @@ import { Environment } from './environment'
 export default class Terrain implements GameNode {
     object: any;
 
-    setup (environment: Environment): void {
+    constructor (environment: Environment) {
       const ground = BABYLON.Mesh.CreateTiledGround('terrain', -15, -15, 16, 16, { w: 31, h: 31 }, { w: 1, h: 1 }, environment.scene)
       this.object = ground
 

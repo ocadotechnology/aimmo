@@ -14,11 +14,8 @@ export default class InteractableManager implements GameNode, DiffHandling {
     materials: any
     gameStateProcessor: DiffProcessor
 
-    constructor (importMesh: Function = BABYLON.SceneLoader.ImportMesh) {
+    constructor (environment: Environment, importMesh: Function = BABYLON.SceneLoader.ImportMesh) {
       this.importMesh = importMesh
-    }
-
-    setup (environment: Environment): void {
       this.gameStateProcessor = new DiffProcessor(this)
 
       this.scene = environment.scene
@@ -33,7 +30,7 @@ export default class InteractableManager implements GameNode, DiffHandling {
     }
 
     createMaterial (interactableType: string) : BABYLON.StandardMaterial {
-      const texture = `/static/babylon/interactables/interactable_${interactableType}.png`
+      const texture = `/static/babylon/interactables/${interactableType}_texture.png`
 
       const material = new BABYLON.StandardMaterial(interactableType, this.scene)
       material.specularColor = new BABYLON.Color3(0, 0, 0)
@@ -69,7 +66,7 @@ export default class InteractableManager implements GameNode, DiffHandling {
     add (interactable: DiffItem): void {
       var model = ''
 
-      model = `model_${interactable.value['type']}.babylon`
+      model = `${interactable.value['type']}_model.babylon`
 
       this.importMesh(interactable.value['type'], '/static/babylon/interactables/', model, this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
         var newInteractable = meshes[0]
