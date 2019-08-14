@@ -4,7 +4,7 @@ from subprocess import PIPE, Popen
 from aimmo import __version__
 
 parser = argparse.ArgumentParser(description="Update version based on branch.")
-parser.add_argument("DEPLOY_TO_DEV", help="True if build to dev")
+parser.add_argument("DEPLOY_TO_DEV", help="True if the build is triggered for dev")
 parser.add_argument("TRAVIS_BUILD_NUMBER", help="Travis build number")
 parser.add_argument("TRAVIS_BRANCH", help="Name of the branch the build is on")
 

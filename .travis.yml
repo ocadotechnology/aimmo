@@ -16,7 +16,7 @@ stages:
   - name: test
     if: NOT tag IS present
   - name: release
-    if: (branch = master OR branch = development) AND (NOT type IN (pull_request))
+    if: (branch = master OR branch = development OR env(DEPLOY_TO_DEV) = true) AND (NOT type IN (pull_request))
   - name: deploy
     if: tag IS present AND (NOT type IN (pull_request))
   - name: Notify Semaphore
@@ -142,9 +142,6 @@ jobs:
         - pushd game_frontend
         - node djangoBundler.js
         - popd
-        - git config --global user.name "semantic-release (via TravisCI)"
-        - git config --global user.email "semantic-release@travis"
-        - semantic-release publish
     - name: "Build and push game image"
       script:
         - docker build --no-cache -t ocadotechnology/aimmo-game:${TRAVIS_TAG} aimmo-game/
@@ -160,7 +157,12 @@ jobs:
         - docker build --no-cache -t ocadotechnology/aimmo-game-worker:${TRAVIS_TAG} aimmo-game-worker/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
         - docker push ocadotechnology/aimmo-game-worker:${TRAVIS_TAG}
+    - name: "Publish semantic release"
+      script:
+        - git config --global user.name "semantic-release (via TravisCI)"
+        - git config --global user.email "semantic-release@travis"
+        - pip install python-semantic-release==3.11.2
+        - semantic-release publish
     - stage: Notify Semaphore
       script:
         - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}"
-
