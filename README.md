@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://www.codeforlife.education/play/aimmo/" target="_blank">
-    <img src="/docs/images/kurono_logo_simple.svg" height="200px" alt="Kurono Logo" />
+    <img src="/docs/images/kurono_logo_simple.svg" height="100px" alt="Kurono Logo" />
   </a>
 </p>
 
