@@ -58,7 +58,7 @@ describe('interactable', () => {
     let interactableNodeDescendants = interactable.interactableNode.getDescendants()
     expect(interactableNodeDescendants.length).toBe(2)
 
-    interactable.delete(interactableList[1])
+    interactable.remove(interactableList[1])
     interactableNodeDescendants = interactable.interactableNode.getDescendants()
     expect(interactableNodeDescendants.length).toBe(1)
   })

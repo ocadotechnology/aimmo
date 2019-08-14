@@ -49,7 +49,7 @@ describe('obstacle', () => {
 
     expect(meshes.length).toBe(1)
 
-    obstacles.delete(obstacle)
+    obstacles.remove(obstacle)
 
     meshes = obstacles.obstacleNode.getChildMeshes()
 

@@ -43,7 +43,7 @@ export default class InteractableManager implements GameNode, DiffHandling {
       return material
     }
 
-    delete (interactable: DiffItem): void {
+    remove (interactable: DiffItem): void {
       const index = interactable.id
       const toDelete = this.interactableNode.getChildMeshes(true,
         function (node): boolean {

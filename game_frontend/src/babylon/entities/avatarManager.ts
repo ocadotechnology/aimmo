@@ -4,6 +4,9 @@ import { Environment } from '../environment/environment'
 import { DiffItem } from '../diff'
 import setOrientation from '../orientation'
 import { createMoveAnimation, createWalkAnimation, MAX_KEYFRAMES_PER_SECOND } from '../animations'
+import { ShaderMaterial } from 'babylonjs'
+
+const MARKER_HEIGHT = 12
 
 export default class AvatarManager implements GameNode, DiffHandling {
   object: any
@@ -13,6 +16,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
   currentAvatarID: number
   gameStateProcessor: DiffProcessor
   importMesh: Function
+  shaderMaterial: BABYLON.ShaderMaterial
 
   constructor (importMesh: Function = BABYLON.SceneLoader.ImportMesh) {
     this.importMesh = importMesh
@@ -26,10 +30,16 @@ export default class AvatarManager implements GameNode, DiffHandling {
     this.avatarNode.parent = environment.onTerrainNode
 
     this.markerMaterial = new BABYLON.StandardMaterial('avatar marker', this.scene)
-    this.markerMaterial.diffuseTexture = new BABYLON.Texture('/static/models/avatar_marker.png', this.scene)
+    this.markerMaterial.diffuseTexture = new BABYLON.Texture('/static/models/arrow.png', this.scene)
+    this.shaderMaterial = new BABYLON.ShaderMaterial('Avatar shader', this.scene, '/static/models/toonshader',
+      {
+        attributes: ['position', 'normal', 'uv'],
+        uniforms: ['world', 'worldView', 'worldViewProjection', 'view', 'projection']
+      })
+    this.shaderMaterial.setTexture('textureSampler', new BABYLON.Texture('/static/models/player_dee.png', this.scene))
   }
 
-  delete (avatar: DiffItem): void {
+  remove (avatar: DiffItem): void {
     const toDelete = this.avatarNode.getChildMeshes(true,
       function (node): boolean {
         return node.name === `avatar: ${avatar.value.id}`
@@ -40,18 +50,12 @@ export default class AvatarManager implements GameNode, DiffHandling {
 
   add (avatar: DiffItem): void {
     // import Dee
-    this.importMesh(`dee`, '/static/models/', 'dee.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
+    this.importMesh(`dee`, '/static/models/', 'model_dee.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
       var dee = meshes[0]
       dee.name = `avatar: ${avatar.value.id}`
       dee.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1)
       dee.computeBonesUsingShaders = false
-      var shaderMaterial = new BABYLON.ShaderMaterial('shader', this.scene, '/static/models/toonshader',
-        {
-          attributes: ['position', 'normal', 'uv'],
-          uniforms: ['world', 'worldView', 'worldViewProjection', 'view', 'projection']
-        })
-      shaderMaterial.setTexture('textureSampler', new BABYLON.Texture('/static/models/dee.png', this.scene))
-      dee.material = shaderMaterial
+      dee.material = this.shaderMaterial
       dee.parent = this.avatarNode
       dee.position = new BABYLON.Vector3(avatar.value.location.x, 0, avatar.value.location.y)
       setOrientation(dee, avatar.value.orientation)
@@ -88,7 +92,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
       marker.material = this.markerMaterial
 
       marker.parent = avatarMesh
-      marker.position = new BABYLON.Vector3(0, 12, 0)
+      marker.position = new BABYLON.Vector3(0, MARKER_HEIGHT, 0)
     })
   }
 

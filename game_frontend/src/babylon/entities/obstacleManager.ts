@@ -17,7 +17,7 @@ export default class ObstacleManager implements GameNode, DiffHandling {
     this.obstacleNode.parent = environment.onTerrainNode
   }
 
-  delete (obstacle: DiffItem): void {
+  remove (obstacle: DiffItem): void {
     const index = obstacle.id
     const toDelete = this.obstacleNode.getChildMeshes(true,
       function (node): boolean {

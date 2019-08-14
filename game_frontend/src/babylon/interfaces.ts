@@ -6,12 +6,18 @@ export interface GameNode {
     setup(environment: Environment): void;
 }
 
+/**
+ * Used to enforce the methods needed by the `DiffProcessor`.
+ */
 export interface DiffHandling {
     add(item: DiffItem): void;
     edit(item: DiffItem): void;
-    delete(item: DiffItem): void;
+    remove(item: DiffItem): void;
 }
 
+/**
+ * calls the add, update, and remove methods of its handler on a given `DiffResult`.
+ */
 export class DiffProcessor {
   handler: DiffHandling
 
@@ -21,7 +27,7 @@ export class DiffProcessor {
 
   handleDifferences (differences: DiffResult): void {
     for (let entity of differences.deleteList) {
-      this.handler.delete(entity)
+      this.handler.remove(entity)
     }
     for (let entity of differences.editList) {
       this.handler.edit(entity)

@@ -50,7 +50,7 @@ describe('avatar', () => {
     let avatarNodeDescendants = avatars.avatarNode.getDescendants()
     expect(avatarNodeDescendants.length).toEqual(1)
 
-    avatars.delete(avatar)
+    avatars.remove(avatar)
 
     avatarNodeDescendants = avatars.avatarNode.getDescendants()
     expect(avatarNodeDescendants.length).toEqual(0)

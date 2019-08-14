@@ -25,6 +25,11 @@ export class DiffResult {
     }
 }
 
+/**
+ * Returns the difference between to arrays. Result is an object containing 3 lists for adding, removing, and editing items
+ * @param previous - Initial state of an array
+ * @param current  - New/Current state of an array
+ */
 export function diff (previous: Array<any>, current: Array<any>): DiffResult {
   var diffResult = new DiffResult([], [], [])
 

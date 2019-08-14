@@ -1,5 +1,14 @@
 import * as BABYLON from 'babylonjs'
 
+/**
+ * This function is used by tests to override the Babylon JS ImportMesh function, since importing meshes doesn't work
+ * without a running server. It creates a dummy cube to replace the mesh that would be imported otherwise.
+ * @param meshName
+ * @param filePath
+ * @param fileName
+ * @param scene
+ * @param onSuccess
+ */
 export default function dummyImportMesh (meshName: string, filePath: string, fileName: string, scene: BABYLON.Scene, onSuccess: Function): void {
   const meshes = []
   meshes[0] = BABYLON.MeshBuilder.CreateBox('', { height: 1 }, this.scene)

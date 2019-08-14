@@ -17,7 +17,7 @@ class DummyHandler implements DiffHandling {
     this.items[parseInt(item.id)] = item.value
   }
 
-  delete (item: DiffItem): void {
+  remove (item: DiffItem): void {
     this.items.splice(parseInt(item.id))
   }
 }
