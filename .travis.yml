@@ -16,7 +16,7 @@ stages:
   - name: test
     if: NOT tag IS present
   - name: release
-    if: (branch = master OR branch = development OR ${DEPLOY_TO_DEV} = true) AND (NOT type IN (pull_request))
+    if: (branch = master OR branch = development) AND (NOT type IN (pull_request))
   - name: deploy
     if: tag IS present AND (NOT type IN (pull_request))
   - name: Notify Semaphore
@@ -166,4 +166,3 @@ jobs:
     - stage: Notify Semaphore
       script:
         - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}"
-
