@@ -31,7 +31,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
 
   setupMarkerMaterial (): void{
     this.markerMaterial = new BABYLON.StandardMaterial('avatar marker', this.scene)
-    this.markerMaterial.diffuseTexture = new BABYLON.Texture('/static/models/avatar_marker.png', this.scene)
+    this.markerMaterial.diffuseTexture = new BABYLON.Texture('/static/models/avatar_marker_texture.png', this.scene)
   }
 
   setupShaderMaterial (): void {
@@ -40,7 +40,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
         attributes: ['position', 'normal', 'uv'],
         uniforms: ['world', 'worldView', 'worldViewProjection', 'view', 'projection']
       })
-    this.shaderMaterial.setTexture('textureSampler', new BABYLON.Texture('/static/models/player_dee.png', this.scene))
+    this.shaderMaterial.setTexture('textureSampler', new BABYLON.Texture('/static/models/avatar_texture.png', this.scene))
   }
 
   remove (avatar: DiffItem): void {
@@ -54,7 +54,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
 
   add (avatar: DiffItem): void {
     // import Dee
-    this.importMesh(`dee`, '/static/models/', 'model_dee.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
+    this.importMesh(`dee`, '/static/models/', 'avatar_model.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
       var dee = meshes[0]
       dee.name = `avatar: ${avatar.value.id}`
       dee.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1)
@@ -93,7 +93,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
 
   attachMarker (avatarMesh: any, avatar: any): void {
     // Load marker mesh.
-    this.importMesh('avatar_marker', '/static/models/', 'model_avatar_marker.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
+    this.importMesh('avatar_marker', '/static/models/', 'avatar_marker_model.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
       var marker = meshes[0]
 
       marker.material = this.markerMaterial
