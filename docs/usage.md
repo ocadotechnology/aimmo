@@ -1,6 +1,6 @@
 # Usage
 
-This setup process will allow you to run AI:MMO locally via [docker](https://www.docker.com/) or a [kubernetes](https://kubernetes.io/) cluster, and to be able to contribute towards the project.
+This setup process will allow you to run Kurono locally via [docker](https://www.docker.com/) or a [kubernetes](https://kubernetes.io/) cluster, and to be able to contribute towards the project.
 
 - [Mac setup](#mac-setup)
 - [Ubuntu/Debian setup](#ubuntu-setup)
@@ -14,7 +14,7 @@ This can be done either manually or using the setup script.
 
 #### Install using the setup script:
 
-* Run `python aimmo_setup.py` in the AI:MMO root directory. Then:
+* Run `python aimmo_setup.py` in the Kurono root directory. Then:
 * Open Docker to finalise the install process. (This will install the [latest release](https://www.docker.com/get-started))
 * Get the latest Unity bundle release from the [aimmo-unity](https://github.com/ocadotechnology/aimmo-unity) repo.
 * See [Useful information](#useful-information) for additional details about the script.
@@ -37,7 +37,7 @@ The game should now be set up to run locally (If you ran the setup script, it wi
 * Get the latest Unity bundle release from the [aimmo-unity](https://github.com/ocadotechnology/aimmo-unity) repo.
 * Follow the instructions for [deploying Portainer](https://portainer.io/install.html), to create a dashboard for your local docker containers.
 
-#### To run AI:MMO:
+#### To run Kurono:
 
 * Ensure you are inside the python virtualenv, `pipenv shell`.
 * To run **locally**, use: `python run.py`.
@@ -50,7 +50,7 @@ This can be done either manually or using the setup script.
 
 #### Install using the setup script:
 
-* Run `python aimmo_setup.py` in the AI:MMO root directory. Then:
+* Run `python aimmo_setup.py` in the Kurono root directory. Then:
 * Get the latest Unity bundle release from the [aimmo-unity](https://github.com/ocadotechnology/aimmo-unity) repo.
 * See [Useful information](#useful-information) for additional details about the script.
 
@@ -71,7 +71,7 @@ The game should now be set up to run locally (If you ran the setup script, it wi
 * Get the latest Unity bundle release from the [aimmo-unity](https://github.com/ocadotechnology/aimmo-unity) repo.
 * Follow the instructions for [deploying Portainer](https://portainer.io/install.html), to create a dashboard for your local docker containers.
 
-#### To run AI:MMO:
+#### To run Kurono:
 
 * Ensure you are inside the python virtualenv, `pipenv shell`.
 * To run **locally**, use: `python run.py`.
@@ -92,7 +92,7 @@ The game should now be set up to run locally. If you wish to be able to run the 
 * Alter your `/etc/hosts` file by adding the following line to the end of the file: `192.168.99.100 local.aimmo.codeforlife.education`. You may need admin privileges for this step as the file is protected.
 * Follow the instructions for [deploying Portainer](https://portainer.io/install.html), to create a dashboard for your local docker containers.
 
-#### To run AI:MMO:
+#### To run Kurono:
 
 * Ensure you are inside the python virtualenv, `pipenv shell`.
 * To run **locally**, use: `python run.py`.

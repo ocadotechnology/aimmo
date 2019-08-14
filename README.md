@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://www.codeforlife.education/play/aimmo/" target="_blank">
-    <img src="/docs/images/AIMMO-Logo-vertical-RGB.svg" height="200px" alt="AI:MMO Logo" />
+    <img src="/docs/images/kurono_logo_mark.svg" height="200px" alt="Kurono Logo" />
   </a>
 </p>
 

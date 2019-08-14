@@ -28,7 +28,7 @@ Before you merge:
 ### When a PR is accepted
 
 1. It will be merged into the  development branch
-2. A new beta version of AI:MMO will be released on PyPI and Docker Hub
+2. A new beta version of Kurono will be released on PyPI and Docker Hub
 3. The beta will be tested on our staging servers
 
 Eventually, development will be merged into master. This will trigger a stable release which will make it's way up to production. Congrats! 🎉

@@ -7,7 +7,7 @@ import traceback
 import argparse
 from aimmo_runner import runner
 
-parser = argparse.ArgumentParser(description="Runs AI:MMO.")
+parser = argparse.ArgumentParser(description="Runs Kurono.")
 
 parser.add_argument(
     "-k",
@@ -15,7 +15,7 @@ parser.add_argument(
     dest="use_minikube",
     action="store_true",
     default=False,
-    help="To specify if you want to use your minikube enviroment for AI:MMO, default is basic docker containers.",
+    help="To specify if you want to use your minikube enviroment for Kurono, default is basic docker containers.",
 )
 parser.add_argument(
     "-t",

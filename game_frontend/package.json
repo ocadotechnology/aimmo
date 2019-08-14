@@ -1,7 +1,7 @@
 {
   "name": "aimmo",
   "version": "0.0.1",
-  "description": "The frontend for the AI:MMO game",
+  "description": "The frontend for the Kurono game",
   "main": "index.js",
   "repository": "https://github.com/ocadotechnology/aimmo",
   "author": "Ocado Technology",
@@ -35,7 +35,7 @@
     "react-dom": "^16.8.6",
     "react-ga": "^2.5.7",
     "react-redux": "^7.0.3",
-    "react-unity-webgl": "^7.1.3",
+    "react-unity-webgl": "^7.1.7",
     "redux": "^4.0.1",
     "redux-devtools-extension": "^2.13.8",
     "redux-observable": "^1.1.0",
