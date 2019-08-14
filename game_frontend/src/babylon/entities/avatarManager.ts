@@ -4,7 +4,6 @@ import { Environment } from '../environment/environment'
 import { DiffItem } from '../diff'
 import setOrientation from '../orientation'
 import { createMoveAnimation, createWalkAnimation, MAX_KEYFRAMES_PER_SECOND } from '../animations'
-import { ShaderMaterial } from 'babylonjs'
 
 const MARKER_HEIGHT = 12
 
