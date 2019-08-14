@@ -28,7 +28,7 @@ function avatarDiffItem (index: string, orientation: string, location: {x: numbe
   })
 }
 
-describe('avatar', () => {
+describe('AvatarManager', () => {
   it('adds an Avatar parent node', () => {
     const terrainNodeDescendants = environment.onTerrainNode.getDescendants()
     expect(terrainNodeDescendants.length).toBe(1)
