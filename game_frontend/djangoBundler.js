@@ -1,9 +1,9 @@
 const Bundler = require('parcel-bundler')
 const Path = require('path')
-const shell = require('shelljs')
 const fs = require('fs')
+const Handlebars = require('handlebars')
 
-const file = Path.join(__dirname, './index.html')
+const file = Path.join(__dirname, './public/index.html')
 const outDir = Path.join(__dirname, '../aimmo/static/react')
 
 const options = {
@@ -20,12 +20,23 @@ const templateFolder = Path.resolve(Path.join(__dirname, '../aimmo/templates/pla
 
 const bundler = new Bundler(file, options)
 
+function getReactURL (entryPointHTML) {
+  const regex = /(<script src=")(.*\.js)("><\/script>)/g
+  return regex.exec(entryPointHTML)[2]
+}
+
+function generateGameIDEHTML (reactUrl) {
+  const templateString = fs.readFileSync('./public/handlebars_template.html', 'utf-8')
+  const template = Handlebars.compile(templateString)
+  return template({ reactUrl: reactUrl, faviconUrl: "{% static 'favicon.ico' %}" })
+}
+
 bundler.on('bundled', (bundle) => {
-  let entryPointHTML = shell.cat(bundle.name).stdout
-  entryPointHTML = '{% load static %}\n' + entryPointHTML
-  entryPointHTML = entryPointHTML.replace(/(<title>.*)(\n)(<style>)/g, '$1\n<link rel="shortcut icon" href="{% static "favicon.ico" %}" type="image/x-icon">\n$3')
-  entryPointHTML = entryPointHTML.replace(/(<script src=")(.*\.js)("><\/script>)/g, '$1{% static "react/$2" %}$3')
-  fs.writeFile(`${templateFolder}/game_ide.html`, entryPointHTML, (error) => {
+  const entryPointHTML = fs.readFileSync(bundle.name, 'utf-8')
+  const reactUrl = getReactURL(entryPointHTML)
+  const gameIDEHTML = generateGameIDEHTML(reactUrl)
+
+  fs.writeFile(`${templateFolder}/game_ide.html`, gameIDEHTML, (error) => {
     if (error) { return console.log(error) }
     console.log('game_ide.html django template generated sucessfully')
   })

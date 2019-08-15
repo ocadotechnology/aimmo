@@ -12,6 +12,7 @@
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "enzyme-to-json": "^3.3.5",
+    "handlebars": "^4.1.2",
     "jest": "^24.8.0",
     "jest-styled-components": "^6.3.1",
     "react-test-renderer": "^16.6.3",
@@ -40,7 +41,6 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-observable": "^1.1.0",
     "rxjs": "^6.5.2",
-    "shelljs": "^0.8.3",
     "socket.io-client": "^2.1.1",
     "styled-components": "^3.4.10",
     "webfontloader": "^1.6.28"
