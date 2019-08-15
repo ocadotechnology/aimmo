@@ -3,14 +3,13 @@ import styled from 'styled-components'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
-import CloseIcon from 'components/icons/Close'
 
 export const NavigationBarLayout = styled.nav`
     grid-area: navigation-bar;
 `
 
-export const CloseToolbar = styled(Toolbar)`
-  justify-content: flex-end;
+export const HomeToolbar = styled(Toolbar)`
+  justify-content: flex-start;
 `
 
 export default class NavigationBar extends Component {
@@ -19,14 +18,14 @@ export default class NavigationBar extends Component {
       <NavigationBarLayout>
         <AppBar
           position='sticky'>
-          <CloseToolbar>
+          <HomeToolbar>
             <IconButton
               href='/kurono'
-              aria-label='Close'
+              aria-label='Home'
               color='inherit'>
-              <CloseIcon />
+              <img src='/static/images/kurono_logo_mark.svg' height='50px' alt='Kurono Logo' />
             </IconButton>
-          </CloseToolbar>
+          </HomeToolbar>
         </AppBar>
       </NavigationBarLayout>
     )
