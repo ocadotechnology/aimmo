@@ -17,6 +17,7 @@ const options = {
 }
 
 const templateFolder = Path.resolve(Path.join(__dirname, '../aimmo/templates/players'))
+const handlebarsTemplatePath = Path.resolve(Path.join(__dirname, './public/handlebars_template.html'))
 
 const bundler = new Bundler(file, options)
 
@@ -25,10 +26,10 @@ function getReactURL (entryPointHTML) {
   return regex.exec(entryPointHTML)[2]
 }
 
-function generateGameIDEHTML (reactUrl) {
-  const templateString = fs.readFileSync('./public/handlebars_template.html', 'utf-8')
+function generateGameIDEHTML (reactFileName) {
+  const templateString = fs.readFileSync(handlebarsTemplatePath, 'utf-8')
   const template = Handlebars.compile(templateString)
-  return template({ reactUrl: reactUrl, faviconUrl: "{% static 'favicon.ico' %}" })
+  return template({ reactUrl: `react/${reactFileName}` })
 }
 
 bundler.on('bundled', (bundle) => {
