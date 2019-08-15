@@ -23,6 +23,7 @@ const bundler = new Bundler(file, options)
 bundler.on('bundled', (bundle) => {
   let entryPointHTML = shell.cat(bundle.name).stdout
   entryPointHTML = '{% load static %}\n' + entryPointHTML
+  entryPointHTML = entryPointHTML.replace(/(<title>.*)(\n)(<style>)/g, '$1\n<link rel="shortcut icon" href="{% static "favicon.ico" %}" type="image/x-icon">\n$3')
   entryPointHTML = entryPointHTML.replace(/(<script src=")(.*\.js)("><\/script>)/g, '$1{% static "react/$2" %}$3')
   fs.writeFile(`${templateFolder}/game_ide.html`, entryPointHTML, (error) => {
     if (error) { return console.log(error) }
