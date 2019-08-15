@@ -28,8 +28,8 @@ The load balancer IP needs to be static in order to be resolved to a single DNS 
 * Go to **VPC Networks -> External IP addresses ** in the Google Cloud Platform UI and reserve a _**static**_ IP address with the name `[env]-aimmo-ingress`
 * In your appengine project, open the [`ingress.yaml`](https://github.com/ocadotechnology/codeforlife-deploy-appengine/blob/master/clusters_setup/ingress.yaml) file and make sure that the following complies:
     * In metadata:annotations `kubernetes.io/ingress.global-static-ip-name: [env]-aimmo-ingress` is set.
-    * Ensure the spec:host entry is made for this domain in the ingress. For example `- host: default-kurono.codeforlife.education`
-* Make a ANAME record in the DNS server to attatch it to that IP address that was reserved. Make sure this domain is `[env]-kurono.codeforlife.education`.
+    * Ensure the spec:host entry is made for this domain in the ingress. For example `- host: default-aimmo.codeforlife.education`
+* Make a ANAME record in the DNS server to attatch it to that IP address that was reserved. Make sure this domain is `[env]-aimmo.codeforlife.education`.
 
 ***
 # Securing the cluster with SSL.
@@ -39,7 +39,7 @@ When settings the above DNS, you should generate/obtain appropriate CA, cert and
 ```  
 tls:
   - hosts:
-    - [env]-kurono.codeforlife.education
+    - [env]-aimmo.codeforlife.education
     secretName: ssl-cert-secret
 ```
 * In your terminal, go to the directory that contains the above mentioned files and use the following to generate the secret: `kubectl create secret tls foo-secret --key=/tmp/tls.key --cert=/tmp/tls.crt`. This will require correct authentication which is described above.

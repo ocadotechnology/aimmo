@@ -33,7 +33,7 @@ The game should now be set up to run locally (If you ran the setup script, it wi
 	* `curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-darwin-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/`
 * To install kubectl (Kubernetes), use:
 	* `curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.9.4/bin/darwin/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/`
-* Alter your `/etc/hosts` file by adding the following line to the end of the file: `192.168.99.100 local.kurono.codeforlife.education`. You may need to use sudo for this step as the file is protected.
+* Alter your `/etc/hosts` file by adding the following line to the end of the file: `192.168.99.100 local.aimmo.codeforlife.education`. You may need to use sudo for this step as the file is protected.
 * Get the latest Unity bundle release from the [aimmo-unity](https://github.com/ocadotechnology/aimmo-unity) repo.
 * Follow the instructions for [deploying Portainer](https://portainer.io/install.html), to create a dashboard for your local docker containers.
 
@@ -67,7 +67,7 @@ The game should now be set up to run locally (If you ran the setup script, it wi
 * Install [Snap](https://snapcraft.io/)) using `sudo apt install snapd`.
 * Now run `sudo snap install kubectl --classic` to install kubectl ([Kubernetes](https://kubernetes.io/)).
 * To install [Docker](https://www.docker.com/), either use `sudo apt-get install docker-ce` to install a fixed version of the latest release, or follow the Ubuntu install instructions on the [Docker website](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository).
-* Alter your `/etc/hosts` file by adding the following line to the end of the file: `192.168.99.100 local.kurono.codeforlife.education`. You may need to use sudo for this step as the file is protected.
+* Alter your `/etc/hosts` file by adding the following line to the end of the file: `192.168.99.100 local.aimmo.codeforlife.education`. You may need to use sudo for this step as the file is protected.
 * Get the latest Unity bundle release from the [aimmo-unity](https://github.com/ocadotechnology/aimmo-unity) repo.
 * Follow the instructions for [deploying Portainer](https://portainer.io/install.html), to create a dashboard for your local docker containers.
 
@@ -89,7 +89,7 @@ The game should now be set up to run locally. If you wish to be able to run the 
 * If not already installed follow the [Virtualbox installation instructions](https://www.virtualbox.org/wiki/Downloads).
 * Next, [download chocolatey](https://chocolatey.org/) and run `choco install kubernetes-cli`.
 * Then follow the [docker installation instructions for Windows](https://docs.docker.com/docker-for-windows/).
-* Alter your `/etc/hosts` file by adding the following line to the end of the file: `192.168.99.100 local.kurono.codeforlife.education`. You may need admin privileges for this step as the file is protected.
+* Alter your `/etc/hosts` file by adding the following line to the end of the file: `192.168.99.100 local.aimmo.codeforlife.education`. You may need admin privileges for this step as the file is protected.
 * Follow the instructions for [deploying Portainer](https://portainer.io/install.html), to create a dashboard for your local docker containers.
 
 #### To run Kurono:
