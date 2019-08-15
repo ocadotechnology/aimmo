@@ -84,4 +84,8 @@ urlpatterns = [
         r"^watch/(?P<id>[0-9]+)/(?P<resource>.[0-9A-Za-z/.]+)$",
         RedirectView.as_view(url="/static/unity/%(resource)s", permanent=False),
     ),
+    url(
+        r"^favicon/.ico$",
+        RedirectView.as_view(url="/static/images/favicon.ico", permanent=True),
+    ),
 ]
