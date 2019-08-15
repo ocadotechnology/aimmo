@@ -3,12 +3,12 @@ import styled from 'styled-components'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
+import KuronoLogo from 'components/icons/KuronoLogo'
 
 export const NavigationBarLayout = styled.nav`
     grid-area: navigation-bar;
 `
-
-export const HomeToolbar = styled(Toolbar)`
+export const LogoToolbar = styled(Toolbar)`
   justify-content: flex-start;
 `
 
@@ -18,14 +18,14 @@ export default class NavigationBar extends Component {
       <NavigationBarLayout>
         <AppBar
           position='sticky'>
-          <HomeToolbar>
+          <LogoToolbar>
             <IconButton
               href='/kurono'
-              aria-label='Home'
+              aria-label='Logo'
               color='inherit'>
-              <img src='/static/images/kurono_logo_mark.svg' height='50px' alt='Kurono Logo' />
+              <KuronoLogo fontSize='large' />
             </IconButton>
-          </HomeToolbar>
+          </LogoToolbar>
         </AppBar>
       </NavigationBarLayout>
     )
