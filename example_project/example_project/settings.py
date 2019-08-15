@@ -97,7 +97,7 @@ MIDDLEWARE = [
 
 def get_game_url_base_and_path(game):
     if os.environ.get("AIMMO_MODE", "") == "minikube":
-        return "local.aimmo.codeforlife.education", "/game-%s" % game
+        return "local.kurono.codeforlife.education", "/game-%s" % game
     else:
         return "localhost", ""
 

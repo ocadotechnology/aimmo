@@ -31,7 +31,7 @@ In the `monitoring` folder in `cluster-setup` in the deploy app-engine repo. Thi
 1. To do this, first find thet file named `prometheus-prometheus.yaml` and change the following line:
 
 ```yaml
-  externalUrl: "https://{CLUSTER}-aimmo.codeforlife.education/prometheus"
+  externalUrl: "https://{CLUSTER}-kurono.codeforlife.education/prometheus"
 ```
 
 by replacing the word `{CLUSTER}` with either dev/staging/default depending on which cluster you are applying the manifests to.
@@ -39,7 +39,7 @@ by replacing the word `{CLUSTER}` with either dev/staging/default depending on w
 2. Next we need to repeat this step for the `alertmanager-alertmanager.yaml` file, again finding the the line:
 
 ```yaml
-  externalUrl: "https://{CLUSTER}-aimmo.codeforlife.education/alertmanager"
+  externalUrl: "https://{CLUSTER}-kurono.codeforlife.education/alertmanager"
 ```
 
 and replacing `{CLUSTER}` with either dev/staging/default depending on which cluster you're workking with.
@@ -47,7 +47,7 @@ and replacing `{CLUSTER}` with either dev/staging/default depending on which clu
 3. Now we need to look for files named: `monitoring-ingress.yaml` & `grafana-ingress.yaml`. In both files there will be a line that looks like this:
 
 ```yaml
-  - host: "https://{CLUSTER}-aimmo.codeforlife.education"
+  - host: "https://{CLUSTER}-kurono.codeforlife.education"
 ```
 
 Again you need to replace `{CLUSTER}` with either dev/staging/default depending on which cluster you're working on.
@@ -55,9 +55,9 @@ Again you need to replace `{CLUSTER}` with either dev/staging/default depending 
 4. After that, look for the `grafana-ini-configmap.yaml` file, this contains the main config file used to setup [Grafana](https://grafana.com/). inside the `[server]` header, look for the lines:
 
 ```ini
-domain = {CLUSTER}-aimmo.codeforlife.education
+domain = {CLUSTER}-=kurono.codeforlife.education
 ...
-root_url = https://{CLUSTER}-aimmo.codeforlife.education/grafana/
+root_url = https://{CLUSTER}-kurono.codeforlife.education/grafana/
 ```
 
 and once again replace `{CLUSTER}` with either dev/staging/default.
@@ -110,7 +110,7 @@ metadata:
     nginx.org/mergeable-ingress-type: minion
 spec:
   rules:
-  - host: staging-aimmo.codeforlife.education
+  - host: staging-kurono.codeforlife.education
     http:
       paths:
       - backend:
@@ -131,7 +131,7 @@ metadata:
     nginx.org/mergeable-ingress-type: minion
 spec:
   rules:
-  - host: staging-aimmo.codeforlife.education
+  - host: staging-kurono.codeforlife.education
     http:
       paths:
       - backend:

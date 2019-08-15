@@ -13,7 +13,7 @@ The application is then deployed to the Google Cloud. This finishes our build.
 Once the application is deployed to the Google Cloud, it needs to find the other services. The discovery of the game services provided is done using a hook that can be found in [this repository](https://github.com/ocadotechnology/codeforlife-deploy-appengine). 
 
 ```python
-AIMMO_GAME_SERVER_LOCATION_FUNCTION = lambda game: ('http://staging.aimmo.codeforlife.education', "/game/%s/socket.io" % game)
+AIMMO_GAME_SERVER_LOCATION_FUNCTION = lambda game: ('http://staging.kurono.codeforlife.education', "/game/%s/socket.io" % game)
 ```
 
 # Deploying to production

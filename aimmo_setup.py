@@ -221,10 +221,10 @@ def get_nodejs():  # Linux only
 def add_aimmo_to_hosts_file():  # Mac & Linux only
     with open("/etc/hosts", "r") as hostfile:
         data = hostfile.read().replace("\n", "")
-    if "192.168.99.100 local.aimmo.codeforlife.education" not in data:
+    if "192.168.99.100 local.kurono.codeforlife.education" not in data:
         print("Adding Kurono to /etc/hosts...")
         _cmd(
-            "sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'"
+            "sudo sh -c 'echo 192.168.99.100 local.kurono.codeforlife.education >> /etc/hosts'"
         )
     else:
         print("Kurono already present in /etc/hosts...")
