@@ -30,7 +30,7 @@ export default class GameView extends Component {
     this.entities = new EntityManager(this.environment)
 
     // Resize the babylon engine when the window is resized
-    window.addEventListener('resize', this.sceneRenderer.windowResized)
+    window.addEventListener('resize', this.environmentManager.windowResized)
   }
 
   componentDidUpdate (prevProps) {
@@ -47,7 +47,7 @@ export default class GameView extends Component {
   }
 
   componentWillUnmount () {
-    window.removeEventListener('resize', this.sceneRenderer.windowResized)
+    window.removeEventListener('resize', this.environmentManager.windowResized)
   }
 
   onCanvasLoaded = canvas => {
