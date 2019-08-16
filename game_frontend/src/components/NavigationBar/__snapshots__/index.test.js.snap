@@ -7,7 +7,7 @@ exports[`<NavigationBar /> renders correctly 1`] = `
   >
     <Styled(WithStyles(ForwardRef(Toolbar)))>
       <WithStyles(ForwardRef(IconButton))
-        aria-label="Logo"
+        aria-label="Kurono dashboard"
         color="inherit"
         href="/kurono"
       >
