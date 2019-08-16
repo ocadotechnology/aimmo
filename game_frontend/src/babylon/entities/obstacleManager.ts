@@ -8,6 +8,7 @@ export default class ObstacleManager implements GameNode, DiffHandling {
   scene: BABYLON.Scene
   obstacleNode: BABYLON.TransformNode
   gameStateProcessor: DiffProcessor
+  material: BABYLON.StandardMaterial
 
   constructor (environment: Environment) {
     this.gameStateProcessor = new DiffProcessor(this)
@@ -15,6 +16,12 @@ export default class ObstacleManager implements GameNode, DiffHandling {
     this.scene = environment.scene
     this.obstacleNode = new BABYLON.TransformNode('Obstacles', environment.scene)
     this.obstacleNode.parent = environment.onTerrainNode
+    this.createMaterial()
+  }
+
+  createMaterial () {
+    this.material = new BABYLON.StandardMaterial('obstacle_material_future', this.scene)
+    this.material.diffuseTexture = new BABYLON.Texture('/static/images/obstacle_future_wall1.jpg', this.scene)
   }
 
   remove (obstacle: DiffItem): void {
@@ -44,10 +51,8 @@ export default class ObstacleManager implements GameNode, DiffHandling {
     // Create mesh
     const box = BABYLON.MeshBuilder.CreateBox(`obstacle: ${obstacle.id}`, { height: 1 }, this.scene)
 
-    // Create and assign material
-    const material = new BABYLON.StandardMaterial('obstacle_material_future', this.scene)
-    material.diffuseTexture = new BABYLON.Texture('/static/images/obstacle_future_wall1.jpg', this.scene)
-    box.material = material
+    // Assign material
+    box.material = this.material
 
     // Set parent and relative position
     box.parent = this.obstacleNode
