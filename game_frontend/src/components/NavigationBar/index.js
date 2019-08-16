@@ -21,7 +21,7 @@ export default class NavigationBar extends Component {
           <LogoToolbar>
             <IconButton
               href='/kurono'
-              aria-label='Logo'
+              aria-label='Kurono dashboard'
               color='inherit'>
               <KuronoLogo fontSize='large' />
             </IconButton>

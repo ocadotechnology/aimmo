@@ -36,7 +36,7 @@
 # identified as the original program.
 """aimmo autoconfig"""
 
-DEFAULT_SETTINGS = {"AUTOCONFIG_INDEX_VIEW": "kurono/home", "STATIC_URL": "/static/"}
+DEFAULT_SETTINGS = {"AUTOCONFIG_INDEX_VIEW": "aimmo/home", "STATIC_URL": "/static/"}
 
 SETTINGS = {
     "INSTALLED_APPS": [
