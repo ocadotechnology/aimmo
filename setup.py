@@ -1,25 +1,11 @@
 # -*- coding: utf-8 -*-
-import re
-import sys
-
 from setuptools import find_packages, setup
 
-with open('aimmo/__init__.py', 'r') as fd:
-    version = re.search(
-        r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
-        fd.read(),
-        re.MULTILINE
-    ).group(1)
-
-try:
-    from semantic_release import setup_hook
-
-    setup_hook(sys.argv)
-except ImportError:
-    pass
+import versioneer
 
 setup(
     name="aimmo",
+    cmdclass=versioneer.get_cmdclass(),
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
@@ -45,6 +31,6 @@ setup(
         "kubernetes == 5.0.0",
         "PyYAML == 4.2b1",
     ],
-    version=version,
+    version=versioneer.get_version(),
     zip_safe=False,
 )
