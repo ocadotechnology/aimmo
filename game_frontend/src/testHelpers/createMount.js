@@ -11,5 +11,5 @@ export default function createMountWithTheme (component, themeVariant = 'light',
   return createMount({ dive })(component, {
     context,
     childContextTypes: ThemeProvider.childContextTypes
-  }).instance()
+  })
 }

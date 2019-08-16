@@ -25,8 +25,6 @@ export default class GameView extends Component {
 
   componentDidMount () {
     this.environment = new this.EnvironmentClass(this.canvas)
-    // console.log(this.environment)
-    console.log(this.EnvironmentClass)
 
     this.sceneRenderer = new SceneRenderer(this.environment)
     this.environmentManager = new EnvironmentManager(this.environment)

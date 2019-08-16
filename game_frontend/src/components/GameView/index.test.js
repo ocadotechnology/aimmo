@@ -23,12 +23,30 @@ describe('<GameView />', () => {
       EnvironmentClass: MockEnvironment
       // theme: themeVariants['light']
     }
-    const component = createMountWithTheme(<GameView {...props} />)
+    const component = createMountWithTheme(<GameView {...props} />).instance()
 
     expect(component.environment).toBeDefined()
     expect(component.sceneRenderer).toBeDefined()
     expect(component.environmentManager).toBeDefined()
     expect(component.entities).toBeDefined()
+  })
+
+  it('Updates the CurrentAvatarID', () => {
+    const props = {
+      connectToGame: jest.fn(),
+      EnvironmentClass: MockEnvironment
+    }
+    const component = createMountWithTheme(<GameView {...props} />)
+    var componentInstance = component.instance()
+    componentInstance.updateCurrentAvatarID = jest.fn()
+
+    const newProps = {
+      ...props,
+      currentAvatarID: 1
+    }
+    component.setProps(newProps)
+
+    expect(componentInstance.updateCurrentAvatarID).toBeCalled()
   })
 })
 
