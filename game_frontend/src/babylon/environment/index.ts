@@ -9,7 +9,7 @@ export default class SceneRenderer {
     this.environment.engine.runRenderLoop(() => {
       this.environment.scene.render()
     })
-    // this.showDebugLayer()
+    this.showDebugLayer()
   }
 
   showDebugLayer (): void {
@@ -27,9 +27,5 @@ export default class SceneRenderer {
       document.getElementById('scene-explorer-host').style.setProperty('z-index', '1500')
       document.getElementById('inspector-host').style.setProperty('z-index', '1500')
     }, 2000)
-  }
-
-  windowResized = () => {
-    this.environment.engine.resize()
   }
 }

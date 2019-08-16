@@ -9,7 +9,7 @@ export default class EnvironmentManager {
     terrain: Terrain
     environment: Environment
 
-    constructor (environment: Environment): void {
+    constructor (environment: Environment) {
       this.environment = environment
 
       this.camera = new Camera(environment)
@@ -18,6 +18,7 @@ export default class EnvironmentManager {
     }
 
     windowResized = () => {
+      this.environment.engine.resize()
       this.camera.computeCameraView(this.environment.canvas)
     }
 }

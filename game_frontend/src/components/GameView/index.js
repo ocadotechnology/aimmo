@@ -20,10 +20,13 @@ export default class GameView extends Component {
   constructor (props) {
     super(props)
     this.props.connectToGame()
+    this.EnvironmentClass = this.props.EnvironmentClass ?? StandardEnvironment
   }
 
   componentDidMount () {
-    this.environment = new StandardEnvironment(this.canvas)
+    this.environment = new this.EnvironmentClass(this.canvas)
+    // console.log(this.environment)
+    console.log(this.EnvironmentClass)
 
     this.sceneRenderer = new SceneRenderer(this.environment)
     this.environmentManager = new EnvironmentManager(this.environment)
