@@ -21,7 +21,7 @@ export default class ObstacleManager implements GameNode, DiffHandling {
 
   createMaterial () {
     this.material = new BABYLON.StandardMaterial('obstacle_material_future', this.scene)
-    this.material.diffuseTexture = new BABYLON.Texture('/static/images/obstacle_future_wall1.jpg', this.scene)
+    this.material.diffuseTexture = new BABYLON.Texture('/static/babylon/terrain/obstacle_future_wall1.jpg', this.scene)
   }
 
   remove (obstacle: DiffItem): void {

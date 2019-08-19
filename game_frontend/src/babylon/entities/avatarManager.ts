@@ -31,16 +31,16 @@ export default class AvatarManager implements GameNode, DiffHandling {
 
   setupMarkerMaterial (): void{
     this.markerMaterial = new BABYLON.StandardMaterial('avatar marker', this.scene)
-    this.markerMaterial.diffuseTexture = new BABYLON.Texture('/static/models/avatar_marker_texture.png', this.scene)
-  }
+    this.markerMaterial.diffuseTexture = new BABYLON.Texture('/static/babylon/models/avatar_marker_texture.png', this.scene)
+  }sdv
 
   setupShaderMaterial (): void {
-    this.shaderMaterial = new BABYLON.ShaderMaterial('Avatar shader', this.scene, '/static/models/toonshader',
+    this.shaderMaterial = new BABYLON.ShaderMaterial('Avatar shader', this.scene, '/static/babylon/models/toonshader',
       {
         attributes: ['position', 'normal', 'uv'],
         uniforms: ['world', 'worldView', 'worldViewProjection', 'view', 'projection']
       })
-    this.shaderMaterial.setTexture('textureSampler', new BABYLON.Texture('/static/models/avatar_texture.png', this.scene))
+    this.shaderMaterial.setTexture('textureSampler', new BABYLON.Texture('/static/babylon/models/avatar_texture.png', this.scene))
   }
 
   remove (avatar: DiffItem): void {
@@ -54,7 +54,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
 
   add (avatar: DiffItem): void {
     // import Dee
-    this.importMesh(`dee`, '/static/models/', 'avatar_model.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
+    this.importMesh(`dee`, '/static/babylon/models/', 'avatar_model.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
       var dee = meshes[0]
       dee.name = `avatar: ${avatar.value.id}`
       dee.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1)
@@ -89,7 +89,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
 
   attachMarker (avatarMesh: any, avatar: any): void {
     // Load marker mesh.
-    this.importMesh('avatar_marker', '/static/models/', 'avatar_marker_model.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
+    this.importMesh('avatar_marker', '/static/babylon/models/', 'avatar_marker_model.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
       var marker = meshes[0]
 
       marker.material = this.markerMaterial

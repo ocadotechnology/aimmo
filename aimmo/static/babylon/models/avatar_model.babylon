@@ -1,6 +1,6 @@
 {"producer":{"name":"Blender","version":"2.78 (sub 0)","exporter_version":"5.6.4","file":"dee.babylon"},
 "autoClear":true,"clearColor":[0.0509,0.0509,0.0509],"ambientColor":[0,0,0],"gravity":[0,-9.81,0],
-"materials":[{"name":"dee.dee","id":"dee.dee","ambient":[1,1,1],"diffuse":[0.8,0.8,0.8],"specular":[0.5,0.5,0.5],"emissive":[0,0,0],"specularPower":49,"alpha":1,"backFaceCulling":true,"checkReadyOnlyOnce":false,"maxSimultaneousLights":4}],
+"materials":[],
 "multiMaterials":[],
 "skeletons":[{"name":"metarig","id":0,"dimensionsAtRest":[4.8255,10.9169,1.7395],"bones":[
 {"name":"hips","index":0,"matrix":[1,0,0,0,0,0.9769,-0.2136,0,0,-0.2136,-0.9769,0,0,5.204,0.2844,1],"rest":[1,0,0,0,0,0.9769,-0.2136,0,0,-0.2136,-0.9769,0,0,5.204,0.2844,1],"parentBoneIndex":-1,"length":0.7304
