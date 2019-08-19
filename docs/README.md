@@ -22,8 +22,6 @@ Architecture of the project. How things are structured, what components exist, e
 
 Babylon side of the project. Game engine and structure.
 - [Babylon](babylon/README.md)
-    - [Game Node](babylon/gamenode/README.md)
-    - [Structure](babylon/structure/README.md)
 
 
 ### Infrastucture
