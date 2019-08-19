@@ -30,15 +30,18 @@ export default class GameView extends Component {
     this.environmentManager = new EnvironmentManager(this.environment)
     this.entities = new EntityManager(this.environment)
 
-    // Resize the babylon engine when the window is resized
-    window.addEventListener('resize', this.environmentManager.windowResized)
+    window.addEventListener('resize', this.environmentManager.windowResizer)
   }
 
   componentDidUpdate (prevProps) {
+    this.updateGameState(prevProps)
+    this.updateCurrentAvatarID(prevProps)
+  }
+
+  updateGameState (prevProps) {
     if (this.props.gameState !== undefined) {
       this.entities.onGameStateUpdate(prevProps.gameState, this.props.gameState)
     }
-    this.updateCurrentAvatarID(prevProps)
   }
 
   updateCurrentAvatarID (prevProps) {

@@ -23,7 +23,7 @@ function interactableDiffItem (index: string, type: string, location: {x: number
   })
 }
 
-describe('interactable', () => {
+describe('InteractableManager', () => {
   it('adds an Interactable parent node', () => {
     const terrainNodeDescendants = environment.onTerrainNode.getDescendants()
     expect(terrainNodeDescendants.length).toBe(1)

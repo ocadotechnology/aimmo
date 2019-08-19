@@ -53,7 +53,6 @@ export default class AvatarManager implements GameNode, DiffHandling {
   }
 
   add (avatar: DiffItem): void {
-    // import Dee
     this.importMesh(`dee`, '/static/babylon/models/', 'avatar_model.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
       var dee = meshes[0]
       dee.name = `avatar: ${avatar.value.id}`
@@ -88,7 +87,6 @@ export default class AvatarManager implements GameNode, DiffHandling {
   }
 
   attachMarker (avatarMesh: any, avatar: any): void {
-    // Load marker mesh.
     this.importMesh('avatar_marker', '/static/babylon/models/', 'avatar_marker_model.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
       var marker = meshes[0]
 

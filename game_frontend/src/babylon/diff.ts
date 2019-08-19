@@ -35,28 +35,36 @@ export class DiffResult {
 export function diff (previous: Array<any>, current: Array<any>): DiffResult {
   var diffResult = new DiffResult([], [], [])
 
-  // If there is no previous array, simply tell them to add everything in a new one.
   if (!previous.length) {
-    for (let [index, element] of Object.entries(current)) {
-      diffResult.addList.push({
-        id: index,
-        value: element
-      })
-    }
-    return diffResult
+    return noPreviousStateGiven(diffResult, current)
   }
 
-  // Goes through every differing element, if the index exists in both lists, add to Edit.
-  // If the element only exists in the previous list, add to Delete.
+  diffResult = doTheDiff(diffResult, previous, current)
+  return processRemainingElements(diffResult, previous, current)
+}
+
+function noPreviousStateGiven (result: DiffResult, current: Array<any>): DiffResult {
+  let list = JSON.parse(JSON.stringify(result))
+  for (let [index, element] of Object.entries(current)) {
+    list.addList.push({
+      id: index,
+      value: element
+    })
+  }
+  return list
+}
+
+function doTheDiff (result: DiffResult, previous: Array<any>, current: Array<any>): DiffResult {
+  let list = JSON.parse(JSON.stringify(result))
   for (let [index, element] of Object.entries(previous)) {
     if (!isEqual(previous[index], current[index])) {
       if (previous[index] !== current[index] && current[index] !== undefined) {
-        diffResult.editList.push({
+        list.editList.push({
           id: index,
           value: current[index]
         })
       } else {
-        diffResult.deleteList.push({
+        list.deleteList.push({
           id: index,
           value: element
         })
@@ -64,17 +72,20 @@ export function diff (previous: Array<any>, current: Array<any>): DiffResult {
     }
   }
 
-  // If our current is longer than our previous, add everything in current that's not in
-  // previous to add.
+  return list
+}
+
+function processRemainingElements (result: DiffResult, previous: Array<any>, current: Array<any>) {
+  let list = JSON.parse(JSON.stringify(result))
   if (previous.length - current.length < 0) {
     for (let [index, element] of Object.entries(current)) {
       if (+index >= previous.length) {
-        diffResult.addList.push({
+        list.addList.push({
           id: index,
           value: element
         })
       }
     }
   }
-  return diffResult
+  return list
 }

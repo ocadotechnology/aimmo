@@ -2,7 +2,7 @@
 import { MockEnvironment } from '../../testHelpers/mockEnvironment'
 import Light from './light'
 
-describe('the light', () => {
+describe('Light', () => {
   it('loads', () => {
     let environment = new MockEnvironment()
     let light = new Light(environment)

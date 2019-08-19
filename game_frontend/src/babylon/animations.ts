@@ -67,7 +67,7 @@ export function bobbingAnimation (objectType: string) : BABYLON.Animation {
 }
 
 export function createMoveAnimation (fromPosition: BABYLON.Vector3, toPosition: BABYLON.Vector3): BABYLON.Animation {
-  let move = new BABYLON.Animation('move', 'position', 1, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT)
+  const move = new BABYLON.Animation('move', 'position', 1, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT)
   const keyFrames = [
     {
       frame: 0,
@@ -86,10 +86,15 @@ export function createMoveAnimation (fromPosition: BABYLON.Vector3, toPosition: 
 
   return move
 }
-
+/**
+ * Gets the `runAnimation` from the skeleton of the given mesh (Avatar) and
+ * plays it.
+ * @param mesh
+ * @param scene
+ */
 export function createWalkAnimation (mesh: BABYLON.AbstractMesh, scene: BABYLON.Scene) {
   // Load animation
-  var runningRange = mesh.skeleton.getAnimationRange('runAnimation')
+  const runningRange = mesh.skeleton.getAnimationRange('runAnimation')
   if (runningRange) {
     scene.beginAnimation(mesh.skeleton, 10, 35, false)
   }
