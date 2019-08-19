@@ -22,7 +22,7 @@ stages:
   - name: Notify Semaphore (Staging)
     if: env(DEPLOY_TO_DEV) = false AND tag IS present
   - name: Notify Sempahore (Dev)
-    if: env(DEPLOY_TO_DEV) = true AND tag IS present
+    if: true IS false
 jobs:
   include:
     - stage: Test
