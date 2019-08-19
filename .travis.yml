@@ -16,11 +16,11 @@ stages:
   - name: test
     if: NOT tag IS present
   - name: release
-    if: (tag IS present AND (NOT type IN (pull_request)) OR env(DEPLOY_TO_DEV) = true
+    if: (branch = master OR branch = development OR env(DEPLOY_TO_DEV) = true) AND (NOT type IN (pull_request))
   - name: deploy
     if: tag IS present AND (NOT type IN (pull_request))
   - name: Notify Semaphore
-    if: tag IS present AND env(DEPLOY_TO_DEV) = false
+    if: tag IS present
 jobs:
   include:
     - stage: Test
