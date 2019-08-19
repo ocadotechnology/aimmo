@@ -21,7 +21,6 @@ describe('<GameView />', () => {
     const props = {
       connectToGame: jest.fn(),
       EnvironmentClass: MockEnvironment
-      // theme: themeVariants['light']
     }
     const component = createMountWithTheme(<GameView {...props} />).instance()
 
