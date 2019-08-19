@@ -19,9 +19,9 @@ stages:
     if: (tag IS present AND (NOT type IN (pull_request)) OR env(DEPLOY_TO_DEV) = true
   - name: deploy
     if: tag IS present AND (NOT type IN (pull_request))
-  - name: Notify Semaphore (Staging)
+  - name: Notify Semaphore Staging
     if: tag IS present AND env(DEPLOY_TO_DEV) = false
-  - name: Notify Semaphore (Dev)
+  - name: Notify Semaphore Dev
     if: tag IS present AND env(DEPLOY_TO_DEV) = true
 jobs:
   include:
@@ -165,9 +165,9 @@ jobs:
         - git config --global user.email "semantic-release@travis"
         - pip install git+https://github.com/ocadotechnology/python-semantic-release.git@add_beta_releases
         - semantic-release publish --branch=${TRAVIS_BRANCH}
-    - stage: Notify Semaphore (Staging)
+    - stage: Notify Semaphore Staging
       script:
         - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}"
-    - stage: Notify Semaphore (Dev)
+    - stage: Notify Semaphore Dev
       script:
         - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/dev/build?auth_token=${SEMAPHORE_API_AUTH}"
