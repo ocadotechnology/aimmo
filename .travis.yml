@@ -16,13 +16,11 @@ stages:
   - name: test
     if: NOT tag IS present
   - name: release
-    if: tag IS present AND (NOT type IN (pull_request)
+    if: (tag IS present AND (NOT type IN (pull_request)) OR env(DEPLOY_TO_DEV) = true
   - name: deploy
     if: tag IS present AND (NOT type IN (pull_request))
   - name: Notify Semaphore
-    if: tag IS present
-#  - name: Notify Semaphore Dev
-#    if: tag IS present AND env(DEPLOY_TO_DEV) = true
+    if: tag IS present AND env(DEPLOY_TO_DEV) = false
 jobs:
   include:
     - stage: Test
@@ -168,6 +166,3 @@ jobs:
     - stage: Notify Semaphore
       script:
         - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}"
-#    - stage: Notify Semaphore Dev
-#      script:
-#        - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/dev/build?auth_token=${SEMAPHORE_API_AUTH}"
