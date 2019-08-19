@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`the light loads 1`] = `
+exports[`Light loads 1`] = `
 t {
   "_animationPropertiesOverride": null,
   "_behaviors": Array [],

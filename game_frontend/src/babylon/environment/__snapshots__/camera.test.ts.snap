@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`the camera loads 1`] = `
+exports[`Camera loads 1`] = `
 t {
   "_YToUpMatrix": e {
     "_isIdentity": false,
