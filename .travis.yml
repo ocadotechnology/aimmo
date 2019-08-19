@@ -20,9 +20,9 @@ stages:
   - name: deploy
     if: tag IS present AND (NOT type IN (pull_request))
   - name: Notify Semaphore (Staging)
-    if: tag IS present AND env(DEPLOY_TO_DEV) = false
+    if: env(DEPLOY_TO_DEV) = false AND tag IS present
   - name: Notify Sempahore (Dev)
-    if: tag IS present AND env(DEPLOY_TO_DEV) = true
+    if: env(DEPLOY_TO_DEV) = true AND tag IS present
 jobs:
   include:
     - stage: Test
