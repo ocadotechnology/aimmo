@@ -10,6 +10,7 @@
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.4.4",
     "@babel/plugin-proposal-optional-chaining": "^7.2.0",
     "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.5.5",
@@ -65,5 +66,15 @@
   "scripts": {
     "lint-typescript": "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin **/*.ts",
     "test": "jest"
+  },
+  "standard-typescript": {
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint/eslint-plugin"
+    ],
+    "globals": [
+      "HTMLCanvasElement",
+      "WheelEvent"
+    ]
   }
 }

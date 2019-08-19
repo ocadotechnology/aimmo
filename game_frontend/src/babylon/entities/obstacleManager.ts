@@ -1,32 +1,31 @@
-import { GameNode } from '../interfaces'
+import { GameNode, DiffHandling, DiffProcessor } from '../interfaces'
 import * as BABYLON from 'babylonjs'
 import { Environment } from '../environment/environment'
-import { DiffResult } from '../diff'
+import { DiffItem } from '../diff'
 
-export default class Obstacle implements GameNode {
+export default class ObstacleManager implements GameNode, DiffHandling {
   object: any
   scene: BABYLON.Scene
   obstacleNode: BABYLON.TransformNode
+  gameStateProcessor: DiffProcessor
+  material: BABYLON.StandardMaterial
 
-  setup (environment: Environment): void {
+  constructor (environment: Environment) {
+    this.gameStateProcessor = new DiffProcessor(this)
+
     this.scene = environment.scene
     this.obstacleNode = new BABYLON.TransformNode('Obstacles', environment.scene)
     this.obstacleNode.parent = environment.onTerrainNode
+    this.createMaterial()
   }
 
-  onGameStateUpdate (obstacleDiff: DiffResult): void {
-    for (let obstacle of obstacleDiff.deleteList) {
-      this.deleteObstacle(obstacle.id)
-    }
-    for (let obstacle of obstacleDiff.editList) {
-      this.editObstacle(obstacle)
-    }
-    for (let obstacle of obstacleDiff.addList) {
-      this.addObstacle(obstacle)
-    }
+  createMaterial () {
+    this.material = new BABYLON.StandardMaterial('obstacle_material_future', this.scene)
+    this.material.diffuseTexture = new BABYLON.Texture('/static/images/obstacle_future_wall1.jpg', this.scene)
   }
 
-  deleteObstacle (index: any): void {
+  remove (obstacle: DiffItem): void {
+    const index = obstacle.id
     const toDelete = this.obstacleNode.getChildMeshes(true,
       function (node): boolean {
         return node.name === `obstacle: ${index}`
@@ -37,7 +36,7 @@ export default class Obstacle implements GameNode {
     }
   }
 
-  editObstacle (obstacle: any): void {
+  edit (obstacle: DiffItem): void {
     const toEdit = this.obstacleNode.getChildMeshes(true,
       function (node): boolean {
         return node.name === `obstacle: ${obstacle.id}`
@@ -48,14 +47,12 @@ export default class Obstacle implements GameNode {
     }
   }
 
-  addObstacle (obstacle: any): void {
+  add (obstacle: DiffItem): void {
     // Create mesh
     const box = BABYLON.MeshBuilder.CreateBox(`obstacle: ${obstacle.id}`, { height: 1 }, this.scene)
 
-    // Create and assign material
-    const material = new BABYLON.StandardMaterial('obstacle_material_future', this.scene)
-    material.diffuseTexture = new BABYLON.Texture('/static/images/obstacle_future_wall1.jpg', this.scene)
-    box.material = material
+    // Assign material
+    box.material = this.material
 
     // Set parent and relative position
     box.parent = this.obstacleNode

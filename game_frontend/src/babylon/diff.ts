@@ -4,19 +4,35 @@ export const ADD = 'A'
 export const DELETE = 'D'
 export const EDIT = 'E'
 
-export class DiffResult {
-    addList: Array<any>
-    deleteList: Array<any>
-    editList: Array<any>
+export class DiffItem {
+  id: string;
+  value: any;
 
-    constructor (toAdd: Array<any>, toDelete: Array<any>, toEdit: Array<any>) {
+  constructor (id: string, value: any) {
+    this.id = id
+    this.value = value
+  }
+}
+export class DiffResult {
+    addList: Array<DiffItem>
+    deleteList: Array<DiffItem>
+    editList: Array<DiffItem>
+
+    constructor (toAdd: Array<DiffItem>, toDelete: Array<DiffItem>, toEdit: Array<DiffItem>) {
       this.addList = toAdd
       this.deleteList = toDelete
       this.editList = toEdit
     }
 }
 
-export default function diff (previous: Array<any>, current: Array<any>): any {
+/**
+ * Calculates the difference between to arrays.
+ * @param previous - Previous state of an array
+ * @param current  - New/Current state of an array
+ *
+ * @returns an object containing 3 lists for adding, removing, and editing items
+ */
+export function diff (previous: Array<any>, current: Array<any>): DiffResult {
   var diffResult = new DiffResult([], [], [])
 
   // If there is no previous array, simply tell them to add everything in a new one.

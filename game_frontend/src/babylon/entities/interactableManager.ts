@@ -1,27 +1,26 @@
-import { GameNode } from '../interfaces'
+import { GameNode, DiffHandling, DiffProcessor } from '../interfaces'
 import * as BABYLON from 'babylonjs'
 import { Environment } from '../environment/environment'
-import { DiffResult } from '../diff'
+import { DiffItem } from '../diff'
 import { bobbingAnimation, rotationAnimation, MAX_KEYFRAMES_PER_SECOND } from '../animations'
 
 const animation = [rotationAnimation('interactable'), bobbingAnimation('interactable')]
 
-export default class Interactable implements GameNode {
+export default class InteractableManager implements GameNode, DiffHandling {
     object: any
     scene: BABYLON.Scene
     interactableNode: BABYLON.TransformNode
     importMesh: Function
     materials: any
+    gameStateProcessor: DiffProcessor
 
-    constructor (importMesh: Function = BABYLON.SceneLoader.ImportMesh) {
+    constructor (environment: Environment, importMesh: Function = BABYLON.SceneLoader.ImportMesh) {
       this.importMesh = importMesh
-    }
+      this.gameStateProcessor = new DiffProcessor(this)
 
-    setup (environment: Environment): void {
       this.scene = environment.scene
       this.interactableNode = new BABYLON.TransformNode('Interactables', environment.scene)
       this.interactableNode.parent = environment.onTerrainNode
-
       this.materials = {
         'damage_boost': this.createMaterial('damage_boost'),
         'health': this.createMaterial('health'),
@@ -30,20 +29,8 @@ export default class Interactable implements GameNode {
       }
     }
 
-    onGameStateUpdate (interactableDiff: DiffResult): void {
-      for (let interactable of interactableDiff.deleteList) {
-        this.deleteInteractable(interactable.id)
-      }
-      for (let interactable of interactableDiff.editList) {
-        this.editInteractable(interactable)
-      }
-      for (let interactable of interactableDiff.addList) {
-        this.addInteractable(interactable)
-      }
-    }
-
     createMaterial (interactableType: string) : BABYLON.StandardMaterial {
-      const texture = `/static/babylon/interactables/interactable_${interactableType}.png`
+      const texture = `/static/babylon/interactables/${interactableType}_texture.png`
 
       const material = new BABYLON.StandardMaterial(interactableType, this.scene)
       material.specularColor = new BABYLON.Color3(0, 0, 0)
@@ -53,7 +40,8 @@ export default class Interactable implements GameNode {
       return material
     }
 
-    deleteInteractable (index: any): void {
+    remove (interactable: DiffItem): void {
+      const index = interactable.id
       const toDelete = this.interactableNode.getChildMeshes(true,
         function (node): boolean {
           return node.name === `interactable: ${index}`
@@ -64,7 +52,7 @@ export default class Interactable implements GameNode {
       }
     }
 
-    editInteractable (interactable: any): void {
+    edit (interactable: DiffItem): void {
       const toEdit = this.interactableNode.getChildMeshes(true,
         function (node): boolean {
           return node.name === `interactable: ${interactable.id}`
@@ -75,10 +63,10 @@ export default class Interactable implements GameNode {
       }
     }
 
-    addInteractable (interactable: any): void {
+    add (interactable: DiffItem): void {
       var model = ''
 
-      model = `model_${interactable.value['type']}.babylon`
+      model = `${interactable.value['type']}_model.babylon`
 
       this.importMesh(interactable.value['type'], '/static/babylon/interactables/', model, this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
         var newInteractable = meshes[0]
@@ -89,7 +77,9 @@ export default class Interactable implements GameNode {
         newInteractable.parent = this.interactableNode
         newInteractable.position = new BABYLON.Vector3(interactable.value.location.x, 0, interactable.value.location.y)
 
-        if (interactable.value['type'] !== 'score') { this.scene.beginDirectAnimation(newInteractable, animation, 0, MAX_KEYFRAMES_PER_SECOND, true) }
+        if (interactable.value['type'] !== 'score') {
+          this.scene.beginDirectAnimation(newInteractable, animation, 0, MAX_KEYFRAMES_PER_SECOND, true)
+        }
       })
     }
 }

@@ -20,31 +20,35 @@ export default class GameView extends Component {
   constructor (props) {
     super(props)
     this.props.connectToGame()
+    this.EnvironmentClass = this.props.EnvironmentClass ?? StandardEnvironment
   }
 
   componentDidMount () {
-    this.environment = new StandardEnvironment(this.canvas)
-    this.environment.setup()
+    this.environment = new this.EnvironmentClass(this.canvas)
 
     this.sceneRenderer = new SceneRenderer(this.environment)
-    this.sceneRenderer.setup()
-
-    this.environmentManager = new EnvironmentManager()
-    this.environmentManager.setup(this.environment)
-
+    this.environmentManager = new EnvironmentManager(this.environment)
     this.entities = new EntityManager(this.environment)
-    this.entities.setup()
 
     // Resize the babylon engine when the window is resized
-    window.addEventListener('resize', this.sceneRenderer.windowResized)
+    window.addEventListener('resize', this.environmentManager.windowResized)
   }
 
   componentDidUpdate (prevProps) {
-    this.entities.onGameStateUpdate(prevProps.gameState, this.props.gameState)
+    if (this.props.gameState !== undefined) {
+      this.entities.onGameStateUpdate(prevProps.gameState, this.props.gameState)
+    }
+    this.updateCurrentAvatarID(prevProps)
+  }
+
+  updateCurrentAvatarID (prevProps) {
+    if (prevProps.currentAvatarID !== this.props.currentAvatarID) {
+      this.entities.setCurrentAvatarID(this.props.currentAvatarID)
+    }
   }
 
   componentWillUnmount () {
-    window.removeEventListener('resize', this.sceneRenderer.windowResized)
+    window.removeEventListener('resize', this.environmentManager.windowResized)
   }
 
   onCanvasLoaded = canvas => {
@@ -69,5 +73,6 @@ export default class GameView extends Component {
 GameView.propTypes = {
   connectToGame: PropTypes.func,
   gameDataLoaded: PropTypes.bool,
-  gameState: PropTypes.object
+  gameState: PropTypes.object,
+  currentAvatarID: PropTypes.number
 }

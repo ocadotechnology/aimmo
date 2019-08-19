@@ -45,4 +45,16 @@ describe('gameReducer', () => {
     const action = actions.gameDataLoaded()
     expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
   })
+
+  it('should set the currentAvatarID correctly on CONNECTION_PARAMETERS_RECEIVED', () => {
+    const expectedState = {
+      initialState: 'someValue',
+      connectionParameters: {
+        currentAvatarID: 1
+      }
+    }
+
+    const action = actions.connectionParametersReceived({ 'avatar_id': 1 })
+    expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
+  })
 })

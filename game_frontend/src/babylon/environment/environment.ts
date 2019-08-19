@@ -15,9 +15,6 @@ export class StandardEnvironment implements Environment {
 
   constructor (canvas: HTMLCanvasElement) {
     this.canvas = canvas
-  }
-
-  setup (): void {
     this.engine = new Engine(
       this.canvas,
       true,

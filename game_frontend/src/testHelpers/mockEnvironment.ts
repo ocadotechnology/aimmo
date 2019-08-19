@@ -12,7 +12,7 @@ export class MockEnvironment implements Environment {
   canvas: HTMLCanvasElement;
   onTerrainNode: BABYLON.TransformNode;
 
-  constructor (useCanvas?: boolean = false) {
+  constructor (useCanvas: boolean = false) {
     this.engine = new BABYLON.NullEngine()
     this.scene = new BABYLON.Scene(this.engine)
 

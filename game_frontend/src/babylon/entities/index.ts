@@ -1,38 +1,44 @@
-import Obstacle from './obstacle'
-import diff from '../diff'
+import ObstacleManager from './obstacleManager'
+import { diff } from '../diff'
 import { Environment } from '../environment/environment'
-import Interactable from './interactable'
+import InteractableManager from './interactableManager'
+import AvatarManager from './avatarManager'
 
 export default class EntityManager {
   environment: Environment
-  obstacles: Obstacle
-  interactables: Interactable
+
+  obstacles: ObstacleManager
+  interactables: InteractableManager
+  avatars: AvatarManager
 
   constructor (environment: Environment) {
     this.environment = environment
-  }
-
-  setup (): void {
-    this.obstacles = new Obstacle()
-    this.interactables = new Interactable()
-
-    this.obstacles.setup(this.environment)
-    this.interactables.setup(this.environment)
+    this.obstacles = new ObstacleManager(this.environment)
+    this.interactables = new InteractableManager(this.environment)
+    this.avatars = new AvatarManager(this.environment)
   }
 
   onGameStateUpdate (previousGameState: any, currentGameState: any): void {
     var previousObstacleList = []
     var previousInteractableList = []
+    var previousAvatarList = []
 
     if (previousGameState) {
       previousObstacleList = previousGameState.obstacles
       previousInteractableList = previousGameState.interactables
+      previousAvatarList = previousGameState.players
     }
 
     const obstacleDiff = diff(previousObstacleList, currentGameState.obstacles)
     const interactableDiff = diff(previousInteractableList, currentGameState.interactables)
+    const avatarDiff = diff(previousAvatarList, currentGameState.players)
 
-    this.obstacles.onGameStateUpdate(obstacleDiff)
-    this.interactables.onGameStateUpdate(interactableDiff)
+    this.obstacles.gameStateProcessor.handleDifferences(obstacleDiff)
+    this.interactables.gameStateProcessor.handleDifferences(interactableDiff)
+    this.avatars.gameStateProcessor.handleDifferences(avatarDiff)
+  }
+
+  setCurrentAvatarID (avatarID: number): void {
+    this.avatars.setCurrentAvatarID(avatarID)
   }
 }
