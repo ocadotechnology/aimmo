@@ -170,4 +170,6 @@ jobs:
         - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}"
     - stage: Notify Semaphore (Dev)
       script:
-        - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/dev/build?auth_token=${SEMAPHORE_API_AUTH}"
+        - echo ${DEPLOY_TO_DEV}
+        - echo ${TRAVIS_TAG}
+#        - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/dev/build?auth_token=${SEMAPHORE_API_AUTH}"
