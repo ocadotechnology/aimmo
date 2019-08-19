@@ -4,7 +4,6 @@ import AvatarManager from './avatarManager'
 import { DiffItem } from '../diff'
 import dummyImportMesh from '../../testHelpers/dummyImportMesh'
 import { MockEnvironment } from '../../testHelpers/mockEnvironment'
-import { } from 'babylonjs'
 
 let environment: MockEnvironment
 let avatars: AvatarManager
