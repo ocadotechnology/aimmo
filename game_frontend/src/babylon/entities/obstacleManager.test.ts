@@ -16,7 +16,7 @@ function obstacleDiffItem (index: string, location: {x: number, y: number}) {
     location: { x: location.x, y: location.y },
     width: 1,
     height: 1,
-    type: 'wall',
+    'type': 'wall',
     orientation: 'north'
   })
 }

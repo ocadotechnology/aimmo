@@ -1,4 +1,5 @@
 import isEqual from 'lodash.isequal'
+import { element } from 'prop-types'
 
 export const ADD = 'A'
 export const DELETE = 'D'
@@ -36,56 +37,55 @@ export function diff (previous: Array<any>, current: Array<any>): DiffResult {
   var diffResult = new DiffResult([], [], [])
 
   if (!previous.length) {
-    return noPreviousStateGiven(diffResult, current)
+    noPreviousStateGiven(diffResult, current)
+    return diffResult
   }
 
-  diffResult = doTheDiff(diffResult, previous, current)
+  computeDiff(diffResult, previous, current)
   return processRemainingElements(diffResult, previous, current)
 }
 
-function noPreviousStateGiven (result: DiffResult, current: Array<any>): DiffResult {
-  let list = JSON.parse(JSON.stringify(result))
-  for (let [index, element] of Object.entries(current)) {
-    list.addList.push({
-      id: index,
+function noPreviousStateGiven (result: DiffResult, current: Array<any>): void {
+  current.map((element, index) => {
+    result.addList.push({
+      id: +index,
       value: element
     })
-  }
-  return list
+  })
 }
 
-function doTheDiff (result: DiffResult, previous: Array<any>, current: Array<any>): DiffResult {
-  let list = JSON.parse(JSON.stringify(result))
+function computeDiff (result: DiffResult, previous: Array<any>, current: Array<any>): void {
   for (let [index, element] of Object.entries(previous)) {
     if (!isEqual(previous[index], current[index])) {
-      if (previous[index] !== current[index] && current[index] !== undefined) {
-        list.editList.push({
+      if (isElementDefinedAndNotEqualToPreviousElement(previous[index], current[index])) {
+        result.editList.push({
           id: index,
           value: current[index]
         })
       } else {
-        list.deleteList.push({
+        result.deleteList.push({
           id: index,
           value: element
         })
       }
     }
   }
+}
 
-  return list
+function isElementDefinedAndNotEqualToPreviousElement (first: DiffItem, second: DiffItem) {
+  return first !== undefined && first !== second
 }
 
 function processRemainingElements (result: DiffResult, previous: Array<any>, current: Array<any>) {
-  let list = JSON.parse(JSON.stringify(result))
   if (previous.length - current.length < 0) {
     for (let [index, element] of Object.entries(current)) {
       if (+index >= previous.length) {
-        list.addList.push({
+        result.addList.push({
           id: index,
           value: element
         })
       }
     }
   }
-  return list
+  return result
 }

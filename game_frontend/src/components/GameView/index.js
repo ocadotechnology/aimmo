@@ -30,7 +30,7 @@ export default class GameView extends Component {
     this.environmentManager = new EnvironmentManager(this.environment)
     this.entities = new EntityManager(this.environment)
 
-    window.addEventListener('resize', this.environmentManager.windowResizer)
+    window.addEventListener('resize', this.environmentManager.resizeBabylonWindow)
   }
 
   componentDidUpdate (prevProps) {

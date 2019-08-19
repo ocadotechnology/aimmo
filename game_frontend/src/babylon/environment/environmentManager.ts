@@ -17,7 +17,7 @@ export default class EnvironmentManager {
       this.terrain = new Terrain(environment)
     }
 
-    windowResizer = () => {
+    resizeBabylonWindow = () => {
       this.environment.engine.resize()
       this.camera.computeCameraView(this.environment.canvas)
     }
