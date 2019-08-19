@@ -79,16 +79,12 @@ export default class AvatarManager implements GameNode, DiffHandling {
 
     const toPosition = new BABYLON.Vector3(avatar.value.location.x, 0, avatar.value.location.y)
 
-    if (avatarToAnimate.skeleton !== null) {
-      const moveAnimation = createMoveAnimation(avatarToAnimate.position, toPosition)
-      this.scene.beginDirectAnimation(avatarToAnimate, [moveAnimation], 0, MAX_KEYFRAMES_PER_SECOND, false, 1)
-      let dee = avatarToAnimate
-      createWalkAnimation(dee, this.scene)
+    const moveAnimation = createMoveAnimation(avatarToAnimate.position, toPosition)
+    this.scene.beginDirectAnimation(avatarToAnimate, [moveAnimation], 0, MAX_KEYFRAMES_PER_SECOND, false, 1)
+    let dee = avatarToAnimate
+    createWalkAnimation(dee, this.scene)
 
-      setOrientation(dee, avatar.value.orientation)
-    } else {
-      avatarToAnimate.position = toPosition
-    }
+    setOrientation(dee, avatar.value.orientation)
   }
 
   attachMarker (avatarMesh: any, avatar: any): void {

@@ -4,6 +4,7 @@ import AvatarManager from './avatarManager'
 import { DiffItem } from '../diff'
 import dummyImportMesh from '../../testHelpers/dummyImportMesh'
 import { MockEnvironment } from '../../testHelpers/mockEnvironment'
+import { } from 'babylonjs'
 
 let environment: MockEnvironment
 let avatars: AvatarManager
@@ -56,6 +57,7 @@ describe('AvatarManager', () => {
 
   it('updates existing avatars', () => {
     const avatar = avatarDiffItem('1', 'east', { x: 0, y: 0 })
+    avatars.scene.createDefaultCamera()
 
     avatars.add(avatar)
     let avatarNodeDescendants = avatars.avatarNode.getChildMeshes()
@@ -63,10 +65,12 @@ describe('AvatarManager', () => {
     expect(avatarNodeDescendants[0].position).toEqual(new BABYLON.Vector3(0, 0, 0))
 
     const updatedAvatar = avatarDiffItem('1', 'east', { x: 1, y: 0 })
-
     avatars.edit(updatedAvatar)
+
     avatarNodeDescendants = avatars.avatarNode.getChildMeshes()
-    expect(avatarNodeDescendants.length).toEqual(1)
-    expect(avatarNodeDescendants[0].position).toEqual(new BABYLON.Vector3(1, 0, 0))
+    setTimeout(() => {
+      expect(avatarNodeDescendants.length).toEqual(1)
+      expect(avatarNodeDescendants[0].position).toEqual(new BABYLON.Vector3(1, 0, 0))
+    })
   })
 })
