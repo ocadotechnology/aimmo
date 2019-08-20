@@ -169,7 +169,7 @@ jobs:
         - docker build --no-cache -t ocadotechnology/aimmo-game-worker:${TRAVIS_TAG} aimmo-game-worker/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
         - docker push ocadotechnology/aimmo-game-worker:${TRAVIS_TAG}
-    - name: "Publish semantic release"
+    - name: "Publish new semantic release"
       script:
         - git config --global user.name "semantic-release (via TravisCI)"
         - git config --global user.email "semantic-release@travis"
