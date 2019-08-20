@@ -17,6 +17,12 @@ export const Compass = styled.img`
 `
 
 export default class GameView extends Component {
+  static propTypes = {
+    connectToGame: PropTypes.func,
+    gameState: PropTypes.object,
+    currentAvatarID: PropTypes.number
+  }
+
   constructor (props) {
     super(props)
     this.props.connectToGame()
@@ -71,11 +77,4 @@ export default class GameView extends Component {
       </GameViewLayout>
     )
   }
-}
-
-GameView.propTypes = {
-  connectToGame: PropTypes.func,
-  gameDataLoaded: PropTypes.bool,
-  gameState: PropTypes.object,
-  currentAvatarID: PropTypes.number
 }
