@@ -48,7 +48,7 @@ export function diff (previous: Array<any>, current: Array<any>): DiffResult {
 function convertToDiffItemsArray (current: Array<any>): DiffItem[] {
   return current.map((element, index) => (
     {
-      id: +index,
+      id: index,
       value: element
     }
   ))
@@ -58,7 +58,7 @@ function getDiffereingElements (previous: Array<any>, current: Array<any>): Arra
   let differences = []
   for (let [index, element] of Object.entries(previous)) {
     if (!isEqual(element, current[index])) {
-      differences.push([index, element, current[index]])
+      differences.push([+index, element, current[index]])
     }
   }
   return differences
@@ -68,14 +68,14 @@ function getItemsToEdit (arrayOfDifferences: Array<Array<any>>, current: Array<a
   return arrayOfDifferences
     .filter(([id, previous, current]) => {
       return current !== undefined
-    }).map(([id, previous, current]) => new DiffItem(+id, current))
+    }).map(([id, previous, current]) => new DiffItem(id, current))
 }
 
 function getItemsToDelete (arrayOfDifferences: Array<Array<any>>, current: Array<any>): DiffItem[] {
   return arrayOfDifferences
     .filter(([id, previous, current]) => {
       return current === undefined
-    }).map(([id, previous, current]) => new DiffItem(+id, previous))
+    }).map(([id, previous, current]) => new DiffItem(id, previous))
 }
 
 function processRemainingElements (previous: Array<any>, current: Array<any>): DiffItem[] {
