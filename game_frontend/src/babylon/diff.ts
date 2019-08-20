@@ -1,15 +1,14 @@
 import isEqual from 'lodash.isequal'
-import { element } from 'prop-types'
 
 export const ADD = 'A'
 export const DELETE = 'D'
 export const EDIT = 'E'
 
 export class DiffItem {
-  id: string;
+  id: number;
   value: any;
 
-  constructor (id: string, value: any) {
+  constructor (id: number, value: any) {
     this.id = id
     this.value = value
   }
@@ -59,12 +58,12 @@ function computeDiff (result: DiffResult, previous: Array<any>, current: Array<a
     if (!isEqual(previous[index], current[index])) {
       if (isElementDefinedAndNotEqualToPreviousElement(previous[index], current[index])) {
         result.editList.push({
-          id: index,
+          id: +index,
           value: current[index]
         })
       } else {
         result.deleteList.push({
-          id: index,
+          id: +index,
           value: element
         })
       }
@@ -81,7 +80,7 @@ function processRemainingElements (result: DiffResult, previous: Array<any>, cur
     for (let [index, element] of Object.entries(current)) {
       if (+index >= previous.length) {
         result.addList.push({
-          id: index,
+          id: +index,
           value: element
         })
       }

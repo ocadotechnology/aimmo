@@ -14,11 +14,11 @@ class DummyHandler implements DiffHandling {
   }
 
   edit (item: DiffItem): void {
-    this.items[parseInt(item.id)] = item.value
+    this.items[item.id] = item.value
   }
 
   remove (item: DiffItem): void {
-    this.items.splice(parseInt(item.id))
+    this.items.splice(item.id)
   }
 }
 
