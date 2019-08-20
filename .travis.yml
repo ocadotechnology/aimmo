@@ -51,6 +51,7 @@ jobs:
         - node djangoBundler.js
         - popd
       script:
+        - echo ${DEPLOY_TO_DEV}
         - python all_tests.py -c --no-docker-container-tests
       after_success:
         - codecov
