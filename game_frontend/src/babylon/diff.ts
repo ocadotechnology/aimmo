@@ -54,7 +54,7 @@ function convertToDiffItemsArray (current: Array<any>): DiffItem[] {
   ))
 }
 
-function getdifferingElements (previous: Array<any>, current: Array<any>): Array<Array<any>> {
+function getDifferingElements (previous: Array<any>, current: Array<any>): Array<Array<any>> {
   let differences = []
   for (let [index, element] of Object.entries(previous)) {
     if (!isEqual(element, current[index])) {
