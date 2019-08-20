@@ -164,7 +164,7 @@ jobs:
         - git config --global user.name "semantic-release (via TravisCI)"
         - git config --global user.email "semantic-release@travis"
         - pip install git+https://github.com/ocadotechnology/python-semantic-release.git@add_beta_releases
-        - semantic-release publish --branch=${TRAVIS_BRANCH}
+        - semantic-release publish --branch=${TRAVIS_BRANCH} --build=${TRAVIS_BUILD_NUMBER} --dev=${DEPLOY_TO_DEV}
     - stage: Notify Semaphore (Staging)
       script:
         - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}"
