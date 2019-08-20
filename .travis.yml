@@ -16,7 +16,7 @@ stages:
   - name: test
     if: tag IS blank
   - name: release
-    if: (branch IN (master, development) AND NOT type IN (pull_request)) OR env(DEPLOY_TO_DEV) = true
+    if: tag IS blank AND ((branch IN (master, development) AND NOT type IN (pull_request)) OR env(DEPLOY_TO_DEV) = true)
   - name: deploy
     if: tag IS present
   - name: Notify Semaphore (Staging)
