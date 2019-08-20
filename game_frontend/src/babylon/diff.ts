@@ -66,16 +66,14 @@ function getDifferingElements (previous: Array<any>, current: Array<any>): Array
 
 function getItemsToEdit (arrayOfDifferences: Array<Array<any>>, current: Array<any>): DiffItem[] {
   return arrayOfDifferences
-    .filter(([id, previous, current]) => {
-      return current !== undefined
-    }).map(([id, previous, current]) => new DiffItem(id, current))
+    .filter(([id, previous, current]) => current !== undefined)
+    .map(([id, previous, current]) => new DiffItem(id, current))
 }
 
 function getItemsToDelete (arrayOfDifferences: Array<Array<any>>, current: Array<any>): DiffItem[] {
   return arrayOfDifferences
-    .filter(([id, previous, current]) => {
-      return current === undefined
-    }).map(([id, previous, current]) => new DiffItem(id, previous))
+    .filter(([id, previous, current]) => current === undefined)
+    .map(([id, previous, current]) => new DiffItem(id, previous))
 }
 
 function processRemainingElements (previous: Array<any>, current: Array<any>): DiffItem[] {
