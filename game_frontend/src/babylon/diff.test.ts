@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { diff, DiffResult } from './diff'
+import { diff, DiffResult, DiffItem } from './diff'
 
 describe('diff', () => {
   it('returns nothing if arrays are equal', () => {
@@ -16,7 +16,6 @@ describe('diff', () => {
     var current = [{ 1: 'a' }, { 2: 'b' }, { 3: 'c' }]
 
     var difference = diff(previous, current)
-    console.log(difference)
     expect(difference).toEqual(new DiffResult([{ id: 2, value: { 3: 'c' } }], [], []))
   })
 
@@ -35,7 +34,7 @@ describe('diff', () => {
 
     var difference = diff(previous, current)
 
-    expect(difference).toEqual(new DiffResult([], [{ id: 1, value: { 2: 'b' } }], []))
+    expect(difference).toEqual(new DiffResult([], [new DiffItem(1, { 2: 'b' })], []))
   })
 
   it('returns edit changes if elements have been changed', () => {
@@ -44,6 +43,6 @@ describe('diff', () => {
 
     var difference = diff(previous, current)
 
-    expect(difference).toEqual(new DiffResult([], [], [{ id: 1, value: { 2: 'c' } }]))
+    expect(difference).toEqual(new DiffResult([], [], [new DiffItem(1, { 2: 'c' })]))
   })
 })

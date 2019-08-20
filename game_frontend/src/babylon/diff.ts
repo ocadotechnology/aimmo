@@ -62,46 +62,26 @@ function getDiffereingElements (previous: Array<any>, current: Array<any>): Arra
     }
   }
   return differences
-  // return previous
-  //   .filter((element, index) => {
-  //     return !isEqual(element, current[index])
-  //   }).map((element, index) => {
-  //     return [index, element, current[index]]
-  //   })
 }
 
 function getItemsToEdit (arrayOfDifferences: Array<Array<any>>, current: Array<any>): DiffItem[] {
   return arrayOfDifferences
     .filter(([id, previous, current]) => {
       return current !== undefined
-    }).map(([id, previous, current]) => ({
-      id: +id,
-      value: current
-    }))
+    }).map(([id, previous, current]) => new DiffItem(+id, current))
 }
 
 function getItemsToDelete (arrayOfDifferences: Array<Array<any>>, current: Array<any>): DiffItem[] {
   return arrayOfDifferences
     .filter(([id, previous, current]) => {
       return current === undefined
-    }).map(([id, previous, current]) => ({
-      id: +id,
-      value: previous
-    }))
+    }).map(([id, previous, current]) => new DiffItem(+id, previous))
 }
 
 function processRemainingElements (previous: Array<any>, current: Array<any>): DiffItem[] {
   let remainingElements = []
-  if (previous.length - current.length < 0) {
-    for (let [index, element] of Object.entries(current)) {
-      if (+index >= previous.length) {
-        remainingElements.push({
-          id: +index,
-          value: element
-        })
-      }
-    }
-    return remainingElements
+  for (let index = previous.length; index < current.length; index++) {
+    remainingElements.push(new DiffItem(index, current[index]))
   }
-  return []
+  return remainingElements
 }
