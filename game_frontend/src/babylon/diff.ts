@@ -36,7 +36,7 @@ export function diff (previous: Array<any>, current: Array<any>): DiffResult {
   var diffResult = new DiffResult([], [], [])
 
   if (!previous.length) {
-    noPreviousStateGiven(diffResult, current)
+    markWholeArrayAsAdd(diffResult, current)
     return diffResult
   }
 
@@ -44,7 +44,7 @@ export function diff (previous: Array<any>, current: Array<any>): DiffResult {
   return processRemainingElements(diffResult, previous, current)
 }
 
-function noPreviousStateGiven (result: DiffResult, current: Array<any>): void {
+function markWholeArrayAsAdd (result: DiffResult, current: Array<any>): void {
   current.map((element, index) => {
     result.addList.push({
       id: +index,
