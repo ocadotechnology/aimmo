@@ -73,7 +73,7 @@ function computeDiff (result: DiffResult, previous: Array<any>, current: Array<a
 }
 
 function isElementDefinedAndNotEqualToPreviousElement (first: DiffItem, second: DiffItem) {
-  return first !== undefined && first !== second
+  return second !== undefined && first !== second
 }
 
 function processRemainingElements (result: DiffResult, previous: Array<any>, current: Array<any>) {

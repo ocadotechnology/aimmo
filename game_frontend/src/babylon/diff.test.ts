@@ -26,7 +26,7 @@ describe('diff', () => {
 
     var difference = diff(previous, current)
 
-    expect(difference).toEqual({ addList: [{ id: '0', value: { 1: 'a' } }, { id: '1', value: { 2: 'b' } }], deleteList: [], editList: [] })
+    expect(difference).toEqual({ addList: [{ id: 0, value: { 1: 'a' } }, { id: 1, value: { 2: 'b' } }], deleteList: [], editList: [] })
   })
 
   it('returns delete changes if elements have been removed', () => {
