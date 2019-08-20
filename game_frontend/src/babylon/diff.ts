@@ -37,7 +37,7 @@ export function diff (previous: Array<any>, current: Array<any>): DiffResult {
     return new DiffResult(convertToDiffItemsArray(current), [], [])
   }
 
-  const arrayOfDifferences = getDiffereingElements(previous, current)
+  const arrayOfDifferences = getDifferingElements(previous, current)
   const editList = getItemsToEdit(arrayOfDifferences, current)
   const deleteList = getItemsToDelete(arrayOfDifferences, current)
   const remainingElements = processRemainingElements(previous, current)
