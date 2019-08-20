@@ -33,58 +33,75 @@ export class DiffResult {
  * @returns an object containing 3 lists for adding, removing, and editing items
  */
 export function diff (previous: Array<any>, current: Array<any>): DiffResult {
-  var diffResult = new DiffResult([], [], [])
-
   if (!previous.length) {
-    markWholeArrayAsAdd(diffResult, current)
-    return diffResult
+    return new DiffResult(convertToDiffItemsArray(current), [], [])
   }
 
-  computeDiff(diffResult, previous, current)
-  return processRemainingElements(diffResult, previous, current)
+  const arrayOfDifferences = getDiffereingElements(previous, current)
+  const editList = getItemsToEdit(arrayOfDifferences, current)
+  const deleteList = getItemsToDelete(arrayOfDifferences, current)
+  const remainingElements = processRemainingElements(previous, current)
+
+  return new DiffResult(remainingElements, deleteList, editList)
 }
 
-function markWholeArrayAsAdd (result: DiffResult, current: Array<any>): void {
-  current.map((element, index) => {
-    result.addList.push({
+function convertToDiffItemsArray (current: Array<any>): DiffItem[] {
+  return current.map((element, index) => (
+    {
       id: +index,
       value: element
-    })
-  })
+    }
+  ))
 }
 
-function computeDiff (result: DiffResult, previous: Array<any>, current: Array<any>): void {
+function getDiffereingElements (previous: Array<any>, current: Array<any>): Array<Array<any>> {
+  let differences = []
   for (let [index, element] of Object.entries(previous)) {
-    if (!isEqual(previous[index], current[index])) {
-      if (isElementDefinedAndNotEqualToPreviousElement(previous[index], current[index])) {
-        result.editList.push({
-          id: +index,
-          value: current[index]
-        })
-      } else {
-        result.deleteList.push({
-          id: +index,
-          value: element
-        })
-      }
+    if (!isEqual(element, current[index])) {
+      differences.push([index, element, current[index]])
     }
   }
+  return differences
+  // return previous
+  //   .filter((element, index) => {
+  //     return !isEqual(element, current[index])
+  //   }).map((element, index) => {
+  //     return [index, element, current[index]]
+  //   })
 }
 
-function isElementDefinedAndNotEqualToPreviousElement (first: DiffItem, second: DiffItem) {
-  return second !== undefined && first !== second
+function getItemsToEdit (arrayOfDifferences: Array<Array<any>>, current: Array<any>): DiffItem[] {
+  return arrayOfDifferences
+    .filter(([id, previous, current]) => {
+      return current !== undefined
+    }).map(([id, previous, current]) => ({
+      id: +id,
+      value: current
+    }))
 }
 
-function processRemainingElements (result: DiffResult, previous: Array<any>, current: Array<any>) {
+function getItemsToDelete (arrayOfDifferences: Array<Array<any>>, current: Array<any>): DiffItem[] {
+  return arrayOfDifferences
+    .filter(([id, previous, current]) => {
+      return current === undefined
+    }).map(([id, previous, current]) => ({
+      id: +id,
+      value: previous
+    }))
+}
+
+function processRemainingElements (previous: Array<any>, current: Array<any>): DiffItem[] {
+  let remainingElements = []
   if (previous.length - current.length < 0) {
     for (let [index, element] of Object.entries(current)) {
       if (+index >= previous.length) {
-        result.addList.push({
+        remainingElements.push({
           id: +index,
           value: element
         })
       }
     }
+    return remainingElements
   }
-  return result
+  return []
 }

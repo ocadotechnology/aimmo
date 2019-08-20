@@ -45,7 +45,6 @@ describe('Diff processor', () => {
 
     const handler = new DummyHandler(startArray)
     const diffProcessor = new DiffProcessor(handler)
-
     diffProcessor.handleDifferences(diffArray)
     expect(handler.items.length).toBe(5)
     expect(handler.items[2]).toBe(100)

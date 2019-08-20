@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { diff } from './diff'
+import { diff, DiffResult } from './diff'
 
 describe('diff', () => {
   it('returns nothing if arrays are equal', () => {
@@ -16,8 +16,8 @@ describe('diff', () => {
     var current = [{ 1: 'a' }, { 2: 'b' }, { 3: 'c' }]
 
     var difference = diff(previous, current)
-
-    expect(difference).toEqual({ addList: [{ id: 2, value: { 3: 'c' } }], deleteList: [], editList: [] })
+    console.log(difference)
+    expect(difference).toEqual(new DiffResult([{ id: 2, value: { 3: 'c' } }], [], []))
   })
 
   it('returns add changes if initial array is empty', () => {
@@ -26,7 +26,7 @@ describe('diff', () => {
 
     var difference = diff(previous, current)
 
-    expect(difference).toEqual({ addList: [{ id: 0, value: { 1: 'a' } }, { id: 1, value: { 2: 'b' } }], deleteList: [], editList: [] })
+    expect(difference).toEqual(new DiffResult([{ id: 0, value: { 1: 'a' } }, { id: 1, value: { 2: 'b' } }], [], []))
   })
 
   it('returns delete changes if elements have been removed', () => {
@@ -35,7 +35,7 @@ describe('diff', () => {
 
     var difference = diff(previous, current)
 
-    expect(difference).toEqual({ addList: [], deleteList: [{ id: 1, value: { 2: 'b' } }], editList: [] })
+    expect(difference).toEqual(new DiffResult([], [{ id: 1, value: { 2: 'b' } }], []))
   })
 
   it('returns edit changes if elements have been changed', () => {
@@ -44,6 +44,6 @@ describe('diff', () => {
 
     var difference = diff(previous, current)
 
-    expect(difference).toEqual({ addList: [], deleteList: [], editList: [{ id: 1, value: { 2: 'c' } }] })
+    expect(difference).toEqual(new DiffResult([], [], [{ id: 1, value: { 2: 'c' } }]))
   })
 })
