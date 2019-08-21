@@ -109,7 +109,7 @@ jobs:
     - stage: Release
       script:
         - pip install git+https://github.com/ocadotechnology/python-semantic-release.git@add_beta_releases
-        - semantic-release version --branch=${TRAVIS_BRANCH} --build=${TRAVIS_BUILD_NUMBER} --dev=${DEPLOY_TO_DEV}
+        - semantic-release publish --branch=${TRAVIS_BRANCH} --build=${TRAVIS_BUILD_NUMBER} --dev=${DEPLOY_TO_DEV}
       deploy:
         - provider: releases
           api_key:
@@ -169,12 +169,6 @@ jobs:
         - docker build --no-cache -t ocadotechnology/aimmo-game-worker:${TRAVIS_TAG} aimmo-game-worker/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
         - docker push ocadotechnology/aimmo-game-worker:${TRAVIS_TAG}
-    - name: "Publish new semantic release"
-      script:
-        - git config --global user.name "semantic-release (via TravisCI)"
-        - git config --global user.email "semantic-release@travis"
-        - pip install git+https://github.com/ocadotechnology/python-semantic-release.git@add_beta_releases
-        - semantic-release publish --branch=${TRAVIS_BRANCH} --build=${TRAVIS_BUILD_NUMBER} --dev=${DEPLOY_TO_DEV}
     - stage: Notify Semaphore (Staging)
       script:
         - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}"
