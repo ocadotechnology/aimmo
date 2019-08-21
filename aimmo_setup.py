@@ -16,7 +16,7 @@ def _cmd(command):
     :param command: command/subprocess to be run, as a string.
 
     Takes in a command/subprocess, and runs it as if you would
-    inside a terminal. DO NOT USE outside of the AI:MMO-setup script, and DO NOT INCLUDE
+    inside a terminal. DO NOT USE outside of the aimmo-setup script, and DO NOT INCLUDE
     in any release build, as this function is able to run bash scripts, and can run commands
     with sudo if specified.
     """
@@ -221,13 +221,13 @@ def get_nodejs():  # Linux only
 def add_aimmo_to_hosts_file():  # Mac & Linux only
     with open("/etc/hosts", "r") as hostfile:
         data = hostfile.read().replace("\n", "")
-    if "192.168.99.100 local.AI:MMO.codeforlife.education" not in data:
-        print("Adding AI:MMO to /etc/hosts...")
+    if "192.168.99.100 local.aimmo.codeforlife.education" not in data:
+        print("Adding Kurono to /etc/hosts...")
         _cmd(
             "sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'"
         )
     else:
-        print("AI:MMO already present in /etc/hosts...")
+        print("Kurono already present in /etc/hosts...")
 
 
 def add_parcel_bundler():  # Mac & Linux only
@@ -245,9 +245,9 @@ def configure_yarn_repo():  # Linux only
 
 def mac_setup(hostOS):
     """
-    Runs the list of commands, sequentially, needed in order to set up AI:MMO for a Mac.
+    Runs the list of commands, sequentially, needed in order to set up Kurono for a Mac.
     After this has been run the user needs to open Docker to finalise its install,
-    and get the unity package for AI:MMO from AI:MMO-unity.
+    and get the unity package for Kurono from aimmo-unity.
     """
     try:
         check_homebrew()
@@ -265,7 +265,7 @@ def mac_setup(hostOS):
             "---------------------------------------------------------------------------------------------------"
         )
         print(
-            "| You now need to get the unity package from the AI:MMO-unity repo, place its contents            |"
+            "| You now need to get the unity package from the aimmo-unity repo, place its contents            |"
         )
         print(
             "| in aimmo/aimmo/static/unity.  (folder may not exist yet)                                        |"
@@ -277,7 +277,7 @@ def mac_setup(hostOS):
             "---------------------------------------------------------------------------------------------------"
         )
         print(
-            "| Everything should now be ready for you to use AI:MMO! :D                                        |"
+            "| Everything should now be ready for you to use Kurono! :D                                        |"
         )
         print(
             "---------------------------------------------------------------------------------------------------"
@@ -294,7 +294,7 @@ def mac_setup(hostOS):
         traceback.print_exc()
     except Exception as e:
         print(
-            "Something went very wrong, maybe I couldn't read hosts? otherwise I have no idea what it was D:"
+            "Something went very wrong, maybe I couldn't read hosts? Otherwise I have no idea what it was D:"
         )
         traceback.print_exc()
 
@@ -323,7 +323,7 @@ def linux_setup(hostOS):
             "---------------------------------------------------------------------------------------------------"
         )
         print(
-            "| You now need to get the unity package from the AI:MMO-unity repo, place its contents            |"
+            "| You now need to get the unity package from the aimmo-unity repo, place its contents            |"
         )
         print(
             "| in aimmo/aimmo/static/unity  (folder may not exist yet)                                         |"
@@ -332,7 +332,7 @@ def linux_setup(hostOS):
             "---------------------------------------------------------------------------------------------------"
         )
         print(
-            "| Everything should now be ready for you to use AI:MMO! :D                                        |"
+            "| Everything should now be ready for you to use Kurono! :D                                        |"
         )
         print(
             "---------------------------------------------------------------------------------------------------"
@@ -358,7 +358,7 @@ print(
     "---------------------------------------------------------------------------------------------------"
 )
 print(
-    "| Welcome to AI:MMO! This script should make your life a little easier,                           |"
+    "| Welcome to Kurono! This script should make your life a little easier,                           |"
 )
 print(
     "| just be kind if it doesn't work.                                                                |"

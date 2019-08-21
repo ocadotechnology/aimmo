@@ -17,7 +17,7 @@ const createTestScheduler = (frameTimeFactor = 10) => {
 }
 
 describe('connectToGameEpic', () => {
-  it('connects to the aimmo game', () => {
+  it('connects to the kurono game', () => {
     const gameState = {
       players: {
         id: 1,

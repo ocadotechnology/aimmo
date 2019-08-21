@@ -50,7 +50,7 @@ restricted_globals["__name__"] = "Avatar"
 restricted_globals["_getitem_"] = safe_getitem
 
 
-# Adds AI:MMO specific modules to the user's environment
+# Adds Kurono specific modules to the user's environment
 add_actions_to_globals()
 restricted_globals["direction"] = direction
 restricted_globals["random"] = utility_builtins["random"]

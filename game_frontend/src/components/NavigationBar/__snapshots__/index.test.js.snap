@@ -7,11 +7,13 @@ exports[`<NavigationBar /> renders correctly 1`] = `
   >
     <Styled(WithStyles(ForwardRef(Toolbar)))>
       <WithStyles(ForwardRef(IconButton))
-        aria-label="Close"
+        aria-label="Kurono dashboard"
         color="inherit"
-        href="/aimmo"
+        href="/kurono"
       >
-        <CloseIcon />
+        <KuronoLogo
+          fontSize="large"
+        />
       </WithStyles(ForwardRef(IconButton))>
     </Styled(WithStyles(ForwardRef(Toolbar)))>
   </WithStyles(ForwardRef(AppBar))>

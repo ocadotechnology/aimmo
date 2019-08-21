@@ -230,7 +230,7 @@ def add_game(request):
             users = get_users_for_new_game(request)
             if users is not None:
                 game.can_play.add(*users)
-            return redirect("aimmo/play", id=game.id)
+            return redirect("kurono/play", id=game.id)
     else:
         form = forms.AddGameForm(playable_games)
     return render(request, "players/add_game.html", {"form": form})

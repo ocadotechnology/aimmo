@@ -31,7 +31,7 @@ We describe the technologies that are underlying to the project and support it
 
 ### Testing 
 
-Levels of testing within AI:MMO.
+Levels of testing within Kurono.
 
 - [Testing](testing/README.md)
     - [Manual Test Plan](testing/test-plan.md)
