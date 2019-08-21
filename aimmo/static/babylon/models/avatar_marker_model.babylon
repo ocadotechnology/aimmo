@@ -1,0 +1,21 @@
+{"producer":{"name":"Blender","version":"2.78 (sub 0)","exporter_version":"5.6.4","file":"avatar_marker.babylon"},
+"autoClear":true,"clearColor":[0.0509,0.0509,0.0509],"ambientColor":[0,0,0],"gravity":[0,-9.81,0],
+"materials":[{"name":"avatar_marker.avatar_marker","id":"avatar_marker.avatar_marker","ambient":[0,0,0],"diffuse":[0.8,0.8,0.8],"specular":[1,1,1],"emissive":[0,0,0],"specularPower":64,"alpha":1,"backFaceCulling":true,"checkReadyOnlyOnce":false,"maxSimultaneousLights":4, 
+"diffuseTexture":{"name":"avatar_marker_texture.png","level":1,"hasAlpha":0,"coordinatesMode":0,"uOffset":0,"vOffset":0,"uScale":1,"vScale":1,"uAng":0,"vAng":0,"wAng":0,"wrapU":0,"wrapV":0,"coordinatesIndex":0}}],
+"multiMaterials":[],
+"skeletons":[],
+"meshes":[{"name":"avatar_marker","id":"avatar_marker","materialId":"avatar_marker.avatar_marker","billboardMode":0,"position":[0,0,0],"rotation":[0,0,0],"scaling":[1,1,1],"isVisible":true,"freezeWorldMatrix":false,"isEnabled":true,"checkCollisions":false,"receiveShadows":false,"pickable":true,"tags":""
+,"positions":[0,1.7149,0.8287,0,0.0575,0,-0.8287,1.7149,0,-0.8287,1.7149,0,0,0.0575,0,0,1.7149,-0.8287,0,1.7149,-0.8287,0,0.0575,0,0.8287,1.7149,0,0.8287,1.7149,0,0,0.0575,0,0,1.7149,0.8287,-0.8287,1.7149,0,0.8287,1.7149,0,0,1.7149,0.8287,-0.8287,1.7149,0,0,1.7149,-0.8287
+,0.8287,1.7149,0]
+,"normals":[0,0.405,0.914,0,-1,0,-0.914,0.405,0,-0.914,0.405,0,0,-1,0,0,0.405,-0.914,0,0.405,-0.914,0,-1,0,0.914,0.405,0,0.914,0.405,0,0,-1,0,0,0.405,0.914,-0.914,0.405,0,0.914,0.405,0,0,0.405,0.914,-0.914,0.405,0,0,0.405,-0.914
+,0.914,0.405,0]
+,"uvs":[0,1,0.17,0.5,0.339,1,0,0.5,0.17,0,0.339,0.5,0.661,0.5,0.83,0,1,0.5,0.339,0.422,0.661,0,0.661,0.527,0.339,0.527,0.678,0.86,0.339,0.86,0.339,0.527,0.678,0.527,0.678,0.86]
+,"indices":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]
+,"subMeshes":[{"materialIndex":0,"verticesStart":0,"verticesCount":18,"indexStart":0,"indexCount":18}]
+,"instances":[]}
+],
+"morphTargetManagers":[],
+"cameras":[],
+"lights":[],
+"shadowGenerators":[]
+}

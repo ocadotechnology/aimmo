@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "downlevelIteration": true,
+        "target": "es5",
+        "sourceMap": true,
+        "allowJs": true,
+        "jsx": "preserve",
+        "lib": [
+            "es2017",
+            "dom"
+        ],
+        "outDir": "./dist/",
+        "baseUrl": "./src",
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+        "noUnusedLocals": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        ".git",
+        "node_modules/**/*"
+    ]
+}

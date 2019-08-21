@@ -103,6 +103,7 @@ jobs:
       install:
         - cd game_frontend && yarn
       script:
+        - yarn lint-typescript
         - yarn test --coverage
       after_success:
         - bash <(curl -s https://codecov.io/bash)
