@@ -1,80 +1,64 @@
 /* eslint-env jest */
 import React from 'react'
-import GameView, { GameViewLayout, StyledUnity, LoadingBackgroundOverlay, StyledCircularProgress, LoadingText } from 'components/GameView'
+import GameView, { GameViewLayout, Compass } from 'components/GameView'
 import { shallow } from 'enzyme/build/index'
+import createMountWithTheme from 'testHelpers/createMount'
 import createShallowWithTheme from 'testHelpers/createShallow'
-
-jest.mock('api/unity')
+import { MockEnvironment } from 'testHelpers/mockEnvironment'
 
 describe('<GameView />', () => {
-  it('shows loading bar whilst game is loading', () => {
-    const connectToGame = jest.fn()
-    const props = {
-      connectToGame,
-      gameDataLoaded: false
-    }
-    const component = shallow(<GameView {...props} />)
-    expect(component).toMatchSnapshot()
-  })
-
-  it('does not show the loading bar when the game has loaded', () => {
+  it('matches snapshot', () => {
     const connectToGame = jest.fn()
     const props = {
       connectToGame,
       gameDataLoaded: true
     }
-    const component = shallow(<GameView {...props} />)
+    const component = shallow(<GameView {...props} />, { disableLifecycleMethods: true })
     expect(component).toMatchSnapshot()
   })
 
-  it('connects to the game only after unity has been loaded', () => {
-    const connectToGame = jest.fn()
+  it('creates a babylon environment on mount', () => {
     const props = {
-      connectToGame
+      connectToGame: jest.fn(),
+      EnvironmentClass: MockEnvironment
     }
-    const component = shallow(<GameView {...props} />)
-    expect(connectToGame).not.toBeCalled()
-    component.instance().unityContentLoaded()
-    expect(connectToGame).toBeCalled()
-  })
-})
+    const component = createMountWithTheme(<GameView {...props} />).instance()
 
-describe('<StyledUnity />', () => {
-  it('is not shown when game data is loading', () => {
-    const component = shallow(<StyledUnity />)
-    expect(component).toMatchSnapshot()
+    expect(component.environment).toBeDefined()
+    expect(component.sceneRenderer).toBeDefined()
+    expect(component.environmentManager).toBeDefined()
+    expect(component.entities).toBeDefined()
   })
 
-  it('is shown when game data has loaded', () => {
-    const component = shallow(<StyledUnity gameDataLoaded />)
-    expect(component).toMatchSnapshot()
-  })
-})
+  it('Updates the CurrentAvatarID', () => {
+    const props = {
+      connectToGame: jest.fn(),
+      EnvironmentClass: MockEnvironment
+    }
+    const component = createMountWithTheme(<GameView {...props} />)
+    var componentInstance = component.instance()
+    componentInstance.updateCurrentAvatarID = jest.fn()
 
-describe('<StyledCircularProgress />', () => {
-  it('matches snapshot', () => {
-    const component = shallow(<StyledCircularProgress />)
-    expect(component).toMatchSnapshot()
-  })
-})
+    const newProps = {
+      ...props,
+      currentAvatarID: 1
+    }
+    component.setProps(newProps)
 
-describe('<LoadingBackgroundOverlay />', () => {
-  it('matches snapshot', () => {
-    const component = shallow(<LoadingBackgroundOverlay />)
-    expect(component).toMatchSnapshot()
-  })
-})
-
-describe('<LoadingText />', () => {
-  it('matches snapshot', () => {
-    const component = createShallowWithTheme(<LoadingText />)
-    expect(component).toMatchSnapshot()
+    expect(componentInstance.updateCurrentAvatarID).toBeCalled()
   })
 })
 
 describe('<GameViewLayout />', () => {
   it('matches snapshot', () => {
     const tree = shallow(<GameViewLayout />)
+    expect(tree).toMatchSnapshot()
+  })
+})
+
+describe('<Compass />', () => {
+  it('matches snapshot', () => {
+    const tree = createShallowWithTheme(<Compass />)
     expect(tree).toMatchSnapshot()
   })
 })

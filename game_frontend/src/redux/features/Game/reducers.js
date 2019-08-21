@@ -29,6 +29,14 @@ const gameReducer = (state = {}, action) => {
         ...state,
         gameDataLoaded: true
       }
+    case types.CONNECTION_PARAMETERS_RECEIVED:
+      return {
+        ...state,
+        connectionParameters: {
+          ...state.connectionParameters,
+          currentAvatarID: action.payload.parameters['avatar_id']
+        }
+      }
     default:
       return state
   }

@@ -8,6 +8,7 @@ __pycache__/
 # Editors & workspaces
 .vscode/
 **.vscode/
+*.code-workspace
 
 # Distribution / packaging
 .Python
