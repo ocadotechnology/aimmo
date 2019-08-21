@@ -108,6 +108,8 @@ jobs:
         - bash <(curl -s https://codecov.io/bash)
     - stage: Release
       script:
+        - git config --global user.name "semantic-release (via TravisCI)"
+        - git config --global user.email "semantic-release@travis"
         - pip install git+https://github.com/ocadotechnology/python-semantic-release.git@add_beta_releases
         - semantic-release publish --branch=${TRAVIS_BRANCH} --build=${TRAVIS_BUILD_NUMBER} --dev=${DEPLOY_TO_DEV}
       deploy:
