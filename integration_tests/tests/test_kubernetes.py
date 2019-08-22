@@ -120,7 +120,7 @@ class TestKubernetes(unittest.TestCase):
         rule = api_response.items[0].spec.rules[0]
         self.assertEqual(len(api_response.items[0].spec.rules), 1)
         self.assertEqual(rule.host,
-                         "local.aimmo.codeforlife.education")
+                         "local.kurono.codeforlife.education")
 
         # PATHS
         path = rule.http.paths[0]

@@ -1,12 +1,12 @@
 <p align="center">
-  <a href="https://www.codeforlife.education/play/aimmo/" target="_blank">
-    <img src="/docs/images/AIMMO-Logo-vertical-RGB.svg" height="200px" alt="AI:MMO Logo" />
+  <a href="https://www.codeforlife.education/play/kurono/" target="_blank">
+    <img src="/docs/images/kurono_logo_simple.svg" height="100px" alt="Kurono Logo" />
   </a>
 </p>
 
 
 <h3 align="center">
-  A Massively Multiplayer Online (MMO) time travelling adventure, which will take them to the next level on their coding journey: Artificial Intelligence and Python. 
+  An online multiplayer time travelling adventure, which will take them to the next level on their coding journey: Artificial Intelligence and Python. 
 </h3>
 
 [![Code Climate](https://codeclimate.com/github/ocadotechnology/aimmo/badges/gpa.svg)](https://codeclimate.com/github/ocadotechnology/aimmo)

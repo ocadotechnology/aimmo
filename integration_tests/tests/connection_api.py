@@ -110,7 +110,7 @@ def _log_in_as_a_superuser():
     log a user in with the correct credentials and take care of
     all CSRF token exchange.
     """
-    url = 'http://localhost:8000/aimmo/accounts/login/'
+    url = 'http://localhost:8000/kurono/accounts/login/'
     assert(is_server_healthy(url))
 
     logging.debug("Creating session...")
@@ -142,7 +142,7 @@ def create_custom_game_default_settings(name):
     """
     csrftoken, session = _log_in_as_a_superuser()
 
-    url = 'http://localhost:8000/aimmo/games/new/'
+    url = 'http://localhost:8000/kurono/games/new/'
 
     print("is server healthy? ", is_server_healthy(url))
 
@@ -164,7 +164,7 @@ def create_custom_game_default_settings(name):
         "start_width": "11",
     }
 
-    headers = {'X-CSRFToken': csrftoken, 'Referer': 'http://localhost:8000/aimmo/accounts/login/'}
+    headers = {'X-CSRFToken': csrftoken, 'Referer': 'http://localhost:8000/kurono/accounts/login/'}
 
     response = session.post(url, data=data, headers=headers)
 

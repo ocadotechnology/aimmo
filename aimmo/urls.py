@@ -8,7 +8,7 @@ from rest_framework import routers
 from aimmo import views
 from app_settings import preview_user_required
 
-HOMEPAGE_REGEX = r"^aimmo/"
+HOMEPAGE_REGEX = r"^kurono/"
 
 
 router = routers.SimpleRouter()
@@ -23,65 +23,69 @@ urlpatterns = [
                 TemplateView.as_view(template_name="players/home.html")
             )
         ),
-        name="aimmo/home",
+        name="kurono/home",
     ),
-    url(r"^accounts/login/$", auth_views.login, name="aimmo/login"),
+    url(r"^accounts/login/$", auth_views.login, name="kurono/login"),
     url(
         r"^accounts/logout/$",
         auth_views.logout,
-        {"next_page": "aimmo/logout_success"},
-        name="aimmo/logout",
+        {"next_page": "kurono/logout_success"},
+        name="kurono/logout",
     ),
     url(
         r"^accounts/logout_success/$",
         TemplateView.as_view(template_name="registration/success_logout.html"),
-        name="aimmo/logout_success",
+        name="kurono/logout_success",
     ),
     url(
         r"^play/(?P<id>[0-9]+)/$",
         login_required(preview_user_required(views.watch_game)),
-        name="aimmo/play",
+        name="kurono/play",
     ),
     url(
         r"^statistics/$",
         TemplateView.as_view(template_name="players/statistics.html"),
-        name="aimmo/statistics",
+        name="kurono/statistics",
     ),
-    url(r"^api/csrf_token", views.csrfToken, name="aimmo/csrf_token"),
-    url(r"^api/code/(?P<id>[0-9]+)/$", views.code, name="aimmo/code"),
+    url(r"^api/csrf_token", views.csrfToken, name="kurono/csrf_token"),
+    url(r"^api/code/(?P<id>[0-9]+)/$", views.code, name="kurono/code"),
     url(
         r"^api/games/(?P<id>[0-9]+)/users/$",
         views.GameUsersView.as_view(),
-        name="aimmo/game_user_details",
+        name="kurono/game_user_details",
     ),
     url(
         r"^api/games/(?P<id>[0-9]+)/token/$",
         views.GameTokenView.as_view(),
-        name="aimmo/game_token",
+        name="kurono/game_token",
     ),
     url(
         r"^api/games/(?P<game_id>[0-9]+)/connection_parameters/$",
         views.connection_parameters,
-        name="aimmo/connection_parameters",
+        name="kurono/connection_parameters",
     ),
     url(
         r"^api/games/(?P<id>[0-9]+)/complete/$",
         views.mark_game_complete,
-        name="aimmo/complete_game",
+        name="kurono/complete_game",
     ),
     url(
         r"^api/games/(?P<game_id>[0-9]+)/current_avatar/$",
         views.current_avatar_in_game,
-        name="aimmo/current_avatar_in_game",
+        name="kurono/current_avatar_in_game",
     ),
     url(r"^api/", include(router.urls)),
     url(
-        r"^jsreverse/$", urls_js, name="aimmo/js_reverse"
+        r"^jsreverse/$", urls_js, name="kurono/js_reverse"
     ),  # TODO: Pull request to make django_js_reverse.urls
-    url(r"^games/new/$", views.add_game, name="aimmo/new_game"),
+    url(r"^games/new/$", views.add_game, name="kurono/new_game"),
     # TODO: this is a quickfix for redirecting for the Unity resources
     url(
         r"^watch/(?P<id>[0-9]+)/(?P<resource>.[0-9A-Za-z/.]+)$",
         RedirectView.as_view(url="/static/unity/%(resource)s", permanent=False),
+    ),
+    url(
+        r"^favicon/.ico$",
+        RedirectView.as_view(url="/static/favicon.ico", permanent=True),
     ),
 ]

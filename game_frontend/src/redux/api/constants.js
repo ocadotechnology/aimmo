@@ -1,1 +1,1 @@
-export const API_PATH = '/aimmo/api/'
+export const API_PATH = '/kurono/api/'

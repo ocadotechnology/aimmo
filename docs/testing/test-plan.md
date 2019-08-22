@@ -17,12 +17,12 @@
 **Prior to playing the game:**
 * The level exists already. Check it by navigating to the Watch->Level.
 * If required, you can login using your details (admin:admin default).
-* You are at the correct URL (/aimmo/watch_level/1/).
+* You are at the correct URL (/kurono/watch_level/1/).
 * It consists of **_five_** square boxes lined horizontally. The leftmost is at (-2,0), the right most at (2,0).
 * There is no player on the screen. Nothing is happening.
 
 **Programming the game:**
-* Program the game (Program-> Level1) and end up in the correct URL (aimmo/program_level/1/).
+* Program the game (Program-> Level1) and end up in the correct URL (kurono/program_level/1/).
 * Ensure the code will be able to move the character to the right 4 times. Default code will suffice (see below to copy). 
 * Click the save button. Now go to Watch->Level1 via the menu (or press the Watch hotlink above the editor).
 * See the character moving. It should stop when it gets to red box at (2,0). 
@@ -43,7 +43,7 @@ class Avatar(object):
 ### Check the following:
 **Prior to playing the game:**
 * Ensure there are no custom games running (Watch menu).
-* Go to Program->Create a new game (/aimmo/games/new). Select any name, select yourself in the 'Can Play' menu.
+* Go to Program->Create a new game (/kurono/games/new). Select any name, select yourself in the 'Can Play' menu.
 * Ensure 'Generator' is set to "Open World". Save, watch.
 * A grid should show with an avatar moving around randomly.
 * The score location should move randomly from time to time (depending on settings).

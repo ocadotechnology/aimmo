@@ -16,4 +16,4 @@ class TestMinikubeRunner(TestCase):
         """
         created_yaml = create_creator_yaml()
         self.assertEqual(created_yaml['spec']['template']['spec']['containers'][0]['env'][1]['value'],
-                         'http://127.0.0.1:8000/aimmo/api/games/')
+                         'http://127.0.0.1:8000/kurono/api/games/')

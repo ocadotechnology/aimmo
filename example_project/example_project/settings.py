@@ -61,7 +61,7 @@ STATIC_ROOT = os.path.join(os.path.dirname(__file__), "static")
 STATIC_URL = "/static/"
 SECRET_KEY = "not-a-secret"
 
-ROOT_URLCONF = "django_autoconfig.autourlconf"
+ROOT_URLCONF = "example_project.urls"
 
 WSGI_APPLICATION = "example_project.wsgi.application"
 
@@ -81,9 +81,9 @@ LOGGING = {
     "loggers": {"views": {"handlers": ["console"], "level": "DEBUG"}},
 }
 
-LOGIN_URL = "/aimmo/accounts/login/"
+LOGIN_URL = "/kurono/accounts/login/"
 
-LOGIN_REDIRECT_URL = "/aimmo/"
+LOGIN_REDIRECT_URL = "/kurono/"
 
 MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
