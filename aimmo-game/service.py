@@ -23,7 +23,7 @@ LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 django_api_url = os.environ.get(
-    "GAME_API_URL", "http://localhost:8000/aimmo/api/games/"
+    "GAME_API_URL", "http://localhost:8000/kurono/api/games/"
 )
 
 communicator = DjangoCommunicator(
