@@ -14,13 +14,15 @@ git:
   depth: 9999999 # Building untagged builds needs enough depth to get the latest tag
 stages:
   - name: test
-    if: NOT tag IS present
+    if: tag IS blank
   - name: release
-    if: branch = master OR branch = development
+    if: tag IS blank AND ((branch IN (master, development) AND NOT type IN (pull_request)) OR env(DEPLOY_TO_DEV) = true)
   - name: deploy
     if: tag IS present
-  - name: Notify Semaphore
-    if: tag IS present
+  - name: Notify Semaphore (Staging)
+    if: tag IS present AND env(DEPLOY_TO_DEV) = false
+  - name: Notify Semaphore (Dev)
+    if: tag IS present AND env(DEPLOY_TO_DEV) = true
 jobs:
   include:
     - stage: Test
@@ -107,8 +109,21 @@ jobs:
         - bash <(curl -s https://codecov.io/bash)
     - stage: Release
       script:
-        - bash tag_release_on_travis.sh
+        - git config --global user.name "semantic-release (via TravisCI)"
+        - git config --global user.email "semantic-release@travis"
+        - pip install git+https://github.com/ocadotechnology/python-semantic-release.git@add_beta_releases
+        - semantic-release publish --branch=${TRAVIS_BRANCH} --build=${TRAVIS_BUILD_NUMBER} --dev=${DEPLOY_TO_DEV}
       deploy:
+        - provider: releases
+          api_key:
+            secure: "dZxjTMW1+eAIw4gv71PKpaaL62BNcb2uWRf4ft1mVRRwsdNy5M1Vxv3YvOQGEYUO3TAo2xuvj/ifc1Yp6F1nCU7fLQaHllUljzU/Wa7gebv434TXMKfCbYLCFAylALF1Up0xhdaJaIEpEK9V4VqGeqhWcvAxi+fuFeK7CNgkvgxMINGAF96m3uU5CRKk4oU45ETifvFoWE8Kea73H32uisShqiECIsririOWZLKnm2YeGn3z26kKNjkn8wK4upWESCZUfP46FjFzV3EtT8RE51g6LFToaIls7fs99yLCwkX4xWBRdI0b6c5JvuaP4mukaXc6Ud9nREVmuOVsJ8mJbtnfl9hvfCdnzSpWR4x1ep6EinmPEX4Z1eBoeYXMkU31eOgdzXn+VpyT48W1rcrZxNCGe9Ln09OLlgNx5aYMDNAKrXiYkD55aMLFM7JLmX40DSez7EP8FFM5xALtNQnwun4ziGomf8Hl8GroYC+xNYIDMSpXVQBEc8s04dw3267tIPbA1p63CAHL/edAzn6bTtmvjLOI49o1fMLHls9ECW4/dKhalsPuZ4GUwqwIbf0WvTzNyvKjx65O+stDkxisDbVWVbXXNzGmbvvKJBo8SRymTM/THpavi+keps3kjUfmfmhImayG5fj5Z9G4r3KM77K+siQTvjjjg0t2hbLvyWI="
+          prerelease: true
+          target_commitish: ${TRAVIS_BRANCH}
+          skip_cleanup: true
+          on:
+            repo: ocadotechnology/aimmo
+            branch: ${TRAVIS_BRANCH}
+            condition: ${DEPLOY_TO_DEV} = true
         - provider: releases
           api_key:
             secure: "dZxjTMW1+eAIw4gv71PKpaaL62BNcb2uWRf4ft1mVRRwsdNy5M1Vxv3YvOQGEYUO3TAo2xuvj/ifc1Yp6F1nCU7fLQaHllUljzU/Wa7gebv434TXMKfCbYLCFAylALF1Up0xhdaJaIEpEK9V4VqGeqhWcvAxi+fuFeK7CNgkvgxMINGAF96m3uU5CRKk4oU45ETifvFoWE8Kea73H32uisShqiECIsririOWZLKnm2YeGn3z26kKNjkn8wK4upWESCZUfP46FjFzV3EtT8RE51g6LFToaIls7fs99yLCwkX4xWBRdI0b6c5JvuaP4mukaXc6Ud9nREVmuOVsJ8mJbtnfl9hvfCdnzSpWR4x1ep6EinmPEX4Z1eBoeYXMkU31eOgdzXn+VpyT48W1rcrZxNCGe9Ln09OLlgNx5aYMDNAKrXiYkD55aMLFM7JLmX40DSez7EP8FFM5xALtNQnwun4ziGomf8Hl8GroYC+xNYIDMSpXVQBEc8s04dw3267tIPbA1p63CAHL/edAzn6bTtmvjLOI49o1fMLHls9ECW4/dKhalsPuZ4GUwqwIbf0WvTzNyvKjx65O+stDkxisDbVWVbXXNzGmbvvKJBo8SRymTM/THpavi+keps3kjUfmfmhImayG5fj5Z9G4r3KM77K+siQTvjjjg0t2hbLvyWI="
@@ -128,7 +143,7 @@ jobs:
             repo: ocadotechnology/aimmo
             branch: master
     - stage: Deploy
-      name: Bundle frontend
+      name: "Bundle frontend"
       env:
         - NODE_ENV=production
       before_install:
@@ -142,16 +157,6 @@ jobs:
         - pushd game_frontend
         - node djangoBundler.js
         - popd
-      deploy:
-        - provider: pypi
-          skip_cleanup: true
-          user: ocadotechnology
-          password:
-            secure: "dX2M4PpyGwa1bjpJN/Wk3EORWRXuTS14ZQEQ7Ndqk/WnOZlNqD5t/WiITTdqBWoR/ScvQiGBzR/VdRLZllkGrhupoMrtkfCldaxEI3/wbbwW9CiLuwyR/V5xgVj9TA+PtXErjgAqG9KRtyaBEOaC20t13Uc6vuIc9e6aXkzhQ9hf3vVMlnABOZP3f/2R3+sJQMLylGPCz/6BAs2U+nyxGJCpfq0aJK7H2aVPUKtM1/nscuhvsrl8yU+RWYS3idgfXDuPlwqKvRL9xbEm1DC3ByCFwwzAGCPlUtzYlx6Ttrg8Jv6S1cgsjxijzV5QqU+k1JhmY3jDqqmMROFAaY3wJ6038xUbn4zlgvXgtCayiebJukSMR7tJoVrs6ao26QPsbLNZdReDzSXJR05pgB4I8gGTlIKeZE8zOS75hkv0CdMjmIsQhTeMKqQcATuN8QszYRP4uO7vG+3I7hNSK8HcqxHtNLEDq2/QKDAVBve0R5CeEvLMnSxj7UydO+HuJUgickjHuJUmLZ+7iR9i1p6G0MUpKq/n8izSponvShu0lDshrNWJ9PYuhRD4Yvnp4/FCSxdY0+u7pHJsbluGcIvaAlwoa5O01Seu2pVpox8hVTIhn9LuR0wP7Ed4Nxper7cMNgugqb8J9BybSlMjRlBYmI7FQePCdsu1ETNI9JDHAug="
-          distributions: "bdist_wheel sdist"
-          on:
-            repo: ocadotechnology/aimmo
-            tags: true
     - name: "Build and push game image"
       script:
         - docker build --no-cache -t ocadotechnology/aimmo-game:${TRAVIS_TAG} aimmo-game/
@@ -167,7 +172,9 @@ jobs:
         - docker build --no-cache -t ocadotechnology/aimmo-game-worker:${TRAVIS_TAG} aimmo-game-worker/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
         - docker push ocadotechnology/aimmo-game-worker:${TRAVIS_TAG}
-    - stage: Notify Semaphore
+    - stage: Notify Semaphore (Staging)
       script:
         - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}"
-
+    - stage: Notify Semaphore (Dev)
+      script:
+        - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/dev/build?auth_token=${SEMAPHORE_API_AUTH}"
