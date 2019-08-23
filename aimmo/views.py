@@ -19,7 +19,7 @@ from rest_framework.views import APIView
 
 import forms
 import game_renderer
-from app_settings import get_users_for_new_game, preview_user_required
+from app_settings import get_users_for_new_game
 from models import Avatar, Game, LevelAttempt
 from permissions import (
     CanDeleteGameOrReadOnly,
@@ -41,7 +41,6 @@ def _create_response(status, message):
 
 
 @login_required
-@preview_user_required
 def code(request, id):
     if not request.user:
         return HttpResponseForbidden()
@@ -215,7 +214,6 @@ def _add_and_return_level(num, user):
 
 
 @login_required
-@preview_user_required
 def add_game(request):
     playable_games = request.user.playable_games.all()
 

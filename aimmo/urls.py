@@ -6,7 +6,6 @@ from django_js_reverse.views import urls_js
 from rest_framework import routers
 
 from aimmo import views
-from app_settings import preview_user_required
 
 HOMEPAGE_REGEX = r"^kurono/"
 
@@ -19,9 +18,7 @@ urlpatterns = [
     url(
         r"^$",
         login_required(
-            preview_user_required(
-                TemplateView.as_view(template_name="players/home.html")
-            )
+            TemplateView.as_view(template_name="players/home.html")
         ),
         name="kurono/home",
     ),
@@ -39,7 +36,7 @@ urlpatterns = [
     ),
     url(
         r"^play/(?P<id>[0-9]+)/$",
-        login_required(preview_user_required(views.watch_game)),
+        login_required(views.watch_game),
         name="kurono/play",
     ),
     url(
