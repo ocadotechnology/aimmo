@@ -4,21 +4,39 @@ exports[`<ConsoleBar /> renders correctly 1`] = `
 <Styled(WithStyles(ForwardRef(Toolbar)))
   variant="dense"
 >
-  <Styled(ConsoleIcon)
-    color="disabled"
-  />
-  <WithStyles(ForwardRef(Typography))
-    color="textSecondary"
-    variant="body1"
+  <styled.div>
+    <Styled(ConsoleIcon)
+      color="disabled"
+    />
+    <WithStyles(ForwardRef(Typography))
+      color="textSecondary"
+      variant="body1"
+    >
+      Console Log
+    </WithStyles(ForwardRef(Typography))>
+  </styled.div>
+  <WithStyles(ForwardRef(IconButton))
+    padding={4}
   >
-    Console Log
-  </WithStyles(ForwardRef(Typography))>
+    <Styled(ClearIcon)
+      color="disabled"
+      viewBox="0 0 14 24"
+    />
+  </WithStyles(ForwardRef(IconButton))>
 </Styled(WithStyles(ForwardRef(Toolbar)))>
 `;
 
 exports[`<StyledConsoleBar /> renders correctly 1`] = `
 .c0 {
   background-color: #616161;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
 }
 
 <WithStyles(ForwardRef(Toolbar))
