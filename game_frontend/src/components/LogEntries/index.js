@@ -34,12 +34,6 @@ export default class LogEntries extends Component {
     }
   }
 
-  clearLogs () {
-    this.setState({ renderChild: false })
-    this.props.logs = []
-    this.setState({ renderChild: true })
-  }
-
   render () {
     return (
       <StyledLogEntries>
