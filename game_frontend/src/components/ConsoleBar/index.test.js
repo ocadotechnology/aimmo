@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import React from 'react'
-import ConsoleBar, { StyledConsoleBar, StyledConsoleIcon } from 'components/ConsoleBar'
+import ConsoleBar, { StyledConsoleBar, StyledConsoleIcon, StyledConsoleTitle, StyledClearIcon } from 'components/ConsoleBar'
 import createShallowWithTheme from 'testHelpers/createShallow'
 
 describe('<ConsoleBar />', () => {
@@ -19,9 +19,25 @@ describe('<StyledConsoleBar />', () => {
   })
 })
 
+describe('<StyledConsoleTitle />', () => {
+  it('renders correctly', () => {
+    const tree = createShallowWithTheme(<StyledConsoleTitle />)
+
+    expect(tree).toMatchSnapshot()
+  })
+})
+
 describe('<StyledConsoleIcon />', () => {
   it('renders correctly', () => {
     const tree = createShallowWithTheme(<StyledConsoleIcon />)
+
+    expect(tree).toMatchSnapshot()
+  })
+})
+
+describe('<StyledClearIcon />', () => {
+  it('renders correctly', () => {
+    const tree = createShallowWithTheme(<StyledClearIcon />)
 
     expect(tree).toMatchSnapshot()
   })
