@@ -68,7 +68,7 @@ export class IDEConsole extends Component {
   render () {
     return (
       <IDEConsoleSection>
-        <ConsoleBar />
+        <ConsoleBar clearLogHandler={() => console.log('AYOOOO')} />
         <StyledConsole innerRef={ref => { this.consoleRef = ref }}>
           <LogEntries
             logs={this.props.logs}
