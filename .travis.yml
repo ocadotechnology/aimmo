@@ -152,6 +152,7 @@ jobs:
       install:
         - pushd game_frontend
         - yarn
+        - node djangoBundler.js
         - popd
       script:
         - pushd game_frontend
