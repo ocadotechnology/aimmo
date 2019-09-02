@@ -155,7 +155,7 @@ jobs:
             repo: ocadotechnology/aimmo
             branch: master
     - stage: Deploy
-    - name: "Build and push game image"
+      name: "Build and push game image"
       script:
         - docker build --no-cache -t ocadotechnology/aimmo-game:${TRAVIS_TAG:1} aimmo-game/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
