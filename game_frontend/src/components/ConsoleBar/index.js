@@ -25,7 +25,17 @@ export const StyledClearIcon = styled(ClearIcon)`
   text-align: center;
 `
 
+export const StyledIconButton = styled(IconButton)`
+  && {
+    padding: 6px;
+  }
+`
+
 export default class ConsoleBar extends Component {
+  static propTypes = {
+    clearLogHandler: PropTypes.func
+
+  }
   render () {
     return (
       <StyledConsoleBar variant='dense' >
@@ -37,14 +47,10 @@ export default class ConsoleBar extends Component {
           Console Log
           </Typography>
         </StyledConsoleTitle>
-        <IconButton padding={4} onClick={this.props.clearLogHandler}>
+        <StyledIconButton onClick={this.props.clearLogHandler}>
           <StyledClearIcon color='disabled' viewBox='0 0 14 24' />
-        </IconButton>
+        </StyledIconButton>
       </StyledConsoleBar>
     )
   }
-}
-
-ConsoleBar.propTypes = {
-  clearLogHandler: PropTypes.func
 }
