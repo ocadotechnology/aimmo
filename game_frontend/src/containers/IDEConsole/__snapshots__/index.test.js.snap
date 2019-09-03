@@ -2,9 +2,7 @@
 
 exports[`<IDEConsole /> renders correctly 1`] = `
 <styled.section>
-  <ConsoleBar
-    clearLogHandler={[Function]}
-  />
+  <ConsoleBar />
   <styled.div
     innerRef={[Function]}
   >
