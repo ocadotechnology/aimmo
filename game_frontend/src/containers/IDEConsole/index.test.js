@@ -11,15 +11,6 @@ describe('<IDEConsole />', () => {
     )
     expect(tree).toMatchSnapshot()
   })
-
-  it('clears logs properly when clearLogs is called', () => {
-    const tree = createShallowWithTheme(
-      <IDEConsole logs={[{ timestamp: '1', log: 'hello' }, { timestamp: '2', log: 'bye' }]} />,
-      'dark'
-    )
-
-    expect(tree.props.logs.length).toBe(0)
-  })
 })
 
 describe('<StyledConsole />', () => {

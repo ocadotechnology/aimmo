@@ -7,7 +7,7 @@ const socketConsoleLogReceived = log => ({
   }
 })
 
-const clearConsoleLog = logs => ({
+const clearConsoleLog = () => ({
   type: types.CLEAR_CONSOLE_LOG
 })
 
