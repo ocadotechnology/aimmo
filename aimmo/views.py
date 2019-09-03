@@ -2,6 +2,7 @@ import cPickle as pickle
 import json
 import logging
 import os
+import time
 from exceptions import UserCannotPlayGameException
 
 from django.contrib.auth.decorators import login_required
@@ -40,6 +41,16 @@ def _create_response(status, message):
     return JsonResponse(response)
 
 
+def _create_avatar_for_user(user, game_id):
+    initial_code_file_name = os.path.join(
+        os.path.abspath(os.path.dirname(__file__)), "avatar_examples/simple_avatar.py"
+    )
+    with open(initial_code_file_name) as initial_code_file:
+        initial_code = initial_code_file.read()
+        avatar = Avatar.objects.create(owner=user, code=initial_code, game_id=game_id)
+    return avatar
+
+
 @login_required
 def code(request, id):
     if not request.user:
@@ -50,15 +61,7 @@ def code(request, id):
     try:
         avatar = game.avatar_set.get(owner=request.user)
     except Avatar.DoesNotExist:
-        initial_code_file_name = os.path.join(
-            os.path.abspath(os.path.dirname(__file__)),
-            "avatar_examples/simple_avatar.py",
-        )
-        with open(initial_code_file_name) as initial_code_file:
-            initial_code = initial_code_file.read()
-        avatar = Avatar.objects.create(
-            owner=request.user, code=initial_code, game_id=id
-        )
+        avatar = _create_avatar_for_user(request.user, id)
     if request.method == "POST":
         avatar.code = request.POST["code"]
         avatar.save()
@@ -228,6 +231,7 @@ def add_game(request):
             users = get_users_for_new_game(request)
             if users is not None:
                 game.can_play.add(*users)
+            _create_avatar_for_user(request.user, game.id)
             return redirect("kurono/play", id=game.id)
     else:
         form = forms.AddGameForm(playable_games)
