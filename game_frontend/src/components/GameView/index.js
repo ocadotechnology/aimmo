@@ -25,7 +25,6 @@ export default class GameView extends Component {
 
   constructor (props) {
     super(props)
-    this.props.connectToGame()
     this.EnvironmentClass = this.props.EnvironmentClass ?? StandardEnvironment
   }
 
@@ -37,6 +36,8 @@ export default class GameView extends Component {
     this.entities = new EntityManager(this.environment)
 
     window.addEventListener('resize', this.environmentManager.resizeBabylonWindow)
+
+    this.props.connectToGame()
   }
 
   componentDidUpdate (prevProps) {
