@@ -25,23 +25,26 @@ export default class GameView extends Component {
 
   constructor (props) {
     super(props)
-    this.props.connectToGame()
     this.EnvironmentClass = this.props.EnvironmentClass ?? StandardEnvironment
   }
 
   componentDidMount () {
-    this.environment = new this.EnvironmentClass(this.canvas)
-
-    this.sceneRenderer = new SceneRenderer(this.environment)
-    this.environmentManager = new EnvironmentManager(this.environment)
-    this.entities = new EntityManager(this.environment)
-
-    window.addEventListener('resize', this.environmentManager.resizeBabylonWindow)
+    this.setupGameEngine()
+    this.props.connectToGame()
   }
 
   componentDidUpdate (prevProps) {
     this.updateGameState(prevProps)
     this.updateCurrentAvatarID(prevProps)
+  }
+
+  setupGameEngine () {
+    this.environment = new this.EnvironmentClass(this.canvas)
+    this.sceneRenderer = new SceneRenderer(this.environment)
+    this.environmentManager = new EnvironmentManager(this.environment)
+    this.entities = new EntityManager(this.environment)
+
+    window.addEventListener('resize', this.environmentManager.resizeBabylonWindow)
   }
 
   updateGameState (prevProps) {

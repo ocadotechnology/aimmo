@@ -21,6 +21,7 @@ DEFAULT_CODE = """def next_turn(world_state, avatar_state):
     return MoveAction(direction.NORTH)
 """
 
+
 class TestViews(TestCase):
     CODE = "class Avatar: pass"
 
@@ -201,7 +202,7 @@ class TestViews(TestCase):
 
     def test_stop_game(self):
         game = models.Game.objects.get(id=1)
-        game.auth_token = 'tokenso lorenzo'
+        game.auth_token = "tokenso lorenzo"
         game.save()
         c = Client()
 
@@ -217,7 +218,7 @@ class TestViews(TestCase):
 
     def test_stop_game_no_token(self):
         game = models.Game.objects.get(id=1)
-        game.auth_token = 'tokenso lorenzo'
+        game.auth_token = "tokenso lorenzo"
         game.save()
         c = Client()
 
@@ -229,7 +230,6 @@ class TestViews(TestCase):
         game = models.Game.objects.get(id=1)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(game.status, models.Game.RUNNING)
-    
 
     def test_current_avatar_api_for_non_existent_game(self):
         response = self._go_to_page("kurono/current_avatar_in_game", "game_id", 1)
@@ -452,3 +452,17 @@ class TestViews(TestCase):
 
         response = client.get(reverse("game-detail", kwargs={"pk": self.game.id}))
         self.assertEquals(response.status_code, 200)
+
+    def test_add_game(self):
+        client = self.login()
+
+        response = client.post(reverse("kurono/new_game"), data={"name": "test"})
+        self.assertEquals(response.status_code, 302)
+
+    def test_adding_a_game_creates_an_avatar(self):
+        client = self.login()
+        response = client.post(reverse("kurono/new_game"), data={"name": "test"})
+        game = models.Game.objects.get(pk=2)
+        avatar = game.avatar_set.get(owner=client.session["_auth_user_id"])
+        self.assertIsNotNone(avatar)
+
