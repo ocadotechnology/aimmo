@@ -1,0 +1,19 @@
+{% load static %}
+<!doctype html>
+
+<head>
+  <title>Kurono</title>
+  <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+  <style type="text/css">
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+<script src="{% static '{{ reactUrl }}' %}"></script>

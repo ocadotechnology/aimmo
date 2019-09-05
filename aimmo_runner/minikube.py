@@ -73,7 +73,7 @@ def create_creator_yaml():
         content = yaml.safe_load(
             orig_file.read()
             .replace("latest", "test")
-            .replace("REPLACE_ME", "http://%s:8000/aimmo/api/games/" % get_ip())
+            .replace("REPLACE_ME", "http://%s:8000/kurono/api/games/" % get_ip())
         )
     return content
 

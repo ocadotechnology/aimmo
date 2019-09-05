@@ -1,6 +1,6 @@
 # Architecture
 
-This section describes the whole game architecture and how things are structured. AI:MMO consists of four main components, split into their own directories.
+This section describes the whole game architecture and how things are structured. Kurono consists of four main components, split into their own directories.
 
 ---
 The following UML diagram is intended as a rough overview of the project:
@@ -10,7 +10,7 @@ The following UML diagram is intended as a rough overview of the project:
 
 [The UI (`aimmo` directory)](ui/README.md) 
 
-A Django app used for the front-end and database interaction. There are static Unity build files to render the game in browser.
+A Django app used for the front-end and database interaction. 
 
 [Games (`aimmo-game` directory)](games/README.md)
 

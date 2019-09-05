@@ -6,26 +6,25 @@ from exceptions import UserCannotPlayGameException
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
+from django.http import (Http404, HttpResponse, HttpResponseForbidden,
+                         JsonResponse)
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
 from rest_framework import mixins, permissions, status, viewsets
-from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.authentication import (BasicAuthentication,
+                                           SessionAuthentication)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 import forms
 import game_renderer
-from app_settings import get_users_for_new_game, preview_user_required
+from app_settings import get_users_for_new_game
 from models import Avatar, Game, LevelAttempt
-from permissions import (
-    CanDeleteGameOrReadOnly,
-    CsrfExemptSessionAuthentication,
-    GameHasToken,
-)
+from permissions import (CanDeleteGameOrReadOnly,
+                         CsrfExemptSessionAuthentication, GameHasToken)
 from serializers import GameSerializer
 
 LOGGER = logging.getLogger(__name__)
@@ -40,8 +39,17 @@ def _create_response(status, message):
     return JsonResponse(response)
 
 
+def _create_avatar_for_user(user, game_id):
+    initial_code_file_name = os.path.join(
+        os.path.abspath(os.path.dirname(__file__)), "avatar_examples/simple_avatar.py"
+    )
+    with open(initial_code_file_name) as initial_code_file:
+        initial_code = initial_code_file.read()
+        avatar = Avatar.objects.create(owner=user, code=initial_code, game_id=game_id)
+    return avatar
+
+
 @login_required
-@preview_user_required
 def code(request, id):
     if not request.user:
         return HttpResponseForbidden()
@@ -51,15 +59,7 @@ def code(request, id):
     try:
         avatar = game.avatar_set.get(owner=request.user)
     except Avatar.DoesNotExist:
-        initial_code_file_name = os.path.join(
-            os.path.abspath(os.path.dirname(__file__)),
-            "avatar_examples/simple_avatar.py",
-        )
-        with open(initial_code_file_name) as initial_code_file:
-            initial_code = initial_code_file.read()
-        avatar = Avatar.objects.create(
-            owner=request.user, code=initial_code, game_id=id
-        )
+        avatar = _create_avatar_for_user(request.user, id)
     if request.method == "POST":
         avatar.code = request.POST["code"]
         avatar.save()
@@ -215,7 +215,6 @@ def _add_and_return_level(num, user):
 
 
 @login_required
-@preview_user_required
 def add_game(request):
     playable_games = request.user.playable_games.all()
 
@@ -230,7 +229,8 @@ def add_game(request):
             users = get_users_for_new_game(request)
             if users is not None:
                 game.can_play.add(*users)
-            return redirect("aimmo/play", id=game.id)
+            _create_avatar_for_user(request.user, game.id)
+            return redirect("kurono/play", id=game.id)
     else:
         form = forms.AddGameForm(playable_games)
     return render(request, "players/add_game.html", {"form": form})

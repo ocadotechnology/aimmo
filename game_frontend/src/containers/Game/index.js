@@ -36,7 +36,8 @@ export class Game extends Component {
       <Fragment>
         <GameView
           connectToGame={this.props.connectToGame}
-          gameDataLoaded={this.props.gameDataLoaded}
+          gameState={this.props.gameState}
+          currentAvatarID={this.props.currentAvatarID}
         />
         <Snackbar
           type='success'
@@ -59,7 +60,8 @@ const mapDispatchToProps = {
 const mapStateToProps = state => ({
   showSnackbar: state.game.showSnackbar,
   snackbarMessage: state.game.snackbarMessage,
-  gameDataLoaded: state.game.gameDataLoaded
+  gameState: state.game.gameState,
+  currentAvatarID: state.game.connectionParameters.currentAvatarID
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game)

@@ -21,6 +21,7 @@ DEFAULT_CODE = """def next_turn(world_state, avatar_state):
     return MoveAction(direction.NORTH)
 """
 
+
 class TestViews(TestCase):
     CODE = "class Avatar: pass"
 
@@ -68,7 +69,7 @@ class TestViews(TestCase):
 
     def test_add_new_code(self):
         c = self.login()
-        response = c.post(reverse("aimmo/code", kwargs={"id": 1}), {"code": self.CODE})
+        response = c.post(reverse("kurono/code", kwargs={"id": 1}), {"code": self.CODE})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             models.Avatar.objects.get(owner__username="test").code, self.CODE
@@ -77,7 +78,7 @@ class TestViews(TestCase):
     def test_update_code(self):
         c = self.login()
         models.Avatar(owner=self.user, code="test", game=self.game).save()
-        response = c.post(reverse("aimmo/code", kwargs={"id": 1}), {"code": self.CODE})
+        response = c.post(reverse("kurono/code", kwargs={"id": 1}), {"code": self.CODE})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             models.Avatar.objects.get(owner__username="test").code, self.CODE
@@ -85,26 +86,26 @@ class TestViews(TestCase):
 
     def test_code_for_non_existant_game(self):
         c = self.login()
-        response = c.post(reverse("aimmo/code", kwargs={"id": 2}), {"code": self.CODE})
+        response = c.post(reverse("kurono/code", kwargs={"id": 2}), {"code": self.CODE})
         self.assertEqual(response.status_code, 404)
 
     def test_code_for_non_authed_user(self):
         self.game.public = False
         self.game.save()
         c = self.login()
-        response = c.post(reverse("aimmo/code", kwargs={"id": 1}), {"code": self.CODE})
+        response = c.post(reverse("kurono/code", kwargs={"id": 1}), {"code": self.CODE})
         self.assertEqual(response.status_code, 404)
 
     def test_default_code(self):
         c = self.login()
-        response = c.get(reverse("aimmo/code", kwargs={"id": 1}))
+        response = c.get(reverse("kurono/code", kwargs={"id": 1}))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(DEFAULT_CODE, json.loads(response.content)["code"])
 
     def test_retrieve_code(self):
         models.Avatar(owner=self.user, code=self.CODE, game=self.game).save()
         c = self.login()
-        response = c.get(reverse("aimmo/code", kwargs={"id": 1}))
+        response = c.get(reverse("kurono/code", kwargs={"id": 1}))
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(response.content, {"code": self.CODE})
 
@@ -118,7 +119,7 @@ class TestViews(TestCase):
 
     def test_play(self):
         c = self.login()
-        response = c.get(reverse("aimmo/play", kwargs={"id": 1}))
+        response = c.get(reverse("kurono/play", kwargs={"id": 1}))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["current_user_player_key"], self.user.pk)
         self.assertEqual(response.context["game_url_base"], "base 1")
@@ -126,7 +127,7 @@ class TestViews(TestCase):
 
     def test_play_for_non_existent_game(self):
         c = self.login()
-        response = c.get(reverse("aimmo/play", kwargs={"id": 2}))
+        response = c.get(reverse("kurono/play", kwargs={"id": 2}))
         self.assertEqual(response.status_code, 404)
 
     def _run_test_for_unauthorised_user(self, link, kwarg_name, status_code):
@@ -136,7 +137,7 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, status_code)
 
     def test_play_for_unauthorised_user(self):
-        self._run_test_for_unauthorised_user("aimmo/play", "id", 404)
+        self._run_test_for_unauthorised_user("kurono/play", "id", 404)
 
     def test_play_inactive_level(self):
         c = self.login()
@@ -145,7 +146,7 @@ class TestViews(TestCase):
             self.skipTest("Completed game is active")
         self.game.static_data = '{"test": 1}'
         self.game.save()
-        response = c.get(reverse("aimmo/play", kwargs={"id": 1}))
+        response = c.get(reverse("kurono/play", kwargs={"id": 1}))
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context["active"])
         self.assertEqual(response.context["static_data"], '{"test": 1}')
@@ -159,19 +160,19 @@ class TestViews(TestCase):
         models.Avatar(owner=user2, code="test2", pk=2, game=self.game).save()
         models.Avatar(owner=user3, code="test3", pk=3, game=self.game).save()
         c = Client()
-        response = c.get(reverse("aimmo/game_user_details", kwargs={"id": 1}))
+        response = c.get(reverse("kurono/game_user_details", kwargs={"id": 1}))
         self.assertJSONEqual(response.content, self.EXPECTED_GAMES)
 
     def test_games_api_for_non_existent_game(self):
-        response = self._go_to_page("aimmo/game_user_details", "id", 5)
+        response = self._go_to_page("kurono/game_user_details", "id", 5)
         self.assertEqual(response.status_code, 404)
 
     def _run_mark_complete_test(self, request_method, game_id, success_expected):
         c = Client()
         if request_method == "POST":
-            response = c.post(reverse("aimmo/complete_game", kwargs={"id": game_id}))
+            response = c.post(reverse("kurono/complete_game", kwargs={"id": game_id}))
         else:
-            response = c.get(reverse("aimmo/complete_game", kwargs={"id": game_id}))
+            response = c.get(reverse("kurono/complete_game", kwargs={"id": game_id}))
         self.assertEqual(response.status_code == 200, success_expected)
         self.assertEqual(models.Game.objects.get(id=1).completed, success_expected)
 
@@ -186,14 +187,14 @@ class TestViews(TestCase):
 
     def test_mark_complete_has_no_csrf_check(self):
         c = Client(enforce_csrf_checks=True)
-        response = c.post(reverse("aimmo/complete_game", kwargs={"id": 1}))
+        response = c.post(reverse("kurono/complete_game", kwargs={"id": 1}))
         self.assertEqual(response.status_code, 200)
         self.assertTrue(models.Game.objects.get(id=1).completed)
 
     def test_mark_complete_with_data(self):
         c = Client()
         c.post(
-            reverse("aimmo/complete_game", kwargs={"id": 1}),
+            reverse("kurono/complete_game", kwargs={"id": 1}),
             "static",
             content_type="application/json",
         )
@@ -201,7 +202,7 @@ class TestViews(TestCase):
 
     def test_stop_game(self):
         game = models.Game.objects.get(id=1)
-        game.auth_token = 'tokenso lorenzo'
+        game.auth_token = "tokenso lorenzo"
         game.save()
         c = Client()
 
@@ -217,7 +218,7 @@ class TestViews(TestCase):
 
     def test_stop_game_no_token(self):
         game = models.Game.objects.get(id=1)
-        game.auth_token = 'tokenso lorenzo'
+        game.auth_token = "tokenso lorenzo"
         game.save()
         c = Client()
 
@@ -229,15 +230,14 @@ class TestViews(TestCase):
         game = models.Game.objects.get(id=1)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(game.status, models.Game.RUNNING)
-    
 
     def test_current_avatar_api_for_non_existent_game(self):
-        response = self._go_to_page("aimmo/current_avatar_in_game", "game_id", 1)
+        response = self._go_to_page("kurono/current_avatar_in_game", "game_id", 1)
         self.assertEqual(response.status_code, 404)
 
     def test_current_avatar_api_for_unauthorised_games(self):
         self._run_test_for_unauthorised_user(
-            "aimmo/current_avatar_in_game", "game_id", 401
+            "kurono/current_avatar_in_game", "game_id", 401
         )
 
     def test_current_avatar_api_for_two_users(self):
@@ -260,10 +260,10 @@ class TestViews(TestCase):
         self.game.save()
 
         first_response = client_one.get(
-            reverse("aimmo/current_avatar_in_game", kwargs={"game_id": 1})
+            reverse("kurono/current_avatar_in_game", kwargs={"game_id": 1})
         )
         second_response = client_two.get(
-            reverse("aimmo/current_avatar_in_game", kwargs={"game_id": 1})
+            reverse("kurono/current_avatar_in_game", kwargs={"game_id": 1})
         )
 
         # Status code starts with 2, success response can be different than 200.
@@ -287,7 +287,7 @@ class TestViews(TestCase):
         self.game.save()
 
         first_response = client_one.get(
-            reverse("aimmo/current_avatar_in_game", kwargs={"game_id": 1})
+            reverse("kurono/current_avatar_in_game", kwargs={"game_id": 1})
         )
 
         self.assertEqual(first_response.status_code, 404)
@@ -306,10 +306,10 @@ class TestViews(TestCase):
         self.game.save()
 
         current_avatar_api_response = client.get(
-            reverse("aimmo/current_avatar_in_game", kwargs={"game_id": 1})
+            reverse("kurono/current_avatar_in_game", kwargs={"game_id": 1})
         )
         games_api_response = client.get(
-            reverse("aimmo/game_user_details", kwargs={"id": 1})
+            reverse("kurono/game_user_details", kwargs={"id": 1})
         )
 
         current_avatar_id = ast.literal_eval(current_avatar_api_response.content)[
@@ -328,32 +328,32 @@ class TestViews(TestCase):
         """
         token = models.Game.objects.get(id=1).auth_token
         client = Client()
-        response = client.get(reverse("aimmo/game_token", kwargs={"id": 1}))
+        response = client.get(reverse("kurono/game_token", kwargs={"id": 1}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(token, response.json()["token"])
 
         # Token starts as empty, as long as it is empty, we can make more GET requests
-        response = client.get(reverse("aimmo/game_token", kwargs={"id": 1}))
+        response = client.get(reverse("kurono/game_token", kwargs={"id": 1}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(token, response.json()["token"])
 
     def test_get_token_after_token_set(self):
         token = models.Game.objects.get(id=1).auth_token
         client = Client()
-        response = client.get(reverse("aimmo/game_token", kwargs={"id": 1}))
+        response = client.get(reverse("kurono/game_token", kwargs={"id": 1}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(token, response.json()["token"])
 
         new_token = "aaaaaaaaaaa"
         response = client.patch(
-            reverse("aimmo/game_token", kwargs={"id": 1}),
+            reverse("kurono/game_token", kwargs={"id": 1}),
             json.dumps({"token": new_token}),
             content_type="application/json",
         )
 
         # Token starts as empty, as long as it is empty, we can make more GET requests
         response = client.get(
-            reverse("aimmo/game_token", kwargs={"id": 1}), HTTP_GAME_TOKEN=new_token
+            reverse("kurono/game_token", kwargs={"id": 1}), HTTP_GAME_TOKEN=new_token
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -363,7 +363,7 @@ class TestViews(TestCase):
         """
         client = Client()
         token = models.Game.objects.get(id=1).auth_token
-        response = client.patch(reverse("aimmo/game_token", kwargs={"id": 1}))
+        response = client.patch(reverse("kurono/game_token", kwargs={"id": 1}))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_patch_token_with_incorrect_token(self):
@@ -373,7 +373,7 @@ class TestViews(TestCase):
         client = Client()
         token = models.Game.objects.get(id=1).auth_token
         response = client.patch(
-            reverse("aimmo/game_token", kwargs={"id": 1}),
+            reverse("kurono/game_token", kwargs={"id": 1}),
             {},
             content_type="application/json",
             HTTP_GAME_TOKEN="INCORRECT TOKEN",
@@ -388,7 +388,7 @@ class TestViews(TestCase):
         token = models.Game.objects.get(id=1).auth_token
         new_token = token[::-1]
         response = client.patch(
-            reverse("aimmo/game_token", kwargs={"id": 1}),
+            reverse("kurono/game_token", kwargs={"id": 1}),
             json.dumps({"token": new_token}),
             content_type="application/json",
             HTTP_GAME_TOKEN=token,
@@ -452,3 +452,17 @@ class TestViews(TestCase):
 
         response = client.get(reverse("game-detail", kwargs={"pk": self.game.id}))
         self.assertEquals(response.status_code, 200)
+
+    def test_add_game(self):
+        client = self.login()
+
+        response = client.post(reverse("kurono/new_game"), data={"name": "test"})
+        self.assertEquals(response.status_code, 302)
+
+    def test_adding_a_game_creates_an_avatar(self):
+        client = self.login()
+        response = client.post(reverse("kurono/new_game"), data={"name": "test"})
+        game = models.Game.objects.get(pk=2)
+        avatar = game.avatar_set.get(owner=client.session["_auth_user_id"])
+        self.assertIsNotNone(avatar)
+

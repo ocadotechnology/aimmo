@@ -18,6 +18,11 @@ Architecture of the project. How things are structured, what components exist, e
     - [Workers](architecture/workers/README.md)
     - [UI](architecture/ui/README.md)
 
+### Babylon
+
+Babylon side of the project. Game engine and structure.
+- [Babylon](babylon/README.md)
+
 
 ### Infrastucture
 
@@ -26,7 +31,7 @@ We describe the technologies that are underlying to the project and support it
 
 ### Testing 
 
-Levels of testing within AI:MMO.
+Levels of testing within Kurono.
 
 - [Testing](testing/README.md)
     - [Manual Test Plan](testing/test-plan.md)

@@ -2,11 +2,11 @@
 
 
 
-# AI:MMO Frontend
+# Kurono Frontend
 
 ## Description
 
-This folder contains the frontend for the AI:MMO game. It is a single page application using [React](https://reactjs.org/). We use [Redux](https://redux.js.org/) for state management and [redux-observable](https://redux-observable.js.org/) for handling our side effects (e.g. asynchronous calls). To learn more about how we connect all of these together, feel free to check out our [How does it all work](#how-does-it-all-work) section.
+This folder contains the frontend for the Kurono game. It is a single page application using [React](https://reactjs.org/). We use [Redux](https://redux.js.org/) for state management and [redux-observable](https://redux-observable.js.org/) for handling our side effects (e.g. asynchronous calls). To learn more about how we connect all of these together, feel free to check out our [How does it all work](#how-does-it-all-work) section.
 
 ## Installation for Contributors
 
@@ -28,7 +28,7 @@ yarn
 
 ### Standalone
 
-It's possible to run the frontend by itself. To do so, run the command below in this folder. **Note:** the Unity WebGL build will not show in standalone mode and you will need to run the project with Django.
+It's possible to run the frontend by itself. To do so, run the command below in this folder.
 
 ```
 parcel index.html
