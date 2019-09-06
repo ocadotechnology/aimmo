@@ -1,30 +1,29 @@
-import cPickle as pickle
-import json
 import logging
 import os
-from exceptions import UserCannotPlayGameException
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.http import (Http404, HttpResponse, HttpResponseForbidden,
-                         JsonResponse)
+from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
-from rest_framework import mixins, permissions, status, viewsets
-from rest_framework.authentication import (BasicAuthentication,
-                                           SessionAuthentication)
+from rest_framework import mixins, status, viewsets
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 import forms
 import game_renderer
 from app_settings import get_users_for_new_game
+from exceptions import UserCannotPlayGameException
 from models import Avatar, Game, LevelAttempt
-from permissions import (CanDeleteGameOrReadOnly,
-                         CsrfExemptSessionAuthentication, GameHasToken)
+from permissions import (
+    CanDeleteGameOrReadOnly,
+    CsrfExemptSessionAuthentication,
+    GameHasToken,
+)
 from serializers import GameSerializer
 
 LOGGER = logging.getLogger(__name__)
