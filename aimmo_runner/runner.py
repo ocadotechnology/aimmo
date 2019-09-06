@@ -107,7 +107,7 @@ def run(
 
     os.environ["NODE_ENV"] = "development" if settings.DEBUG else "production"
     server = run_command_async(
-        ["python", _MANAGE_PY, "runserver"] + server_args, capture_output=capture_output
+        ["python", "-wd", _MANAGE_PY, "runserver"] + server_args, capture_output=capture_output
     )
     frontend_bundler = run_command_async(
         ["node", _FRONTEND_BUNDLER_JS], capture_output=capture_output
