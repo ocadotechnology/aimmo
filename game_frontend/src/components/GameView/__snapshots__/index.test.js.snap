@@ -15,6 +15,17 @@ exports[`<Compass /> matches snapshot 1`] = `
 
 exports[`<GameView /> matches snapshot 1`] = `
 <styled.div>
+  <styled.div>
+    <Styled(WithStyles(ForwardRef(CircularProgress)))
+      color="inherit"
+    />
+    <Styled(WithStyles(ForwardRef(Typography)))
+      color="inherit"
+      variant="body1"
+    >
+      Building game world...
+    </Styled(WithStyles(ForwardRef(Typography)))>
+  </styled.div>
   <canvas
     style={
       Object {
@@ -22,9 +33,6 @@ exports[`<GameView /> matches snapshot 1`] = `
         "width": "100%",
       }
     }
-  />
-  <styled.img
-    src="/static/images/compass.svg"
   />
 </styled.div>
 `;
