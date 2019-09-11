@@ -56,7 +56,6 @@ class WorkerManager(object):
     async def update_code(self, player):
         self.player_id_to_worker[player["id"]].code = player["code"]
 
-
     async def add_new_worker(self, player_id):
         self.player_id_to_worker[player_id] = self.worker_class(player_id, self.port)
 
