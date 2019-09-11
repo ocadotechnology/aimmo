@@ -53,19 +53,14 @@ class WorkerManager(object):
         for worker in self.player_id_to_worker.values():
             worker.log = None
 
-    def update_code(self, player):
+    async def update_code(self, player):
         self.player_id_to_worker[player["id"]].code = player["code"]
+
 
     async def add_new_worker(self, player_id):
         self.player_id_to_worker[player_id] = self.worker_class(player_id, self.port)
 
     async def _parallel_map(self, func, iterable_args):
-        # loop = asyncio.get_event_loop()
-        # with futures.ThreadPoolExecutor() as executor:
-        #     workers: Tuple[Future] = (
-        #         loop.run_in_executor(executor, func, args) for args in iterable_args
-        #     )
-        #     await asyncio.gather(*workers)
         futures = [func(arg) for arg in iterable_args]
         await asyncio.gather(*futures)
 
