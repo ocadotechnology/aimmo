@@ -5,9 +5,29 @@ import EntityManager from '../../babylon/entities'
 import SceneRenderer from '../../babylon/environment'
 import EnvironmentManager from '../../babylon/environment/environmentManager'
 import { StandardEnvironment } from '../../babylon/environment/environment'
+import { CircularProgress } from '@material-ui/core'
+import Typography from '@material-ui/core/Typography'
 
 export const GameViewLayout = styled.div`
   grid-area: game-view;
+`
+
+export const LoadingBackgroundOverlay = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.2);
+`
+
+export const StyledCircularProgress = styled(CircularProgress)`
+    max-width: 50%;
+`
+
+export const LoadingText = styled(Typography)`
+  padding-top: ${props => props.theme.spacing(2)}px;
 `
 
 export const Compass = styled.img`
@@ -69,14 +89,42 @@ export default class GameView extends Component {
     }
   }
 
+  renderLoadingScreen = () => {
+    if (!this.props.avatarReady) {
+      return (
+        <LoadingBackgroundOverlay>
+          <StyledCircularProgress color='inherit' />
+          <LoadingText
+            variant='body1'
+            color='inherit'>
+            Building game world...
+          </LoadingText>
+        </LoadingBackgroundOverlay>
+      )
+    }
+  }
+
+  renderGameView = () => {
+    return (
+      <canvas
+      style={{ width: '100%', height: '100%' }}
+      ref={this.onCanvasLoaded}
+      />
+    )
+  }
+
+  renderCompass = () => {
+    if (this.props.avatarReady){
+      return (<Compass src='/static/images/compass.svg' />)
+    }
+  }
+
   render () {
     return (
       <GameViewLayout>
-        <canvas
-          style={{ width: '100%', height: '100%' }}
-          ref={this.onCanvasLoaded}
-        />
-        <Compass src='/static/images/compass.svg' />
+        {this.renderLoadingScreen()}
+        {this.renderGameView()}
+        {this.renderCompass()}
       </GameViewLayout>
     )
   }

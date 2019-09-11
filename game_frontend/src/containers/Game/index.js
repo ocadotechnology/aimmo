@@ -11,7 +11,8 @@ export class Game extends Component {
     theme: PropTypes.object,
     showSnackbar: PropTypes.bool,
     snackbarMessage: PropTypes.string,
-    snackbarType: PropTypes.oneOf(Object.values(SnackbarTypes))
+    snackbarType: PropTypes.oneOf(Object.values(SnackbarTypes)),
+    avatarReady: PropTypes.bool
   }
 
   state = {
@@ -38,6 +39,7 @@ export class Game extends Component {
           connectToGame={this.props.connectToGame}
           gameState={this.props.gameState}
           currentAvatarID={this.props.currentAvatarID}
+          avatarReady={this.props.avatarReady}
         />
         <Snackbar
           type='success'
@@ -61,7 +63,8 @@ const mapStateToProps = state => ({
   showSnackbar: state.game.showSnackbar,
   snackbarMessage: state.game.snackbarMessage,
   gameState: state.game.gameState,
-  currentAvatarID: state.game.connectionParameters.currentAvatarID
+  currentAvatarID: state.game.connectionParameters.currentAvatarID,
+  avatarReady: state.game.avatarReady
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game)

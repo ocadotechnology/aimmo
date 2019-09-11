@@ -37,6 +37,11 @@ const gameReducer = (state = {}, action) => {
           currentAvatarID: action.payload.parameters['avatar_id']
         }
       }
+    case types.AVATAR_READY:
+      return {
+        ...state,
+        avatarReady: true
+      }
     default:
       return state
   }

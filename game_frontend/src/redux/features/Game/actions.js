@@ -67,6 +67,10 @@ const setTimeout = () => ({
   type: types.SET_TIMEOUT
 })
 
+const avatarReady = () => ({
+  type: types.AVATAR_READY
+})
+
 export default {
   socketConnectToGameRequest,
   sendGameStateFail,
@@ -77,5 +81,6 @@ export default {
   socketFeedbackAvatarUpdatedTimeout,
   snackbarShown,
   gameDataLoaded,
-  setTimeout
+  setTimeout,
+  avatarReady
 }

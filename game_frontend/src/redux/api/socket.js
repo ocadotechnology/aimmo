@@ -25,7 +25,8 @@ const startListeners = () =>
     mergeMap(socket => merge(
       listenFor('game-state', socket, gameActions.socketGameStateReceived),
       listenFor('log', socket, consoleLogActions.socketConsoleLogReceived),
-      listenFor('feedback-avatar-updated', socket, gameActions.socketFeedbackAvatarUpdatedSuccess)
+      listenFor('feedback-avatar-updated', socket, gameActions.socketFeedbackAvatarUpdatedSuccess),
+      listenFor('worker-ready', socket, gameActions.avatarReady)
     ))
   )
 
