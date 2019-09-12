@@ -22,10 +22,6 @@ export const LoadingBackgroundOverlay = styled.div`
   background-color: rgba(0, 0, 0, 0.2);
 `
 
-export const StyledCircularProgress = styled(CircularProgress)`
-    max-width: 50%;
-`
-
 export const LoadingText = styled(Typography)`
   padding-top: ${props => props.theme.spacing(2)}px;
 `
@@ -40,7 +36,8 @@ export default class GameView extends Component {
   static propTypes = {
     connectToGame: PropTypes.func,
     gameState: PropTypes.object,
-    currentAvatarID: PropTypes.number
+    currentAvatarID: PropTypes.number,
+    gameLoaded: PropTypes.bool
   }
 
   constructor (props) {
@@ -89,21 +86,6 @@ export default class GameView extends Component {
     }
   }
 
-  renderLoadingScreen = () => {
-    if (!this.props.avatarReady) {
-      return (
-        <LoadingBackgroundOverlay>
-          <StyledCircularProgress color='inherit' />
-          <LoadingText
-            variant='body1'
-            color='inherit'>
-            Building game world...
-          </LoadingText>
-        </LoadingBackgroundOverlay>
-      )
-    }
-  }
-
   renderGameView = () => {
     return (
       <canvas
@@ -113,18 +95,27 @@ export default class GameView extends Component {
     )
   }
 
-  renderCompass = () => {
-    if (this.props.avatarReady){
-      return (<Compass src='/static/images/compass.svg' />)
-    }
-  }
-
   render () {
+    let loadingScreen = (
+      <LoadingBackgroundOverlay>
+          <CircularProgress color='inherit' />
+          <LoadingText
+            variant='body1'
+            color='inherit'>
+            Building game world...
+          </LoadingText>
+        </LoadingBackgroundOverlay>
+    )
+
+    let compass = (
+      <Compass src='/static/images/compass.svg' />
+    )
+
     return (
       <GameViewLayout>
-        {this.renderLoadingScreen()}
+        {(!this.props.gameLoaded) && loadingScreen}
         {this.renderGameView()}
-        {this.renderCompass()}
+        {this.props.gameLoaded && compass}
       </GameViewLayout>
     )
   }

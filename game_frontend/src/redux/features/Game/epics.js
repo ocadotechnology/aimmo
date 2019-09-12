@@ -17,7 +17,7 @@ const getConnectionParametersEpic = (action$, state$, { api: { get } }) => actio
   )
 )
 
-const gameLoadedEpic = action$ => action$.pipe(
+const gameDataLoadedEpic = action$ => action$.pipe(
   ofType(types.SOCKET_CONNECT_TO_GAME_REQUEST),
   switchMap(() =>
     action$.pipe(
@@ -28,7 +28,7 @@ const gameLoadedEpic = action$ => action$.pipe(
   )
 )
 
-const gameLoadedIntervalEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
+const gameDataLoadedIntervalEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
   action$.pipe(
     ofType(types.GAME_DATA_LOADED),
     timeInterval(scheduler),
@@ -80,8 +80,8 @@ const codeUpdatingIntervalEpic = (action$, state$, dependencies, scheduler = bac
 export default {
   getConnectionParametersEpic,
   connectToGameEpic,
-  gameLoadedEpic,
+  gameDataLoadedEpic,
   avatarUpdatingTimeoutEpic,
-  gameLoadedIntervalEpic,
+  gameDataLoadedIntervalEpic,
   codeUpdatingIntervalEpic
 }

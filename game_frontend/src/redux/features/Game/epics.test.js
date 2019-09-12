@@ -111,7 +111,7 @@ describe('getConnectionParametersEpic', () => {
   })
 })
 
-describe('gameLoadedEpic', () => {
+describe('gameDataLoadedEpic', () => {
   it('dispatches an GAME_LOADED action only when the first game state is received', () => {
     const testScheduler = createTestScheduler()
 
@@ -121,7 +121,7 @@ describe('gameLoadedEpic', () => {
         b: actions.socketGameStateReceived({})
       })
 
-      const output$ = epics.gameLoadedEpic(action$)
+      const output$ = epics.gameDataLoadedEpic(action$)
 
       expectObservable(output$).toBe('-----c---', {
         c: actions.gameDataLoaded()
@@ -165,7 +165,7 @@ describe('avatarUpdatingTimeoutEpic', () => {
   })
 })
 
-describe('gameLoadedIntervalEpic', () => {
+describe('gameDataLoadedIntervalEpic', () => {
   it('measures the time taken for the game to load and sends a corresponding analytic event', () => {
     const testScheduler = createTestScheduler()
 
@@ -175,7 +175,7 @@ describe('gameLoadedIntervalEpic', () => {
       })
 
       const state$ = null
-      const output$ = epics.gameLoadedIntervalEpic(action$, state$, {}, testScheduler)
+      const output$ = epics.gameDataLoadedIntervalEpic(action$, state$, {}, testScheduler)
 
       expectObservable(output$).toBe('-------b-', {
         b: analyticActions.sendAnalyticsTimingEvent('Kurono', 'Load', 'Game', 7)

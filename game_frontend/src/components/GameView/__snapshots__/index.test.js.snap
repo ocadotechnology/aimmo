@@ -15,8 +15,24 @@ exports[`<Compass /> matches snapshot 1`] = `
 
 exports[`<GameView /> matches snapshot 1`] = `
 <styled.div>
+  <canvas
+    style={
+      Object {
+        "height": "100%",
+        "width": "100%",
+      }
+    }
+  />
+  <styled.img
+    src="/static/images/compass.svg"
+  />
+</styled.div>
+`;
+
+exports[`<GameView /> matches snapshot when the game is loading 1`] = `
+<styled.div>
   <styled.div>
-    <Styled(WithStyles(ForwardRef(CircularProgress)))
+    <WithStyles(ForwardRef(CircularProgress))
       color="inherit"
     />
     <Styled(WithStyles(ForwardRef(Typography)))
@@ -40,6 +56,33 @@ exports[`<GameView /> matches snapshot 1`] = `
 exports[`<GameViewLayout /> matches snapshot 1`] = `
 .c0 {
   grid-area: game-view;
+}
+
+<div
+  className="c0"
+/>
+`;
+
+exports[`<LoadingBackgroundOverlay /> matches snapshot 1`] = `
+.c0 {
+  height: 100%;
+  width: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  background-color: rgba(0,0,0,0.2);
 }
 
 <div
