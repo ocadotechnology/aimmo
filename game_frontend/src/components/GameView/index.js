@@ -95,8 +95,8 @@ export default class GameView extends Component {
     )
   }
 
-  render () {
-    let loadingScreen = (
+  renderLoadingScreen = () => {
+    return (
       <LoadingBackgroundOverlay>
           <CircularProgress color='inherit' />
           <LoadingText
@@ -105,17 +105,21 @@ export default class GameView extends Component {
             Building game world...
           </LoadingText>
         </LoadingBackgroundOverlay>
-    )
+      )
+  }
 
-    let compass = (
+  renderCompass = () => {
+    return (
       <Compass src='/static/images/compass.svg' />
     )
+  }
 
+  render () {
     return (
       <GameViewLayout>
-        {(!this.props.avatarReady) && loadingScreen}
+        {(!this.props.avatarReady) && this.renderLoadingScreen()}
         {this.renderGameView()}
-        {this.props.avatarReady && compass}
+        {this.props.avatarReady && this.renderCompass()}
       </GameViewLayout>
     )
   }
