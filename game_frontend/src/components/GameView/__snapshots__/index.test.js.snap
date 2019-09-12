@@ -82,7 +82,7 @@ exports[`<LoadingBackgroundOverlay /> matches snapshot 1`] = `
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: rgb(127,127,127);
+  background-color: #fff;
 }
 
 <div
