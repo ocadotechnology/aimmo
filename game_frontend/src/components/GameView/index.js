@@ -19,7 +19,7 @@ export const LoadingBackgroundOverlay = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: ${props => props.theme.palette.primary.light};
+  background-color: ${props => props.theme.palette.primary.contrastText};
 `
 
 export const LoadingText = styled(Typography)`
