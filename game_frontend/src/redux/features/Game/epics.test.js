@@ -112,7 +112,7 @@ describe('getConnectionParametersEpic', () => {
 })
 
 describe('gameDataLoadedEpic', () => {
-  it('dispatches an GAME_LOADED action only when the first game state is received', () => {
+  it('dispatches an GAME_DATA_LOADED action only when the first game state is received', () => {
     const testScheduler = createTestScheduler()
 
     testScheduler.run(({ hot, cold, expectObservable }) => {

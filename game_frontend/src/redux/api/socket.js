@@ -26,7 +26,7 @@ const startListeners = () =>
       listenFor('game-state', socket, gameActions.socketGameStateReceived),
       listenFor('log', socket, consoleLogActions.socketConsoleLogReceived),
       listenFor('feedback-avatar-updated', socket, gameActions.socketFeedbackAvatarUpdatedSuccess),
-      listenFor('worker-ready', socket, gameActions.gameLoaded)
+      listenFor('worker-ready', socket, gameActions.socketAvatarReadyReceived)
     ))
   )
 

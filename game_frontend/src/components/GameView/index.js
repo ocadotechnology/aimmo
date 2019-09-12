@@ -19,7 +19,7 @@ export const LoadingBackgroundOverlay = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: ${props => props.theme.palette.primary.light};
 `
 
 export const LoadingText = styled(Typography)`
@@ -37,7 +37,7 @@ export default class GameView extends Component {
     connectToGame: PropTypes.func,
     gameState: PropTypes.object,
     currentAvatarID: PropTypes.number,
-    gameLoaded: PropTypes.bool
+    avatarReady: PropTypes.bool
   }
 
   constructor (props) {
@@ -113,9 +113,9 @@ export default class GameView extends Component {
 
     return (
       <GameViewLayout>
-        {(!this.props.gameLoaded) && loadingScreen}
+        {(!this.props.avatarReady) && loadingScreen}
         {this.renderGameView()}
-        {this.props.gameLoaded && compass}
+        {this.props.avatarReady && compass}
       </GameViewLayout>
     )
   }

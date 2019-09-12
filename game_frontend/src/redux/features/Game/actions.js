@@ -67,8 +67,8 @@ const setTimeout = () => ({
   type: types.SET_TIMEOUT
 })
 
-const gameLoaded = () => ({
-  type: types.GAME_LOADED
+const socketAvatarReadyReceived = () => ({
+  type: types.SOCKET_AVATAR_READY_RECEIVED
 })
 
 export default {
@@ -82,5 +82,5 @@ export default {
   snackbarShown,
   gameDataLoaded,
   setTimeout,
-  gameLoaded
+  socketAvatarReadyReceived
 }
