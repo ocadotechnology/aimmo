@@ -117,7 +117,7 @@ export default class GameView extends Component {
   render () {
     return (
       <GameViewLayout>
-        {(!this.props.avatarReady) && this.renderLoadingScreen()}
+        {!this.props.avatarReady && this.renderLoadingScreen()}
         {this.renderGameView()}
         {this.props.avatarReady && this.renderCompass()}
       </GameViewLayout>

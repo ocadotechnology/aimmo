@@ -29,7 +29,7 @@ exports[`<GameView /> matches snapshot 1`] = `
 </styled.div>
 `;
 
-exports[`<GameView /> matches snapshot when the game is loading 1`] = `
+exports[`<GameView /> shows the loading screen when the game is loading 1`] = `
 <styled.div>
   <styled.div>
     <WithStyles(ForwardRef(CircularProgress))

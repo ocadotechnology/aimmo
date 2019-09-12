@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import React from 'react'
-import GameView, { GameViewLayout, Compass, LoadingBackgroundOverlay, StyledCircularProgress } from 'components/GameView'
+import GameView, { GameViewLayout, Compass, LoadingBackgroundOverlay } from 'components/GameView'
 import { shallow } from 'enzyme/build/index'
 import createMountWithTheme from 'testHelpers/createMount'
 import createShallowWithTheme from 'testHelpers/createShallow'
@@ -49,7 +49,7 @@ describe('<GameView />', () => {
     expect(componentInstance.updateCurrentAvatarID).toBeCalled()
   })
 
-  it('matches snapshot when the game is loading', () => {
+  it('shows the loading screen when the game is loading', () => {
     const connectToGame = jest.fn()
     const props = {
       connectToGame,
