@@ -17,20 +17,9 @@ const getConnectionParametersEpic = (action$, state$, { api: { get } }) => actio
   )
 )
 
-const gameDataLoadedEpic = action$ => action$.pipe(
-  ofType(types.SOCKET_CONNECT_TO_GAME_REQUEST),
-  switchMap(() =>
-    action$.pipe(
-      ofType(types.SOCKET_GAME_STATE_RECEIVED),
-      first(),
-      mapTo(actions.gameDataLoaded())
-    )
-  )
-)
-
 const gameDataLoadedIntervalEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
   action$.pipe(
-    ofType(types.GAME_DATA_LOADED),
+    ofType(types.SOCKET_AVATAR_READY_RECEIVED),
     timeInterval(scheduler),
     map(timeInterval =>
       analyticActions.sendAnalyticsTimingEvent('Kurono', 'Load', 'Game', timeInterval.interval)
@@ -80,7 +69,6 @@ const codeUpdatingIntervalEpic = (action$, state$, dependencies, scheduler = bac
 export default {
   getConnectionParametersEpic,
   connectToGameEpic,
-  gameDataLoadedEpic,
   avatarUpdatingTimeoutEpic,
   gameDataLoadedIntervalEpic,
   codeUpdatingIntervalEpic

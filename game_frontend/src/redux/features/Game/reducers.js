@@ -24,11 +24,6 @@ const gameReducer = (state = {}, action) => {
         ...state,
         showSnackbar: false
       }
-    case types.GAME_DATA_LOADED:
-      return {
-        ...state,
-        gameDataLoaded: true
-      }
     case types.CONNECTION_PARAMETERS_RECEIVED:
       return {
         ...state,

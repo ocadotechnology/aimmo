@@ -37,15 +37,6 @@ describe('gameReducer', () => {
     expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
   })
 
-  it('should handle GAME_DATA_LOADED', () => {
-    const expectedState = {
-      gameDataLoaded: true,
-      initialState: 'someValue'
-    }
-    const action = actions.gameDataLoaded()
-    expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
-  })
-
   it('should set avatarReady correctly on SOCKET_AVATAR_READY_RECEIVED', () => {
     const expectedState = {
       avatarReady: true,

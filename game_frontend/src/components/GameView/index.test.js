@@ -11,7 +11,6 @@ describe('<GameView />', () => {
     const connectToGame = jest.fn()
     const props = {
       connectToGame,
-      gameDataLoaded: true,
       avatarReady: true
     }
     const component = shallow(<GameView {...props} />, { disableLifecycleMethods: true })
@@ -53,7 +52,6 @@ describe('<GameView />', () => {
     const connectToGame = jest.fn()
     const props = {
       connectToGame,
-      gameDataLoaded: true,
       avatarReady: false
     }
     const component = shallow(<GameView {...props} />, { disableLifecycleMethods: true })

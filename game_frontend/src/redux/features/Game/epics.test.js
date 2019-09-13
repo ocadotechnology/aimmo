@@ -111,25 +111,6 @@ describe('getConnectionParametersEpic', () => {
   })
 })
 
-describe('gameDataLoadedEpic', () => {
-  it('dispatches an GAME_DATA_LOADED action only when the first game state is received', () => {
-    const testScheduler = createTestScheduler()
-
-    testScheduler.run(({ hot, cold, expectObservable }) => {
-      const action$ = hot('--a--b--b', {
-        a: actions.socketConnectToGameRequest(),
-        b: actions.socketGameStateReceived({})
-      })
-
-      const output$ = epics.gameDataLoadedEpic(action$)
-
-      expectObservable(output$).toBe('-----c---', {
-        c: actions.gameDataLoaded()
-      })
-    })
-  })
-})
-
 describe('avatarUpdatingTimeoutEpic', () => {
   it('dispatches an SET_TIMEOUT action when we sent code to update the avatar but nothing has come back in 25s', () => {
     const testScheduler = createTestScheduler()
@@ -171,7 +152,7 @@ describe('gameDataLoadedIntervalEpic', () => {
 
     testScheduler.run(({ hot, cold, expectObservable }) => {
       const action$ = hot('-------a-', {
-        a: actions.gameDataLoaded()
+        a: actions.socketAvatarReadyReceived()
       })
 
       const state$ = null
