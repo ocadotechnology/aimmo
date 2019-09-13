@@ -84,7 +84,6 @@ class GameAPI(object):
         self.register_endpoints()
         self.worker_manager = worker_manager
         self.game_state = game_state
-        self.has_sent_worker_ready = False
 
     async def async_map(self, func, iterable_args):
         futures = [func(arg) for arg in iterable_args]
@@ -143,7 +142,6 @@ class GameAPI(object):
     def register_remove_session_id_from_mappings(self):
         @self.socketio_server.on("disconnect")
         async def remove_session_id_from_mappings(sid):
-            self.has_sent_worker_ready = False
             LOGGER.info("Socket disconnected for session id: {}. ".format(sid))
 
         return remove_session_id_from_mappings
@@ -210,9 +208,8 @@ class GameAPI(object):
     async def _send_has_worker_started(self, sid):
         session_data = await self.socketio_server.get_session(sid)
         worker = self.worker_manager.player_id_to_worker[session_data["id"]]
-        if worker.ready and not self.has_sent_worker_ready:
+        if worker.ready:
             await self.socketio_server.emit("worker-ready", {}, room=sid)
-            self.has_sent_worker_ready = True
 
 
 def create_runner(port):
