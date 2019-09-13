@@ -9,12 +9,11 @@ from urllib.parse import parse_qs
 
 import aiohttp_cors
 import socketio
+from activity_monitor import ActivityMonitor
 from aiohttp import web
 from aiohttp_wsgi import WSGIHandler
-from prometheus_client import make_wsgi_app
-
-from activity_monitor import ActivityMonitor
 from authentication import initialize_game_token
+from prometheus_client import make_wsgi_app
 from simulation import map_generator
 from simulation.django_communicator import DjangoCommunicator
 from simulation.game_runner import GameRunner
