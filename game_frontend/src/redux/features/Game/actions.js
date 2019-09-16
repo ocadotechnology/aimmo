@@ -61,10 +61,6 @@ const setTimeout = () => ({
   type: types.SET_TIMEOUT
 })
 
-const socketAvatarReadyReceived = () => ({
-  type: types.SOCKET_AVATAR_READY_RECEIVED
-})
-
 export default {
   socketConnectToGameRequest,
   sendGameStateFail,
@@ -74,6 +70,5 @@ export default {
   socketFeedbackAvatarUpdatedSuccess,
   socketFeedbackAvatarUpdatedTimeout,
   snackbarShown,
-  setTimeout,
-  socketAvatarReadyReceived
+  setTimeout
 }

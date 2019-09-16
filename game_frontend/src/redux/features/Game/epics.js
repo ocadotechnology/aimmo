@@ -17,9 +17,10 @@ const getConnectionParametersEpic = (action$, state$, { api: { get } }) => actio
   )
 )
 
-const gameDataLoadedIntervalEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
+const gameLoadedIntervalEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
   action$.pipe(
-    ofType(types.SOCKET_AVATAR_READY_RECEIVED),
+    ofType(types.SOCKET_GAME_STATE_RECEIVED),
+    first(),
     timeInterval(scheduler),
     map(timeInterval =>
       analyticActions.sendAnalyticsTimingEvent('Kurono', 'Load', 'Game', timeInterval.interval)
@@ -70,6 +71,6 @@ export default {
   getConnectionParametersEpic,
   connectToGameEpic,
   avatarUpdatingTimeoutEpic,
-  gameDataLoadedIntervalEpic,
+  gameLoadedIntervalEpic,
   codeUpdatingIntervalEpic
 }

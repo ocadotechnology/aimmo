@@ -5,7 +5,8 @@ const gameReducer = (state = {}, action) => {
     case types.SOCKET_GAME_STATE_RECEIVED:
       return {
         ...state,
-        gameState: action.payload.gameState
+        gameState: action.payload.gameState,
+        avatarReady: true
       }
     case types.SOCKET_FEEDBACK_AVATAR_UPDATED_SUCCESS:
       return {
@@ -31,11 +32,6 @@ const gameReducer = (state = {}, action) => {
           ...state.connectionParameters,
           currentAvatarID: action.payload.parameters['avatar_id']
         }
-      }
-    case types.SOCKET_AVATAR_READY_RECEIVED:
-      return {
-        ...state,
-        avatarReady: true
       }
     default:
       return state

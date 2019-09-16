@@ -37,15 +37,6 @@ describe('gameReducer', () => {
     expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
   })
 
-  it('should set avatarReady correctly on SOCKET_AVATAR_READY_RECEIVED', () => {
-    const expectedState = {
-      avatarReady: true,
-      initialState: 'someValue'
-    }
-    const action = actions.socketAvatarReadyReceived()
-    expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
-  })
-
   it('should set the currentAvatarID correctly on CONNECTION_PARAMETERS_RECEIVED', () => {
     const expectedState = {
       initialState: 'someValue',
