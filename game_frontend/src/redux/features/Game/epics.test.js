@@ -152,7 +152,7 @@ describe('gameLoadedIntervalEpic', () => {
 
     testScheduler.run(({ hot, cold, expectObservable }) => {
       const action$ = hot('-------a-', {
-        a: actions.sendGameStateSuccess()
+        a: actions.socketGameStateReceived()
       })
 
       const state$ = null

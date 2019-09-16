@@ -9,6 +9,7 @@ describe('gameReducer', () => {
 
   it('should handle SOCKET_GAME_STATE_RECEIVED', () => {
     const expectedState = {
+      avatarReady: true,
       gameState: {
         id: 1
       },
