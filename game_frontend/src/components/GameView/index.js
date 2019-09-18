@@ -37,7 +37,7 @@ export default class GameView extends Component {
     connectToGame: PropTypes.func,
     gameState: PropTypes.object,
     currentAvatarID: PropTypes.number,
-    avatarReady: PropTypes.bool
+    gameLoaded: PropTypes.bool
   }
 
   constructor (props) {
@@ -117,9 +117,9 @@ export default class GameView extends Component {
   render () {
     return (
       <GameViewLayout>
-        {!this.props.avatarReady && this.renderLoadingScreen()}
+        {!this.props.gameLoaded && this.renderLoadingScreen()}
         {this.renderGameView()}
-        {this.props.avatarReady && this.renderCompass()}
+        {this.props.gameLoaded && this.renderCompass()}
       </GameViewLayout>
     )
   }

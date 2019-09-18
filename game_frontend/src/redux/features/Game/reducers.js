@@ -6,7 +6,7 @@ const gameReducer = (state = {}, action) => {
       return {
         ...state,
         gameState: action.payload.gameState,
-        avatarReady: true
+        gameLoaded: true
       }
     case types.SOCKET_FEEDBACK_AVATAR_UPDATED_SUCCESS:
       return {

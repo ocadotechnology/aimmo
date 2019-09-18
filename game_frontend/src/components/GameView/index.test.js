@@ -11,7 +11,7 @@ describe('<GameView />', () => {
     const connectToGame = jest.fn()
     const props = {
       connectToGame,
-      avatarReady: true
+      gameLoaded: true
     }
     const component = shallow(<GameView {...props} />, { disableLifecycleMethods: true })
     expect(component).toMatchSnapshot()
@@ -52,7 +52,7 @@ describe('<GameView />', () => {
     const connectToGame = jest.fn()
     const props = {
       connectToGame,
-      avatarReady: false
+      gameLoaded: false
     }
     const component = shallow(<GameView {...props} />, { disableLifecycleMethods: true })
     expect(component).toMatchSnapshot()

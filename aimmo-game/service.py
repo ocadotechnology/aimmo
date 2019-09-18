@@ -194,9 +194,7 @@ class GameAPI(object):
             )
 
     async def _send_game_state(self, sid):
-        # Get game state
         serialized_game_state = self.game_state.serialize()
-        # Get 
         session_data = await self.socketio_server.get_session(sid)
         worker = self.worker_manager.player_id_to_worker[session_data["id"]]
         if worker.ready:
