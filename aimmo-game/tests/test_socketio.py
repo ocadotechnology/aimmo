@@ -68,7 +68,7 @@ def client(app, aiohttp_client, loop):
     return loop.run_until_complete(aiohttp_client(app))
 
 
-async def test_socketio_emit_called(game_api, socketio_server, client, loop):
+async def test_socketio_emit_called_when_worker_ready(game_api, socketio_server, client, loop):
     socketio_client = socketio.AsyncClient(reconnection=False)
     mock_game_state_listener = mock.MagicMock()
 
@@ -87,6 +87,26 @@ async def test_socketio_emit_called(game_api, socketio_server, client, loop):
     await socketio_client.disconnect()
 
     mock_game_state_listener.assert_called_once()
+
+async def test_socketio_emit_not_called_if_worker_not_ready(game_api, socketio_server, client, loop):
+    socketio_client = socketio.AsyncClient(reconnection=False)
+    mock_game_state_listener = mock.MagicMock()
+
+    await game_api.worker_manager.add_new_worker(1)
+
+    socketio_client.on("game-state", mock_game_state_listener)
+
+    worker = game_api.worker_manager.player_id_to_worker[1]
+    assert worker.ready == False
+
+    await socketio_client.connect(
+        f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
+    )
+
+    await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
+    await socketio_client.disconnect()
+
+    mock_game_state_listener.assert_not_called()
 
 
 async def test_send_updates_for_one_user(game_api, client, socketio_server, loop):
