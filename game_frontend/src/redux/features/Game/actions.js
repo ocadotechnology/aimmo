@@ -57,6 +57,12 @@ const snackbarShown = () => (
   }
 )
 
+const gameLoaded = () => (
+  {
+    type: types.GAME_LOADED
+  }
+)
+
 const setTimeout = () => ({
   type: types.SET_TIMEOUT
 })
@@ -70,5 +76,6 @@ export default {
   socketFeedbackAvatarUpdatedSuccess,
   socketFeedbackAvatarUpdatedTimeout,
   snackbarShown,
+  gameLoaded,
   setTimeout
 }
