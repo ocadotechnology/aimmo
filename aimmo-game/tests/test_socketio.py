@@ -76,6 +76,9 @@ async def test_socketio_emit_called(game_api, socketio_server, client, loop):
 
     socketio_client.on("game-state", mock_game_state_listener)
 
+    worker = game_api.worker_manager.player_id_to_worker[1]
+    worker.ready = True    
+
     await socketio_client.connect(
         f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
     )
