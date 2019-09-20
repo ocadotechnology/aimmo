@@ -28,9 +28,10 @@ export const StyledIconButton = styled(IconButton)`
 
 export default class ConsoleBar extends Component {
   static propTypes = {
-    clearLogHandler: PropTypes.func
+    clearConsoleClicked: PropTypes.func
 
   }
+
   render () {
     return (
       <StyledConsoleBar variant='dense' >
@@ -42,7 +43,7 @@ export default class ConsoleBar extends Component {
           Console Log
           </Typography>
         </StyledConsoleTitle>
-        <StyledIconButton onClick={this.props.clearLogHandler}>
+        <StyledIconButton onClick={this.props.clearConsoleClicked}>
           <ClearIcon color='disabled' />
         </StyledIconButton>
       </StyledConsoleBar>

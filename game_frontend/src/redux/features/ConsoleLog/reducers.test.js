@@ -25,8 +25,8 @@ describe('consoleLogReducer', () => {
 
     expect(initialState.logs).toHaveLength(1)
 
-    const clearAction = actions.clearConsoleLog()
-    const actualState = consoleLogReducer(undefined, clearAction)
+    const clearAction = actions.clearConsoleLogs()
+    const actualState = consoleLogReducer(initialState, clearAction)
 
     expect(actualState.logs).toHaveLength(0)
   })

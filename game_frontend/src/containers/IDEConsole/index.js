@@ -68,7 +68,7 @@ export class IDEConsole extends Component {
   render () {
     return (
       <IDEConsoleSection>
-        <ConsoleBar clearLogHandler={this.props.clearLogHandler} />
+        <ConsoleBar clearConsoleClicked={this.props.clearConsoleLogs} />
         <StyledConsole innerRef={ref => { this.consoleRef = ref }}>
           <LogEntries
             logs={this.props.logs}
@@ -84,7 +84,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = {
-  clearLogHandler: actions.clearConsoleLog
+  clearConsoleLogs: actions.clearConsoleLogs
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(IDEConsole)
