@@ -20,11 +20,6 @@ export const StyledConsoleIcon = styled(ConsoleIcon)`
   padding-right: ${props => props.theme.spacing()}px;
 `
 
-export const StyledClearIcon = styled(ClearIcon)`
-  padding-top: ${props => props.theme.spacing(0.625)}px;
-  text-align: center;
-`
-
 export const StyledIconButton = styled(IconButton)`
   && {
     padding: 6px;
@@ -48,7 +43,7 @@ export default class ConsoleBar extends Component {
           </Typography>
         </StyledConsoleTitle>
         <StyledIconButton onClick={this.props.clearLogHandler}>
-          <StyledClearIcon color='disabled' viewBox='0 0 14 24' />
+          <ClearIcon color='disabled' />
         </StyledIconButton>
       </StyledConsoleBar>
     )
