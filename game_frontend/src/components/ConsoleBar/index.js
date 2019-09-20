@@ -20,12 +20,6 @@ export const StyledConsoleIcon = styled(ConsoleIcon)`
   padding-right: ${props => props.theme.spacing()}px;
 `
 
-export const StyledIconButton = styled(IconButton)`
-  && {
-    padding: 6px;
-  }
-`
-
 export default class ConsoleBar extends Component {
   static propTypes = {
     clearConsoleClicked: PropTypes.func
@@ -43,9 +37,11 @@ export default class ConsoleBar extends Component {
           Console Log
           </Typography>
         </StyledConsoleTitle>
-        <StyledIconButton onClick={this.props.clearConsoleClicked}>
-          <ClearIcon color='disabled' />
-        </StyledIconButton>
+        <IconButton
+          size='small'
+          onClick={this.props.clearConsoleClicked}>
+          <ClearIcon />
+        </IconButton>
       </StyledConsoleBar>
     )
   }
