@@ -12,7 +12,7 @@ from simulation.game_runner import GameRunner
 from .test_simulation.mock_communicator import MockCommunicator
 from .test_simulation.mock_worker_manager import MockWorkerManager
 
-TIME_TO_PROCESS_SOME_EVENT_LOOP = 0.1
+TIME_TO_PROCESS_SOME_EVENT_LOOP = 0.2
 
 
 class MockGameState(object):
