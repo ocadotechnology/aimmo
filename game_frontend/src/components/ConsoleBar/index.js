@@ -23,7 +23,6 @@ export const StyledConsoleIcon = styled(ConsoleIcon)`
 export default class ConsoleBar extends Component {
   static propTypes = {
     clearConsoleClicked: PropTypes.func
-
   }
 
   render () {
