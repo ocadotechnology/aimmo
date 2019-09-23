@@ -134,7 +134,6 @@ class GameAPI(object):
             query = environ["QUERY_STRING"]
             avatar_id = self._find_avatar_id_from_query(sid, query)
             await self.socketio_server.save_session(sid, {"id": avatar_id})
-            await self.send_updates(sid)
 
         return world_update_on_connect
 

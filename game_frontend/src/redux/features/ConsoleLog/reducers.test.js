@@ -17,6 +17,20 @@ describe('consoleLogReducer', () => {
     expect(actualState.logs[0].message).toEqual(expectedStateLog.message)
   })
 
+  it('should handle CLEAR_CONSOLE_LOG', () => {
+    const intialStateLog = { turn_count: 1, message: 'Hello, good morning, I got here in my code' }
+
+    const action = actions.socketConsoleLogReceived(intialStateLog)
+    const initialState = consoleLogReducer(undefined, action)
+
+    expect(initialState.logs).toHaveLength(1)
+
+    const clearAction = actions.clearConsoleLogs()
+    const actualState = consoleLogReducer(initialState, clearAction)
+
+    expect(actualState.logs).toHaveLength(0)
+  })
+
   it('should get rid of old logs past MAX_NUMBER_OF_STORED_LOGS', () => {
     let initialLogs = Array(MAX_NUMBER_OF_STORED_LOGS - 1).fill({ turn_count: 1, message: 'Same old logs' })
     const newLog = { turn_count: 1, message: 'I\'m a new log!' }

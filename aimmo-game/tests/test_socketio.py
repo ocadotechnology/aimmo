@@ -83,6 +83,8 @@ async def test_socketio_emit_called_when_worker_ready(game_api, socketio_server,
         f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
     )
 
+    await game_api.send_updates_to_all()
+
     await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
     await socketio_client.disconnect()
 
@@ -102,6 +104,8 @@ async def test_socketio_emit_not_called_if_worker_not_ready(game_api, socketio_s
     await socketio_client.connect(
         f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
     )
+
+    await game_api.send_updates_to_all()
 
     await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
     await socketio_client.disconnect()
@@ -124,6 +128,8 @@ async def test_send_updates_for_one_user(game_api, client, socketio_server, loop
         f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
     )
 
+    await game_api.send_updates_to_all()
+
     await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
     await socketio_client.disconnect()
 
@@ -144,6 +150,8 @@ async def test_no_logs_not_emitted(game_api, client, socketio_server, loop):
     await socketio_client.connect(
         f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
     )
+
+    await game_api.send_updates_to_all()
 
     await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
     await socketio_client.disconnect()
@@ -166,6 +174,8 @@ async def test_empty_logs_not_emitted(game_api, client, socketio_server, loop):
     await socketio_client.connect(
         f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
     )
+
+    await game_api.send_updates_to_all()
 
     await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
     await socketio_client.disconnect()
@@ -198,6 +208,8 @@ async def test_send_updates_for_multiple_users(game_api, client, socketio_server
         f"http://{client.server.host}:{client.server.port}?avatar_id=2&EIO=3&transport=polling&t=MJhoMgb"
     )
 
+    await game_api.send_updates_to_all()
+
     await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
     await socketio_client.disconnect()
     await socketio_client2.disconnect()
@@ -225,6 +237,8 @@ async def test_send_code_changed_flag(game_api, client, socketio_server, loop):
         f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
     )
 
+    await game_api.send_updates_to_all()
+
     await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
     await socketio_client.disconnect()
 
@@ -245,6 +259,8 @@ async def test_send_false_flag_not_sent(game_api, client, socketio_server, loop)
     await socketio_client.connect(
         f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
     )
+
+    await game_api.send_updates_to_all()
 
     await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
     await socketio_client.disconnect()
