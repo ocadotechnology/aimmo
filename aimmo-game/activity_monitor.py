@@ -48,8 +48,9 @@ class ActivityMonitor:
             )
 
     def _stop_timer(self):
-        LOGGER.info("Cancelling timer!")
-        self.timer.cancel()
+        if not self.timer.cancelled():
+            LOGGER.info("Cancelling timer!")
+            self.timer.cancel()
 
     @property
     def active_users(self):
