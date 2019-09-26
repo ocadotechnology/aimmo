@@ -91,6 +91,7 @@ class GameRunner:
 
     async def run(self):
         while True:
+            LOGGER.info(f"Starting turn {self.game_state.turn_count}")
             turn = asyncio.ensure_future(self.update())
             await asyncio.sleep(TURN_TIME)
             await turn

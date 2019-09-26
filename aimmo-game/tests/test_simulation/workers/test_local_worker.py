@@ -6,23 +6,21 @@ from simulation.workers.local_worker import LocalWorker
 from simulation.worker_manager import WorkerManager
 
 import pytest
-import asyncio
 
 
-@pytest.mark.asyncio
-async def test_local_worker_ports_do_not_conflict(mocker):
+def test_local_worker_ports_do_not_conflict(mocker):
     mocker.patch("docker.from_env")
     os.environ["GAME_ID"] = "1"
     LocalWorker._init_port_counter()
     worker_manager1 = WorkerManager()
-    await worker_manager1.add_new_worker(1)
+    worker_manager1.add_new_worker(1)
     local_worker1 = worker_manager1.player_id_to_worker[1]
     url1 = urlparse(local_worker1.url)
 
     os.environ["GAME_ID"] = "2"
     LocalWorker._init_port_counter()
     worker_manager2 = WorkerManager()
-    await worker_manager2.add_new_worker(1)
+    worker_manager2.add_new_worker(1)
     local_worker2 = worker_manager2.player_id_to_worker[1]
     url2 = urlparse(local_worker2.url)
 
@@ -30,14 +28,13 @@ async def test_local_worker_ports_do_not_conflict(mocker):
     assert url2.port == 21989
 
 
-@pytest.mark.asyncio
-async def test_local_worker_in_the_same_game_do_not_have_port_conflicts(mocker):
+def test_local_worker_in_the_same_game_do_not_have_port_conflicts(mocker):
     mocker.patch("docker.from_env")
     os.environ["GAME_ID"] = "1"
     LocalWorker._init_port_counter()
     worker_manager = WorkerManager()
-    await worker_manager.add_new_worker(1)
-    await worker_manager.add_new_worker(2)
+    worker_manager.add_new_worker(1)
+    worker_manager.add_new_worker(2)
     local_worker1 = worker_manager.player_id_to_worker[1]
     local_worker2 = worker_manager.player_id_to_worker[2]
 

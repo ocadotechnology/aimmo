@@ -68,16 +68,18 @@ def client(app, aiohttp_client, loop):
     return loop.run_until_complete(aiohttp_client(app))
 
 
-async def test_socketio_emit_called_when_worker_ready(game_api, socketio_server, client, loop):
+async def test_socketio_emit_called_when_worker_ready(
+    game_api, socketio_server, client, loop
+):
     socketio_client = socketio.AsyncClient(reconnection=False)
     mock_game_state_listener = mock.MagicMock()
 
-    await game_api.worker_manager.add_new_worker(1)
+    game_api.worker_manager.add_new_worker(1)
 
     socketio_client.on("game-state", mock_game_state_listener)
 
     worker = game_api.worker_manager.player_id_to_worker[1]
-    worker.ready = True    
+    worker.ready = True
 
     await socketio_client.connect(
         f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
@@ -90,11 +92,14 @@ async def test_socketio_emit_called_when_worker_ready(game_api, socketio_server,
 
     mock_game_state_listener.assert_called_once()
 
-async def test_socketio_emit_not_called_if_worker_not_ready(game_api, socketio_server, client, loop):
+
+async def test_socketio_emit_not_called_if_worker_not_ready(
+    game_api, socketio_server, client, loop
+):
     socketio_client = socketio.AsyncClient(reconnection=False)
     mock_game_state_listener = mock.MagicMock()
 
-    await game_api.worker_manager.add_new_worker(1)
+    game_api.worker_manager.add_new_worker(1)
 
     socketio_client.on("game-state", mock_game_state_listener)
 
@@ -117,7 +122,7 @@ async def test_send_updates_for_one_user(game_api, client, socketio_server, loop
     socketio_client = socketio.AsyncClient(reconnection=False)
     mock_log_listener = mock.MagicMock()
 
-    await game_api.worker_manager.add_new_worker(1)
+    game_api.worker_manager.add_new_worker(1)
 
     socketio_client.on("log", mock_log_listener)
 
@@ -143,7 +148,7 @@ async def test_no_logs_not_emitted(game_api, client, socketio_server, loop):
     socketio_client = socketio.AsyncClient(reconnection=False)
     mock_log_listener = mock.MagicMock()
 
-    await game_api.worker_manager.add_new_worker(1)
+    game_api.worker_manager.add_new_worker(1)
 
     socketio_client.on("log", mock_log_listener)
 
@@ -164,7 +169,7 @@ async def test_empty_logs_not_emitted(game_api, client, socketio_server, loop):
     socketio_client = socketio.AsyncClient(reconnection=False)
     mock_log_listener = mock.MagicMock()
 
-    await game_api.worker_manager.add_new_worker(1)
+    game_api.worker_manager.add_new_worker(1)
 
     socketio_client.on("log", mock_log_listener)
 
@@ -189,8 +194,8 @@ async def test_send_updates_for_multiple_users(game_api, client, socketio_server
     mock_log_listener = mock.MagicMock()
     mock_log_listener2 = mock.MagicMock()
 
-    await game_api.worker_manager.add_new_worker(1)
-    await game_api.worker_manager.add_new_worker(2)
+    game_api.worker_manager.add_new_worker(1)
+    game_api.worker_manager.add_new_worker(2)
 
     socketio_client.on("log", mock_log_listener)
     socketio_client2.on("log", mock_log_listener2)
@@ -226,7 +231,7 @@ async def test_send_code_changed_flag(game_api, client, socketio_server, loop):
     socketio_client = socketio.AsyncClient(reconnection=False)
     mock_avatar_updated_listener = mock.MagicMock()
 
-    await game_api.worker_manager.add_new_worker(1)
+    game_api.worker_manager.add_new_worker(1)
 
     socketio_client.on("feedback-avatar-updated", mock_avatar_updated_listener)
 
@@ -249,7 +254,7 @@ async def test_send_false_flag_not_sent(game_api, client, socketio_server, loop)
     socketio_client = socketio.AsyncClient(reconnection=False)
     mock_avatar_updated_listener = mock.MagicMock()
 
-    await game_api.worker_manager.add_new_worker(1)
+    game_api.worker_manager.add_new_worker(1)
 
     socketio_client.on("feedback-avatar-updated", mock_avatar_updated_listener)
 
@@ -271,7 +276,7 @@ async def test_send_false_flag_not_sent(game_api, client, socketio_server, loop)
 async def test_remove_session_id_on_disconnect(game_api, client, socketio_server, loop):
     socketio_client = socketio.AsyncClient(reconnection=False)
 
-    await game_api.worker_manager.add_new_worker(1)
+    game_api.worker_manager.add_new_worker(1)
 
     await socketio_client.connect(
         f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
