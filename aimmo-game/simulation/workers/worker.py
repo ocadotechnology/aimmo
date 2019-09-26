@@ -1,7 +1,7 @@
 import logging
 from asyncio import CancelledError
 
-from aiohttp import ClientSession, ClientResponseError, ServerDisconnectedError, ClientOSError
+from aiohttp import ClientSession, ClientResponseError, ServerDisconnectedError
 
 LOGGER = logging.getLogger(__name__)
 
