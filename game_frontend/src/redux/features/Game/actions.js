@@ -57,9 +57,9 @@ const snackbarShown = () => (
   }
 )
 
-const gameDataLoaded = () => (
+const gameLoaded = () => (
   {
-    type: types.GAME_DATA_LOADED
+    type: types.GAME_LOADED
   }
 )
 
@@ -76,6 +76,6 @@ export default {
   socketFeedbackAvatarUpdatedSuccess,
   socketFeedbackAvatarUpdatedTimeout,
   snackbarShown,
-  gameDataLoaded,
+  gameLoaded,
   setTimeout
 }
