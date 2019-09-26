@@ -150,7 +150,9 @@ class GameAPI(object):
             await self._send_game_state(sid)
             await self._send_logs(sid)
         except KeyError:
-            LOGGER.error(f"Failed to send updates. No worker for player in session {sid}")
+            LOGGER.error(
+                f"Failed to send updates. No worker for player in session {sid}"
+            )
 
     async def send_updates_to_all(self):
         try:
@@ -197,7 +199,9 @@ class GameAPI(object):
         session_data = await self.socketio_server.get_session(sid)
         worker = self.worker_manager.player_id_to_worker[session_data["id"]]
         if worker.ready:
-            await self.socketio_server.emit("game-state", serialized_game_state, room=sid)
+            await self.socketio_server.emit(
+                "game-state", serialized_game_state, room=sid
+            )
 
     async def _send_have_avatars_code_updated(self, sid):
         session_data = await self.socketio_server.get_session(sid)
