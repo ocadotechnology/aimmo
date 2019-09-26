@@ -29,7 +29,7 @@ class Worker(object):
         raise NotImplementedError
 
     async def fetch_data(self, state_view):
-        if self.code == None:
+        if self.code is None:
             self._set_defaults()
             return
         try:
