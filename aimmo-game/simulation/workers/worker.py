@@ -1,7 +1,7 @@
 import logging
 from asyncio import CancelledError
 
-from aiohttp import ClientResponseError, ClientSession
+from aiohttp import ClientSession, ClientResponseError, ServerDisconnectedError, ClientOSError
 
 LOGGER = logging.getLogger(__name__)
 
@@ -29,6 +29,8 @@ class Worker(object):
         raise NotImplementedError
 
     async def fetch_data(self, state_view):
+        if self.code == None:
+            return
         try:
             async with ClientSession(raise_for_status=True) as session:
                 code_and_options = {"code": self.code, "options": {}, "state": None}
@@ -39,7 +41,7 @@ class Worker(object):
                 self.log = data["log"]
                 self.has_code_updated = data["avatar_updated"]
                 self.ready = True
-        except ClientResponseError:
+        except (ClientResponseError, ServerDisconnectedError):
             LOGGER.info("Could not connect to worker, probably not ready yet")
             self._set_defaults()
         except CancelledError as e:
