@@ -38,9 +38,10 @@ def _create_response(status, message):
     return JsonResponse(response)
 
 
-def _create_avatar_for_user(user, game_id):
+def _create_avatar_for_user(user, game_id, avatar_template_name="simple_avatar"):
     initial_code_file_name = os.path.join(
-        os.path.abspath(os.path.dirname(__file__)), "avatar_examples/simple_avatar.py"
+        os.path.abspath(os.path.dirname(__file__)),
+        "avatar_examples/{}.py".format(avatar_template_name),
     )
     with open(initial_code_file_name) as initial_code_file:
         initial_code = initial_code_file.read()

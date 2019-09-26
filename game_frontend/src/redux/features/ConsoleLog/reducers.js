@@ -12,6 +12,11 @@ const consoleLogReducer = (state = { logs: [] }, action) => {
         ...state,
         logs: logs
       }
+    case types.CLEAR_CONSOLE_LOGS:
+      return {
+        ...state,
+        logs: []
+      }
     default:
       return state
   }

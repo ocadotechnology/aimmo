@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import LogEntries from 'components/LogEntries'
 import ConsoleBar from 'components/ConsoleBar'
 import { connect } from 'react-redux'
+import { actions } from 'redux/features/ConsoleLog'
 
 export const IDEConsoleSection = styled.section`
   grid-area: ide-console;
@@ -64,11 +65,10 @@ export class IDEConsole extends Component {
       this.lastLogRef.scrollIntoView(false)
     }
   }
-
   render () {
     return (
       <IDEConsoleSection>
-        <ConsoleBar />
+        <ConsoleBar clearConsoleClicked={this.props.clearConsoleLogs} />
         <StyledConsole innerRef={ref => { this.consoleRef = ref }}>
           <LogEntries
             logs={this.props.logs}
@@ -83,6 +83,8 @@ const mapStateToProps = state => ({
   logs: state.consoleLog.logs
 })
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = {
+  clearConsoleLogs: actions.clearConsoleLogs
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(IDEConsole)
