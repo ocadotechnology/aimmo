@@ -9,12 +9,11 @@ from urllib.parse import parse_qs
 
 import aiohttp_cors
 import socketio
+from activity_monitor import ActivityMonitor
 from aiohttp import web
 from aiohttp_wsgi import WSGIHandler
-from prometheus_client import make_wsgi_app
-
-from activity_monitor import ActivityMonitor
 from authentication import initialize_game_token
+from prometheus_client import make_wsgi_app
 from simulation import map_generator
 from simulation.django_communicator import DjangoCommunicator
 from simulation.game_runner import GameRunner
@@ -135,7 +134,6 @@ class GameAPI(object):
             query = environ["QUERY_STRING"]
             avatar_id = self._find_avatar_id_from_query(sid, query)
             await self.socketio_server.save_session(sid, {"id": avatar_id})
-            await self.send_updates(sid)
 
         return world_update_on_connect
 
@@ -196,7 +194,10 @@ class GameAPI(object):
 
     async def _send_game_state(self, sid):
         serialized_game_state = self.game_state.serialize()
-        await self.socketio_server.emit("game-state", serialized_game_state, room=sid)
+        session_data = await self.socketio_server.get_session(sid)
+        worker = self.worker_manager.player_id_to_worker[session_data["id"]]
+        if worker.ready:
+            await self.socketio_server.emit("game-state", serialized_game_state, room=sid)
 
     async def _send_have_avatars_code_updated(self, sid):
         session_data = await self.socketio_server.get_session(sid)

@@ -15,6 +15,7 @@ class Worker(object):
         self.serialized_action = None
         self.has_code_updated = False
         self.url = self._create_worker()
+        self.ready = False
 
     def _set_defaults(self):
         self.log = None
@@ -37,6 +38,7 @@ class Worker(object):
                 self.serialized_action = data["action"]
                 self.log = data["log"]
                 self.has_code_updated = data["avatar_updated"]
+                self.ready = True
         except ClientResponseError:
             LOGGER.info("Could not connect to worker, probably not ready yet")
             self._set_defaults()

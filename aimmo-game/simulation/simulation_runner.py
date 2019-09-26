@@ -71,8 +71,6 @@ class SimulationRunner(object):
     def _update_map(self, num_avatars):
         context = MapContext(num_avatars=num_avatars)
         MapExpander().update(self.game_state.world_map, context=context)
-        ScoreLocationUpdater().update(self.game_state.world_map, context=context)
-        PickupUpdater().update(self.game_state.world_map, context=context)
 
     def _mark_complete(self):
         self.communicator.mark_game_complete(data=self.game_state.serialize())
