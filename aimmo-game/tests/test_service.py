@@ -105,7 +105,7 @@ class TestService(TestCase):
         The JSON returns the correct amount of pickups.
         """
         interactable_list = self.world_state_json["interactables"]
-        self.assertEqual(len(interactable_list), 0)
+        self.assertEqual(len(interactable_list), 3)
 
     def test_correct_json_world_obstacles(self):
         """
