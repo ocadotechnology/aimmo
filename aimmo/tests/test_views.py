@@ -465,3 +465,4 @@ class TestViews(TestCase):
         game = models.Game.objects.get(pk=2)
         avatar = game.avatar_set.get(owner=client.session["_auth_user_id"])
         self.assertIsNotNone(avatar)
+

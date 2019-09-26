@@ -9,7 +9,6 @@ describe('gameReducer', () => {
 
   it('should handle SOCKET_GAME_STATE_RECEIVED', () => {
     const expectedState = {
-      gameLoaded: true,
       gameState: {
         id: 1
       },
@@ -35,6 +34,15 @@ describe('gameReducer', () => {
       initialState: 'someValue'
     }
     const action = actions.snackbarShown()
+    expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
+  })
+
+  it('should handle GAME_DATA_LOADED', () => {
+    const expectedState = {
+      gameDataLoaded: true,
+      initialState: 'someValue'
+    }
+    const action = actions.gameDataLoaded()
     expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
   })
 

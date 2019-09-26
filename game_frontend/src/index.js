@@ -41,10 +41,10 @@ const initialState = {
     connectionParameters: {
       game_id: getGameIDFromURL() || 1
     },
+    gameDataLoaded: false,
     showSnackbar: false,
     snackbarMessage: '',
-    timeoutStatus: false,
-    gameLoaded: false
+    timeoutStatus: false
   },
   consoleLog: {
     logs: []

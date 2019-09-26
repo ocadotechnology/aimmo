@@ -17,7 +17,9 @@ router.register(r"games", views.GameViewSet)
 urlpatterns = [
     url(
         r"^$",
-        login_required(TemplateView.as_view(template_name="players/home.html")),
+        login_required(
+            TemplateView.as_view(template_name="players/home.html")
+        ),
         name="kurono/home",
     ),
     url(r"^accounts/login/$", auth_views.login, name="kurono/login"),
@@ -33,7 +35,9 @@ urlpatterns = [
         name="kurono/logout_success",
     ),
     url(
-        r"^play/(?P<id>[0-9]+)/$", login_required(views.watch_game), name="kurono/play"
+        r"^play/(?P<id>[0-9]+)/$",
+        login_required(views.watch_game),
+        name="kurono/play",
     ),
     url(
         r"^statistics/$",

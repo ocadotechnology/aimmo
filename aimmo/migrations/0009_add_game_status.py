@@ -7,16 +7,14 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [("aimmo", "0008_default_public_field")]
+    dependencies = [
+        ('aimmo', '0008_default_public_field'),
+    ]
 
     operations = [
         migrations.AddField(
-            model_name="game",
-            name="status",
-            field=models.CharField(
-                choices=[(b"r", b"running"), (b"s", b"stopped"), (b"p", b"paused")],
-                default=b"r",
-                max_length=1,
-            ),
-        )
+            model_name='game',
+            name='status',
+            field=models.CharField(choices=[(b'r', b'running'), (b's', b'stopped'), (b'p', b'paused')], default=b'r', max_length=1),
+        ),
     ]

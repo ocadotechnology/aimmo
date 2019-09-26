@@ -5,8 +5,7 @@ const gameReducer = (state = {}, action) => {
     case types.SOCKET_GAME_STATE_RECEIVED:
       return {
         ...state,
-        gameState: action.payload.gameState,
-        gameLoaded: true
+        gameState: action.payload.gameState
       }
     case types.SOCKET_FEEDBACK_AVATAR_UPDATED_SUCCESS:
       return {
@@ -24,6 +23,11 @@ const gameReducer = (state = {}, action) => {
       return {
         ...state,
         showSnackbar: false
+      }
+    case types.GAME_DATA_LOADED:
+      return {
+        ...state,
+        gameDataLoaded: true
       }
     case types.CONNECTION_PARAMETERS_RECEIVED:
       return {

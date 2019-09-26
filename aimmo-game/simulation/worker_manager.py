@@ -53,15 +53,19 @@ class WorkerManager(object):
         for worker in self.player_id_to_worker.values():
             worker.log = None
 
-    async def update_code(self, player):
+    def update_code(self, player):
         self.player_id_to_worker[player["id"]].code = player["code"]
 
-    async def add_new_worker(self, player_id):
+    def add_new_worker(self, player_id):
         self.player_id_to_worker[player_id] = self.worker_class(player_id, self.port)
 
     async def _parallel_map(self, func, iterable_args):
-        futures = [func(arg) for arg in iterable_args]
-        await asyncio.gather(*futures)
+        loop = asyncio.get_event_loop()
+        with futures.ThreadPoolExecutor() as executor:
+            workers: Tuple[Future] = (
+                loop.run_in_executor(executor, func, args) for args in iterable_args
+            )
+            await asyncio.gather(*workers)
 
     async def add_workers(self, users_to_add):
         await self._parallel_map(self.add_new_worker, users_to_add)
@@ -69,7 +73,7 @@ class WorkerManager(object):
     async def delete_workers(self, players_to_delete):
         await self._parallel_map(self.delete_worker, players_to_delete)
 
-    async def delete_worker(self, player_id):
+    def delete_worker(self, player_id):
         if player_id in self.player_id_to_worker:
             worker = self.player_id_to_worker[player_id]
             del self.player_id_to_worker[player_id]

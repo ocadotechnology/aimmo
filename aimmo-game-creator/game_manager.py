@@ -123,7 +123,7 @@ class GameManager(object):
         try:
             LOGGER.info("Waking up")
             games = requests.get(self.games_url).json()
-            LOGGER.debug(f"Received Games: {games}")
+            LOGGER.debug(f"Recieved Games: {games}")
         except (requests.RequestException, ValueError) as ex:
             LOGGER.error("Failed to obtain game data")
             LOGGER.exception(ex)

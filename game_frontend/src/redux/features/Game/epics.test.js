@@ -111,6 +111,25 @@ describe('getConnectionParametersEpic', () => {
   })
 })
 
+describe('gameLoadedEpic', () => {
+  it('dispatches an GAME_LOADED action only when the first game state is received', () => {
+    const testScheduler = createTestScheduler()
+
+    testScheduler.run(({ hot, cold, expectObservable }) => {
+      const action$ = hot('--a--b--b', {
+        a: actions.socketConnectToGameRequest(),
+        b: actions.socketGameStateReceived({})
+      })
+
+      const output$ = epics.gameLoadedEpic(action$)
+
+      expectObservable(output$).toBe('-----c---', {
+        c: actions.gameDataLoaded()
+      })
+    })
+  })
+})
+
 describe('avatarUpdatingTimeoutEpic', () => {
   it('dispatches an SET_TIMEOUT action when we sent code to update the avatar but nothing has come back in 25s', () => {
     const testScheduler = createTestScheduler()
@@ -146,32 +165,13 @@ describe('avatarUpdatingTimeoutEpic', () => {
   })
 })
 
-describe('gameLoadedEpic', () => {
-  it('dispatches an GAME_LOADED action only when the first game state is received', () => {
-    const testScheduler = createTestScheduler()
-
-    testScheduler.run(({ hot, cold, expectObservable }) => {
-      const action$ = hot('--a--b--b', {
-        a: actions.socketConnectToGameRequest(),
-        b: actions.socketGameStateReceived({})
-      })
-
-      const output$ = epics.gameLoadedEpic(action$)
-
-      expectObservable(output$).toBe('-----c---', {
-        c: actions.gameLoaded()
-      })
-    })
-  })
-})
-
 describe('gameLoadedIntervalEpic', () => {
   it('measures the time taken for the game to load and sends a corresponding analytic event', () => {
     const testScheduler = createTestScheduler()
 
     testScheduler.run(({ hot, cold, expectObservable }) => {
       const action$ = hot('-------a-', {
-        a: actions.gameLoaded()
+        a: actions.gameDataLoaded()
       })
 
       const state$ = null
