@@ -30,6 +30,7 @@ class Worker(object):
 
     async def fetch_data(self, state_view):
         if self.code == None:
+            self._set_defaults()
             return
         try:
             async with ClientSession(raise_for_status=True) as session:
