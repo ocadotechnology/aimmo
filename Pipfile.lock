@@ -157,10 +157,10 @@
         },
         "hypothesis": {
             "hashes": [
-                "sha256:523d2742db1ac360aec5d25d4a4caef29889262e3fb13cf5cae7bbe93a284ad0",
-                "sha256:cedceaf41679fe56ba74ad11309bfcf0b84a1e5b1415982412cc8928bb937ffd"
+                "sha256:4143191cc6618c61a64dd26d992f56e1a04ad835945dff250b4ec39a264d4ad6",
+                "sha256:b9a2f630d198d06eb26dd4198524364b8c64c3d79eb7616288be5fcaaebc0a78"
             ],
-            "version": "==4.40.1"
+            "version": "==4.40.2"
         },
         "idna": {
             "hashes": [
@@ -338,7 +338,7 @@
                 "sha256:9d98697f088eb1b0fa451391f91afb5e3ebde16bbdb272819fd091151fda4f1a",
                 "sha256:f0b0e4eba956de51238e17573b7087e852dfe9854afd2e9c873f73fc0ca0a6dd"
             ],
-            "markers": "python_version < '3.4'",
+            "markers": "python_version < '3.2'",
             "version": "==1.5"
         },
         "configparser": {
