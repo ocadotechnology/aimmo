@@ -100,7 +100,7 @@ export default class Camera implements GameNode {
 
     unCenter(mesh: any) {
       if (this.isCentered) {
-        this.object.setTarget(mesh.position)
+        this.object.setTarget(mesh.position.floor())
         this.isCentered = false
       }
     }

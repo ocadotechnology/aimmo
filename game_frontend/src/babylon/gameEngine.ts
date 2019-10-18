@@ -24,10 +24,9 @@ export default class GameEngine {
       this.environmentManager = new EnvironmentManager(this.environment)
       this.entities = new EntityManager(this.environment)
       this.panHandler = handlePanEvent
-      console.log(this.panHandler)
 
       window.addEventListener('resize', this.environmentManager.resizeBabylonWindow)
-      this.addPanListener(this.environment.scene, canvas)
+      this.addPanListener(this.environment.scene)
     }
 
     onUpdate(previousProps: any, currentProps: any) {
@@ -63,7 +62,7 @@ export default class GameEngine {
         window.removeEventListener('resize', this.environmentManager.windowResized)
     }
 
-    addPanListener (scene: BABYLON.Scene, canvas: HTMLCanvasElement) {
+    addPanListener (scene: BABYLON.Scene) {
       scene.onPrePointerObservable.add(pointerInfo => {
         this.environmentManager.unCenter(this.entities.avatars.currentAvatarMesh)
         this.panHandler()
