@@ -67,6 +67,12 @@ const setTimeout = () => ({
   type: types.SET_TIMEOUT
 })
 
+const panEvent = () => (
+  {
+    type: types.PAN_EVENT
+  }
+)
+
 export default {
   socketConnectToGameRequest,
   sendGameStateFail,
@@ -77,5 +83,6 @@ export default {
   socketFeedbackAvatarUpdatedTimeout,
   snackbarShown,
   gameLoaded,
-  setTimeout
+  setTimeout,
+  panEvent
 }

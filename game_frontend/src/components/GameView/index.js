@@ -1,12 +1,11 @@
 import styled from 'styled-components'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import EntityManager from '../../babylon/entities'
-import SceneRenderer from '../../babylon/environment'
-import EnvironmentManager from '../../babylon/environment/environmentManager'
-import { StandardEnvironment } from '../../babylon/environment/environment'
 import { CircularProgress } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography'
+import GameEngine from '../../babylon/gameEngine'
+import { StandardEnvironment } from '../../babylon/environment/environment'
+import { tsParenthesizedType } from '@babel/types'
 
 export const GameViewLayout = styled.div`
   grid-area: game-view;
@@ -37,7 +36,9 @@ export default class GameView extends Component {
     connectToGame: PropTypes.func,
     gameState: PropTypes.object,
     currentAvatarID: PropTypes.number,
-    gameLoaded: PropTypes.bool
+    gameLoaded: PropTypes.bool,
+    cameraCentered: PropTypes.bool,
+    panEvent: PropTypes.func
   }
 
   constructor (props) {
@@ -46,38 +47,16 @@ export default class GameView extends Component {
   }
 
   componentDidMount () {
-    this.setupGameEngine()
+    this.gameEngine = new GameEngine(this.canvas, this.handlePanEvent)
     this.props.connectToGame()
   }
 
   componentDidUpdate (prevProps) {
-    this.updateGameState(prevProps)
-    this.updateCurrentAvatarID(prevProps)
-  }
-
-  setupGameEngine () {
-    this.environment = new this.EnvironmentClass(this.canvas)
-    this.sceneRenderer = new SceneRenderer(this.environment)
-    this.environmentManager = new EnvironmentManager(this.environment)
-    this.entities = new EntityManager(this.environment)
-
-    window.addEventListener('resize', this.environmentManager.resizeBabylonWindow)
-  }
-
-  updateGameState (prevProps) {
-    if (this.props.gameState !== undefined) {
-      this.entities.onGameStateUpdate(prevProps.gameState, this.props.gameState)
-    }
-  }
-
-  updateCurrentAvatarID (prevProps) {
-    if (prevProps.currentAvatarID !== this.props.currentAvatarID) {
-      this.entities.setCurrentAvatarID(this.props.currentAvatarID)
-    }
+    this.gameEngine.onUpdate(prevProps, this.props)
   }
 
   componentWillUnmount () {
-    window.removeEventListener('resize', this.environmentManager.windowResized)
+    this.gameEngine.unmount()
   }
 
   onCanvasLoaded = canvas => {
@@ -85,6 +64,12 @@ export default class GameView extends Component {
       this.canvas = canvas
     }
   }
+
+  handlePanEvent = () => {
+    this.setState({ cameraCentered: false })
+    this.props.panEvent()
+  }
+
 
   renderGameView = () => {
     return (
