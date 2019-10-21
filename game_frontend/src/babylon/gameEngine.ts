@@ -64,8 +64,8 @@ export default class GameEngine {
 
     addPanListener (scene: BABYLON.Scene) {
       scene.onPrePointerObservable.add(pointerInfo => {
-        this.environmentManager.unCenter(this.entities.avatars.currentAvatarMesh)
         this.panHandler()
+        this.environmentManager.unCenter(this.entities.avatars.currentAvatarMesh)
       }, BABYLON.PointerEventTypes.POINTERDOWN, false)
     }
 }
