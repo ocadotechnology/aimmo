@@ -49,4 +49,14 @@ describe('gameReducer', () => {
     const action = actions.connectionParametersReceived({ 'avatar_id': 1 })
     expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
   })
+
+  it('should set cameraCentered to false on PAN_EVENT', () => {
+    const expectedState = {
+      initialState: 'someValue',
+      cameraCentered: false
+    }
+
+    const action = actions.panEvent()
+    expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
+  })
 })

@@ -3,7 +3,6 @@ import { diff } from '../diff'
 import { Environment } from '../environment/environment'
 import InteractableManager from './interactableManager'
 import AvatarManager from './avatarManager'
-import { runInThisContext } from 'vm'
 
 export default class EntityManager {
   environment: Environment

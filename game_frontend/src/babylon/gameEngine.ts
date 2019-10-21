@@ -12,9 +12,9 @@ export default class GameEngine {
     entities: EntityManager
     panHandler: Function
 
-    constructor(canvas: HTMLCanvasElement, handlePanEvent: Function) {
-      if (!canvas) {
-        this.environment = new MockEnvironment()
+    constructor(canvas: HTMLCanvasElement, handlePanEvent: Function, mock: Boolean) {
+      if (mock) {
+        this.environment = new MockEnvironment(true)
       }
       else {
         this.environment = new StandardEnvironment(canvas)

@@ -4,7 +4,6 @@ import GameView, { GameViewLayout, Compass, LoadingBackgroundOverlay } from 'com
 import { shallow } from 'enzyme/build/index'
 import createMountWithTheme from 'testHelpers/createMount'
 import createShallowWithTheme from 'testHelpers/createShallow'
-import { MockEnvironment } from 'testHelpers/mockEnvironment'
 
 describe('<GameView />', () => {
   it('matches snapshot', () => {
@@ -20,24 +19,24 @@ describe('<GameView />', () => {
   it('creates a babylon environment on mount', () => {
     const props = {
       connectToGame: jest.fn(),
-      EnvironmentClass: MockEnvironment
+      mockEnvironment: true
     }
     const component = createMountWithTheme(<GameView {...props} />).instance()
 
-    expect(component.environment).toBeDefined()
-    expect(component.sceneRenderer).toBeDefined()
-    expect(component.environmentManager).toBeDefined()
-    expect(component.entities).toBeDefined()
+    expect(component.gameEngine.environment).toBeDefined()
+    expect(component.gameEngine.sceneRenderer).toBeDefined()
+    expect(component.gameEngine.environmentManager).toBeDefined()
+    expect(component.gameEngine.entities).toBeDefined()
   })
 
   it('updates the CurrentAvatarID', () => {
     const props = {
       connectToGame: jest.fn(),
-      EnvironmentClass: MockEnvironment
+      mockEnvironment: true
     }
     const component = createMountWithTheme(<GameView {...props} />)
     var componentInstance = component.instance()
-    componentInstance.updateCurrentAvatarID = jest.fn()
+    componentInstance.gameEngine.updateCurrentAvatarID = jest.fn()
 
     const newProps = {
       ...props,
@@ -45,7 +44,25 @@ describe('<GameView />', () => {
     }
     component.setProps(newProps)
 
-    expect(componentInstance.updateCurrentAvatarID).toBeCalled()
+    expect(componentInstance.gameEngine.updateCurrentAvatarID).toBeCalled()
+  })
+
+  it('centers camera on cameraCentered', () => {
+    const props = {
+      connectToGame: jest.fn(),
+      mockEnvironment: true
+    }
+    const component = createMountWithTheme(<GameView {...props} />)
+    var componentInstance = component.instance()
+    componentInstance.gameEngine.centerOn = jest.fn()
+
+    const newProps = {
+      ...props,
+      cameraCentered: true
+    }
+    component.setProps(newProps)
+
+    expect(componentInstance.gameEngine.centerOn).toBeCalled()
   })
 
   it('shows the loading screen when the game is loading', () => {

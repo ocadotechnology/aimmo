@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import { CircularProgress } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography'
 import GameEngine from '../../babylon/gameEngine'
-import { StandardEnvironment } from '../../babylon/environment/environment'
 import { tsParenthesizedType } from '@babel/types'
 
 export const GameViewLayout = styled.div`
@@ -43,11 +42,10 @@ export default class GameView extends Component {
 
   constructor (props) {
     super(props)
-    this.EnvironmentClass = this.props.EnvironmentClass ?? StandardEnvironment
   }
 
   componentDidMount () {
-    this.gameEngine = new GameEngine(this.canvas, this.handlePanEvent)
+    this.gameEngine = new GameEngine(this.canvas, this.handlePanEven, this.props.mockEnvironment)
     this.props.connectToGame()
   }
 
