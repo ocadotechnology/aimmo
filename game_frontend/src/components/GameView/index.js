@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import { CircularProgress } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography'
 import GameEngine from '../../babylon/gameEngine'
-import { tsParenthesizedType } from '@babel/types'
 
 export const GameViewLayout = styled.div`
   grid-area: game-view;
@@ -36,8 +35,8 @@ export default class GameView extends Component {
     gameState: PropTypes.object,
     currentAvatarID: PropTypes.number,
     gameLoaded: PropTypes.bool,
-    cameraCentered: PropTypes.bool,
-    panEvent: PropTypes.func
+    cameraCenteredOnUserAvatar: PropTypes.bool,
+    mapPanned: PropTypes.func
   }
 
   constructor (props) {
@@ -45,7 +44,7 @@ export default class GameView extends Component {
   }
 
   componentDidMount () {
-    this.gameEngine = new GameEngine(this.canvas, this.handlePanEvent, this.props.mockEnvironment)
+    this.gameEngine = new GameEngine(this.canvas, this.handleMapPanned, this.props.mockEnvironment)
     this.props.connectToGame()
   }
 
@@ -63,9 +62,8 @@ export default class GameView extends Component {
     }
   }
 
-  handlePanEvent = () => {
-    this.setState({ cameraCentered: false })
-    this.props.panEvent()
+  handleMapPanned = () => {
+    this.props.mapPanned()
   }
 
 

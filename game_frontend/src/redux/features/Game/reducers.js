@@ -33,10 +33,10 @@ const gameReducer = (state = {}, action) => {
           currentAvatarID: action.payload.parameters['avatar_id']
         }
       }
-    case types.PAN_EVENT:
+    case types.MAP_PANNED:
       return {
         ...state,
-        cameraCentered: false
+        cameraCenteredOnUserAvatar: false
       }
     default:
       return state

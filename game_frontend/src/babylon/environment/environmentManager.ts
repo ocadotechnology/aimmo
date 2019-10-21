@@ -22,11 +22,11 @@ export default class EnvironmentManager {
       this.camera.computeCameraView(this.environment.canvas)
     }
 
-    centerOn(mesh: any): void {
+    centerOn (mesh: any): void {
       this.camera.centerOn(mesh)
     }
 
-    unCenter(mesh: any): void {
+    unCenter (mesh: any): void {
       this.camera.unCenter(mesh)
     }
 }

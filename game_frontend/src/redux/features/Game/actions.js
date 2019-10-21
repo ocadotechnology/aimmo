@@ -67,9 +67,9 @@ const setTimeout = () => ({
   type: types.SET_TIMEOUT
 })
 
-const panEvent = () => (
+const mapPanned = () => (
   {
-    type: types.PAN_EVENT
+    type: types.MAP_PANNED
   }
 )
 
@@ -84,5 +84,5 @@ export default {
   snackbarShown,
   gameLoaded,
   setTimeout,
-  panEvent
+  mapPanned
 }

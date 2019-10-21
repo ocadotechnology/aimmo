@@ -2,7 +2,6 @@ import { GameNode } from '../interfaces'
 import * as BABYLON from 'babylonjs'
 import { Environment } from './environment'
 
-
 const ZOOM_LOWER_BOUND = 5
 const ZOOM_UPPER_BOUND = 15
 const ZOOM_COEFFICIENT = 20
@@ -15,14 +14,14 @@ export default class Camera implements GameNode {
     frustum: number
     zoomFactor: number
     view: BABYLON.Vector2
-    isCentered: Boolean
+    isCenteredOnUserAvatar: Boolean
 
     constructor (environment: Environment) {
       const camera = new BABYLON.ArcRotateCamera('camera1', 0, 0.785, 50, BABYLON.Vector3.Zero(), environment.scene)
       this.frustum = 7.5
       this.zoomFactor = 0
       this.object = camera
-      this.isCentered = false
+      this.isCenteredOnUserAvatar = false
 
       camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA
       camera.orthoTop = 5
@@ -91,17 +90,17 @@ export default class Camera implements GameNode {
       this.object.orthoRight = (this.frustum + this.zoomFactor) * this.view.x
     }
 
-    centerOn(mesh: any) {
-      if (!this.isCentered) {
+    centerOn (mesh: any) {
+      if (!this.isCenteredOnUserAvatar) {
         this.object.setTarget(mesh)
-        this.isCentered = true
+        this.isCenteredOnUserAvatar = true
       }
     }
 
-    unCenter(mesh: any) {
-      if (this.isCentered) {
+    unCenter (mesh: any) {
+      if (this.isCenteredOnUserAvatar) {
         this.object.setTarget(mesh.position.floor())
-        this.isCentered = false
+        this.isCenteredOnUserAvatar = false
       }
     }
 }

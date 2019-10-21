@@ -35,7 +35,7 @@ describe('<GameView />', () => {
       mockEnvironment: true
     }
     const component = createMountWithTheme(<GameView {...props} />)
-    var componentInstance = component.instance()
+    const componentInstance = component.instance()
     componentInstance.gameEngine.updateCurrentAvatarID = jest.fn()
 
     const newProps = {
@@ -47,18 +47,18 @@ describe('<GameView />', () => {
     expect(componentInstance.gameEngine.updateCurrentAvatarID).toBeCalled()
   })
 
-  it('centers camera on cameraCentered', () => {
+  it('centers camera on cameraCenteredOnUserAvatar', () => {
     const props = {
       connectToGame: jest.fn(),
       mockEnvironment: true
     }
     const component = createMountWithTheme(<GameView {...props} />)
-    var componentInstance = component.instance()
+    const componentInstance = component.instance()
     componentInstance.gameEngine.centerOn = jest.fn()
 
     const newProps = {
       ...props,
-      cameraCentered: true
+      cameraCenteredOnUserAvatar: true
     }
     component.setProps(newProps)
 

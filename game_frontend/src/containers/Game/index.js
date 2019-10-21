@@ -39,8 +39,8 @@ export class Game extends Component {
           gameState={this.props.gameState}
           currentAvatarID={this.props.currentAvatarID}
           gameLoaded={this.props.gameLoaded}
-          cameraCentered={this.props.cameraCentered}
-          panEvent={this.props.panEvent}
+          cameraCenteredOnUserAvatar={this.props.cameraCenteredOnUserAvatar}
+          mapPanned={this.props.mapPanned}
         />
         <Snackbar
           type='success'
@@ -58,7 +58,7 @@ export class Game extends Component {
 const mapDispatchToProps = {
   connectToGame: actions.socketConnectToGameRequest,
   snackbarShown: actions.snackbarShown,
-  panEvent: actions.panEvent
+  mapPanned: actions.mapPanned
 }
 
 const mapStateToProps = state => ({
@@ -67,7 +67,7 @@ const mapStateToProps = state => ({
   gameState: state.game.gameState,
   currentAvatarID: state.game.connectionParameters.currentAvatarID,
   gameLoaded: state.game.gameLoaded,
-  cameraCentered: state.game.cameraCentered
+  cameraCenteredOnUserAvatar: state.game.cameraCenteredOnUserAvatar
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game)
