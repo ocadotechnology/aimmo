@@ -45,7 +45,7 @@ export default class GameView extends Component {
   }
 
   componentDidMount () {
-    this.gameEngine = new GameEngine(this.canvas, this.handlePanEven, this.props.mockEnvironment)
+    this.gameEngine = new GameEngine(this.canvas, this.handlePanEvent, this.props.mockEnvironment)
     this.props.connectToGame()
   }
 
