@@ -60,7 +60,7 @@ describe('AvatarManager', () => {
 
     avatars.add(avatar)
 
-    let  avatarNodeDescendants = avatars.avatarNode.getChildMeshes()
+    let avatarNodeDescendants = avatars.avatarNode.getChildMeshes()
     expect(avatars.currentAvatarMesh).toEqual(avatarNodeDescendants[0])
   })
 
