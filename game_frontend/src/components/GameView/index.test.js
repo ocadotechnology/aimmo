@@ -29,33 +29,16 @@ describe('<GameView />', () => {
     expect(component.gameEngine.entities).toBeDefined()
   })
 
-  it('updates the CurrentAvatarID', () => {
-    const props = {
-      connectToGame: jest.fn(),
-      mockEnvironment: true
-    }
-    const component = createMountWithTheme(<GameView {...props} />)
-    const componentInstance = component.instance()
-    componentInstance.gameEngine.updateCurrentAvatarID = jest.fn()
-
-    const newProps = {
-      ...props,
-      currentAvatarID: 1
-    }
-    component.setProps(newProps)
-
-    expect(componentInstance.gameEngine.updateCurrentAvatarID).toBeCalled()
-  })
-
   it('updates the game Engine', () => {
     const props = {
       connectToGame: jest.fn(),
-      mockEnvironment: true
+      mockEnvironment: true,
+      currentAvatarID: 2
     }
     const component = createMountWithTheme(<GameView {...props} />)
     const componentInstance = component.instance()
-    componentInstance.gameEngine.updateGameState = jest.fn()
-    componentInstance.gameEngine.updateCurrentAvatarID = jest.fn()
+    componentInstance.gameEngine.entities.onGameStateUpdate = jest.fn()
+    componentInstance.gameEngine.entities.setCurrentAvatarID = jest.fn()
     componentInstance.gameEngine.centerOn = jest.fn()
 
     const newProps = {
@@ -67,8 +50,8 @@ describe('<GameView />', () => {
     }
     component.setProps(newProps)
 
-    expect(componentInstance.gameEngine.updateGameState).toBeCalled()
-    expect(componentInstance.gameEngine.updateCurrentAvatarID).toBeCalled()
+    expect(componentInstance.gameEngine.entities.onGameStateUpdate).toBeCalled()
+    expect(componentInstance.gameEngine.entities.setCurrentAvatarID).toBeCalled()
     expect(componentInstance.gameEngine.centerOn).toBeCalled()
   })
 
