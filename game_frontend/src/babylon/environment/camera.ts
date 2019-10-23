@@ -90,16 +90,17 @@ export default class Camera implements GameNode {
       this.object.orthoRight = (this.frustum + this.zoomFactor) * this.view.x
     }
 
-    centerOn (mesh: any) {
+    centerOn (mesh: BABYLON.AbstractMesh) {
       if (!this.isCenteredOnUserAvatar) {
         this.object.setTarget(mesh)
         this.isCenteredOnUserAvatar = true
       }
     }
 
-    unCenter (mesh: any) {
+    unCenter (mesh: BABYLON.AbstractMesh) {
       if (this.isCenteredOnUserAvatar) {
-        this.object.setTarget(mesh.position.floor())
+        let position = mesh.position.clone()
+        this.object.setTarget(position)
         this.isCenteredOnUserAvatar = false
       }
     }

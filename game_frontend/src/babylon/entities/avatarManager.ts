@@ -9,7 +9,7 @@ const MARKER_HEIGHT = 12
 
 export default class AvatarManager implements GameNode, DiffHandling {
   object: any
-  currentAvatarMesh: any
+  currentAvatarMesh: BABYLON.AbstractMesh
   scene: BABYLON.Scene
   avatarNode: BABYLON.TransformNode
   markerMaterial : BABYLON.StandardMaterial
