@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import React from 'react'
-import GameView, { GameViewLayout, Compass, LoadingBackgroundOverlay } from 'components/GameView'
+import GameView, { GameViewLayout, Compass, LoadingBackgroundOverlay, StyledFindMe } from 'components/GameView'
 import { shallow } from 'enzyme/build/index'
 import createMountWithTheme from 'testHelpers/createMount'
 import createShallowWithTheme from 'testHelpers/createShallow'
@@ -69,6 +69,13 @@ describe('<GameViewLayout />', () => {
 describe('<Compass />', () => {
   it('matches snapshot', () => {
     const tree = createShallowWithTheme(<Compass />)
+    expect(tree).toMatchSnapshot()
+  })
+})
+
+describe('<StyledFindMe />', () => {
+  it('matches snapshot', () => {
+    const tree = createShallowWithTheme(<StyledFindMe />)
     expect(tree).toMatchSnapshot()
   })
 })

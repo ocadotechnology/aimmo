@@ -92,3 +92,14 @@ exports[`<LoadingBackgroundOverlay /> matches snapshot 1`] = `
   className="c0"
 />
 `;
+
+exports[`<StyledFindMe /> matches snapshot 1`] = `
+.c0 {
+  height: 60px;
+  padding-right: 8px;
+}
+
+<img
+  className="c0"
+/>
+`;
