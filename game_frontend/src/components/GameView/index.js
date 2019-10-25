@@ -107,7 +107,7 @@ export default class GameView extends Component {
     return (
       <OverlayIcons>
         <Compass src='/static/images/compass.svg' />
-        <StyledFindMe src='/static/images/findme.svg' onClick={this.props.findMeButtonClicked()}/>
+        <StyledFindMe src='/static/images/findme.svg' onClick={this.props.findMeButtonClicked}/>
       </OverlayIcons>
     )
   }
