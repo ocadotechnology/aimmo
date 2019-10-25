@@ -13,22 +13,22 @@ export const GameViewLayout = styled.div`
 `
 
 export const LoadingBackgroundOverlay = styled.div`
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
   background-color: ${props => props.theme.palette.primary.contrastText};
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
 `
 
 export const OverlayIcons = styled.div`
-  position: absolute;
-  display: flex;
+  align-items: center;
   bottom: 0;
-  align-content: center;
+  display: flex;
   justify-content: space-between;
-  width: 60%;
+  position: absolute;
+  width: 50%;
 `
 
 export const LoadingText = styled(Typography)`
@@ -36,14 +36,13 @@ export const LoadingText = styled(Typography)`
 `
 
 export const Compass = styled.img`
-  bottom: ${props => props.theme.spacing()}px;
+  padding-bottom: ${props => props.theme.spacing()}px;
   padding-left: ${props => props.theme.spacing()}px;
 `
 
 export const StyledFindMe = styled.img`
-  bottom: ${props => props.theme.spacing(6)}px;
-  /* padding-left: ${props => props.theme.spacing()}px; */
-  transform: scale(6);
+  height: 60px;
+  padding-right: ${props => props.theme.spacing()}px;
 `
 
 export default class GameView extends Component {
@@ -103,8 +102,8 @@ export default class GameView extends Component {
   renderGameView = () => {
     return (
       <canvas
-      style={{ width: '100%', height: '100%' }}
-      ref={this.onCanvasLoaded}
+        style={{ width: '100%', height: '100%' }}
+        ref={this.onCanvasLoaded}
       />
     )
   }
@@ -112,22 +111,21 @@ export default class GameView extends Component {
   renderLoadingScreen = () => {
     return (
       <LoadingBackgroundOverlay>
-          <CircularProgress color='inherit' />
-          <LoadingText
-            variant='body1'
-            color='inherit'>
-            Building game world...
-          </LoadingText>
-        </LoadingBackgroundOverlay>
-      )
+        <CircularProgress color='inherit'/>
+        <LoadingText
+          variant='body1'
+          color='inherit'>
+          Building game world...
+        </LoadingText>
+      </LoadingBackgroundOverlay>
+    )
   }
-
 
   renderIcons = () => {
     return (
       <OverlayIcons>
         <Compass src='/static/images/compass.svg' />
-        <img src='/static/images/findme.svg' />
+        <StyledFindMe src='/static/images/findme.svg'/>
       </OverlayIcons>
     )
   }
