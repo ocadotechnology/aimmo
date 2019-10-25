@@ -59,4 +59,14 @@ describe('gameReducer', () => {
     const action = actions.mapPanned()
     expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
   })
+
+  it('should set cameraCenteredOnUserAvatar to true on FIND_ME_BUTTON_CLICKED', () => {
+    const expectedState = {
+      initialState: 'someValue',
+      cameraCenteredOnUserAvatar: true
+    }
+
+    const action = actions.findMeButtonClicked()
+    expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
+  })
 })

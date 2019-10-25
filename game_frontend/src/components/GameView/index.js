@@ -49,7 +49,8 @@ export default class GameView extends Component {
     currentAvatarID: PropTypes.number,
     gameLoaded: PropTypes.bool,
     cameraCenteredOnUserAvatar: PropTypes.bool,
-    mapPanned: PropTypes.func
+    mapPanned: PropTypes.func,
+    findMeButtonClicked: PropTypes.func
   }
 
   constructor (props) {
@@ -106,7 +107,7 @@ export default class GameView extends Component {
     return (
       <OverlayIcons>
         <Compass src='/static/images/compass.svg' />
-        <StyledFindMe src='/static/images/findme.svg'/>
+        <StyledFindMe src='/static/images/findme.svg' onClick={this.props.findMeButtonClicked()}/>
       </OverlayIcons>
     )
   }

@@ -41,6 +41,7 @@ export class Game extends Component {
           gameLoaded={this.props.gameLoaded}
           cameraCenteredOnUserAvatar={this.props.cameraCenteredOnUserAvatar}
           mapPanned={this.props.mapPanned}
+          findMeButtonClicked={this.props.findMeButtonClicked}
         />
         <Snackbar
           type='success'
@@ -58,7 +59,8 @@ export class Game extends Component {
 const mapDispatchToProps = {
   connectToGame: actions.socketConnectToGameRequest,
   snackbarShown: actions.snackbarShown,
-  mapPanned: actions.mapPanned
+  mapPanned: actions.mapPanned,
+  findMeButtonClicked: actions.findMeButtonClicked
 }
 
 const mapStateToProps = state => ({

@@ -38,6 +38,11 @@ const gameReducer = (state = {}, action) => {
         ...state,
         cameraCenteredOnUserAvatar: false
       }
+    case types.FIND_ME_BUTTON_CLICKED:
+      return {
+        ...state,
+        cameraCenteredOnUserAvatar: true
+      }
     default:
       return state
   }

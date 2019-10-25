@@ -73,6 +73,12 @@ const mapPanned = () => (
   }
 )
 
+const findMeButtonClicked = () => (
+  {
+    type: types.FIND_ME_BUTTON_CLICKED
+  }
+)
+
 export default {
   socketConnectToGameRequest,
   sendGameStateSuccess,
@@ -84,5 +90,6 @@ export default {
   snackbarShown,
   gameLoaded,
   setTimeout,
-  mapPanned
+  mapPanned,
+  findMeButtonClicked
 }
