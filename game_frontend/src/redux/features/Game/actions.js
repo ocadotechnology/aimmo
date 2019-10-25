@@ -75,8 +75,8 @@ const mapPanned = () => (
 
 export default {
   socketConnectToGameRequest,
-  sendGameStateFail,
   sendGameStateSuccess,
+  sendGameStateFail,
   socketGameStateReceived,
   connectionParametersReceived,
   socketFeedbackAvatarUpdatedSuccess,
