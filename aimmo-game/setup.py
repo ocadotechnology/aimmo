@@ -25,7 +25,7 @@ setup(
     setup_requires=["pytest-runner"],
     tests_require=[
         "socketIO-client",
-        "pytest>=5.2, <6",
+        "pytest==4.1.1",
         "pytest-asyncio==0.10.0",
         "pytest-mock",
         "asynctest",
