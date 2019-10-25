@@ -2,9 +2,7 @@
 
 exports[`<Compass /> matches snapshot 1`] = `
 .c0 {
-  position: -webkit-sticky;
-  position: sticky;
-  bottom: 8px;
+  padding-bottom: 8px;
   padding-left: 8px;
 }
 
@@ -23,9 +21,14 @@ exports[`<GameView /> matches snapshot 1`] = `
       }
     }
   />
-  <styled.img
-    src="/static/images/compass.svg"
-  />
+  <styled.div>
+    <styled.img
+      src="/static/images/compass.svg"
+    />
+    <styled.img
+      src="/static/images/findme.svg"
+    />
+  </styled.div>
 </styled.div>
 `;
 
@@ -65,8 +68,11 @@ exports[`<GameViewLayout /> matches snapshot 1`] = `
 
 exports[`<LoadingBackgroundOverlay /> matches snapshot 1`] = `
 .c0 {
-  height: 100%;
-  width: 100%;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  background-color: #fff;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -74,15 +80,12 @@ exports[`<LoadingBackgroundOverlay /> matches snapshot 1`] = `
   -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
+  height: 100%;
   -webkit-box-pack: center;
   -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  background-color: #fff;
+  width: 100%;
 }
 
 <div
