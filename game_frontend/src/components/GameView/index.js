@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { CircularProgress } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography'
 import GameEngine from '../../babylon/gameEngine'
+import FindMeButton from 'components/FindMeButton'
 
 export const GameViewLayout = styled.div`
   grid-area: game-view;
@@ -37,9 +38,8 @@ export const Compass = styled.img`
   padding-left: ${props => props.theme.spacing()}px;
 `
 
-export const StyledFindMe = styled.img`
-  height: 60px;
-  padding-right: ${props => props.theme.spacing()}px;
+export const PositionedFindMeButton = styled(FindMeButton)`
+  right: ${props => props.theme.spacing(3)}px;
 `
 
 export default class GameView extends Component {
@@ -107,7 +107,9 @@ export default class GameView extends Component {
     return (
       <OverlayIcons>
         <Compass src='/static/images/compass.svg' />
-        <StyledFindMe src='/static/images/findme.svg' onClick={this.props.findMeButtonClicked}/>
+        <PositionedFindMeButton
+          aria-label='Find Me'
+          whenClicked={this.props.findMeButtonClicked}/>
       </OverlayIcons>
     )
   }

@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import React from 'react'
-import GameView, { GameViewLayout, Compass, LoadingBackgroundOverlay, StyledFindMe } from 'components/GameView'
+import GameView, { GameViewLayout, Compass, LoadingBackgroundOverlay, PositionedFindMeButton } from 'components/GameView'
 import { shallow } from 'enzyme/build/index'
 import createMountWithTheme from 'testHelpers/createMount'
 import createShallowWithTheme from 'testHelpers/createShallow'
@@ -99,9 +99,9 @@ describe('<Compass />', () => {
   })
 })
 
-describe('<StyledFindMe />', () => {
+describe('<PositionedFindMeButton/>', () => {
   it('matches snapshot', () => {
-    const tree = createShallowWithTheme(<StyledFindMe />)
+    const tree = createShallowWithTheme(<PositionedFindMeButton />)
     expect(tree).toMatchSnapshot()
   })
 })
