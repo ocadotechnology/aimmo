@@ -22,14 +22,28 @@ export const LoadingBackgroundOverlay = styled.div`
   background-color: ${props => props.theme.palette.primary.contrastText};
 `
 
+export const OverlayIcons = styled.div`
+  position: absolute;
+  display: flex;
+  bottom: 0;
+  align-content: center;
+  justify-content: space-between;
+  width: 60%;
+`
+
 export const LoadingText = styled(Typography)`
   padding-top: ${props => props.theme.spacing(2)}px;
 `
 
 export const Compass = styled.img`
-  position: sticky;
   bottom: ${props => props.theme.spacing()}px;
   padding-left: ${props => props.theme.spacing()}px;
+`
+
+export const StyledFindMe = styled.img`
+  bottom: ${props => props.theme.spacing(6)}px;
+  /* padding-left: ${props => props.theme.spacing()}px; */
+  transform: scale(6);
 `
 
 export default class GameView extends Component {
@@ -108,9 +122,13 @@ export default class GameView extends Component {
       )
   }
 
-  renderCompass = () => {
+
+  renderIcons = () => {
     return (
-      <Compass src='/static/images/compass.svg' />
+      <OverlayIcons>
+        <Compass src='/static/images/compass.svg' />
+        <img src='/static/images/findme.svg' />
+      </OverlayIcons>
     )
   }
 
@@ -119,7 +137,7 @@ export default class GameView extends Component {
       <GameViewLayout>
         {!this.props.gameLoaded && this.renderLoadingScreen()}
         {this.renderGameView()}
-        {this.props.gameLoaded && this.renderCompass()}
+        {this.props.gameLoaded && this.renderIcons()}
       </GameViewLayout>
     )
   }
