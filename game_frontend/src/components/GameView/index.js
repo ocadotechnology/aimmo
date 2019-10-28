@@ -22,15 +22,6 @@ export const LoadingBackgroundOverlay = styled.div`
   width: 100%;
 `
 
-export const OverlayIcons = styled.div`
-  align-items: center;
-  bottom: 0;
-  display: flex;
-  justify-content: space-between;
-  position: absolute;
-  width: 50%;
-`
-
 export const LoadingText = styled(Typography)`
   padding-top: ${props => props.theme.spacing(2)}px;
 `
@@ -38,6 +29,7 @@ export const LoadingText = styled(Typography)`
 export const Compass = styled.img`
   padding-bottom: ${props => props.theme.spacing()}px;
   padding-left: ${props => props.theme.spacing()}px;
+  position: sticky;
 `
 
 export default class GameView extends Component {
@@ -117,7 +109,9 @@ export default class GameView extends Component {
   }
 
   renderCompass = () => {
+    return (
       <Compass src='/static/images/compass.svg' />
+    )
   }
 
   render () {
