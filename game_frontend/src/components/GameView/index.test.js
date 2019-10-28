@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import React from 'react'
-import GameView, { GameViewLayout, Compass, LoadingBackgroundOverlay, StyledFindMe } from 'components/GameView'
+import GameView, { GameViewLayout, Compass, LoadingBackgroundOverlay } from 'components/GameView'
 import { shallow } from 'enzyme/build/index'
 import createMountWithTheme from 'testHelpers/createMount'
 import createShallowWithTheme from 'testHelpers/createShallow'
