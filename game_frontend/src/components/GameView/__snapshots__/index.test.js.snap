@@ -21,14 +21,6 @@ exports[`<GameView /> matches snapshot 1`] = `
       }
     }
   />
-  <styled.div>
-    <styled.img
-      src="/static/images/compass.svg"
-    />
-    <styled.img
-      src="/static/images/findme.svg"
-    />
-  </styled.div>
 </styled.div>
 `;
 
@@ -89,17 +81,6 @@ exports[`<LoadingBackgroundOverlay /> matches snapshot 1`] = `
 }
 
 <div
-  className="c0"
-/>
-`;
-
-exports[`<StyledFindMe /> matches snapshot 1`] = `
-.c0 {
-  height: 60px;
-  padding-right: 8px;
-}
-
-<img
   className="c0"
 />
 `;

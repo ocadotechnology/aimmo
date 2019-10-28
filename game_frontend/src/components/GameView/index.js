@@ -40,11 +40,6 @@ export const Compass = styled.img`
   padding-left: ${props => props.theme.spacing()}px;
 `
 
-export const StyledFindMe = styled.img`
-  height: 60px;
-  padding-right: ${props => props.theme.spacing()}px;
-`
-
 export default class GameView extends Component {
   static propTypes = {
     connectToGame: PropTypes.func,
@@ -121,13 +116,8 @@ export default class GameView extends Component {
     )
   }
 
-  renderIcons = () => {
-    return (
-      <OverlayIcons>
-        <Compass src='/static/images/compass.svg' />
-        <StyledFindMe src='/static/images/findme.svg'/>
-      </OverlayIcons>
-    )
+  renderCompass = () => {
+      <Compass src='/static/images/compass.svg' />
   }
 
   render () {
@@ -135,7 +125,7 @@ export default class GameView extends Component {
       <GameViewLayout>
         {!this.props.gameLoaded && this.renderLoadingScreen()}
         {this.renderGameView()}
-        {this.props.gameLoaded && this.renderIcons()}
+        {this.props.gameLoaded && this.renderCompass()}
       </GameViewLayout>
     )
   }

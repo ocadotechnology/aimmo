@@ -73,13 +73,6 @@ describe('<Compass />', () => {
   })
 })
 
-describe('<StyledFindMe />', () => {
-  it('matches snapshot', () => {
-    const tree = createShallowWithTheme(<StyledFindMe />)
-    expect(tree).toMatchSnapshot()
-  })
-})
-
 describe('<LoadingBackgroundOverlay />', () => {
   it('matches snapshot', () => {
     const tree = createShallowWithTheme(<LoadingBackgroundOverlay />)
