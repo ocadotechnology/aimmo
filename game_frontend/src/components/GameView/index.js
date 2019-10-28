@@ -13,13 +13,13 @@ export const GameViewLayout = styled.div`
 `
 
 export const LoadingBackgroundOverlay = styled.div`
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
   background-color: ${props => props.theme.palette.primary.contrastText};
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
 `
 
 export const LoadingText = styled(Typography)`
@@ -27,9 +27,9 @@ export const LoadingText = styled(Typography)`
 `
 
 export const Compass = styled.img`
-  position: sticky;
-  bottom: ${props => props.theme.spacing()}px;
+  padding-bottom: ${props => props.theme.spacing()}px;
   padding-left: ${props => props.theme.spacing()}px;
+  position: sticky;
 `
 
 export default class GameView extends Component {
@@ -89,8 +89,8 @@ export default class GameView extends Component {
   renderGameView = () => {
     return (
       <canvas
-      style={{ width: '100%', height: '100%' }}
-      ref={this.onCanvasLoaded}
+        style={{ width: '100%', height: '100%' }}
+        ref={this.onCanvasLoaded}
       />
     )
   }
@@ -98,14 +98,14 @@ export default class GameView extends Component {
   renderLoadingScreen = () => {
     return (
       <LoadingBackgroundOverlay>
-          <CircularProgress color='inherit' />
-          <LoadingText
-            variant='body1'
-            color='inherit'>
-            Building game world...
-          </LoadingText>
-        </LoadingBackgroundOverlay>
-      )
+        <CircularProgress color='inherit'/>
+        <LoadingText
+          variant='body1'
+          color='inherit'>
+          Building game world...
+        </LoadingText>
+      </LoadingBackgroundOverlay>
+    )
   }
 
   renderCompass = () => {
