@@ -4,6 +4,7 @@ import GameView, { GameViewLayout, Compass, LoadingBackgroundOverlay } from 'com
 import { shallow } from 'enzyme/build/index'
 import createMountWithTheme from 'testHelpers/createMount'
 import createShallowWithTheme from 'testHelpers/createShallow'
+import { MockEnvironment } from 'testHelpers/mockEnvironment'
 
 describe('<GameView />', () => {
   it('matches snapshot', () => {
@@ -19,7 +20,7 @@ describe('<GameView />', () => {
   it('creates a babylon environment on mount', () => {
     const props = {
       connectToGame: jest.fn(),
-      mockEnvironment: true
+      environment: new MockEnvironment(true)
     }
     const component = createMountWithTheme(<GameView {...props} />).instance()
 
@@ -32,7 +33,7 @@ describe('<GameView />', () => {
   it('updates the game Engine', () => {
     const props = {
       connectToGame: jest.fn(),
-      mockEnvironment: true,
+      environment: new MockEnvironment(true),
       currentAvatarID: 2
     }
     const component = createMountWithTheme(<GameView {...props} />)
@@ -58,7 +59,7 @@ describe('<GameView />', () => {
   it('centers camera on cameraCenteredOnUserAvatar', () => {
     const props = {
       connectToGame: jest.fn(),
-      mockEnvironment: true
+      environment: new MockEnvironment(true)
     }
     const component = createMountWithTheme(<GameView {...props} />)
     const componentInstance = component.instance()

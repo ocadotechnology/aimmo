@@ -1,24 +1,18 @@
 import EntityManager from './entities'
 import SceneRenderer from './environment'
 import EnvironmentManager from './environment/environmentManager'
-import { StandardEnvironment } from './environment/environment'
-import { MockEnvironment } from 'testHelpers/mockEnvironment'
+import { Environment } from './environment/environment'
 import * as BABYLON from 'babylonjs'
 
 export default class GameEngine {
-    environment: any
+    environment: Environment
     sceneRenderer: SceneRenderer
     environmentManager: EnvironmentManager
     entities: EntityManager
     panHandler: Function
 
-    constructor (canvas: HTMLCanvasElement, handleMapPanned: Function, mock: Boolean) {
-      if (mock) {
-        this.environment = new MockEnvironment(true)
-      } else {
-        this.environment = new StandardEnvironment(canvas)
-      }
-
+    constructor (canvas: HTMLCanvasElement, handleMapPanned: Function, environment: Environment, props: any) {
+      this.environment = environment
       this.sceneRenderer = new SceneRenderer(this.environment)
       this.environmentManager = new EnvironmentManager(this.environment)
       this.entities = new EntityManager(this.environment)
@@ -31,12 +25,17 @@ export default class GameEngine {
     onUpdate (previousProps: any, currentProps: any) {
       this.updateGameState(previousProps.gameState, currentProps.gameState)
       this.updateCurrentAvatarID(previousProps.currentAvatarID, currentProps.currentAvatarID)
-      this.centerOn(currentProps ? currentProps.cameraCenteredOnUserAvatar : previousProps.cameraCenteredOnUserAvatar)
+      this.centerOn(currentProps ? currentProps : previousProps)
     }
 
-    centerOn (centerOn: Boolean) {
-      if (centerOn && this.entities.avatars.currentAvatarMesh) {
-        this.environmentManager.centerOn(this.entities.avatars.currentAvatarMesh)
+    centerOn (props: any) {
+      if (props.cameraCenteredOnUserAvatar && props.gameLoaded) {
+        if (this.entities.avatars.currentAvatarMesh) {
+          this.environmentManager.centerOn(this.entities.avatars.currentAvatarMesh)
+        } else if (props.gameState.players){
+          let location = this.getAvatarLocation(props.currentAvatarID, props.gameState.players)
+          this.environmentManager.camera.object.setTarget(new BABYLON.Vector3(location.x, 0, location.y))
+        }
       }
     }
 
@@ -65,5 +64,13 @@ export default class GameEngine {
         this.panHandler()
         this.environmentManager.unCenter(this.entities.avatars.currentAvatarMesh)
       }, BABYLON.PointerEventTypes.POINTERDOWN, false)
+    }
+
+    getAvatarLocation (playerID: number, players: any) : any {
+      for (let player of players) {
+        if (player['id'] === playerID) {
+          return player['location']
+        }
+      }
     }
 }

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { CircularProgress } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography'
 import GameEngine from '../../babylon/gameEngine'
+import { StandardEnvironment } from '../../babylon/environment/environment'
 
 export const GameViewLayout = styled.div`
   grid-area: game-view;
@@ -44,8 +45,9 @@ export default class GameView extends Component {
   }
 
   componentDidMount () {
-    this.gameEngine = new GameEngine(this.canvas, this.handleMapPanned, this.props.mockEnvironment)
     this.props.connectToGame()
+    const environment = this.props.environment ?? new StandardEnvironment(this.canvas)
+    this.gameEngine = new GameEngine(this.canvas, this.handleMapPanned, environment, this.props)
   }
 
   componentDidUpdate (prevProps) {
