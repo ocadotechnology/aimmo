@@ -63,16 +63,17 @@ describe('<GameView />', () => {
     }
     const component = createMountWithTheme(<GameView {...props} />)
     const componentInstance = component.instance()
-    componentInstance.gameEngine.centerOn = jest.fn()
+    componentInstance.gameEngine.environmentManager.centerOn = jest.fn()
     componentInstance.gameEngine.entities.avatars.currentAvatarMesh = true
 
     const newProps = {
       ...props,
-      cameraCenteredOnUserAvatar: true
+      cameraCenteredOnUserAvatar: true,
+      gameLoaded: true
     }
     component.setProps(newProps)
 
-    expect(componentInstance.gameEngine.centerOn).toBeCalled()
+    expect(componentInstance.gameEngine.environmentManager.centerOn).toBeCalled()
   })
 
   it('shows the loading screen when the game is loading', () => {
