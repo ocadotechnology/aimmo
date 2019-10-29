@@ -2,7 +2,7 @@
 
 exports[`<Compass /> matches snapshot 1`] = `
 .c0 {
-  padding-bottom: 8px;
+  bottom: 8px;
   padding-left: 8px;
   position: -webkit-sticky;
   position: sticky;
