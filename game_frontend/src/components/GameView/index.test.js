@@ -76,6 +76,20 @@ describe('<GameView />', () => {
     expect(componentInstance.gameEngine.environmentManager.centerOn).toBeCalled()
   })
 
+  it('handles panning', () => {
+    const props = {
+      connectToGame: jest.fn(),
+      environment: new MockEnvironment(true),
+      mapPanned: jest.fn()
+    }
+    const component = createMountWithTheme(<GameView {...props} />)
+    const componentInstance = component.instance()
+
+    componentInstance.gameEngine.panHandler()
+
+    expect(componentInstance.props.mapPanned).toBeCalled()
+  })
+
   it('shows the loading screen when the game is loading', () => {
     const connectToGame = jest.fn()
     const props = {

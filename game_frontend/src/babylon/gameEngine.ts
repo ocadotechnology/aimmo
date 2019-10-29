@@ -48,11 +48,7 @@ export default class GameEngine {
 
     updateCurrentAvatarID (previousAvatarID: number, currentAvatarID: number) {
       if (previousAvatarID !== currentAvatarID) {
-        if (currentAvatarID) {
-          this.entities.setCurrentAvatarID(currentAvatarID)
-        } else {
-          this.entities.setCurrentAvatarID(previousAvatarID)
-        }
+        this.entities.setCurrentAvatarID(currentAvatarID)
       }
     }
 
