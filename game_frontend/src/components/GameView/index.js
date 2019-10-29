@@ -25,7 +25,7 @@ export const LoadingText = styled(Typography)`
 `
 
 export const Compass = styled.img`
-  padding-bottom: ${props => props.theme.spacing()}px;
+  bottom: ${props => props.theme.spacing()}px;
   padding-left: ${props => props.theme.spacing()}px;
   position: sticky;
 `
