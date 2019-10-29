@@ -25,14 +25,14 @@ export default class GameEngine {
     onUpdate (previousProps: any, currentProps: any) {
       this.updateGameState(previousProps.gameState, currentProps.gameState)
       this.updateCurrentAvatarID(previousProps.currentAvatarID, currentProps.currentAvatarID)
-      this.centerOn(currentProps ? currentProps : previousProps)
+      this.centerOn(currentProps)
     }
 
     centerOn (props: any) {
       if (props.cameraCenteredOnUserAvatar && props.gameLoaded) {
         if (this.entities.avatars.currentAvatarMesh) {
           this.environmentManager.centerOn(this.entities.avatars.currentAvatarMesh)
-        } else if (props.gameState.players){
+        } else if (props.gameState.players) {
           const location = this.getVectorAvatarLocation(props.currentAvatarID, props.gameState.players)
           this.environmentManager.camera.object.setTarget(location)
           this.environmentManager.camera.object.panningOriginTarget = location
