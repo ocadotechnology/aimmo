@@ -33,8 +33,9 @@ export default class GameEngine {
         if (this.entities.avatars.currentAvatarMesh) {
           this.environmentManager.centerOn(this.entities.avatars.currentAvatarMesh)
         } else if (props.gameState.players){
-          let location = this.getAvatarLocation(props.currentAvatarID, props.gameState.players)
-          this.environmentManager.camera.object.setTarget(new BABYLON.Vector3(location.x, 0, location.y))
+          let location = this.getVectorAvatarLocation(props.currentAvatarID, props.gameState.players)
+          this.environmentManager.camera.object.setTarget(location)
+          this.environmentManager.camera.object.panningOriginTarget = location
         }
       }
     }
@@ -66,10 +67,11 @@ export default class GameEngine {
       }, BABYLON.PointerEventTypes.POINTERDOWN, false)
     }
 
-    getAvatarLocation (playerID: number, players: any) : any {
+    getVectorAvatarLocation (playerID: number, players: any) : any {
       for (let player of players) {
         if (player['id'] === playerID) {
-          return player['location']
+          let location = player['location']
+          return new BABYLON.Vector3(location.x, 0, location.y)
         }
       }
     }

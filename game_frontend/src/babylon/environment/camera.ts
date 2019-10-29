@@ -39,8 +39,6 @@ export default class Camera implements GameNode {
       camera.angularSensibilityY = 20
       camera.panningDistanceLimit = 20
 
-      // camera.setTarget(BABYLON.Vector3.Zero())
-
       camera.attachControl(environment.canvas, true, false, 0)
 
       this.updatePanningSensibility()
@@ -93,6 +91,7 @@ export default class Camera implements GameNode {
     centerOn (mesh: BABYLON.AbstractMesh) {
       if (!this.isCenteredOnUserAvatar) {
         this.object.setTarget(mesh)
+        this.object.panningOriginTarget = mesh.position.clone()
         this.isCenteredOnUserAvatar = true
       }
     }
@@ -100,8 +99,10 @@ export default class Camera implements GameNode {
     unCenter (mesh: BABYLON.AbstractMesh) {
       if (this.isCenteredOnUserAvatar) {
         let position = mesh.position.clone()
-        console.log(position)
+
         this.object.setTarget(position)
+        this.object.panningOriginTarget = position
+
         this.isCenteredOnUserAvatar = false
       }
     }
