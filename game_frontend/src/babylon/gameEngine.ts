@@ -33,7 +33,7 @@ export default class GameEngine {
         if (this.entities.avatars.currentAvatarMesh) {
           this.environmentManager.centerOn(this.entities.avatars.currentAvatarMesh)
         } else if (props.gameState.players){
-          let location = this.getVectorAvatarLocation(props.currentAvatarID, props.gameState.players)
+          const location = this.getVectorAvatarLocation(props.currentAvatarID, props.gameState.players)
           this.environmentManager.camera.object.setTarget(location)
           this.environmentManager.camera.object.panningOriginTarget = location
         }
@@ -70,7 +70,7 @@ export default class GameEngine {
     getVectorAvatarLocation (playerID: number, players: any) : any {
       for (let player of players) {
         if (player['id'] === playerID) {
-          let location = player['location']
+          const location = player['location']
           return new BABYLON.Vector3(location.x, 0, location.y)
         }
       }
