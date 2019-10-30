@@ -14,12 +14,14 @@ export default class Camera implements GameNode {
     frustum: number
     zoomFactor: number
     view: BABYLON.Vector2
+  isCenteredOnUserAvatar: Boolean
 
     constructor (environment: Environment) {
       const camera = new BABYLON.ArcRotateCamera('camera1', 0, 0.785, 50, BABYLON.Vector3.Zero(), environment.scene)
       this.frustum = 7.5
       this.zoomFactor = 0
       this.object = camera
+      this.isCenteredOnUserAvatar = false
 
       camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA
       camera.orthoTop = 5
@@ -36,8 +38,6 @@ export default class Camera implements GameNode {
       camera.angularSensibilityX = 20
       camera.angularSensibilityY = 20
       camera.panningDistanceLimit = 20
-
-      camera.setTarget(BABYLON.Vector3.Zero())
 
       camera.attachControl(environment.canvas, true, false, 0)
 
@@ -87,4 +87,23 @@ export default class Camera implements GameNode {
       this.object.orthoLeft = -(this.frustum + this.zoomFactor) * this.view.x
       this.object.orthoRight = (this.frustum + this.zoomFactor) * this.view.x
     }
+
+  centerOn (mesh: BABYLON.AbstractMesh) {
+    if (!this.isCenteredOnUserAvatar) {
+      this.object.setTarget(mesh)
+      this.object.panningOriginTarget = mesh.position.clone()
+      this.isCenteredOnUserAvatar = true
+    }
+  }
+
+  unCenter (mesh: BABYLON.AbstractMesh) {
+    if (this.isCenteredOnUserAvatar) {
+      const position = mesh.position.clone()
+
+      this.object.setTarget(position)
+      this.object.panningOriginTarget = position
+
+      this.isCenteredOnUserAvatar = false
+    }
+  }
 }

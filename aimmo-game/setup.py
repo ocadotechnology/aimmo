@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import sys
 
 from setuptools import find_packages, setup
 
@@ -25,7 +24,7 @@ setup(
     setup_requires=["pytest-runner"],
     tests_require=[
         "socketIO-client",
-        "pytest",
+        "pytest>=5.2, <6",
         "pytest-asyncio==0.10.0",
         "pytest-mock",
         "asynctest",

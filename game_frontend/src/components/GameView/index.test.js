@@ -20,32 +20,70 @@ describe('<GameView />', () => {
   it('creates a babylon environment on mount', () => {
     const props = {
       connectToGame: jest.fn(),
-      EnvironmentClass: MockEnvironment
+      environment: new MockEnvironment(true)
     }
     const component = createMountWithTheme(<GameView {...props} />).instance()
 
-    expect(component.environment).toBeDefined()
-    expect(component.sceneRenderer).toBeDefined()
-    expect(component.environmentManager).toBeDefined()
-    expect(component.entities).toBeDefined()
+    expect(component.gameEngine.environment).toBeDefined()
+    expect(component.gameEngine.sceneRenderer).toBeDefined()
+    expect(component.gameEngine.environmentManager).toBeDefined()
+    expect(component.gameEngine.entities).toBeDefined()
   })
 
-  it('updates the CurrentAvatarID', () => {
+  it('updates the game Engine', () => {
     const props = {
       connectToGame: jest.fn(),
-      EnvironmentClass: MockEnvironment
+      environment: new MockEnvironment(true),
+      currentAvatarID: 2
     }
     const component = createMountWithTheme(<GameView {...props} />)
-    var componentInstance = component.instance()
-    componentInstance.updateCurrentAvatarID = jest.fn()
+    const componentInstance = component.instance()
+    componentInstance.gameEngine.onUpdate = jest.fn()
 
     const newProps = {
       ...props,
-      currentAvatarID: 1
+      currentAvatarID: 1,
+      gameState: {
+        id: 1
+      }
     }
     component.setProps(newProps)
 
-    expect(componentInstance.updateCurrentAvatarID).toBeCalled()
+    expect(componentInstance.gameEngine.onUpdate).toBeCalled()
+  })
+
+  it('centers camera on cameraCenteredOnUserAvatar', () => {
+    const props = {
+      connectToGame: jest.fn(),
+      environment: new MockEnvironment(true)
+    }
+    const component = createMountWithTheme(<GameView {...props} />)
+    const componentInstance = component.instance()
+    componentInstance.gameEngine.centerOn = jest.fn()
+    componentInstance.gameEngine.entities.avatars.currentAvatarMesh = true
+
+    const newProps = {
+      ...props,
+      cameraCenteredOnUserAvatar: true,
+      gameLoaded: true
+    }
+    component.setProps(newProps)
+
+    expect(componentInstance.gameEngine.centerOn).toBeCalled()
+  })
+
+  it('detects panning event from gameEngine and calls its mapping function', () => {
+    const props = {
+      connectToGame: jest.fn(),
+      environment: new MockEnvironment(true),
+      mapPanned: jest.fn()
+    }
+    const component = createMountWithTheme(<GameView {...props} />)
+    const componentInstance = component.instance()
+
+    componentInstance.gameEngine.panHandler()
+
+    expect(componentInstance.props.mapPanned).toBeCalled()
   })
 
   it('shows the loading screen when the game is loading', () => {
