@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
 from rest_framework import mixins, status, viewsets
@@ -175,7 +175,7 @@ class ProgramView(TemplateView):
         context["game_id"] = int(self.kwargs["id"])
         return context
 
-
+@ensure_csrf_cookie
 def watch_game(request, id):
     game = get_object_or_404(Game, id=id)
     if not game.can_user_play(request.user):
@@ -273,11 +273,3 @@ def get_avatar_id(request, game_id):
         )
 
     return avatar_id, response
-
-
-def csrfToken(request):
-    if request.method == "GET":
-        token = get_token(request)
-        return JsonResponse({"csrfToken": token})
-    else:
-        return HttpResponse(status=405)

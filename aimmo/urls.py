@@ -40,7 +40,6 @@ urlpatterns = [
         TemplateView.as_view(template_name="players/statistics.html"),
         name="kurono/statistics",
     ),
-    url(r"^api/csrf_token", views.csrfToken, name="kurono/csrf_token"),
     url(r"^api/code/(?P<id>[0-9]+)/$", views.code, name="kurono/code"),
     url(
         r"^api/games/(?P<id>[0-9]+)/users/$",
