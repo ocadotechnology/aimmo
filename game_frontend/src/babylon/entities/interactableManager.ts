@@ -20,6 +20,7 @@ export default class InteractableManager implements GameNode, DiffHandling {
 
       this.scene = environment.scene
       this.interactableNode = new BABYLON.TransformNode('Interactables', environment.scene)
+      this.object = this.interactableNode
       this.interactableNode.parent = environment.onTerrainNode
       this.materials = {
         'damage_boost': this.createMaterial('damage_boost'),

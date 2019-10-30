@@ -9,6 +9,7 @@ const MARKER_HEIGHT = 12
 
 export default class AvatarManager implements GameNode, DiffHandling {
   object: any
+  currentAvatarMesh: BABYLON.AbstractMesh
   scene: BABYLON.Scene
   avatarNode: BABYLON.TransformNode
   markerMaterial : BABYLON.StandardMaterial
@@ -23,6 +24,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
 
     this.scene = environment.scene
     this.avatarNode = new BABYLON.TransformNode('Avatars', environment.scene)
+    this.object = this.avatarNode
     this.avatarNode.parent = environment.onTerrainNode
 
     this.setupMarkerMaterial()
@@ -65,6 +67,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
 
       if (avatar.value.id === this.currentAvatarID) {
         this.attachMarker(dee, avatar)
+        this.currentAvatarMesh = dee
       }
     })
   }
