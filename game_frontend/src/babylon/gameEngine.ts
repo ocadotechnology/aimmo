@@ -11,7 +11,7 @@ export default class GameEngine {
     entities: EntityManager
     panHandler: Function
 
-    constructor (canvas: HTMLCanvasElement, handleMapPanned: Function, environment: Environment, props: any) {
+    constructor (handleMapPanned: Function, environment: Environment) {
       this.environment = environment
       this.sceneRenderer = new SceneRenderer(this.environment)
       this.environmentManager = new EnvironmentManager(this.environment)
@@ -64,9 +64,9 @@ export default class GameEngine {
     }
 
     getVectorAvatarLocation (playerID: number, players: any) : any {
-      for (let player of players) {
-        if (player['id'] === playerID) {
-          const location = player['location']
+      for (let player in players) {
+        if (players[player]['id'] === playerID) {
+          const location = players[player]['location']
           return new BABYLON.Vector3(location.x, 0, location.y)
         }
       }

@@ -38,9 +38,7 @@ describe('<GameView />', () => {
     }
     const component = createMountWithTheme(<GameView {...props} />)
     const componentInstance = component.instance()
-    componentInstance.gameEngine.entities.onGameStateUpdate = jest.fn()
-    componentInstance.gameEngine.entities.setCurrentAvatarID = jest.fn()
-    componentInstance.gameEngine.centerOn = jest.fn()
+    componentInstance.gameEngine.onUpdate = jest.fn()
 
     const newProps = {
       ...props,
@@ -51,9 +49,7 @@ describe('<GameView />', () => {
     }
     component.setProps(newProps)
 
-    expect(componentInstance.gameEngine.entities.onGameStateUpdate).toBeCalled()
-    expect(componentInstance.gameEngine.entities.setCurrentAvatarID).toBeCalled()
-    expect(componentInstance.gameEngine.centerOn).toBeCalled()
+    expect(componentInstance.gameEngine.onUpdate).toBeCalled()
   })
 
   it('centers camera on cameraCenteredOnUserAvatar', () => {
@@ -63,7 +59,7 @@ describe('<GameView />', () => {
     }
     const component = createMountWithTheme(<GameView {...props} />)
     const componentInstance = component.instance()
-    componentInstance.gameEngine.environmentManager.centerOn = jest.fn()
+    componentInstance.gameEngine.centerOn = jest.fn()
     componentInstance.gameEngine.entities.avatars.currentAvatarMesh = true
 
     const newProps = {
@@ -73,7 +69,7 @@ describe('<GameView />', () => {
     }
     component.setProps(newProps)
 
-    expect(componentInstance.gameEngine.environmentManager.centerOn).toBeCalled()
+    expect(componentInstance.gameEngine.centerOn).toBeCalled()
   })
 
   it('handles panning', () => {
