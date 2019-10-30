@@ -49,12 +49,40 @@ describe('GameEngine', () => {
     const avatar = avatarDiffItem('1', 'east', { x: 0, y: 0 })
     gameEngine.entities.avatars.add(avatar)
 
-    console.log(gameEngine.entities.avatars.currentAvatarMesh)
-
     gameEngine.environmentManager.camera.centerOn = jest.fn()
     gameEngine.centerOn(props)
 
     expect(gameEngine.environmentManager.camera.centerOn).toBeCalled()
+  })
+
+  it('uncenters the camera on avatar location', () => {
+    const props = {
+      cameraCenteredOnUserAvatar: true,
+      gameLoaded: true,
+      gameState: {
+        players: {
+          0: {
+            id: 1,
+            location: {
+              x: 1,
+              y: 1
+            }
+          }
+        }
+      },
+      currentAvatarID: 1
+    }
+
+    gameEngine.entities.avatars = new AvatarManager(gameEngine.environment, dummyImportMesh)
+    gameEngine.updateCurrentAvatarID(0, 1)
+
+    const avatar = avatarDiffItem('1', 'east', { x: 0, y: 0 })
+    gameEngine.entities.avatars.add(avatar)
+
+    gameEngine.environmentManager.camera.unCenter = jest.fn()
+    gameEngine.environmentManager.unCenter(gameEngine.entities.avatars.currentAvatarMesh)
+
+    expect(gameEngine.environmentManager.camera.unCenter).toBeCalled()
   })
 
   it('handles updates', () => {
