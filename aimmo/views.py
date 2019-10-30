@@ -175,6 +175,7 @@ class ProgramView(TemplateView):
         context["game_id"] = int(self.kwargs["id"])
         return context
 
+
 @ensure_csrf_cookie
 def watch_game(request, id):
     game = get_object_or_404(Game, id=id)
