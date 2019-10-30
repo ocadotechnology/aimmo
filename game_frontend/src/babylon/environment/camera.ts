@@ -98,7 +98,7 @@ export default class Camera implements GameNode {
 
     unCenter (mesh: BABYLON.AbstractMesh) {
       if (this.isCenteredOnUserAvatar) {
-        let position = mesh.position.clone()
+        const position = mesh.position.clone()
 
         this.object.setTarget(position)
         this.object.panningOriginTarget = position

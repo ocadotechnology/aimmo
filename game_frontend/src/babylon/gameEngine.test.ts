@@ -6,48 +6,57 @@ import dummyImportMesh from '../testHelpers/dummyImportMesh'
 import { DiffItem } from './diff'
 
 let gameEngine: GameEngine
+let avatarToAdd: DiffItem
+let examplePlayer1: any
+let examplePlayer2: any
 
 beforeEach(() => {
   gameEngine = new GameEngine(jest.fn(), new MockEnvironment(true))
-})
-
-function avatarDiffItem (index: string, orientation: string, location: {x: number, y: number}) {
-  return new DiffItem(index, {
+  avatarToAdd = new DiffItem(1, {
     health: 5,
     location: {
-      x: location.x,
-      y: location.y
+      x: 0,
+      y: 0
     },
     score: 0,
-    id: parseInt(index),
-    orientation: orientation
+    id: 1,
+    orientation: 'east'
   })
+  examplePlayer1 = {
+    id: 1,
+    location: {
+      x: 1,
+      y: 1
+    }
+  }
+  examplePlayer2 = {
+    id: 2,
+    location: {
+      x: 2,
+      y: 2
+    }
+  }
+})
+
+function generateProps (cameraCenteredOnUserAvatar: Boolean, gameLoaded: Boolean, players: any, currentAvatarID: Number) {
+  return {
+    cameraCenteredOnUserAvatar: cameraCenteredOnUserAvatar,
+    gameLoaded: gameLoaded,
+    gameState: {
+      players: players
+    },
+    currentAvatarID: currentAvatarID
+  }
 }
 
 describe('GameEngine', () => {
   it('centers the camera on avatar location', () => {
-    const props = {
-      cameraCenteredOnUserAvatar: true,
-      gameLoaded: true,
-      gameState: {
-        players: {
-          0: {
-            id: 1,
-            location: {
-              x: 1,
-              y: 1
-            }
-          }
-        }
-      },
-      currentAvatarID: 1
-    }
+    const props = generateProps(true, true, { 0: examplePlayer1 }, 1)
 
     gameEngine.entities.avatars = new AvatarManager(gameEngine.environment, dummyImportMesh)
-    gameEngine.updateCurrentAvatarID(0, 1)
+    gameEngine.onUpdateCurrentAvatarID(0, 1)
 
-    const avatar = avatarDiffItem('1', 'east', { x: 0, y: 0 })
-    gameEngine.entities.avatars.add(avatar)
+    gameEngine.entities.avatars.add(avatarToAdd)
 
     gameEngine.environmentManager.camera.centerOn = jest.fn()
     gameEngine.centerOn(props)
@@ -57,10 +66,9 @@ describe('GameEngine', () => {
 
   it('uncenters the camera on avatar location', () => {
     gameEngine.entities.avatars = new AvatarManager(gameEngine.environment, dummyImportMesh)
-    gameEngine.updateCurrentAvatarID(0, 1)
+    gameEngine.onUpdateCurrentAvatarID(0, 1)
 
-    const avatar = avatarDiffItem('1', 'east', { x: 0, y: 0 })
-    gameEngine.entities.avatars.add(avatar)
+    gameEngine.entities.avatars.add(avatarToAdd)
 
     gameEngine.environmentManager.camera.unCenter = jest.fn()
     gameEngine.environmentManager.unCenter(gameEngine.entities.avatars.currentAvatarMesh)
@@ -68,46 +76,10 @@ describe('GameEngine', () => {
     expect(gameEngine.environmentManager.camera.unCenter).toBeCalled()
   })
 
-  it('handles updates', () => {
-    const previousProps = {
-      cameraCenteredOnUserAvatar: true,
-      gameLoaded: true,
-      gameState: {
-        players: {
-          0: {
-            id: 1,
-            location: {
-              x: 1,
-              y: 1
-            }
-          }
-        }
-      },
-      currentAvatarID: 1
-    }
-    const currentProps = {
-      cameraCenteredOnUserAvatar: true,
-      gameLoaded: true,
-      gameState: {
-        players: {
-          0: {
-            id: 1,
-            location: {
-              x: 1,
-              y: 1
-            }
-          },
-          1: {
-            id: 2,
-            location: {
-              x: 2,
-              y: 2
-            }
-          }
-        }
-      },
-      currentAvatarID: 2
-    }
+  it('handles game state updates', () => {
+    const previousProps = generateProps(true, true, { 0: examplePlayer1 }, 1)
+    const currentProps = generateProps(true, true, { 0: examplePlayer1, 1: examplePlayer2 }, 2)
+
     gameEngine.entities.onGameStateUpdate = jest.fn()
     gameEngine.entities.setCurrentAvatarID = jest.fn()
 

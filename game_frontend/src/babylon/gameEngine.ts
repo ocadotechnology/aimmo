@@ -23,8 +23,8 @@ export default class GameEngine {
     }
 
     onUpdate (previousProps: any, currentProps: any) {
-      this.updateGameState(previousProps.gameState, currentProps.gameState)
-      this.updateCurrentAvatarID(previousProps.currentAvatarID, currentProps.currentAvatarID)
+      this.onUpdateGameState(previousProps.gameState, currentProps.gameState)
+      this.onUpdateCurrentAvatarID(previousProps.currentAvatarID, currentProps.currentAvatarID)
       this.centerOn(currentProps)
     }
 
@@ -33,20 +33,20 @@ export default class GameEngine {
         if (this.entities.avatars.currentAvatarMesh) {
           this.environmentManager.centerOn(this.entities.avatars.currentAvatarMesh)
         } else if (props.gameState.players) {
-          const location = this.getVectorAvatarLocation(props.currentAvatarID, props.gameState.players)
+          const location = this.getAvatarLocation(props.currentAvatarID, props.gameState.players)
           this.environmentManager.camera.object.setTarget(location)
           this.environmentManager.camera.object.panningOriginTarget = location
         }
       }
     }
 
-    updateGameState (previousGameState: any, currentGameState: any) {
+    onUpdateGameState (previousGameState: any, currentGameState: any) {
       if (currentGameState !== undefined) {
         this.entities.onGameStateUpdate(previousGameState, currentGameState)
       }
     }
 
-    updateCurrentAvatarID (previousAvatarID: number, currentAvatarID: number) {
+    onUpdateCurrentAvatarID (previousAvatarID: number, currentAvatarID: number) {
       if (previousAvatarID !== currentAvatarID) {
         this.entities.setCurrentAvatarID(currentAvatarID)
       }
@@ -63,7 +63,7 @@ export default class GameEngine {
       }, BABYLON.PointerEventTypes.POINTERDOWN, false)
     }
 
-    getVectorAvatarLocation (playerID: number, players: any) : any {
+    getAvatarLocation (playerID: number, players: any) : any {
       for (let player in players) {
         if (players[player]['id'] === playerID) {
           const location = players[player]['location']

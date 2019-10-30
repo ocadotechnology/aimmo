@@ -72,7 +72,7 @@ describe('<GameView />', () => {
     expect(componentInstance.gameEngine.centerOn).toBeCalled()
   })
 
-  it('handles panning', () => {
+  it('detects panning event from gameEngine and calls its mapping function', () => {
     const props = {
       connectToGame: jest.fn(),
       environment: new MockEnvironment(true),
