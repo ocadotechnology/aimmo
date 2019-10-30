@@ -63,12 +63,13 @@ export default class GameEngine {
       }, BABYLON.PointerEventTypes.POINTERDOWN, false)
     }
 
-    getAvatarLocation (playerID: number, players: any) : any {
+    getAvatarLocation (playerID: number, players: any) : BABYLON.Vector3 {
       for (let player in players) {
         if (players[player]['id'] === playerID) {
           const location = players[player]['location']
           return new BABYLON.Vector3(location.x, 0, location.y)
         }
       }
+      return null
     }
 }
