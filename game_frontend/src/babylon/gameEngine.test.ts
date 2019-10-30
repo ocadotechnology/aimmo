@@ -56,23 +56,6 @@ describe('GameEngine', () => {
   })
 
   it('uncenters the camera on avatar location', () => {
-    const props = {
-      cameraCenteredOnUserAvatar: true,
-      gameLoaded: true,
-      gameState: {
-        players: {
-          0: {
-            id: 1,
-            location: {
-              x: 1,
-              y: 1
-            }
-          }
-        }
-      },
-      currentAvatarID: 1
-    }
-
     gameEngine.entities.avatars = new AvatarManager(gameEngine.environment, dummyImportMesh)
     gameEngine.updateCurrentAvatarID(0, 1)
 
