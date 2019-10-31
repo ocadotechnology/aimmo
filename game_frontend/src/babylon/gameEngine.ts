@@ -53,7 +53,7 @@ export default class GameEngine {
     }
 
     unmount () {
-      window.removeEventListener('resize', this.environmentManager.windowResized)
+      window.removeEventListener('resize', this.environmentManager.resizeBabylonWindow)
     }
 
     addPanListener (scene: BABYLON.Scene) {
