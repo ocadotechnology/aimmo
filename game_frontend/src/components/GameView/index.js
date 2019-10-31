@@ -51,7 +51,7 @@ export default class GameView extends Component {
     currentAvatarID: PropTypes.number,
     gameLoaded: PropTypes.bool,
     cameraCenteredOnUserAvatar: PropTypes.bool,
-    mapPanned: PropTypes.func
+    mapPanned: PropTypes.func,
     findMeButtonClicked: PropTypes.func
   }
 

@@ -2,9 +2,9 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Fab } from '@material-ui/core'
-import LocationIcon from 'components/icons/Location'
+import FindMeIcon from 'components/icons/FindMe'
 
-export const MarginedLocationIcon = styled(LocationIcon)`
+export const MarginedLocationIcon = styled(FindMeIcon)`
     margin-right: ${props => props.theme.spacing()}px;
 `
 
@@ -22,11 +22,9 @@ export default class FindMeButton extends Component {
         aria-label='Find Me'
         variant='extended'
         onClick={this.props.whenClicked}>
-        <>
-          <MarginedLocationIcon
+        <MarginedLocationIcon
             color='inherit'
             size='24px' /> Find Me
-        </>
       </Fab>
     )
   }

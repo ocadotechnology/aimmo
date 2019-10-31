@@ -6,7 +6,7 @@ exports[`<FindMeButton /> matches snapshot 1`] = `
   color="secondary"
   variant="extended"
 >
-  <Styled(LocationIcon)
+  <Styled(FindMeIcon)
     color="inherit"
     size="24px"
   />
@@ -19,7 +19,7 @@ exports[`<MarginedLocationIcon /> matches snapshot 1`] = `
   margin-right: 8px;
 }
 
-<LocationIcon
+<FindMeIcon
   className="c0"
   theme={
     Object {

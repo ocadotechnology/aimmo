@@ -4,6 +4,7 @@ import GameView, { GameViewLayout, Compass, LoadingBackgroundOverlay, Positioned
 import { shallow } from 'enzyme/build/index'
 import createMountWithTheme from 'testHelpers/createMount'
 import createShallowWithTheme from 'testHelpers/createShallow'
+import { MockEnvironment } from 'testHelpers/mockEnvironment'
 
 describe('<GameView />', () => {
   it('matches snapshot', () => {
