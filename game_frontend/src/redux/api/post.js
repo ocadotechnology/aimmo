@@ -1,14 +1,12 @@
 import { ajax } from 'rxjs/ajax'
 import { pipe } from 'rxjs'
 import { mergeMap, map } from 'rxjs/operators'
-import api from 'api'
+import Cookies from 'js-cookie'
 
 const getCSRFToken = action$ =>
   action$.pipe(
-    mergeMap(action =>
-      api.get('csrf_token').pipe(
-        map(response => response.csrfToken)
-      )
+    map(action =>
+      Cookies.get('csrftoken')
     )
   )
 
