@@ -112,7 +112,8 @@ export default class GameView extends Component {
         <Compass src='/static/images/compass.svg' />
         <PositionedFindMeButton
           aria-label='Find Me'
-          whenClicked={this.props.findMeButtonClicked}/>
+          whenClicked={this.props.findMeButtonClicked}
+          isCameraCenteredOnUserAvatar={this.props.cameraCenteredOnUserAvatar}/>
       </OverlayIcons>
     )
   }

@@ -3,14 +3,13 @@
 exports[`<FindMeButton /> matches snapshot 1`] = `
 <WithStyles(ForwardRef(Fab))
   aria-label="Find Me"
-  color="secondary"
+  color="primary"
   variant="extended"
 >
   <Styled(FindMeIcon)
     color="inherit"
-    size="24px"
   />
-   Find Me
+  Find Me
 </WithStyles(ForwardRef(Fab))>
 `;
 
