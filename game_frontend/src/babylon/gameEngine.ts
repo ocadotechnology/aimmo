@@ -1,24 +1,18 @@
 import EntityManager from './entities'
 import SceneRenderer from './environment'
 import EnvironmentManager from './environment/environmentManager'
-import { StandardEnvironment } from './environment/environment'
-import { MockEnvironment } from 'testHelpers/mockEnvironment'
+import { Environment } from './environment/environment'
 import * as BABYLON from 'babylonjs'
 
 export default class GameEngine {
-    environment: any
+    environment: Environment
     sceneRenderer: SceneRenderer
     environmentManager: EnvironmentManager
     entities: EntityManager
     panHandler: Function
 
-    constructor (canvas: HTMLCanvasElement, handleMapPanned: Function, mock: Boolean) {
-      if (mock) {
-        this.environment = new MockEnvironment(true)
-      } else {
-        this.environment = new StandardEnvironment(canvas)
-      }
-
+    constructor (handleMapPanned: Function, environment: Environment) {
+      this.environment = environment
       this.sceneRenderer = new SceneRenderer(this.environment)
       this.environmentManager = new EnvironmentManager(this.environment)
       this.entities = new EntityManager(this.environment)
@@ -29,30 +23,32 @@ export default class GameEngine {
     }
 
     onUpdate (previousProps: any, currentProps: any) {
-      this.updateGameState(previousProps.gameState, currentProps.gameState)
-      this.updateCurrentAvatarID(previousProps.currentAvatarID, currentProps.currentAvatarID)
-      this.centerOn(currentProps ? currentProps.cameraCenteredOnUserAvatar : previousProps.cameraCenteredOnUserAvatar)
+      this.onUpdateGameState(previousProps.gameState, currentProps.gameState)
+      this.onUpdateCurrentAvatarID(previousProps.currentAvatarID, currentProps.currentAvatarID)
+      this.centerOn(currentProps)
     }
 
-    centerOn (centerOn: Boolean) {
-      if (centerOn && this.entities.avatars.currentAvatarMesh) {
-        this.environmentManager.centerOn(this.entities.avatars.currentAvatarMesh)
+    centerOn (props: any) {
+      if (props.cameraCenteredOnUserAvatar && props.gameLoaded) {
+        if (this.entities.avatars.currentAvatarMesh) {
+          this.environmentManager.centerOn(this.entities.avatars.currentAvatarMesh)
+        } else if (props.gameState.players) {
+          const location = this.getAvatarLocation(props.currentAvatarID, props.gameState.players)
+          this.environmentManager.camera.object.setTarget(location)
+          this.environmentManager.camera.object.panningOriginTarget = location
+        }
       }
     }
 
-    updateGameState (previousGameState: any, currentGameState: any) {
+    onUpdateGameState (previousGameState: any, currentGameState: any) {
       if (currentGameState !== undefined) {
         this.entities.onGameStateUpdate(previousGameState, currentGameState)
       }
     }
 
-    updateCurrentAvatarID (previousAvatarID: number, currentAvatarID: number) {
+    onUpdateCurrentAvatarID (previousAvatarID: number, currentAvatarID: number) {
       if (previousAvatarID !== currentAvatarID) {
-        if (currentAvatarID) {
-          this.entities.setCurrentAvatarID(currentAvatarID)
-        } else {
-          this.entities.setCurrentAvatarID(previousAvatarID)
-        }
+        this.entities.setCurrentAvatarID(currentAvatarID)
       }
     }
 
@@ -65,5 +61,15 @@ export default class GameEngine {
         this.panHandler()
         this.environmentManager.unCenter(this.entities.avatars.currentAvatarMesh)
       }, BABYLON.PointerEventTypes.POINTERDOWN, false)
+    }
+
+    getAvatarLocation (playerID: number, players: any) : BABYLON.Vector3 {
+      for (let player in players) {
+        if (players[player]['id'] === playerID) {
+          const location = players[player]['location']
+          return new BABYLON.Vector3(location.x, 0, location.y)
+        }
+      }
+      return null
     }
 }

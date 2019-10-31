@@ -3,8 +3,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { CircularProgress } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography'
-import GameEngine from '../../babylon/gameEngine'
 import FindMeButton from 'components/FindMeButton'
+import GameEngine from '../../babylon/gameEngine'
+import { StandardEnvironment } from '../../babylon/environment/environment'
 
 export const GameViewLayout = styled.div`
   grid-area: game-view;
@@ -36,6 +37,7 @@ export const LoadingText = styled(Typography)`
 export const Compass = styled.img`
   padding-bottom: ${props => props.theme.spacing()}px;
   padding-left: ${props => props.theme.spacing()}px;
+  position: sticky;
 `
 
 export const PositionedFindMeButton = styled(FindMeButton)`
@@ -49,7 +51,7 @@ export default class GameView extends Component {
     currentAvatarID: PropTypes.number,
     gameLoaded: PropTypes.bool,
     cameraCenteredOnUserAvatar: PropTypes.bool,
-    mapPanned: PropTypes.func,
+    mapPanned: PropTypes.func
     findMeButtonClicked: PropTypes.func
   }
 
@@ -58,8 +60,9 @@ export default class GameView extends Component {
   }
 
   componentDidMount () {
-    this.gameEngine = new GameEngine(this.canvas, this.handleMapPanned, this.props.mockEnvironment)
     this.props.connectToGame()
+    const environment = this.props.environment ?? new StandardEnvironment(this.canvas)
+    this.gameEngine = new GameEngine(this.handleMapPanned, environment)
   }
 
   componentDidUpdate (prevProps) {
