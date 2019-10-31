@@ -41,6 +41,7 @@
     "babylonjs": "^4.0.3",
     "core-js": "2",
     "handlebars": "^4.3.0",
+    "js-cookie": "^2.2.1",
     "lodash.isequal": "^4.5.0",
     "parcel-bundler": "^1.12.4",
     "react": "^16.8.6",
