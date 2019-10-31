@@ -44,7 +44,8 @@ const initialState = {
     showSnackbar: false,
     snackbarMessage: '',
     timeoutStatus: false,
-    gameLoaded: false
+    gameLoaded: false,
+    cameraCenteredOnUserAvatar: true
   },
   consoleLog: {
     logs: []

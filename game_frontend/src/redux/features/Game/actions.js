@@ -67,15 +67,22 @@ const setTimeout = () => ({
   type: types.SET_TIMEOUT
 })
 
+const mapPanned = () => (
+  {
+    type: types.MAP_PANNED
+  }
+)
+
 export default {
   socketConnectToGameRequest,
-  sendGameStateFail,
   sendGameStateSuccess,
+  sendGameStateFail,
   socketGameStateReceived,
   connectionParametersReceived,
   socketFeedbackAvatarUpdatedSuccess,
   socketFeedbackAvatarUpdatedTimeout,
   snackbarShown,
   gameLoaded,
-  setTimeout
+  setTimeout,
+  mapPanned
 }
