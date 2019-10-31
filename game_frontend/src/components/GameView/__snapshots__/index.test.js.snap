@@ -29,6 +29,7 @@ exports[`<GameView /> matches snapshot 1`] = `
     />
     <Styled(FindMeButton)
       aria-label="Find Me"
+      id="find-me-button"
     />
   </styled.div>
 </styled.div>
@@ -88,6 +89,30 @@ exports[`<LoadingBackgroundOverlay /> matches snapshot 1`] = `
   -ms-flex-pack: center;
   justify-content: center;
   width: 100%;
+}
+
+<div
+  className="c0"
+/>
+`;
+
+exports[`<OverlayElements /> matches snapshot 1`] = `
+.c0 {
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  bottom: 0;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  position: -webkit-sticky;
+  position: sticky;
 }
 
 <div

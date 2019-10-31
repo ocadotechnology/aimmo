@@ -21,6 +21,7 @@ export default class FindMeButton extends Component {
         className={this.props.className}
         disabled={this.props.isCameraCenteredOnUserAvatar}
         aria-label='Find Me'
+        id='find-me-button'
         variant='extended'
         onClick={this.props.whenClicked}>
         <MarginedLocationIcon

@@ -21,13 +21,12 @@ export const LoadingBackgroundOverlay = styled.div`
   width: 100%;
 `
 
-export const OverlayIcons = styled.div`
+export const OverlayElements = styled.div`
   align-items: center;
   bottom: 0;
   display: flex;
   justify-content: space-between;
-  position: absolute;
-  width: 50%;
+  position: sticky;
 `
 
 export const LoadingText = styled(Typography)`
@@ -52,11 +51,7 @@ export default class GameView extends Component {
     gameLoaded: PropTypes.bool,
     cameraCenteredOnUserAvatar: PropTypes.bool,
     mapPanned: PropTypes.func,
-    findMeButtonClicked: PropTypes.func
-  }
-
-  constructor (props) {
-    super(props)
+    centerCameraOnUserAvatar: PropTypes.func
   }
 
   componentDidMount () {
@@ -83,7 +78,6 @@ export default class GameView extends Component {
     this.props.mapPanned()
   }
 
-
   renderGameView = () => {
     return (
       <canvas
@@ -96,7 +90,7 @@ export default class GameView extends Component {
   renderLoadingScreen = () => {
     return (
       <LoadingBackgroundOverlay>
-        <CircularProgress color='inherit'/>
+        <CircularProgress color='inherit' />
         <LoadingText
           variant='body1'
           color='inherit'>
@@ -108,13 +102,14 @@ export default class GameView extends Component {
 
   renderIcons = () => {
     return (
-      <OverlayIcons>
+      <OverlayElements>
         <Compass src='/static/images/compass.svg' />
         <PositionedFindMeButton
           aria-label='Find Me'
-          whenClicked={this.props.findMeButtonClicked}
-          isCameraCenteredOnUserAvatar={this.props.cameraCenteredOnUserAvatar}/>
-      </OverlayIcons>
+          whenClicked={this.props.centerCameraOnUserAvatar}
+          isCameraCenteredOnUserAvatar={this.props.cameraCenteredOnUserAvatar}
+          id='find-me-button' />
+      </OverlayElements>
     )
   }
 

@@ -4,6 +4,7 @@ exports[`<FindMeButton /> matches snapshot 1`] = `
 <WithStyles(ForwardRef(Fab))
   aria-label="Find Me"
   color="primary"
+  id="find-me-button"
   variant="extended"
 >
   <Styled(FindMeIcon)

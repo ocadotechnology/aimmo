@@ -73,9 +73,9 @@ const mapPanned = () => (
   }
 )
 
-const findMeButtonClicked = () => (
+const centerCameraOnUserAvatar = () => (
   {
-    type: types.FIND_ME_BUTTON_CLICKED
+    type: types.CENTER_CAMERA_ON_USER_AVATAR
   }
 )
 
@@ -91,5 +91,5 @@ export default {
   gameLoaded,
   setTimeout,
   mapPanned,
-  findMeButtonClicked
+  centerCameraOnUserAvatar
 }
