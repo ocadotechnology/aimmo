@@ -116,15 +116,15 @@ exports[`<MarginedBugIcon /> matches snapshot 1`] = `
         },
         "primary": Object {
           "contrastText": "#fff",
-          "dark": "rgb(67, 67, 67)",
-          "light": "rgb(127, 127, 127)",
-          "main": "#606060",
-        },
-        "secondary": Object {
-          "contrastText": "#fff",
           "dark": "rgb(156, 65, 162)",
           "light": "rgb(229, 126, 236)",
           "main": "#DF5EE8",
+        },
+        "secondary": Object {
+          "contrastText": "#fff",
+          "dark": "rgb(67, 67, 67)",
+          "light": "rgb(127, 127, 127)",
+          "main": "#606060",
         },
         "text": Object {
           "disabled": "rgba(255, 255, 255, 0.5)",
@@ -421,15 +421,15 @@ exports[`<MarginedCheckCircle /> matches snapshot 1`] = `
         },
         "primary": Object {
           "contrastText": "#fff",
-          "dark": "rgb(67, 67, 67)",
-          "light": "rgb(127, 127, 127)",
-          "main": "#606060",
-        },
-        "secondary": Object {
-          "contrastText": "#fff",
           "dark": "rgb(156, 65, 162)",
           "light": "rgb(229, 126, 236)",
           "main": "#DF5EE8",
+        },
+        "secondary": Object {
+          "contrastText": "#fff",
+          "dark": "rgb(67, 67, 67)",
+          "light": "rgb(127, 127, 127)",
+          "main": "#606060",
         },
         "text": Object {
           "disabled": "rgba(255, 255, 255, 0.5)",
@@ -726,15 +726,15 @@ exports[`<MarginedCircularProgress /> matches snapshot 1`] = `
         },
         "primary": Object {
           "contrastText": "#fff",
-          "dark": "rgb(67, 67, 67)",
-          "light": "rgb(127, 127, 127)",
-          "main": "#606060",
-        },
-        "secondary": Object {
-          "contrastText": "#fff",
           "dark": "rgb(156, 65, 162)",
           "light": "rgb(229, 126, 236)",
           "main": "#DF5EE8",
+        },
+        "secondary": Object {
+          "contrastText": "#fff",
+          "dark": "rgb(67, 67, 67)",
+          "light": "rgb(127, 127, 127)",
+          "main": "#606060",
         },
         "text": Object {
           "disabled": "rgba(255, 255, 255, 0.5)",
@@ -1031,15 +1031,15 @@ exports[`<MarginedPlayIcon /> matches snapshot 1`] = `
         },
         "primary": Object {
           "contrastText": "#fff",
-          "dark": "rgb(67, 67, 67)",
-          "light": "rgb(127, 127, 127)",
-          "main": "#606060",
-        },
-        "secondary": Object {
-          "contrastText": "#fff",
           "dark": "rgb(156, 65, 162)",
           "light": "rgb(229, 126, 236)",
           "main": "#DF5EE8",
+        },
+        "secondary": Object {
+          "contrastText": "#fff",
+          "dark": "rgb(67, 67, 67)",
+          "light": "rgb(127, 127, 127)",
+          "main": "#606060",
         },
         "text": Object {
           "disabled": "rgba(255, 255, 255, 0.5)",
@@ -1223,7 +1223,7 @@ exports[`<MarginedPlayIcon /> matches snapshot 1`] = `
 exports[`<RunCodeButton /> becomes disabled when code is the same as the server 1`] = `
 <WithStyles(ForwardRef(Fab))
   aria-label="Run Code"
-  color="secondary"
+  color="primary"
   disabled={true}
   id="post-code-button"
   onClick={[MockFunction]}
@@ -1237,7 +1237,7 @@ exports[`<RunCodeButton /> becomes disabled when code is the same as the server 
 exports[`<RunCodeButton /> becomes enabled when code is different from the server 1`] = `
 <WithStyles(ForwardRef(Fab))
   aria-label="Run Code"
-  color="secondary"
+  color="primary"
   disabled={false}
   id="post-code-button"
   onClick={[MockFunction]}
@@ -1251,7 +1251,7 @@ exports[`<RunCodeButton /> becomes enabled when code is different from the serve
 exports[`<RunCodeButton /> renders with a done status 1`] = `
 <WithStyles(ForwardRef(Fab))
   aria-label="Run Code"
-  color="secondary"
+  color="primary"
   disabled={false}
   id="post-code-button"
   onClick={[MockFunction]}
@@ -1265,7 +1265,7 @@ exports[`<RunCodeButton /> renders with a done status 1`] = `
 exports[`<RunCodeButton /> renders with a normal status 1`] = `
 <WithStyles(ForwardRef(Fab))
   aria-label="Run Code"
-  color="secondary"
+  color="primary"
   disabled={true}
   id="post-code-button"
   onClick={[MockFunction]}
@@ -1279,7 +1279,7 @@ exports[`<RunCodeButton /> renders with a normal status 1`] = `
 exports[`<RunCodeButton /> renders with a updating status 1`] = `
 <WithStyles(ForwardRef(Fab))
   aria-label="Run Code"
-  color="secondary"
+  color="primary"
   disabled={true}
   id="post-code-button"
   onClick={[MockFunction]}
@@ -1296,7 +1296,7 @@ exports[`<RunCodeButton /> renders with a updating status 1`] = `
 exports[`<RunCodeButton /> shows an error when a timeout is detected 1`] = `
 <WithStyles(ForwardRef(Fab))
   aria-label="Run Code"
-  color="secondary"
+  color="primary"
   disabled={false}
   id="post-code-button"
   onClick={[MockFunction]}
