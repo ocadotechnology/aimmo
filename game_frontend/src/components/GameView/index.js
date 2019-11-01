@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { CircularProgress } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography'
+import FindMeButton from 'components/FindMeButton'
 import GameEngine from '../../babylon/gameEngine'
 import { StandardEnvironment } from '../../babylon/environment/environment'
 
@@ -20,14 +21,26 @@ export const LoadingBackgroundOverlay = styled.div`
   width: 100%;
 `
 
+export const OverlayElements = styled.div`
+  align-items: center;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  position: sticky;
+`
+
 export const LoadingText = styled(Typography)`
   padding-top: ${props => props.theme.spacing(2)}px;
 `
 
 export const Compass = styled.img`
-  bottom: ${props => props.theme.spacing()}px;
+  padding-bottom: ${props => props.theme.spacing()}px;
   padding-left: ${props => props.theme.spacing()}px;
   position: sticky;
+`
+
+export const PositionedFindMeButton = styled(FindMeButton)`
+  right: ${props => props.theme.spacing(3)}px;
 `
 
 export default class GameView extends Component {
@@ -37,11 +50,8 @@ export default class GameView extends Component {
     currentAvatarID: PropTypes.number,
     gameLoaded: PropTypes.bool,
     cameraCenteredOnUserAvatar: PropTypes.bool,
-    mapPanned: PropTypes.func
-  }
-
-  constructor (props) {
-    super(props)
+    mapPanned: PropTypes.func,
+    centerCameraOnUserAvatar: PropTypes.func
   }
 
   componentDidMount () {
@@ -68,7 +78,6 @@ export default class GameView extends Component {
     this.props.mapPanned()
   }
 
-
   renderGameView = () => {
     return (
       <canvas
@@ -81,7 +90,7 @@ export default class GameView extends Component {
   renderLoadingScreen = () => {
     return (
       <LoadingBackgroundOverlay>
-        <CircularProgress color='inherit'/>
+        <CircularProgress color='inherit' />
         <LoadingText
           variant='body1'
           color='inherit'>
@@ -91,9 +100,16 @@ export default class GameView extends Component {
     )
   }
 
-  renderCompass = () => {
+  renderIcons = () => {
     return (
-      <Compass src='/static/images/compass.svg' />
+      <OverlayElements>
+        <Compass src='/static/images/compass.svg' />
+        <PositionedFindMeButton
+          aria-label='Find Me'
+          whenClicked={this.props.centerCameraOnUserAvatar}
+          isCameraCenteredOnUserAvatar={this.props.cameraCenteredOnUserAvatar}
+          id='find-me-button' />
+      </OverlayElements>
     )
   }
 
@@ -102,7 +118,7 @@ export default class GameView extends Component {
       <GameViewLayout>
         {!this.props.gameLoaded && this.renderLoadingScreen()}
         {this.renderGameView()}
-        {this.props.gameLoaded && this.renderCompass()}
+        {this.props.gameLoaded && this.renderIcons()}
       </GameViewLayout>
     )
   }

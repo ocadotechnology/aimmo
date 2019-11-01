@@ -121,15 +121,15 @@ exports[`<Snackbar /> renders correctly with type=error 1`] = `
         },
         "primary": Object {
           "contrastText": "#fff",
-          "dark": "rgb(67, 67, 67)",
-          "light": "rgb(127, 127, 127)",
-          "main": "#606060",
-        },
-        "secondary": Object {
-          "contrastText": "#fff",
           "dark": "rgb(156, 65, 162)",
           "light": "rgb(229, 126, 236)",
           "main": "#DF5EE8",
+        },
+        "secondary": Object {
+          "contrastText": "#fff",
+          "dark": "rgb(67, 67, 67)",
+          "light": "rgb(127, 127, 127)",
+          "main": "#606060",
         },
         "text": Object {
           "disabled": "rgba(0, 0, 0, 0.38)",
@@ -440,15 +440,15 @@ exports[`<Snackbar /> renders correctly with type=info 1`] = `
         },
         "primary": Object {
           "contrastText": "#fff",
-          "dark": "rgb(67, 67, 67)",
-          "light": "rgb(127, 127, 127)",
-          "main": "#606060",
-        },
-        "secondary": Object {
-          "contrastText": "#fff",
           "dark": "rgb(156, 65, 162)",
           "light": "rgb(229, 126, 236)",
           "main": "#DF5EE8",
+        },
+        "secondary": Object {
+          "contrastText": "#fff",
+          "dark": "rgb(67, 67, 67)",
+          "light": "rgb(127, 127, 127)",
+          "main": "#606060",
         },
         "text": Object {
           "disabled": "rgba(0, 0, 0, 0.38)",
@@ -759,15 +759,15 @@ exports[`<Snackbar /> renders correctly with type=success 1`] = `
         },
         "primary": Object {
           "contrastText": "#fff",
-          "dark": "rgb(67, 67, 67)",
-          "light": "rgb(127, 127, 127)",
-          "main": "#606060",
-        },
-        "secondary": Object {
-          "contrastText": "#fff",
           "dark": "rgb(156, 65, 162)",
           "light": "rgb(229, 126, 236)",
           "main": "#DF5EE8",
+        },
+        "secondary": Object {
+          "contrastText": "#fff",
+          "dark": "rgb(67, 67, 67)",
+          "light": "rgb(127, 127, 127)",
+          "main": "#606060",
         },
         "text": Object {
           "disabled": "rgba(0, 0, 0, 0.38)",
@@ -1073,15 +1073,15 @@ exports[`<Snackbar /> renders correctly with type=warning 1`] = `
         },
         "primary": Object {
           "contrastText": "#fff",
-          "dark": "rgb(67, 67, 67)",
-          "light": "rgb(127, 127, 127)",
-          "main": "#606060",
-        },
-        "secondary": Object {
-          "contrastText": "#fff",
           "dark": "rgb(156, 65, 162)",
           "light": "rgb(229, 126, 236)",
           "main": "#DF5EE8",
+        },
+        "secondary": Object {
+          "contrastText": "#fff",
+          "dark": "rgb(67, 67, 67)",
+          "light": "rgb(127, 127, 127)",
+          "main": "#606060",
         },
         "text": Object {
           "disabled": "rgba(0, 0, 0, 0.38)",
@@ -1407,15 +1407,15 @@ exports[`<StyledSnackbarContent /> renders correctly 1`] = `
         },
         "primary": Object {
           "contrastText": "#fff",
-          "dark": "rgb(67, 67, 67)",
-          "light": "rgb(127, 127, 127)",
-          "main": "#606060",
-        },
-        "secondary": Object {
-          "contrastText": "#fff",
           "dark": "rgb(156, 65, 162)",
           "light": "rgb(229, 126, 236)",
           "main": "#DF5EE8",
+        },
+        "secondary": Object {
+          "contrastText": "#fff",
+          "dark": "rgb(67, 67, 67)",
+          "light": "rgb(127, 127, 127)",
+          "main": "#606060",
         },
         "text": Object {
           "disabled": "rgba(0, 0, 0, 0.38)",

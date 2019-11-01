@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import React from 'react'
-import GameView, { GameViewLayout, Compass, LoadingBackgroundOverlay } from 'components/GameView'
+import GameView, { GameViewLayout, Compass, LoadingBackgroundOverlay, PositionedFindMeButton, OverlayElements } from 'components/GameView'
 import { shallow } from 'enzyme/build/index'
 import createMountWithTheme from 'testHelpers/createMount'
 import createShallowWithTheme from 'testHelpers/createShallow'
@@ -86,6 +86,36 @@ describe('<GameView />', () => {
     expect(componentInstance.props.mapPanned).toBeCalled()
   })
 
+  it('calls FindMe function upon click when camera is not centered', () => {
+    const props = {
+      connectToGame: jest.fn(),
+      environment: new MockEnvironment(true),
+      cameraCenteredOnUserAvatar: false,
+      centerCameraOnUserAvatar: jest.fn(),
+      gameLoaded: true
+    }
+
+    const component = createMountWithTheme(<GameView {...props} />)
+
+    component.find('#find-me-button').at(1).simulate('click')
+    expect(props.centerCameraOnUserAvatar).toBeCalled()
+  })
+
+  it('does not call FindMe function upon click when camera is centered', () => {
+    const props = {
+      connectToGame: jest.fn(),
+      environment: new MockEnvironment(true),
+      cameraCenteredOnUserAvatar: true,
+      centerCameraOnUserAvatar: jest.fn(),
+      gameLoaded: true
+    }
+
+    const component = createMountWithTheme(<GameView {...props} />)
+
+    component.find('#find-me-button').at(1).simulate('click')
+    expect(props.centerCameraOnUserAvatar).not.toBeCalled()
+  })
+
   it('shows the loading screen when the game is loading', () => {
     const connectToGame = jest.fn()
     const props = {
@@ -104,9 +134,23 @@ describe('<GameViewLayout />', () => {
   })
 })
 
+describe('<OverlayElements />', () => {
+  it('matches snapshot', () => {
+    const tree = createShallowWithTheme(<OverlayElements />)
+    expect(tree).toMatchSnapshot()
+  })
+})
+
 describe('<Compass />', () => {
   it('matches snapshot', () => {
     const tree = createShallowWithTheme(<Compass />)
+    expect(tree).toMatchSnapshot()
+  })
+})
+
+describe('<PositionedFindMeButton/>', () => {
+  it('matches snapshot', () => {
+    const tree = createShallowWithTheme(<PositionedFindMeButton />)
     expect(tree).toMatchSnapshot()
   })
 })

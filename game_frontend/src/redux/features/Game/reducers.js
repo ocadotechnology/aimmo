@@ -38,6 +38,11 @@ const gameReducer = (state = {}, action) => {
         ...state,
         cameraCenteredOnUserAvatar: false
       }
+    case types.CENTER_CAMERA_ON_USER_AVATAR:
+      return {
+        ...state,
+        cameraCenteredOnUserAvatar: true
+      }
     default:
       return state
   }

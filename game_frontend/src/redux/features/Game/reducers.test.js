@@ -59,4 +59,14 @@ describe('gameReducer', () => {
     const action = actions.mapPanned()
     expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
   })
+
+  it('should set cameraCenteredOnUserAvatar to true on CENTER_CAMERA_ON_USER_AVATAR', () => {
+    const expectedState = {
+      initialState: 'someValue',
+      cameraCenteredOnUserAvatar: true
+    }
+
+    const action = actions.centerCameraOnUserAvatar()
+    expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
+  })
 })

@@ -73,6 +73,12 @@ const mapPanned = () => (
   }
 )
 
+const centerCameraOnUserAvatar = () => (
+  {
+    type: types.CENTER_CAMERA_ON_USER_AVATAR
+  }
+)
+
 export default {
   socketConnectToGameRequest,
   sendGameStateSuccess,
@@ -84,5 +90,6 @@ export default {
   snackbarShown,
   gameLoaded,
   setTimeout,
-  mapPanned
+  mapPanned,
+  centerCameraOnUserAvatar
 }
