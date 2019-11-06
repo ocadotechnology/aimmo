@@ -33,6 +33,16 @@ const gameReducer = (state = {}, action) => {
           currentAvatarID: action.payload.parameters['avatar_id']
         }
       }
+    case types.MAP_PANNED:
+      return {
+        ...state,
+        cameraCenteredOnUserAvatar: false
+      }
+    case types.CENTER_CAMERA_ON_USER_AVATAR:
+      return {
+        ...state,
+        cameraCenteredOnUserAvatar: true
+      }
     default:
       return state
   }

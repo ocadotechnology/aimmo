@@ -1,131 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Compass /> matches snapshot 1`] = `
-.c0 {
-  padding-bottom: 8px;
-  padding-left: 8px;
-  position: -webkit-sticky;
-  position: sticky;
-}
-
-<img
-  className="c0"
-/>
-`;
-
-exports[`<GameView /> matches snapshot 1`] = `
-<styled.div>
-  <canvas
-    style={
-      Object {
-        "height": "100%",
-        "width": "100%",
-      }
-    }
+exports[`<FindMeButton /> matches snapshot 1`] = `
+<WithStyles(ForwardRef(Fab))
+  aria-label="Find Me"
+  color="primary"
+  id="find-me-button"
+  variant="extended"
+>
+  <Styled(FindMeIcon)
+    color="inherit"
   />
-  <styled.div>
-    <styled.img
-      src="/static/images/compass.svg"
-    />
-    <Styled(FindMeButton)
-      aria-label="Find Me"
-      id="find-me-button"
-    />
-  </styled.div>
-</styled.div>
+  Find Me
+</WithStyles(ForwardRef(Fab))>
 `;
 
-exports[`<GameView /> shows the loading screen when the game is loading 1`] = `
-<styled.div>
-  <styled.div>
-    <WithStyles(ForwardRef(CircularProgress))
-      color="inherit"
-    />
-    <Styled(WithStyles(ForwardRef(Typography)))
-      color="inherit"
-      variant="body1"
-    >
-      Building game world...
-    </Styled(WithStyles(ForwardRef(Typography)))>
-  </styled.div>
-  <canvas
-    style={
-      Object {
-        "height": "100%",
-        "width": "100%",
-      }
-    }
-  />
-</styled.div>
-`;
-
-exports[`<GameViewLayout /> matches snapshot 1`] = `
+exports[`<MarginedLocationIcon /> matches snapshot 1`] = `
 .c0 {
-  grid-area: game-view;
+  margin-right: 8px;
 }
 
-<div
-  className="c0"
-/>
-`;
-
-exports[`<LoadingBackgroundOverlay /> matches snapshot 1`] = `
-.c0 {
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  background-color: #fff;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  height: 100%;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  width: 100%;
-}
-
-<div
-  className="c0"
-/>
-`;
-
-exports[`<OverlayElements /> matches snapshot 1`] = `
-.c0 {
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  bottom: 0;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: justify;
-  -webkit-justify-content: space-between;
-  -ms-flex-pack: justify;
-  justify-content: space-between;
-  position: -webkit-sticky;
-  position: sticky;
-}
-
-<div
-  className="c0"
-/>
-`;
-
-exports[`<PositionedFindMeButton/> matches snapshot 1`] = `
-.c0 {
-  right: 24px;
-}
-
-<FindMeButton
+<FindMeIcon
   className="c0"
   theme={
     Object {
@@ -193,24 +87,24 @@ exports[`<PositionedFindMeButton/> matches snapshot 1`] = `
       },
       "palette": Object {
         "action": Object {
-          "active": "rgba(0, 0, 0, 0.54)",
-          "disabled": "rgba(0, 0, 0, 0.26)",
-          "disabledBackground": "rgba(0, 0, 0, 0.12)",
-          "hover": "rgba(0, 0, 0, 0.08)",
-          "hoverOpacity": 0.08,
-          "selected": "rgba(0, 0, 0, 0.14)",
+          "active": "#fff",
+          "disabled": "rgba(255, 255, 255, 0.3)",
+          "disabledBackground": "rgba(255, 255, 255, 0.12)",
+          "hover": "rgba(255, 255, 255, 0.1)",
+          "hoverOpacity": 0.1,
+          "selected": "rgba(255, 255, 255, 0.2)",
         },
         "augmentColor": [Function],
         "background": Object {
-          "default": "#fafafa",
-          "paper": "#fff",
+          "default": "#303030",
+          "paper": "#424242",
         },
         "common": Object {
           "black": "#000",
           "white": "#fff",
         },
         "contrastThreshold": 3,
-        "divider": "rgba(0, 0, 0, 0.12)",
+        "divider": "rgba(255, 255, 255, 0.12)",
         "error": Object {
           "contrastText": "#fff",
           "dark": "#d32f2f",
@@ -247,13 +141,14 @@ exports[`<PositionedFindMeButton/> matches snapshot 1`] = `
           "main": "#606060",
         },
         "text": Object {
-          "disabled": "rgba(0, 0, 0, 0.38)",
-          "hint": "rgba(0, 0, 0, 0.38)",
-          "primary": "rgba(0, 0, 0, 0.87)",
-          "secondary": "rgba(0, 0, 0, 0.54)",
+          "disabled": "rgba(255, 255, 255, 0.5)",
+          "hint": "rgba(255, 255, 255, 0.5)",
+          "icon": "rgba(255, 255, 255, 0.5)",
+          "primary": "#fff",
+          "secondary": "rgba(255, 255, 255, 0.7)",
         },
         "tonalOffset": 0.2,
-        "type": "light",
+        "type": "dark",
       },
       "props": Object {},
       "shadows": Array [

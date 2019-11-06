@@ -67,15 +67,29 @@ const setTimeout = () => ({
   type: types.SET_TIMEOUT
 })
 
+const mapPanned = () => (
+  {
+    type: types.MAP_PANNED
+  }
+)
+
+const centerCameraOnUserAvatar = () => (
+  {
+    type: types.CENTER_CAMERA_ON_USER_AVATAR
+  }
+)
+
 export default {
   socketConnectToGameRequest,
-  sendGameStateFail,
   sendGameStateSuccess,
+  sendGameStateFail,
   socketGameStateReceived,
   connectionParametersReceived,
   socketFeedbackAvatarUpdatedSuccess,
   socketFeedbackAvatarUpdatedTimeout,
   snackbarShown,
   gameLoaded,
-  setTimeout
+  setTimeout,
+  mapPanned,
+  centerCameraOnUserAvatar
 }

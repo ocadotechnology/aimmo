@@ -96,7 +96,7 @@ export default class RunCodeButton extends Component {
   render () {
     return (
       <Fab
-        color='secondary'
+        color='primary'
         className={this.props.className}
         disabled={this.shouldButtonBeDisabled()}
         aria-label='Run Code'

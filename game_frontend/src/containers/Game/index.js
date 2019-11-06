@@ -11,7 +11,7 @@ export class Game extends Component {
     theme: PropTypes.object,
     showSnackbar: PropTypes.bool,
     snackbarMessage: PropTypes.string,
-    snackbarType: PropTypes.oneOf(Object.values(SnackbarTypes)),
+    snackbarType: PropTypes.oneOf(Object.values(SnackbarTypes))
   }
 
   state = {
@@ -39,6 +39,9 @@ export class Game extends Component {
           gameState={this.props.gameState}
           currentAvatarID={this.props.currentAvatarID}
           gameLoaded={this.props.gameLoaded}
+          cameraCenteredOnUserAvatar={this.props.cameraCenteredOnUserAvatar}
+          mapPanned={this.props.mapPanned}
+          centerCameraOnUserAvatar={this.props.centerCameraOnUserAvatar}
         />
         <Snackbar
           type='success'
@@ -55,7 +58,9 @@ export class Game extends Component {
 
 const mapDispatchToProps = {
   connectToGame: actions.socketConnectToGameRequest,
-  snackbarShown: actions.snackbarShown
+  snackbarShown: actions.snackbarShown,
+  mapPanned: actions.mapPanned,
+  centerCameraOnUserAvatar: actions.centerCameraOnUserAvatar
 }
 
 const mapStateToProps = state => ({
@@ -63,7 +68,8 @@ const mapStateToProps = state => ({
   snackbarMessage: state.game.snackbarMessage,
   gameState: state.game.gameState,
   currentAvatarID: state.game.connectionParameters.currentAvatarID,
-  gameLoaded: state.game.gameLoaded
+  gameLoaded: state.game.gameLoaded,
+  cameraCenteredOnUserAvatar: state.game.cameraCenteredOnUserAvatar
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game)

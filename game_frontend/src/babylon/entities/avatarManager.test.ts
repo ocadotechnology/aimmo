@@ -54,6 +54,16 @@ describe('AvatarManager', () => {
     expect(avatarNodeDescendants.length).toEqual(0)
   })
 
+  it('sets current avatar mesh if it matches the ID', () => {
+    avatars.setCurrentAvatarID(1)
+    const avatar = avatarDiffItem('1', 'east', { x: 0, y: 0 })
+
+    avatars.add(avatar)
+
+    let avatarNodeDescendants = avatars.avatarNode.getChildMeshes()
+    expect(avatars.currentAvatarMesh).toEqual(avatarNodeDescendants[0])
+  })
+
   it('updates existing avatars', () => {
     const avatar = avatarDiffItem('1', 'east', { x: 0, y: 0 })
     avatars.scene.createDefaultCamera()
