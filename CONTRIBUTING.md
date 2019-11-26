@@ -31,7 +31,9 @@ Before you merge:
 2. A new beta version of Kurono will be released on PyPI and Docker Hub
 3. The beta will be tested on our staging servers
 
-Eventually, development will be merged into master. This will trigger a stable release which will make it's way up to production. Congrats! 🎉
+Eventually, development will be merged into master. This will trigger a stable release which will make its way up to production. Congrats! 🎉
+
+***Note:*** *See [Life Cycle Of A Code Change](docs/life-cycle-of-a-code-change.md) for details on the pipeline a code change is submitted to after the PR is approved.*
 
 ## Some conventions to keep in mind...
 We follow PEP8 convention quite strictly however we do make a few exceptions to this rule. They are as follows:
