@@ -1,10 +1,14 @@
+from __future__ import absolute_import
+from __future__ import print_function
+
 import json
 import os
 import platform
 import re
 
 import docker
-from shell_api import BASE_DIR, create_test_bin, run_command
+
+from .shell_api import BASE_DIR, run_command
 
 
 def create_docker_client(use_raw_env=False, minikube=None):

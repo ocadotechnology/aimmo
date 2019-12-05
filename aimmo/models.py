@@ -1,13 +1,13 @@
 from base64 import urlsafe_b64encode
 from os import urandom
-import json
 
-from aimmo import app_settings
 from django.contrib.auth.models import User
 from django.db import models
 
+from aimmo import app_settings
+
 GAME_GENERATORS = [("Main", "Open World")] + [  # Default
-    ("Level%s" % i, "Level %s" % i) for i in xrange(1, app_settings.MAX_LEVEL + 1)
+    ("Level%s" % i, "Level %s" % i) for i in range(1, app_settings.MAX_LEVEL + 1)
 ]
 
 

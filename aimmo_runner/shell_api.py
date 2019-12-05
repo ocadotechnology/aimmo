@@ -1,11 +1,11 @@
+import errno
+import os
+import platform
+import stat
 import subprocess
 import sys
-import os
-import stat
-import errno
-import platform
 from subprocess import CalledProcessError
-from urllib import urlretrieve, urlopen
+from urllib.request import urlretrieve, urlopen
 
 BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 TEST_BIN = os.path.join(BASE_DIR, 'test-bin')

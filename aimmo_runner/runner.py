@@ -1,12 +1,15 @@
+from __future__ import absolute_import
+
 import logging
 import os
 import sys
 import time
 
 import django
-import docker_scripts
 from django.conf import settings
-from shell_api import log, run_command, run_command_async
+
+from . import docker_scripts
+from .shell_api import log, run_command, run_command_async
 
 sys.path.append("/home/travis/build/ocadotechnology/aimmo")
 
