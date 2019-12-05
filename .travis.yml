@@ -126,7 +126,7 @@ jobs:
         # - pip install git+https://github.com/ocadotechnology/python-semantic-release.git@add_beta_releases
         # - semantic-release publish --branch=${TRAVIS_BRANCH} --build=${TRAVIS_BUILD_NUMBER} --dev=${DEPLOY_TO_DEV}
         - git checkout development
-        - git merge master
+        - git merge origin/master
         - git remote add authed-origin https://${GH_TOKEN}@github.com/ocadotechnology/aimmo.git > /dev/null 2>&1
         - git push --quiet --set-upstream authed-origin development
       deploy:
