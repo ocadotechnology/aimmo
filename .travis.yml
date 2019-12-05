@@ -129,7 +129,7 @@ jobs:
         - git checkout master
         - git checkout development
         - git merge master
-        - git remote add authed-origin https://${GH_TOKEN}github.com/ocadotechnology/aimmo.git > /dev/null 2>&1
+        - git remote add authed-origin https://${GH_TOKEN}@github.com/ocadotechnology/aimmo.git > /dev/null 2>&1
         - git push --quiet --set-upstream authed-origin development
       deploy:
         - provider: releases
