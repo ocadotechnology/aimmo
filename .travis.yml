@@ -17,6 +17,8 @@ stages:
     if: tag IS blank AND type IN (pull_request)
   - name: release
     if: tag IS blank AND ((branch IN (master, development) AND NOT type IN (pull_request)) OR env(DEPLOY_TO_DEV) = true)
+  - name: Merge master into development after release
+    if: tag IS blank AND branch = "master" AND NOT type IN (pull_request)
   - name: deploy
     if: tag IS present
   - name: Notify Semaphore (Staging)
@@ -110,7 +112,7 @@ jobs:
     - stage: Release
       env:
         - NODE_ENV=production
-      # before_install:
+      before_install:
         - nvm install node
         - nvm use node
         - pip install git+https://github.com/ocadotechnology/python-semantic-release.git@add_beta_releases
@@ -125,10 +127,6 @@ jobs:
         - git config --global user.name "semantic-release (via TravisCI)"
         - git config --global user.email "semantic-release@travis"
         - semantic-release publish --branch=${TRAVIS_BRANCH} --build=${TRAVIS_BUILD_NUMBER} --dev=${DEPLOY_TO_DEV}
-        - git checkout development
-        - git merge origin/master
-        - git remote add authed-origin https://${GH_TOKEN}@github.com/ocadotechnology/aimmo.git > /dev/null 2>&1
-        - git push --quiet --set-upstream authed-origin development
       deploy:
         - provider: releases
           api_key:
@@ -158,6 +156,12 @@ jobs:
           on:
             repo: ocadotechnology/aimmo
             branch: master
+    - stage: Merge master into development after release
+      script:
+        - git checkout development
+        - git merge origin/master
+        - git remote add authed-origin https://${GH_TOKEN}@github.com/ocadotechnology/aimmo.git > /dev/null 2>&1
+        - git push --quiet --set-upstream authed-origin development
     - stage: Deploy
       name: "Build and push game image"
       script:
