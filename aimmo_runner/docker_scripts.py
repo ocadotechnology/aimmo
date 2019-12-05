@@ -19,7 +19,9 @@ def create_docker_client(use_raw_env=False, minikube=None):
     :return:
     """
     if use_raw_env:
-        raw_env_settings = run_command([minikube, "docker-env", '--shell="bash"'], True)
+        raw_env_settings = run_command(
+            [minikube, "docker-env", '--shell="bash"'], True
+        ).decode("utf-8")
         matches = re.finditer(r'^export (.+)="(.+)"$', raw_env_settings, re.MULTILINE)
         env_variables = dict([(m.group(1), m.group(2)) for m in matches])
 
