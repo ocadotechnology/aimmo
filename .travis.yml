@@ -131,6 +131,7 @@ jobs:
         - git merge master
         - git status
         - git log
+        - git push origin development
       deploy:
         - provider: releases
           api_key:
