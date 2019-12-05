@@ -126,10 +126,11 @@ jobs:
         # - pip install git+https://github.com/ocadotechnology/python-semantic-release.git@add_beta_releases
         # - semantic-release publish --branch=${TRAVIS_BRANCH} --build=${TRAVIS_BUILD_NUMBER} --dev=${DEPLOY_TO_DEV}
         - git status
-        - git checkout development
-        - git status
         - git checkout master
+        - git checkout development
+        - git merge master
         - git status
+        - git log
       deploy:
         - provider: releases
           api_key:
