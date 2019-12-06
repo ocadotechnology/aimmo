@@ -5,7 +5,10 @@ import stat
 import subprocess
 import sys
 from subprocess import CalledProcessError
-from urllib.request import urlretrieve, urlopen
+try:
+    from urllib.request import urlretrieve, urlopen
+except ImportError:
+    from urllib import urlretrieve, urlopen
 
 BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 TEST_BIN = os.path.join(BASE_DIR, 'test-bin')
