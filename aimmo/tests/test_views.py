@@ -1,12 +1,9 @@
-import ast
 import json
 
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.http import JsonResponse
 from django.test import Client, TestCase
 from rest_framework import status
-from rest_framework.test import APIRequestFactory
 
 from aimmo import app_settings, models
 from aimmo.serializers import GameSerializer
@@ -37,7 +34,7 @@ class TestViews(TestCase):
     EXPECTED_GAME_DETAIL = {
         "name": "test",
         "status": "r",
-        "settings": '{"TARGET_NUM_CELLS_PER_AVATAR": 16.0, "START_HEIGHT": 31, "GENERATOR": "Main", "TARGET_NUM_PICKUPS_PER_AVATAR": 1.2, "SCORE_DESPAWN_CHANCE": 0.05, "START_WIDTH": 31, "PICKUP_SPAWN_CHANCE": 0.1, "OBSTACLE_RATIO": 0.1, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
+        "settings": '{"GENERATOR": "Main", "OBSTACLE_RATIO": 0.1, "PICKUP_SPAWN_CHANCE": 0.1, "SCORE_DESPAWN_CHANCE": 0.05, "START_HEIGHT": 31, "START_WIDTH": 31, "TARGET_NUM_CELLS_PER_AVATAR": 16.0, "TARGET_NUM_PICKUPS_PER_AVATAR": 1.2, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
     }
 
     EXPECTED_GAME_LIST = {"1": EXPECTED_GAME_DETAIL, "2": EXPECTED_GAME_DETAIL}
@@ -271,8 +268,8 @@ class TestViews(TestCase):
         self.assertEqual(str(second_response.status_code)[0], "2")
 
         # JSON is returned as string so needs to be evaluated.
-        first_id = ast.literal_eval(first_response.content)["current_avatar_id"]
-        second_id = ast.literal_eval(second_response.content)["current_avatar_id"]
+        first_id = json.loads(first_response.content)["current_avatar_id"]
+        second_id = json.loads(second_response.content)["current_avatar_id"]
 
         self.assertEqual(first_id, 1)
         self.assertEqual(second_id, 2)
@@ -312,7 +309,7 @@ class TestViews(TestCase):
             reverse("kurono/game_user_details", kwargs={"id": 1})
         )
 
-        current_avatar_id = ast.literal_eval(current_avatar_api_response.content)[
+        current_avatar_id = json.loads(current_avatar_api_response.content)[
             "current_avatar_id"
         ]
         games_api_users = json.loads(games_api_response.content)["users"]
@@ -433,7 +430,8 @@ class TestViews(TestCase):
         serializer = GameSerializer(self.game)
 
         self.assertEquals(
-            json.dumps(self.game.settings_as_dict()), serializer.data["settings"]
+            json.dumps(self.game.settings_as_dict(), sort_keys=True),
+            serializer.data["settings"],
         )
 
     def test_list_all_games(self):
@@ -445,6 +443,7 @@ class TestViews(TestCase):
 
         c = Client()
         response = c.get(reverse("game-list"))
+
         self.assertJSONEqual(response.content, self.EXPECTED_GAME_LIST)
 
     def test_view_one_game(self):

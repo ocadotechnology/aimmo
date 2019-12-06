@@ -1,11 +1,12 @@
 """
 Any helper functions used for the unity game.
 """
+from __future__ import absolute_import
 
 from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.models import User
+
 from aimmo import app_settings, exceptions
-from models import Game
+from .models import Game
 
 
 def render_game(request, game):

@@ -1,4 +1,5 @@
 #!/user/bin/env python
+from __future__ import absolute_import
 from __future__ import print_function
 
 import os
@@ -9,8 +10,9 @@ from subprocess import CalledProcessError
 
 import kubernetes
 import yaml
-from docker_scripts import build_docker_images
-from shell_api import BASE_DIR, create_test_bin, run_command
+
+from .docker_scripts import build_docker_images
+from .shell_api import BASE_DIR, create_test_bin, run_command
 
 MINIKUBE_EXECUTABLE = "minikube"
 TIME_FOR_COMPONENTS_TO_DELETE = 5
