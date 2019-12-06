@@ -430,7 +430,8 @@ class TestViews(TestCase):
         serializer = GameSerializer(self.game)
 
         self.assertEquals(
-            json.dumps(self.game.settings_as_dict()), serializer.data["settings"]
+            json.dumps(self.game.settings_as_dict(), sort_keys=True),
+            serializer.data["settings"],
         )
 
     def test_list_all_games(self):
@@ -442,6 +443,7 @@ class TestViews(TestCase):
 
         c = Client()
         response = c.get(reverse("game-list"))
+
         self.assertJSONEqual(response.content, self.EXPECTED_GAME_LIST)
 
     def test_view_one_game(self):

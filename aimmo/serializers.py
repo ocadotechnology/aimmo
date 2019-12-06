@@ -10,7 +10,7 @@ class GameSerializer(serializers.Serializer):
     status = serializers.CharField(max_length=1)
 
     def get_settings_as_dict(self, game):
-        return json.dumps(game.settings_as_dict())
+        return json.dumps(game.settings_as_dict(), sort_keys=True)
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get("name", instance.name)
