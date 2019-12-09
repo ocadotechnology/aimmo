@@ -18,7 +18,7 @@ stages:
   - name: release
     if: tag IS blank AND ((branch IN (master, development) AND NOT type IN (pull_request)) OR env(DEPLOY_TO_DEV) = true)
   - name: Merge master into development after release
-    if: tag IS present AND tag =~ /^\d+\.\d+\.\d+$/
+    if: tag IS present AND tag =~ /^v\d+\.\d+\.\d+$/
   - name: deploy
     if: tag IS present
   - name: Notify Semaphore (Staging)
