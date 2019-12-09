@@ -1,8 +1,9 @@
+from __future__ import absolute_import
 from django.contrib import admin
-from models import Avatar, Game, User
+from .models import Avatar, Game, User
 import uuid
 
-from views import _create_avatar_for_user
+from .views import _create_avatar_for_user
 
 NUMBER_OF_AVATARS_TO_ADD = 10
 

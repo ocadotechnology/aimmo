@@ -1,7 +1,8 @@
-from django.shortcuts import get_object_or_404
+from __future__ import absolute_import
+
 from rest_framework import authentication, permissions
 
-from app_settings import CanDelete
+from .app_settings import CanDelete
 
 
 class CsrfExemptSessionAuthentication(authentication.SessionAuthentication):
