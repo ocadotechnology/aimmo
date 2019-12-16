@@ -70,7 +70,6 @@ INSTALLED_APPS = (
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "aimmo",
-    "django_forms_bootstrap",
 )
 
 LOGGING = {
