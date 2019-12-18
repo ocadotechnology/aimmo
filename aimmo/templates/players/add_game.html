@@ -1,5 +1,4 @@
 {% extends 'players/base.html' %}
-{% load bootstrap_tags %}
 
 {% block content %}
 <div class="row">
@@ -8,7 +7,7 @@
         <form action="" method="post">
             {% csrf_token %}
             <div class="form-actions">
-                {{ form|as_bootstrap }}
+                {{ form }}
                 <input type="submit" value="Submit" class="btn btn-primary">
             </div>
         </form>
