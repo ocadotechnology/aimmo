@@ -46,7 +46,7 @@ class TestIntegration(unittest.TestCase):
         delete_old_database()
 
         os.chdir(runner.ROOT_DIR_LOCATION)
-        self.processes = runner.run(use_minikube=False, server_wait=False, capture_output=False, test_env=True)
+        self.processes = runner.run(use_minikube=False, server_wait=False, capture_output=True, test_env=True)
         client = Client()
         response = client.get(reverse(url_string))
         self.assertEqual(response.status_code, 200)
