@@ -12,7 +12,7 @@ setup(
         "six",
         "djangorestframework>=3.8.2, < 3.9.0",
     ],
-    tests_require=["httmock", "mock"],
+    tests_require=[],
     test_suite="test_utils.test_suite.DjangoAutoTestSuite",
     zip_safe=False,
 )
