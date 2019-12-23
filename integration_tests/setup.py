@@ -8,12 +8,13 @@ setup(
     include_package_data=True,
     install_requires=[
         'requests',
+        'docker >= 3.5, < 3.6'
     ],
     tests_require=[
         'requests',
         'psutil',
         'mock',
-        'kubernetes == 5.0.0',
+        'kubernetes',
     ],
     test_suite='test_utils.test_suite.DjangoAutoTestSuite',
     zip_safe=False,

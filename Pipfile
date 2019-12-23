@@ -4,10 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
-pylint = "<2.0.0"
 
 [packages]
-"e1839a8" = {editable = true, path = "."}
+e1839a8 = {path = ".",editable = true}
 kubernetes = "*"
 eventlet = "*"
 docker = "*"
