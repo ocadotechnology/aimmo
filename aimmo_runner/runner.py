@@ -81,15 +81,6 @@ def run(
         sys.path.append(os.path.join(parent_dir, "aimmo_runner"))
 
         os.chdir(ROOT_DIR_LOCATION)
-        run_command(
-            [
-                "pip",
-                "install",
-                "-r",
-                os.path.join(ROOT_DIR_LOCATION, "minikube_requirements.txt"),
-            ],
-            capture_output=capture_output,
-        )
 
         # Import minikube here, so we can install the dependencies first
         from aimmo_runner import minikube
