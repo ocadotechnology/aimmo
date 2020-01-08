@@ -3,6 +3,10 @@ import types from './types'
 import { gameTypes } from 'features/Game'
 import { RunCodeButtonStatus } from 'components/RunCodeButton'
 
+const DEFAULT_CODE = `def next_turn(world_state, avatar_state):
+    return MoveAction(direction.NORTH)
+`
+
 const codeReducer = (state = {}, action) => {
   switch (action.type) {
     case types.GET_CODE_SUCCESS:
@@ -20,6 +24,11 @@ const codeReducer = (state = {}, action) => {
       return {
         ...state,
         codeOnServer: state.code
+      }
+    case types.RESET_CODE:
+      return {
+        ...state,
+        code: DEFAULT_CODE
       }
     default:
       return state
