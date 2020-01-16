@@ -3,14 +3,22 @@ import asyncio
 import pytest
 from aioresponses import aioresponses
 from requests import Response
+from simulation.location import Location
+from simulation.world_map import WorldMap
 from tests.test_simulation.concrete_worker import ConcreteWorker
+from tests.test_simulation.test_game_runner import game_runner, RequestMock
+from tests.test_simulation.test_world_map import generate_grid, WORLD_MAP_SETTINGS
 
+from unittest.mock import MagicMock
 import mock
 from simulation.workers.worker import Worker
 
 DEFAULT_RESPONSE_CONTENT = (
     b'{"action": "test_action",' b'"log": "test_log",' b'"avatar_updated": "True"}'
 )
+
+NORTH_MOVE_RESPONSE_CONTENT = '{"action": {"action_type": "move", "options": {"direction": {"x": 0, "y": 1}}}}'
+
 
 MISSING_KEY_RESPONSE_CONTENT = (
     b'{"corruptedKey": "test_action",'
@@ -81,3 +89,26 @@ async def test_missing_key_in_worker_data(mock_aioresponse, worker, mocker):
     await asyncio.ensure_future(worker.fetch_data(state_view={}))
 
     worker._set_defaults.assert_called_once()
+    assert False
+
+@pytest.mark.asyncio
+async def test_fetch_data_uses_correct_game_state(mock_aioresponse, game_runner):
+    mock_aioresponse.post(
+        "http://test/turn/", status=200, body=NORTH_MOVE_RESPONSE_CONTENT
+    )
+    game = RequestMock(1)
+
+    game_runner.game_state.world_map = WorldMap(generate_grid(), WORLD_MAP_SETTINGS)
+
+    game_runner.game_state.world_map.get_random_spawn_location = MagicMock(return_value=Location(0,0))
+    await game_runner.update()
+
+    assert game_runner.game_state.avatar_manager.get_avatar(1) is not None
+
+    assert game_runner.game_state.avatar_manager.get_avatar(1).location == Location(0,0)
+
+
+    # await game_runner.update()
+    
+    # assert game_runner.game_state.avatar_manager.get_avatar(1).location == Location(0,1)
+
