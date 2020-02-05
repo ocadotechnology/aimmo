@@ -1,8 +1,9 @@
 from __future__ import absolute_import
 
-import math
 from string import ascii_uppercase
 from unittest import TestCase
+
+import math
 
 from simulation.game_logic import SpawnLocationFinder
 from simulation.interactables.interactable import _Interactable
@@ -10,7 +11,6 @@ from simulation.interactables.pickups import ALL_PICKUPS, HealthPickup
 from simulation.interactables.score_location import ScoreLocation
 from simulation.location import Location
 from simulation.world_map import WorldMap, WorldMapStaticSpawnDecorator
-
 from .dummy_avatar import DummyAvatar
 from .maps import AvatarMap, MockCell, MockPickup
 
@@ -35,8 +35,8 @@ def generate_grid(columns=2, rows=2):
     alphabet = iter(ascii_uppercase)
     grid = {
         Location(x, y): MockCell(Location(x, y), name=next(alphabet))
-        for x in range(columns)
-        for y in range(rows)
+        for x in range(-int_ceil(columns / 2.0) + 1, int_floor(columns / 2.0) + 1)
+        for y in range(-int_ceil(rows / 2.0) + 1, int_floor(rows / 2.0) + 1)
     }
     return grid
 
@@ -250,7 +250,7 @@ class TestWorldMap(TestCase):
         world_map = WorldMap({target: cell}, self.settings)
         self.assertFalse(world_map.can_move_to(target))
 
-    def test_cannot_move_to_habited_cell(self):
+    def test_cannot_move_to_inhabited_cell(self):
         target = Location(0, 0)
         cell = MockCell(target, avatar=DummyAvatar(target, 0))
         world_map = WorldMap({target: cell}, self.settings)
@@ -296,16 +296,6 @@ class TestWorldMap(TestCase):
 
 
 class TestWorldMapWithOriginCentre(TestWorldMap):
-    def _generate_grid(self, columns=2, rows=2):
-        alphabet = iter(ascii_uppercase)
-        grid = {
-            Location(x, y): MockCell(Location(x, y), name=next(alphabet))
-            for x in range(-int_ceil(columns / 2.0) + 1, int_floor(columns / 2.0) + 1)
-            for y in range(-int_ceil(rows / 2.0) + 1, int_floor(rows / 2.0) + 1)
-        }
-
-        return grid
-
     def _grid_from_list(self, in_list):
         out = {}
         min_x = -int_ceil(len(in_list) / 2.0) + 1
