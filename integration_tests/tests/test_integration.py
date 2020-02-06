@@ -1,13 +1,15 @@
-import os
 import logging
-import mock
+import os
 import unittest
-from django.test.client import Client
+
+import mock
 import psutil
-from aimmo_runner import runner
-from connection_api import (create_session, send_get_request, send_post_request,
-                            obtain_csrftoken, delete_old_database, is_server_healthy)
 from django.core.urlresolvers import reverse
+from django.test.client import Client
+
+from aimmo_runner import runner
+from .connection_api import delete_old_database
+
 logging.basicConfig(level=logging.WARNING)
 
 
@@ -34,7 +36,7 @@ class TestIntegration(unittest.TestCase):
 
             parent.terminate()
 
-    @mock.patch('docker.from_env')
+    @mock.patch("docker.from_env")
     def test_superuser_authentication(self, docker_from_env):
         """
         A test that will run on a clean & empty database, create all migrations, new
@@ -42,21 +44,19 @@ class TestIntegration(unittest.TestCase):
         
         Server gets killed at the end of the test.
         """
-        url_string = 'kurono/login'
+        url_string = "kurono/login"
         delete_old_database()
 
         os.chdir(runner.ROOT_DIR_LOCATION)
-        self.processes = runner.run(use_minikube=False, server_wait=False, capture_output=True, test_env=True)
+        self.processes = runner.run(
+            use_minikube=False, server_wait=False, capture_output=True, test_env=True
+        )
         client = Client()
         response = client.get(reverse(url_string))
         self.assertEqual(response.status_code, 200)
-        csrf_token = response.context['csrf_token']
+        csrf_token = response.context["csrf_token"]
 
-        login_info = {
-            'username': 'admin',
-            'password': 'admin',
-            'csrftoken': csrf_token,
-        }
+        login_info = {"username": "admin", "password": "admin", "csrftoken": csrf_token}
 
         response = client.post(reverse(url_string), login_info)
         self.assertEqual(response.status_code, 302)
