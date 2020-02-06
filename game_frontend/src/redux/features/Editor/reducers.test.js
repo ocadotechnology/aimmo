@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import editorReducer, { DEFAULT_CODE } from './reducers'
+import editorReducer from './reducers'
 import actions from './actions'
 import { actions as gameActions } from 'features/Game'
 import { RunCodeButtonStatus } from 'components/RunCodeButton'
@@ -77,6 +77,9 @@ describe('runCodeButtonReducer', () => {
 
 describe('resetCodeReducer', () => {
   it('should reset the code the the initial code', () => {
+    const DEFAULT_CODE = `def next_turn(world_state, avatar_state):
+    return MoveAction(direction.NORTH)
+`
     const initialState = {
       code: {},
       runCodeButton: {}
