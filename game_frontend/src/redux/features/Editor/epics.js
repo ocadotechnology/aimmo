@@ -44,6 +44,12 @@ const postCodeAnalyticsEpic = action$ =>
     mapTo(analyticActions.sendAnalyticsEvent('Kurono', 'Click', 'Run Code'))
   )
 
+const resetCodeAnalyticsEpic = action$ =>
+  action$.pipe(
+    ofType(types.RESET_CODE),
+    mapTo(analyticActions.sendAnalyticsEvent('Kurono', 'Click', 'Reset Code'))
+  )
+
 const changeCodeEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
   action$.pipe(
     ofType(types.KEY_PRESSED),
@@ -55,5 +61,6 @@ export default {
   getCodeEpic,
   postCodeEpic,
   changeCodeEpic,
-  postCodeAnalyticsEpic
+  postCodeAnalyticsEpic,
+  resetCodeAnalyticsEpic
 }
