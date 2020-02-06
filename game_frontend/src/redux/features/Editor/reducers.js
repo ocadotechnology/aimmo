@@ -2,6 +2,7 @@ import { combineReducers } from 'redux'
 import types from './types'
 import { gameTypes } from 'features/Game'
 import { RunCodeButtonStatus } from 'components/RunCodeButton'
+import { DEFAULT_CODE } from '../constants'
 
 const codeReducer = (state = {}, action) => {
   switch (action.type) {
@@ -20,6 +21,11 @@ const codeReducer = (state = {}, action) => {
       return {
         ...state,
         codeOnServer: state.code
+      }
+    case types.RESET_CODE:
+      return {
+        ...state,
+        code: DEFAULT_CODE
       }
     default:
       return state

@@ -36,6 +36,12 @@ const changeCode = code => (
   }
 )
 
+const resetCode = () => (
+  {
+    type: types.RESET_CODE
+  }
+)
+
 const keyPressed = code => (
   {
     type: types.KEY_PRESSED,
@@ -51,5 +57,6 @@ export default {
   postCodeRequest,
   postCodeReceived,
   changeCode,
-  keyPressed
+  keyPressed,
+  resetCode
 }
