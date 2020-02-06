@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import editorReducer from './reducers'
+import editorReducer, { DEFAULT_CODE } from './reducers'
 import actions from './actions'
 import { actions as gameActions } from 'features/Game'
 import { RunCodeButtonStatus } from 'components/RunCodeButton'
@@ -72,5 +72,22 @@ describe('runCodeButtonReducer', () => {
 
     const action = gameActions.snackbarShown()
     expect(editorReducer({}, action)).toEqual(expectedState)
+  })
+})
+
+describe('resetCodeReducer', () => {
+  it('should reset the code the the initial code', () => {
+    const initialState = {
+      code: {},
+      runCodeButton: {}
+    }
+    const expectedState = {
+      code: {
+        code: DEFAULT_CODE
+      },
+      runCodeButton: {}
+    }
+    const action = actions.resetCode()
+    expect(editorReducer(initialState, action)).toEqual(expectedState)
   })
 })

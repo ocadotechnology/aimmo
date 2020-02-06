@@ -3,7 +3,7 @@ import types from './types'
 import { gameTypes } from 'features/Game'
 import { RunCodeButtonStatus } from 'components/RunCodeButton'
 
-const DEFAULT_CODE = `def next_turn(world_state, avatar_state):
+export const DEFAULT_CODE = `def next_turn(world_state, avatar_state):
     return MoveAction(direction.NORTH)
 `
 
