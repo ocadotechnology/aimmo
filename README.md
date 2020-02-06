@@ -19,7 +19,6 @@
   </a>
 </p>
 
-## Objective
 It is the year 3000 and the museum is in big trouble! The priceless artifacts are lost and scattered across timelines. Your team’s mission is to travel through time and bring them back into the museum.
 
 ## Quick Start
