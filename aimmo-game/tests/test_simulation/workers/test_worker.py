@@ -3,14 +3,14 @@ import asyncio
 import pytest
 from aioresponses import aioresponses
 from requests import Response
-from tests.test_simulation.concrete_worker import ConcreteWorker
 
-import mock
 from simulation.workers.worker import Worker
+from tests.test_simulation.concrete_worker import ConcreteWorker
 
 DEFAULT_RESPONSE_CONTENT = (
     b'{"action": "test_action",' b'"log": "test_log",' b'"avatar_updated": "True"}'
 )
+
 
 MISSING_KEY_RESPONSE_CONTENT = (
     b'{"corruptedKey": "test_action",'
