@@ -15,7 +15,7 @@
 
 <p align="center">
   <a href="https://www.codeforlife.education/play/kurono/" target="_blank">
-      <img src="/docs/images/kurono_game.png" height="500px" alt="Kurono Game" />
+      <img src="/docs/images/kurono_game.png" height="400px" alt="Kurono Game" />
   </a>
 </p>
 
