@@ -1,10 +1,5 @@
 import asyncio
-import concurrent.futures
 import logging
-import threading
-import time
-
-from prometheus_client import Histogram
 
 from metrics import GAME_TURN_TIME
 from simulation.avatar.avatar_manager import AvatarManager
@@ -83,7 +78,6 @@ class GameRunner:
     async def update(self):
         with GAME_TURN_TIME():
             await self.update_workers()
-            await asyncio.sleep(TURN_TIME / 4)
             await self.update_simulation(
                 self.worker_manager.get_player_id_to_serialized_actions()
             )
