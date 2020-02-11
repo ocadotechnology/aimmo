@@ -2,16 +2,9 @@ import asyncio
 import logging
 import threading
 from abc import ABCMeta, abstractmethod
-from threading import Thread
 
-from simulation.action import PRIORITIES, WaitAction
-from simulation.game_logic import (
-    EffectApplier,
-    MapContext,
-    MapExpander,
-    PickupUpdater,
-    ScoreLocationUpdater,
-)
+from simulation.action import PRIORITIES
+from simulation.game_logic import EffectApplier, MapContext, MapExpander
 
 LOGGER = logging.getLogger(__name__)
 
