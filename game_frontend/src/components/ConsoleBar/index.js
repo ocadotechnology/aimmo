@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import Toolbar from '@material-ui/core/Toolbar/Toolbar'
-import { Typography, IconButton } from '@material-ui/core'
+import { Typography, IconButton, Button } from '@material-ui/core'
 import ConsoleIcon from 'components/icons/Console'
 import ClearIcon from 'components/icons/Clear'
 import React, { Component } from 'react'
@@ -22,7 +22,8 @@ export const StyledConsoleIcon = styled(ConsoleIcon)`
 
 export default class ConsoleBar extends Component {
   static propTypes = {
-    clearConsoleClicked: PropTypes.func
+    clearConsoleClicked: PropTypes.func,
+    resetCodeClicked: PropTypes.func
   }
 
   render () {
@@ -36,6 +37,11 @@ export default class ConsoleBar extends Component {
           Console Log
           </Typography>
         </StyledConsoleTitle>
+        <Button
+          variant='outlined'
+          onClick={this.props.resetCodeClicked}>
+          Reset code
+        </Button>
         <IconButton
           size='small'
           onClick={this.props.clearConsoleClicked}>

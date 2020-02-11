@@ -4,19 +4,22 @@
   </a>
 </p>
 
-
 <h3 align="center">
-  An online multiplayer time travelling adventure, which will take them to the next level on their coding journey: Artificial Intelligence and Python. 
+  Using intermediate Python, join your class on a time travelling adventure. Work together to complete challenges and unlock new time periods.
 </h3>
 
 [![Code Climate](https://codeclimate.com/github/ocadotechnology/aimmo/badges/gpa.svg)](https://codeclimate.com/github/ocadotechnology/aimmo)
+[![codecov](https://codecov.io/gh/ocadotechnology/aimmo/branch/master/graph/badge.svg)](https://codecov.io/gh/ocadotechnology/aimmo)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![Zenhub Shield](https://camo.githubusercontent.com/96347b1f6d9b0f08194ba026de8b69bc27bb8f0d/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f5368697070696e675f6661737465725f776974682d5a656e4875622d3565363062612e7376673f7374796c653d666c61742d737175617265)](https://app.zenhub.com/workspace/o/ocadotechnology/codeforlife-deploy-appengine/boards?repos=96999382,39072690)
 
-## Objective
-People program Avatars. Avatars play the game. A player's aim is to create a better Avatar than other people's Avatars. A "better" Avatar is one that scores points faster than other people's Avatars.
+<p align="center">
+  <a href="https://www.codeforlife.education/play/kurono/" target="_blank">
+      <img src="/docs/images/kurono_game.png" height="400px" alt="Kurono Game" />
+  </a>
+</p>
 
-By getting people to compete to program better Avatars, we can teach them all sorts of algorithms and optimisation techniques. For example, a really good Avatar might incorporate AI techniques such as neural networks in order to make more optimal decisions.
+It is the year 3000 and the museum is in big trouble! The priceless artifacts are lost and scattered across timelines. Your team’s mission is to travel through time and bring them back into the museum.
 
 ## Quick Start
 1. **Fork** the repo.

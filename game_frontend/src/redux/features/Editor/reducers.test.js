@@ -74,3 +74,23 @@ describe('runCodeButtonReducer', () => {
     expect(editorReducer({}, action)).toEqual(expectedState)
   })
 })
+
+describe('resetCodeReducer', () => {
+  it('should reset the code the the initial code', () => {
+    const DEFAULT_CODE = `def next_turn(world_state, avatar_state):
+    return MoveAction(direction.NORTH)
+`
+    const initialState = {
+      code: {},
+      runCodeButton: {}
+    }
+    const expectedState = {
+      code: {
+        code: DEFAULT_CODE
+      },
+      runCodeButton: {}
+    }
+    const action = actions.resetCode()
+    expect(editorReducer(initialState, action)).toEqual(expectedState)
+  })
+})
