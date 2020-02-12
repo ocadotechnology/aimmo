@@ -1,4 +1,3 @@
-from enum import Enum
 from threading import RLock
 
 from simulation.interactables import serialize_interactables

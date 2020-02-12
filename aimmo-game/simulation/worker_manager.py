@@ -3,10 +3,7 @@ import logging
 import os
 from asyncio import Future
 from concurrent import futures
-from threading import Thread
 from typing import Tuple
-
-from eventlet.semaphore import Semaphore
 
 from simulation.workers import WORKER
 
@@ -41,7 +38,9 @@ class WorkerManager(object):
             worker.fetch_data(game_state) for worker, game_state in worker_game_states
         ]
 
-        return asyncio.wait_for(asyncio.gather(*requests), WORKER_TIMEOUT_TIME_SECONDS)
+        return await asyncio.wait_for(
+            asyncio.gather(*requests), WORKER_TIMEOUT_TIME_SECONDS
+        )
 
     def get_player_id_to_serialized_actions(self):
         return {
