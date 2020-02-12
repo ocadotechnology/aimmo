@@ -38,9 +38,12 @@ class WorkerManager(object):
             worker.fetch_data(game_state) for worker, game_state in worker_game_states
         ]
 
-        return await asyncio.wait_for(
-            asyncio.gather(*requests), WORKER_TIMEOUT_TIME_SECONDS
-        )
+        try:
+            return await asyncio.wait_for(
+                asyncio.gather(*requests), WORKER_TIMEOUT_TIME_SECONDS
+            )
+        except futures.TimeoutError:
+            LOGGER.warning("Fetching worker data timed out")
 
     def get_player_id_to_serialized_actions(self):
         return {
