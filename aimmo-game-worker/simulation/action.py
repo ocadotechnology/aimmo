@@ -14,6 +14,11 @@ class WaitAction(Action):
         return {"action_type": "wait"}
 
 
+class PickupAction(Action):
+    def serialise(self):
+        return {"action_type": "pickup"}
+
+
 class MoveAction(Action):
     def __init__(self, direction):
         self.direction = direction
