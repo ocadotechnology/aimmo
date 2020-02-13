@@ -20,6 +20,7 @@ class AvatarWrapper(object):
         self.orientation = "north"
         self.health = 5
         self.score = 0
+        self.number_of_artefacts = 0
         self.events = []
         self.avatar_appearance = avatar_appearance
         self.effects = set()

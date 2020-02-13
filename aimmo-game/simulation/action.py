@@ -1,19 +1,28 @@
 from logging import getLogger
+from typing import TYPE_CHECKING
+
 from simulation.direction import Direction
 from simulation.event import (
     FailedAttackEvent,
     FailedMoveEvent,
+    FailedPickupEvent,
     MovedEvent,
     PerformedAttackEvent,
+    PickedUpEvent,
     ReceivedAttackEvent,
 )
+from simulation.interactables.pickups import Artefact
+
+if TYPE_CHECKING:
+    from simulation.world_map import WorldMap
+    from simulation.avatar.avatar_wrapper import AvatarWrapper
 
 LOGGER = getLogger(__name__)
 
 
 class Action(object):
     def __init__(self, avatar):
-        self._avatar = avatar
+        self._avatar: "AvatarWrapper" = avatar
         try:
             self._target_location = self._avatar.location + self.direction
         except AttributeError:
@@ -43,7 +52,7 @@ class Action(object):
     def _is_legal(self, world_map):
         raise NotImplementedError("Abstract method")
 
-    def _apply(self, world_map):
+    def _apply(self, world_map: "WorldMap"):
         raise NotImplementedError("Abstract method")
 
     def _reject(self):
@@ -58,6 +67,23 @@ class WaitAction(Action):
         return True
 
     def _apply(self, world_map):
+        self.avatar.clear_action()
+
+
+class PickupAction(Action):
+    def __init__(self, avatar):
+        super(PickupAction, self).__init__(avatar)
+
+    def _is_legal(self, world_map):
+        return True
+
+    def _apply(self, world_map):
+        current_cell = world_map.get_cell(self.avatar.location)
+        if isinstance(current_cell.interactable, Artefact):
+            current_cell.interactable.pickup_action_applied = True
+            self.avatar.add_event(PickedUpEvent(current_cell.interactable.serialize()))
+        else:
+            self.avatar.add_event(FailedPickupEvent())
         self.avatar.clear_action()
 
 
@@ -139,6 +165,11 @@ class AttackAction(Action):
         self.avatar.clear_action()
 
 
-ACTIONS = {"attack": AttackAction, "move": MoveAction, "wait": WaitAction}
+ACTIONS = {
+    "attack": AttackAction,
+    "move": MoveAction,
+    "wait": WaitAction,
+    "pickup": PickupAction,
+}
 
-PRIORITIES = {WaitAction: 0, AttackAction: 1, MoveAction: 2}
+PRIORITIES = {WaitAction: 0, PickupAction: 0, AttackAction: 1, MoveAction: 2}

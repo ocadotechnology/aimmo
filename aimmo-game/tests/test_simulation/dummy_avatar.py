@@ -55,6 +55,23 @@ class LiveDummy(DummyAvatar):
         return True
 
 
+class CustomLiveDummy(LiveDummy):
+    """
+    An avatar that you can choose the next action for
+    """
+
+    def __init__(self, player_id, initial_location):
+        super(CustomLiveDummy, self).__init__(player_id, initial_location)
+        self._next_action = MoveAction(self, EAST.dict)
+
+    def set_next_action(self, action):
+        self._next_action = action
+
+    def decide_action(self, worker_data):
+        self._action = self._next_action
+        return True
+
+
 class DeadDummy(DummyAvatar):
     """
     An avatar whose worker is no longer responding or returning an invalid action.
