@@ -33,6 +33,7 @@ setup(
         "hypothesis",
         "pytest-aiohttp",
         "aioresponses",
+        "tornado",
     ],
     test_suite="tests",
     zip_safe=False,
