@@ -43,7 +43,7 @@ class WorkerManager(object):
                 asyncio.gather(*requests), WORKER_TIMEOUT_TIME_SECONDS
             )
         except futures.TimeoutError:
-            LOGGER.warning("Fetching worker data timed out")
+            LOGGER.warning("Fetching workers data timed out")
 
     def get_player_id_to_serialized_actions(self):
         return {
