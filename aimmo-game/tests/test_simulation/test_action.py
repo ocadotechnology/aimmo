@@ -165,4 +165,3 @@ class TestAction(unittest.TestCase):
         action.PickupAction(self.avatar).process(game_state.world_map)
 
         self.assertEqual(self.avatar.events, [event.FailedPickupEvent()])
-

@@ -28,6 +28,7 @@ def game() -> "MockWorld":
 def cell(game):
     return game.game_state.world_map.get_cell(Location(1, 0))
 
+
 def test_artefact_serialization(cell):
     artefact = Artefact(cell)
     assert artefact.serialize() == {
