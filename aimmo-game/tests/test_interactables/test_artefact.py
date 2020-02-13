@@ -27,16 +27,18 @@ def game() -> "MockWorld":
 def cell(game):
     return game.game_state.world_map.get_cell(Location(1, 0))
 
+def test_artefact_serialization(cell):
+    artefact = Artefact(cell)
+    assert cell.interactable.serialize() == {
+        "type": "artefact",
+        "location": {"x": cell.location.x, "y": cell.location.y},
+    }
+
 
 @pytest.mark.asyncio
 async def test_artefact_applies_correctly(game, cell):
     avatar: "CustomLiveDummy" = game.avatar_manager.get_avatar(1)
     cell.interactable = Artefact(cell)
-
-    assert cell.interactable.serialize() == {
-        "type": "artefact",
-        "location": {"x": cell.location.x, "y": cell.location.y},
-    }
 
     await game.simulation_runner.run_single_turn(
         game.avatar_manager.get_player_id_to_serialized_action()
@@ -53,4 +55,4 @@ async def test_artefact_applies_correctly(game, cell):
     assert cell.avatar == avatar
     assert cell.interactable is None
     assert avatar.number_of_artefacts == 1
-    assert len(avatar.events) == 2
+    assert avatar.events == 2
