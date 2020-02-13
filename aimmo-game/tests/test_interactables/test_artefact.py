@@ -41,11 +41,15 @@ async def test_artefact_applies_correctly(game, cell):
     avatar: "CustomLiveDummy" = game.avatar_manager.get_avatar(1)
     cell.interactable = Artefact(cell)
 
+    # Move to the cell with the artefact
+
     await game.simulation_runner.run_single_turn(
         game.avatar_manager.get_player_id_to_serialized_action()
     )
 
     assert cell.interactable is not None
+
+    # Pickup the artefact
 
     avatar.set_next_action(PickupAction(avatar))
 
@@ -56,4 +60,3 @@ async def test_artefact_applies_correctly(game, cell):
     assert cell.avatar == avatar
     assert cell.interactable is None
     assert avatar.number_of_artefacts == 1
-    assert isinstance(avatar.events[1], PickedUpEvent)

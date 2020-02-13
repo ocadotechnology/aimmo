@@ -75,15 +75,17 @@ class PickupAction(Action):
         super(PickupAction, self).__init__(avatar)
 
     def _is_legal(self, world_map):
-        return True
+        current_cell = world_map.get_cell(self.avatar.location)
+        return isinstance(current_cell.interactable, Artefact)
 
     def _apply(self, world_map):
         current_cell = world_map.get_cell(self.avatar.location)
-        if isinstance(current_cell.interactable, Artefact):
-            current_cell.interactable.pickup_action_applied = True
-            self.avatar.add_event(PickedUpEvent(current_cell.interactable.serialize()))
-        else:
-            self.avatar.add_event(FailedPickupEvent())
+        current_cell.interactable.pickup_action_applied = True
+        self.avatar.add_event(PickedUpEvent(current_cell.interactable.serialize()))    
+        self.avatar.clear_action()
+
+    def _reject(self):
+        self.avatar.add_event(FailedPickupEvent())
         self.avatar.clear_action()
 
 

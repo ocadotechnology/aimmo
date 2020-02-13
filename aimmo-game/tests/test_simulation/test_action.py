@@ -8,8 +8,9 @@ from simulation.avatar.avatar_manager import AvatarManager
 from simulation.direction import EAST
 from simulation.game_state import GameState
 from simulation.location import Location
+from simulation.interactables.pickups import Artefact
 from .dummy_avatar import MoveDummy
-from .maps import InfiniteMap, EmptyMap, AvatarMap
+from .maps import InfiniteMap, EmptyMap, AvatarMap, PickupMap
 
 ORIGIN = Location(x=0, y=0)
 EAST_OF_ORIGIN = Location(x=1, y=0)
@@ -147,3 +148,21 @@ class TestAction(unittest.TestCase):
         game_state = GameState(InfiniteMap(), self.avatar_manager)
         action.WaitAction(self.avatar).process(game_state.world_map)
         self.assertEqual(self.avatar.location, ORIGIN)
+
+    def test_successful_pickup_action(self):
+        game_state = GameState(PickupMap(Artefact), self.avatar_manager)
+
+        action.PickupAction(self.avatar).process(game_state.world_map)
+
+        self.assertEqual(
+            self.avatar.events,
+            [event.PickedUpEvent({"type": "artefact", "location": ORIGIN.serialize()})],
+        )
+
+    def test_failed_pickup_action(self):
+        game_state = GameState(InfiniteMap(), self.avatar_manager)
+
+        action.PickupAction(self.avatar).process(game_state.world_map)
+
+        self.assertEqual(self.avatar.events, [event.FailedPickupEvent()])
+

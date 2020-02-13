@@ -120,10 +120,10 @@ class AvatarMap(WorldMap):
 
 
 class PickupMap(WorldMap):
-    def __init__(self, pickup):
-        self._pickup = pickup
+    def __init__(self, pickup_class):
+        self._pickup_class = pickup_class
 
     def get_cell(self, location):
         cell = Cell(location)
-        cell.interactable = self._pickup
+        cell.interactable = self._pickup_class(cell)
         return cell
