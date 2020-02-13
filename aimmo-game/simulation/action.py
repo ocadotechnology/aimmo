@@ -81,7 +81,7 @@ class PickupAction(Action):
     def _apply(self, world_map):
         current_cell = world_map.get_cell(self.avatar.location)
         current_cell.interactable.pickup_action_applied = True
-        self.avatar.add_event(PickedUpEvent(current_cell.interactable.serialize()))    
+        self.avatar.add_event(PickedUpEvent(current_cell.interactable.serialize()))
         self.avatar.clear_action()
 
     def _reject(self):
