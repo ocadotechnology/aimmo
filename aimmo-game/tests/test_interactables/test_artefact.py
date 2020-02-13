@@ -5,6 +5,7 @@ import random
 
 from simulation.location import Location
 from simulation.action import PickupAction
+from simulation.event import PickedUpEvent
 from simulation.interactables.pickups import Artefact
 
 
@@ -29,7 +30,7 @@ def cell(game):
 
 def test_artefact_serialization(cell):
     artefact = Artefact(cell)
-    assert cell.interactable.serialize() == {
+    assert artefact.serialize() == {
         "type": "artefact",
         "location": {"x": cell.location.x, "y": cell.location.y},
     }
@@ -55,4 +56,4 @@ async def test_artefact_applies_correctly(game, cell):
     assert cell.avatar == avatar
     assert cell.interactable is None
     assert avatar.number_of_artefacts == 1
-    assert avatar.events == 2
+    assert isinstance(avatar.events[1], PickedUpEvent)
