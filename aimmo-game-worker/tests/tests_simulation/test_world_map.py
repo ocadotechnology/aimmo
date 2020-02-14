@@ -63,11 +63,8 @@ class TestWorldMap(TestCase):
     def test_artefact_cell(self):
         cells = self._generate_cells()
         cells[0]["interactable"] = {"type": "artefact"}
-        print(cells)
         map = WorldMap(cells)
-        self.assertEqual(
-            map.get_cell(Location(-1, -1)).has_artefact(), True
-        )
+        self.assertEqual(map.get_cell(Location(-1, -1)).has_artefact(), True)
 
     def test_location_is_visible(self):
         map = WorldMap(self._generate_cells())
