@@ -47,8 +47,9 @@ class ScoreLocationUpdater(_MapUpdater):
 
 class PickupUpdater(_MapUpdater):
     """
-    G
+    Generates artefacts based on the TARGET_NUM_PICKUPS_PER_AVATAR setting.
     """
+
     def update(self, world_map, context):
         target_num_pickups = int(
             math.ceil(
@@ -63,11 +64,8 @@ class PickupUpdater(_MapUpdater):
             max_num_pickups_to_add
         )
         for cell in locations:
-            if random.random() < world_map.settings["PICKUP_SPAWN_CHANCE"]:
-                cell.interactable = Artefact(cell)
-                LOGGER.info(
-                    "Adding new pickup at %s of type %s", cell, cell.interactable
-                )
+            cell.interactable = Artefact(cell)
+            LOGGER.info("Adding new pickup at %s of type %s", cell, cell.interactable)
 
 
 class MapExpander(_MapUpdater):
