@@ -55,7 +55,7 @@ class WorldMap(object):
         return [cell for cell in self.all_cells() if cell.interactable]
 
     def pickup_cells(self):
-        pickup_types = ["damage_boost", "invulnerability", "health", "artefact"]
+        pickup_types = ("damage_boost", "invulnerability", "health", "artefact")
         return [
             cell
             for cell in self.interactable_cells()
