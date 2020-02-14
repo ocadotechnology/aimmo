@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 from simulation.avatar.avatar_appearance import AvatarAppearance
 from simulation.game_state import GameState
-from simulation.interactables.pickups import DamageBoostPickup
+from simulation.interactables.pickups import Artefact, DamageBoostPickup
 from simulation.interactables.score_location import ScoreLocation
 from simulation.location import Location
 from simulation.simulation_runner import ConcurrentSimulationRunner
@@ -216,6 +216,26 @@ class TestSimulationRunner:
         self.simulation_runner.update(1, self.simulation_runner.game_state)
         assert len(list(self.simulation_runner.game_state.world_map.score_cells())) == 0
 
+    def test_pickups_added(self):
+        self.construct_simulation_runner([], [])
+        settings = SETTINGS.copy()
+        settings["TARGET_NUM_PICKUPS_PER_AVATAR"] = 1
+        settings["PICKUP_SPAWN_CHANCE"] = 1
+        self.simulation_runner.game_state.world_map = WorldMap(
+            self._generate_grid(), settings
+        )
+        self.simulation_runner.update(1, self.simulation_runner.game_state)
+        assert (
+            len(list(self.simulation_runner.game_state.world_map.interactable_cells()))
+            == 1
+        )
+
+        self.simulation_runner.update(2, self.simulation_runner.game_state)
+        assert (
+            len(list(self.simulation_runner.game_state.world_map.interactable_cells()))
+            == 2
+        )
+
     def test_pickups_applied(self):
         self.construct_simulation_runner([], [])
         grid = self._generate_grid()
@@ -227,20 +247,7 @@ class TestSimulationRunner:
         self.simulation_runner.update(1, self.simulation_runner.game_state)
         assert pickup.applied_to == avatar
 
-    def test_pickup_spawn_chance(self):
-        self.construct_simulation_runner([], [])
-        settings = SETTINGS.copy()
-        settings["TARGET_NUM_PICKUPS_PER_AVATAR"] = 5
-        settings["PICKUP_SPAWN_CHANCE"] = 0
-        grid = self._generate_grid()
-        self.simulation_runner.game_state.world_map = WorldMap(grid, settings)
-        self.simulation_runner.update(1, self.simulation_runner.game_state)
-        assert (
-            len(list(self.simulation_runner.game_state.world_map.interactable_cells()))
-            == 0
-        )
-
-    @patch("simulation.interactables.pickups.DamageBoostPickup")
+    @patch("simulation.interactables.pickups.Artefact", spec=Artefact)
     def test_pickups_not_added_when_at_target(self, mockPickup):
         self.construct_simulation_runner([], [])
         settings = SETTINGS.copy()

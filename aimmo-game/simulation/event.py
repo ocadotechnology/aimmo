@@ -13,3 +13,7 @@ FailedAttackEvent = namedtuple("FailedAttackEvent", ["target_location"])
 MovedEvent = namedtuple("MovedEvent", ["source_location", "target_location"])
 
 FailedMoveEvent = namedtuple("FailedMoveEvent", ["source_location", "target_location"])
+
+PickedUpEvent = namedtuple("PickedUpEvent", ["interactable"])
+
+FailedPickupEvent = namedtuple("FailedPickupEvent", [])
