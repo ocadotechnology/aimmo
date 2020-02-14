@@ -19,6 +19,6 @@ class Artefact(_Interactable):
 
     def serialize(self):
         return {
-            "type": "health",
+            "type": "artefact",
             "location": {"x": self.cell.location.x, "y": self.cell.location.y},
         }
