@@ -77,7 +77,7 @@ class WorldMap(object):
             return False
         return True
 
-    def get_cell(self, location):
+    def get_cell(self, location) -> Cell:
         try:
             return self.grid[location]
         except KeyError:

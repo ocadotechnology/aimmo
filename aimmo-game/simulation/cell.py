@@ -1,5 +1,10 @@
 from simulation.action import MoveAction
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from simulation.avatar.avatar_wrapper import AvatarWrapper
+
 
 class Cell(object):
     """
@@ -9,7 +14,7 @@ class Cell(object):
     def __init__(self, location, habitable=True, partially_fogged=False):
         self.location = location
         self.habitable = habitable
-        self.avatar = None
+        self.avatar: "AvatarWrapper" = None
         self.interactable = None
         self.partially_fogged = partially_fogged
         self.actions = []
