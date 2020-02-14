@@ -154,7 +154,6 @@ class GameAPI(object):
 
     async def send_updates(self, sid):
         try:
-            print(f"Socket id: {sid}")
             await self._send_have_avatars_code_updated(sid)
             await self._send_game_state(sid)
             await self._send_logs(sid)
