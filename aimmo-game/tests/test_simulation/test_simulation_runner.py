@@ -38,6 +38,7 @@ SETTINGS = {
     "TARGET_NUM_PICKUPS_PER_AVATAR": 0,
     "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0,
     "SCORE_DESPAWN_CHANCE": 0,
+    "PICKUP_SPAWN_CHANCE": 0,
 }
 
 
@@ -219,6 +220,7 @@ class TestSimulationRunner:
         self.construct_simulation_runner([], [])
         settings = SETTINGS.copy()
         settings["TARGET_NUM_PICKUPS_PER_AVATAR"] = 1
+        settings["PICKUP_SPAWN_CHANCE"] = 1
         self.simulation_runner.game_state.world_map = WorldMap(
             self._generate_grid(), settings
         )
