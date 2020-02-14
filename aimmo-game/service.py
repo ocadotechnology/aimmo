@@ -58,6 +58,7 @@ def setup_socketIO_server(
         async_mode="aiohttp",
         client_manager=client_manager_class(),
         async_handlers=async_handlers,
+        cors_allowed_origins="*",
     )
 
     socket_server.attach(
@@ -68,13 +69,7 @@ def setup_socketIO_server(
 
 
 app = setup_application()
-cors = aiohttp_cors.setup(app, defaults={
-    "*": aiohttp_cors.ResourceOptions(
-            allow_credentials=True,
-            expose_headers="*",
-            allow_headers="*",
-        )
-})
+cors = aiohttp_cors.setup(app)
 
 socketio_server = setup_socketIO_server(app)
 
@@ -103,7 +98,7 @@ class GameAPI(object):
         self.register_healthcheck()
         self.app.add_routes(self.routes)
         # for route in app.router.routes():
-            # cors.add(route)
+        # cors.add(route)
 
     def open_connections_number(self):
         try:
@@ -141,9 +136,9 @@ class GameAPI(object):
         @self.socketio_server.on("connect")
         async def world_update_on_connect(sid, environ):
             LOGGER.info(f"Socket connected for session id: {sid}")
-            # query = environ["QUERY_STRING"]
-            # avatar_id = self._find_avatar_id_from_query(sid, query)
-            # await self.socketio_server.save_session(sid, {"id": avatar_id})
+            query = environ["QUERY_STRING"]
+            avatar_id = self._find_avatar_id_from_query(sid, query)
+            await self.socketio_server.save_session(sid, {"id": avatar_id})
 
         return world_update_on_connect
 

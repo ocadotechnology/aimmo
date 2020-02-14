@@ -216,6 +216,26 @@ class TestSimulationRunner:
         self.simulation_runner.update(1, self.simulation_runner.game_state)
         assert len(list(self.simulation_runner.game_state.world_map.score_cells())) == 0
 
+    def test_pickups_added(self):
+        self.construct_simulation_runner([], [])
+        settings = SETTINGS.copy()
+        settings["TARGET_NUM_PICKUPS_PER_AVATAR"] = 1
+        settings["PICKUP_SPAWN_CHANCE"] = 1
+        self.simulation_runner.game_state.world_map = WorldMap(
+            self._generate_grid(), settings
+        )
+        self.simulation_runner.update(1, self.simulation_runner.game_state)
+        assert (
+            len(list(self.simulation_runner.game_state.world_map.interactable_cells()))
+            == 1
+        )
+
+        self.simulation_runner.update(2, self.simulation_runner.game_state)
+        assert (
+            len(list(self.simulation_runner.game_state.world_map.interactable_cells()))
+            == 2
+        )
+
     def test_pickups_applied(self):
         self.construct_simulation_runner([], [])
         grid = self._generate_grid()
