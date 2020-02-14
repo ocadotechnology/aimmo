@@ -5,6 +5,7 @@ import json
 import os
 import platform
 import re
+import time
 
 import docker
 
@@ -46,11 +47,14 @@ def build_docker_images(minikube=None, build_target=None):
         client = create_docker_client(use_raw_env=False, minikube=minikube)
 
     directories = ("aimmo-game", "aimmo-game-creator", "aimmo-game-worker")
+
+    start_time = time.time()
     for dir in directories:
         path = os.path.join(BASE_DIR, dir)
         tag = "ocadotechnology/%s:test" % dir
         print("Building %s..." % tag)
         client.images.build(path=path, tag=tag, encoding="gzip", target=build_target)
+    print(f"building images took: {time.time() - start_time}")
 
 
 def delete_containers():

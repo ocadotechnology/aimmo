@@ -55,7 +55,9 @@ def setup_socketIO_server(
     application, client_manager_class=socketio.AsyncManager, async_handlers=True
 ):
     socket_server = socketio.AsyncServer(
-        client_manager=client_manager_class(), async_handlers=async_handlers
+        async_mode="aiohttp",
+        client_manager=client_manager_class(),
+        async_handlers=async_handlers,
     )
 
     socket_server.attach(
@@ -66,7 +68,13 @@ def setup_socketIO_server(
 
 
 app = setup_application()
-cors = aiohttp_cors.setup(app)
+cors = aiohttp_cors.setup(app, defaults={
+    "*": aiohttp_cors.ResourceOptions(
+            allow_credentials=True,
+            expose_headers="*",
+            allow_headers="*",
+        )
+})
 
 socketio_server = setup_socketIO_server(app)
 
@@ -94,6 +102,8 @@ class GameAPI(object):
         self.register_remove_session_id_from_mappings()
         self.register_healthcheck()
         self.app.add_routes(self.routes)
+        # for route in app.router.routes():
+            # cors.add(route)
 
     def open_connections_number(self):
         try:
@@ -131,9 +141,9 @@ class GameAPI(object):
         @self.socketio_server.on("connect")
         async def world_update_on_connect(sid, environ):
             LOGGER.info(f"Socket connected for session id: {sid}")
-            query = environ["QUERY_STRING"]
-            avatar_id = self._find_avatar_id_from_query(sid, query)
-            await self.socketio_server.save_session(sid, {"id": avatar_id})
+            # query = environ["QUERY_STRING"]
+            # avatar_id = self._find_avatar_id_from_query(sid, query)
+            # await self.socketio_server.save_session(sid, {"id": avatar_id})
 
         return world_update_on_connect
 
@@ -146,6 +156,7 @@ class GameAPI(object):
 
     async def send_updates(self, sid):
         try:
+            print(f"Socket id: {sid}")
             await self._send_have_avatars_code_updated(sid)
             await self._send_game_state(sid)
             await self._send_logs(sid)
@@ -153,13 +164,16 @@ class GameAPI(object):
             LOGGER.error(
                 f"Failed to send updates. No worker for player in session {sid}"
             )
+        except Exception as e:
+            LOGGER.info(e)
 
     async def send_updates_to_all(self):
         try:
             socket_ids = self.socketio_server.manager.get_participants("/", None)
             await self.async_map(self.send_updates, socket_ids)
-        except KeyError:
+        except KeyError as e:
             LOGGER.error("No open socket connections")
+            LOGGER.info(e)
         self.update_active_users()
 
     def _find_avatar_id_from_query(self, session_id, query_string):
@@ -244,7 +258,7 @@ if __name__ == "__main__":
 
     setup_prometheus()
 
-    logging.getLogger("socketio").setLevel(logging.ERROR)
-    logging.getLogger("engineio").setLevel(logging.ERROR)
+    logging.getLogger("socketio").setLevel(logging.INFO)
+    logging.getLogger("engineio").setLevel(logging.INFO)
     LOGGER.info("starting the server")
     web.run_app(app, host=host, port=port)

@@ -118,10 +118,10 @@
         },
         "google-auth": {
             "hashes": [
-                "sha256:44549e69ac39acf41fdf47f3f39a06e4e68378476806760d94a2c6a361b2bb06",
-                "sha256:b2d83edc02a9deeed9b1b839046671fd9eda223d21bd2dd50051559787032fd8"
+                "sha256:5b6f71953db7d9bee2e967120f90e45ccdc12a219b89fa1209bec3e10bb245b3",
+                "sha256:74655ad79b89611f93b899ea8fe1194970a1701fe1d692bf2beb0e67bcb0f4d4"
             ],
-            "version": "==1.11.0"
+            "version": "==1.11.1"
         },
         "greenlet": {
             "hashes": [
@@ -303,10 +303,10 @@
         },
         "python-socketio": {
             "hashes": [
-                "sha256:626381a6940f0e4ec6a8bbd2dc95e231a515b2838ee0cc98c535076a4650a872",
-                "sha256:64feb0817f1bf7e3e7fc05f6f65e28d76146d8061cb7de25b63502717f80e908"
+                "sha256:48cba5b827ac665dbf923a4f5ec590812aed5299a831fc43576a9af346272534",
+                "sha256:af6c23c35497960f82106e36688123ecb52ad5a77d0ca27954ff3811c4d9d562"
             ],
-            "version": "==4.0.0"
+            "version": "==4.4.0"
         },
         "pyyaml": {
             "hashes": [
