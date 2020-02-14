@@ -97,8 +97,6 @@ class GameAPI(object):
         self.register_remove_session_id_from_mappings()
         self.register_healthcheck()
         self.app.add_routes(self.routes)
-        # for route in app.router.routes():
-        # cors.add(route)
 
     def open_connections_number(self):
         try:
@@ -159,8 +157,6 @@ class GameAPI(object):
             LOGGER.error(
                 f"Failed to send updates. No worker for player in session {sid}"
             )
-        except Exception as e:
-            LOGGER.info(e)
 
     async def send_updates_to_all(self):
         try:
@@ -168,7 +164,6 @@ class GameAPI(object):
             await self.async_map(self.send_updates, socket_ids)
         except KeyError as e:
             LOGGER.error("No open socket connections")
-            LOGGER.info(e)
         self.update_active_users()
 
     def _find_avatar_id_from_query(self, session_id, query_string):
@@ -186,7 +181,7 @@ class GameAPI(object):
             LOGGER.error("Avatar ID could not be casted into an integer")
         except KeyError:
             LOGGER.error("No avatar ID found. User may not be authorised")
-            LOGGER.error("query_string: " + query_string)
+            LOGGER.error(f"query_string: {query_string}")
 
     async def _send_logs(self, sid):
         def should_send_logs(logs):
@@ -253,7 +248,7 @@ if __name__ == "__main__":
 
     setup_prometheus()
 
-    logging.getLogger("socketio").setLevel(logging.INFO)
-    logging.getLogger("engineio").setLevel(logging.INFO)
+    logging.getLogger("socketio").setLevel(logging.ERROR)
+    logging.getLogger("engineio").setLevel(logging.ERROR)
     LOGGER.info("starting the server")
     web.run_app(app, host=host, port=port)

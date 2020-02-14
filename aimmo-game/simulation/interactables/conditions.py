@@ -29,6 +29,6 @@ def pickup_action_applied(turn_state: TurnState):
     The `pickup_action_applied` should be set to True by the `PickupAction`.
     """
     try:
-        return turn_state.interactable_cell.interactable.pickup_action_applied == True
-    except:
+        return turn_state.interactable_cell.interactable.pickup_action_applied
+    except Exception:
         return False
