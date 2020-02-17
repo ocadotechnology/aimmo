@@ -3,7 +3,7 @@
         "name": "Blender",
         "version": "2.81 (sub 16)",
         "exporter_version": "6.3.0",
-        "file": "artefact_model.babylon"
+        "file": "artefact.babylon"
     },
     "autoClear": true,
     "clearColor": [
@@ -50798,4 +50798,4 @@
     "cameras": [],
     "lights": [],
     "shadowGenerators": []
-}}
+}

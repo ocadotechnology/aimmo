@@ -23,10 +23,6 @@ export default class InteractableManager implements GameNode, DiffHandling {
       this.object = this.interactableNode
       this.interactableNode.parent = environment.onTerrainNode
       this.materials = {
-        'damage_boost': this.createMaterial('damage_boost'),
-        'health': this.createMaterial('health'),
-        'invulnerability': this.createMaterial('invulnerability'),
-        'score': this.createMaterial('score'),
         'artefact': this.createMaterial('artefact')
       }
     }
