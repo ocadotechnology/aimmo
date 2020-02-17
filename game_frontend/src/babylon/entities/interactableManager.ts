@@ -36,7 +36,14 @@ export default class InteractableManager implements GameNode, DiffHandling {
 
       const material = new BABYLON.StandardMaterial(interactableType, this.scene)
       material.specularColor = new BABYLON.Color3(0, 0, 0)
-      material.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5)
+
+      if (interactableType === 'artefact') {
+        material.emissiveColor = new BABYLON.Color3(0, 0, 0)
+      }
+      else {
+        material.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5)
+      }
+      
       material.diffuseTexture = new BABYLON.Texture(texture, this.scene)
 
       return material
@@ -79,7 +86,7 @@ export default class InteractableManager implements GameNode, DiffHandling {
         newInteractable.parent = this.interactableNode
         newInteractable.position = new BABYLON.Vector3(interactable.value.location.x, 0, interactable.value.location.y)
 
-        if (interactable.value['type'] !== 'score') {
+        if (interactable.value['type'] !== 'score' && interactable.value['type'] !== 'artefact') {
           this.scene.beginDirectAnimation(newInteractable, animation, 0, MAX_KEYFRAMES_PER_SECOND, true)
         }
       })
