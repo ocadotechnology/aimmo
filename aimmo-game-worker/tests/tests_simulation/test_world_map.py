@@ -7,7 +7,13 @@ from simulation.world_map import WorldMap
 
 
 class TestWorldMap(TestCase):
-    AVATAR = {"location": {"x": 0, "y": 0}, "health": True, "score": 3, "events": []}
+    AVATAR = {
+        "location": {"x": 0, "y": 0},
+        "health": True,
+        "score": 3,
+        "number_of_artefacts": 0,
+        "events": [],
+    }
 
     def _generate_cells(self, columns=3, rows=3):
         cells = [
@@ -59,6 +65,12 @@ class TestWorldMap(TestCase):
         self.assertLocationsEqual(
             map.interactable_cells(), (Location(-1, -1), Location(1, 1))
         )
+
+    def test_artefact_cell(self):
+        cells = self._generate_cells()
+        cells[0]["interactable"] = {"type": "artefact"}
+        map = WorldMap(cells)
+        self.assertEqual(map.get_cell(Location(-1, -1)).has_artefact(), True)
 
     def test_location_is_visible(self):
         map = WorldMap(self._generate_cells())
@@ -117,7 +129,7 @@ class TestWorldMap(TestCase):
         map = WorldMap(cells)
         self.assertFalse(map.can_move_to(Location(-1, -1)))
 
-    def test_cannot_move_to_habited_cell(self):
+    def test_cannot_move_to_inhabited_cell(self):
         cells = self._generate_cells()
         cells[1]["avatar"] = self.AVATAR
         map = WorldMap(cells)

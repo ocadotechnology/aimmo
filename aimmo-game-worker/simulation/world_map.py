@@ -16,9 +16,13 @@ class Cell(object):
                 location=avatar["location"],
                 score=avatar["score"],
                 health=avatar["health"],
+                number_of_artefacts=avatar["number_of_artefacts"],
             )
         for (key, value) in kwargs.items():
             setattr(self, key, value)
+
+    def has_artefact(self):
+        return self.interactable is not None and self.interactable["type"] == "artefact"
 
     def __repr__(self):
         return "Cell({} h={} a={} i={})".format(
@@ -51,12 +55,11 @@ class WorldMap(object):
         return [cell for cell in self.all_cells() if cell.interactable]
 
     def pickup_cells(self):
+        pickup_types = ("damage_boost", "invulnerability", "health", "artefact")
         return [
             cell
             for cell in self.interactable_cells()
-            if "damage_boost" == cell.interactable["type"]
-            or "invulnerability" == cell.interactable["type"]
-            or "health" == cell.interactable["type"]
+            if cell.interactable["type"] in pickup_types
         ]
 
     def score_cells(self):

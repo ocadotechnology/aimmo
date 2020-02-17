@@ -1,8 +1,7 @@
 import logging
-import requests
 
 from simulation.action import ACTIONS, MoveAction, WaitAction
-from simulation.direction import Direction, NORTH, EAST, WEST, SOUTH
+from simulation.direction import Direction
 
 LOGGER = logging.getLogger(__name__)
 
@@ -112,9 +111,8 @@ class AvatarWrapper(object):
             "score": self.score,
             "id": self.player_id,
             "orientation": self.orientation,
+            "number_of_artefacts": self.number_of_artefacts,
         }
 
     def __repr__(self):
-        return "Avatar(id={}, location={}, health={}, score={})".format(
-            self.player_id, self.location, self.health, self.score
-        )
+        return f"Avatar(id={self.player_id}, location={self.location}, health={self.health}, score={self.score}, number of artefacts={self.number_of_artefacts})"
