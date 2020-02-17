@@ -4,7 +4,7 @@ import threading
 from abc import ABCMeta, abstractmethod
 
 from simulation.action import PRIORITIES
-from simulation.game_logic import EffectApplier, MapContext, MapExpander
+from simulation.game_logic import EffectApplier, MapContext, MapExpander, PickupUpdater
 
 LOGGER = logging.getLogger(__name__)
 
@@ -64,7 +64,6 @@ class SimulationRunner(object):
     def _update_map(self, num_avatars):
         context = MapContext(num_avatars=num_avatars)
         MapExpander().update(self.game_state.world_map, context=context)
-        ScoreLocationUpdater().update(self.game_state.world_map, context=context)
         PickupUpdater().update(self.game_state.world_map, context=context)
 
     def _mark_complete(self):
