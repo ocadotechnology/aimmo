@@ -33,11 +33,7 @@ export default class InteractableManager implements GameNode, DiffHandling {
       const material = new BABYLON.StandardMaterial(interactableType, this.scene)
       material.specularColor = new BABYLON.Color3(0, 0, 0)
 
-      if (interactableType === 'artefact') {
-        material.emissiveColor = new BABYLON.Color3(0, 0, 0)
-      } else {
-        material.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5)
-      }
+      material.emissiveColor = new BABYLON.Color3(0, 0, 0)
 
       material.diffuseTexture = new BABYLON.Texture(texture, this.scene)
 
