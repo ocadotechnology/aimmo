@@ -43,7 +43,7 @@ export default class InteractableManager implements GameNode, DiffHandling {
       else {
         material.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5)
       }
-      
+
       material.diffuseTexture = new BABYLON.Texture(texture, this.scene)
 
       return material
