@@ -168,16 +168,6 @@ class TestSimulationRunner:
         self.simulation_runner.update(1, self.simulation_runner.game_state)
         self.assertGridSize(self.simulation_runner.game_state.world_map, 2)
 
-    def test_scores_removed(self):
-        self.construct_simulation_runner([], [])
-        settings = SETTINGS.copy()
-        settings["SCORE_DESPAWN_CHANCE"] = 1
-        grid = self._generate_grid()
-        grid[Location(0, 1)].interactable = ScoreLocation(grid[Location(0, 1)])
-        self.simulation_runner.game_state.world_map = WorldMap(grid, settings)
-        self.simulation_runner.update(1, self.simulation_runner.game_state)
-        assert len(list(self.simulation_runner.game_state.world_map.score_cells())) == 0
-
     def test_score_despawn_chance(self):
         self.construct_simulation_runner([], [])
         settings = SETTINGS.copy()
@@ -191,19 +181,6 @@ class TestSimulationRunner:
             in self.simulation_runner.game_state.world_map.score_cells()
         )
         assert len(list(self.simulation_runner.game_state.world_map.score_cells())) == 1
-
-    def test_scores_added(self):
-        self.construct_simulation_runner([], [])
-        settings = SETTINGS.copy()
-        settings["TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR"] = 1
-        self.simulation_runner.game_state.world_map = WorldMap(
-            self._generate_grid(), settings
-        )
-        self.simulation_runner.update(1, self.simulation_runner.game_state)
-        assert len(list(self.simulation_runner.game_state.world_map.score_cells())) == 1
-
-        self.simulation_runner.update(2, self.simulation_runner.game_state)
-        assert len(list(self.simulation_runner.game_state.world_map.score_cells())) == 2
 
     def test_scores_applied(self):
         self.construct_simulation_runner([], [])
