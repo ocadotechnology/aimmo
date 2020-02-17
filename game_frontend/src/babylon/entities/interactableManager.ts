@@ -35,8 +35,7 @@ export default class InteractableManager implements GameNode, DiffHandling {
 
       if (interactableType === 'artefact') {
         material.emissiveColor = new BABYLON.Color3(0, 0, 0)
-      }
-      else {
+      } else {
         material.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5)
       }
 
