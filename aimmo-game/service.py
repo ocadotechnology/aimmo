@@ -60,9 +60,9 @@ def setup_socketIO_server(
         async_handlers=async_handlers,
         cors_allowed_origins=[
             "http://localhost:8000",
-            "http://dev-dot-decent-digit-629.appspot.com",
-            "http://staging-dot-decent-digit-629.appspot.com",
-            "http://codeforlife.education",
+            "https://dev-dot-decent-digit-629.appspot.com",
+            "https://staging-dot-decent-digit-629.appspot.com",
+            "https://codeforlife.education",
         ],
     )
 
