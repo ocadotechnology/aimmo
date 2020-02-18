@@ -43,13 +43,13 @@ class Worker(object):
                 self.has_code_updated = data["avatar_updated"]
                 self.ready = True
         except (ClientResponseError, ServerDisconnectedError):
-            LOGGER.info("Could not connect to worker, probably not ready yet")
+            LOGGER.info("ClientResponseError, ServerDisconnectedError: Could not connect to worker, probably not ready yet")
             self._set_defaults()
         except CancelledError as e:
-            LOGGER.error("Worker took too long to respond: {}".format(e))
+            LOGGER.error("CancelledError: Worker took too long to respond")
             self._set_defaults()
         except KeyError as e:
-            LOGGER.error("Missing key in data from worker: {}".format(e))
+            LOGGER.error("KeyError: Missing key in data from worker")
             self._set_defaults()
         except Exception as e:
             LOGGER.exception("Unknown error while fetching turn data.")
