@@ -72,14 +72,12 @@ export default class GameView extends Component {
   componentWillUnmount () {
     if (this.props.gameLoaded) {
       this.gameEngine.unmount()
-      console.log('unmounted')
     }
   }
 
   onCanvasLoaded = canvas => {
     if (canvas !== null) {
       this.canvas = canvas
-      console.log('trout')
       const environment = this.props.environment ?? new StandardEnvironment(this.canvas)
       this.gameEngine = new GameEngine(this.handleMapPanned, environment)
     }
