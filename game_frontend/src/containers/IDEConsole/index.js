@@ -42,13 +42,20 @@ export class IDEConsole extends Component {
     logs: PropTypes.arrayOf(PropTypes.object)
   }
 
+  componentDidMount () {
+    if (this.consoleRef) {
+      this.consoleRef.scrollTo(0, 1)
+    }
+  }
+
   render () {
     return (
       <IDEConsoleSection>
         <ConsoleBar clearConsoleClicked={this.props.clearConsoleLogs} resetCodeClicked={this.props.resetCode} />
-        <StyledConsole>
+        <StyledConsole innerRef={ref => { this.consoleRef = ref }}>
           <LogEntries
-            logs={this.props.logs} />
+            logs={this.props.logs}
+          />
         </StyledConsole>
       </IDEConsoleSection>
     )

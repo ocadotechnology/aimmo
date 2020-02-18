@@ -7,7 +7,6 @@ exports[`<IDEConsole /> renders correctly 1`] = `
     innerRef={[Function]}
   >
     <LogEntries
-      lastLogRef={[Function]}
       logs={
         Array [
           Object {

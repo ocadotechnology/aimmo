@@ -3,26 +3,34 @@
 exports[`<LogEntries /> renders correctly with logs 1`] = `
 <styled.ul>
   <styled.li
-    innerRef={[Function]}
     key="0"
   >
     hello
   </styled.li>
   <styled.li
-    innerRef={[Function]}
     key="1"
   >
     bye
   </styled.li>
+  <styled.li
+    key="-1"
+  />
 </styled.ul>
 `;
 
-exports[`<LogEntries /> renders correctly without logs 1`] = `<styled.ul />`;
+exports[`<LogEntries /> renders correctly without logs 1`] = `
+<styled.ul>
+  <styled.li
+    key="-1"
+  />
+</styled.ul>
+`;
 
 exports[`<LogEntry /> renders correctly 1`] = `
 .c0 {
   list-style: none;
   padding: 8px;
+  overflow-anchor: none;
 }
 
 <li
