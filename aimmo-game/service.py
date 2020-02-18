@@ -62,7 +62,7 @@ def setup_socketIO_server(
             "http://localhost:8000",
             "https://dev-dot-decent-digit-629.appspot.com",
             "https://staging-dot-decent-digit-629.appspot.com",
-            "https://codeforlife.education",
+            "https://www.codeforlife.education",
         ],
     )
 
