@@ -2,11 +2,6 @@ from __future__ import print_function
 
 import imp
 import inspect
-import logging
-import re
-import sys
-import traceback
-from io import StringIO
 
 from RestrictedPython import compile_restricted, utility_builtins
 from RestrictedPython.Guards import (

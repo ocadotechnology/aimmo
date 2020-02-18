@@ -6,12 +6,13 @@ from simulation.interactables.conditions import TurnState
 if TYPE_CHECKING:
     from simulation.game_state import GameState
     from simulation.avatar.avatar_wrapper import AvatarWrapper
+    from simulation.cell import Cell
 
 
 class _Interactable(object):
     __metaclass__ = ABCMeta
 
-    def __init__(self, cell):
+    def __init__(self, cell: "Cell"):
         self.cell = cell
         self.delete_after_effects_applied = False
 
