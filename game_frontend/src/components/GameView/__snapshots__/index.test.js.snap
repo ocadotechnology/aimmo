@@ -24,13 +24,15 @@ exports[`<GameView /> matches snapshot 1`] = `
     }
   />
   <styled.div>
-    <styled.img
-      src="/static/images/compass.svg"
-    />
-    <Styled(FindMeButton)
-      aria-label="Find Me"
-      id="find-me-button"
-    />
+    <styled.div>
+      <styled.img
+        src="/static/images/compass.svg"
+      />
+      <Styled(FindMeButton)
+        aria-label="Find Me"
+        id="find-me-button"
+      />
+    </styled.div>
   </styled.div>
 </styled.div>
 `;
@@ -48,20 +50,13 @@ exports[`<GameView /> shows the loading screen when the game is loading 1`] = `
       Building game world...
     </Styled(WithStyles(ForwardRef(Typography)))>
   </styled.div>
-  <canvas
-    style={
-      Object {
-        "height": "100%",
-        "width": "100%",
-      }
-    }
-  />
 </styled.div>
 `;
 
 exports[`<GameViewLayout /> matches snapshot 1`] = `
 .c0 {
   grid-area: game-view;
+  position: relative;
 }
 
 <div
@@ -102,7 +97,6 @@ exports[`<OverlayElements /> matches snapshot 1`] = `
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  bottom: 0;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -111,8 +105,6 @@ exports[`<OverlayElements /> matches snapshot 1`] = `
   -webkit-justify-content: space-between;
   -ms-flex-pack: justify;
   justify-content: space-between;
-  position: -webkit-sticky;
-  position: sticky;
 }
 
 <div

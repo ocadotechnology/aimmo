@@ -110,6 +110,18 @@ class HealthEffect(_Effect):
         return f"HealthEffect(value={self.health_restored})"
 
 
+class ArtefactEffect(_Effect):
+    def __init__(self, *args):
+        super(ArtefactEffect, self).__init__(duration=1, *args)
+        self._recipient.number_of_artefacts += 1
+
+    def remove(self):
+        super(ArtefactEffect, self).remove()
+
+    def __repr__(self):
+        return f"ArtefactEffect()"
+
+
 class ScoreEffect(_Effect):
     def __init__(self, *args):
         super(ScoreEffect, self).__init__(duration=1, *args)

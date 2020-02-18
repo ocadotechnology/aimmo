@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-import asyncio
 import json
-import logging
-import sys
 
 import aiohttp_cors
+import logging
+import sys
 from aiohttp import web
 
 from avatar_runner import AvatarRunner
@@ -33,6 +32,7 @@ async def process_turn(request):
         location=data["avatar_state"]["location"],
         score=data["avatar_state"]["score"],
         health=data["avatar_state"]["health"],
+        number_of_artefacts=data["avatar_state"]["number_of_artefacts"],
     )
 
     response = avatar_runner.process_avatar_turn(world_map, avatar_state, code)

@@ -29,7 +29,7 @@ function getReactURL (entryPointHTML) {
 function generateGameIDEHTML (reactFileName) {
   const templateString = fs.readFileSync(handlebarsTemplatePath, 'utf-8')
   const template = Handlebars.compile(templateString)
-  return template({ reactUrl: `react/${reactFileName}` })
+  return template({ reactUrl: `react/${reactFileName}`, environment: process.env.NODE_ENV })
 }
 
 bundler.on('bundled', (bundle) => {

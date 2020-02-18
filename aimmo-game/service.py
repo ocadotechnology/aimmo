@@ -55,7 +55,15 @@ def setup_socketIO_server(
     application, client_manager_class=socketio.AsyncManager, async_handlers=True
 ):
     socket_server = socketio.AsyncServer(
-        client_manager=client_manager_class(), async_handlers=async_handlers
+        async_mode="aiohttp",
+        client_manager=client_manager_class(),
+        async_handlers=async_handlers,
+        cors_allowed_origins=[
+            "http://localhost:8000",
+            "https://dev-dot-decent-digit-629.appspot.com",
+            "https://staging-dot-decent-digit-629.appspot.com",
+            "https://codeforlife.education",
+        ],
     )
 
     socket_server.attach(
@@ -158,7 +166,7 @@ class GameAPI(object):
         try:
             socket_ids = self.socketio_server.manager.get_participants("/", None)
             await self.async_map(self.send_updates, socket_ids)
-        except KeyError:
+        except KeyError as e:
             LOGGER.error("No open socket connections")
         self.update_active_users()
 
@@ -177,7 +185,7 @@ class GameAPI(object):
             LOGGER.error("Avatar ID could not be casted into an integer")
         except KeyError:
             LOGGER.error("No avatar ID found. User may not be authorised")
-            LOGGER.error("query_string: " + query_string)
+            LOGGER.error(f"query_string: {query_string}")
 
     async def _send_logs(self, sid):
         def should_send_logs(logs):

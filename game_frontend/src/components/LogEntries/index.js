@@ -5,6 +5,13 @@ import PropTypes from 'prop-types'
 export const LogEntry = styled.li`
   list-style: none;
   padding: ${props => props.theme.spacing()}px;
+  overflow-anchor: none;
+`
+
+export const BottomSnapper = styled.li`
+  overflow-anchor: auto;
+  height: 1px;
+  list-style: none;
 `
 
 export const StyledLogEntries = styled.ul`
@@ -15,31 +22,17 @@ export const StyledLogEntries = styled.ul`
 
 export default class LogEntries extends Component {
   generateLogEntries () {
-    const lastLogEntry = this.props.logs[this.props.logs.length - 1]
-    const logEntries = this.props.logs.map(logEntry =>
-      <LogEntry
-        key={logEntry.turn_count}
-        innerRef={this.setLastLogEntryRef(logEntry, lastLogEntry)}>
-        {logEntry.message}
-      </LogEntry>
+    let logEntries = this.props.logs.map(logEntry => (
+      <LogEntry key={logEntry.turn_count}>{logEntry.message}</LogEntry>
+    ))
+    logEntries.push(
+      <BottomSnapper key={-1} />
     )
     return logEntries
   }
 
-  setLastLogEntryRef (logEntry, lastLogEntry) {
-    return node => {
-      if (logEntry.turn_count === lastLogEntry.turn_count) {
-        this.props.lastLogRef(node)
-      }
-    }
-  }
-
   render () {
-    return (
-      <StyledLogEntries>
-        {this.generateLogEntries()}
-      </StyledLogEntries>
-    )
+    return <StyledLogEntries>{this.generateLogEntries()}</StyledLogEntries>
   }
 }
 
@@ -48,6 +41,6 @@ LogEntries.propTypes = {
     PropTypes.shape({
       turn_count: PropTypes.int,
       message: PropTypes.string
-    })),
-  lastLogRef: PropTypes.func
+    })
+  )
 }
