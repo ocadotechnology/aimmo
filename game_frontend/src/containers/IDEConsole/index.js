@@ -42,38 +42,13 @@ export class IDEConsole extends Component {
     logs: PropTypes.arrayOf(PropTypes.object)
   }
 
-  state = {
-    scrolledToBottom: true
-  }
-
-  handleScroll = event => {
-    let target = event.target || event.srcElement
-    this.setState({ ...this.state, scrolledToBottom: target.offsetHeight + target.scrollTop === target.scrollHeight })
-  }
-
-  componentDidMount () {
-    if (this.consoleRef) {
-      this.consoleRef.addEventListener('scroll', this.handleScroll)
-    }
-  }
-
-  componentWillUnmount () {
-    this.consoleRef.removeEventListener('scroll', this.handleScroll)
-  }
-
-  componentDidUpdate () {
-    if (this.lastLogRef && this.state.scrolledToBottom) {
-      this.lastLogRef.scrollIntoView(false)
-    }
-  }
   render () {
     return (
       <IDEConsoleSection>
         <ConsoleBar clearConsoleClicked={this.props.clearConsoleLogs} resetCodeClicked={this.props.resetCode} />
-        <StyledConsole innerRef={ref => { this.consoleRef = ref }}>
+        <StyledConsole>
           <LogEntries
-            logs={this.props.logs}
-            lastLogRef={ref => { this.lastLogRef = ref }} />
+            logs={this.props.logs} />
         </StyledConsole>
       </IDEConsoleSection>
     )
