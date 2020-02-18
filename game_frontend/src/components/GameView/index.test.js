@@ -17,11 +17,10 @@ describe('<GameView />', () => {
     expect(component).toMatchSnapshot()
   })
 
-  it('creates a babylon environment when game is loaded', () => {
+  it('creates a babylon environment on mount', () => {
     const props = {
       connectToGame: jest.fn(),
-      environment: new MockEnvironment(true),
-      gameLoaded: true
+      environment: new MockEnvironment(true)
     }
     const component = createMountWithTheme(<GameView {...props} />).instance()
 
@@ -34,7 +33,6 @@ describe('<GameView />', () => {
   it('updates the game Engine', () => {
     const props = {
       connectToGame: jest.fn(),
-      gameLoaded: true,
       environment: new MockEnvironment(true),
       currentAvatarID: 2
     }
@@ -57,8 +55,7 @@ describe('<GameView />', () => {
   it('centers camera on cameraCenteredOnUserAvatar', () => {
     const props = {
       connectToGame: jest.fn(),
-      environment: new MockEnvironment(true),
-      gameLoaded: true
+      environment: new MockEnvironment(true)
     }
     const component = createMountWithTheme(<GameView {...props} />)
     const componentInstance = component.instance()
@@ -79,8 +76,7 @@ describe('<GameView />', () => {
     const props = {
       connectToGame: jest.fn(),
       environment: new MockEnvironment(true),
-      mapPanned: jest.fn(),
-      gameLoaded: true
+      mapPanned: jest.fn()
     }
     const component = createMountWithTheme(<GameView {...props} />)
     const componentInstance = component.instance()

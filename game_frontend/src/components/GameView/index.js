@@ -9,7 +9,6 @@ import { StandardEnvironment } from '../../babylon/environment/environment'
 
 export const GameViewLayout = styled.div`
   grid-area: game-view;
-  position: relative;
 `
 
 export const LoadingBackgroundOverlay = styled.div`
@@ -24,14 +23,10 @@ export const LoadingBackgroundOverlay = styled.div`
 
 export const OverlayElements = styled.div`
   align-items: center;
+  bottom: 0;
   display: flex;
   justify-content: space-between;
-`
-
-export const Overlay = styled.div`
-  position: absolute;
-  width: 100%;
-  bottom: 0;
+  position: sticky;
 `
 
 export const LoadingText = styled(Typography)`
@@ -61,25 +56,21 @@ export default class GameView extends Component {
 
   componentDidMount () {
     this.props.connectToGame()
+    const environment = this.props.environment ?? new StandardEnvironment(this.canvas)
+    this.gameEngine = new GameEngine(this.handleMapPanned, environment)
   }
 
   componentDidUpdate (prevProps) {
-    if (this.props.gameLoaded) {
-      this.gameEngine.onUpdate(prevProps, this.props)
-    }
+    this.gameEngine.onUpdate(prevProps, this.props)
   }
 
   componentWillUnmount () {
-    if (this.props.gameLoaded) {
-      this.gameEngine.unmount()
-    }
+    this.gameEngine.unmount()
   }
 
   onCanvasLoaded = canvas => {
     if (canvas !== null) {
       this.canvas = canvas
-      const environment = this.props.environment ?? new StandardEnvironment(this.canvas)
-      this.gameEngine = new GameEngine(this.handleMapPanned, environment)
     }
   }
 
@@ -111,16 +102,14 @@ export default class GameView extends Component {
 
   renderIcons = () => {
     return (
-      <Overlay>
-        <OverlayElements>
-          <Compass src='/static/images/compass.svg' />
-          <PositionedFindMeButton
-            aria-label='Find Me'
-            whenClicked={this.props.centerCameraOnUserAvatar}
-            isCameraCenteredOnUserAvatar={this.props.cameraCenteredOnUserAvatar}
-            id='find-me-button' />
-        </OverlayElements>
-      </Overlay>
+      <OverlayElements>
+        <Compass src='/static/images/compass.svg' />
+        <PositionedFindMeButton
+          aria-label='Find Me'
+          whenClicked={this.props.centerCameraOnUserAvatar}
+          isCameraCenteredOnUserAvatar={this.props.cameraCenteredOnUserAvatar}
+          id='find-me-button' />
+      </OverlayElements>
     )
   }
 
@@ -128,7 +117,7 @@ export default class GameView extends Component {
     return (
       <GameViewLayout>
         {!this.props.gameLoaded && this.renderLoadingScreen()}
-        {this.props.gameLoaded && this.renderGameView()}
+        {this.renderGameView()}
         {this.props.gameLoaded && this.renderIcons()}
       </GameViewLayout>
     )
