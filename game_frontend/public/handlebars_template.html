@@ -3,7 +3,7 @@
 
 <head>
 <!-- Google Tag Manager -->
-  {% if environment == "production" %}
+  {{#if_eq environment "production"}}
   <!-- Production Environment -->
     <script>
         (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -12,7 +12,8 @@
         'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
         })(window,document,'script','dataLayer','GTM-M32M5N5')
     </script>
-  {% else %}
+  {{/if_eq}}
+  {{#if_eq environment "staging"}}
   <!-- Non-Production Environment (staging or dev) -->
     <script>
       (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -21,7 +22,7 @@
       'https://www.googletagmanager.com/gtm.js?id='+i+dl+ '&gtm_auth=ZZqc7ZNE1mTX6vrV43Q_7g&gtm_preview=env-6&gtm_cookies_win=x';f.parentNode.insertBefore(j,f);
       })(window,document,'script','dataLayer','GTM-M32M5N5');
     </script>
-  {% endif %}
+  {{/if_eq}}
 <!-- End Google Tag Manager -->
   <title>Kurono</title>
   <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
@@ -36,21 +37,22 @@
 
 <body>
 <!-- Google Tag Manager (noscript) -->
-  {% if environment == "production" %}
+  {{#if_eq environment "production"}}
   <!-- Production Environment -->
     <noscript>
         <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M32M5N5"
         height="0" width="0" style="display:none;visibility:hidden">
         </iframe>
     </noscript>
-  {% else %}
+  {{/if_eq}}
+  {{#if_eq environment "staging"}}
   <!-- Non-Production Environment (staging or dev) -->
       <noscript>
         <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M32M5N5&gtm_auth=ZZqc7ZNE1mTX6vrV43Q_7g&gtm_preview=env-6&gtm_cookies_win=x"
         height="0" width="0" style="display:none;visibility:hidden">
         </iframe>
     </noscript>
-  {% endif %}
+  {{/if_eq}}
 <!-- End Google Tag Manager (noscript) -->
   <div id="root"></div>
 </body>
