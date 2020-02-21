@@ -223,19 +223,24 @@ def add_game(request):
     if request.method == "POST":
         form = forms.AddGameForm(playable_games, data=request.POST)
         if form.is_valid():
-            game = form.save(commit=False)
-            game.generator = "Main"
-            game.owner = request.user
-            game.main_user = request.user
-            game.save()
-            users = get_users_for_new_game(request)
-            if users is not None:
-                game.can_play.add(*users)
-            _create_avatar_for_user(request.user, game.id)
+            users_to_add_to_game = get_users_for_new_game(request)
+            game = create_game(request.user, form, users_to_add_to_game)
             return redirect("kurono/play", id=game.id)
     else:
         form = forms.AddGameForm(playable_games)
     return render(request, "players/add_game.html", {"form": form})
+
+
+def create_game(main_user, form, users_to_add_to_game):
+    game = form.save(commit=False)
+    game.generator = "Main"
+    game.owner = main_user
+    game.main_user = main_user
+    game.save()
+    if users_to_add_to_game is not None:
+        game.can_play.add(*users_to_add_to_game)
+    _create_avatar_for_user(main_user, game.id)
+    return game
 
 
 def current_avatar_in_game(request, game_id):
