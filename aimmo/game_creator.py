@@ -10,8 +10,12 @@ from .models import Avatar
 
 def create_game(main_user, form, users_to_add_to_game):
     """
-    Creates a Game by saving the form, then sets default values. Also adds users who
-    can play the game and creates an avatar for the main user.
+    Creates a Game by:
+    - saving the form
+    - setting default values
+    - adding users who can play the game
+    - creating an avatar for the main user.
+
     :param main_user: The user who requested game creation, and is the game owner.
     :param form: The form used to submit the creation of the game.
     :param users_to_add_to_game: List of User objects who are able to play this game.
@@ -32,6 +36,7 @@ def create_avatar_for_user(user, game_id, avatar_template_name="simple_avatar"):
     """
     Creates an Avatar object for a user. Sets the initial code to simple avatar code
     (unless specified otherwise).
+
     :param user: The user the Avatar is for.
     :param game_id: The id of the game in which the Avatar is created.
     :param avatar_template_name: Optional. The name of the default code template for
