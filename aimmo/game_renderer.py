@@ -1,5 +1,5 @@
 """
-Any helper functions used for the unity game.
+Any helper functions used for the game.
 """
 from __future__ import absolute_import
 
@@ -33,7 +33,6 @@ def get_environment_connection_settings(game_id):
     This function will return the correct URL parts and a SSL flag
     based on the environment of which it exists in.
 
-    :param request: Request object used to generate this response.
     :param game_id: Integer with the ID of the game.
     :return: A dict object with all relevant settings.
     """
