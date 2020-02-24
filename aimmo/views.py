@@ -4,12 +4,10 @@ import logging
 import os
 
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ValidationError
 from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
-from django.views.generic import TemplateView
 from rest_framework import mixins, status, viewsets
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.response import Response
@@ -19,7 +17,8 @@ from . import forms
 from . import game_renderer
 from .app_settings import get_users_for_new_game
 from .exceptions import UserCannotPlayGameException
-from .models import Avatar, Game, LevelAttempt
+from .models import Avatar, Game
+from .game_creator import create_game, create_avatar_for_user
 from .permissions import (
     CanDeleteGameOrReadOnly,
     CsrfExemptSessionAuthentication,
@@ -39,17 +38,6 @@ def _create_response(status, message):
     return JsonResponse(response)
 
 
-def _create_avatar_for_user(user, game_id, avatar_template_name="simple_avatar"):
-    initial_code_file_name = os.path.join(
-        os.path.abspath(os.path.dirname(__file__)),
-        "avatar_examples/{}.py".format(avatar_template_name),
-    )
-    with open(initial_code_file_name) as initial_code_file:
-        initial_code = initial_code_file.read()
-        avatar = Avatar.objects.create(owner=user, code=initial_code, game_id=game_id)
-    return avatar
-
-
 @login_required
 def code(request, id):
     if not request.user:
@@ -60,7 +48,7 @@ def code(request, id):
     try:
         avatar = game.avatar_set.get(owner=request.user)
     except Avatar.DoesNotExist:
-        avatar = _create_avatar_for_user(request.user, id)
+        avatar = create_avatar_for_user(request.user, id)
     if request.method == "POST":
         avatar.code = request.POST["code"]
         avatar.save()
@@ -146,7 +134,7 @@ class GameTokenView(APIView):
 
     def get(self, request, id):
         """
-        After the inital token request, we need to check where the
+        After the initial token request, we need to check where the
         request comes from. So for subsequent requests we verify that
         they came from the token-holder.
         """
@@ -165,18 +153,6 @@ class GameTokenView(APIView):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
 
-class ProgramView(TemplateView):
-    template_name = "players/program.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(ProgramView, self).get_context_data(**kwargs)
-        game = get_object_or_404(Game, id=self.kwargs["id"])
-        if not game.can_user_play(self.request.user):
-            raise Http404
-        context["game_id"] = int(self.kwargs["id"])
-        return context
-
-
 @ensure_csrf_cookie
 def watch_game(request, id):
     game = get_object_or_404(Game, id=id)
@@ -188,34 +164,6 @@ def watch_game(request, id):
     return game_renderer.render_game(request, game)
 
 
-def watch_level(request, num):
-    try:
-        game = Game.objects.get(
-            levelattempt__user=request.user, levelattempt__level_number=num
-        )
-    except Game.DoesNotExist:
-        LOGGER.debug("Adding level")
-        game = _add_and_return_level(num, request.user)
-    LOGGER.debug("Displaying game with id %s", game.id)
-    return game_renderer.render_game(request, game)
-
-
-def _add_and_return_level(num, user):
-    game = Game(
-        generator="Level" + num, name="Level " + num, public=False, main_user=user
-    )
-    try:
-        game.save()
-    except ValidationError as e:
-        LOGGER.warn(e)
-        raise Http404
-    game.can_play = [user]
-    game.save()
-    level_attempt = LevelAttempt(game=game, user=user, level_number=num)
-    level_attempt.save()
-    return game
-
-
 @login_required
 def add_game(request):
     playable_games = request.user.playable_games.all()
@@ -223,15 +171,8 @@ def add_game(request):
     if request.method == "POST":
         form = forms.AddGameForm(playable_games, data=request.POST)
         if form.is_valid():
-            game = form.save(commit=False)
-            game.generator = "Main"
-            game.owner = request.user
-            game.main_user = request.user
-            game.save()
-            users = get_users_for_new_game(request)
-            if users is not None:
-                game.can_play.add(*users)
-            _create_avatar_for_user(request.user, game.id)
+            users_to_add_to_game = get_users_for_new_game(request)
+            game = create_game(request.user, form, users_to_add_to_game)
             return redirect("kurono/play", id=game.id)
     else:
         form = forms.AddGameForm(playable_games)

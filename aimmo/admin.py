@@ -1,9 +1,11 @@
 from __future__ import absolute_import
-from django.contrib import admin
-from .models import Avatar, Game, User
+
 import uuid
 
-from .views import _create_avatar_for_user
+from django.contrib import admin
+
+from .game_creator import create_avatar_for_user
+from .models import Avatar, Game, User
 
 NUMBER_OF_AVATARS_TO_ADD = 10
 
@@ -11,7 +13,7 @@ NUMBER_OF_AVATARS_TO_ADD = 10
 def create_avatar_for_game(game):
     user = User.objects.create_user(uuid.uuid4())
     user.save()
-    _create_avatar_for_user(user, game.id, "random_avatar")
+    create_avatar_for_user(user, game.id, "random_avatar")
     return user
 
 
