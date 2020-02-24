@@ -6,16 +6,14 @@ const Handlebars = require('handlebars')
 const file = Path.join(__dirname, './public/index.html')
 const outDir = Path.join(__dirname, '../aimmo/static/react')
 
-const cloudEnvironments = new Set(['production'])
-
 const options = {
   outDir,
   outFile: 'index.html',
   publicUrl: './',
-  watch: !cloudEnvironments.has(process.env.NODE_ENV),
-  minify: cloudEnvironments.has(process.env.NODE_ENV),
+  watch: process.env.NODE_ENV !== 'production',
+  minify: process.env.NODE_ENV === 'production',
   target: 'browser',
-  cache: cloudEnvironments.has(process.env.NODE_ENV)
+  cache: process.env.NODE_ENV === 'production'
 }
 
 const templateFolder = Path.resolve(
