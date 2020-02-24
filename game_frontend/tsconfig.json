@@ -14,8 +14,7 @@
         "outDir": "./dist/",
         "baseUrl": "./src",
         "typeRoots": [
-            "node_modules/@types",
-            "./globals"
+            "node_modules/@types"
         ],
         "noUnusedLocals": true,
         "noImplicitReturns": true,
