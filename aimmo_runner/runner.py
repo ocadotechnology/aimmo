@@ -100,6 +100,7 @@ def run(
             docker_scripts.start_game_creator()
 
     os.environ["NODE_ENV"] = "development" if settings.DEBUG else "production"
+    os.environ["SERVER_ENV"] = "local"
     server = run_command_async(
         ["python", _MANAGE_PY, "runserver"] + server_args, capture_output=capture_output
     )
