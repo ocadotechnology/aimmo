@@ -77,7 +77,7 @@ class PickupAction(Action):
     def _is_legal(self, world_map):
         current_cell = world_map.get_cell(self.avatar.location)
         cell_has_artefact = isinstance(current_cell.interactable, Artefact)
-        backpack_has_space = len(self.avatar.backpack) < 10
+        backpack_has_space = len(self.avatar.backpack) < 1
         return cell_has_artefact and backpack_has_space
 
     def _apply(self, world_map):
@@ -89,6 +89,8 @@ class PickupAction(Action):
     def _reject(self):
         self.avatar.add_event(FailedPickupEvent())
         self.avatar.clear_action()
+        self.avatar.logs.append(
+            "Your backpack is full! You cannot pick up this artefact.")
 
 
 class MoveAction(Action):

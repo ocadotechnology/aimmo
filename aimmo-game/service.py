@@ -17,6 +17,7 @@ from prometheus_client import make_wsgi_app
 from simulation import map_generator
 from simulation.django_communicator import DjangoCommunicator
 from simulation.game_runner import GameRunner
+from simulation.log_collector import LogCollector
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -193,12 +194,14 @@ class GameAPI(object):
 
         session_data = await self.socketio_server.get_session(sid)
         worker = self.worker_manager.player_id_to_worker[session_data["id"]]
-        avatar_logs = worker.log
+        avatar = self.avatar_manager.avatars_by_id[session_data["id"]]
+        log_collector = LogCollector()
 
-        if should_send_logs(avatar_logs):
+        if should_send_logs(log_collector.player_logs):
             await self.socketio_server.emit(
                 "log",
-                {"message": avatar_logs, "turn_count": self.game_state.turn_count},
+                {"message": log_collector.player_logs,
+                 "turn_count": self.game_state.turn_count},
                 room=sid,
             )
 

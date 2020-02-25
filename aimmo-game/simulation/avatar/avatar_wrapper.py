@@ -26,6 +26,7 @@ class AvatarWrapper(object):
         self.resistance = 0
         self.attack_strength = 1
         self.fog_of_war_modifier = 0
+        self.logs = []
         self._action = None
 
     def update_effects(self):
@@ -89,6 +90,9 @@ class AvatarWrapper(object):
 
     def clear_action(self):
         self._action = None
+
+    def clear_logs(self):
+        self.logs = []
 
     def die(self, respawn_location):
         # TODO: extract settings for health and score loss on death
