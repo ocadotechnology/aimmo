@@ -76,7 +76,9 @@ class PickupAction(Action):
 
     def _is_legal(self, world_map):
         current_cell = world_map.get_cell(self.avatar.location)
-        return isinstance(current_cell.interactable, Artefact)
+        cell_has_artefact = isinstance(current_cell.interactable, Artefact)
+        backpack_has_space = len(self.avatar.backpack) < 10
+        return cell_has_artefact and backpack_has_space
 
     def _apply(self, world_map):
         current_cell = world_map.get_cell(self.avatar.location)

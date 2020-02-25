@@ -41,7 +41,7 @@ class _Interactable(object):
         self.targets = self.get_targets()
         for effect in self.effects:
             for target in self.targets:
-                effect(target)
+                effect(target, self)
 
         if self.delete_after_effects_applied:
             self.delete()

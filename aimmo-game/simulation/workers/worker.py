@@ -43,7 +43,9 @@ class Worker(object):
                 self.has_code_updated = data["avatar_updated"]
                 self.ready = True
         except (ClientResponseError, ServerDisconnectedError):
-            LOGGER.info("ClientResponseError, ServerDisconnectedError: Could not connect to worker, probably not ready yet")
+            LOGGER.info(
+                "ClientResponseError, ServerDisconnectedError: Could not connect to worker, probably not ready yet"
+            )
             self._set_defaults()
         except CancelledError as e:
             LOGGER.error("CancelledError: Worker took too long to respond")

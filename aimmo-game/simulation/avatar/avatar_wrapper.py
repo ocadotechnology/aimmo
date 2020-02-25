@@ -19,7 +19,7 @@ class AvatarWrapper(object):
         self.orientation = "north"
         self.health = 5
         self.score = 0
-        self.number_of_artefacts = 0
+        self.backpack = []
         self.events = []
         self.avatar_appearance = avatar_appearance
         self.effects = set()
@@ -111,8 +111,8 @@ class AvatarWrapper(object):
             "score": self.score,
             "id": self.player_id,
             "orientation": self.orientation,
-            "number_of_artefacts": self.number_of_artefacts,
+            "backpack": self.backpack,
         }
 
     def __repr__(self):
-        return f"Avatar(id={self.player_id}, location={self.location}, health={self.health}, score={self.score}, number of artefacts={self.number_of_artefacts})"
+        return f"Avatar(id={self.player_id}, location={self.location}, health={self.health}, score={self.score}, backpack={self.backpack})"
