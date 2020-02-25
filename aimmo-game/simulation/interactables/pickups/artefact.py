@@ -10,6 +10,7 @@ class Artefact(_Interactable):
         self.pickup_action_applied = False
         self.conditions = [avatar_on_cell, pickup_action_applied]
         self.effects.append(ArtefactEffect)
+        self._in_backpack = False
 
     def get_targets(self):
         return [self.cell.avatar]
@@ -18,7 +19,12 @@ class Artefact(_Interactable):
         return "Artefact(Location={})".format(self.cell.location)
 
     def serialize(self):
-        return {
-            "type": "artefact",
-            "location": {"x": self.cell.location.x, "y": self.cell.location.y},
-        }
+        serialized_artefact = {"type": "artefact"}
+
+        if not self._in_backpack:
+            serialized_artefact["location"] = {
+                "x": self.cell.location.x,
+                "y": self.cell.location.y,
+            }
+
+        return serialized_artefact

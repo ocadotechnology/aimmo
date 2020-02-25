@@ -111,8 +111,8 @@ class AvatarWrapper(object):
             "score": self.score,
             "id": self.player_id,
             "orientation": self.orientation,
-            "backpack": self.backpack,
+            "backpack": [artefact.serialize() for artefact in self.backpack],
         }
 
     def __repr__(self):
-        return f"Avatar(id={self.player_id}, location={self.location}, health={self.health}, score={self.score}, backpack={self.backpack})"
+        return f"Avatar(id={self.player_id}, location={self.location}, health={self.health}, score={self.score}, backpack={[artefact.serialize() for artefact in self.backpack]})"
