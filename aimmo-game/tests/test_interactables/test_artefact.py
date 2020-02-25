@@ -32,9 +32,7 @@ def test_artefact_serialization(cell):
     }
 
     artefact._in_backpack = True
-    assert artefact.serialize() == {
-        "type": "artefact",
-    }
+    assert artefact.serialize() == {"type": "artefact"}
 
 
 @pytest.mark.asyncio

@@ -40,10 +40,10 @@ class _Effect(object):
     """
 
     def __init__(
-            self,
-            recipient: "AvatarWrapper",
-            interactable: "_Interactable",
-            duration=DEFAULT_EFFECT_TIME,
+        self,
+        recipient: "AvatarWrapper",
+        interactable: "_Interactable",
+        duration=DEFAULT_EFFECT_TIME,
     ):
         self._recipient = recipient
         self._interactable = interactable
