@@ -169,7 +169,7 @@ class TestAction(unittest.TestCase):
     def test_failed_pickup_action_if_backpack_full(self):
         game_state = GameState(PickupMap(Artefact), self.avatar_manager)
 
-        self.avatar.backpack = [Artefact for _ in range(10)]
+        self.avatar.backpack = [Artefact for _ in range(self.avatar.BACKPACK_SIZE)]
 
         action.PickupAction(self.avatar).process(game_state.world_map)
 
