@@ -78,7 +78,7 @@ export default class GameView extends Component {
   onCanvasLoaded = canvas => {
     if (canvas !== null) {
       this.canvas = canvas
-      const environment = this.props.environment ?? new StandardEnvironment(this.canvas)
+      const environment = this.props.environment ?? new StandardEnvironment(this.canvas, 'prehistory')
       this.gameEngine = new GameEngine(this.handleMapPanned, environment)
     }
   }

@@ -8,12 +8,17 @@ export default class ObstacleManager implements GameNode, DiffHandling {
   scene: BABYLON.Scene
   obstacleNode: BABYLON.TransformNode
   gameStateProcessor: DiffProcessor
+  importMesh: Function
   material: BABYLON.StandardMaterial
+  timeline: String
 
-  constructor (environment: Environment) {
+  constructor (environment: Environment, importMesh: Function = BABYLON.SceneLoader.ImportMesh) {
     this.gameStateProcessor = new DiffProcessor(this)
 
+    this.importMesh = importMesh
+    this.timeline = environment.timeline
     this.scene = environment.scene
+
     this.obstacleNode = new BABYLON.TransformNode('Obstacles', environment.scene)
     this.object = this.obstacleNode
     this.obstacleNode.parent = environment.onTerrainNode
@@ -21,8 +26,13 @@ export default class ObstacleManager implements GameNode, DiffHandling {
   }
 
   createMaterial () {
-    this.material = new BABYLON.StandardMaterial('obstacle_material_future', this.scene)
-    this.material.diffuseTexture = new BABYLON.Texture('/static/babylon/terrain/obstacle_future_wall1.jpg', this.scene)
+    const texture_url = '/static/babylon/obstacles/obstacle_' + this.timeline + '.jpg'
+    this.material = new BABYLON.StandardMaterial('obstacle_material_' + this.timeline, this.scene)
+    this.material.diffuseTexture = new BABYLON.Texture(texture_url, this.scene)
+  }
+
+  createRandomRotation (): number {
+    return Math.PI / (Math.floor(Math.random() * Math.floor(4)))
   }
 
   remove (obstacle: DiffItem): void {
@@ -49,14 +59,25 @@ export default class ObstacleManager implements GameNode, DiffHandling {
   }
 
   add (obstacle: DiffItem): void {
-    // Create mesh
-    const box = BABYLON.MeshBuilder.CreateBox(`obstacle: ${obstacle.id}`, { height: 1 }, this.scene)
+    if (this.timeline === 'prehistory') {
+      this.importMesh('rock', '/static/babylon/obstacles/', 'rock_model.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
+        var newObstacle = meshes[0]
+        newObstacle.name = `obstacle: ${obstacle.id}`
 
-    // Assign material
-    box.material = this.material
+        newObstacle.material = this.material
 
-    // Set parent and relative position
-    box.parent = this.obstacleNode
-    box.position = new BABYLON.Vector3(obstacle.value.location.x, 0.5, obstacle.value.location.y)
+        newObstacle.parent = this.obstacleNode
+        newObstacle.position = new BABYLON.Vector3(obstacle.value.location.x, 0.5, obstacle.value.location.y)
+        
+        newObstacle.rotate(BABYLON.Axis.Y, this.createRandomRotation(), BABYLON.Space.WORLD)
+      })
+    }
+    else {
+      var newObstacle = BABYLON.MeshBuilder.CreateBox(`obstacle: ${obstacle.id}`, { height: 1 }, this.scene)
+      newObstacle.material = this.material
+
+      newObstacle.parent = this.obstacleNode
+      newObstacle.position = new BABYLON.Vector3(obstacle.value.location.x, 0.5, obstacle.value.location.y)
+    }
   }
 }
