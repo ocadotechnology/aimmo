@@ -9,22 +9,18 @@ import socketio
 import service
 from simulation.game_runner import GameRunner
 from simulation.avatar.avatar_wrapper import AvatarWrapper
+from simulation.avatar.avatar_manager import AvatarManager
 from .test_simulation.mock_communicator import MockCommunicator
 from .test_simulation.mock_worker_manager import MockWorkerManager
 
 TIME_TO_PROCESS_SOME_EVENT_LOOP = 0.1
 
 
-class MockAvatarManager(object):
-    avatars_by_id = {}
-
-    def add_avatar(self, player_id):
+class MockAvatarManager(AvatarManager):
+    def add_avatar(self, player_id, location=None):
         avatar = AvatarWrapper(player_id, None, None)
         self.avatars_by_id[player_id] = avatar
         return avatar
-
-    def get_avatar(self, user_id):
-        return self.avatars_by_id[user_id]
 
 
 class MockGameState(object):

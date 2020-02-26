@@ -23,6 +23,9 @@ class AvatarManager(object):
     def remove_avatar(self, user_id):
         del self.avatars_by_id[user_id]
 
+    def clear_all_avatar_logs(self):
+        [avatar.clear_logs() for avatar in self.avatars]
+
     @property
     def avatars(self):
         return list(self.avatars_by_id.values())
