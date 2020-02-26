@@ -11,6 +11,10 @@ from .test_simulation.dummy_avatar import MoveEastDummy
 from .test_simulation.maps import MockCell, MockPickup
 
 
+class MockGameState(object):
+    avatar_manager = None
+
+
 class TestService(TestCase):
     class DummyAvatarManager(AvatarManager):
         avatars = [MoveEastDummy(1, Location(0, -1))]
@@ -18,7 +22,7 @@ class TestService(TestCase):
     @classmethod
     def setUpClass(cls):
         """ Register the api endpoints """
-        cls.game_api = service.GameAPI(worker_manager=None, game_state=None)
+        cls.game_api = service.GameAPI(worker_manager=None, game_state=MockGameState())
 
     def setUp(self):
         """

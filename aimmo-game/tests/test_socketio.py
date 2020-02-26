@@ -174,7 +174,7 @@ async def test_send_worker_and_avatar_logs_for_one_user(
     worker.log = "Worker log"
 
     avatar = game_api.game_state.avatar_manager.get_avatar(1)
-    avatar.log = "Avatar log"
+    avatar.logs.append("Avatar log")
 
     await socketio_client.connect(
         f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"

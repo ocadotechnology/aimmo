@@ -11,5 +11,7 @@ class LogCollector:
         avatar = self.avatar_manager.get_avatar(user_id)
 
         self.player_logs = worker.log
-        self.player_logs = [self.player_logs + log for log in avatar.logs]
+        for log in avatar.logs:
+            self.player_logs += log
+
         return self.player_logs
