@@ -1,9 +1,13 @@
 import logging
+from typing import TYPE_CHECKING, List
 
 from simulation.action import ACTIONS, MoveAction, WaitAction
 from simulation.direction import Direction
 
 LOGGER = logging.getLogger(__name__)
+
+if TYPE_CHECKING:
+    from simulation.interactables.pickups.artefact import Artefact
 
 
 class AvatarWrapper(object):
@@ -19,7 +23,7 @@ class AvatarWrapper(object):
         self.orientation = "north"
         self.health = 5
         self.score = 0
-        self.backpack = []
+        self.backpack: "List[Artefact]" = []
         self.BACKPACK_SIZE = 10
         self.events = []
         self.avatar_appearance = avatar_appearance
