@@ -61,12 +61,12 @@ export default class GameView extends Component {
 
   componentDidMount () {
     this.props.connectToGame()
+    const environment = this.props.environment ?? new StandardEnvironment(this.canvas)
+    this.gameEngine = new GameEngine(this.handleMapPanned, environment)
   }
 
   componentDidUpdate (prevProps) {
-    if (this.props.gameLoaded) {
-      this.gameEngine.onUpdate(prevProps, this.props)
-    }
+    this.gameEngine.onUpdate(prevProps, this.props)
   }
 
   componentWillUnmount () {
@@ -78,8 +78,6 @@ export default class GameView extends Component {
   onCanvasLoaded = canvas => {
     if (canvas !== null) {
       this.canvas = canvas
-      const environment = this.props.environment ?? new StandardEnvironment(this.canvas)
-      this.gameEngine = new GameEngine(this.handleMapPanned, environment)
     }
   }
 
@@ -128,7 +126,7 @@ export default class GameView extends Component {
     return (
       <GameViewLayout>
         {!this.props.gameLoaded && this.renderLoadingScreen()}
-        {this.props.gameLoaded && this.renderGameView()}
+        {this.renderGameView()}
         {this.props.gameLoaded && this.renderIcons()}
       </GameViewLayout>
     )
