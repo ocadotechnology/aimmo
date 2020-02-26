@@ -92,6 +92,7 @@ class GameAPI(object):
         self.register_endpoints()
         self.worker_manager = worker_manager
         self.game_state = game_state
+        self.log_collector = LogCollector(worker_manager, game_state.avatar_manager)
 
     async def async_map(self, func, iterable_args):
         futures = [func(arg) for arg in iterable_args]
@@ -189,22 +190,18 @@ class GameAPI(object):
             LOGGER.error(f"query_string: {query_string}")
 
     async def _send_logs(self, sid):
-        log_collector = LogCollector()
+        def should_send_logs(logs):
+            return bool(logs)
+
         session_data = await self.socketio_server.get_session(sid)
-        log_collector.worker = self.worker_manager.player_id_to_worker[
-            session_data["id"]
-        ]
-        log_collector.avatar = self.game_state.avatar_manager.get_avatar(
-            session_data["id"]
-        )
 
-        log_collector.collect_logs()
+        player_logs = self.log_collector.collect_logs(session_data["id"])
 
-        if log_collector.should_send_logs():
+        if should_send_logs(player_logs):
             await self.socketio_server.emit(
                 "log",
                 {
-                    "message": log_collector.player_logs,
+                    "message": player_logs,
                     "turn_count": self.game_state.turn_count,
                 },
                 room=sid,

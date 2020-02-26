@@ -68,7 +68,7 @@ class WaitAction(Action):
 
     def _apply(self, world_map):
         self.avatar.clear_action()
-        self.avatar.clear_log()
+        self.avatar.clear_logs()
 
 
 class PickupAction(Action):
@@ -78,20 +78,20 @@ class PickupAction(Action):
     def _is_legal(self, world_map):
         current_cell = world_map.get_cell(self.avatar.location)
         cell_has_artefact = isinstance(current_cell.interactable, Artefact)
-        backpack_has_space = len(self.avatar.backpack) < self.avatar.BACKPACK_SIZE
-        return cell_has_artefact and backpack_has_space
+        return cell_has_artefact and self.avatar.backpack_has_space()
 
     def _apply(self, world_map):
         current_cell = world_map.get_cell(self.avatar.location)
         current_cell.interactable.pickup_action_applied = True
         self.avatar.add_event(PickedUpEvent(current_cell.interactable.serialize()))
         self.avatar.clear_action()
-        self.avatar.clear_log()
+        self.avatar.clear_logs()
 
     def _reject(self):
         self.avatar.add_event(FailedPickupEvent())
         self.avatar.clear_action()
-        self.avatar.log = "Uh oh! Your backpack is full! 🎒 Please drop something."
+        self.avatar.logs.append(
+            "Uh oh! Your backpack is full! 🎒 Please drop something.")
 
 
 class MoveAction(Action):
@@ -115,7 +115,7 @@ class MoveAction(Action):
         self.avatar.orientation = self.avatar.calculate_orientation()
         world_map.get_cell(self.target_location).avatar = self.avatar
         self.avatar.clear_action()
-        self.avatar.clear_log()
+        self.avatar.clear_logs()
         return True
 
     def detect_cycles(self, world_map, visited):
@@ -139,7 +139,7 @@ class MoveAction(Action):
         event = FailedMoveEvent(self.avatar.location, self.target_location)
         self.avatar.add_event(event)
         self.avatar.clear_action()
-        self.avatar.clear_log()
+        self.avatar.clear_logs()
         return False
 
 
@@ -161,7 +161,7 @@ class AttackAction(Action):
         attacked_avatar.damage(damage_dealt)
 
         self.avatar.clear_action()
-        self.avatar.clear_log()
+        self.avatar.clear_logs()
 
         if attacked_avatar.health <= 0:
             # Move responsibility for this to avatar.die() ?
@@ -173,7 +173,7 @@ class AttackAction(Action):
     def _reject(self):
         self.avatar.add_event(FailedAttackEvent(self.target_location))
         self.avatar.clear_action()
-        self.avatar.clear_log()
+        self.avatar.clear_logs()
 
 
 ACTIONS = {

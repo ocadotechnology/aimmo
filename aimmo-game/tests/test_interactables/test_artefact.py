@@ -1,5 +1,3 @@
-from typing import TYPE_CHECKING
-
 import pytest
 
 from simulation.action import PickupAction
@@ -7,9 +5,6 @@ from simulation.interactables.pickups import Artefact
 from simulation.location import Location
 from tests.test_simulation.dummy_avatar import CustomLiveDummy
 from .mock_world import MockWorld
-
-if TYPE_CHECKING:
-    pass
 
 
 @pytest.fixture

@@ -31,7 +31,7 @@ class AvatarWrapper(object):
         self.resistance = 0
         self.attack_strength = 1
         self.fog_of_war_modifier = 0
-        self.log = None
+        self.logs = []
         self._action = None
 
     def update_effects(self):
@@ -96,8 +96,8 @@ class AvatarWrapper(object):
     def clear_action(self):
         self._action = None
 
-    def clear_log(self):
-        self.log = None
+    def clear_logs(self):
+        self.logs = []
 
     def die(self, respawn_location):
         # TODO: extract settings for health and score loss on death
@@ -112,6 +112,9 @@ class AvatarWrapper(object):
         applied_dmg = max(0, amount - self.resistance)
         self.health -= applied_dmg
         return applied_dmg
+
+    def backpack_has_space(self):
+        return len(self.backpack) < self.BACKPACK_SIZE
 
     def serialize(self):
         return {

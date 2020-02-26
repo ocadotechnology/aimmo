@@ -11,15 +11,6 @@ class MockWorker(Worker):
 
 
 class TestLogCollector(TestCase):
-    def test_should_send_logs(self):
-        log_collector = LogCollector()
-
-        self.assertEquals(log_collector.should_send_logs(), False)
-
-        log_collector.player_logs = "Test logs"
-
-        self.assertEquals(log_collector.should_send_logs(), True)
-
     def test_collect_logs(self):
         log_collector = LogCollector()
         worker = MockWorker(None, None)
