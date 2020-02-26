@@ -68,6 +68,7 @@ class WaitAction(Action):
 
     def _apply(self, world_map):
         self.avatar.clear_action()
+        self.avatar.clear_log()
 
 
 class PickupAction(Action):
@@ -85,12 +86,12 @@ class PickupAction(Action):
         current_cell.interactable.pickup_action_applied = True
         self.avatar.add_event(PickedUpEvent(current_cell.interactable.serialize()))
         self.avatar.clear_action()
+        self.avatar.clear_log()
 
     def _reject(self):
         self.avatar.add_event(FailedPickupEvent())
         self.avatar.clear_action()
-        self.avatar.logs.append(
-            "Your backpack is full! You cannot pick up this artefact.")
+        self.avatar.log = "Uh oh! Your backpack is full! 🎒 Please drop something."
 
 
 class MoveAction(Action):
@@ -114,6 +115,7 @@ class MoveAction(Action):
         self.avatar.orientation = self.avatar.calculate_orientation()
         world_map.get_cell(self.target_location).avatar = self.avatar
         self.avatar.clear_action()
+        self.avatar.clear_log()
         return True
 
     def detect_cycles(self, world_map, visited):
@@ -137,6 +139,7 @@ class MoveAction(Action):
         event = FailedMoveEvent(self.avatar.location, self.target_location)
         self.avatar.add_event(event)
         self.avatar.clear_action()
+        self.avatar.clear_log()
         return False
 
 
@@ -158,6 +161,7 @@ class AttackAction(Action):
         attacked_avatar.damage(damage_dealt)
 
         self.avatar.clear_action()
+        self.avatar.clear_log()
 
         if attacked_avatar.health <= 0:
             # Move responsibility for this to avatar.die() ?
@@ -169,6 +173,7 @@ class AttackAction(Action):
     def _reject(self):
         self.avatar.add_event(FailedAttackEvent(self.target_location))
         self.avatar.clear_action()
+        self.avatar.clear_log()
 
 
 ACTIONS = {

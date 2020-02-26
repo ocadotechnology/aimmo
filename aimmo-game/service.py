@@ -189,19 +189,24 @@ class GameAPI(object):
             LOGGER.error(f"query_string: {query_string}")
 
     async def _send_logs(self, sid):
-        def should_send_logs(logs):
-            return bool(logs)
-
-        session_data = await self.socketio_server.get_session(sid)
-        worker = self.worker_manager.player_id_to_worker[session_data["id"]]
-        avatar = self.avatar_manager.avatars_by_id[session_data["id"]]
         log_collector = LogCollector()
+        session_data = await self.socketio_server.get_session(sid)
+        log_collector.worker = self.worker_manager.player_id_to_worker[
+            session_data["id"]
+        ]
+        log_collector.avatar = self.game_state.avatar_manager.get_avatar(
+            session_data["id"]
+        )
 
-        if should_send_logs(log_collector.player_logs):
+        log_collector.collect_logs()
+
+        if log_collector.should_send_logs():
             await self.socketio_server.emit(
                 "log",
-                {"message": log_collector.player_logs,
-                 "turn_count": self.game_state.turn_count},
+                {
+                    "message": log_collector.player_logs,
+                    "turn_count": self.game_state.turn_count,
+                },
                 room=sid,
             )
 
