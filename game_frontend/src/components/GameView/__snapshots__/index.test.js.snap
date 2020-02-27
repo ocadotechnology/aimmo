@@ -50,6 +50,14 @@ exports[`<GameView /> shows the loading screen when the game is loading 1`] = `
       Building game world...
     </Styled(WithStyles(ForwardRef(Typography)))>
   </styled.div>
+  <canvas
+    style={
+      Object {
+        "height": "100%",
+        "width": "100%",
+      }
+    }
+  />
 </styled.div>
 `;
 

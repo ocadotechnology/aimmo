@@ -24,8 +24,8 @@ export default class SceneRenderer {
       )
     }, 1000)
     setTimeout(() => {
-      document.getElementById('scene-explorer-host').style.setProperty('z-index', '1500')
-      document.getElementById('inspector-host').style.setProperty('z-index', '1500')
+      document.getElementById('scene-explorer-host').style.setProperty('z-index', '15000')
+      document.getElementById('inspector-host').style.setProperty('z-index', '15000')
     }, 2000)
   }
 }
