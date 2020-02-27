@@ -10,13 +10,13 @@ export default class ObstacleManager implements GameNode, DiffHandling {
   gameStateProcessor: DiffProcessor
   importMesh: Function
   materials: Array <BABYLON.StandardMaterial>
-  timeline: String
+  era: String
 
   constructor (environment: Environment, importMesh: Function = BABYLON.SceneLoader.ImportMesh) {
     this.gameStateProcessor = new DiffProcessor(this)
 
     this.importMesh = importMesh
-    this.timeline = environment.timeline
+    this.era = environment.era
     this.scene = environment.scene
 
     this.obstacleNode = new BABYLON.TransformNode('Obstacles', environment.scene)
@@ -28,25 +28,31 @@ export default class ObstacleManager implements GameNode, DiffHandling {
   }
 
   createMaterials () {
-    const textureUrl = '/static/babylon/obstacles/obstacle_' + this.timeline + '.jpg'
+    const textureUrl = '/static/babylon/obstacles/obstacle_' + this.era + '.jpg'
 
     // Base material
-    this.materials[0] = new BABYLON.StandardMaterial('obstacle_material_' + this.timeline, this.scene)
+    this.materials[0] = new BABYLON.StandardMaterial('obstacle_material_' + this.era, this.scene)
     this.materials[0].diffuseTexture = new BABYLON.Texture(textureUrl, this.scene)
     this.materials[0].specularColor = new BABYLON.Color3(0, 0, 0)
     this.materials[0].diffuseColor = new BABYLON.Color3(1, 1, 1)
 
-    if (this.timeline === 'prehistory') {
+    if (this.era === 'prehistory') {
       // Other materials - only one for now
-      this.materials[1] = new BABYLON.StandardMaterial('obstacle_material_' + this.timeline, this.scene)
+      this.materials[1] = new BABYLON.StandardMaterial('obstacle_material_' + this.era, this.scene)
       this.materials[1].diffuseTexture = new BABYLON.Texture(textureUrl, this.scene)
       this.materials[1].specularColor = new BABYLON.Color3(0, 0, 0)
       this.materials[1].diffuseColor = new BABYLON.Color3(0.70, 0.80, 1)
     }
   }
 
+  /**
+   * This function returns a random angle in radians 
+   * 
+   * @return {number} a random angle in radians, in increments of a quarter
+   * 
+   */
   createRandomRotation (): number {
-    return Math.PI / (Math.floor(Math.random() * Math.floor(4)))
+    return Math.PI / (Math.floor(Math.random() * Math.floor(4)) + 1)
   }
 
   remove (obstacle: DiffItem): void {
@@ -73,7 +79,7 @@ export default class ObstacleManager implements GameNode, DiffHandling {
   }
 
   add (obstacle: DiffItem): void {
-    if (this.timeline === 'prehistory') {
+    if (this.era === 'prehistory') {
       this.importMesh('rock', '/static/babylon/obstacles/', 'rock_model.babylon', this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
         var newObstacle = meshes[0]
         newObstacle.name = `obstacle: ${obstacle.id}`

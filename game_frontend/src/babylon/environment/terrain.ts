@@ -14,9 +14,9 @@ export default class Terrain implements GameNode {
       gridMat.opacityTexture = new BABYLON.Texture('/static/babylon/terrain/grid.png', environment.scene)
       gridOverlay.material = gridMat
 
-      var tileSize = 31
-
-      if (environment.timeline === 'prehistory') {
+     if (environment.era === 'future'){
+       var tileSize = 31
+     } else if (environment.era === 'prehistory') {
         tileSize = 1
       }
 
@@ -24,7 +24,7 @@ export default class Terrain implements GameNode {
       this.object = ground
 
       const mat = new BABYLON.StandardMaterial('Terrain', environment.scene)
-      const textureUrl = '/static/babylon/terrain/ground_' + environment.timeline + '.jpg'
+      const textureUrl = '/static/babylon/terrain/ground_' + environment.era + '.jpg'
 
       mat.useReflectionOverAlpha = false
       mat.diffuseTexture = new BABYLON.Texture(textureUrl, environment.scene)
