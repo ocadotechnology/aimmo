@@ -119,7 +119,6 @@ class ArtefactEffect(_Effect):
     def __init__(self, *args):
         super(ArtefactEffect, self).__init__(duration=1, *args)
         self._recipient.backpack.append(self._interactable)
-        self._interactable._in_backpack = True
 
     def remove(self):
         super(ArtefactEffect, self).remove()

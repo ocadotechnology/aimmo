@@ -26,7 +26,7 @@ def test_artefact_serialization(cell):
         "location": {"x": cell.location.x, "y": cell.location.y},
     }
 
-    artefact._in_backpack = True
+    artefact.in_backpack = True
     assert artefact.serialize() == {"type": "artefact"}
 
 

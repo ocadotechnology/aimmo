@@ -151,13 +151,18 @@ class TestAction(unittest.TestCase):
 
     def test_successful_pickup_action(self):
         game_state = GameState(PickupMap(Artefact), self.avatar_manager)
+        game_state.world_map.setup_cell(self.avatar.location)
+        artefact = game_state.world_map.get_cell(self.avatar.location).interactable
+
+        self.assertEquals(artefact.in_backpack, False)
 
         action.PickupAction(self.avatar).process(game_state.world_map)
 
         self.assertEqual(
             self.avatar.events,
-            [event.PickedUpEvent({"type": "artefact", "location": ORIGIN.serialize()})],
+            [event.PickedUpEvent({"type": "artefact"})],
         )
+        self.assertEquals(artefact.in_backpack, True)
 
     def test_failed_pickup_action(self):
         game_state = GameState(InfiniteMap(), self.avatar_manager)
@@ -168,9 +173,12 @@ class TestAction(unittest.TestCase):
 
     def test_failed_pickup_action_if_backpack_full(self):
         game_state = GameState(PickupMap(Artefact), self.avatar_manager)
+        game_state.world_map.setup_cell(self.avatar.location)
+        artefact = game_state.world_map.get_cell(self.avatar.location).interactable
 
         self.avatar.backpack = [Artefact for _ in range(self.avatar.BACKPACK_SIZE)]
 
         action.PickupAction(self.avatar).process(game_state.world_map)
 
         self.assertEqual(self.avatar.events, [event.FailedPickupEvent()])
+        self.assertEquals(artefact.in_backpack, False)

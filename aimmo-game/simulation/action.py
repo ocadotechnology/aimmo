@@ -76,12 +76,12 @@ class PickupAction(Action):
 
     def _is_legal(self, world_map):
         current_cell = world_map.get_cell(self.avatar.location)
-        cell_has_artefact = isinstance(current_cell.interactable, Artefact)
+        cell_has_artefact = issubclass(type(current_cell.interactable), Artefact)
         return cell_has_artefact and self.avatar.backpack_has_space()
 
     def _apply(self, world_map):
         current_cell = world_map.get_cell(self.avatar.location)
-        current_cell.interactable.pickup_action_applied = True
+        current_cell.interactable.in_backpack = True
         self.avatar.add_event(PickedUpEvent(current_cell.interactable.serialize()))
         self.avatar.clear_action()
 
