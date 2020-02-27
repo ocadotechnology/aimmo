@@ -28,18 +28,18 @@ export default class ObstacleManager implements GameNode, DiffHandling {
   }
 
   createMaterials () {
-    const texture_url = '/static/babylon/obstacles/obstacle_' + this.timeline + '.jpg'
+    const textureUrl = '/static/babylon/obstacles/obstacle_' + this.timeline + '.jpg'
 
     // Base material
     this.materials[0] = new BABYLON.StandardMaterial('obstacle_material_' + this.timeline, this.scene)
-    this.materials[0].diffuseTexture = new BABYLON.Texture(texture_url, this.scene)
+    this.materials[0].diffuseTexture = new BABYLON.Texture(textureUrl, this.scene)
     this.materials[0].specularColor = new BABYLON.Color3(0, 0, 0)
     this.materials[0].diffuseColor = new BABYLON.Color3(1, 1, 1)
 
     if (this.timeline === 'prehistory') {
       // Other materials - only one for now
       this.materials[1] = new BABYLON.StandardMaterial('obstacle_material_' + this.timeline, this.scene)
-      this.materials[1].diffuseTexture = new BABYLON.Texture(texture_url, this.scene)
+      this.materials[1].diffuseTexture = new BABYLON.Texture(textureUrl, this.scene)
       this.materials[1].specularColor = new BABYLON.Color3(0, 0, 0)
       this.materials[1].diffuseColor = new BABYLON.Color3(0.70, 0.80, 1)
     }
@@ -80,14 +80,12 @@ export default class ObstacleManager implements GameNode, DiffHandling {
 
         newObstacle.material = this.materials[Math.floor(Math.random() * Math.floor(this.materials.length))]
 
-
         newObstacle.parent = this.obstacleNode
         newObstacle.position = new BABYLON.Vector3(obstacle.value.location.x, 0, obstacle.value.location.y)
-        
+
         newObstacle.rotate(BABYLON.Axis.Y, this.createRandomRotation(), BABYLON.Space.WORLD)
       })
-    }
-    else {
+    } else {
       var newObstacle = BABYLON.MeshBuilder.CreateBox(`obstacle: ${obstacle.id}`, { height: 1 }, this.scene)
       newObstacle.material = this.materials[0]
 

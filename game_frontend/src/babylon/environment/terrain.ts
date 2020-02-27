@@ -11,7 +11,7 @@ export default class Terrain implements GameNode {
       gridMat.diffuseColor = new BABYLON.Color3(0, 0, 0)
       gridMat.specularColor = new BABYLON.Color3(0, 0, 0)
       gridMat.ambientColor = BABYLON.Color3.White()
-      gridMat.opacityTexture = new BABYLON.Texture('/static/babylon/terrain/grid.png', environment.scene);
+      gridMat.opacityTexture = new BABYLON.Texture('/static/babylon/terrain/grid.png', environment.scene)
       gridOverlay.material = gridMat
 
       var tileSize = 31
@@ -19,8 +19,8 @@ export default class Terrain implements GameNode {
       if (environment.timeline === 'prehistory') {
         tileSize = 1
       }
-      
-      const ground = BABYLON.Mesh.CreateTiledGround('terrain', -15, -15, 16, 16, { w: tileSize, h: tileSize}, { w: 1, h: 1 }, environment.scene)
+
+      const ground = BABYLON.Mesh.CreateTiledGround('terrain', -15, -15, 16, 16, { w: tileSize, h: tileSize }, { w: 1, h: 1 }, environment.scene)
       this.object = ground
 
       const mat = new BABYLON.StandardMaterial('Terrain', environment.scene)
