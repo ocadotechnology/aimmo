@@ -8,27 +8,12 @@ import socketio
 
 import service
 from simulation.game_runner import GameRunner
-from simulation.avatar.avatar_wrapper import AvatarWrapper
-from simulation.avatar.avatar_manager import AvatarManager
+from .test_simulation.mock_avatar_manager import MockAvatarManager
 from .test_simulation.mock_communicator import MockCommunicator
+from .test_simulation.mock_game_state import MockGameState
 from .test_simulation.mock_worker_manager import MockWorkerManager
 
 TIME_TO_PROCESS_SOME_EVENT_LOOP = 0.1
-
-
-class MockAvatarManager(AvatarManager):
-    def add_avatar(self, player_id, location=None):
-        avatar = AvatarWrapper(player_id, None, None)
-        self.avatars_by_id[player_id] = avatar
-        return avatar
-
-
-class MockGameState(object):
-    avatar_manager = MockAvatarManager()
-    turn_count = 0
-
-    def serialize(self):
-        return {"foo": "bar"}
 
 
 @pytest.fixture
@@ -59,7 +44,9 @@ def socketio_server(app):
 @pytest.fixture
 def game_api(app, socketio_server, game_id):
     game_runner = GameRunner(
-        game_state_generator=lambda avatar_manager: MockGameState(),
+        game_state_generator=lambda avatar_manager: MockGameState(
+            None, MockAvatarManager()
+        ),
         communicator=MockCommunicator(),
         port="0000",
         worker_manager_class=MockWorkerManager,

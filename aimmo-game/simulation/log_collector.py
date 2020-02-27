@@ -1,7 +1,7 @@
 class LogCollector:
     """
     This class aggregates:
-    - the worker logs (logs created from print statements in the user's code)
+    - the worker logs (logs coming from the worker)
     - the avatar logs (logs outputted by the game under certain conditions)
     These logs are concatenated to form the `player_logs`.
     """
