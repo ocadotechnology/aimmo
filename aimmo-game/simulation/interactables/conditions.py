@@ -24,7 +24,7 @@ def avatar_on_cell(turn_state: TurnState):
 
 def in_backpack(turn_state: TurnState):
     """
-    Checks if the interactable has had the `in_backpack` attribute set to True.
+    Checks if the interactable is in a backpack.
 
     The `in_backpack` attribute should be set to True by the `PickupAction`.
     """

@@ -11,7 +11,7 @@ def test_collect_logs():
 
     log_collector = LogCollector(worker_manager, avatar_manager)
     worker = MockWorker(None, None)
-    worker.log = "Worker test log"
+    worker.logs = ["Worker test log"]
 
     worker_manager.player_id_to_worker[1] = worker
 
@@ -19,12 +19,8 @@ def test_collect_logs():
 
     avatar_manager.avatars_by_id[1] = avatar
 
-    log_collector.collect_logs(1)
+    assert log_collector.collect_logs(1) == "Worker test log"
 
-    assert log_collector.player_logs == "Worker test log"
+    avatar.logs = ["Avatar test log"]
 
-    avatar.logs.append("Avatar test log")
-
-    log_collector.collect_logs(1)
-
-    assert log_collector.player_logs == "Worker test logAvatar test log"
+    assert log_collector.collect_logs(1) == "Worker test log\nAvatar test log"

@@ -126,7 +126,7 @@ async def test_send_updates_for_one_user(game_api, client, socketio_server, loop
     socketio_client.on("log", mock_log_listener)
 
     worker = game_api.worker_manager.player_id_to_worker[1]
-    worker.log = "Logs one"
+    worker.logs = ["Logs one"]
 
     await socketio_client.connect(
         f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
@@ -154,10 +154,10 @@ async def test_send_worker_and_avatar_logs_for_one_user(
     socketio_client.on("log", mock_log_listener)
 
     worker = game_api.worker_manager.player_id_to_worker[1]
-    worker.log = "Worker log"
+    worker.logs = ["Worker log"]
 
     avatar = game_api.game_state.avatar_manager.get_avatar(1)
-    avatar.logs.append("Avatar log")
+    avatar.logs = ["Avatar log"]
 
     await socketio_client.connect(
         f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
@@ -169,7 +169,7 @@ async def test_send_worker_and_avatar_logs_for_one_user(
     await socketio_client.disconnect()
 
     mock_log_listener.assert_has_calls(
-        [mock.call({"message": "Worker logAvatar log", "turn_count": 0})]
+        [mock.call({"message": "Worker log\nAvatar log", "turn_count": 0})]
     )
 
 
@@ -206,7 +206,7 @@ async def test_empty_logs_not_emitted(game_api, client, socketio_server, loop):
     socketio_client.on("log", mock_log_listener)
 
     worker = game_api.worker_manager.player_id_to_worker[1]
-    worker.log = ""
+    worker.logs = []
 
     await socketio_client.connect(
         f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
@@ -236,8 +236,8 @@ async def test_send_updates_for_multiple_users(game_api, client, socketio_server
 
     worker = game_api.worker_manager.player_id_to_worker[1]
     worker2 = game_api.worker_manager.player_id_to_worker[2]
-    worker.log = "Logs one"
-    worker2.log = "Logs two"
+    worker.logs = ["Logs one"]
+    worker2.logs = ["Logs two"]
 
     await socketio_client.connect(
         f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"

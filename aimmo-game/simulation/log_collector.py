@@ -9,7 +9,6 @@ class LogCollector:
     def __init__(self, worker_manager, avatar_manager):
         super(LogCollector, self).__init__()
 
-        self.player_logs = None
         self.worker_manager = worker_manager
         self.avatar_manager = avatar_manager
 
@@ -17,8 +16,12 @@ class LogCollector:
         worker = self.worker_manager.player_id_to_worker[user_id]
         avatar = self.avatar_manager.get_avatar(user_id)
 
-        self.player_logs = worker.log
-        for log in avatar.logs:
-            self.player_logs += log
+        player_logs = ""
+        for worker_log in worker.logs:
+            player_logs += worker_log
 
-        return self.player_logs
+        if len(avatar.logs) > 0:
+            player_logs += "\n"
+            player_logs += "\n".join(avatar.logs)
+
+        return player_logs
