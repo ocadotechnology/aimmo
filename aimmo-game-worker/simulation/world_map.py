@@ -16,7 +16,7 @@ class Cell(object):
                 location=avatar["location"],
                 score=avatar["score"],
                 health=avatar["health"],
-                number_of_artefacts=avatar["number_of_artefacts"],
+                backpack=avatar["backpack"],
             )
         for (key, value) in kwargs.items():
             setattr(self, key, value)

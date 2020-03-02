@@ -8,13 +8,13 @@ from simulation.workers.worker import Worker
 from tests.test_simulation.concrete_worker import ConcreteWorker
 
 DEFAULT_RESPONSE_CONTENT = (
-    b'{"action": "test_action",' b'"log": "test_log",' b'"avatar_updated": "True"}'
+    b'{"action": "test_action",' b'"log": ["test_log"],' b'"avatar_updated": "True"}'
 )
 
 
 MISSING_KEY_RESPONSE_CONTENT = (
     b'{"corruptedKey": "test_action",'
-    b'"log": "test_log",'
+    b'"log": ["test_log"],'
     b'"avatar_updated": "True"}'
 )
 
@@ -45,19 +45,19 @@ async def test_fetch_data_fetches_correct_response(mock_aioresponse, worker):
     await asyncio.ensure_future(worker.fetch_data(state_view={}))
 
     assert worker.serialized_action == "test_action"
-    assert worker.log == "test_log"
+    assert worker.logs == ["test_log"]
     assert worker.has_code_updated == "True"
 
 
 def test_setting_defaults_works_correctly(worker):
-    worker.log = "test_log_fake"
+    worker.logs = ["test_log_fake"]
     worker.serialised_action = "test_action_fake"
     worker.has_code_updated = "test_avatar_updated_fake"
 
     worker._set_defaults()
 
     assert worker.serialized_action is None
-    assert worker.log is None
+    assert worker.logs == []
     assert worker.has_code_updated is False
 
 

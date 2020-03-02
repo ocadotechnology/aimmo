@@ -1,4 +1,4 @@
-from simulation.interactables.conditions import avatar_on_cell, pickup_action_applied
+from simulation.interactables.conditions import avatar_on_cell, in_backpack
 from simulation.interactables.effects import ArtefactEffect
 from simulation.interactables.interactable import _Interactable
 
@@ -7,8 +7,8 @@ class Artefact(_Interactable):
     def __init__(self, cell):
         super(Artefact, self).__init__(cell)
         self.delete_after_effects_applied = True
-        self.pickup_action_applied = False
-        self.conditions = [avatar_on_cell, pickup_action_applied]
+        self.in_backpack = False
+        self.conditions = [avatar_on_cell, in_backpack]
         self.effects.append(ArtefactEffect)
 
     def get_targets(self):
@@ -18,7 +18,12 @@ class Artefact(_Interactable):
         return "Artefact(Location={})".format(self.cell.location)
 
     def serialize(self):
-        return {
-            "type": "artefact",
-            "location": {"x": self.cell.location.x, "y": self.cell.location.y},
-        }
+        serialized_artefact = {"type": "artefact"}
+
+        if not self.in_backpack:
+            serialized_artefact["location"] = {
+                "x": self.cell.location.x,
+                "y": self.cell.location.y,
+            }
+
+        return serialized_artefact

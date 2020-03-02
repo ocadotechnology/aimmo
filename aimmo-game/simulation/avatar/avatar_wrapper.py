@@ -1,9 +1,13 @@
 import logging
+from typing import TYPE_CHECKING, List
 
 from simulation.action import ACTIONS, MoveAction, WaitAction
 from simulation.direction import Direction
 
 LOGGER = logging.getLogger(__name__)
+
+if TYPE_CHECKING:
+    from simulation.interactables.pickups.artefact import Artefact
 
 
 class AvatarWrapper(object):
@@ -19,13 +23,15 @@ class AvatarWrapper(object):
         self.orientation = "north"
         self.health = 5
         self.score = 0
-        self.number_of_artefacts = 0
+        self.backpack: "List[Artefact]" = []
+        self.BACKPACK_SIZE = 10
         self.events = []
         self.avatar_appearance = avatar_appearance
         self.effects = set()
         self.resistance = 0
         self.attack_strength = 1
         self.fog_of_war_modifier = 0
+        self.logs = []
         self._action = None
 
     def update_effects(self):
@@ -90,6 +96,9 @@ class AvatarWrapper(object):
     def clear_action(self):
         self._action = None
 
+    def clear_logs(self):
+        self.logs = []
+
     def die(self, respawn_location):
         # TODO: extract settings for health and score loss on death
         self.health = 5
@@ -104,6 +113,9 @@ class AvatarWrapper(object):
         self.health -= applied_dmg
         return applied_dmg
 
+    def backpack_has_space(self):
+        return len(self.backpack) < self.BACKPACK_SIZE
+
     def serialize(self):
         return {
             "health": self.health,
@@ -111,8 +123,8 @@ class AvatarWrapper(object):
             "score": self.score,
             "id": self.player_id,
             "orientation": self.orientation,
-            "number_of_artefacts": self.number_of_artefacts,
+            "backpack": [artefact.serialize() for artefact in self.backpack],
         }
 
     def __repr__(self):
-        return f"Avatar(id={self.player_id}, location={self.location}, health={self.health}, score={self.score}, number of artefacts={self.number_of_artefacts})"
+        return f"Avatar(id={self.player_id}, location={self.location}, health={self.health}, score={self.score}, backpack={[artefact.serialize() for artefact in self.backpack]})"

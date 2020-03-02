@@ -8,7 +8,7 @@ LOGGER = logging.getLogger(__name__)
 
 class Worker(object):
     def __init__(self, player_id, game_port):
-        self.log = None
+        self.logs = []
         self.player_id = player_id
         self.game_port = game_port
         self.code = None
@@ -18,7 +18,7 @@ class Worker(object):
         self.ready = False
 
     def _set_defaults(self):
-        self.log = None
+        self.logs = []
         self.serialized_action = None
         self.has_code_updated = False
 
@@ -39,11 +39,13 @@ class Worker(object):
                 response = await session.post(f"{self.url}/turn/", json=data)
                 data = await response.json()
                 self.serialized_action = data["action"]
-                self.log = data["log"]
+                self.logs = data["log"]
                 self.has_code_updated = data["avatar_updated"]
                 self.ready = True
         except (ClientResponseError, ServerDisconnectedError):
-            LOGGER.info("ClientResponseError, ServerDisconnectedError: Could not connect to worker, probably not ready yet")
+            LOGGER.info(
+                "ClientResponseError, ServerDisconnectedError: Could not connect to worker, probably not ready yet"
+            )
             self._set_defaults()
         except CancelledError as e:
             LOGGER.error("CancelledError: Worker took too long to respond")

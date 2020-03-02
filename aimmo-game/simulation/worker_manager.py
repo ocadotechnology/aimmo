@@ -40,7 +40,8 @@ class WorkerManager(object):
 
         try:
             return await asyncio.wait_for(
-                asyncio.gather(*requests, return_exceptions=True), WORKER_TIMEOUT_TIME_SECONDS
+                asyncio.gather(*requests, return_exceptions=True),
+                WORKER_TIMEOUT_TIME_SECONDS,
             )
         except futures.TimeoutError:
             LOGGER.warning("Fetching workers data timed out")

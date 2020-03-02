@@ -1,13 +1,12 @@
 from __future__ import absolute_import
 
-import asyncio
 import json
 
-from tests.test_simulation.concrete_worker import ConcreteWorker
-
 from httmock import HTTMock
+
 from simulation.avatar import avatar_wrapper
 from simulation.location import Location
+from tests.test_simulation.concrete_worker import ConcreteWorker
 
 
 class MockEffect(object):
@@ -76,7 +75,7 @@ class TestAvatarWrapper:
         await self.take_turn(request_mock)
         assert actions_created == [], "No action should have been applied"
 
-    async def test_non_existant_action(self, loop):
+    async def test_non_existent_action(self, loop):
         request_mock = NonExistentActionRequest
         await self.take_turn(request_mock)
         assert actions_created == [], "No action should have been applied"

@@ -29,6 +29,7 @@
     "jest": "^24.8.0",
     "jest-styled-components": "^6.3.1",
     "parcel-plugin-babel-typescript": "^1.0.1",
+    "prettier": "^1.19.1",
     "react-test-renderer": "^16.6.3",
     "redux-mock-store": "^1.5.3",
     "standard": "^12.0.1",
@@ -39,7 +40,7 @@
     "@material-ui/icons": "^4.1.0",
     "babylon": "^6.18.0",
     "babylonjs": "^4.0.3",
-    "core-js": "2",
+    "core-js": "3",
     "handlebars": "4.5.3",
     "js-cookie": "^2.2.1",
     "lodash.isequal": "^4.5.0",
@@ -61,7 +62,8 @@
     "parser": "babel-eslint",
     "globals": [
       "HTMLCanvasElement",
-      "WheelEvent"
+      "WheelEvent",
+      "HTMLElement"
     ]
   },
   "scripts": {

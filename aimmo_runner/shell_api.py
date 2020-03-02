@@ -5,18 +5,19 @@ import stat
 import subprocess
 import sys
 from subprocess import CalledProcessError
+
 try:
     from urllib.request import urlretrieve, urlopen
 except ImportError:
     from urllib import urlretrieve, urlopen
 
 BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-TEST_BIN = os.path.join(BASE_DIR, 'test-bin')
+TEST_BIN = os.path.join(BASE_DIR, "test-bin")
 OS = platform.system().lower()
-FILE_SUFFIX = '.exe' if OS == 'windows' else ''
-KUBECTL = os.path.join(TEST_BIN, 'kubectl%s' % FILE_SUFFIX)
-MINIKUBE = os.path.join(TEST_BIN, 'minikube%s' % FILE_SUFFIX)
-FNULL = open(os.devnull, 'w')
+FILE_SUFFIX = ".exe" if OS == "windows" else ""
+KUBECTL = os.path.join(TEST_BIN, "kubectl%s" % FILE_SUFFIX)
+MINIKUBE = os.path.join(TEST_BIN, "minikube%s" % FILE_SUFFIX)
+FNULL = open(os.devnull, "w")
 
 
 def log(message):
@@ -30,7 +31,7 @@ def run_command(args, capture_output=False):
         else:
             subprocess.check_call(args)
     except CalledProcessError as e:
-        log('Command failed with exit status %d: %s' % (e.returncode, ' '.join(args)))
+        log("Command failed with exit status %d: %s" % (e.returncode, " ".join(args)))
         raise
 
 
@@ -70,5 +71,5 @@ def make_exec(file):
 
 
 def get_latest_github_version(repo):
-    result = urlopen('https://github.com/%s/releases/latest' % repo)
-    return result.geturl().split('/')[-1]
+    result = urlopen("https://github.com/%s/releases/latest" % repo)
+    return result.geturl().split("/")[-1]

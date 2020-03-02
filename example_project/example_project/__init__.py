@@ -1,1 +1,1 @@
-'''example_project __init__'''
+"""example_project __init__"""

@@ -25,8 +25,12 @@ class DjangoAutoTestSuite(unittest.TestSuite):
         self.test_dbs = self.test_runner.setup_databases()
 
     def _configure(self):
-        test_settings = importlib.import_module('test_settings')
-        setting_attrs = {attr: getattr(test_settings, attr) for attr in dir(test_settings) if '__' not in attr}
+        test_settings = importlib.import_module("test_settings")
+        setting_attrs = {
+            attr: getattr(test_settings, attr)
+            for attr in dir(test_settings)
+            if "__" not in attr
+        }
 
         if not django.conf.settings.configured:
             django.conf.settings.configure(**setting_attrs)

@@ -92,15 +92,27 @@ async def test_changed_code(game_runner):
 
 
 @pytest.mark.asyncio
-async def test_logs_cleared_at_each_update(game_runner):
+async def test_worker_logs_cleared_at_each_update(game_runner):
     game_runner.communicator.data = RequestMock(3).value
     await game_runner.update_workers()
     first_worker = game_runner.worker_manager.player_id_to_worker[0]
-    first_worker.log = "test logs"
+    first_worker.log = "worker test logs"
 
     game_runner.worker_manager.clear_logs()
 
     assert first_worker.log is None
+
+
+@pytest.mark.asyncio
+async def test_avatar_logs_cleared_at_each_update(game_runner):
+    game_runner.communicator.data = RequestMock(3).value
+    await game_runner.update_workers()
+    first_avatar = game_runner.game_state.avatar_manager.avatars_by_id[0]
+    first_avatar.logs.append("avatar test logs")
+
+    await game_runner.update()
+
+    assert first_avatar.logs == []
 
 
 @pytest.mark.asyncio

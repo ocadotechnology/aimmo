@@ -1,5 +1,4 @@
 import os
-import os
 import random
 import string
 from unittest import mock
@@ -9,17 +8,12 @@ import socketio
 
 import service
 from simulation.game_runner import GameRunner
+from .test_simulation.mock_avatar_manager import MockAvatarManager
 from .test_simulation.mock_communicator import MockCommunicator
+from .test_simulation.mock_game_state import MockGameState
 from .test_simulation.mock_worker_manager import MockWorkerManager
 
 TIME_TO_PROCESS_SOME_EVENT_LOOP = 0.1
-
-
-class MockGameState(object):
-    turn_count = 0
-
-    def serialize(self):
-        return {"foo": "bar"}
 
 
 @pytest.fixture
@@ -50,7 +44,9 @@ def socketio_server(app):
 @pytest.fixture
 def game_api(app, socketio_server, game_id):
     game_runner = GameRunner(
-        game_state_generator=lambda avatar_manager: MockGameState(),
+        game_state_generator=lambda avatar_manager: MockGameState(
+            None, MockAvatarManager()
+        ),
         communicator=MockCommunicator(),
         port="0000",
         worker_manager_class=MockWorkerManager,
@@ -75,6 +71,7 @@ async def test_socketio_emit_called_when_worker_ready(
     mock_game_state_listener = mock.MagicMock()
 
     game_api.worker_manager.add_new_worker(1)
+    game_api.game_state.avatar_manager.add_avatar(1)
 
     socketio_client.on("game-state", mock_game_state_listener)
 
@@ -100,6 +97,7 @@ async def test_socketio_emit_not_called_if_worker_not_ready(
     mock_game_state_listener = mock.MagicMock()
 
     game_api.worker_manager.add_new_worker(1)
+    game_api.game_state.avatar_manager.add_avatar(1)
 
     socketio_client.on("game-state", mock_game_state_listener)
 
@@ -123,11 +121,12 @@ async def test_send_updates_for_one_user(game_api, client, socketio_server, loop
     mock_log_listener = mock.MagicMock()
 
     game_api.worker_manager.add_new_worker(1)
+    game_api.game_state.avatar_manager.add_avatar(1)
 
     socketio_client.on("log", mock_log_listener)
 
     worker = game_api.worker_manager.player_id_to_worker[1]
-    worker.log = "Logs one"
+    worker.logs = ["Logs one"]
 
     await socketio_client.connect(
         f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
@@ -143,12 +142,44 @@ async def test_send_updates_for_one_user(game_api, client, socketio_server, loop
     )
 
 
+async def test_send_worker_and_avatar_logs_for_one_user(
+    game_api, client, socketio_server, loop
+):
+    socketio_client = socketio.AsyncClient(reconnection=False)
+    mock_log_listener = mock.MagicMock()
+
+    game_api.worker_manager.add_new_worker(1)
+    game_api.game_state.avatar_manager.add_avatar(1)
+
+    socketio_client.on("log", mock_log_listener)
+
+    worker = game_api.worker_manager.player_id_to_worker[1]
+    worker.logs = ["Worker log"]
+
+    avatar = game_api.game_state.avatar_manager.get_avatar(1)
+    avatar.logs = ["Avatar log"]
+
+    await socketio_client.connect(
+        f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
+    )
+
+    await game_api.send_updates_to_all()
+
+    await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
+    await socketio_client.disconnect()
+
+    mock_log_listener.assert_has_calls(
+        [mock.call({"message": "Worker log\nAvatar log", "turn_count": 0})]
+    )
+
+
 async def test_no_logs_not_emitted(game_api, client, socketio_server, loop):
     """ If there are no logs for an avatar, no logs should be emitted. """
     socketio_client = socketio.AsyncClient(reconnection=False)
     mock_log_listener = mock.MagicMock()
 
     game_api.worker_manager.add_new_worker(1)
+    game_api.game_state.avatar_manager.add_avatar(1)
 
     socketio_client.on("log", mock_log_listener)
 
@@ -170,11 +201,12 @@ async def test_empty_logs_not_emitted(game_api, client, socketio_server, loop):
     mock_log_listener = mock.MagicMock()
 
     game_api.worker_manager.add_new_worker(1)
+    game_api.game_state.avatar_manager.add_avatar(1)
 
     socketio_client.on("log", mock_log_listener)
 
     worker = game_api.worker_manager.player_id_to_worker[1]
-    worker.log = ""
+    worker.logs = []
 
     await socketio_client.connect(
         f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
@@ -195,15 +227,17 @@ async def test_send_updates_for_multiple_users(game_api, client, socketio_server
     mock_log_listener2 = mock.MagicMock()
 
     game_api.worker_manager.add_new_worker(1)
+    game_api.game_state.avatar_manager.add_avatar(1)
     game_api.worker_manager.add_new_worker(2)
+    game_api.game_state.avatar_manager.add_avatar(2)
 
     socketio_client.on("log", mock_log_listener)
     socketio_client2.on("log", mock_log_listener2)
 
     worker = game_api.worker_manager.player_id_to_worker[1]
     worker2 = game_api.worker_manager.player_id_to_worker[2]
-    worker.log = "Logs one"
-    worker2.log = "Logs two"
+    worker.logs = ["Logs one"]
+    worker2.logs = ["Logs two"]
 
     await socketio_client.connect(
         f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
@@ -232,6 +266,7 @@ async def test_send_code_changed_flag(game_api, client, socketio_server, loop):
     mock_avatar_updated_listener = mock.MagicMock()
 
     game_api.worker_manager.add_new_worker(1)
+    game_api.game_state.avatar_manager.add_avatar(1)
 
     socketio_client.on("feedback-avatar-updated", mock_avatar_updated_listener)
 
@@ -255,6 +290,7 @@ async def test_send_false_flag_not_sent(game_api, client, socketio_server, loop)
     mock_avatar_updated_listener = mock.MagicMock()
 
     game_api.worker_manager.add_new_worker(1)
+    game_api.game_state.avatar_manager.add_avatar(1)
 
     socketio_client.on("feedback-avatar-updated", mock_avatar_updated_listener)
 
@@ -277,6 +313,7 @@ async def test_remove_session_id_on_disconnect(game_api, client, socketio_server
     socketio_client = socketio.AsyncClient(reconnection=False)
 
     game_api.worker_manager.add_new_worker(1)
+    game_api.game_state.avatar_manager.add_avatar(1)
 
     await socketio_client.connect(
         f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
