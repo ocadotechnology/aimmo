@@ -46,10 +46,10 @@ export default class ObstacleManager implements GameNode, DiffHandling {
   }
 
   /**
-   * This function returns a random angle in radians 
-   * 
+   * This function returns a random angle in radians
+   *
    * @return {number} a random angle in radians, in increments of a quarter
-   * 
+   *
    */
   createRandomRotation (): number {
     return Math.PI / (Math.floor(Math.random() * Math.floor(4)) + 1)

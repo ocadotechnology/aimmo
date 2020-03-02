@@ -14,9 +14,9 @@ export default class Terrain implements GameNode {
       gridMat.opacityTexture = new BABYLON.Texture('/static/babylon/terrain/grid.png', environment.scene)
       gridOverlay.material = gridMat
 
-     if (environment.era === 'future'){
-       var tileSize = 31
-     } else if (environment.era === 'prehistory') {
+      if (environment.era === 'future') {
+        var tileSize = 31
+      } else if (environment.era === 'prehistory') {
         tileSize = 1
       }
 
