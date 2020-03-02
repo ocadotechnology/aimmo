@@ -11,7 +11,7 @@ class TestWorldMap(TestCase):
         "location": {"x": 0, "y": 0},
         "health": True,
         "score": 3,
-        "number_of_artefacts": 0,
+        "backpack": [],
         "events": [],
     }
 

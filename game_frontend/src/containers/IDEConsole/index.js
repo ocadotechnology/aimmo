@@ -17,8 +17,7 @@ export const StyledConsole = styled.div`
   color: ${props => props.theme.palette.text.primary};
   background-color: ${props => props.theme.palette.background.default};
   font-family: ${props => props.theme.additionalVariables.typography.code.fontFamily};
-  overflow: auto;
-  white-space: pre-line;
+  overflow-y: auto;
   height: 100%;
   
   ::-webkit-scrollbar {
@@ -42,18 +41,40 @@ export class IDEConsole extends Component {
     logs: PropTypes.arrayOf(PropTypes.object)
   }
 
-  componentDidMount () {
-    if (this.consoleRef) {
-      this.consoleRef.scrollTo(0, 1)
+  // see https://blog.eqrion.net/pin-to-bottom/
+  state = {
+    activatedScrollToBottom: false,
+    shouldActivateSnapToBottom: false
+  }
+
+  isOverflown ({ clientHeight, scrollHeight }) {
+    return scrollHeight > clientHeight
+  }
+
+  isOverflownForTheFirstTime () {
+    return !this.state.activatedScrollToBottom && this.consoleRef && this.isOverflown(this.consoleRef)
+  }
+
+  componentDidUpdate () {
+    if (this.isOverflownForTheFirstTime()) {
+      this.setState({ ...this.state, shouldActivateSnapToBottom: true, activatedScrollToBottom: true })
+    } else if (this.state.activatedScrollToBottom && this.state.shouldActivateSnapToBottom) {
+      this.setState({ ...this.state, shouldActivateSnapToBottom: false })
     }
+  }
+
+  clearConsole = () => {
+    this.props.clearConsoleLogs()
+    this.setState({ ...this.state, activatedScrollToBottom: false })
   }
 
   render () {
     return (
       <IDEConsoleSection>
-        <ConsoleBar clearConsoleClicked={this.props.clearConsoleLogs} resetCodeClicked={this.props.resetCode} />
+        <ConsoleBar clearConsoleClicked={this.clearConsole} resetCodeClicked={this.props.resetCode} />
         <StyledConsole innerRef={ref => { this.consoleRef = ref }}>
           <LogEntries
+            shouldActivateSnapToBottom={this.state.shouldActivateSnapToBottom}
             logs={this.props.logs}
           />
         </StyledConsole>

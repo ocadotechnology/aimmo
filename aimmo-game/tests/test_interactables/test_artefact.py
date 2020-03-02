@@ -1,20 +1,10 @@
-from typing import TYPE_CHECKING
 import pytest
-import asyncio
-import random
 
-from simulation.location import Location
 from simulation.action import PickupAction
-from simulation.event import PickedUpEvent
 from simulation.interactables.pickups import Artefact
-
-
-from .mock_world import MockWorld
+from simulation.location import Location
 from tests.test_simulation.dummy_avatar import CustomLiveDummy
-
-if TYPE_CHECKING:
-    from simulation.cell import Cell
-    from simulation.avatar.avatar_wrapper import AvatarWrapper
+from .mock_world import MockWorld
 
 
 @pytest.fixture
@@ -36,11 +26,15 @@ def test_artefact_serialization(cell):
         "location": {"x": cell.location.x, "y": cell.location.y},
     }
 
+    artefact.in_backpack = True
+    assert artefact.serialize() == {"type": "artefact"}
+
 
 @pytest.mark.asyncio
 async def test_artefact_applies_correctly(game, cell):
     avatar: "CustomLiveDummy" = game.avatar_manager.get_avatar(1)
-    cell.interactable = Artefact(cell)
+    artefact = Artefact(cell)
+    cell.interactable = artefact
 
     # Move to the cell with the artefact
 
@@ -60,4 +54,5 @@ async def test_artefact_applies_correctly(game, cell):
 
     assert cell.avatar == avatar
     assert cell.interactable is None
-    assert avatar.number_of_artefacts == 1
+    assert len(avatar.backpack) == 1
+    assert avatar.backpack == [artefact]

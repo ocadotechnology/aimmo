@@ -2,8 +2,8 @@ from simulation.location import Location
 
 
 class AvatarState(object):
-    def __init__(self, location, health, score, number_of_artefacts):
+    def __init__(self, location, health, score, backpack):
         self.location = Location(**location)
         self.health = health
         self.score = score
-        self.number_of_artefacts = number_of_artefacts
+        self.backpack = backpack

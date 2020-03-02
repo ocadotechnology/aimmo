@@ -4,11 +4,9 @@ import sys
 
 from setuptools import find_packages, setup
 
-with open('aimmo/__init__.py', 'r') as fd:
+with open("aimmo/__init__.py", "r") as fd:
     version = re.search(
-        r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
-        fd.read(),
-        re.MULTILINE
+        r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', fd.read(), re.MULTILINE
     ).group(1)
 
 try:
@@ -33,11 +31,7 @@ setup(
         "hypothesis",
         "psutil >= 5.4, < 5.5",
     ],
-    tests_require=[
-        "docker >= 3.5, < 3.6",
-        "kubernetes == 5.0.0",
-        "PyYAML == 4.2b1",
-    ],
+    tests_require=["docker >= 3.5, < 3.6", "kubernetes == 5.0.0", "PyYAML == 4.2b1"],
     version=version,
     zip_safe=False,
 )

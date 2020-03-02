@@ -47,7 +47,7 @@ class AvatarRunner(object):
                 self.avatar, avatar_updated = self.code_updater.update_avatar(src_code)
 
             if self.avatar:
-                action = self.run_users_code(world_map, avatar_state, src_code)
+                action = self.run_users_code(world_map, avatar_state)
             else:
                 action = WaitAction().serialise()
 
@@ -58,7 +58,7 @@ class AvatarRunner(object):
 
         return {"action": action, "log": output_log, "avatar_updated": avatar_updated}
 
-    def run_users_code(self, world_map, avatar_state, src_code):
+    def run_users_code(self, world_map, avatar_state):
         try:
             action = self.decide_action(world_map, avatar_state)
             self.print_logs()

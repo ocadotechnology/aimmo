@@ -1,17 +1,14 @@
 from __future__ import absolute_import
 
-import asyncio
 from string import ascii_uppercase
 from unittest.mock import patch
 
 from simulation.avatar.avatar_appearance import AvatarAppearance
-from simulation.game_state import GameState
-from simulation.interactables.pickups import Artefact, DamageBoostPickup
+from simulation.interactables.pickups import Artefact
 from simulation.interactables.score_location import ScoreLocation
 from simulation.location import Location
 from simulation.simulation_runner import ConcurrentSimulationRunner
 from simulation.world_map import WorldMap
-
 from .dummy_avatar import (
     DeadDummy,
     DummyAvatar,
@@ -24,6 +21,7 @@ from .dummy_avatar import (
 )
 from .maps import InfiniteMap, MockCell, MockPickup
 from .mock_communicator import MockCommunicator
+from .mock_game_state import MockGameState
 
 ORIGIN = Location(0, 0)
 
@@ -40,11 +38,6 @@ SETTINGS = {
     "SCORE_DESPAWN_CHANCE": 0,
     "PICKUP_SPAWN_CHANCE": 0,
 }
-
-
-class MockGameState(GameState):
-    def get_state_for(self, avatar):
-        return self
 
 
 class TestSimulationRunner:
