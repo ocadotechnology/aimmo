@@ -15,14 +15,15 @@ export class StandardEnvironment implements Environment {
   onTerrainNode: TransformNode;
   era: String;
 
-  constructor (canvas: HTMLCanvasElement, era: String) {
+  constructor (canvas: HTMLCanvasElement) {
     this.canvas = canvas
-    this.era = era
     this.engine = new Engine(this.canvas, true, {}, true)
 
     this.scene = new Scene(this.engine)
 
     this.onTerrainNode = new TransformNode('On Terrain', this.scene)
     this.onTerrainNode.position = new Vector3(0.5, 0, 0.5)
+
+    this.era = ''
   }
 }

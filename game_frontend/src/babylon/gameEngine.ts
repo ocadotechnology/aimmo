@@ -13,27 +13,38 @@ export default class GameEngine {
 
     constructor (handleMapPanned: Function, environment: Environment) {
       this.environment = environment
+      this.panHandler = handleMapPanned
+    }
+
+    onUpdate (previousProps: any, currentProps: any) {
+      if (currentProps.gameState) {
+        if (this.environment.era === '') {
+          this.environment.era = currentProps.gameState['era']
+          this.populateMap()
+        }
+        
+        this.onUpdateGameState(previousProps.gameState, currentProps.gameState)
+        this.entities.setCurrentAvatarID(currentProps.currentAvatarID)
+        this.centerOn(currentProps)
+      }
+    }
+
+    populateMap(): void {
       this.sceneRenderer = new SceneRenderer(this.environment)
       this.environmentManager = new EnvironmentManager(this.environment)
       this.entities = new EntityManager(this.environment)
-      this.panHandler = handleMapPanned
 
       window.addEventListener('resize', this.environmentManager.resizeBabylonWindow)
       this.addPanListener(this.environment.scene)
     }
 
-    onUpdate (previousProps: any, currentProps: any) {
-      this.onUpdateGameState(previousProps.gameState, currentProps.gameState)
-      this.onUpdateCurrentAvatarID(previousProps.currentAvatarID, currentProps.currentAvatarID)
-      this.centerOn(currentProps)
-    }
-
     centerOn (props: any) {
-      if (props.cameraCenteredOnUserAvatar && props.gameLoaded) {
+      if (props.cameraCenteredOnUserAvatar) {
         if (this.entities.avatars.currentAvatarMesh) {
           this.environmentManager.centerOn(this.entities.avatars.currentAvatarMesh)
         } else if (props.gameState.players) {
           const location = this.getAvatarLocation(props.currentAvatarID, props.gameState.players)
+          console.log("There was no currentAvatarMesh")
           this.environmentManager.camera.object.setTarget(location)
           this.environmentManager.camera.object.panningOriginTarget = location
         }
@@ -41,15 +52,7 @@ export default class GameEngine {
     }
 
     onUpdateGameState (previousGameState: any, currentGameState: any) {
-      if (currentGameState !== undefined) {
-        this.entities.onGameStateUpdate(previousGameState, currentGameState)
-      }
-    }
-
-    onUpdateCurrentAvatarID (previousAvatarID: number, currentAvatarID: number) {
-      if (previousAvatarID !== currentAvatarID) {
-        this.entities.setCurrentAvatarID(currentAvatarID)
-      }
+      this.entities.onGameStateUpdate(previousGameState, currentGameState)
     }
 
     unmount () {
