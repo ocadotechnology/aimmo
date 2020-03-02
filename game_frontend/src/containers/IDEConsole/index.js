@@ -51,9 +51,13 @@ export class IDEConsole extends Component {
     return scrollHeight > clientHeight
   }
 
+  isOverflownForTheFirstTime () {
+    return !this.state.activatedScrollToBottom && this.consoleRef && this.isOverflown(this.consoleRef)
+  }
+
   componentDidUpdate () {
-    if (!this.state.activatedScrollToBottom && this.consoleRef && this.isOverflown(this.consoleRef)) {
-      this.setState({ activatedScrollToBottom: true, shouldActivateSnapToBottom: true })
+    if (this.isOverflownForTheFirstTime()) {
+      this.setState({ ...this.state, shouldActivateSnapToBottom: true, activatedScrollToBottom: true })
     } else if (this.state.activatedScrollToBottom && this.state.shouldActivateSnapToBottom) {
       this.setState({ ...this.state, shouldActivateSnapToBottom: false })
     }
