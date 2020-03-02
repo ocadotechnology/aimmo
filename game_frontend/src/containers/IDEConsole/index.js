@@ -52,13 +52,9 @@ export class IDEConsole extends Component {
   }
 
   componentDidUpdate () {
-    console.log('this is called')
     if (!this.state.activatedScrollToBottom && this.consoleRef && this.isOverflown(this.consoleRef)) {
-      console.log('got this')
       this.setState({ activatedScrollToBottom: true, shouldActivateSnapToBottom: true })
     } else if (this.state.activatedScrollToBottom && this.state.shouldActivateSnapToBottom) {
-      console.log('got trout')
-      console.log(this.state)
       this.setState({ ...this.state, shouldActivateSnapToBottom: false })
     }
   }
