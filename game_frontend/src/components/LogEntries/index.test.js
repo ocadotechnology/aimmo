@@ -1,12 +1,24 @@
 /* eslint-env jest */
 import React from 'react'
-import LogEntries, { StyledLogEntries, LogEntry } from 'components/LogEntries'
+import LogEntries, {
+  LogEntry,
+  LogData,
+  LogTurn,
+  BottomSnapper,
+  StyledTable
+} from 'components/LogEntries'
 import createShallowWithTheme from 'testHelpers/createShallow'
+import createMountWithTheme from 'testHelpers/createMount'
 
 describe('<LogEntries />', () => {
   it('renders correctly with logs', () => {
     const tree = createShallowWithTheme(
-      <LogEntries logs={[{ turn_count: 0, message: 'hello' }, { turn_count: 1, message: 'bye' }]} />,
+      <LogEntries
+        logs={[
+          { turn_count: 0, message: 'hello' },
+          { turn_count: 1, message: 'bye' }
+        ]}
+      />,
       'dark'
     )
     expect(tree).toMatchSnapshot()
@@ -16,12 +28,21 @@ describe('<LogEntries />', () => {
     const tree = createShallowWithTheme(<LogEntries logs={[]} />, 'dark')
     expect(tree).toMatchSnapshot()
   })
+
+  it('calls `scrollIntoView` only when shouldActivateSnapToBottom is true', () => {
+    const scrollIntoViewMock = jest.fn()
+    HTMLElement.prototype.scrollIntoView = scrollIntoViewMock
+    let tree = createMountWithTheme(<LogEntries logs={[]} />, 'dark')
+    expect(scrollIntoViewMock).not.toBeCalled()
+    tree.setProps({ logs: [], shouldActivateSnapToBottom: true })
+    expect(scrollIntoViewMock.mock).toMatchSnapshot()
+  })
 })
 
-describe('<StyledLogEntries />', () => {
+describe('<LogData />', () => {
   it('renders correctly', () => {
     const tree = createShallowWithTheme(
-      <StyledLogEntries logs={[{ timestamp: '1', log: 'hello' }, { timestamp: 2, log: 'bye' }]} />,
+      <LogData>This is my log</LogData>,
       'dark'
     )
     expect(tree).toMatchSnapshot()
@@ -30,7 +51,40 @@ describe('<StyledLogEntries />', () => {
 
 describe('<LogEntry />', () => {
   it('renders correctly', () => {
-    const tree = createShallowWithTheme(<LogEntry>hello</LogEntry>, 'dark')
+    const tree = createShallowWithTheme(
+      <LogEntry>This is my log row</LogEntry>,
+      'dark'
+    )
+    expect(tree).toMatchSnapshot()
+  })
+})
+
+describe('<LogTurn />', () => {
+  it('renders correctly', () => {
+    const tree = createShallowWithTheme(
+      <LogTurn>My turn number goes here</LogTurn>,
+      'dark'
+    )
+    expect(tree).toMatchSnapshot()
+  })
+})
+
+describe('<BottomSnapper />', () => {
+  it('renders correctly', () => {
+    const tree = createShallowWithTheme(
+      <BottomSnapper />,
+      'dark'
+    )
+    expect(tree).toMatchSnapshot()
+  })
+})
+
+describe('<StyledTable />', () => {
+  it('renders correctly', () => {
+    const tree = createShallowWithTheme(
+      <StyledTable>This is the table containing the logs</StyledTable>,
+      'dark'
+    )
     expect(tree).toMatchSnapshot()
   })
 })

@@ -1,53 +1,1329 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`<BottomSnapper /> renders correctly 1`] = `
+.c0 {
+  overflow-anchor: auto;
+  height: 1px;
+}
+
+<tr
+  className="c0"
+/>
+`;
+
+exports[`<LogData /> renders correctly 1`] = `
+.c0 {
+  padding-inline-start: 24px;
+}
+
+<WithStyles(ForwardRef(TableCell))
+  className="c0"
+  theme={
+    Object {
+      "additionalVariables": Object {
+        "snackbar": Object {
+          "borderRadius": "6px",
+        },
+        "typography": Object {
+          "code": Object {
+            "fontFamily": "'Source Code Pro', monospace",
+            "fontSize": "1rem",
+          },
+        },
+      },
+      "breakpoints": Object {
+        "between": [Function],
+        "down": [Function],
+        "keys": Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ],
+        "only": [Function],
+        "up": [Function],
+        "values": Object {
+          "lg": 1280,
+          "md": 960,
+          "sm": 600,
+          "xl": 1920,
+          "xs": 0,
+        },
+        "width": [Function],
+      },
+      "direction": "ltr",
+      "mixins": Object {
+        "gutters": [Function],
+        "toolbar": Object {
+          "@media (min-width:0px) and (orientation: landscape)": Object {
+            "minHeight": 48,
+          },
+          "@media (min-width:600px)": Object {
+            "minHeight": 64,
+          },
+          "minHeight": 56,
+        },
+      },
+      "overrides": Object {
+        "MuiSnackbar": Object {
+          "anchorOriginTopRight": Object {
+            "right": "25% !important",
+            "transform": "translate(50%, 64px)",
+          },
+          "root": Object {
+            "zIndex": "1000",
+          },
+        },
+        "MuiSnackbarContent": Object {
+          "root": Object {
+            "paddingLeft": "14px",
+            "paddingRight": "14px",
+          },
+        },
+      },
+      "palette": Object {
+        "action": Object {
+          "active": "#fff",
+          "disabled": "rgba(255, 255, 255, 0.3)",
+          "disabledBackground": "rgba(255, 255, 255, 0.12)",
+          "hover": "rgba(255, 255, 255, 0.1)",
+          "hoverOpacity": 0.1,
+          "selected": "rgba(255, 255, 255, 0.2)",
+        },
+        "augmentColor": [Function],
+        "background": Object {
+          "default": "#303030",
+          "paper": "#424242",
+        },
+        "common": Object {
+          "black": "#000",
+          "white": "#fff",
+        },
+        "contrastThreshold": 3,
+        "divider": "rgba(255, 255, 255, 0.12)",
+        "error": Object {
+          "contrastText": "#fff",
+          "dark": "#d32f2f",
+          "light": "#e57373",
+          "main": "#f44336",
+        },
+        "getContrastText": [Function],
+        "grey": Object {
+          "100": "#f5f5f5",
+          "200": "#eeeeee",
+          "300": "#e0e0e0",
+          "400": "#bdbdbd",
+          "50": "#fafafa",
+          "500": "#9e9e9e",
+          "600": "#757575",
+          "700": "#616161",
+          "800": "#424242",
+          "900": "#212121",
+          "A100": "#d5d5d5",
+          "A200": "#aaaaaa",
+          "A400": "#303030",
+          "A700": "#616161",
+        },
+        "primary": Object {
+          "contrastText": "#fff",
+          "dark": "rgb(156, 65, 162)",
+          "light": "rgb(229, 126, 236)",
+          "main": "#DF5EE8",
+        },
+        "secondary": Object {
+          "contrastText": "#fff",
+          "dark": "rgb(67, 67, 67)",
+          "light": "rgb(127, 127, 127)",
+          "main": "#606060",
+        },
+        "text": Object {
+          "disabled": "rgba(255, 255, 255, 0.5)",
+          "hint": "rgba(255, 255, 255, 0.5)",
+          "icon": "rgba(255, 255, 255, 0.5)",
+          "primary": "#fff",
+          "secondary": "rgba(255, 255, 255, 0.7)",
+        },
+        "tonalOffset": 0.2,
+        "type": "dark",
+      },
+      "props": Object {},
+      "shadows": Array [
+        "none",
+        "0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)",
+        "0px 3px 1px -2px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.14),0px 1px 5px 0px rgba(0,0,0,0.12)",
+        "0px 3px 3px -2px rgba(0,0,0,0.2),0px 3px 4px 0px rgba(0,0,0,0.14),0px 1px 8px 0px rgba(0,0,0,0.12)",
+        "0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12)",
+        "0px 3px 5px -1px rgba(0,0,0,0.2),0px 5px 8px 0px rgba(0,0,0,0.14),0px 1px 14px 0px rgba(0,0,0,0.12)",
+        "0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12)",
+        "0px 4px 5px -2px rgba(0,0,0,0.2),0px 7px 10px 1px rgba(0,0,0,0.14),0px 2px 16px 1px rgba(0,0,0,0.12)",
+        "0px 5px 5px -3px rgba(0,0,0,0.2),0px 8px 10px 1px rgba(0,0,0,0.14),0px 3px 14px 2px rgba(0,0,0,0.12)",
+        "0px 5px 6px -3px rgba(0,0,0,0.2),0px 9px 12px 1px rgba(0,0,0,0.14),0px 3px 16px 2px rgba(0,0,0,0.12)",
+        "0px 6px 6px -3px rgba(0,0,0,0.2),0px 10px 14px 1px rgba(0,0,0,0.14),0px 4px 18px 3px rgba(0,0,0,0.12)",
+        "0px 6px 7px -4px rgba(0,0,0,0.2),0px 11px 15px 1px rgba(0,0,0,0.14),0px 4px 20px 3px rgba(0,0,0,0.12)",
+        "0px 7px 8px -4px rgba(0,0,0,0.2),0px 12px 17px 2px rgba(0,0,0,0.14),0px 5px 22px 4px rgba(0,0,0,0.12)",
+        "0px 7px 8px -4px rgba(0,0,0,0.2),0px 13px 19px 2px rgba(0,0,0,0.14),0px 5px 24px 4px rgba(0,0,0,0.12)",
+        "0px 7px 9px -4px rgba(0,0,0,0.2),0px 14px 21px 2px rgba(0,0,0,0.14),0px 5px 26px 4px rgba(0,0,0,0.12)",
+        "0px 8px 9px -5px rgba(0,0,0,0.2),0px 15px 22px 2px rgba(0,0,0,0.14),0px 6px 28px 5px rgba(0,0,0,0.12)",
+        "0px 8px 10px -5px rgba(0,0,0,0.2),0px 16px 24px 2px rgba(0,0,0,0.14),0px 6px 30px 5px rgba(0,0,0,0.12)",
+        "0px 8px 11px -5px rgba(0,0,0,0.2),0px 17px 26px 2px rgba(0,0,0,0.14),0px 6px 32px 5px rgba(0,0,0,0.12)",
+        "0px 9px 11px -5px rgba(0,0,0,0.2),0px 18px 28px 2px rgba(0,0,0,0.14),0px 7px 34px 6px rgba(0,0,0,0.12)",
+        "0px 9px 12px -6px rgba(0,0,0,0.2),0px 19px 29px 2px rgba(0,0,0,0.14),0px 7px 36px 6px rgba(0,0,0,0.12)",
+        "0px 10px 13px -6px rgba(0,0,0,0.2),0px 20px 31px 3px rgba(0,0,0,0.14),0px 8px 38px 7px rgba(0,0,0,0.12)",
+        "0px 10px 13px -6px rgba(0,0,0,0.2),0px 21px 33px 3px rgba(0,0,0,0.14),0px 8px 40px 7px rgba(0,0,0,0.12)",
+        "0px 10px 14px -6px rgba(0,0,0,0.2),0px 22px 35px 3px rgba(0,0,0,0.14),0px 8px 42px 7px rgba(0,0,0,0.12)",
+        "0px 11px 14px -7px rgba(0,0,0,0.2),0px 23px 36px 3px rgba(0,0,0,0.14),0px 9px 44px 8px rgba(0,0,0,0.12)",
+        "0px 11px 15px -7px rgba(0,0,0,0.2),0px 24px 38px 3px rgba(0,0,0,0.14),0px 9px 46px 8px rgba(0,0,0,0.12)",
+      ],
+      "shape": Object {
+        "borderRadius": "24px",
+      },
+      "spacing": [Function],
+      "transitions": Object {
+        "create": [Function],
+        "duration": Object {
+          "complex": 375,
+          "enteringScreen": 225,
+          "leavingScreen": 195,
+          "short": 250,
+          "shorter": 200,
+          "shortest": 150,
+          "standard": 300,
+        },
+        "easing": Object {
+          "easeIn": "cubic-bezier(0.4, 0, 1, 1)",
+          "easeInOut": "cubic-bezier(0.4, 0, 0.2, 1)",
+          "easeOut": "cubic-bezier(0.0, 0, 0.2, 1)",
+          "sharp": "cubic-bezier(0.4, 0, 0.6, 1)",
+        },
+        "getAutoHeightDuration": [Function],
+      },
+      "typography": Object {
+        "body1": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "1rem",
+          "fontWeight": 500,
+          "lineHeight": 1.5,
+        },
+        "body2": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "0.875rem",
+          "fontWeight": 500,
+          "lineHeight": 1.43,
+        },
+        "button": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "0.875rem",
+          "fontWeight": 500,
+          "lineHeight": 1.75,
+          "textTransform": "capitalize",
+        },
+        "caption": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "0.75rem",
+          "fontStyle": "italic",
+          "fontWeight": 500,
+          "lineHeight": 1.66,
+        },
+        "display1": Object {
+          "fontWeight": 700,
+        },
+        "display2": Object {
+          "fontWeight": 700,
+        },
+        "display3": Object {
+          "fontWeight": 900,
+        },
+        "display4": Object {
+          "fontWeight": 900,
+        },
+        "fontFamily": "museo-sans,Source Code Pro",
+        "fontSize": 14,
+        "fontWeightBold": 700,
+        "fontWeightLight": 300,
+        "fontWeightMedium": 500,
+        "fontWeightRegular": 400,
+        "h1": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "6rem",
+          "fontWeight": 300,
+          "lineHeight": 1,
+        },
+        "h2": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "3.75rem",
+          "fontWeight": 300,
+          "lineHeight": 1,
+        },
+        "h3": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "3rem",
+          "fontWeight": 400,
+          "lineHeight": 1.04,
+        },
+        "h4": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "2.125rem",
+          "fontWeight": 400,
+          "lineHeight": 1.17,
+        },
+        "h5": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "1.5rem",
+          "fontWeight": 400,
+          "lineHeight": 1.33,
+        },
+        "h6": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "1.25rem",
+          "fontWeight": 500,
+          "lineHeight": 1.6,
+        },
+        "htmlFontSize": 16,
+        "overline": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "0.75rem",
+          "fontWeight": 400,
+          "lineHeight": 2.66,
+          "textTransform": "uppercase",
+        },
+        "pxToRem": [Function],
+        "round": [Function],
+        "subtitle1": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "1rem",
+          "fontWeight": 400,
+          "lineHeight": 1.75,
+        },
+        "subtitle2": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "0.875rem",
+          "fontWeight": 500,
+          "lineHeight": 1.57,
+        },
+      },
+      "zIndex": Object {
+        "appBar": 1100,
+        "drawer": 1200,
+        "mobileStepper": 1000,
+        "modal": 1300,
+        "snackbar": 1400,
+        "speedDial": 1050,
+        "tooltip": 1500,
+      },
+    }
+  }
+>
+  This is my log
+</WithStyles(ForwardRef(TableCell))>
+`;
+
+exports[`<LogEntries /> calls \`scrollIntoView\` only when shouldActivateSnapToBottom is true 1`] = `
+Object {
+  "calls": Array [
+    Array [
+      Object {
+        "behavior": "smooth",
+      },
+    ],
+  ],
+  "instances": Array [
+    .c0 {
+  overflow-anchor: auto;
+  height: 1px;
+}
+
+<tr
+      class="c0"
+    />,
+  ],
+  "invocationCallOrder": Array [
+    1,
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
 exports[`<LogEntries /> renders correctly with logs 1`] = `
-<styled.ul>
-  <styled.li
-    key="0"
-  >
-    hello
-  </styled.li>
-  <styled.li
-    key="1"
-  >
-    bye
-  </styled.li>
-  <styled.li
-    key="-1"
-  />
-</styled.ul>
+<Styled(WithStyles(ForwardRef(Table)))
+  innerRef={[Function]}
+  size="small"
+>
+  <WithStyles(ForwardRef(TableBody))>
+    <Styled(WithStyles(ForwardRef(TableRow)))
+      key="0"
+    >
+      <Styled(WithStyles(ForwardRef(TableCell)))>
+        hello
+      </Styled(WithStyles(ForwardRef(TableCell)))>
+      <Styled(WithStyles(ForwardRef(TableCell)))
+        align="right"
+      >
+        Turn: 
+        0
+      </Styled(WithStyles(ForwardRef(TableCell)))>
+    </Styled(WithStyles(ForwardRef(TableRow)))>
+    <Styled(WithStyles(ForwardRef(TableRow)))
+      key="1"
+    >
+      <Styled(WithStyles(ForwardRef(TableCell)))>
+        bye
+      </Styled(WithStyles(ForwardRef(TableCell)))>
+      <Styled(WithStyles(ForwardRef(TableCell)))
+        align="right"
+      >
+        Turn: 
+        1
+      </Styled(WithStyles(ForwardRef(TableCell)))>
+    </Styled(WithStyles(ForwardRef(TableRow)))>
+    <styled.tr
+      innerRef={[Function]}
+      key="-1"
+    />
+  </WithStyles(ForwardRef(TableBody))>
+</Styled(WithStyles(ForwardRef(Table)))>
 `;
 
 exports[`<LogEntries /> renders correctly without logs 1`] = `
-<styled.ul>
-  <styled.li
-    key="-1"
-  />
-</styled.ul>
+<Styled(WithStyles(ForwardRef(Table)))
+  innerRef={[Function]}
+  size="small"
+>
+  <WithStyles(ForwardRef(TableBody))>
+    <styled.tr
+      innerRef={[Function]}
+      key="-1"
+    />
+  </WithStyles(ForwardRef(TableBody))>
+</Styled(WithStyles(ForwardRef(Table)))>
 `;
 
 exports[`<LogEntry /> renders correctly 1`] = `
 .c0 {
-  list-style: none;
-  padding: 8px;
   overflow-anchor: none;
+  font-family: 'Source Code Pro',monospace;
+  font-size: 1rem;
 }
 
-<li
+<WithStyles(ForwardRef(TableRow))
   className="c0"
+  theme={
+    Object {
+      "additionalVariables": Object {
+        "snackbar": Object {
+          "borderRadius": "6px",
+        },
+        "typography": Object {
+          "code": Object {
+            "fontFamily": "'Source Code Pro', monospace",
+            "fontSize": "1rem",
+          },
+        },
+      },
+      "breakpoints": Object {
+        "between": [Function],
+        "down": [Function],
+        "keys": Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ],
+        "only": [Function],
+        "up": [Function],
+        "values": Object {
+          "lg": 1280,
+          "md": 960,
+          "sm": 600,
+          "xl": 1920,
+          "xs": 0,
+        },
+        "width": [Function],
+      },
+      "direction": "ltr",
+      "mixins": Object {
+        "gutters": [Function],
+        "toolbar": Object {
+          "@media (min-width:0px) and (orientation: landscape)": Object {
+            "minHeight": 48,
+          },
+          "@media (min-width:600px)": Object {
+            "minHeight": 64,
+          },
+          "minHeight": 56,
+        },
+      },
+      "overrides": Object {
+        "MuiSnackbar": Object {
+          "anchorOriginTopRight": Object {
+            "right": "25% !important",
+            "transform": "translate(50%, 64px)",
+          },
+          "root": Object {
+            "zIndex": "1000",
+          },
+        },
+        "MuiSnackbarContent": Object {
+          "root": Object {
+            "paddingLeft": "14px",
+            "paddingRight": "14px",
+          },
+        },
+      },
+      "palette": Object {
+        "action": Object {
+          "active": "#fff",
+          "disabled": "rgba(255, 255, 255, 0.3)",
+          "disabledBackground": "rgba(255, 255, 255, 0.12)",
+          "hover": "rgba(255, 255, 255, 0.1)",
+          "hoverOpacity": 0.1,
+          "selected": "rgba(255, 255, 255, 0.2)",
+        },
+        "augmentColor": [Function],
+        "background": Object {
+          "default": "#303030",
+          "paper": "#424242",
+        },
+        "common": Object {
+          "black": "#000",
+          "white": "#fff",
+        },
+        "contrastThreshold": 3,
+        "divider": "rgba(255, 255, 255, 0.12)",
+        "error": Object {
+          "contrastText": "#fff",
+          "dark": "#d32f2f",
+          "light": "#e57373",
+          "main": "#f44336",
+        },
+        "getContrastText": [Function],
+        "grey": Object {
+          "100": "#f5f5f5",
+          "200": "#eeeeee",
+          "300": "#e0e0e0",
+          "400": "#bdbdbd",
+          "50": "#fafafa",
+          "500": "#9e9e9e",
+          "600": "#757575",
+          "700": "#616161",
+          "800": "#424242",
+          "900": "#212121",
+          "A100": "#d5d5d5",
+          "A200": "#aaaaaa",
+          "A400": "#303030",
+          "A700": "#616161",
+        },
+        "primary": Object {
+          "contrastText": "#fff",
+          "dark": "rgb(156, 65, 162)",
+          "light": "rgb(229, 126, 236)",
+          "main": "#DF5EE8",
+        },
+        "secondary": Object {
+          "contrastText": "#fff",
+          "dark": "rgb(67, 67, 67)",
+          "light": "rgb(127, 127, 127)",
+          "main": "#606060",
+        },
+        "text": Object {
+          "disabled": "rgba(255, 255, 255, 0.5)",
+          "hint": "rgba(255, 255, 255, 0.5)",
+          "icon": "rgba(255, 255, 255, 0.5)",
+          "primary": "#fff",
+          "secondary": "rgba(255, 255, 255, 0.7)",
+        },
+        "tonalOffset": 0.2,
+        "type": "dark",
+      },
+      "props": Object {},
+      "shadows": Array [
+        "none",
+        "0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)",
+        "0px 3px 1px -2px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.14),0px 1px 5px 0px rgba(0,0,0,0.12)",
+        "0px 3px 3px -2px rgba(0,0,0,0.2),0px 3px 4px 0px rgba(0,0,0,0.14),0px 1px 8px 0px rgba(0,0,0,0.12)",
+        "0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12)",
+        "0px 3px 5px -1px rgba(0,0,0,0.2),0px 5px 8px 0px rgba(0,0,0,0.14),0px 1px 14px 0px rgba(0,0,0,0.12)",
+        "0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12)",
+        "0px 4px 5px -2px rgba(0,0,0,0.2),0px 7px 10px 1px rgba(0,0,0,0.14),0px 2px 16px 1px rgba(0,0,0,0.12)",
+        "0px 5px 5px -3px rgba(0,0,0,0.2),0px 8px 10px 1px rgba(0,0,0,0.14),0px 3px 14px 2px rgba(0,0,0,0.12)",
+        "0px 5px 6px -3px rgba(0,0,0,0.2),0px 9px 12px 1px rgba(0,0,0,0.14),0px 3px 16px 2px rgba(0,0,0,0.12)",
+        "0px 6px 6px -3px rgba(0,0,0,0.2),0px 10px 14px 1px rgba(0,0,0,0.14),0px 4px 18px 3px rgba(0,0,0,0.12)",
+        "0px 6px 7px -4px rgba(0,0,0,0.2),0px 11px 15px 1px rgba(0,0,0,0.14),0px 4px 20px 3px rgba(0,0,0,0.12)",
+        "0px 7px 8px -4px rgba(0,0,0,0.2),0px 12px 17px 2px rgba(0,0,0,0.14),0px 5px 22px 4px rgba(0,0,0,0.12)",
+        "0px 7px 8px -4px rgba(0,0,0,0.2),0px 13px 19px 2px rgba(0,0,0,0.14),0px 5px 24px 4px rgba(0,0,0,0.12)",
+        "0px 7px 9px -4px rgba(0,0,0,0.2),0px 14px 21px 2px rgba(0,0,0,0.14),0px 5px 26px 4px rgba(0,0,0,0.12)",
+        "0px 8px 9px -5px rgba(0,0,0,0.2),0px 15px 22px 2px rgba(0,0,0,0.14),0px 6px 28px 5px rgba(0,0,0,0.12)",
+        "0px 8px 10px -5px rgba(0,0,0,0.2),0px 16px 24px 2px rgba(0,0,0,0.14),0px 6px 30px 5px rgba(0,0,0,0.12)",
+        "0px 8px 11px -5px rgba(0,0,0,0.2),0px 17px 26px 2px rgba(0,0,0,0.14),0px 6px 32px 5px rgba(0,0,0,0.12)",
+        "0px 9px 11px -5px rgba(0,0,0,0.2),0px 18px 28px 2px rgba(0,0,0,0.14),0px 7px 34px 6px rgba(0,0,0,0.12)",
+        "0px 9px 12px -6px rgba(0,0,0,0.2),0px 19px 29px 2px rgba(0,0,0,0.14),0px 7px 36px 6px rgba(0,0,0,0.12)",
+        "0px 10px 13px -6px rgba(0,0,0,0.2),0px 20px 31px 3px rgba(0,0,0,0.14),0px 8px 38px 7px rgba(0,0,0,0.12)",
+        "0px 10px 13px -6px rgba(0,0,0,0.2),0px 21px 33px 3px rgba(0,0,0,0.14),0px 8px 40px 7px rgba(0,0,0,0.12)",
+        "0px 10px 14px -6px rgba(0,0,0,0.2),0px 22px 35px 3px rgba(0,0,0,0.14),0px 8px 42px 7px rgba(0,0,0,0.12)",
+        "0px 11px 14px -7px rgba(0,0,0,0.2),0px 23px 36px 3px rgba(0,0,0,0.14),0px 9px 44px 8px rgba(0,0,0,0.12)",
+        "0px 11px 15px -7px rgba(0,0,0,0.2),0px 24px 38px 3px rgba(0,0,0,0.14),0px 9px 46px 8px rgba(0,0,0,0.12)",
+      ],
+      "shape": Object {
+        "borderRadius": "24px",
+      },
+      "spacing": [Function],
+      "transitions": Object {
+        "create": [Function],
+        "duration": Object {
+          "complex": 375,
+          "enteringScreen": 225,
+          "leavingScreen": 195,
+          "short": 250,
+          "shorter": 200,
+          "shortest": 150,
+          "standard": 300,
+        },
+        "easing": Object {
+          "easeIn": "cubic-bezier(0.4, 0, 1, 1)",
+          "easeInOut": "cubic-bezier(0.4, 0, 0.2, 1)",
+          "easeOut": "cubic-bezier(0.0, 0, 0.2, 1)",
+          "sharp": "cubic-bezier(0.4, 0, 0.6, 1)",
+        },
+        "getAutoHeightDuration": [Function],
+      },
+      "typography": Object {
+        "body1": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "1rem",
+          "fontWeight": 500,
+          "lineHeight": 1.5,
+        },
+        "body2": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "0.875rem",
+          "fontWeight": 500,
+          "lineHeight": 1.43,
+        },
+        "button": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "0.875rem",
+          "fontWeight": 500,
+          "lineHeight": 1.75,
+          "textTransform": "capitalize",
+        },
+        "caption": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "0.75rem",
+          "fontStyle": "italic",
+          "fontWeight": 500,
+          "lineHeight": 1.66,
+        },
+        "display1": Object {
+          "fontWeight": 700,
+        },
+        "display2": Object {
+          "fontWeight": 700,
+        },
+        "display3": Object {
+          "fontWeight": 900,
+        },
+        "display4": Object {
+          "fontWeight": 900,
+        },
+        "fontFamily": "museo-sans,Source Code Pro",
+        "fontSize": 14,
+        "fontWeightBold": 700,
+        "fontWeightLight": 300,
+        "fontWeightMedium": 500,
+        "fontWeightRegular": 400,
+        "h1": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "6rem",
+          "fontWeight": 300,
+          "lineHeight": 1,
+        },
+        "h2": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "3.75rem",
+          "fontWeight": 300,
+          "lineHeight": 1,
+        },
+        "h3": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "3rem",
+          "fontWeight": 400,
+          "lineHeight": 1.04,
+        },
+        "h4": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "2.125rem",
+          "fontWeight": 400,
+          "lineHeight": 1.17,
+        },
+        "h5": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "1.5rem",
+          "fontWeight": 400,
+          "lineHeight": 1.33,
+        },
+        "h6": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "1.25rem",
+          "fontWeight": 500,
+          "lineHeight": 1.6,
+        },
+        "htmlFontSize": 16,
+        "overline": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "0.75rem",
+          "fontWeight": 400,
+          "lineHeight": 2.66,
+          "textTransform": "uppercase",
+        },
+        "pxToRem": [Function],
+        "round": [Function],
+        "subtitle1": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "1rem",
+          "fontWeight": 400,
+          "lineHeight": 1.75,
+        },
+        "subtitle2": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "0.875rem",
+          "fontWeight": 500,
+          "lineHeight": 1.57,
+        },
+      },
+      "zIndex": Object {
+        "appBar": 1100,
+        "drawer": 1200,
+        "mobileStepper": 1000,
+        "modal": 1300,
+        "snackbar": 1400,
+        "speedDial": 1050,
+        "tooltip": 1500,
+      },
+    }
+  }
 >
-  hello
-</li>
+  This is my log row
+</WithStyles(ForwardRef(TableRow))>
 `;
 
-exports[`<StyledLogEntries /> renders correctly 1`] = `
+exports[`<LogTurn /> renders correctly 1`] = `
 .c0 {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  color: #9e9e9e;
+  white-space: nowrap;
+  vertical-align: text-top;
 }
 
-<ul
+<WithStyles(ForwardRef(TableCell))
   className="c0"
-/>
+  theme={
+    Object {
+      "additionalVariables": Object {
+        "snackbar": Object {
+          "borderRadius": "6px",
+        },
+        "typography": Object {
+          "code": Object {
+            "fontFamily": "'Source Code Pro', monospace",
+            "fontSize": "1rem",
+          },
+        },
+      },
+      "breakpoints": Object {
+        "between": [Function],
+        "down": [Function],
+        "keys": Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ],
+        "only": [Function],
+        "up": [Function],
+        "values": Object {
+          "lg": 1280,
+          "md": 960,
+          "sm": 600,
+          "xl": 1920,
+          "xs": 0,
+        },
+        "width": [Function],
+      },
+      "direction": "ltr",
+      "mixins": Object {
+        "gutters": [Function],
+        "toolbar": Object {
+          "@media (min-width:0px) and (orientation: landscape)": Object {
+            "minHeight": 48,
+          },
+          "@media (min-width:600px)": Object {
+            "minHeight": 64,
+          },
+          "minHeight": 56,
+        },
+      },
+      "overrides": Object {
+        "MuiSnackbar": Object {
+          "anchorOriginTopRight": Object {
+            "right": "25% !important",
+            "transform": "translate(50%, 64px)",
+          },
+          "root": Object {
+            "zIndex": "1000",
+          },
+        },
+        "MuiSnackbarContent": Object {
+          "root": Object {
+            "paddingLeft": "14px",
+            "paddingRight": "14px",
+          },
+        },
+      },
+      "palette": Object {
+        "action": Object {
+          "active": "#fff",
+          "disabled": "rgba(255, 255, 255, 0.3)",
+          "disabledBackground": "rgba(255, 255, 255, 0.12)",
+          "hover": "rgba(255, 255, 255, 0.1)",
+          "hoverOpacity": 0.1,
+          "selected": "rgba(255, 255, 255, 0.2)",
+        },
+        "augmentColor": [Function],
+        "background": Object {
+          "default": "#303030",
+          "paper": "#424242",
+        },
+        "common": Object {
+          "black": "#000",
+          "white": "#fff",
+        },
+        "contrastThreshold": 3,
+        "divider": "rgba(255, 255, 255, 0.12)",
+        "error": Object {
+          "contrastText": "#fff",
+          "dark": "#d32f2f",
+          "light": "#e57373",
+          "main": "#f44336",
+        },
+        "getContrastText": [Function],
+        "grey": Object {
+          "100": "#f5f5f5",
+          "200": "#eeeeee",
+          "300": "#e0e0e0",
+          "400": "#bdbdbd",
+          "50": "#fafafa",
+          "500": "#9e9e9e",
+          "600": "#757575",
+          "700": "#616161",
+          "800": "#424242",
+          "900": "#212121",
+          "A100": "#d5d5d5",
+          "A200": "#aaaaaa",
+          "A400": "#303030",
+          "A700": "#616161",
+        },
+        "primary": Object {
+          "contrastText": "#fff",
+          "dark": "rgb(156, 65, 162)",
+          "light": "rgb(229, 126, 236)",
+          "main": "#DF5EE8",
+        },
+        "secondary": Object {
+          "contrastText": "#fff",
+          "dark": "rgb(67, 67, 67)",
+          "light": "rgb(127, 127, 127)",
+          "main": "#606060",
+        },
+        "text": Object {
+          "disabled": "rgba(255, 255, 255, 0.5)",
+          "hint": "rgba(255, 255, 255, 0.5)",
+          "icon": "rgba(255, 255, 255, 0.5)",
+          "primary": "#fff",
+          "secondary": "rgba(255, 255, 255, 0.7)",
+        },
+        "tonalOffset": 0.2,
+        "type": "dark",
+      },
+      "props": Object {},
+      "shadows": Array [
+        "none",
+        "0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)",
+        "0px 3px 1px -2px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.14),0px 1px 5px 0px rgba(0,0,0,0.12)",
+        "0px 3px 3px -2px rgba(0,0,0,0.2),0px 3px 4px 0px rgba(0,0,0,0.14),0px 1px 8px 0px rgba(0,0,0,0.12)",
+        "0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12)",
+        "0px 3px 5px -1px rgba(0,0,0,0.2),0px 5px 8px 0px rgba(0,0,0,0.14),0px 1px 14px 0px rgba(0,0,0,0.12)",
+        "0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12)",
+        "0px 4px 5px -2px rgba(0,0,0,0.2),0px 7px 10px 1px rgba(0,0,0,0.14),0px 2px 16px 1px rgba(0,0,0,0.12)",
+        "0px 5px 5px -3px rgba(0,0,0,0.2),0px 8px 10px 1px rgba(0,0,0,0.14),0px 3px 14px 2px rgba(0,0,0,0.12)",
+        "0px 5px 6px -3px rgba(0,0,0,0.2),0px 9px 12px 1px rgba(0,0,0,0.14),0px 3px 16px 2px rgba(0,0,0,0.12)",
+        "0px 6px 6px -3px rgba(0,0,0,0.2),0px 10px 14px 1px rgba(0,0,0,0.14),0px 4px 18px 3px rgba(0,0,0,0.12)",
+        "0px 6px 7px -4px rgba(0,0,0,0.2),0px 11px 15px 1px rgba(0,0,0,0.14),0px 4px 20px 3px rgba(0,0,0,0.12)",
+        "0px 7px 8px -4px rgba(0,0,0,0.2),0px 12px 17px 2px rgba(0,0,0,0.14),0px 5px 22px 4px rgba(0,0,0,0.12)",
+        "0px 7px 8px -4px rgba(0,0,0,0.2),0px 13px 19px 2px rgba(0,0,0,0.14),0px 5px 24px 4px rgba(0,0,0,0.12)",
+        "0px 7px 9px -4px rgba(0,0,0,0.2),0px 14px 21px 2px rgba(0,0,0,0.14),0px 5px 26px 4px rgba(0,0,0,0.12)",
+        "0px 8px 9px -5px rgba(0,0,0,0.2),0px 15px 22px 2px rgba(0,0,0,0.14),0px 6px 28px 5px rgba(0,0,0,0.12)",
+        "0px 8px 10px -5px rgba(0,0,0,0.2),0px 16px 24px 2px rgba(0,0,0,0.14),0px 6px 30px 5px rgba(0,0,0,0.12)",
+        "0px 8px 11px -5px rgba(0,0,0,0.2),0px 17px 26px 2px rgba(0,0,0,0.14),0px 6px 32px 5px rgba(0,0,0,0.12)",
+        "0px 9px 11px -5px rgba(0,0,0,0.2),0px 18px 28px 2px rgba(0,0,0,0.14),0px 7px 34px 6px rgba(0,0,0,0.12)",
+        "0px 9px 12px -6px rgba(0,0,0,0.2),0px 19px 29px 2px rgba(0,0,0,0.14),0px 7px 36px 6px rgba(0,0,0,0.12)",
+        "0px 10px 13px -6px rgba(0,0,0,0.2),0px 20px 31px 3px rgba(0,0,0,0.14),0px 8px 38px 7px rgba(0,0,0,0.12)",
+        "0px 10px 13px -6px rgba(0,0,0,0.2),0px 21px 33px 3px rgba(0,0,0,0.14),0px 8px 40px 7px rgba(0,0,0,0.12)",
+        "0px 10px 14px -6px rgba(0,0,0,0.2),0px 22px 35px 3px rgba(0,0,0,0.14),0px 8px 42px 7px rgba(0,0,0,0.12)",
+        "0px 11px 14px -7px rgba(0,0,0,0.2),0px 23px 36px 3px rgba(0,0,0,0.14),0px 9px 44px 8px rgba(0,0,0,0.12)",
+        "0px 11px 15px -7px rgba(0,0,0,0.2),0px 24px 38px 3px rgba(0,0,0,0.14),0px 9px 46px 8px rgba(0,0,0,0.12)",
+      ],
+      "shape": Object {
+        "borderRadius": "24px",
+      },
+      "spacing": [Function],
+      "transitions": Object {
+        "create": [Function],
+        "duration": Object {
+          "complex": 375,
+          "enteringScreen": 225,
+          "leavingScreen": 195,
+          "short": 250,
+          "shorter": 200,
+          "shortest": 150,
+          "standard": 300,
+        },
+        "easing": Object {
+          "easeIn": "cubic-bezier(0.4, 0, 1, 1)",
+          "easeInOut": "cubic-bezier(0.4, 0, 0.2, 1)",
+          "easeOut": "cubic-bezier(0.0, 0, 0.2, 1)",
+          "sharp": "cubic-bezier(0.4, 0, 0.6, 1)",
+        },
+        "getAutoHeightDuration": [Function],
+      },
+      "typography": Object {
+        "body1": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "1rem",
+          "fontWeight": 500,
+          "lineHeight": 1.5,
+        },
+        "body2": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "0.875rem",
+          "fontWeight": 500,
+          "lineHeight": 1.43,
+        },
+        "button": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "0.875rem",
+          "fontWeight": 500,
+          "lineHeight": 1.75,
+          "textTransform": "capitalize",
+        },
+        "caption": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "0.75rem",
+          "fontStyle": "italic",
+          "fontWeight": 500,
+          "lineHeight": 1.66,
+        },
+        "display1": Object {
+          "fontWeight": 700,
+        },
+        "display2": Object {
+          "fontWeight": 700,
+        },
+        "display3": Object {
+          "fontWeight": 900,
+        },
+        "display4": Object {
+          "fontWeight": 900,
+        },
+        "fontFamily": "museo-sans,Source Code Pro",
+        "fontSize": 14,
+        "fontWeightBold": 700,
+        "fontWeightLight": 300,
+        "fontWeightMedium": 500,
+        "fontWeightRegular": 400,
+        "h1": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "6rem",
+          "fontWeight": 300,
+          "lineHeight": 1,
+        },
+        "h2": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "3.75rem",
+          "fontWeight": 300,
+          "lineHeight": 1,
+        },
+        "h3": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "3rem",
+          "fontWeight": 400,
+          "lineHeight": 1.04,
+        },
+        "h4": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "2.125rem",
+          "fontWeight": 400,
+          "lineHeight": 1.17,
+        },
+        "h5": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "1.5rem",
+          "fontWeight": 400,
+          "lineHeight": 1.33,
+        },
+        "h6": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "1.25rem",
+          "fontWeight": 500,
+          "lineHeight": 1.6,
+        },
+        "htmlFontSize": 16,
+        "overline": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "0.75rem",
+          "fontWeight": 400,
+          "lineHeight": 2.66,
+          "textTransform": "uppercase",
+        },
+        "pxToRem": [Function],
+        "round": [Function],
+        "subtitle1": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "1rem",
+          "fontWeight": 400,
+          "lineHeight": 1.75,
+        },
+        "subtitle2": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "0.875rem",
+          "fontWeight": 500,
+          "lineHeight": 1.57,
+        },
+      },
+      "zIndex": Object {
+        "appBar": 1100,
+        "drawer": 1200,
+        "mobileStepper": 1000,
+        "modal": 1300,
+        "snackbar": 1400,
+        "speedDial": 1050,
+        "tooltip": 1500,
+      },
+    }
+  }
+>
+  My turn number goes here
+</WithStyles(ForwardRef(TableCell))>
+`;
+
+exports[`<StyledTable /> renders correctly 1`] = `
+.c0 {
+  white-space: pre-line;
+}
+
+<WithStyles(ForwardRef(Table))
+  className="c0"
+  theme={
+    Object {
+      "additionalVariables": Object {
+        "snackbar": Object {
+          "borderRadius": "6px",
+        },
+        "typography": Object {
+          "code": Object {
+            "fontFamily": "'Source Code Pro', monospace",
+            "fontSize": "1rem",
+          },
+        },
+      },
+      "breakpoints": Object {
+        "between": [Function],
+        "down": [Function],
+        "keys": Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ],
+        "only": [Function],
+        "up": [Function],
+        "values": Object {
+          "lg": 1280,
+          "md": 960,
+          "sm": 600,
+          "xl": 1920,
+          "xs": 0,
+        },
+        "width": [Function],
+      },
+      "direction": "ltr",
+      "mixins": Object {
+        "gutters": [Function],
+        "toolbar": Object {
+          "@media (min-width:0px) and (orientation: landscape)": Object {
+            "minHeight": 48,
+          },
+          "@media (min-width:600px)": Object {
+            "minHeight": 64,
+          },
+          "minHeight": 56,
+        },
+      },
+      "overrides": Object {
+        "MuiSnackbar": Object {
+          "anchorOriginTopRight": Object {
+            "right": "25% !important",
+            "transform": "translate(50%, 64px)",
+          },
+          "root": Object {
+            "zIndex": "1000",
+          },
+        },
+        "MuiSnackbarContent": Object {
+          "root": Object {
+            "paddingLeft": "14px",
+            "paddingRight": "14px",
+          },
+        },
+      },
+      "palette": Object {
+        "action": Object {
+          "active": "#fff",
+          "disabled": "rgba(255, 255, 255, 0.3)",
+          "disabledBackground": "rgba(255, 255, 255, 0.12)",
+          "hover": "rgba(255, 255, 255, 0.1)",
+          "hoverOpacity": 0.1,
+          "selected": "rgba(255, 255, 255, 0.2)",
+        },
+        "augmentColor": [Function],
+        "background": Object {
+          "default": "#303030",
+          "paper": "#424242",
+        },
+        "common": Object {
+          "black": "#000",
+          "white": "#fff",
+        },
+        "contrastThreshold": 3,
+        "divider": "rgba(255, 255, 255, 0.12)",
+        "error": Object {
+          "contrastText": "#fff",
+          "dark": "#d32f2f",
+          "light": "#e57373",
+          "main": "#f44336",
+        },
+        "getContrastText": [Function],
+        "grey": Object {
+          "100": "#f5f5f5",
+          "200": "#eeeeee",
+          "300": "#e0e0e0",
+          "400": "#bdbdbd",
+          "50": "#fafafa",
+          "500": "#9e9e9e",
+          "600": "#757575",
+          "700": "#616161",
+          "800": "#424242",
+          "900": "#212121",
+          "A100": "#d5d5d5",
+          "A200": "#aaaaaa",
+          "A400": "#303030",
+          "A700": "#616161",
+        },
+        "primary": Object {
+          "contrastText": "#fff",
+          "dark": "rgb(156, 65, 162)",
+          "light": "rgb(229, 126, 236)",
+          "main": "#DF5EE8",
+        },
+        "secondary": Object {
+          "contrastText": "#fff",
+          "dark": "rgb(67, 67, 67)",
+          "light": "rgb(127, 127, 127)",
+          "main": "#606060",
+        },
+        "text": Object {
+          "disabled": "rgba(255, 255, 255, 0.5)",
+          "hint": "rgba(255, 255, 255, 0.5)",
+          "icon": "rgba(255, 255, 255, 0.5)",
+          "primary": "#fff",
+          "secondary": "rgba(255, 255, 255, 0.7)",
+        },
+        "tonalOffset": 0.2,
+        "type": "dark",
+      },
+      "props": Object {},
+      "shadows": Array [
+        "none",
+        "0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)",
+        "0px 3px 1px -2px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.14),0px 1px 5px 0px rgba(0,0,0,0.12)",
+        "0px 3px 3px -2px rgba(0,0,0,0.2),0px 3px 4px 0px rgba(0,0,0,0.14),0px 1px 8px 0px rgba(0,0,0,0.12)",
+        "0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12)",
+        "0px 3px 5px -1px rgba(0,0,0,0.2),0px 5px 8px 0px rgba(0,0,0,0.14),0px 1px 14px 0px rgba(0,0,0,0.12)",
+        "0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12)",
+        "0px 4px 5px -2px rgba(0,0,0,0.2),0px 7px 10px 1px rgba(0,0,0,0.14),0px 2px 16px 1px rgba(0,0,0,0.12)",
+        "0px 5px 5px -3px rgba(0,0,0,0.2),0px 8px 10px 1px rgba(0,0,0,0.14),0px 3px 14px 2px rgba(0,0,0,0.12)",
+        "0px 5px 6px -3px rgba(0,0,0,0.2),0px 9px 12px 1px rgba(0,0,0,0.14),0px 3px 16px 2px rgba(0,0,0,0.12)",
+        "0px 6px 6px -3px rgba(0,0,0,0.2),0px 10px 14px 1px rgba(0,0,0,0.14),0px 4px 18px 3px rgba(0,0,0,0.12)",
+        "0px 6px 7px -4px rgba(0,0,0,0.2),0px 11px 15px 1px rgba(0,0,0,0.14),0px 4px 20px 3px rgba(0,0,0,0.12)",
+        "0px 7px 8px -4px rgba(0,0,0,0.2),0px 12px 17px 2px rgba(0,0,0,0.14),0px 5px 22px 4px rgba(0,0,0,0.12)",
+        "0px 7px 8px -4px rgba(0,0,0,0.2),0px 13px 19px 2px rgba(0,0,0,0.14),0px 5px 24px 4px rgba(0,0,0,0.12)",
+        "0px 7px 9px -4px rgba(0,0,0,0.2),0px 14px 21px 2px rgba(0,0,0,0.14),0px 5px 26px 4px rgba(0,0,0,0.12)",
+        "0px 8px 9px -5px rgba(0,0,0,0.2),0px 15px 22px 2px rgba(0,0,0,0.14),0px 6px 28px 5px rgba(0,0,0,0.12)",
+        "0px 8px 10px -5px rgba(0,0,0,0.2),0px 16px 24px 2px rgba(0,0,0,0.14),0px 6px 30px 5px rgba(0,0,0,0.12)",
+        "0px 8px 11px -5px rgba(0,0,0,0.2),0px 17px 26px 2px rgba(0,0,0,0.14),0px 6px 32px 5px rgba(0,0,0,0.12)",
+        "0px 9px 11px -5px rgba(0,0,0,0.2),0px 18px 28px 2px rgba(0,0,0,0.14),0px 7px 34px 6px rgba(0,0,0,0.12)",
+        "0px 9px 12px -6px rgba(0,0,0,0.2),0px 19px 29px 2px rgba(0,0,0,0.14),0px 7px 36px 6px rgba(0,0,0,0.12)",
+        "0px 10px 13px -6px rgba(0,0,0,0.2),0px 20px 31px 3px rgba(0,0,0,0.14),0px 8px 38px 7px rgba(0,0,0,0.12)",
+        "0px 10px 13px -6px rgba(0,0,0,0.2),0px 21px 33px 3px rgba(0,0,0,0.14),0px 8px 40px 7px rgba(0,0,0,0.12)",
+        "0px 10px 14px -6px rgba(0,0,0,0.2),0px 22px 35px 3px rgba(0,0,0,0.14),0px 8px 42px 7px rgba(0,0,0,0.12)",
+        "0px 11px 14px -7px rgba(0,0,0,0.2),0px 23px 36px 3px rgba(0,0,0,0.14),0px 9px 44px 8px rgba(0,0,0,0.12)",
+        "0px 11px 15px -7px rgba(0,0,0,0.2),0px 24px 38px 3px rgba(0,0,0,0.14),0px 9px 46px 8px rgba(0,0,0,0.12)",
+      ],
+      "shape": Object {
+        "borderRadius": "24px",
+      },
+      "spacing": [Function],
+      "transitions": Object {
+        "create": [Function],
+        "duration": Object {
+          "complex": 375,
+          "enteringScreen": 225,
+          "leavingScreen": 195,
+          "short": 250,
+          "shorter": 200,
+          "shortest": 150,
+          "standard": 300,
+        },
+        "easing": Object {
+          "easeIn": "cubic-bezier(0.4, 0, 1, 1)",
+          "easeInOut": "cubic-bezier(0.4, 0, 0.2, 1)",
+          "easeOut": "cubic-bezier(0.0, 0, 0.2, 1)",
+          "sharp": "cubic-bezier(0.4, 0, 0.6, 1)",
+        },
+        "getAutoHeightDuration": [Function],
+      },
+      "typography": Object {
+        "body1": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "1rem",
+          "fontWeight": 500,
+          "lineHeight": 1.5,
+        },
+        "body2": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "0.875rem",
+          "fontWeight": 500,
+          "lineHeight": 1.43,
+        },
+        "button": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "0.875rem",
+          "fontWeight": 500,
+          "lineHeight": 1.75,
+          "textTransform": "capitalize",
+        },
+        "caption": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "0.75rem",
+          "fontStyle": "italic",
+          "fontWeight": 500,
+          "lineHeight": 1.66,
+        },
+        "display1": Object {
+          "fontWeight": 700,
+        },
+        "display2": Object {
+          "fontWeight": 700,
+        },
+        "display3": Object {
+          "fontWeight": 900,
+        },
+        "display4": Object {
+          "fontWeight": 900,
+        },
+        "fontFamily": "museo-sans,Source Code Pro",
+        "fontSize": 14,
+        "fontWeightBold": 700,
+        "fontWeightLight": 300,
+        "fontWeightMedium": 500,
+        "fontWeightRegular": 400,
+        "h1": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "6rem",
+          "fontWeight": 300,
+          "lineHeight": 1,
+        },
+        "h2": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "3.75rem",
+          "fontWeight": 300,
+          "lineHeight": 1,
+        },
+        "h3": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "3rem",
+          "fontWeight": 400,
+          "lineHeight": 1.04,
+        },
+        "h4": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "2.125rem",
+          "fontWeight": 400,
+          "lineHeight": 1.17,
+        },
+        "h5": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "1.5rem",
+          "fontWeight": 400,
+          "lineHeight": 1.33,
+        },
+        "h6": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "1.25rem",
+          "fontWeight": 500,
+          "lineHeight": 1.6,
+        },
+        "htmlFontSize": 16,
+        "overline": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "0.75rem",
+          "fontWeight": 400,
+          "lineHeight": 2.66,
+          "textTransform": "uppercase",
+        },
+        "pxToRem": [Function],
+        "round": [Function],
+        "subtitle1": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "1rem",
+          "fontWeight": 400,
+          "lineHeight": 1.75,
+        },
+        "subtitle2": Object {
+          "fontFamily": "museo-sans,Source Code Pro",
+          "fontSize": "0.875rem",
+          "fontWeight": 500,
+          "lineHeight": 1.57,
+        },
+      },
+      "zIndex": Object {
+        "appBar": 1100,
+        "drawer": 1200,
+        "mobileStepper": 1000,
+        "modal": 1300,
+        "snackbar": 1400,
+        "speedDial": 1050,
+        "tooltip": 1500,
+      },
+    }
+  }
+>
+  This is the table containing the logs
+</WithStyles(ForwardRef(Table))>
 `;

@@ -39,8 +39,8 @@ export default class LogEntries extends Component {
   }
 
   componentDidUpdate () {
-    if (this.tableRef && this.props.shouldActivateSnapToBottom) {
-      this.bottomSnapperRef.scrollIntoView()
+    if (this.bottomSnapperRef && this.props.shouldActivateSnapToBottom) {
+      this.bottomSnapperRef.scrollIntoView({ behavior: 'smooth' })
     }
   }
 

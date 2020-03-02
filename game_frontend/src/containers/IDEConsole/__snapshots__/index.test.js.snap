@@ -2,7 +2,9 @@
 
 exports[`<IDEConsole /> renders correctly 1`] = `
 <styled.section>
-  <ConsoleBar />
+  <ConsoleBar
+    clearConsoleClicked={[Function]}
+  />
   <styled.div
     innerRef={[Function]}
   >
@@ -11,17 +13,35 @@ exports[`<IDEConsole /> renders correctly 1`] = `
         Array [
           Object {
             "log": "hello",
-            "timestamp": "1",
+            "turn_count": "1",
           },
           Object {
             "log": "bye",
-            "timestamp": "2",
+            "turn_count": "2",
           },
         ]
       }
+      shouldActivateSnapToBottom={false}
     />
   </styled.div>
 </styled.section>
+`;
+
+exports[`<IDEConsole /> sends activates snap to bottom on the LogEntries if the console log is overflown 1`] = `
+Array [
+  Array [
+    Object {
+      "activatedScrollToBottom": true,
+      "shouldActivateSnapToBottom": true,
+    },
+  ],
+  Array [
+    Object {
+      "activatedScrollToBottom": true,
+      "shouldActivateSnapToBottom": false,
+    },
+  ],
+]
 `;
 
 exports[`<StyledConsole /> renders correctly 1`] = `
@@ -29,8 +49,7 @@ exports[`<StyledConsole /> renders correctly 1`] = `
   color: #fff;
   background-color: #303030;
   font-family: 'Source Code Pro',monospace;
-  overflow: auto;
-  white-space: pre-line;
+  overflow-y: auto;
   height: 100%;
 }
 
