@@ -47,8 +47,8 @@ export class IDEConsole extends Component {
     shouldActivateSnapToBottom: false
   }
 
-  isOverflown ({ clientWidth, clientHeight, scrollWidth, scrollHeight }) {
-    return scrollHeight > clientHeight || scrollWidth > clientWidth
+  isOverflown ({ clientHeight, scrollHeight }) {
+    return scrollHeight > clientHeight
   }
 
   componentDidUpdate () {
