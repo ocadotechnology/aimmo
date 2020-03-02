@@ -27,23 +27,6 @@ exports[`<IDEConsole /> renders correctly 1`] = `
 </styled.section>
 `;
 
-exports[`<IDEConsole /> sends activates snap to bottom on the LogEntries if the console log is overflown 1`] = `
-Array [
-  Array [
-    Object {
-      "activatedScrollToBottom": true,
-      "shouldActivateSnapToBottom": true,
-    },
-  ],
-  Array [
-    Object {
-      "activatedScrollToBottom": true,
-      "shouldActivateSnapToBottom": false,
-    },
-  ],
-]
-`;
-
 exports[`<StyledConsole /> renders correctly 1`] = `
 .c0 {
   color: #fff;
