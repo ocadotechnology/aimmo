@@ -9,7 +9,7 @@ let environment: MockEnvironment
 let avatars: AvatarManager
 
 beforeEach(() => {
-  environment = new MockEnvironment()
+  environment = new MockEnvironment(true, 'future')
   avatars = new AvatarManager(environment, dummyImportMesh)
 })
 

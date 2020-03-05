@@ -1,9 +1,9 @@
-{"producer":{"name":"Blender","version":"2.81 (sub 16)","exporter_version":"6.3.0","file":"rock_model.babylon"},
+{"producer":{"name":"Blender","version":"2.81 (sub 16)","exporter_version":"6.3.0","file":"obstacle_model_prehistory.babylon"},
 "autoClear":true,"clearColor":[0.0509,0.0509,0.0509],"gravity":[0,-9.81,0],
 "materials":[{"name":"Material","id":"Material","customType":"BABYLON.PBRMaterial","backFaceCulling":true,"checkReadyOnlyOnce":false,"maxSimultaneousLights":4,"environmentIntensity":1,"albedo":[0.8,0.8,0.8],"reflectivity":[0.5,0.5,0.5],"roughness":0.4,"alpha":1,"transparencyMode":0,"alphaCutOff":0.4,"metallic":0}],
 "multiMaterials":[],
 "skeletons":[],
-"meshes":[{"name":"rock","id":"rock","materialId":"Material","billboardMode":0,"position":[0,0,0],"rotation":[0,0,0],"scaling":[1,1,1],"isVisible":true,"freezeWorldMatrix":false,"isEnabled":true,"checkCollisions":false,"receiveShadows":false,"pickable":true,"tags":""
+"meshes":[{"name":"obstacle","id":"obstacle","materialId":"Material","billboardMode":0,"position":[0,0,0],"rotation":[0,0,0],"scaling":[1,1,1],"isVisible":true,"freezeWorldMatrix":false,"isEnabled":true,"checkCollisions":false,"receiveShadows":false,"pickable":true,"tags":""
 ,"positions":[-0.1875,0.0001,-0.3654,-0.3897,0.4031,-0.3103,-0.3627,0.0001,-0.2373,-0.3251,0.0001,0.3555,-0.0252,0.0001,0.3942,-0.3729,0.0001,0.1657,0.2883,0.0001,0.3091,0.3062,0.2674,0.3592,0.351,0.0001,0.0346,-0.3251,0.0001,0.3555,-0.206,0.2881,0.3816,-0.0252,0.0001,0.3942,0.3555,0.2751,-0.0486,0.3169,0.4421,0.027,0.3443,0.4512,-0.1495,0.3689,0.4541,0.1679,0.1642,0.7243,0.2418
 ,0.1261,0.7973,0.1057,0.3169,0.4421,0.027,0.3689,0.4541,0.1679,0.1795,0.7252,-0.0089,-0.0252,0.0001,0.3942,0.0952,0.4099,0.4569,0.3062,0.2674,0.3592,0.3062,0.2674,0.3592,0.2883,0.0001,0.3091,-0.0252,0.0001,0.3942,0.351,0.0001,0.0346,0.2883,0.0001,0.3091,-0.3729,0.0001,0.1657,-0.206,0.2881,0.3816,-0.3251,0.0001,0.3555,-0.1615,0.6692,0.1121,-0.3767,0.3705,0.0893
 ,-0.3555,0.7627,-0.1202,-0.3627,0.0001,-0.2373,-0.3897,0.4031,-0.3103,-0.3767,0.3705,0.0893,-0.3767,0.3705,0.0893,-0.3897,0.4031,-0.3103,-0.3555,0.7627,-0.1202,0.0467,0.8223,-0.1319,-0.2306,0.6525,-0.3575,0.0241,0.6991,-0.4018,0.1642,0.7243,0.2418,0.1069,0.6601,0.3325,-0.0915,0.6101,0.2759,0.3942,0.2161,-0.2829,0.2705,0.0001,-0.3348,0.3942,0.1081,-0.1242,0.3689,0.4541,0.1679

@@ -9,7 +9,7 @@ let environment: MockEnvironment
 let interactable: InteractableManager
 
 beforeEach(() => {
-  environment = new MockEnvironment()
+  environment = new MockEnvironment(true, 'future')
   interactable = new InteractableManager(environment, dummyImportMesh)
 })
 

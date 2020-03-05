@@ -24,7 +24,7 @@ export default class GameEngine {
         }
         
         this.onUpdateGameState(previousProps.gameState, currentProps.gameState)
-        this.entities.setCurrentAvatarID(currentProps.currentAvatarID)
+        this.setCurrentAvatarID(currentProps.currentAvatarID)
         this.centerOn(currentProps)
       }
     }
@@ -38,13 +38,16 @@ export default class GameEngine {
       this.addPanListener(this.environment.scene)
     }
 
+    setCurrentAvatarID(props: any) {
+      this.entities.setCurrentAvatarID(props)
+    }
+
     centerOn (props: any) {
       if (props.cameraCenteredOnUserAvatar) {
         if (this.entities.avatars.currentAvatarMesh) {
           this.environmentManager.centerOn(this.entities.avatars.currentAvatarMesh)
         } else if (props.gameState.players) {
           const location = this.getAvatarLocation(props.currentAvatarID, props.gameState.players)
-          console.log("There was no currentAvatarMesh")
           this.environmentManager.camera.object.setTarget(location)
           this.environmentManager.camera.object.panningOriginTarget = location
         }

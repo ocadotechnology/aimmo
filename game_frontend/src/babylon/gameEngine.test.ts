@@ -11,7 +11,8 @@ let examplePlayer1: any
 let examplePlayer2: any
 
 beforeEach(() => {
-  gameEngine = new GameEngine(jest.fn(), new MockEnvironment(true))
+  gameEngine = new GameEngine(jest.fn(), new MockEnvironment(true, 'future'))
+  gameEngine.populateMap()
   avatarToAdd = new DiffItem(1, {
     health: 5,
     location: {
@@ -54,7 +55,7 @@ describe('GameEngine', () => {
     const props = generateProps(true, true, { 0: examplePlayer1 }, 1)
 
     gameEngine.entities.avatars = new AvatarManager(gameEngine.environment, dummyImportMesh)
-    gameEngine.onUpdateCurrentAvatarID(0, 1)
+    gameEngine.entities.setCurrentAvatarID(1)
 
     gameEngine.entities.avatars.add(avatarToAdd)
 
@@ -66,7 +67,7 @@ describe('GameEngine', () => {
 
   it('uncenters the camera on avatar location', () => {
     gameEngine.entities.avatars = new AvatarManager(gameEngine.environment, dummyImportMesh)
-    gameEngine.onUpdateCurrentAvatarID(0, 1)
+    gameEngine.entities.setCurrentAvatarID(1)
 
     gameEngine.entities.avatars.add(avatarToAdd)
 

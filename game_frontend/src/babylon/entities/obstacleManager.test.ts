@@ -1,14 +1,15 @@
 /* eslint-env jest */
 import { MockEnvironment } from '../../testHelpers/mockEnvironment'
 import ObstacleManager from './obstacleManager'
+import dummyImportMesh from '../../testHelpers/dummyImportMesh'
 import { DiffItem } from '../diff'
 
 let environment: MockEnvironment
 let obstacles: ObstacleManager
 
 beforeEach(() => {
-  environment = new MockEnvironment()
-  obstacles = new ObstacleManager(environment)
+  environment = new MockEnvironment(true, 'future')
+  obstacles = new ObstacleManager(environment, dummyImportMesh)
 })
 
 function obstacleDiffItem (index: string, location: {x: number, y: number}) {
@@ -36,7 +37,7 @@ describe('obstacle', () => {
     const meshes = obstacles.obstacleNode.getChildMeshes()
 
     expect(meshes.length).toBe(1)
-    expect(meshes[0].position).toEqual({ x: 0, y: 0.5, z: 0 })
+    expect(meshes[0].position).toEqual({ x: 0, y: 0, z: 0 })
   })
 
   it('deletes an obstacle', () => {
@@ -61,7 +62,7 @@ describe('obstacle', () => {
     let meshes = obstacles.obstacleNode.getChildMeshes()
 
     expect(meshes.length).toBe(1)
-    expect(meshes[0].position).toEqual({ x: 0, y: 0.5, z: 0 })
+    expect(meshes[0].position).toEqual({ x: 0, y: 0, z: 0 })
 
     const updatedObstacle = obstacleDiffItem('1', { x: 1, y: 1 })
 
@@ -70,6 +71,6 @@ describe('obstacle', () => {
     meshes = obstacles.obstacleNode.getChildMeshes()
 
     expect(meshes.length).toBe(1)
-    expect(meshes[0].position).toEqual({ x: 1, y: 0.5, z: 1 })
+    expect(meshes[0].position).toEqual({ x: 1, y: 0, z: 1 })
   })
 })

@@ -1,33 +1,29 @@
 import { GameNode } from '../interfaces'
 import * as BABYLON from 'babylonjs'
 import { Environment } from './environment'
+import { AssetPack } from '../assetPack'
 
 export default class Terrain implements GameNode {
     object: any;
+    assetPack: AssetPack
 
     constructor (environment: Environment) {
-      const gridOverlay = BABYLON.Mesh.CreateTiledGround('overlay', -15, -15, 16, 16, { w: 31, h: 31 }, { w: 1, h: 1 }, environment.scene)
-      const gridMat = new BABYLON.StandardMaterial('Terrain', environment.scene)
+      this.assetPack = new AssetPack(environment.era)
+
+      const gridOverlay = BABYLON.Mesh.CreateTiledGround(this.assetPack.grid.name, -15, -15, 16, 16, this.assetPack.grid.tileSize, { w: 1, h: 1 }, environment.scene)
+      const gridMat = new BABYLON.StandardMaterial(this.assetPack.grid.materialName, environment.scene)
       gridMat.diffuseColor = new BABYLON.Color3(0, 0, 0)
       gridMat.specularColor = new BABYLON.Color3(0, 0, 0)
       gridMat.ambientColor = BABYLON.Color3.White()
-      gridMat.opacityTexture = new BABYLON.Texture('/static/babylon/terrain/grid.png', environment.scene)
+      gridMat.opacityTexture = new BABYLON.Texture(this.assetPack.grid.textureURL, environment.scene)
       gridOverlay.material = gridMat
 
-      if (environment.era === 'future') {
-        var tileSize = 31
-      } else if (environment.era === 'prehistory') {
-        tileSize = 1
-      }
+      this.object = BABYLON.Mesh.CreateTiledGround(this.assetPack.terrain.name, -15, -15, 16, 16, this.assetPack.terrain.tileSize, { w: 1, h: 1 }, environment.scene)
 
-      const ground = BABYLON.Mesh.CreateTiledGround('terrain', -15, -15, 16, 16, { w: tileSize, h: tileSize }, { w: 1, h: 1 }, environment.scene)
-      this.object = ground
-
-      const mat = new BABYLON.StandardMaterial('Terrain', environment.scene)
-      const textureUrl = '/static/babylon/terrain/ground_' + environment.era + '.jpg'
+      const mat = new BABYLON.StandardMaterial(this.assetPack.terrain.materialName, environment.scene)
 
       mat.useReflectionOverAlpha = false
-      mat.diffuseTexture = new BABYLON.Texture(textureUrl, environment.scene)
+      mat.diffuseTexture = new BABYLON.Texture(this.assetPack.terrain.textureURL, environment.scene)
       mat.diffuseTexture.level = 1.2
       mat.specularColor = new BABYLON.Color3(0, 0, 0)
       mat.ambientColor = BABYLON.Color3.White()

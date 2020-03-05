@@ -5,7 +5,7 @@ export interface Environment {
   engine: Engine;
   canvas?: HTMLCanvasElement;
   onTerrainNode: TransformNode;
-  era: String;
+  era: string;
 }
 
 export class StandardEnvironment implements Environment {
@@ -13,7 +13,7 @@ export class StandardEnvironment implements Environment {
   engine: Engine;
   canvas: HTMLCanvasElement;
   onTerrainNode: TransformNode;
-  era: String;
+  era: string;
 
   constructor (canvas: HTMLCanvasElement) {
     this.canvas = canvas
