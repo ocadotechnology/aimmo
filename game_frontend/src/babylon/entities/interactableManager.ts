@@ -7,7 +7,6 @@ import { AssetPack } from '../assetPacks/assetPack'
 export default class InteractableManager implements GameNode, DiffHandling {
   object: any
   assetPack: AssetPack
-  scene: BABYLON.Scene
   interactableNode: BABYLON.TransformNode
   importMesh: Function
   materials: any

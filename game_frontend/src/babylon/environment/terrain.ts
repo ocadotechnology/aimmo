@@ -9,7 +9,7 @@ export default class Terrain implements GameNode {
   constructor (assetPack: AssetPack) {
     this.assetPack = assetPack
 
-    this.object = new TransformNode('Terrain', this.assetPack.environment.scene)
+    this.object = new TransformNode('Terrain', this.assetPack.scene)
 
     assetPack.createGridOverlay(this.object)
     assetPack.createTerrain(this.object)

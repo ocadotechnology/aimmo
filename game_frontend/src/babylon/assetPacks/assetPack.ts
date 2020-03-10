@@ -6,7 +6,8 @@ import {
   Texture,
   TransformNode,
   Mesh,
-  Color3
+  Color3,
+  Scene
 } from 'babylonjs'
 import { Environment } from '../environment/environment'
 
@@ -32,7 +33,7 @@ export interface PlaneAsset {
 }
 
 export class AssetPack {
-  environment: Environment
+  scene: Scene
   obstacleInfo: StandardAsset
   terrianInfo: PlaneAsset
   gridInfo: PlaneAsset = {
@@ -43,10 +44,10 @@ export class AssetPack {
   }
   interactableMaterials: Record<string, StandardMaterial>
 
-  constructor (environment: Environment) {
-    this.environment = environment
-    this.obstacleInfo = getObstacleAssetInfoForEra(environment.era)
-    this.terrianInfo = this.getTerrainInfoForEra(environment.era)
+  constructor (era: string, scene: Scene) {
+    this.scene = scene
+    this.obstacleInfo = getObstacleAssetInfoForEra(era)
+    this.terrianInfo = this.getTerrainInfoForEra(era)
     this.interactableMaterials = {
       artefact: this.createInteractableMaterial('artefact')
     }
@@ -54,10 +55,10 @@ export class AssetPack {
 
   createInteractableMaterial (interactableType: string): StandardMaterial {
     const texture = `/static/babylon/interactables/${interactableType}_texture.png`
-    const material = new StandardMaterial(interactableType, this.environment.scene)
+    const material = new StandardMaterial(interactableType, this.scene)
     material.specularColor = new BABYLON.Color3(0, 0, 0)
     material.emissiveColor = new BABYLON.Color3(0, 0, 0)
-    material.diffuseTexture = new Texture(texture, this.environment.scene)
+    material.diffuseTexture = new Texture(texture, this.scene)
     return material
   }
 
@@ -66,7 +67,7 @@ export class AssetPack {
       this.obstacleInfo.name,
       this.obstacleInfo.modelURL,
       this.obstacleInfo.modelName,
-      this.environment.scene
+      this.scene
     )
     const obstacle = meshes[0]
     obstacle.name = name
@@ -86,7 +87,7 @@ export class AssetPack {
       type,
       '/static/babylon/interactables/',
       model,
-      this.environment.scene
+      this.scene
     )
     const interactable = meshes[0]
     interactable.material = this.interactableMaterials[type]
@@ -105,11 +106,11 @@ export class AssetPack {
       16,
       this.gridInfo.tileSize,
       { w: 1, h: 1 },
-      this.environment.scene
+      this.scene
     )
     const gridOverlayMaterial = new StandardMaterial(
       this.gridInfo.materialName,
-      this.environment.scene
+      this.scene
     )
 
     gridOverlayMaterial.diffuseColor = Color3.Black()
@@ -117,7 +118,7 @@ export class AssetPack {
     gridOverlayMaterial.ambientColor = BABYLON.Color3.White()
     gridOverlayMaterial.opacityTexture = new BABYLON.Texture(
       this.gridInfo.textureURL,
-      this.environment.scene
+      this.scene
     )
     gridOverlay.material = gridOverlayMaterial
     return gridOverlay
@@ -132,12 +133,12 @@ export class AssetPack {
       16,
       this.terrianInfo.tileSize,
       { w: 1, h: 1 },
-      this.environment.scene
+      this.scene
     )
-    const material = new StandardMaterial(this.terrianInfo.materialName, this.environment.scene)
+    const material = new StandardMaterial(this.terrianInfo.materialName, this.scene)
 
     material.useReflectionOverAlpha = false
-    material.diffuseTexture = new Texture(this.terrianInfo.textureURL, this.environment.scene)
+    material.diffuseTexture = new Texture(this.terrianInfo.textureURL, this.scene)
     material.diffuseTexture.level = 1.2
     material.specularColor = Color3.Black()
     material.ambientColor = Color3.White()
@@ -163,48 +164,5 @@ function getObstacleAssetInfoForEra (era: string): StandardAsset {
     modelName: `obstacle_model_${era}.babylon`,
     textureURL: `/static/babylon/obstacles/obstacle_${era}.jpg`,
     materialName: `obstacle_material_${era}`
-  }
-}
-
-/**
- * Used to store game assets and map them to eras
- */
-export class AssetSomethingPack {
-  obstacles: StandardAsset
-  terrain: PlaneAsset
-  grid: PlaneAsset
-
-  constructor (era: string) {
-    this.createObstacles(era)
-    this.createTerrain(era)
-    this.createGrid()
-  }
-
-  createObstacles (era: string): void {
-    this.obstacles = {
-      name: 'obstacle',
-      modelURL: '/static/babylon/obstacles/',
-      modelName: `obstacle_model_${era}.babylon`,
-      textureURL: `/static/babylon/obstacles/obstacle_${era}.jpg`,
-      materialName: `obstacle_material_${era}`
-    }
-  }
-
-  createTerrain (era: string): void {
-    this.terrain = {
-      name: 'terrain',
-      tileSize: tileSizes[era],
-      materialName: `terrain_material_${era}`,
-      textureURL: `/static/babylon/terrain/terrain_${era}.jpg`
-    }
-  }
-
-  createGrid (): void {
-    this.grid = {
-      name: 'grid',
-      tileSize: tileSizes['grid'],
-      materialName: 'grid_material',
-      textureURL: '/static/babylon/terrain/grid.png'
-    }
   }
 }

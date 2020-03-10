@@ -24,7 +24,7 @@ export default class GameEngine {
     if (currentProps.gameState) {
       if (this.environment.era === '') {
         this.environment.era = currentProps.gameState['era']
-        this.assetPack = getAssetPackForEra(this.environment.era, this.environment)
+        this.assetPack = getAssetPackForEra(this.environment.era, this.environment.scene)
         this.populateMap()
       }
 
@@ -36,8 +36,8 @@ export default class GameEngine {
 
   populateMap (): void {
     this.sceneRenderer = new SceneRenderer(this.environment)
-    this.environmentManager = new EnvironmentManager(this.assetPack)
-    this.entities = new EntityManager(this.assetPack)
+    this.environmentManager = new EnvironmentManager(this.environment, this.assetPack)
+    this.entities = new EntityManager(this.environment, this.assetPack)
 
     window.addEventListener('resize', this.environmentManager.resizeBabylonWindow)
     this.addPanListener(this.environment.scene)
@@ -69,7 +69,7 @@ export default class GameEngine {
 
   addPanListener (scene: BABYLON.Scene) {
     scene.onPrePointerObservable.add(
-      pointerInfo => {
+      () => {
         this.panHandler()
         this.environmentManager.unCenter(this.entities.avatars.currentAvatarMesh)
       },

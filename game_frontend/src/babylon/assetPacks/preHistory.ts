@@ -1,18 +1,27 @@
 import { AssetPack } from './assetPack'
-import { StandardMaterial, Texture, Color3, Vector3, TransformNode, Axis, Space, AbstractMesh } from 'babylonjs'
-import { Environment } from '../environment/environment'
+import {
+  StandardMaterial,
+  Texture,
+  Color3,
+  Vector3,
+  TransformNode,
+  Axis,
+  Space,
+  AbstractMesh,
+  Scene
+} from 'babylonjs'
 
 export default class PreHistoryAssetPack extends AssetPack {
   obstacleMaterial: StandardMaterial
 
-  constructor (environment: Environment) {
-    super(environment)
+  constructor (era: string, scene: Scene) {
+    super(era, scene)
     this.obstacleMaterial = this.makeObstacleMaterial()
   }
 
   makeObstacleMaterial (): StandardMaterial {
-    const material = new StandardMaterial(this.obstacleInfo.materialName, this.environment.scene)
-    material.diffuseTexture = new Texture(this.obstacleInfo.textureURL, this.environment.scene)
+    const material = new StandardMaterial(this.obstacleInfo.materialName, this.scene)
+    material.diffuseTexture = new Texture(this.obstacleInfo.textureURL, this.scene)
     material.specularColor = new Color3(0, 0, 0)
     material.diffuseColor = new Color3(0.7, 0.8, 1)
     return material
