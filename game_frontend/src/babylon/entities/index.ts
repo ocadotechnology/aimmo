@@ -3,9 +3,11 @@ import { diff } from '../diff'
 import { Environment } from '../environment/environment'
 import InteractableManager from './interactableManager'
 import AvatarManager from './avatarManager'
+import { AssetPack, getAssetPackForEra } from '../assetPack'
 
 export default class EntityManager {
   environment: Environment
+  assetPack: AssetPack
 
   obstacles: ObstacleManager
   interactables: InteractableManager
@@ -13,8 +15,9 @@ export default class EntityManager {
 
   constructor (environment: Environment) {
     this.environment = environment
-    this.obstacles = new ObstacleManager(this.environment)
-    this.interactables = new InteractableManager(this.environment)
+    this.assetPack = getAssetPackForEra(environment.era, environment)
+    this.obstacles = new ObstacleManager(this.environment, this.assetPack)
+    this.interactables = new InteractableManager(this.environment, this.assetPack)
     this.avatars = new AvatarManager(this.environment)
   }
 

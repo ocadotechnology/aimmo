@@ -1,14 +1,14 @@
 import { GameNode } from '../interfaces'
 import * as BABYLON from 'babylonjs'
 import { Environment } from './environment'
-import { AssetPack } from '../assetPack'
+import { AssetSomethingPack } from '../assetPack'
 
 export default class Terrain implements GameNode {
     object: any;
-    assetPack: AssetPack
+    assetPack: AssetSomethingPack
 
     constructor (environment: Environment) {
-      this.assetPack = new AssetPack(environment.era)
+      this.assetPack = new AssetSomethingPack(environment.era)
 
       const gridOverlay = BABYLON.Mesh.CreateTiledGround(this.assetPack.grid.name, -15, -15, 16, 16, this.assetPack.grid.tileSize, { w: 1, h: 1 }, environment.scene)
       const gridMat = new BABYLON.StandardMaterial(this.assetPack.grid.materialName, environment.scene)
