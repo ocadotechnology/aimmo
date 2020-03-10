@@ -3,22 +3,20 @@ import { diff } from '../diff'
 import { Environment } from '../environment/environment'
 import InteractableManager from './interactableManager'
 import AvatarManager from './avatarManager'
-import { AssetPack, getAssetPackForEra } from '../assetPack'
+import { AssetPack } from '../assetPacks/assetPack'
 
 export default class EntityManager {
-  environment: Environment
   assetPack: AssetPack
 
   obstacles: ObstacleManager
   interactables: InteractableManager
   avatars: AvatarManager
 
-  constructor (environment: Environment) {
-    this.environment = environment
-    this.assetPack = getAssetPackForEra(environment.era, environment)
-    this.obstacles = new ObstacleManager(this.environment, this.assetPack)
-    this.interactables = new InteractableManager(this.environment, this.assetPack)
-    this.avatars = new AvatarManager(this.environment)
+  constructor (assetPack: AssetPack) {
+    this.assetPack = assetPack
+    this.obstacles = new ObstacleManager(this.assetPack)
+    this.interactables = new InteractableManager(this.assetPack.environment, this.assetPack)
+    this.avatars = new AvatarManager(this.assetPack.environment)
   }
 
   onGameStateUpdate (previousGameState: any, currentGameState: any): void {

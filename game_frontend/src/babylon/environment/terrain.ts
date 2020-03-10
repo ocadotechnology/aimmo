@@ -1,32 +1,17 @@
 import { GameNode } from '../interfaces'
-import * as BABYLON from 'babylonjs'
-import { Environment } from './environment'
-import { AssetSomethingPack } from '../assetPack'
+import { TransformNode } from 'babylonjs'
+import { AssetPack } from '../assetPacks/assetPack'
 
 export default class Terrain implements GameNode {
-    object: any;
-    assetPack: AssetSomethingPack
+  object: any
+  assetPack: AssetPack
 
-    constructor (environment: Environment) {
-      this.assetPack = new AssetSomethingPack(environment.era)
+  constructor (assetPack: AssetPack) {
+    this.assetPack = assetPack
 
-      const gridOverlay = BABYLON.Mesh.CreateTiledGround(this.assetPack.grid.name, -15, -15, 16, 16, this.assetPack.grid.tileSize, { w: 1, h: 1 }, environment.scene)
-      const gridMat = new BABYLON.StandardMaterial(this.assetPack.grid.materialName, environment.scene)
-      gridMat.diffuseColor = new BABYLON.Color3(0, 0, 0)
-      gridMat.specularColor = new BABYLON.Color3(0, 0, 0)
-      gridMat.ambientColor = BABYLON.Color3.White()
-      gridMat.opacityTexture = new BABYLON.Texture(this.assetPack.grid.textureURL, environment.scene)
-      gridOverlay.material = gridMat
+    this.object = new TransformNode('Terrain', this.assetPack.environment.scene)
 
-      this.object = BABYLON.Mesh.CreateTiledGround(this.assetPack.terrain.name, -15, -15, 16, 16, this.assetPack.terrain.tileSize, { w: 1, h: 1 }, environment.scene)
-
-      const mat = new BABYLON.StandardMaterial(this.assetPack.terrain.materialName, environment.scene)
-
-      mat.useReflectionOverAlpha = false
-      mat.diffuseTexture = new BABYLON.Texture(this.assetPack.terrain.textureURL, environment.scene)
-      mat.diffuseTexture.level = 1.2
-      mat.specularColor = new BABYLON.Color3(0, 0, 0)
-      mat.ambientColor = BABYLON.Color3.White()
-      this.object.material = mat
-    }
+    assetPack.createGridOverlay(this.object)
+    assetPack.createTerrain(this.object)
+  }
 }

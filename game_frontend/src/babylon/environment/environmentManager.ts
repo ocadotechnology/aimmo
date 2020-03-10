@@ -1,25 +1,25 @@
 import Camera from './camera'
 import Light from './light'
 import Terrain from './terrain'
-import { Environment } from './environment'
+import { AssetPack } from '../assetPacks/assetPack'
 
 export default class EnvironmentManager {
     camera: Camera
     light: Light
     terrain: Terrain
-    environment: Environment
+    assetPack: AssetPack
 
-    constructor (environment: Environment) {
-      this.environment = environment
+    constructor (assetPack: AssetPack) {
+      this.assetPack = assetPack
 
-      this.camera = new Camera(environment)
-      this.light = new Light(environment)
-      this.terrain = new Terrain(environment)
+      this.camera = new Camera(this.assetPack.environment)
+      this.light = new Light(this.assetPack.environment)
+      this.terrain = new Terrain(this.assetPack)
     }
 
     resizeBabylonWindow = () => {
-      this.environment.engine.resize()
-      this.camera.computeCameraView(this.environment.canvas)
+      this.assetPack.environment.engine.resize()
+      this.camera.computeCameraView(this.assetPack.environment.canvas)
     }
 
     centerOn (mesh: any): void {

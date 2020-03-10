@@ -1,8 +1,7 @@
 import { GameNode, DiffHandling, DiffProcessor } from '../interfaces'
 import * as BABYLON from 'babylonjs'
-import { Environment } from '../environment/environment'
 import { DiffItem } from '../diff'
-import { AssetPack } from '../assetPack'
+import { AssetPack } from '../assetPacks/assetPack'
 
 export default class ObstacleManager implements GameNode, DiffHandling {
   object: any
@@ -12,13 +11,12 @@ export default class ObstacleManager implements GameNode, DiffHandling {
   materials: Array<BABYLON.StandardMaterial>
   assetPack: AssetPack
 
-  constructor (environment: Environment, assetPack: AssetPack) {
+  constructor (assetPack: AssetPack) {
+    this.assetPack = assetPack
     this.gameStateProcessor = new DiffProcessor(this)
-
-    this.obstacleNode = new BABYLON.TransformNode('Obstacles', environment.scene)
+    this.obstacleNode = new BABYLON.TransformNode('Obstacles', this.assetPack.environment.scene)
     this.object = this.obstacleNode
-    this.obstacleNode.parent = environment.onTerrainNode
-
+    this.obstacleNode.parent = this.assetPack.environment.onTerrainNode
     this.assetPack = assetPack
   }
 
