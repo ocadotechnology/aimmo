@@ -46,8 +46,8 @@ export default class InteractableManager implements GameNode, DiffHandling {
     }
   }
 
-  add (interactable: DiffItem): void {
-    this.assetPack.createInteractable(
+  async add (interactable: DiffItem) {
+    await this.assetPack.createInteractable(
       `interactable: ${interactable.id}`,
       interactable.value.type,
       new BABYLON.Vector3(interactable.value.location.x, 0, interactable.value.location.y),

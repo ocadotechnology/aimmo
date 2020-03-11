@@ -9,9 +9,9 @@ import * as BABYLON from 'babylonjs'
  * @param scene
  * @param onSuccess
  */
-export default function dummyImportMesh (meshName: string, filePath: string, fileName: string, scene: BABYLON.Scene, onSuccess: Function): void {
+export default async function dummyImportMeshAsync (meshName: string, filePath: string, fileName: string, scene: BABYLON.Scene): Promise<any> {
   const meshes: BABYLON.AbstractMesh[] = []
   meshes[0] = BABYLON.MeshBuilder.CreateBox('', { height: 1 }, scene)
   meshes[0].skeleton = new BABYLON.Skeleton('box bones', 'box bones', scene)
-  onSuccess(meshes, [], [], [])
+  return Promise.resolve({ meshes })
 }
