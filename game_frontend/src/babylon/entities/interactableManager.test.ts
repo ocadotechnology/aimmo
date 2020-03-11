@@ -4,15 +4,15 @@ import { DiffItem } from '../diff'
 import { MockEnvironment } from '../../testHelpers/mockEnvironment'
 import AssetPack from '../assetPacks/assetPack'
 import { Vector3 } from 'babylonjs'
-import dummyImportMeshAsync from 'testHelpers/dummyImportMesh'
+import dummyImportMeshAsync from 'testHelpers/dummyImportMeshAsync'
 
 let environment: MockEnvironment
 let interactableManager: InteractableManager
 
 beforeEach(() => {
   environment = new MockEnvironment(true, 'future')
-  const mockAssetPack = new AssetPack(environment.era, environment.scene, dummyImportMeshAsync)
-  interactableManager = new InteractableManager(environment, mockAssetPack)
+  const assetPack = new AssetPack(environment.era, environment.scene, dummyImportMeshAsync)
+  interactableManager = new InteractableManager(environment, assetPack)
 })
 
 function interactableDiffItem (index: number, type: string, location: { x: number; y: number }) {

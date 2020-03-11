@@ -44,8 +44,8 @@ export default class ObstacleManager implements GameNode, DiffHandling {
     }
   }
 
-  add (obstacle: DiffItem): void {
-    this.assetPack.createObstacle(
+  async add (obstacle: DiffItem) {
+    await this.assetPack.createObstacle(
       `obstacle: ${obstacle.id}`,
       new BABYLON.Vector3(obstacle.value.location.x, 0, obstacle.value.location.y),
       this.obstacleNode

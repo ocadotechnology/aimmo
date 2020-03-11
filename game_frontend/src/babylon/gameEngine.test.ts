@@ -2,7 +2,7 @@
 import { MockEnvironment } from '../testHelpers/mockEnvironment'
 import GameEngine from './gameEngine'
 import AvatarManager from './entities/avatarManager'
-import dummyImportMesh from '../testHelpers/dummyImportMesh'
+import dummyImportMeshAsync from '../testHelpers/dummyImportMeshAsync'
 import { DiffItem } from './diff'
 
 let gameEngine: GameEngine
@@ -51,13 +51,13 @@ function generateProps (cameraCenteredOnUserAvatar: Boolean, gameLoaded: Boolean
 }
 
 describe('GameEngine', () => {
-  it('centers the camera on avatar location', () => {
+  it('centers the camera on avatar location', async () => {
     const props = generateProps(true, true, { 0: examplePlayer1 }, 1)
 
-    gameEngine.entities.avatars = new AvatarManager(gameEngine.environment, dummyImportMesh)
+    gameEngine.entities.avatars = new AvatarManager(gameEngine.environment, dummyImportMeshAsync)
     gameEngine.entities.setCurrentAvatarID(1)
 
-    gameEngine.entities.avatars.add(avatarToAdd)
+    await gameEngine.entities.avatars.add(avatarToAdd)
 
     gameEngine.environmentManager.camera.centerOn = jest.fn()
     gameEngine.centerOn(props)
@@ -65,11 +65,11 @@ describe('GameEngine', () => {
     expect(gameEngine.environmentManager.camera.centerOn).toBeCalled()
   })
 
-  it('uncenters the camera on avatar location', () => {
-    gameEngine.entities.avatars = new AvatarManager(gameEngine.environment, dummyImportMesh)
+  it('uncenters the camera on avatar location', async () => {
+    gameEngine.entities.avatars = new AvatarManager(gameEngine.environment, dummyImportMeshAsync)
     gameEngine.entities.setCurrentAvatarID(1)
 
-    gameEngine.entities.avatars.add(avatarToAdd)
+    await gameEngine.entities.avatars.add(avatarToAdd)
 
     gameEngine.environmentManager.camera.unCenter = jest.fn()
     gameEngine.environmentManager.unCenter(gameEngine.entities.avatars.currentAvatarMesh)
