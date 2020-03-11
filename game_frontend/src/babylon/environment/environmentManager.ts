@@ -1,7 +1,7 @@
 import Camera from './camera'
 import Light from './light'
 import Terrain from './terrain'
-import { AssetPack } from '../assetPacks/assetPack'
+import AssetPack from '../assetPacks/assetPack'
 import { Environment } from './environment'
 
 export default class EnvironmentManager {

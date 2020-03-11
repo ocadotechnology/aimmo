@@ -2,7 +2,7 @@ import ObstacleManager from './obstacleManager'
 import { diff } from '../diff'
 import InteractableManager from './interactableManager'
 import AvatarManager from './avatarManager'
-import { AssetPack } from '../assetPacks/assetPack'
+import AssetPack from '../assetPacks/assetPack'
 import { Environment } from '../environment/environment'
 
 export default class EntityManager {

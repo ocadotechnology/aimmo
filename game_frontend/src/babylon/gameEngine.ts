@@ -3,7 +3,7 @@ import SceneRenderer from './environment'
 import EnvironmentManager from './environment/environmentManager'
 import { Environment } from './environment/environment'
 import * as BABYLON from 'babylonjs'
-import { AssetPack } from './assetPacks/assetPack'
+import AssetPack from './assetPacks/assetPack'
 import getAssetPackForEra from './assetPacks/getAssetPackForEra'
 
 export default class GameEngine {

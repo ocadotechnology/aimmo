@@ -9,7 +9,6 @@ import {
   Color3,
   Scene
 } from 'babylonjs'
-import { Environment } from '../environment/environment'
 
 const tileSizes = {
   future: { w: 31, h: 31 },
@@ -32,7 +31,7 @@ export interface PlaneAsset {
   textureURL: string
 }
 
-export class AssetPack {
+export default class AssetPack {
   scene: Scene
   obstacleInfo: StandardAsset
   terrianInfo: PlaneAsset
@@ -43,9 +42,11 @@ export class AssetPack {
     textureURL: '/static/babylon/terrain/grid.png'
   }
   interactableMaterials: Record<string, StandardMaterial>
+  importMeshAsync: Function
 
-  constructor (era: string, scene: Scene) {
+  constructor (era: string, scene: Scene, importMeshAsync: Function = SceneLoader.ImportMeshAsync) {
     this.scene = scene
+    this.importMeshAsync = importMeshAsync
     this.obstacleInfo = getObstacleAssetInfoForEra(era)
     this.terrianInfo = this.getTerrainInfoForEra(era)
     this.interactableMaterials = {
@@ -63,7 +64,7 @@ export class AssetPack {
   }
 
   async createObstacle (name: string, location: Vector3, parent: TransformNode) {
-    const { meshes } = await SceneLoader.ImportMeshAsync(
+    const { meshes } = await this.importMeshAsync(
       this.obstacleInfo.name,
       this.obstacleInfo.modelURL,
       this.obstacleInfo.modelName,
@@ -83,7 +84,7 @@ export class AssetPack {
     parent: TransformNode
   ): Promise<AbstractMesh> {
     const model = `${type}_model.babylon`
-    const { meshes } = await SceneLoader.ImportMeshAsync(
+    const { meshes } = await this.importMeshAsync(
       type,
       '/static/babylon/interactables/',
       model,

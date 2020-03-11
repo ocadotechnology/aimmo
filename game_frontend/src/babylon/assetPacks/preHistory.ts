@@ -1,4 +1,4 @@
-import { AssetPack } from './assetPack'
+import AssetPack from './assetPack'
 import {
   StandardMaterial,
   Texture,

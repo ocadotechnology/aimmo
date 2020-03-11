@@ -2,7 +2,7 @@ import { GameNode, DiffHandling, DiffProcessor } from '../interfaces'
 import * as BABYLON from 'babylonjs'
 import { Environment } from '../environment/environment'
 import { DiffItem } from '../diff'
-import { AssetPack } from '../assetPacks/assetPack'
+import AssetPack from '../assetPacks/assetPack'
 
 export default class InteractableManager implements GameNode, DiffHandling {
   object: any

@@ -7,7 +7,7 @@ import {
   AbstractMesh,
   Scene
 } from 'babylonjs'
-import { AssetPack } from './assetPack'
+import AssetPack from './assetPack'
 
 export default class FutureAssetPack extends AssetPack {
   obstacleMaterial: StandardMaterial

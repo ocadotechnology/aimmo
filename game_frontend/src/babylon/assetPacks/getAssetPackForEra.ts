@@ -1,4 +1,4 @@
-import { AssetPack } from './assetPack'
+import AssetPack from './assetPack'
 import FutureAssetPack from './future'
 import PreHistoryAssetPack from './preHistory'
 import { Scene } from 'babylonjs'

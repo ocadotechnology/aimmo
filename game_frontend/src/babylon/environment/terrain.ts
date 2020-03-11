@@ -1,6 +1,6 @@
 import { GameNode } from '../interfaces'
 import { TransformNode } from 'babylonjs'
-import { AssetPack } from '../assetPacks/assetPack'
+import AssetPack from '../assetPacks/assetPack'
 
 export default class Terrain implements GameNode {
   object: any
