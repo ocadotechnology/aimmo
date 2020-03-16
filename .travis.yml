@@ -4,6 +4,8 @@ group: edge
 language: python
 cache:
   yarn: true
+node_js:
+  - "12.16"
 python:
   - "3.6.7"
 services:
