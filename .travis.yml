@@ -6,11 +6,6 @@ addons:
   apt:
     sources:
       - docker-xenial
-cache:
-  yarn: false
-  npm: false
-node_js:
-  - 12
 python:
   - "3.6.7"
 services:
@@ -112,14 +107,16 @@ jobs:
       node_js:
         - 12
       install:
-        - cd game_frontend && yarn
+        - cd game_frontend && yarn --frozen-lockfile
       script:
         - yarn lint
-        - yarn lint-typescript
         - yarn test --coverage
       after_success:
         - bash <(curl -s https://codecov.io/bash)
     - stage: Release
+      language: node_js
+      node_js:
+        - 12
       env:
         - NODE_ENV=production
         - SERVER_ENV=$(if [ "$TRAVIS_BRANCH" = "master" ]; then echo "default"; else echo "staging"; fi)
