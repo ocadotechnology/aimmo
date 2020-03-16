@@ -1,12 +1,16 @@
 sudo: required
-dist: trusty
-group: edge
+dist: xenial
+# group: edge
 language: python
+addons:
+  apt:
+    sources:
+      - docker-xenial
 cache:
   yarn: false
   npm: false
 node_js:
-  - "12"
+  - 12
 python:
   - "3.6.7"
 services:
