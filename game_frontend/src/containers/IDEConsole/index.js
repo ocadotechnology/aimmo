@@ -19,13 +19,13 @@ export const StyledConsole = styled.div`
   font-family: ${props => props.theme.additionalVariables.typography.code.fontFamily};
   overflow-y: auto;
   height: 100%;
-  
+
   ::-webkit-scrollbar {
     background-color: ${props => props.theme.palette.divider};
   }
 
   ::-webkit-scrollbar-track {
-    background: ${props => props.theme.palette.divider}; 
+    background: ${props => props.theme.palette.divider};
   }
 
   ::-webkit-scrollbar-thumb {
@@ -49,17 +49,27 @@ export class IDEConsole extends Component {
     shouldActivateSnapToBottom: false
   }
 
+  componentDidUpdate () {
+    this.snapToBottomIfNeeded()
+  }
+
   isOverflown ({ clientHeight, scrollHeight }) {
     return scrollHeight > clientHeight
   }
 
   isOverflownForTheFirstTime () {
-    return !this.state.activatedScrollToBottom && this.consoleRef && this.isOverflown(this.consoleRef)
+    return (
+      !this.state.activatedScrollToBottom && this.consoleRef && this.isOverflown(this.consoleRef)
+    )
   }
 
-  componentDidUpdate () {
+  snapToBottomIfNeeded () {
     if (this.isOverflownForTheFirstTime()) {
-      this.setState({ ...this.state, shouldActivateSnapToBottom: true, activatedScrollToBottom: true })
+      this.setState({
+        ...this.state,
+        shouldActivateSnapToBottom: true,
+        activatedScrollToBottom: true
+      })
     } else if (this.state.activatedScrollToBottom && this.state.shouldActivateSnapToBottom) {
       this.setState({ ...this.state, shouldActivateSnapToBottom: false })
     }
@@ -73,8 +83,15 @@ export class IDEConsole extends Component {
   render () {
     return (
       <IDEConsoleSection>
-        <ConsoleBar handleClearConsoleClicked={this.clearConsole} handleResetCodeClicked={this.props.resetCode} />
-        <StyledConsole innerRef={ref => { this.consoleRef = ref }}>
+        <ConsoleBar
+          clearConsoleClicked={this.clearConsole}
+          handleResetCodeClicked={this.props.resetCode}
+        />
+        <StyledConsole
+          innerRef={ref => {
+            this.consoleRef = ref
+          }}
+        >
           <LogEntries
             shouldActivateSnapToBottom={this.state.shouldActivateSnapToBottom}
             logs={this.props.logs}
