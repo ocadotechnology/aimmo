@@ -13,7 +13,7 @@ beforeEach(() => {
   avatars = new AvatarManager(environment, dummyImportMesh)
 })
 
-function avatarDiffItem (index: number, orientation: string, location: {x: number, y: number}) {
+function avatarDiffItem (index: number, orientation: string, location: {x: number; y: number}) {
   return new DiffItem(index, {
     health: 5,
     location: {
@@ -37,7 +37,7 @@ describe('AvatarManager', () => {
     const avatar = avatarDiffItem(1, 'east', { x: 0, y: 0 })
 
     await avatars.add(avatar)
-    let avatarNodeDescendants = avatars.avatarNode.getDescendants()
+    const avatarNodeDescendants = avatars.avatarNode.getDescendants()
     expect(avatarNodeDescendants.length).toEqual(1)
   })
 
@@ -60,7 +60,7 @@ describe('AvatarManager', () => {
 
     await avatars.add(avatar)
 
-    let avatarNodeDescendants = avatars.avatarNode.getChildMeshes()
+    const avatarNodeDescendants = avatars.avatarNode.getChildMeshes()
     expect(avatars.currentAvatarMesh).toEqual(avatarNodeDescendants[0])
   })
 

@@ -1,19 +1,19 @@
 import { Scene, Engine, TransformNode, Vector3 } from 'babylonjs'
 
 export interface Environment {
-  scene: Scene;
-  engine: Engine;
-  canvas?: HTMLCanvasElement;
-  onTerrainNode: TransformNode;
-  era: string;
+  scene: Scene
+  engine: Engine
+  canvas?: HTMLCanvasElement
+  onTerrainNode: TransformNode
+  era: string
 }
 
 export class StandardEnvironment implements Environment {
-  scene: Scene;
-  engine: Engine;
-  canvas: HTMLCanvasElement;
-  onTerrainNode: TransformNode;
-  era: string;
+  scene: Scene
+  engine: Engine
+  canvas: HTMLCanvasElement
+  onTerrainNode: TransformNode
+  era: string
 
   constructor (canvas: HTMLCanvasElement) {
     this.canvas = canvas

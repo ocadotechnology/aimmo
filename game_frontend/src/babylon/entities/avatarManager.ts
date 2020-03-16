@@ -67,7 +67,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
 
   async add (avatar: DiffItem) {
     const { meshes } = await this.importMesh(
-      `dee`,
+      'dee',
       '/static/babylon/models/',
       'avatar_model.babylon',
       this.scene
@@ -103,7 +103,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
       false,
       1
     )
-    let dee = avatarToAnimate
+    const dee = avatarToAnimate
     createWalkAnimation(dee, this.scene)
 
     setOrientation(dee, avatar.value.orientation)

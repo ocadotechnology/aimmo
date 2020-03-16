@@ -23,7 +23,7 @@ export default class GameEngine {
   onUpdate (previousProps: any, currentProps: any) {
     if (currentProps.gameState) {
       if (this.environment.era === '') {
-        this.environment.era = currentProps.gameState['era']
+        this.environment.era = currentProps.gameState.era
         this.populateMap()
       }
 
@@ -79,9 +79,9 @@ export default class GameEngine {
   }
 
   getAvatarLocation (playerID: number, players: any): BABYLON.Vector3 {
-    for (let player in players) {
-      if (players[player]['id'] === playerID) {
-        const location = players[player]['location']
+    for (const player in players) {
+      if (players[player].id === playerID) {
+        const location = players[player].location
         return new BABYLON.Vector3(location.x, 0, location.y)
       }
     }

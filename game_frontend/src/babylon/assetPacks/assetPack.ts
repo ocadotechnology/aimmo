@@ -1,13 +1,13 @@
 import {
-  Vector3,
   SceneLoader,
-  AbstractMesh,
   StandardMaterial,
   Texture,
-  TransformNode,
   Mesh,
   Color3,
-  Scene
+  Scene,
+  Vector3,
+  TransformNode,
+  AbstractMesh
 } from 'babylonjs'
 
 const tileSizes = {
@@ -34,13 +34,14 @@ export interface PlaneAsset {
 export default class AssetPack {
   scene: Scene
   obstacleInfo: StandardAsset
-  terrianInfo: PlaneAsset
+  terrainInfo: PlaneAsset
   gridInfo: PlaneAsset = {
     name: 'grid',
-    tileSize: tileSizes['grid'],
+    tileSize: tileSizes.grid,
     materialName: 'grid_material',
     textureURL: '/static/babylon/terrain/grid.png'
   }
+
   interactableMaterials: Record<string, StandardMaterial>
   importMeshAsync: Function
 
@@ -48,7 +49,7 @@ export default class AssetPack {
     this.scene = scene
     this.importMeshAsync = importMeshAsync
     this.obstacleInfo = getObstacleAssetInfoForEra(era)
-    this.terrianInfo = this.getTerrainInfoForEra(era)
+    this.terrainInfo = this.getTerrainInfoForEra(era)
     this.interactableMaterials = {
       artefact: this.createInteractableMaterial('artefact')
     }
@@ -57,8 +58,8 @@ export default class AssetPack {
   createInteractableMaterial (interactableType: string): StandardMaterial {
     const texture = `/static/babylon/interactables/${interactableType}_texture.png`
     const material = new StandardMaterial(interactableType, this.scene)
-    material.specularColor = new BABYLON.Color3(0, 0, 0)
-    material.emissiveColor = new BABYLON.Color3(0, 0, 0)
+    material.specularColor = new Color3(0, 0, 0)
+    material.emissiveColor = new Color3(0, 0, 0)
     material.diffuseTexture = new Texture(texture, this.scene)
     return material
   }
@@ -109,37 +110,31 @@ export default class AssetPack {
       { w: 1, h: 1 },
       this.scene
     )
-    const gridOverlayMaterial = new StandardMaterial(
-      this.gridInfo.materialName,
-      this.scene
-    )
+    const gridOverlayMaterial = new StandardMaterial(this.gridInfo.materialName, this.scene)
 
     gridOverlayMaterial.diffuseColor = Color3.Black()
     gridOverlayMaterial.specularColor = Color3.Black()
-    gridOverlayMaterial.ambientColor = BABYLON.Color3.White()
-    gridOverlayMaterial.opacityTexture = new BABYLON.Texture(
-      this.gridInfo.textureURL,
-      this.scene
-    )
+    gridOverlayMaterial.ambientColor = Color3.White()
+    gridOverlayMaterial.opacityTexture = new Texture(this.gridInfo.textureURL, this.scene)
     gridOverlay.material = gridOverlayMaterial
     return gridOverlay
   }
 
   createTerrain (parent: TransformNode): AbstractMesh {
     const terrain = Mesh.CreateTiledGround(
-      this.terrianInfo.name,
+      this.terrainInfo.name,
       -15,
       -15,
       16,
       16,
-      this.terrianInfo.tileSize,
+      this.terrainInfo.tileSize,
       { w: 1, h: 1 },
       this.scene
     )
-    const material = new StandardMaterial(this.terrianInfo.materialName, this.scene)
+    const material = new StandardMaterial(this.terrainInfo.materialName, this.scene)
 
     material.useReflectionOverAlpha = false
-    material.diffuseTexture = new Texture(this.terrianInfo.textureURL, this.scene)
+    material.diffuseTexture = new Texture(this.terrainInfo.textureURL, this.scene)
     material.diffuseTexture.level = 1.2
     material.specularColor = Color3.Black()
     material.ambientColor = Color3.White()
@@ -148,7 +143,7 @@ export default class AssetPack {
     return terrain
   }
 
-  protected getTerrainInfoForEra(era: string): PlaneAsset {
+  protected getTerrainInfoForEra (era: string): PlaneAsset {
     return {
       name: 'terrain',
       tileSize: tileSizes[era],
