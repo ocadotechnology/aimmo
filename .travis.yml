@@ -49,7 +49,7 @@ jobs:
         - pip install codecov
         - pip install docker
         - pushd game_frontend
-        - yarn
+        - yarn --frozen-lockfile
         - node djangoBundler.js
         - popd
       script:
@@ -99,6 +99,7 @@ jobs:
         - sudo docker cp -a $CONTAINERID:coverage.xml $(pwd)/coverage.xml
         - bash <(curl -s https://codecov.io/bash)
     - name: "Javascript Tests"
+      language: node_js
       before_install:
         - nvm install v11.10.0
         - nvm use node
@@ -119,7 +120,7 @@ jobs:
         - pip install git+https://github.com/ocadotechnology/python-semantic-release.git@add_beta_releases
       install:
         - pushd game_frontend
-        - yarn
+        - yarn --frozen-lockfile
         - popd
       script:
         - pushd game_frontend
