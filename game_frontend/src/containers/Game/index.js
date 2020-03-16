@@ -1,17 +1,22 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import GameView from 'components/GameView'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { actions } from 'redux/features/Game'
-import Snackbar, { SnackbarTypes } from 'components/Snackbar'
+import Snackbar from 'components/Snackbar'
 
 export class Game extends Component {
   static propTypes = {
     connectToGame: PropTypes.func,
-    theme: PropTypes.object,
     showSnackbar: PropTypes.bool,
     snackbarMessage: PropTypes.string,
-    snackbarType: PropTypes.oneOf(Object.values(SnackbarTypes))
+    snackbarShown: PropTypes.func,
+    gameState: PropTypes.func,
+    currentAvatarID: PropTypes.number,
+    gameLoaded: PropTypes.func,
+    centerCameraOnUserAvatar: PropTypes.func,
+    cameraCenteredOnUserAvatar: PropTypes.bool,
+    mapPanned: PropTypes.bool
   }
 
   state = {
@@ -33,7 +38,7 @@ export class Game extends Component {
 
   render () {
     return (
-      <Fragment>
+      <>
         <GameView
           connectToGame={this.props.connectToGame}
           gameState={this.props.gameState}
@@ -51,7 +56,7 @@ export class Game extends Component {
           onClose={this.handleClose}
           message={this.props.snackbarMessage}
         />
-      </Fragment>
+      </>
     )
   }
 }

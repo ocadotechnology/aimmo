@@ -30,7 +30,7 @@ const gameReducer = (state = {}, action) => {
         ...state,
         connectionParameters: {
           ...state.connectionParameters,
-          currentAvatarID: action.payload.parameters['avatar_id']
+          currentAvatarID: action.payload.parameters.avatar_id
         }
       }
     case types.MAP_PANNED:

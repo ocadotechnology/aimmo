@@ -33,12 +33,12 @@ describe('sendToGoogleAnalyticsEpic', () => {
     expect(ReactGA.testModeAPI.calls).toEqual([
       ['send',
         {
-          'eventAction': 'Test Action',
-          'eventCategory': 'Test Category',
-          'eventLabel': 'Test Label',
-          'eventValue': 0,
-          'hitType': 'event',
-          'nonInteraction': false
+          eventAction: 'Test Action',
+          eventCategory: 'Test Category',
+          eventLabel: 'Test Label',
+          eventValue: 0,
+          hitType: 'event',
+          nonInteraction: false
         }]
     ])
   })
@@ -65,11 +65,11 @@ describe('sendToGoogleAnalyticsTimingEventEpic', () => {
     expect(ReactGA.testModeAPI.calls).toEqual([
       ['send',
         {
-          'timingVar': 'Test Action',
-          'timingCategory': 'Test Category',
-          'timingLabel': 'Test Label',
-          'timingValue': 5,
-          'hitType': 'timing'
+          timingVar: 'Test Action',
+          timingCategory: 'Test Category',
+          timingLabel: 'Test Label',
+          timingValue: 5,
+          hitType: 'timing'
         }
       ]])
   })

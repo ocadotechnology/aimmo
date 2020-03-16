@@ -4,8 +4,8 @@ import Light from './light'
 
 describe('Light', () => {
   it('loads', () => {
-    let environment = new MockEnvironment()
-    let light = new Light(environment)
+    const environment = new MockEnvironment(true, 'future')
+    const light = new Light(environment)
 
     expect(light.object).toMatchSnapshot()
   })

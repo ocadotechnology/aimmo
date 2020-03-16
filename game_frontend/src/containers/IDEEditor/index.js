@@ -57,13 +57,15 @@ export class IDEEditor extends PureComponent {
           value={this.props.code}
           width='100%'
           height='100%'
-          setOptions={this.options()} />
+          setOptions={this.options()}
+        />
         <PositionedRunCodeButton
           runCodeButtonStatus={this.props.runCodeButtonStatus}
           isCodeOnServerDifferent={this.isCodeOnServerDifferent()}
           aria-label='Run Code'
           id='post-code-button'
-          whenClicked={this.props.postCode} />
+          whenClicked={this.props.postCode}
+        />
       </IDEEditorLayout>
     )
   }

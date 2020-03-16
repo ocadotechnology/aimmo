@@ -95,12 +95,12 @@ class TestService(TestCase):
 
     def test_correct_json_era(self):
         """
-        Ensure that the era (for the assets in Unity) is correct.
+        Ensure that the era (for the assets in the frontend) is correct.
 
-        NOTE: This is hard coded right now to "less_flat". This test should fail when this functionality is added.
+        NOTE: This is hard coded right now to "future". This test should fail when this functionality is added.
         """
         era = self.world_state_json["era"]
-        self.assertEqual(era, "less_flat")
+        self.assertEqual(era, "future")
 
     def test_correct_json_world_interactables_returned_is_correct_amount(self):
         """

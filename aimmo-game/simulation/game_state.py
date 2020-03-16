@@ -23,7 +23,7 @@ class GameState:
 
     def serialize(self):
         return {
-            "era": "less_flat",
+            "era": "future",
             "southWestCorner": self.world_map.get_serialized_south_west_corner(),
             "northEastCorner": self.world_map.get_serialized_north_east_corner(),
             "players": self.avatar_manager.serialize_players(),

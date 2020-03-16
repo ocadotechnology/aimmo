@@ -32,7 +32,7 @@ describe('consoleLogReducer', () => {
   })
 
   it('should get rid of old logs past MAX_NUMBER_OF_STORED_LOGS', () => {
-    let initialLogs = Array(MAX_NUMBER_OF_STORED_LOGS - 1).fill({ turn_count: 1, message: 'Same old logs' })
+    const initialLogs = Array(MAX_NUMBER_OF_STORED_LOGS - 1).fill({ turn_count: 1, message: 'Same old logs' })
     const newLog = { turn_count: 1, message: 'I\'m a new log!' }
     const ancientLogMessage = 'I\'m a new log!'
     initialLogs.unshift({ turn_count: 0, message: ancientLogMessage })

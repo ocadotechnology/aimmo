@@ -4,8 +4,8 @@ import Camera from './camera'
 
 describe('Camera', () => {
   it('loads', () => {
-    let environment = new MockEnvironment(true)
-    let camera = new Camera(environment)
+    const environment = new MockEnvironment(true, 'future')
+    const camera = new Camera(environment)
 
     expect(camera.object).toMatchSnapshot()
   })

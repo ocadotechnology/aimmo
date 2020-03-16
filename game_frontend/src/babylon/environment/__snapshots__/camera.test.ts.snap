@@ -25,7 +25,7 @@ t {
       0,
       1,
     ],
-    "updateFlag": 92,
+    "updateFlag": 95,
   },
   "_activeMeshes": e {
     "_id": 8,
@@ -365,7 +365,7 @@ t {
       0,
       0,
     ],
-    "updateFlag": 109,
+    "updateFlag": 112,
   },
   "_cameraRotationMatrix": e {
     "_isIdentity": false,
@@ -390,7 +390,7 @@ t {
       0,
       0,
     ],
-    "updateFlag": 115,
+    "updateFlag": 118,
   },
   "_cameraTransformMatrix": e {
     "_isIdentity": false,
@@ -415,7 +415,7 @@ t {
       0,
       0,
     ],
-    "updateFlag": 112,
+    "updateFlag": 115,
   },
   "_childUpdateId": 0,
   "_children": null,
@@ -452,7 +452,7 @@ t {
       50,
       1,
     ],
-    "updateFlag": 119,
+    "updateFlag": 122,
   },
   "_currentRenderId": 0,
   "_currentTarget": e {
@@ -466,6 +466,7 @@ t {
     "z": 0,
   },
   "_doNotComputeProjectionMatrix": false,
+  "_doNotSerialize": false,
   "_globalCurrentTarget": e {
     "x": 0,
     "y": 0,
@@ -489,7 +490,7 @@ t {
   "_isNode": true,
   "_isParentEnabled": true,
   "_isReady": true,
-  "_isRightCamera": true,
+  "_isRightCamera": false,
   "_newPosition": e {
     "x": 35.341259055268296,
     "y": 35.369413458359986,
@@ -534,7 +535,7 @@ t {
       0,
       0,
     ],
-    "updateFlag": 97,
+    "updateFlag": 100,
   },
   "_ranges": Object {},
   "_referencePoint": e {
@@ -1168,6 +1169,7 @@ t {
     "_beforeRenderTargetDrawStage": t {},
     "_beforeRenderingGroupDrawStage": t {},
     "_beforeRenderingMeshStage": t {},
+    "_blockEntityCollection": false,
     "_blockMaterialDirtyMechanism": false,
     "_cameraDrawRenderTargetStage": t {},
     "_components": Array [],
@@ -1185,7 +1187,8 @@ t {
       "_activeChannel": 0,
       "_activeRenderLoops": Array [],
       "_activeRequests": Array [],
-      "_alphaMode": 0,
+      "_alphaEquation": 0,
+      "_alphaMode": 1,
       "_alphaState": e {
         "_alphaBlend": false,
         "_blendConstants": Array [
@@ -1215,6 +1218,8 @@ t {
       "_boundUniforms": Object {},
       "_caps": Object {
         "astc": null,
+        "blendMinMax": false,
+        "canUseTimestampForTimerQuery": false,
         "colorBufferFloat": false,
         "depthTextureExtension": false,
         "drawBuffersExtension": false,
@@ -1224,8 +1229,10 @@ t {
         "highPrecisionShaderSupported": true,
         "instancedArrays": false,
         "maxAnisotropy": 0,
+        "maxCombinedTexturesImageUnits": 32,
         "maxCubemapTextureSize": 512,
         "maxFragmentUniformVectors": 16,
+        "maxMSAASamples": 1,
         "maxRenderTextureSize": 512,
         "maxTextureSize": 512,
         "maxTexturesImageUnits": 16,
@@ -1234,9 +1241,7 @@ t {
         "maxVertexTextureImageUnits": 16,
         "maxVertexUniformVectors": 16,
         "pvrtc": null,
-        "s3tc": null,
         "standardDerivatives": false,
-        "textureAnisotropicFilterExtension": null,
         "textureFloat": false,
         "textureFloatLinearFiltering": false,
         "textureFloatRender": false,
@@ -1248,6 +1253,7 @@ t {
         "vertexArrayObject": false,
       },
       "_colorWrite": true,
+      "_colorWriteChanged": true,
       "_compiledEffects": Object {},
       "_contextWasLost": false,
       "_currentBoundBuffer": Array [],
@@ -1289,13 +1295,14 @@ t {
         "_totalValueCount": 0,
       },
       "_fps": 60,
+      "_getDepthStencilBuffer": [Function],
       "_highPrecisionShadersAllowed": true,
       "_internalTexturesCache": Array [],
       "_lockstepMaxSteps": 4,
       "_maxSimultaneousTextures": 0,
       "_mustWipeVertexAttributes": false,
       "_nextFreeTextureSlots": Array [],
-      "_options": Object {
+      "_options": u {
         "deterministicLockstep": false,
         "lockstepMaxSteps": 4,
         "renderHeight": 256,
@@ -1360,12 +1367,13 @@ t {
         "_stencilTest": false,
       },
       "_texturesSupported": Array [],
+      "_timeStep": 0.016666666666666666,
       "_uintIndicesCurrentlySet": false,
       "_uniformBuffers": Array [],
       "_unpackFlipYCached": null,
       "_vaoRecordInProgress": false,
       "_vertexAttribArraysEnabled": Array [],
-      "_viewportCached": e {
+      "_viewportCached": Object {
         "w": 0,
         "x": 0,
         "y": 0,
@@ -1373,6 +1381,7 @@ t {
       },
       "_webGLVersion": 1,
       "_windowIsBackground": false,
+      "canvasTabIndex": 1,
       "cullBackFaces": true,
       "customAnimationFrameRequester": null,
       "disableManifestCheck": false,
@@ -1428,7 +1437,7 @@ t {
           "target": undefined,
         },
         "_observers": Array [
-          Object {
+          r {
             "_willBeUnregistered": false,
             "callback": [Function],
             "mask": -1,
@@ -1507,8 +1516,10 @@ t {
       "scenes": Array [
         [Circular],
       ],
+      "useReverseDepthBuffer": false,
       "validateShaderPrograms": false,
     },
+    "_environmentIntensity": 1,
     "_environmentTexture": null,
     "_evaluateSubMeshStage": t {},
     "_executeWhenReadyTimeoutId": -1,
@@ -2730,19 +2741,21 @@ t {
       "_customAlphaTestSortCompareFn": Object {},
       "_customOpaqueSortCompareFn": Object {},
       "_customTransparentSortCompareFn": Object {},
-      "_renderingGroupInfo": Object {},
+      "_renderingGroupInfo": r {},
       "_renderingGroups": Array [],
       "_scene": [Circular],
       "_useSceneAutoClearSetup": false,
     },
     "_sceneUbo": e {
+      "_alreadyBound": false,
       "_data": Array [],
       "_dynamic": true,
       "_engine": i {
         "_activeChannel": 0,
         "_activeRenderLoops": Array [],
         "_activeRequests": Array [],
-        "_alphaMode": 0,
+        "_alphaEquation": 0,
+        "_alphaMode": 1,
         "_alphaState": e {
           "_alphaBlend": false,
           "_blendConstants": Array [
@@ -2772,6 +2785,8 @@ t {
         "_boundUniforms": Object {},
         "_caps": Object {
           "astc": null,
+          "blendMinMax": false,
+          "canUseTimestampForTimerQuery": false,
           "colorBufferFloat": false,
           "depthTextureExtension": false,
           "drawBuffersExtension": false,
@@ -2781,8 +2796,10 @@ t {
           "highPrecisionShaderSupported": true,
           "instancedArrays": false,
           "maxAnisotropy": 0,
+          "maxCombinedTexturesImageUnits": 32,
           "maxCubemapTextureSize": 512,
           "maxFragmentUniformVectors": 16,
+          "maxMSAASamples": 1,
           "maxRenderTextureSize": 512,
           "maxTextureSize": 512,
           "maxTexturesImageUnits": 16,
@@ -2791,9 +2808,7 @@ t {
           "maxVertexTextureImageUnits": 16,
           "maxVertexUniformVectors": 16,
           "pvrtc": null,
-          "s3tc": null,
           "standardDerivatives": false,
-          "textureAnisotropicFilterExtension": null,
           "textureFloat": false,
           "textureFloatLinearFiltering": false,
           "textureFloatRender": false,
@@ -2805,6 +2820,7 @@ t {
           "vertexArrayObject": false,
         },
         "_colorWrite": true,
+        "_colorWriteChanged": true,
         "_compiledEffects": Object {},
         "_contextWasLost": false,
         "_currentBoundBuffer": Array [],
@@ -2846,13 +2862,14 @@ t {
           "_totalValueCount": 0,
         },
         "_fps": 60,
+        "_getDepthStencilBuffer": [Function],
         "_highPrecisionShadersAllowed": true,
         "_internalTexturesCache": Array [],
         "_lockstepMaxSteps": 4,
         "_maxSimultaneousTextures": 0,
         "_mustWipeVertexAttributes": false,
         "_nextFreeTextureSlots": Array [],
-        "_options": Object {
+        "_options": u {
           "deterministicLockstep": false,
           "lockstepMaxSteps": 4,
           "renderHeight": 256,
@@ -2917,12 +2934,13 @@ t {
           "_stencilTest": false,
         },
         "_texturesSupported": Array [],
+        "_timeStep": 0.016666666666666666,
         "_uintIndicesCurrentlySet": false,
         "_uniformBuffers": Array [],
         "_unpackFlipYCached": null,
         "_vaoRecordInProgress": false,
         "_vertexAttribArraysEnabled": Array [],
-        "_viewportCached": e {
+        "_viewportCached": Object {
           "w": 0,
           "x": 0,
           "y": 0,
@@ -2930,6 +2948,7 @@ t {
         },
         "_webGLVersion": 1,
         "_windowIsBackground": false,
+        "canvasTabIndex": 1,
         "cullBackFaces": true,
         "customAnimationFrameRequester": null,
         "disableManifestCheck": false,
@@ -2985,7 +3004,7 @@ t {
             "target": undefined,
           },
           "_observers": Array [
-            Object {
+            r {
               "_willBeUnregistered": false,
               "callback": [Function],
               "mask": -1,
@@ -3064,6 +3083,7 @@ t {
         "scenes": Array [
           [Circular],
         ],
+        "useReverseDepthBuffer": false,
         "validateShaderPrograms": false,
       },
       "_needSync": false,
@@ -3071,6 +3091,7 @@ t {
       "_uniformLocationPointer": 0,
       "_uniformLocations": Object {},
       "_uniformSizes": Object {},
+      "_valueCache": Object {},
       "updateColor3": [Function],
       "updateColor4": [Function],
       "updateFloat": [Function],
@@ -3086,6 +3107,8 @@ t {
     "_serializableComponents": Array [],
     "_shadowsEnabled": true,
     "_skeletonsEnabled": true,
+    "_skipEvaluateActiveMeshesCompletely": false,
+    "_skipFrustumClipping": false,
     "_softwareSkinnedMeshes": t {
       "_duplicateId": 0,
       "_id": 7,
@@ -3421,7 +3444,7 @@ t {
         0,
         0,
       ],
-      "updateFlag": 77,
+      "updateFlag": 80,
     },
     "_transientComponents": Array [],
     "_uid": null,
@@ -3456,6 +3479,7 @@ t {
     "defaultCursor": "",
     "disableOfflineSupportExceptionRules": Array [],
     "dispatchAllSubMeshesOfActiveMeshes": false,
+    "doNotHandleCursors": false,
     "dumpNextRenderTargets": false,
     "fogColor": e {
       "b": 0.3,
@@ -3466,7 +3490,7 @@ t {
     "fogEnd": 1000,
     "fogStart": 0,
     "geometries": Array [],
-    "geometriesByUniqueId": null,
+    "geometriesByUniqueId": Object {},
     "getActiveMeshCandidates": [Function],
     "getActiveSubMeshCandidates": [Function],
     "getCollidingSubMeshCandidates": [Function],
@@ -3540,6 +3564,15 @@ t {
       },
       "_observers": Array [],
     },
+    "onAfterRenderCameraObservable": e {
+      "_eventState": e {
+        "currentTarget": undefined,
+        "mask": 0,
+        "skipNextObservers": false,
+        "target": undefined,
+      },
+      "_observers": Array [],
+    },
     "onAfterRenderObservable": e {
       "_eventState": e {
         "currentTarget": undefined,
@@ -3568,6 +3601,15 @@ t {
       "_observers": Array [],
     },
     "onAfterStepObservable": e {
+      "_eventState": e {
+        "currentTarget": undefined,
+        "mask": 0,
+        "skipNextObservers": false,
+        "target": undefined,
+      },
+      "_observers": Array [],
+    },
+    "onAnimationFileImportedObservable": e {
       "_eventState": e {
         "currentTarget": undefined,
         "mask": 0,
@@ -3701,7 +3743,7 @@ t {
         "target": undefined,
       },
       "_observers": Array [
-        Object {
+        r {
           "_willBeUnregistered": false,
           "callback": [Function],
           "mask": -1,
@@ -3826,14 +3868,14 @@ t {
         "target": undefined,
       },
       "_observers": Array [
-        Object {
+        r {
           "_willBeUnregistered": false,
           "callback": [Function],
           "mask": 8,
           "scope": null,
           "unregisterOnNextCall": false,
         },
-        Object {
+        r {
           "_willBeUnregistered": false,
           "callback": [Function],
           "mask": 7,
@@ -3859,7 +3901,7 @@ t {
         "target": undefined,
       },
       "_observers": Array [
-        Object {
+        r {
           "_willBeUnregistered": false,
           "callback": [Function],
           "mask": 8,
@@ -3926,6 +3968,17 @@ t {
           "y": 0,
           "z": 0,
         },
+        "_absoluteRotationQuaternion": e {
+          "w": 1,
+          "x": 0,
+          "y": 0,
+          "z": 0,
+        },
+        "_absoluteScaling": e {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+        },
         "_animationPropertiesOverride": null,
         "_behaviors": Array [],
         "_billboardMode": 0,
@@ -3959,6 +4012,7 @@ t {
         "_childUpdateId": -1,
         "_children": null,
         "_currentRenderId": -1,
+        "_doNotSerialize": false,
         "_forward": e {
           "x": 0,
           "y": 0,
@@ -3971,6 +4025,7 @@ t {
         },
         "_indexInSceneTransformNodesArray": 0,
         "_infiniteDistance": false,
+        "_isAbsoluteSynced": false,
         "_isDirty": true,
         "_isDisposed": false,
         "_isEnabled": true,
@@ -4001,7 +4056,7 @@ t {
             0,
             0,
           ],
-          "updateFlag": 83,
+          "updateFlag": 86,
         },
         "_nonUniformScaling": false,
         "_onDisposeObserver": null,
@@ -4030,7 +4085,7 @@ t {
             0,
             1,
           ],
-          "updateFlag": 86,
+          "updateFlag": 89,
         },
         "_poseMatrix": null,
         "_position": e {
@@ -4095,12 +4150,11 @@ t {
             0,
             1,
           ],
-          "updateFlag": 80,
+          "updateFlag": 83,
         },
         "_worldMatrixDeterminant": 0,
         "_worldMatrixDeterminantIsDirty": true,
         "animations": Array [],
-        "doNotSerialize": false,
         "id": "On Terrain",
         "ignoreNonUniformScaling": false,
         "metadata": null,
@@ -4142,6 +4196,17 @@ t {
           "y": 0,
           "z": 0,
         },
+        "_absoluteRotationQuaternion": e {
+          "w": 1,
+          "x": 0,
+          "y": 0,
+          "z": 0,
+        },
+        "_absoluteScaling": e {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+        },
         "_animationPropertiesOverride": null,
         "_behaviors": Array [],
         "_billboardMode": 0,
@@ -4175,6 +4240,7 @@ t {
         "_childUpdateId": -1,
         "_children": null,
         "_currentRenderId": -1,
+        "_doNotSerialize": false,
         "_forward": e {
           "x": 0,
           "y": 0,
@@ -4187,6 +4253,7 @@ t {
         },
         "_indexInSceneTransformNodesArray": 0,
         "_infiniteDistance": false,
+        "_isAbsoluteSynced": false,
         "_isDirty": true,
         "_isDisposed": false,
         "_isEnabled": true,
@@ -4217,7 +4284,7 @@ t {
             0,
             0,
           ],
-          "updateFlag": 83,
+          "updateFlag": 86,
         },
         "_nonUniformScaling": false,
         "_onDisposeObserver": null,
@@ -4246,7 +4313,7 @@ t {
             0,
             1,
           ],
-          "updateFlag": 86,
+          "updateFlag": 89,
         },
         "_poseMatrix": null,
         "_position": e {
@@ -4311,12 +4378,11 @@ t {
             0,
             1,
           ],
-          "updateFlag": 80,
+          "updateFlag": 83,
         },
         "_worldMatrixDeterminant": 0,
         "_worldMatrixDeterminantIsDirty": true,
         "animations": Array [],
-        "doNotSerialize": false,
         "id": "On Terrain",
         "ignoreNonUniformScaling": false,
         "metadata": null,
@@ -4347,9 +4413,9 @@ t {
         "uniqueId": 0,
       },
     ],
-    "useClonedMeshhMap": false,
+    "useClonedMeshMap": true,
     "useConstantAnimationDeltaTime": false,
-    "useMaterialMeshMap": false,
+    "useMaterialMeshMap": true,
   },
   "_sceneRootNodesIndex": 1,
   "_skipRendering": false,
@@ -4387,7 +4453,7 @@ t {
       0,
       0,
     ],
-    "updateFlag": 103,
+    "updateFlag": 106,
   },
   "_transformedReferencePoint": e {
     "x": 0,
@@ -4417,7 +4483,7 @@ t {
       0,
       1,
     ],
-    "updateFlag": 93,
+    "updateFlag": 96,
   },
   "_upVector": e {
     "x": 0,
@@ -4448,7 +4514,7 @@ t {
       50,
       1,
     ],
-    "updateFlag": 119,
+    "updateFlag": 122,
   },
   "_waitingParentId": null,
   "_webvrViewMatrix": e {
@@ -4474,7 +4540,7 @@ t {
       0,
       1,
     ],
-    "updateFlag": 96,
+    "updateFlag": 99,
   },
   "_worldMatrix": e {
     "_isIdentity": false,
@@ -4499,7 +4565,7 @@ t {
       -0,
       1,
     ],
-    "updateFlag": 120,
+    "updateFlag": 123,
   },
   "_worldMatrixDeterminant": 0,
   "_worldMatrixDeterminantIsDirty": true,
@@ -4524,7 +4590,6 @@ t {
     "z": 0.5,
   },
   "customRenderTargets": Array [],
-  "doNotSerialize": false,
   "fov": 0.8,
   "fovMode": 0,
   "id": "camera1",
@@ -4541,7 +4606,8 @@ t {
           "_activeChannel": 0,
           "_activeRenderLoops": Array [],
           "_activeRequests": Array [],
-          "_alphaMode": 0,
+          "_alphaEquation": 0,
+          "_alphaMode": 1,
           "_alphaState": e {
             "_alphaBlend": false,
             "_blendConstants": Array [
@@ -4571,6 +4637,8 @@ t {
           "_boundUniforms": Object {},
           "_caps": Object {
             "astc": null,
+            "blendMinMax": false,
+            "canUseTimestampForTimerQuery": false,
             "colorBufferFloat": false,
             "depthTextureExtension": false,
             "drawBuffersExtension": false,
@@ -4580,8 +4648,10 @@ t {
             "highPrecisionShaderSupported": true,
             "instancedArrays": false,
             "maxAnisotropy": 0,
+            "maxCombinedTexturesImageUnits": 32,
             "maxCubemapTextureSize": 512,
             "maxFragmentUniformVectors": 16,
+            "maxMSAASamples": 1,
             "maxRenderTextureSize": 512,
             "maxTextureSize": 512,
             "maxTexturesImageUnits": 16,
@@ -4590,9 +4660,7 @@ t {
             "maxVertexTextureImageUnits": 16,
             "maxVertexUniformVectors": 16,
             "pvrtc": null,
-            "s3tc": null,
             "standardDerivatives": false,
-            "textureAnisotropicFilterExtension": null,
             "textureFloat": false,
             "textureFloatLinearFiltering": false,
             "textureFloatRender": false,
@@ -4604,6 +4672,7 @@ t {
             "vertexArrayObject": false,
           },
           "_colorWrite": true,
+          "_colorWriteChanged": true,
           "_compiledEffects": Object {},
           "_contextWasLost": false,
           "_currentBoundBuffer": Array [],
@@ -4645,13 +4714,14 @@ t {
             "_totalValueCount": 0,
           },
           "_fps": 60,
+          "_getDepthStencilBuffer": [Function],
           "_highPrecisionShadersAllowed": true,
           "_internalTexturesCache": Array [],
           "_lockstepMaxSteps": 4,
           "_maxSimultaneousTextures": 0,
           "_mustWipeVertexAttributes": false,
           "_nextFreeTextureSlots": Array [],
-          "_options": Object {
+          "_options": u {
             "deterministicLockstep": false,
             "lockstepMaxSteps": 4,
             "renderHeight": 256,
@@ -4716,12 +4786,13 @@ t {
             "_stencilTest": false,
           },
           "_texturesSupported": Array [],
+          "_timeStep": 0.016666666666666666,
           "_uintIndicesCurrentlySet": false,
           "_uniformBuffers": Array [],
           "_unpackFlipYCached": null,
           "_vaoRecordInProgress": false,
           "_vertexAttribArraysEnabled": Array [],
-          "_viewportCached": e {
+          "_viewportCached": Object {
             "w": 0,
             "x": 0,
             "y": 0,
@@ -4729,6 +4800,7 @@ t {
           },
           "_webGLVersion": 1,
           "_windowIsBackground": false,
+          "canvasTabIndex": 1,
           "cullBackFaces": true,
           "customAnimationFrameRequester": null,
           "disableManifestCheck": false,
@@ -4784,7 +4856,7 @@ t {
               "target": undefined,
             },
             "_observers": Array [
-              Object {
+              r {
                 "_willBeUnregistered": false,
                 "callback": [Function],
                 "mask": -1,
@@ -5484,6 +5556,7 @@ t {
               "_beforeRenderTargetDrawStage": t {},
               "_beforeRenderingGroupDrawStage": t {},
               "_beforeRenderingMeshStage": t {},
+              "_blockEntityCollection": false,
               "_blockMaterialDirtyMechanism": false,
               "_cameraDrawRenderTargetStage": t {},
               "_components": Array [],
@@ -5498,6 +5571,7 @@ t {
                 "length": 0,
               },
               "_engine": [Circular],
+              "_environmentIntensity": 1,
               "_environmentTexture": null,
               "_evaluateSubMeshStage": t {},
               "_executeWhenReadyTimeoutId": -1,
@@ -6719,12 +6793,13 @@ t {
                 "_customAlphaTestSortCompareFn": Object {},
                 "_customOpaqueSortCompareFn": Object {},
                 "_customTransparentSortCompareFn": Object {},
-                "_renderingGroupInfo": Object {},
+                "_renderingGroupInfo": r {},
                 "_renderingGroups": Array [],
                 "_scene": [Circular],
                 "_useSceneAutoClearSetup": false,
               },
               "_sceneUbo": e {
+                "_alreadyBound": false,
                 "_data": Array [],
                 "_dynamic": true,
                 "_engine": [Circular],
@@ -6733,6 +6808,7 @@ t {
                 "_uniformLocationPointer": 0,
                 "_uniformLocations": Object {},
                 "_uniformSizes": Object {},
+                "_valueCache": Object {},
                 "updateColor3": [Function],
                 "updateColor4": [Function],
                 "updateFloat": [Function],
@@ -6748,6 +6824,8 @@ t {
               "_serializableComponents": Array [],
               "_shadowsEnabled": true,
               "_skeletonsEnabled": true,
+              "_skipEvaluateActiveMeshesCompletely": false,
+              "_skipFrustumClipping": false,
               "_softwareSkinnedMeshes": t {
                 "_duplicateId": 0,
                 "_id": 7,
@@ -7083,7 +7161,7 @@ t {
                   0,
                   0,
                 ],
-                "updateFlag": 77,
+                "updateFlag": 80,
               },
               "_transientComponents": Array [],
               "_uid": null,
@@ -7118,6 +7196,7 @@ t {
               "defaultCursor": "",
               "disableOfflineSupportExceptionRules": Array [],
               "dispatchAllSubMeshesOfActiveMeshes": false,
+              "doNotHandleCursors": false,
               "dumpNextRenderTargets": false,
               "fogColor": e {
                 "b": 0.3,
@@ -7128,7 +7207,7 @@ t {
               "fogEnd": 1000,
               "fogStart": 0,
               "geometries": Array [],
-              "geometriesByUniqueId": null,
+              "geometriesByUniqueId": Object {},
               "getActiveMeshCandidates": [Function],
               "getActiveSubMeshCandidates": [Function],
               "getCollidingSubMeshCandidates": [Function],
@@ -7202,6 +7281,15 @@ t {
                 },
                 "_observers": Array [],
               },
+              "onAfterRenderCameraObservable": e {
+                "_eventState": e {
+                  "currentTarget": undefined,
+                  "mask": 0,
+                  "skipNextObservers": false,
+                  "target": undefined,
+                },
+                "_observers": Array [],
+              },
               "onAfterRenderObservable": e {
                 "_eventState": e {
                   "currentTarget": undefined,
@@ -7230,6 +7318,15 @@ t {
                 "_observers": Array [],
               },
               "onAfterStepObservable": e {
+                "_eventState": e {
+                  "currentTarget": undefined,
+                  "mask": 0,
+                  "skipNextObservers": false,
+                  "target": undefined,
+                },
+                "_observers": Array [],
+              },
+              "onAnimationFileImportedObservable": e {
                 "_eventState": e {
                   "currentTarget": undefined,
                   "mask": 0,
@@ -7363,7 +7460,7 @@ t {
                   "target": undefined,
                 },
                 "_observers": Array [
-                  Object {
+                  r {
                     "_willBeUnregistered": false,
                     "callback": [Function],
                     "mask": -1,
@@ -7488,14 +7585,14 @@ t {
                   "target": undefined,
                 },
                 "_observers": Array [
-                  Object {
+                  r {
                     "_willBeUnregistered": false,
                     "callback": [Function],
                     "mask": 8,
                     "scope": null,
                     "unregisterOnNextCall": false,
                   },
-                  Object {
+                  r {
                     "_willBeUnregistered": false,
                     "callback": [Function],
                     "mask": 7,
@@ -7521,7 +7618,7 @@ t {
                   "target": undefined,
                 },
                 "_observers": Array [
-                  Object {
+                  r {
                     "_willBeUnregistered": false,
                     "callback": [Function],
                     "mask": 8,
@@ -7588,6 +7685,17 @@ t {
                     "y": 0,
                     "z": 0,
                   },
+                  "_absoluteRotationQuaternion": e {
+                    "w": 1,
+                    "x": 0,
+                    "y": 0,
+                    "z": 0,
+                  },
+                  "_absoluteScaling": e {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0,
+                  },
                   "_animationPropertiesOverride": null,
                   "_behaviors": Array [],
                   "_billboardMode": 0,
@@ -7621,6 +7729,7 @@ t {
                   "_childUpdateId": -1,
                   "_children": null,
                   "_currentRenderId": -1,
+                  "_doNotSerialize": false,
                   "_forward": e {
                     "x": 0,
                     "y": 0,
@@ -7633,6 +7742,7 @@ t {
                   },
                   "_indexInSceneTransformNodesArray": 0,
                   "_infiniteDistance": false,
+                  "_isAbsoluteSynced": false,
                   "_isDirty": true,
                   "_isDisposed": false,
                   "_isEnabled": true,
@@ -7663,7 +7773,7 @@ t {
                       0,
                       0,
                     ],
-                    "updateFlag": 83,
+                    "updateFlag": 86,
                   },
                   "_nonUniformScaling": false,
                   "_onDisposeObserver": null,
@@ -7692,7 +7802,7 @@ t {
                       0,
                       1,
                     ],
-                    "updateFlag": 86,
+                    "updateFlag": 89,
                   },
                   "_poseMatrix": null,
                   "_position": e {
@@ -7757,12 +7867,11 @@ t {
                       0,
                       1,
                     ],
-                    "updateFlag": 80,
+                    "updateFlag": 83,
                   },
                   "_worldMatrixDeterminant": 0,
                   "_worldMatrixDeterminantIsDirty": true,
                   "animations": Array [],
-                  "doNotSerialize": false,
                   "id": "On Terrain",
                   "ignoreNonUniformScaling": false,
                   "metadata": null,
@@ -7804,6 +7913,17 @@ t {
                     "y": 0,
                     "z": 0,
                   },
+                  "_absoluteRotationQuaternion": e {
+                    "w": 1,
+                    "x": 0,
+                    "y": 0,
+                    "z": 0,
+                  },
+                  "_absoluteScaling": e {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0,
+                  },
                   "_animationPropertiesOverride": null,
                   "_behaviors": Array [],
                   "_billboardMode": 0,
@@ -7837,6 +7957,7 @@ t {
                   "_childUpdateId": -1,
                   "_children": null,
                   "_currentRenderId": -1,
+                  "_doNotSerialize": false,
                   "_forward": e {
                     "x": 0,
                     "y": 0,
@@ -7849,6 +7970,7 @@ t {
                   },
                   "_indexInSceneTransformNodesArray": 0,
                   "_infiniteDistance": false,
+                  "_isAbsoluteSynced": false,
                   "_isDirty": true,
                   "_isDisposed": false,
                   "_isEnabled": true,
@@ -7879,7 +8001,7 @@ t {
                       0,
                       0,
                     ],
-                    "updateFlag": 83,
+                    "updateFlag": 86,
                   },
                   "_nonUniformScaling": false,
                   "_onDisposeObserver": null,
@@ -7908,7 +8030,7 @@ t {
                       0,
                       1,
                     ],
-                    "updateFlag": 86,
+                    "updateFlag": 89,
                   },
                   "_poseMatrix": null,
                   "_position": e {
@@ -7973,12 +8095,11 @@ t {
                       0,
                       1,
                     ],
-                    "updateFlag": 80,
+                    "updateFlag": 83,
                   },
                   "_worldMatrixDeterminant": 0,
                   "_worldMatrixDeterminantIsDirty": true,
                   "animations": Array [],
-                  "doNotSerialize": false,
                   "id": "On Terrain",
                   "ignoreNonUniformScaling": false,
                   "metadata": null,
@@ -8009,22 +8130,23 @@ t {
                   "uniqueId": 0,
                 },
               ],
-              "useClonedMeshhMap": false,
+              "useClonedMeshMap": true,
               "useConstantAnimationDeltaTime": false,
-              "useMaterialMeshMap": false,
+              "useMaterialMeshMap": true,
             },
           ],
+          "useReverseDepthBuffer": false,
           "validateShaderPrograms": false,
         },
         "_keys": Array [],
-        "_onCanvasBlurObserver": Object {
+        "_onCanvasBlurObserver": r {
           "_willBeUnregistered": false,
           "callback": [Function],
           "mask": -1,
           "scope": null,
           "unregisterOnNextCall": false,
         },
-        "_onKeyboardObserver": Object {
+        "_onKeyboardObserver": r {
           "_willBeUnregistered": false,
           "callback": [Function],
           "mask": -1,
@@ -8654,6 +8776,7 @@ t {
           "_beforeRenderTargetDrawStage": t {},
           "_beforeRenderingGroupDrawStage": t {},
           "_beforeRenderingMeshStage": t {},
+          "_blockEntityCollection": false,
           "_blockMaterialDirtyMechanism": false,
           "_cameraDrawRenderTargetStage": t {},
           "_components": Array [],
@@ -8671,7 +8794,8 @@ t {
             "_activeChannel": 0,
             "_activeRenderLoops": Array [],
             "_activeRequests": Array [],
-            "_alphaMode": 0,
+            "_alphaEquation": 0,
+            "_alphaMode": 1,
             "_alphaState": e {
               "_alphaBlend": false,
               "_blendConstants": Array [
@@ -8701,6 +8825,8 @@ t {
             "_boundUniforms": Object {},
             "_caps": Object {
               "astc": null,
+              "blendMinMax": false,
+              "canUseTimestampForTimerQuery": false,
               "colorBufferFloat": false,
               "depthTextureExtension": false,
               "drawBuffersExtension": false,
@@ -8710,8 +8836,10 @@ t {
               "highPrecisionShaderSupported": true,
               "instancedArrays": false,
               "maxAnisotropy": 0,
+              "maxCombinedTexturesImageUnits": 32,
               "maxCubemapTextureSize": 512,
               "maxFragmentUniformVectors": 16,
+              "maxMSAASamples": 1,
               "maxRenderTextureSize": 512,
               "maxTextureSize": 512,
               "maxTexturesImageUnits": 16,
@@ -8720,9 +8848,7 @@ t {
               "maxVertexTextureImageUnits": 16,
               "maxVertexUniformVectors": 16,
               "pvrtc": null,
-              "s3tc": null,
               "standardDerivatives": false,
-              "textureAnisotropicFilterExtension": null,
               "textureFloat": false,
               "textureFloatLinearFiltering": false,
               "textureFloatRender": false,
@@ -8734,6 +8860,7 @@ t {
               "vertexArrayObject": false,
             },
             "_colorWrite": true,
+            "_colorWriteChanged": true,
             "_compiledEffects": Object {},
             "_contextWasLost": false,
             "_currentBoundBuffer": Array [],
@@ -8775,13 +8902,14 @@ t {
               "_totalValueCount": 0,
             },
             "_fps": 60,
+            "_getDepthStencilBuffer": [Function],
             "_highPrecisionShadersAllowed": true,
             "_internalTexturesCache": Array [],
             "_lockstepMaxSteps": 4,
             "_maxSimultaneousTextures": 0,
             "_mustWipeVertexAttributes": false,
             "_nextFreeTextureSlots": Array [],
-            "_options": Object {
+            "_options": u {
               "deterministicLockstep": false,
               "lockstepMaxSteps": 4,
               "renderHeight": 256,
@@ -8846,12 +8974,13 @@ t {
               "_stencilTest": false,
             },
             "_texturesSupported": Array [],
+            "_timeStep": 0.016666666666666666,
             "_uintIndicesCurrentlySet": false,
             "_uniformBuffers": Array [],
             "_unpackFlipYCached": null,
             "_vaoRecordInProgress": false,
             "_vertexAttribArraysEnabled": Array [],
-            "_viewportCached": e {
+            "_viewportCached": Object {
               "w": 0,
               "x": 0,
               "y": 0,
@@ -8859,6 +8988,7 @@ t {
             },
             "_webGLVersion": 1,
             "_windowIsBackground": false,
+            "canvasTabIndex": 1,
             "cullBackFaces": true,
             "customAnimationFrameRequester": null,
             "disableManifestCheck": false,
@@ -8914,7 +9044,7 @@ t {
                 "target": undefined,
               },
               "_observers": Array [
-                Object {
+                r {
                   "_willBeUnregistered": false,
                   "callback": [Function],
                   "mask": -1,
@@ -8993,8 +9123,10 @@ t {
             "scenes": Array [
               [Circular],
             ],
+            "useReverseDepthBuffer": false,
             "validateShaderPrograms": false,
           },
+          "_environmentIntensity": 1,
           "_environmentTexture": null,
           "_evaluateSubMeshStage": t {},
           "_executeWhenReadyTimeoutId": -1,
@@ -10216,19 +10348,21 @@ t {
             "_customAlphaTestSortCompareFn": Object {},
             "_customOpaqueSortCompareFn": Object {},
             "_customTransparentSortCompareFn": Object {},
-            "_renderingGroupInfo": Object {},
+            "_renderingGroupInfo": r {},
             "_renderingGroups": Array [],
             "_scene": [Circular],
             "_useSceneAutoClearSetup": false,
           },
           "_sceneUbo": e {
+            "_alreadyBound": false,
             "_data": Array [],
             "_dynamic": true,
             "_engine": i {
               "_activeChannel": 0,
               "_activeRenderLoops": Array [],
               "_activeRequests": Array [],
-              "_alphaMode": 0,
+              "_alphaEquation": 0,
+              "_alphaMode": 1,
               "_alphaState": e {
                 "_alphaBlend": false,
                 "_blendConstants": Array [
@@ -10258,6 +10392,8 @@ t {
               "_boundUniforms": Object {},
               "_caps": Object {
                 "astc": null,
+                "blendMinMax": false,
+                "canUseTimestampForTimerQuery": false,
                 "colorBufferFloat": false,
                 "depthTextureExtension": false,
                 "drawBuffersExtension": false,
@@ -10267,8 +10403,10 @@ t {
                 "highPrecisionShaderSupported": true,
                 "instancedArrays": false,
                 "maxAnisotropy": 0,
+                "maxCombinedTexturesImageUnits": 32,
                 "maxCubemapTextureSize": 512,
                 "maxFragmentUniformVectors": 16,
+                "maxMSAASamples": 1,
                 "maxRenderTextureSize": 512,
                 "maxTextureSize": 512,
                 "maxTexturesImageUnits": 16,
@@ -10277,9 +10415,7 @@ t {
                 "maxVertexTextureImageUnits": 16,
                 "maxVertexUniformVectors": 16,
                 "pvrtc": null,
-                "s3tc": null,
                 "standardDerivatives": false,
-                "textureAnisotropicFilterExtension": null,
                 "textureFloat": false,
                 "textureFloatLinearFiltering": false,
                 "textureFloatRender": false,
@@ -10291,6 +10427,7 @@ t {
                 "vertexArrayObject": false,
               },
               "_colorWrite": true,
+              "_colorWriteChanged": true,
               "_compiledEffects": Object {},
               "_contextWasLost": false,
               "_currentBoundBuffer": Array [],
@@ -10332,13 +10469,14 @@ t {
                 "_totalValueCount": 0,
               },
               "_fps": 60,
+              "_getDepthStencilBuffer": [Function],
               "_highPrecisionShadersAllowed": true,
               "_internalTexturesCache": Array [],
               "_lockstepMaxSteps": 4,
               "_maxSimultaneousTextures": 0,
               "_mustWipeVertexAttributes": false,
               "_nextFreeTextureSlots": Array [],
-              "_options": Object {
+              "_options": u {
                 "deterministicLockstep": false,
                 "lockstepMaxSteps": 4,
                 "renderHeight": 256,
@@ -10403,12 +10541,13 @@ t {
                 "_stencilTest": false,
               },
               "_texturesSupported": Array [],
+              "_timeStep": 0.016666666666666666,
               "_uintIndicesCurrentlySet": false,
               "_uniformBuffers": Array [],
               "_unpackFlipYCached": null,
               "_vaoRecordInProgress": false,
               "_vertexAttribArraysEnabled": Array [],
-              "_viewportCached": e {
+              "_viewportCached": Object {
                 "w": 0,
                 "x": 0,
                 "y": 0,
@@ -10416,6 +10555,7 @@ t {
               },
               "_webGLVersion": 1,
               "_windowIsBackground": false,
+              "canvasTabIndex": 1,
               "cullBackFaces": true,
               "customAnimationFrameRequester": null,
               "disableManifestCheck": false,
@@ -10471,7 +10611,7 @@ t {
                   "target": undefined,
                 },
                 "_observers": Array [
-                  Object {
+                  r {
                     "_willBeUnregistered": false,
                     "callback": [Function],
                     "mask": -1,
@@ -10550,6 +10690,7 @@ t {
               "scenes": Array [
                 [Circular],
               ],
+              "useReverseDepthBuffer": false,
               "validateShaderPrograms": false,
             },
             "_needSync": false,
@@ -10557,6 +10698,7 @@ t {
             "_uniformLocationPointer": 0,
             "_uniformLocations": Object {},
             "_uniformSizes": Object {},
+            "_valueCache": Object {},
             "updateColor3": [Function],
             "updateColor4": [Function],
             "updateFloat": [Function],
@@ -10572,6 +10714,8 @@ t {
           "_serializableComponents": Array [],
           "_shadowsEnabled": true,
           "_skeletonsEnabled": true,
+          "_skipEvaluateActiveMeshesCompletely": false,
+          "_skipFrustumClipping": false,
           "_softwareSkinnedMeshes": t {
             "_duplicateId": 0,
             "_id": 7,
@@ -10907,7 +11051,7 @@ t {
               0,
               0,
             ],
-            "updateFlag": 77,
+            "updateFlag": 80,
           },
           "_transientComponents": Array [],
           "_uid": null,
@@ -10942,6 +11086,7 @@ t {
           "defaultCursor": "",
           "disableOfflineSupportExceptionRules": Array [],
           "dispatchAllSubMeshesOfActiveMeshes": false,
+          "doNotHandleCursors": false,
           "dumpNextRenderTargets": false,
           "fogColor": e {
             "b": 0.3,
@@ -10952,7 +11097,7 @@ t {
           "fogEnd": 1000,
           "fogStart": 0,
           "geometries": Array [],
-          "geometriesByUniqueId": null,
+          "geometriesByUniqueId": Object {},
           "getActiveMeshCandidates": [Function],
           "getActiveSubMeshCandidates": [Function],
           "getCollidingSubMeshCandidates": [Function],
@@ -11026,6 +11171,15 @@ t {
             },
             "_observers": Array [],
           },
+          "onAfterRenderCameraObservable": e {
+            "_eventState": e {
+              "currentTarget": undefined,
+              "mask": 0,
+              "skipNextObservers": false,
+              "target": undefined,
+            },
+            "_observers": Array [],
+          },
           "onAfterRenderObservable": e {
             "_eventState": e {
               "currentTarget": undefined,
@@ -11054,6 +11208,15 @@ t {
             "_observers": Array [],
           },
           "onAfterStepObservable": e {
+            "_eventState": e {
+              "currentTarget": undefined,
+              "mask": 0,
+              "skipNextObservers": false,
+              "target": undefined,
+            },
+            "_observers": Array [],
+          },
+          "onAnimationFileImportedObservable": e {
             "_eventState": e {
               "currentTarget": undefined,
               "mask": 0,
@@ -11187,7 +11350,7 @@ t {
               "target": undefined,
             },
             "_observers": Array [
-              Object {
+              r {
                 "_willBeUnregistered": false,
                 "callback": [Function],
                 "mask": -1,
@@ -11312,14 +11475,14 @@ t {
               "target": undefined,
             },
             "_observers": Array [
-              Object {
+              r {
                 "_willBeUnregistered": false,
                 "callback": [Function],
                 "mask": 8,
                 "scope": null,
                 "unregisterOnNextCall": false,
               },
-              Object {
+              r {
                 "_willBeUnregistered": false,
                 "callback": [Function],
                 "mask": 7,
@@ -11345,7 +11508,7 @@ t {
               "target": undefined,
             },
             "_observers": Array [
-              Object {
+              r {
                 "_willBeUnregistered": false,
                 "callback": [Function],
                 "mask": 8,
@@ -11412,6 +11575,17 @@ t {
                 "y": 0,
                 "z": 0,
               },
+              "_absoluteRotationQuaternion": e {
+                "w": 1,
+                "x": 0,
+                "y": 0,
+                "z": 0,
+              },
+              "_absoluteScaling": e {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+              },
               "_animationPropertiesOverride": null,
               "_behaviors": Array [],
               "_billboardMode": 0,
@@ -11445,6 +11619,7 @@ t {
               "_childUpdateId": -1,
               "_children": null,
               "_currentRenderId": -1,
+              "_doNotSerialize": false,
               "_forward": e {
                 "x": 0,
                 "y": 0,
@@ -11457,6 +11632,7 @@ t {
               },
               "_indexInSceneTransformNodesArray": 0,
               "_infiniteDistance": false,
+              "_isAbsoluteSynced": false,
               "_isDirty": true,
               "_isDisposed": false,
               "_isEnabled": true,
@@ -11487,7 +11663,7 @@ t {
                   0,
                   0,
                 ],
-                "updateFlag": 83,
+                "updateFlag": 86,
               },
               "_nonUniformScaling": false,
               "_onDisposeObserver": null,
@@ -11516,7 +11692,7 @@ t {
                   0,
                   1,
                 ],
-                "updateFlag": 86,
+                "updateFlag": 89,
               },
               "_poseMatrix": null,
               "_position": e {
@@ -11581,12 +11757,11 @@ t {
                   0,
                   1,
                 ],
-                "updateFlag": 80,
+                "updateFlag": 83,
               },
               "_worldMatrixDeterminant": 0,
               "_worldMatrixDeterminantIsDirty": true,
               "animations": Array [],
-              "doNotSerialize": false,
               "id": "On Terrain",
               "ignoreNonUniformScaling": false,
               "metadata": null,
@@ -11628,6 +11803,17 @@ t {
                 "y": 0,
                 "z": 0,
               },
+              "_absoluteRotationQuaternion": e {
+                "w": 1,
+                "x": 0,
+                "y": 0,
+                "z": 0,
+              },
+              "_absoluteScaling": e {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+              },
               "_animationPropertiesOverride": null,
               "_behaviors": Array [],
               "_billboardMode": 0,
@@ -11661,6 +11847,7 @@ t {
               "_childUpdateId": -1,
               "_children": null,
               "_currentRenderId": -1,
+              "_doNotSerialize": false,
               "_forward": e {
                 "x": 0,
                 "y": 0,
@@ -11673,6 +11860,7 @@ t {
               },
               "_indexInSceneTransformNodesArray": 0,
               "_infiniteDistance": false,
+              "_isAbsoluteSynced": false,
               "_isDirty": true,
               "_isDisposed": false,
               "_isEnabled": true,
@@ -11703,7 +11891,7 @@ t {
                   0,
                   0,
                 ],
-                "updateFlag": 83,
+                "updateFlag": 86,
               },
               "_nonUniformScaling": false,
               "_onDisposeObserver": null,
@@ -11732,7 +11920,7 @@ t {
                   0,
                   1,
                 ],
-                "updateFlag": 86,
+                "updateFlag": 89,
               },
               "_poseMatrix": null,
               "_position": e {
@@ -11797,12 +11985,11 @@ t {
                   0,
                   1,
                 ],
-                "updateFlag": 80,
+                "updateFlag": 83,
               },
               "_worldMatrixDeterminant": 0,
               "_worldMatrixDeterminantIsDirty": true,
               "animations": Array [],
-              "doNotSerialize": false,
               "id": "On Terrain",
               "ignoreNonUniformScaling": false,
               "metadata": null,
@@ -11833,9 +12020,9 @@ t {
               "uniqueId": 0,
             },
           ],
-          "useClonedMeshhMap": false,
+          "useClonedMeshMap": true,
           "useConstantAnimationDeltaTime": false,
-          "useMaterialMeshMap": false,
+          "useMaterialMeshMap": true,
         },
         "angularSpeed": 0.01,
         "camera": [Circular],
@@ -11859,7 +12046,7 @@ t {
         "zoomingSensibility": 25,
       },
       "mousewheel": e {
-        "_observer": Object {
+        "_observer": r {
           "_willBeUnregistered": false,
           "callback": [Function],
           "mask": 8,
@@ -11878,7 +12065,7 @@ t {
         "_isPanClick": false,
         "_isPinching": false,
         "_metaKey": false,
-        "_observer": Object {
+        "_observer": r {
           "_willBeUnregistered": false,
           "callback": [Function],
           "mask": 7,
@@ -11905,6 +12092,7 @@ t {
         "pinchPrecision": 12,
         "pointA": null,
         "pointB": null,
+        "useNaturalPinchZoom": false,
       },
     },
     "attachedElement": <canvas />,
@@ -11913,6 +12101,7 @@ t {
     "noPreventDefault": true,
   },
   "isIntermediate": false,
+  "isRigCamera": false,
   "layerMask": 268435455,
   "lockedTarget": null,
   "lowerAlphaLimit": -2.356194490192345,

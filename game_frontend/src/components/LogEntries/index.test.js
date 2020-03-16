@@ -32,7 +32,7 @@ describe('<LogEntries />', () => {
   it('calls `scrollIntoView` only when shouldActivateSnapToBottom is true', () => {
     const scrollIntoViewMock = jest.fn()
     HTMLElement.prototype.scrollIntoView = scrollIntoViewMock
-    let tree = createMountWithTheme(<LogEntries logs={[]} />, 'dark')
+    const tree = createMountWithTheme(<LogEntries logs={[]} />, 'dark')
     expect(scrollIntoViewMock).not.toBeCalled()
     tree.setProps({ logs: [], shouldActivateSnapToBottom: true })
     expect(scrollIntoViewMock.mock).toMatchSnapshot()

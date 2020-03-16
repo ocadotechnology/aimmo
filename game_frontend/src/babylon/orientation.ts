@@ -8,18 +8,26 @@ const westOrientation = new BABYLON.Vector3(0, Math.PI / 2, 0)
 export default function setOrientation (mesh: BABYLON.AbstractMesh, orientation: string): void {
   switch (orientation) {
     case 'north':
-      if (mesh.rotation !== northOrientation) { mesh.rotation = northOrientation }
+      if (mesh.rotation !== northOrientation) {
+        mesh.rotation = northOrientation
+      }
       break
     case 'east':
-      if (mesh.rotation !== eastOrientation) { mesh.rotation = eastOrientation }
+      if (mesh.rotation !== eastOrientation) {
+        mesh.rotation = eastOrientation
+      }
       break
     case 'south':
-      if (mesh.rotation !== southOrientation) { mesh.rotation = southOrientation }
+      if (mesh.rotation !== southOrientation) {
+        mesh.rotation = southOrientation
+      }
       break
     case 'west':
-      if (mesh.rotation !== westOrientation) { mesh.rotation = westOrientation }
+      if (mesh.rotation !== westOrientation) {
+        mesh.rotation = westOrientation
+      }
       break
     default:
-      console.log(`${mesh} was not provided with a valid orientation: ${orientation}`)
+      console.warn(`${mesh} was not provided with a valid orientation: ${orientation}`)
   }
 }
