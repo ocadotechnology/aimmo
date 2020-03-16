@@ -18,7 +18,6 @@ export default class ObstacleManager implements GameNode, DiffHandling {
     this.obstacleNode = new BABYLON.TransformNode('Obstacles', environment.scene)
     this.object = this.obstacleNode
     this.obstacleNode.parent = environment.onTerrainNode
-    this.assetPack = assetPack
   }
 
   remove (obstacle: DiffItem): void {
