@@ -76,8 +76,7 @@
     }
   },
   "scripts": {
-    "lint": "standard src/**/*.js",
-    "lint-typescript": "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin **/*.ts",
+    "lint": "eslint 'src/**/*.{js,ts}'",
     "test": "jest"
   }
 }
