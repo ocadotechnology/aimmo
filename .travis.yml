@@ -1,6 +1,5 @@
 sudo: required
 dist: xenial
-# group: edge
 language: python
 addons:
   apt:
