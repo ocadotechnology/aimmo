@@ -6,6 +6,9 @@
   "repository": "https://github.com/ocadotechnology/aimmo",
   "author": "Ocado Technology",
   "license": "MIT",
+  "engines": {
+    "node": ">=12.16.1"
+  },
   "private": false,
   "devDependencies": {
     "@babel/core": "^7.6.4",
