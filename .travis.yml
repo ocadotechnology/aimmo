@@ -3,7 +3,7 @@ dist: trusty
 group: edge
 language: python
 cache:
-  npm: false
+  yarn: true
 python:
   - "3.6.7"
 services:
@@ -44,8 +44,8 @@ jobs:
         # Wait for Kubernetes to be up and ready.
         - JSONPATH='{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}{@.type}={@.status};{end}{end}'; until kubectl get nodes -o jsonpath="$JSONPATH" 2>&1 | grep -q "Ready=True"; do sleep 1; done
       before_install:
-        - nvm install 12.16.1
-        - nvm use 12.16.1
+        - curl -o- -L https://yarnpkg.com/install.sh | bash
+        - export PATH="$HOME/.yarn/bin:$PATH"
       install:
         - pip install .
         - pip install codecov
@@ -103,11 +103,12 @@ jobs:
     - name: "Javascript Tests"
       language: node_js
       before_install:
-        - nvm install v11.10.0
-        - nvm use node
+        - curl -o- -L https://yarnpkg.com/install.sh | bash
+        - export PATH="$HOME/.yarn/bin:$PATH"
       install:
         - cd game_frontend && yarn
       script:
+        - yarn lint
         - yarn lint-typescript
         - yarn test --coverage
       after_success:
