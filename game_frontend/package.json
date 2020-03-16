@@ -22,20 +22,27 @@
     "@babel/runtime": "^7.6.3",
     "@types/enzyme": "^3.10.3",
     "@types/jest": "^24.0.15",
-    "@typescript-eslint/eslint-plugin": "^1.13.0",
-    "@typescript-eslint/parser": "^1.13.0",
-    "babel-eslint": "^10.0.2",
+    "@typescript-eslint/eslint-plugin": "^2.23.0",
+    "@typescript-eslint/parser": "^2.23.0",
+    "babel-eslint": "^10.1.0",
     "babel-plugin-module-resolver": "^3.2.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "enzyme-to-json": "^3.3.5",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-config-standard-react": "^9.2.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-standard": "^4.0.1",
     "jest": "^24.8.0",
     "jest-styled-components": "^6.3.1",
     "parcel-plugin-babel-typescript": "^1.0.1",
     "prettier-standard": "^16.2.1",
     "react-test-renderer": "^16.6.3",
     "redux-mock-store": "^1.5.3",
-    "standard": "^12.0.1",
     "typescript": "^3.5.3"
   },
   "dependencies": {
@@ -61,27 +68,16 @@
     "styled-components": "^3.4.10",
     "webfontloader": "^1.6.28"
   },
-  "standard": {
-    "parser": "babel-eslint",
-    "globals": [
-      "HTMLCanvasElement",
-      "WheelEvent",
-      "HTMLElement"
-    ]
+  "esLintConfig": {
+    "rules": {
+      "@typescript-eslint/member-delimiter-style": {
+        "multiline": "none"
+      }
+    }
   },
   "scripts": {
     "lint": "standard src/**/*.js",
     "lint-typescript": "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin **/*.ts",
     "test": "jest"
-  },
-  "standard-typescript": {
-    "parser": "@typescript-eslint/parser",
-    "plugins": [
-      "@typescript-eslint/eslint-plugin"
-    ],
-    "globals": [
-      "HTMLCanvasElement",
-      "WheelEvent"
-    ]
   }
 }

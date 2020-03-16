@@ -46,7 +46,7 @@ describe('gameReducer', () => {
       }
     }
 
-    const action = actions.connectionParametersReceived({ 'avatar_id': 1 })
+    const action = actions.connectionParametersReceived({ avatar_id: 1 })
     expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
   })
 

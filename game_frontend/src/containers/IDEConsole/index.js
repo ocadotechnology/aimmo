@@ -29,7 +29,7 @@ export const StyledConsole = styled.div`
   }
 
   ::-webkit-scrollbar-thumb {
-    background: ${props => props.theme.palette.grey['A200']};
+    background: ${props => props.theme.palette.grey.A200};
     border-radius: 100px;
     border: ${props => props.theme.spacing(0.25)}px solid transparent;
     background-clip: content-box;
@@ -38,7 +38,9 @@ export const StyledConsole = styled.div`
 
 export class IDEConsole extends Component {
   static propTypes = {
-    logs: PropTypes.arrayOf(PropTypes.object)
+    logs: PropTypes.arrayOf(PropTypes.object),
+    resetCode: PropTypes.func,
+    clearConsoleLogs: PropTypes.func
   }
 
   // see https://blog.eqrion.net/pin-to-bottom/
@@ -71,7 +73,7 @@ export class IDEConsole extends Component {
   render () {
     return (
       <IDEConsoleSection>
-        <ConsoleBar clearConsoleClicked={this.clearConsole} resetCodeClicked={this.props.resetCode} />
+        <ConsoleBar handleClearConsoleClicked={this.clearConsole} handleResetCodeClicked={this.props.resetCode} />
         <StyledConsole innerRef={ref => { this.consoleRef = ref }}>
           <LogEntries
             shouldActivateSnapToBottom={this.state.shouldActivateSnapToBottom}

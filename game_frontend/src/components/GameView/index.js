@@ -51,12 +51,11 @@ export const PositionedFindMeButton = styled(FindMeButton)`
 export default class GameView extends Component {
   static propTypes = {
     connectToGame: PropTypes.func,
-    gameState: PropTypes.object,
-    currentAvatarID: PropTypes.number,
     gameLoaded: PropTypes.bool,
     cameraCenteredOnUserAvatar: PropTypes.bool,
     mapPanned: PropTypes.func,
-    centerCameraOnUserAvatar: PropTypes.func
+    centerCameraOnUserAvatar: PropTypes.func,
+    environment: PropTypes.string
   }
 
   componentDidMount () {
@@ -100,7 +99,8 @@ export default class GameView extends Component {
         <CircularProgress color='inherit' />
         <LoadingText
           variant='body1'
-          color='inherit'>
+          color='inherit'
+        >
           Building game world...
         </LoadingText>
       </LoadingBackgroundOverlay>
@@ -116,7 +116,8 @@ export default class GameView extends Component {
             aria-label='Find Me'
             whenClicked={this.props.centerCameraOnUserAvatar}
             isCameraCenteredOnUserAvatar={this.props.cameraCenteredOnUserAvatar}
-            id='find-me-button' />
+            id='find-me-button'
+          />
         </OverlayElements>
       </Overlay>
     )

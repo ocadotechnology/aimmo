@@ -7,7 +7,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 export const StyledConsoleBar = styled(Toolbar)`
-  background-color: ${props => props.theme.palette.grey['A700']};
+  background-color: ${props => props.theme.palette.grey.A700};
   display: flex;
   justify-content: space-between;
 `
@@ -28,23 +28,17 @@ export default class ConsoleBar extends Component {
 
   render () {
     return (
-      <StyledConsoleBar variant='dense' >
+      <StyledConsoleBar variant='dense'>
         <StyledConsoleTitle>
           <StyledConsoleIcon color='disabled' />
-          <Typography
-            variant='body1'
-            color='textSecondary'>
-          Console Log
+          <Typography variant='body1' color='textSecondary'>
+            Console Log
           </Typography>
         </StyledConsoleTitle>
-        <Button
-          variant='outlined'
-          onClick={this.props.resetCodeClicked}>
+        <Button variant='outlined' onClick={this.props.resetCodeClicked}>
           Reset code
         </Button>
-        <IconButton
-          size='small'
-          onClick={this.props.clearConsoleClicked}>
+        <IconButton size='small' onClick={this.props.clearConsoleClicked}>
           <ClearIcon />
         </IconButton>
       </StyledConsoleBar>

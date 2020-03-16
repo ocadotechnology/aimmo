@@ -12,7 +12,7 @@ const palette = {
 const additionalVariables = {
   typography: {
     code: {
-      fontFamily: '\'Source Code Pro\', monospace',
+      fontFamily: "'Source Code Pro', monospace",
       fontSize: '1rem'
     }
   },
@@ -49,10 +49,7 @@ const theme = {
   shape,
   overrides,
   typography: {
-    fontFamily: [
-      'museo-sans',
-      'Source Code Pro'
-    ].join(','),
+    fontFamily: ['museo-sans', 'Source Code Pro'].join(','),
     display1: {
       fontWeight: 700
     },
