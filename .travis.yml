@@ -109,9 +109,8 @@ jobs:
         - bash <(curl -s https://codecov.io/bash)
     - name: "Javascript Tests"
       language: node_js
-      before_install:
-        - curl -o- -L https://yarnpkg.com/install.sh | bash
-        - export PATH="$HOME/.yarn/bin:$PATH"
+      node_js:
+        - 12
       install:
         - cd game_frontend && yarn
       script:
