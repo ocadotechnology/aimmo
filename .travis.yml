@@ -2,6 +2,8 @@ sudo: required
 dist: trusty
 group: edge
 language: python
+cache:
+  npm: false
 python:
   - "3.6.7"
 services:
