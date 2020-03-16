@@ -6,7 +6,7 @@ cache:
   yarn: false
   npm: false
 node_js:
-  - "12.16"
+  - "12"
 python:
   - "3.6.7"
 services:
