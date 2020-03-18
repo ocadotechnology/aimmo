@@ -40,6 +40,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
       '/static/babylon/models/avatar_marker_texture.png',
       this.scene
     )
+    this.markerMaterial.specularColor = new BABYLON.Color3(0, 0, 0)
   }
 
   setupShaderMaterial (): void {
