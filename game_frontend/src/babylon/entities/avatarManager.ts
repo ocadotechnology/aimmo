@@ -67,23 +67,23 @@ export default class AvatarManager implements GameNode, DiffHandling {
 
   async add (avatar: DiffItem) {
     const { meshes } = await this.importMesh(
-      'dee',
+      'avatar',
       '/static/babylon/models/',
       'avatar_model.babylon',
       this.scene
     )
-    var dee = meshes[0]
-    dee.name = `avatar: ${avatar.value.id}`
-    dee.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1)
-    dee.computeBonesUsingShaders = false
-    dee.material = this.shaderMaterial
-    dee.parent = this.avatarNode
-    dee.position = new BABYLON.Vector3(avatar.value.location.x, 0, avatar.value.location.y)
-    setOrientation(dee, avatar.value.orientation)
+    var avatarMesh = meshes[0]
+    avatarMesh.name = `avatar: ${avatar.value.id}`
+    avatarMesh.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1)
+    avatarMesh.computeBonesUsingShaders = false
+    avatarMesh.material = this.shaderMaterial
+    avatarMesh.parent = this.avatarNode
+    avatarMesh.position = new BABYLON.Vector3(avatar.value.location.x, 0, avatar.value.location.y)
+    setOrientation(avatarMesh, avatar.value.orientation)
 
     if (avatar.value.id === this.currentAvatarID) {
-      this.attachMarker(dee, avatar)
-      this.currentAvatarMesh = dee
+      this.attachMarker(avatarMesh, avatar)
+      this.currentAvatarMesh = avatarMesh
     }
   }
 
@@ -103,10 +103,10 @@ export default class AvatarManager implements GameNode, DiffHandling {
       false,
       1
     )
-    const dee = avatarToAnimate
-    createWalkAnimation(dee, this.scene)
+    const walkingAvatar = avatarToAnimate
+    createWalkAnimation(walkingAvatar, this.scene)
 
-    setOrientation(dee, avatar.value.orientation)
+    setOrientation(walkingAvatar, avatar.value.orientation)
   }
 
   attachMarker (avatarMesh: any, avatar: any): void {
