@@ -73,7 +73,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
       'avatar_model.babylon',
       this.scene
     )
-    var avatarMesh = meshes[0]
+    const avatarMesh = meshes[0]
     avatarMesh.name = `avatar: ${avatar.value.id}`
     avatarMesh.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1)
     avatarMesh.computeBonesUsingShaders = false
