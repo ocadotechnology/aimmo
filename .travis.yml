@@ -118,6 +118,8 @@ jobs:
         - NODE_ENV=production
         - SERVER_ENV=$(if [ "$TRAVIS_BRANCH" = "master" ]; then echo "default"; else echo "staging"; fi)
       before_install:
+        - nvm install 12
+        - nvm use 12
         - curl -o- -L https://yarnpkg.com/install.sh | bash
         - export PATH="$HOME/.yarn/bin:$PATH"
         - pip install git+https://github.com/ocadotechnology/python-semantic-release.git@add_beta_releases
