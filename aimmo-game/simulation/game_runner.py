@@ -85,9 +85,20 @@ class GameRunner:
             self.game_state.avatar_manager.clear_all_avatar_logs()
             self.game_state.turn_count += 1
 
+    def _get_task_result_or_stop_loop(self, task):
+        try:
+            task.result()
+        except Exception as e:
+            LOGGER.exception(f"Unexpected error, stopping game loop: {e}")
+            loop = asyncio.get_event_loop()
+            loop.stop()
+
     async def run(self):
         while True:
             LOGGER.info(f"Starting turn {self.game_state.turn_count}")
             turn = asyncio.ensure_future(self.update())
+
+            turn.add_done_callback(self._get_task_result_or_stop_loop)
+
             await asyncio.sleep(TURN_TIME)
             await turn
