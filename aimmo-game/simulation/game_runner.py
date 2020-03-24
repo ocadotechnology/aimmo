@@ -89,7 +89,7 @@ class GameRunner:
         try:
             task.result()
         except Exception as e:
-            LOGGER.error(f"Unexpected error, stopping game loop: {e}")
+            LOGGER.exception(f"Unexpected error, stopping game loop: {e}")
             loop = asyncio.get_event_loop()
             loop.stop()
 
