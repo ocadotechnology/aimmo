@@ -87,7 +87,18 @@ class GameRunner:
 
     async def run(self):
         while True:
+            loop = asyncio.get_event_loop()
             LOGGER.info(f"Starting turn {self.game_state.turn_count}")
             turn = asyncio.ensure_future(self.update())
+
+            def callback(turn_future):
+                try:
+                    turn_future.result()
+                except Exception:
+                    LOGGER.error("Unexpected error")
+                    loop.stop()
+
+            turn.add_done_callback(callback)
+
             await asyncio.sleep(TURN_TIME)
             await turn
