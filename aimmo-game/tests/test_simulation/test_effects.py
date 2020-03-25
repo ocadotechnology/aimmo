@@ -14,13 +14,13 @@ class _BaseCases(object):
         __metaclass__ = abc.ABCMeta
 
         @abc.abstractmethod
-        def make_effect(self, avatar):
+        def make_effect(self, avatar, interactable):
             pass
 
         def setUp(self):
             self.cell = MockCell()
             self.avatar = DummyAvatar(1, None)
-            self.effect = self.make_effect(self.avatar)
+            self.effect = self.make_effect(self.avatar, self.cell.interactable)
             self.avatar.effects.add(self.effect)
 
         def assertNoEffects(self):

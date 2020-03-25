@@ -4,16 +4,16 @@ import { DiffResult, DiffItem } from './diff'
  * An interface for implementing the objects that are part of the game world.
  */
 export interface GameNode {
-    object: any;
+  object: any
 }
 
 /**
  * Used to enforce the methods needed by the `DiffProcessor`.
  */
 export interface DiffHandling {
-    add(item: DiffItem): void;
-    edit(item: DiffItem): void;
-    remove(item: DiffItem): void;
+  add(item: DiffItem): void
+  edit(item: DiffItem): void
+  remove(item: DiffItem): void
 }
 
 /**
@@ -28,13 +28,13 @@ export class DiffProcessor {
   }
 
   handleDifferences (differences: DiffResult): void {
-    for (let entity of differences.deleteList) {
+    for (const entity of differences.deleteList) {
       this.handler.remove(entity)
     }
-    for (let entity of differences.editList) {
+    for (const entity of differences.editList) {
       this.handler.edit(entity)
     }
-    for (let entity of differences.addList) {
+    for (const entity of differences.addList) {
       this.handler.add(entity)
     }
   }

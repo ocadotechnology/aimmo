@@ -1,19 +1,21 @@
 /* eslint-env jest */
-import * as BABYLON from 'babylonjs'
 import InteractableManager from './interactableManager'
 import { DiffItem } from '../diff'
 import { MockEnvironment } from '../../testHelpers/mockEnvironment'
-import dummyImportMesh from '../../testHelpers/dummyImportMesh'
+import AssetPack from '../assetPacks/assetPack'
+import { Vector3 } from 'babylonjs'
+import dummyImportMeshAsync from 'testHelpers/dummyImportMeshAsync'
 
 let environment: MockEnvironment
-let interactable: InteractableManager
+let interactableManager: InteractableManager
 
 beforeEach(() => {
-  environment = new MockEnvironment()
-  interactable = new InteractableManager(environment, dummyImportMesh)
+  environment = new MockEnvironment(true, 'future')
+  const assetPack = new AssetPack(environment.era, environment.scene, dummyImportMeshAsync)
+  interactableManager = new InteractableManager(environment, assetPack)
 })
 
-function interactableDiffItem (index: string, type: string, location: {x: number, y: number}) {
+function interactableDiffItem (index: number, type: string, location: { x: number; y: number }) {
   return new DiffItem(index, {
     type: type,
     location: {
@@ -30,50 +32,64 @@ describe('InteractableManager', () => {
     expect(terrainNodeDescendants[0].name).toBe('Interactables')
   })
 
-  it('adds interactables to a new Interactable', () => {
+  it('adds interactables to a new Interactable', async () => {
+    jest.spyOn(interactableManager.assetPack, 'createInteractable')
     const interactableList = [
-      interactableDiffItem('1', 'score', { x: 0, y: 1 }),
-      interactableDiffItem('2', 'damage_boost', { x: 1, y: 0 })
+      interactableDiffItem(1, 'score', { x: 0, y: 1 }),
+      interactableDiffItem(2, 'damage_boost', { x: 1, y: 0 })
     ]
 
-    interactable.add(interactableList[0])
-    let interactableNodeDescendants = interactable.interactableNode.getDescendants()
+    await interactableManager.add(interactableList[0])
+    expect(interactableManager.assetPack.createInteractable).toBeCalledWith(
+      'interactable: 1',
+      'score',
+      new Vector3(0, 0, 1),
+      interactableManager.object
+    )
+    let interactableNodeDescendants = interactableManager.interactableNode.getDescendants()
     expect(interactableNodeDescendants.length).toBe(1)
 
-    interactable.add(interactableList[1])
-    interactableNodeDescendants = interactable.interactableNode.getDescendants()
+    await interactableManager.add(interactableList[1])
+    expect(interactableManager.assetPack.createInteractable).toBeCalledTimes(2)
+    expect(interactableManager.assetPack.createInteractable).toBeCalledWith(
+      'interactable: 2',
+      'damage_boost',
+      new Vector3(1, 0, 0),
+      interactableManager.object
+    )
+    interactableNodeDescendants = interactableManager.interactableNode.getDescendants()
     expect(interactableNodeDescendants.length).toBe(2)
   })
 
-  it('removes interactables from an Interactable', () => {
+  it('removes interactables from an Interactable', async () => {
     const interactableList = [
-      interactableDiffItem('1', 'score', { x: 0, y: 1 }),
-      interactableDiffItem('2', 'damage_boost', { x: 1, y: 0 })
+      interactableDiffItem(1, 'score', { x: 0, y: 1 }),
+      interactableDiffItem(2, 'damage_boost', { x: 1, y: 0 })
     ]
 
-    interactable.add(interactableList[0])
-    interactable.add(interactableList[1])
-    let interactableNodeDescendants = interactable.interactableNode.getDescendants()
+    await interactableManager.add(interactableList[0])
+    await interactableManager.add(interactableList[1])
+    let interactableNodeDescendants = interactableManager.interactableNode.getDescendants()
     expect(interactableNodeDescendants.length).toBe(2)
 
-    interactable.remove(interactableList[1])
-    interactableNodeDescendants = interactable.interactableNode.getDescendants()
+    interactableManager.remove(interactableList[1])
+    interactableNodeDescendants = interactableManager.interactableNode.getDescendants()
     expect(interactableNodeDescendants.length).toBe(1)
   })
 
-  it('edits interactable from an Interactable', () => {
-    const interactableItem = interactableDiffItem('1', 'score', { x: 0, y: 1 })
+  it('edits interactable from an Interactable', async () => {
+    const interactableItem = interactableDiffItem(1, 'score', { x: 0, y: 1 })
 
-    interactable.add(interactableItem)
+    await interactableManager.add(interactableItem)
 
-    var interactableNodeChildren = interactable.interactableNode.getChildMeshes()
-    expect(interactableNodeChildren[0].position).toEqual(new BABYLON.Vector3(0, 0, 1))
+    var interactableNodeChildren = interactableManager.interactableNode.getChildMeshes()
+    expect(interactableNodeChildren[0].position).toEqual(new Vector3(0, 0, 1))
 
-    const updatedInteractableItem = interactableDiffItem('1', 'score', { x: 1, y: 0 })
+    const updatedInteractableItem = interactableDiffItem(1, 'score', { x: 1, y: 0 })
 
-    interactable.edit(updatedInteractableItem)
+    interactableManager.edit(updatedInteractableItem)
 
-    interactableNodeChildren = interactable.interactableNode.getChildMeshes()
-    expect(interactableNodeChildren[0].position).toEqual(new BABYLON.Vector3(1, 0, 0))
+    interactableNodeChildren = interactableManager.interactableNode.getChildMeshes()
+    expect(interactableNodeChildren[0].position).toEqual(new Vector3(1, 0, 0))
   })
 })

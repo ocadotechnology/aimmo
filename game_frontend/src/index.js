@@ -1,9 +1,10 @@
-import '@babel/polyfill'
+import 'core-js/stable'
+import 'regenerator-runtime/runtime'
 import React from 'react'
 import { render } from 'react-dom'
 
 import WebFont from 'webfontloader'
-import { MuiThemeProvider } from '@material-ui/core/styles'
+import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components'
 import { darkTheme } from 'theme'
 
@@ -18,6 +19,9 @@ import { RunCodeButtonStatus } from 'components/RunCodeButton'
 WebFont.load({
   typekit: {
     id: 'mrl4ieu'
+  },
+  google: {
+    families: ['Source Code Pro']
   }
 })
 
@@ -61,13 +65,15 @@ function getGameIDFromURL () {
 const reduxStore = configureStore(initialState)
 
 const RootJSX = () => (
-  <StyledComponentsThemeProvider theme={darkTheme}>
+  <StylesProvider injectFirst>
     <MuiThemeProvider theme={darkTheme}>
-      <Provider store={reduxStore}>
-        <GamePage />
-      </Provider>
+      <StyledComponentsThemeProvider theme={darkTheme}>
+        <Provider store={reduxStore}>
+          <GamePage />
+        </Provider>
+      </StyledComponentsThemeProvider>
     </MuiThemeProvider>
-  </StyledComponentsThemeProvider>
+  </StylesProvider>
 )
 
 const root = document.getElementById('root')

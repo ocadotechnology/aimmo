@@ -16,12 +16,11 @@ class NewEffect(_Effect):
         # if the effect is temporary, it should be undone here
 ```
 """
-import math
-from abc import ABCMeta, abstractmethod
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from simulation.avatar.avatar_wrapper import AvatarWrapper
+    from simulation.interactables.interactable import _Interactable
 
 DEFAULT_EFFECT_TIME = 10
 
@@ -40,8 +39,14 @@ class _Effect(object):
     Base effect class, does nothing on its own.
     """
 
-    def __init__(self, recipient: "AvatarWrapper", duration=DEFAULT_EFFECT_TIME):
+    def __init__(
+        self,
+        recipient: "AvatarWrapper",
+        interactable: "_Interactable",
+        duration=DEFAULT_EFFECT_TIME,
+    ):
         self._recipient = recipient
+        self._interactable = interactable
         self.is_expired = False
         self._time_remaining = duration
         try:
@@ -113,7 +118,7 @@ class HealthEffect(_Effect):
 class ArtefactEffect(_Effect):
     def __init__(self, *args):
         super(ArtefactEffect, self).__init__(duration=1, *args)
-        self._recipient.number_of_artefacts += 1
+        self._recipient.backpack.append(self._interactable)
 
     def remove(self):
         super(ArtefactEffect, self).remove()

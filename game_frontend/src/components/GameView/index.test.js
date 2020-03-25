@@ -5,6 +5,7 @@ import { shallow } from 'enzyme/build/index'
 import createMountWithTheme from 'testHelpers/createMount'
 import createShallowWithTheme from 'testHelpers/createShallow'
 import { MockEnvironment } from 'testHelpers/mockEnvironment'
+import EntityManager from '../../babylon/entities'
 
 describe('<GameView />', () => {
   it('matches snapshot', () => {
@@ -26,9 +27,6 @@ describe('<GameView />', () => {
     const component = createMountWithTheme(<GameView {...props} />).instance()
 
     expect(component.gameEngine.environment).toBeDefined()
-    expect(component.gameEngine.sceneRenderer).toBeDefined()
-    expect(component.gameEngine.environmentManager).toBeDefined()
-    expect(component.gameEngine.entities).toBeDefined()
   })
 
   it('updates the game Engine', () => {
@@ -54,6 +52,65 @@ describe('<GameView />', () => {
     expect(componentInstance.gameEngine.onUpdate).toBeCalled()
   })
 
+  it('populates the map on first update', () => {
+    const props = {
+      connectToGame: jest.fn(),
+      gameLoaded: true,
+      environment: new MockEnvironment(true)
+    }
+
+    const component = createMountWithTheme(<GameView {...props} />)
+    const componentInstance = component.instance()
+
+    componentInstance.gameEngine.onUpdateGameState = jest.fn()
+    componentInstance.gameEngine.setCurrentAvatarID = jest.fn()
+    componentInstance.gameEngine.centerOn = jest.fn()
+
+    const newProps = {
+      ...props,
+      currentAvatarID: 1,
+      gameState: {
+        era: 'future',
+        id: 1
+      }
+    }
+
+    component.setProps(newProps)
+
+    expect(componentInstance.gameEngine.sceneRenderer).toBeDefined()
+    expect(componentInstance.gameEngine.environmentManager).toBeDefined()
+    expect(componentInstance.gameEngine.entities).toBeDefined()
+  })
+
+  it('does not populate the map if the environment era is set', () => {
+    const props = {
+      connectToGame: jest.fn(),
+      gameLoaded: true,
+      environment: new MockEnvironment(true, 'future')
+    }
+
+    const component = createMountWithTheme(<GameView {...props} />)
+    const componentInstance = component.instance()
+
+    componentInstance.gameEngine.populateMap = jest.fn()
+    componentInstance.gameEngine.onUpdateGameState = jest.fn()
+    componentInstance.gameEngine.setCurrentAvatarID = jest.fn()
+    componentInstance.gameEngine.centerOn = jest.fn()
+
+    const newProps = {
+      ...props,
+      currentAvatarID: 1,
+      gameState: {
+        era: 'future',
+        id: 1
+      }
+    }
+
+    component.setProps(newProps)
+
+    expect(componentInstance.gameEngine.populateMap).toBeCalledTimes(0)
+  })
+
   it('centers camera on cameraCenteredOnUserAvatar', () => {
     const props = {
       connectToGame: jest.fn(),
@@ -62,12 +119,20 @@ describe('<GameView />', () => {
     }
     const component = createMountWithTheme(<GameView {...props} />)
     const componentInstance = component.instance()
+
     componentInstance.gameEngine.centerOn = jest.fn()
+    componentInstance.gameEngine.onUpdateGameState = jest.fn()
+    componentInstance.gameEngine.setCurrentAvatarID = jest.fn()
+
+    componentInstance.gameEngine.entities = new EntityManager(componentInstance.gameEngine.environment)
     componentInstance.gameEngine.entities.avatars.currentAvatarMesh = true
 
     const newProps = {
       ...props,
       cameraCenteredOnUserAvatar: true,
+      gameState: {
+        id: 1
+      },
       gameLoaded: true
     }
     component.setProps(newProps)

@@ -17,20 +17,19 @@ export const StyledConsole = styled.div`
   color: ${props => props.theme.palette.text.primary};
   background-color: ${props => props.theme.palette.background.default};
   font-family: ${props => props.theme.additionalVariables.typography.code.fontFamily};
-  overflow: auto;
-  white-space: pre-line;
+  overflow-y: auto;
   height: 100%;
-  
+
   ::-webkit-scrollbar {
     background-color: ${props => props.theme.palette.divider};
   }
 
   ::-webkit-scrollbar-track {
-    background: ${props => props.theme.palette.divider}; 
+    background: ${props => props.theme.palette.divider};
   }
 
   ::-webkit-scrollbar-thumb {
-    background: ${props => props.theme.palette.grey['A200']};
+    background: ${props => props.theme.palette.grey.A200};
     border-radius: 100px;
     border: ${props => props.theme.spacing(0.25)}px solid transparent;
     background-clip: content-box;
@@ -39,21 +38,62 @@ export const StyledConsole = styled.div`
 
 export class IDEConsole extends Component {
   static propTypes = {
-    logs: PropTypes.arrayOf(PropTypes.object)
+    logs: PropTypes.arrayOf(PropTypes.object),
+    resetCode: PropTypes.func,
+    clearConsoleLogs: PropTypes.func
   }
 
-  componentDidMount () {
-    if (this.consoleRef) {
-      this.consoleRef.scrollTo(0, 1)
+  // see https://blog.eqrion.net/pin-to-bottom/
+  state = {
+    activatedScrollToBottom: false,
+    shouldActivateSnapToBottom: false
+  }
+
+  componentDidUpdate () {
+    this.snapToBottomIfNeeded()
+  }
+
+  isOverflown ({ clientHeight, scrollHeight }) {
+    return scrollHeight > clientHeight
+  }
+
+  isOverflownForTheFirstTime () {
+    return (
+      !this.state.activatedScrollToBottom && this.consoleRef && this.isOverflown(this.consoleRef)
+    )
+  }
+
+  snapToBottomIfNeeded () {
+    if (this.isOverflownForTheFirstTime()) {
+      this.setState({
+        ...this.state,
+        shouldActivateSnapToBottom: true,
+        activatedScrollToBottom: true
+      })
+    } else if (this.state.activatedScrollToBottom && this.state.shouldActivateSnapToBottom) {
+      this.setState({ ...this.state, shouldActivateSnapToBottom: false })
     }
+  }
+
+  clearConsole = () => {
+    this.props.clearConsoleLogs()
+    this.setState({ ...this.state, activatedScrollToBottom: false })
   }
 
   render () {
     return (
       <IDEConsoleSection>
-        <ConsoleBar clearConsoleClicked={this.props.clearConsoleLogs} resetCodeClicked={this.props.resetCode} />
-        <StyledConsole innerRef={ref => { this.consoleRef = ref }}>
+        <ConsoleBar
+          clearConsoleClicked={this.clearConsole}
+          handleResetCodeClicked={this.props.resetCode}
+        />
+        <StyledConsole
+          innerRef={ref => {
+            this.consoleRef = ref
+          }}
+        >
           <LogEntries
+            shouldActivateSnapToBottom={this.state.shouldActivateSnapToBottom}
             logs={this.props.logs}
           />
         </StyledConsole>

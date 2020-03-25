@@ -22,13 +22,13 @@ def avatar_on_cell(turn_state: TurnState):
     return turn_state.interactable_cell.avatar is not None
 
 
-def pickup_action_applied(turn_state: TurnState):
+def in_backpack(turn_state: TurnState):
     """
-    Checks if the interactable has had the `PickupAction` applied to it.
+    Checks if the interactable is in a backpack.
 
-    The `pickup_action_applied` should be set to True by the `PickupAction`.
+    The `in_backpack` attribute should be set to True by the `PickupAction`.
     """
     try:
-        return turn_state.interactable_cell.interactable.pickup_action_applied
+        return turn_state.interactable_cell.interactable.in_backpack
     except Exception:
         return False

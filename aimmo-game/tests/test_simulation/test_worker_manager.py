@@ -1,13 +1,5 @@
 from simulation.worker_manager import WorkerManager
-from simulation.workers.worker import Worker
-
-
-class MockWorker(Worker):
-    async def fetch_data(self, state_view):
-        pass
-
-    def _create_worker(self):
-        pass
+from .mock_worker import MockWorker
 
 
 class TestWorkerManager:

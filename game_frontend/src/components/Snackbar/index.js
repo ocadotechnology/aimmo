@@ -58,23 +58,24 @@ export class Snackbar extends Component {
 
   durationIncludingTransitionTime = () => {
     const { theme } = this.props
-    return theme.transitions.duration.enteringScreen + Snackbar.duration + theme.transitions.duration.leavingScreen
+    return (
+      theme.transitions.duration.enteringScreen +
+      Snackbar.duration +
+      theme.transitions.duration.leavingScreen
+    )
   }
 
   render () {
     const { message } = this.props
     const StyledIcon = this.getStyledIcon()
     return (
-      <MaterialSnackbar
-        {...this.props}
-        autoHideDuration={this.durationIncludingTransitionTime()}
-      >
+      <MaterialSnackbar {...this.props} autoHideDuration={this.durationIncludingTransitionTime()}>
         <StyledSnackbarContent
           message={
-            (<SnackbarContentLayout>
+            <SnackbarContentLayout>
               <StyledIcon />
               {message}
-            </SnackbarContentLayout>)
+            </SnackbarContentLayout>
           }
         />
       </MaterialSnackbar>

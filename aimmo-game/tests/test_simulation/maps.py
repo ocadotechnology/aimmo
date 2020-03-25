@@ -122,8 +122,11 @@ class AvatarMap(WorldMap):
 class PickupMap(WorldMap):
     def __init__(self, pickup_class):
         self._pickup_class = pickup_class
+        self._cell = None
+
+    def setup_cell(self, location):
+        self._cell = Cell(location)
+        self._cell.interactable = self._pickup_class(self._cell)
 
     def get_cell(self, location):
-        cell = Cell(location)
-        cell.interactable = self._pickup_class(cell)
-        return cell
+        return self._cell

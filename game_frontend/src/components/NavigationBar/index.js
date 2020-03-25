@@ -18,12 +18,14 @@ export default class NavigationBar extends Component {
       <NavigationBarLayout>
         <AppBar
           color='secondary'
-          position='sticky'>
+          position='sticky'
+        >
           <LogoToolbar>
             <IconButton
               href='/kurono'
               aria-label='Kurono dashboard'
-              color='inherit'>
+              color='inherit'
+            >
               <KuronoLogo fontSize='large' />
             </IconButton>
           </LogoToolbar>

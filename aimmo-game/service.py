@@ -17,6 +17,7 @@ from prometheus_client import make_wsgi_app
 from simulation import map_generator
 from simulation.django_communicator import DjangoCommunicator
 from simulation.game_runner import GameRunner
+from simulation.log_collector import LogCollector
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -91,6 +92,7 @@ class GameAPI(object):
         self.register_endpoints()
         self.worker_manager = worker_manager
         self.game_state = game_state
+        self.log_collector = LogCollector(worker_manager, game_state.avatar_manager)
 
     async def async_map(self, func, iterable_args):
         futures = [func(arg) for arg in iterable_args]
@@ -192,13 +194,13 @@ class GameAPI(object):
             return bool(logs)
 
         session_data = await self.socketio_server.get_session(sid)
-        worker = self.worker_manager.player_id_to_worker[session_data["id"]]
-        avatar_logs = worker.log
 
-        if should_send_logs(avatar_logs):
+        player_logs = self.log_collector.collect_logs(session_data["id"])
+
+        if should_send_logs(player_logs):
             await self.socketio_server.emit(
                 "log",
-                {"message": avatar_logs, "turn_count": self.game_state.turn_count},
+                {"message": player_logs, "turn_count": self.game_state.turn_count},
                 room=sid,
             )
 

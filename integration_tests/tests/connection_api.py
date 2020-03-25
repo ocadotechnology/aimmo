@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.WARNING)
 
 def delete_old_database():
     dirname = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    filename = 'example_project/example_project/db.sqlite3'
+    filename = "example_project/example_project/db.sqlite3"
     path = os.path.abspath(os.path.join(dirname, filename))
 
     try:
@@ -27,7 +27,7 @@ def obtain_csrftoken(session):
     :return: String representing the token.
     """
 
-    return session.cookies['csrftoken']
+    return session.cookies["csrftoken"]
 
 
 def create_session():
@@ -110,8 +110,8 @@ def _log_in_as_a_superuser():
     log a user in with the correct credentials and take care of
     all CSRF token exchange.
     """
-    url = 'http://localhost:8000/kurono/accounts/login/'
-    assert(is_server_healthy(url))
+    url = "http://localhost:8000/kurono/accounts/login/"
+    assert is_server_healthy(url)
 
     logging.debug("Creating session...")
     session = create_session()
@@ -122,15 +122,15 @@ def _log_in_as_a_superuser():
     csrftoken = obtain_csrftoken(session)
 
     login_info = {
-        'username': 'admin',
-        'password': 'admin',
-        'csrfmiddlewaretoken': csrftoken,
+        "username": "admin",
+        "password": "admin",
+        "csrfmiddlewaretoken": csrftoken,
     }
 
     logging.debug("Sending post response...")
 
     response = send_post_request(session, url, login_info)
-    assert(response.status_code == 200)
+    assert response.status_code == 200
 
     return csrftoken, session
 
@@ -142,11 +142,11 @@ def create_custom_game_default_settings(name):
     """
     csrftoken, session = _log_in_as_a_superuser()
 
-    url = 'http://localhost:8000/kurono/games/new/'
+    url = "http://localhost:8000/kurono/games/new/"
 
     print("is server healthy? ", is_server_healthy(url))
 
-    csrftoken = session.cookies['csrftoken']
+    csrftoken = session.cookies["csrftoken"]
 
     data = {
         "csrfmiddlewaretoken": csrftoken,
@@ -164,7 +164,10 @@ def create_custom_game_default_settings(name):
         "start_width": "11",
     }
 
-    headers = {'X-CSRFToken': csrftoken, 'Referer': 'http://localhost:8000/kurono/accounts/login/'}
+    headers = {
+        "X-CSRFToken": csrftoken,
+        "Referer": "http://localhost:8000/kurono/accounts/login/",
+    }
 
     response = session.post(url, data=data, headers=headers)
 

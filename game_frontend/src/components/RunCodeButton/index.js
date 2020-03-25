@@ -75,7 +75,8 @@ export default class RunCodeButton extends Component {
           <>
             <MarginedCircularProgress
               color='inherit'
-              size='24px' />Updating
+              size='24px'
+            />Updating
           </>
         )
       case RunCodeButtonStatus.error:
@@ -86,8 +87,8 @@ export default class RunCodeButton extends Component {
         )
       case RunCodeButtonStatus.done:
         return (
-            <>
-              <MarginedCheckCircle />Done
+          <>
+            <MarginedCheckCircle />Done
           </>
         )
     }
@@ -102,7 +103,8 @@ export default class RunCodeButton extends Component {
         aria-label='Run Code'
         variant='extended'
         id='post-code-button'
-        onClick={this.shouldButtonBeClickable() ? this.props.whenClicked : () => { }}>
+        onClick={this.shouldButtonBeClickable() ? this.props.whenClicked : () => { }}
+      >
         {this.renderContent(this.props.runCodeButtonStatus.status)}
       </Fab>
     )

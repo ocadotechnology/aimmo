@@ -11,7 +11,8 @@ export const MarginedLocationIcon = styled(FindMeIcon)`
 export default class FindMeButton extends Component {
   static propTypes = {
     whenClicked: PropTypes.func,
-    isCameraCenteredOnUseAvatar: PropTypes.bool
+    isCameraCenteredOnUserAvatar: PropTypes.bool,
+    className: PropTypes.string
   }
 
   render () {
@@ -23,9 +24,11 @@ export default class FindMeButton extends Component {
         aria-label='Find Me'
         id='find-me-button'
         variant='extended'
-        onClick={this.props.whenClicked}>
+        onClick={this.props.whenClicked}
+      >
         <MarginedLocationIcon
-          color='inherit' />
+          color='inherit'
+        />
         Find Me
       </Fab>
     )

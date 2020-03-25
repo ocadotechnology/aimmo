@@ -8,12 +8,7 @@ import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-component
 
 export default class IDE extends Component {
   static propTypes = {
-    code: PropTypes.string,
-    postCode: PropTypes.func,
-    getCode: PropTypes.func,
-    editorChanged: PropTypes.func,
-    logs: PropTypes.arrayOf(PropTypes.object),
-    runCodeButtonStatus: PropTypes.object
+    logs: PropTypes.arrayOf(PropTypes.object)
   }
 
   render () {

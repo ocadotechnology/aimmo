@@ -5,8 +5,8 @@ export const DELETE = 'D'
 export const EDIT = 'E'
 
 export class DiffItem {
-  id: number;
-  value: any;
+  id: number
+  value: any
 
   constructor (id: number, value: any) {
     this.id = id
@@ -14,15 +14,15 @@ export class DiffItem {
   }
 }
 export class DiffResult {
-    addList: Array<DiffItem>
-    deleteList: Array<DiffItem>
-    editList: Array<DiffItem>
+  addList: Array<DiffItem>
+  deleteList: Array<DiffItem>
+  editList: Array<DiffItem>
 
-    constructor (toAdd: Array<DiffItem>, toDelete: Array<DiffItem>, toEdit: Array<DiffItem>) {
-      this.addList = toAdd
-      this.deleteList = toDelete
-      this.editList = toEdit
-    }
+  constructor (toAdd: Array<DiffItem>, toDelete: Array<DiffItem>, toEdit: Array<DiffItem>) {
+    this.addList = toAdd
+    this.deleteList = toDelete
+    this.editList = toEdit
+  }
 }
 
 /**
@@ -46,17 +46,15 @@ export function diff (previous: Array<any>, current: Array<any>): DiffResult {
 }
 
 function convertToDiffItemsArray (current: Array<any>): DiffItem[] {
-  return current.map((element, index) => (
-    {
-      id: index,
-      value: element
-    }
-  ))
+  return current.map((element, index) => ({
+    id: index,
+    value: element
+  }))
 }
 
 function getDifferingElements (previous: Array<any>, current: Array<any>): Array<Array<any>> {
-  let differences = []
-  for (let [index, element] of Object.entries(previous)) {
+  const differences = []
+  for (const [index, element] of Object.entries(previous)) {
     if (!isEqual(element, current[index])) {
       differences.push([+index, element, current[index]])
     }
@@ -77,7 +75,7 @@ function getItemsToDelete (arrayOfDifferences: Array<Array<any>>, current: Array
 }
 
 function processRemainingElements (previous: Array<any>, current: Array<any>): DiffItem[] {
-  let remainingElements = []
+  const remainingElements = []
   for (let index = previous.length; index < current.length; index++) {
     remainingElements.push(new DiffItem(index, current[index]))
   }

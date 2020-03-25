@@ -41,7 +41,7 @@ towards.
 {
   "id": 1,
   // each level is set in one era only
-  "era": "less_flat"
+  "era": "future"
   "terrain": {
     "width": 10,
     "height": 10,
