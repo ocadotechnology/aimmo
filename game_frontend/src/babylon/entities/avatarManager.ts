@@ -83,7 +83,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
     setOrientation(avatarMesh, avatar.value.orientation)
 
     if (avatar.value.id === this.currentAvatarID) {
-      this.attachMarker(avatarMesh, avatar)
+      await this.attachMarker(avatarMesh)
       this.currentAvatarMesh = avatarMesh
     }
   }
@@ -110,21 +110,19 @@ export default class AvatarManager implements GameNode, DiffHandling {
     setOrientation(walkingAvatar, avatar.value.orientation)
   }
 
-  attachMarker (avatarMesh: any, avatar: any): void {
-    this.importMesh(
+  async attachMarker (avatarMesh: any) {
+    const { meshes } = await this.importMesh(
       'avatar_marker',
       '/static/babylon/models/',
       'avatar_marker_model.babylon',
-      this.scene,
-      (meshes, particleSystems, skeletons, animationGroups) => {
-        var marker = meshes[0]
-
-        marker.material = this.markerMaterial
-
-        marker.parent = avatarMesh
-        marker.position = new BABYLON.Vector3(0, MARKER_HEIGHT, 0)
-      }
+      this.scene
     )
+    const marker = meshes[0]
+
+    marker.material = this.markerMaterial
+
+    marker.parent = avatarMesh
+    marker.position = new BABYLON.Vector3(0, MARKER_HEIGHT, 0)
   }
 
   setCurrentAvatarID (avatarID: number) {
