@@ -32,7 +32,7 @@ add_test_avatars_to_games.short_description = "Add {} test avatars to selected g
 class GameDataAdmin(admin.ModelAdmin):
     search_fields = ["id", "name", "owner__username", "owner__email"]
     list_display = ["id", "name", "owner"]
-    raw_id_fields = ["owner", "main_user"]
+    raw_id_fields = ["owner", "main_user", "can_play"]
     readonly_fields = ["players", "auth_token"]
     actions = [add_test_avatars_to_games]
 
