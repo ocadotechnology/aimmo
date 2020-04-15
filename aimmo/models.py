@@ -39,7 +39,7 @@ class Game(models.Model):
     can_play = models.ManyToManyField(
         User,
         related_name="playable_games",
-        help_text="List of user IDs of users who are allowed to play and have access to the game.",
+        help_text="List of auth_user IDs of users who are allowed to play and have access to the game.",
     )
     completed = models.BooleanField(default=False)
     main_user = models.ForeignKey(
