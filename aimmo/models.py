@@ -36,7 +36,11 @@ class Game(models.Model):
     auth_token = models.CharField(max_length=24, blank=True)
     owner = models.ForeignKey(User, blank=True, null=True, related_name="owned_games")
     public = models.BooleanField(default=False)
-    can_play = models.ManyToManyField(User, related_name="playable_games")
+    can_play = models.ManyToManyField(
+        User,
+        related_name="playable_games",
+        help_text="List of auth_user IDs of users who are allowed to play and have access to the game.",
+    )
     completed = models.BooleanField(default=False)
     main_user = models.ForeignKey(
         User, blank=True, null=True, related_name="games_for_user"

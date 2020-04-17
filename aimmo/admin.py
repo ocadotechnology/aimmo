@@ -30,10 +30,10 @@ add_test_avatars_to_games.short_description = "Add {} test avatars to selected g
 
 
 class GameDataAdmin(admin.ModelAdmin):
-    list_display = ["id", "name"]
-
-    readonly_fields = ["players"]
-
+    search_fields = ["id", "name", "owner__username", "owner__email"]
+    list_display = ["id", "name", "owner"]
+    raw_id_fields = ["owner", "main_user", "can_play"]
+    readonly_fields = ["players", "auth_token"]
     actions = [add_test_avatars_to_games]
 
     def players(self, obj):
@@ -41,7 +41,10 @@ class GameDataAdmin(admin.ModelAdmin):
 
 
 class AvatarDataAdmin(admin.ModelAdmin):
+    search_fields = ["owner__username", "owner__email"]
     list_display = ["id", "owner_name", "game_name"]
+    raw_id_fields = ["game"]
+    readonly_fields = ["owner", "auth_token"]
 
     def owner_name(self, obj):
         return obj.owner
