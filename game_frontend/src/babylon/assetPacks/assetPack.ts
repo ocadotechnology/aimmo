@@ -13,6 +13,7 @@ import {
 const tileSizes = {
   future: { w: 31, h: 31 },
   prehistory: { w: 1, h: 1 },
+  ancient: { w: 15, j: 15 },
   grid: { w: 31, h: 31 }
 }
 
