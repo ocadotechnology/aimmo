@@ -1,22 +1,22 @@
 import {
-    StandardMaterial,
-    Texture,
-    Color3,
-    Vector3,
-    TransformNode,
-    AbstractMesh,
-    Scene
-  } from 'babylonjs'
-  import AssetPack from './assetPack'
-  
-  export default class WrongFutureAssetPack extends AssetPack {
+  StandardMaterial,
+  Texture,
+  Color3,
+  Vector3,
+  TransformNode,
+  AbstractMesh,
+  Scene
+} from 'babylonjs'
+import AssetPack from './assetPack'
+
+export default class WrongFutureAssetPack extends AssetPack {
     obstacleMaterial: StandardMaterial
-  
+
     constructor (era: string, scene: Scene) {
       super(era, scene)
       this.obstacleMaterial = this.makeObstacleMaterial()
     }
-  
+
     makeObstacleMaterial (): StandardMaterial {
       const material = new StandardMaterial(this.obstacleInfo.materialName, this.scene)
       material.diffuseTexture = new Texture(this.obstacleInfo.textureURL, this.scene)
@@ -24,7 +24,7 @@ import {
       material.diffuseColor = new Color3(1, 1, 1)
       return material
     }
-  
+
     async createObstacle (
       name: string,
       location: Vector3,
@@ -34,5 +34,4 @@ import {
       obstacle.material = this.obstacleMaterial
       return obstacle
     }
-  }
-  
+}
