@@ -30,7 +30,7 @@ export default class AncientAssetPack extends AssetPack {
       location: Vector3,
       parent: TransformNode
     ): Promise<AbstractMesh> {
-    // TODO: There are two different models for the same texture, but only one is used in here
+    // There are two different models for the same texture, but only one is used in here for now
       const obstacle = await super.createObstacle(name, location, parent)
       obstacle.material = this.obstacleMaterial
       return obstacle

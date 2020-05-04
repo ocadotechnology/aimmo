@@ -21,7 +21,7 @@ export default class PreHistoryAssetPack extends AssetPack {
 
   makeObstacleMaterial (): StandardMaterial {
     const material = new StandardMaterial(this.obstacleInfo.materialName, this.scene)
-    // TODO: There are two different textures for the same model, but only one is used in here
+    // There are two different textures for the same model, but only one is used in here for now
     material.diffuseTexture = new Texture(this.obstacleInfo.textureURL, this.scene)
     material.specularColor = new Color3(0, 0, 0)
     material.diffuseColor = new Color3(0.7, 0.8, 1)
