@@ -1,4 +1,4 @@
-from simulation.location import Location
+from avatar_api.simulation.location import Location
 
 
 class AvatarState(object):

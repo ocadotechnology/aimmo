@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from setuptools import find_packages, setup
+from setuptools import find_namespace_packages, setup
 import sys
 import os
 
@@ -7,10 +7,10 @@ import os
 withcoverage = os.environ.get("WITH_COVERAGE")
 
 setup(
-    name="aimmo-game-worker",
-    packages=find_packages(),
+    name="avatar_api",
+    packages=find_namespace_packages(include=["avatar_api.*"]),
+    # package_dir={"": "simulation"},
     include_package_data=True,
-    install_requires=["flask", "requests"],
     tests_require=["httmock", "mock"],
     test_suite="tests",
     zip_safe=False,

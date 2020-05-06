@@ -8,8 +8,8 @@ from aiohttp import web
 
 from avatar_runner import AvatarRunner
 from code_updater import CodeUpdater
-from simulation.avatar_state import AvatarState
-from simulation.world_map import WorldMap
+from avatar_api.simulation.avatar_state import AvatarState
+from avatar_api.simulation.world_map import WorldMap
 
 app = web.Application()
 cors = aiohttp_cors.setup(app)

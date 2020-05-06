@@ -8,7 +8,7 @@ import sys
 from io import StringIO
 
 from print_collector import LogManager
-from simulation.action import Action, WaitAction
+from avatar_api.simulation.action import Action, WaitAction
 from user_exceptions import InvalidActionException
 
 LOGGER = logging.getLogger(__name__)
