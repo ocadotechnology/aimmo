@@ -1,12 +1,5 @@
 {
   "parser": "@typescript-eslint/parser",
-  "extends": [
-    "standard",
-    "standard-react"
-  ],
-  "plugins": [
-    "@typescript-eslint"
-  ],
   "parserOptions": {
     "sourceType": "module"
   },
