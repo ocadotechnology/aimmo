@@ -133,7 +133,8 @@ jobs:
         - popd
         - git config --global user.name "semantic-release (via TravisCI)"
         - git config --global user.email "semantic-release@travis"
-        - semantic-release publish --branch=${TRAVIS_BRANCH} --build=${TRAVIS_BUILD_NUMBER} --dev=${DEPLOY_TO_DEV} && bash publish_aimmo_avatar_api.sh
+        - semantic-release publish --branch=${TRAVIS_BRANCH} --build=${TRAVIS_BUILD_NUMBER} --dev=${DEPLOY_TO_DEV}
+        - bash publish_aimmo_avatar_api.sh
       deploy:
         - provider: releases
           api_key:
