@@ -90,14 +90,10 @@ jobs:
       before_install:
         - cd aimmo-game-worker
         - docker build --target tester -t ocadotechnology/aimmo-game-worker:test .
-        - pip install git+https://github.com/ocadotechnology/python-semantic-release.git@add_beta_releases
       install:
         - pip install codecov
       script:
         - docker run -it -p 5000:5000 ocadotechnology/aimmo-game-worker:test python setup.py test
-        - git config --global user.name "semantic-release (via TravisCI)"
-        - git config --global user.email "semantic-release@travis"
-        - semantic-release publish --branch=${TRAVIS_BRANCH} --build=${TRAVIS_BUILD_NUMBER} --dev=${DEPLOY_TO_DEV}
       after_success:
         # Get the coverage data from the container
         - read CONTAINERID <<< $(docker ps --all -q | head -1)
@@ -138,6 +134,9 @@ jobs:
         - git config --global user.name "semantic-release (via TravisCI)"
         - git config --global user.email "semantic-release@travis"
         - semantic-release publish --branch=${TRAVIS_BRANCH} --build=${TRAVIS_BUILD_NUMBER} --dev=${DEPLOY_TO_DEV}
+        - pushd aimmo-game-worker
+        - semantic-release publish --branch=${TRAVIS_BRANCH} --build=${TRAVIS_BUILD_NUMBER} --dev=${DEPLOY_TO_DEV}
+        - popd
       deploy:
         - provider: releases
           api_key:
