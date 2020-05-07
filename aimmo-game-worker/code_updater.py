@@ -11,8 +11,8 @@ from RestrictedPython.Guards import (
     safer_getattr,
 )
 
-import simulation.action as avatar_action
-import simulation.direction as direction
+from simulation import action as avatar_action
+from simulation import direction as direction
 
 
 def add_actions_to_globals():
