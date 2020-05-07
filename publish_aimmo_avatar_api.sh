@@ -3,9 +3,9 @@
 pushd aimmo-game-worker
 
 # build the package
-python setup.py sdist wheel
+python setup.py sdist bdist_wheel
 
 # upload to PyPi
-twine upload dist/* --username ${PYPI_USERNAME} --password ${PYPI_PASSWORD} --non-interactive
+twine upload --username ${PYPI_USERNAME} --password ${PYPI_PASSWORD} dist/*
 
 popd
