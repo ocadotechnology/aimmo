@@ -2,8 +2,8 @@ from __future__ import absolute_import
 
 from unittest import TestCase
 
-from avatar_api.simulation.location import Location
-from avatar_api.simulation.world_map import WorldMap
+from simulation.location import Location
+from simulation.world_map import WorldMap
 
 
 class TestWorldMap(TestCase):

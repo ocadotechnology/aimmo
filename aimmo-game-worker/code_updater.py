@@ -1,6 +1,6 @@
 from __future__ import print_function
 
-import importlib
+import imp
 import inspect
 
 from RestrictedPython import compile_restricted, utility_builtins
@@ -11,8 +11,8 @@ from RestrictedPython.Guards import (
     safer_getattr,
 )
 
-from avatar_api.simulation import action as avatar_action
-from avatar_api.simulation import direction as direction
+from simulation import action as avatar_action
+from simulation import direction as direction
 
 
 def add_actions_to_globals():
@@ -94,7 +94,7 @@ class CodeUpdater:
 
     def _get_new_avatar(self, src_code):
         self.avatar_source_code = src_code
-        module = importlib.import_module(
+        module = imp.new_module(
             "avatar"
         )  # Create a temporary module to execute the src_code in
 
