@@ -13,7 +13,13 @@ aioresponses = "*"
 [dev-packages]
 pytest = "*"
 pytest-mock = "*"
+pytest-asyncio = "*"
 black = "==19.10b0"
+httmock = "*"
+asynctest = "*"
+hypothesis = "*"
+mock = "*"
+pytest-aiohttp = "*"
 
 [requires]
-python_version = "3.6.7"
+python_version = "3.7.7"

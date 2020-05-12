@@ -1,11 +1,16 @@
 import asyncio
 import logging
+from typing import TYPE_CHECKING
 
 from metrics import GAME_TURN_TIME
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.django_communicator import DjangoCommunicator
 from simulation.simulation_runner import ConcurrentSimulationRunner
 from simulation.worker_manager import WorkerManager
+
+if TYPE_CHECKING:
+    from turn_collector import TurnCollector
+    from simulation.game_state import GameState
 
 LOGGER = logging.getLogger(__name__)
 
@@ -18,16 +23,19 @@ class GameRunner:
         game_state_generator,
         communicator: DjangoCommunicator,
         port,
+        turn_collector: "TurnCollector",
         worker_manager_class=WorkerManager,
     ):
         super(GameRunner, self).__init__()
 
         self.worker_manager = worker_manager_class(port=port)
-        self.game_state = game_state_generator(AvatarManager())
+        self.game_state: "GameState" = game_state_generator(AvatarManager())
         self.communicator = communicator
         self.simulation_runner = ConcurrentSimulationRunner(
             communicator=self.communicator, game_state=self.game_state
         )
+        self.turn_collector = turn_collector
+        self.turn_collector.new_turn(-1)
         self._end_turn_callback = lambda: None
 
     def set_end_turn_callback(self, callback_method):
@@ -84,6 +92,7 @@ class GameRunner:
             self.worker_manager.clear_logs()
             self.game_state.avatar_manager.clear_all_avatar_logs()
             self.game_state.turn_count += 1
+            self.turn_collector.new_turn(self.game_state.turn_count)
 
     def _get_task_result_or_stop_loop(self, task):
         try:

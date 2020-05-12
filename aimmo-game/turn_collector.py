@@ -6,7 +6,6 @@ LOGGER = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from socketio import AsyncServer
-    import aiohttp.web.Application
 
 
 @dataclass
@@ -16,12 +15,8 @@ class CollectedTurnActions:
 
 
 class TurnCollector:
-    def __init__(
-        self, socketio_server: "AsyncServer", application: "aiohttp.web.Application"
-    ):
-        # LOGGER.info("this got worked on here")
+    def __init__(self, socketio_server: "AsyncServer"):
         self.socketio_server = socketio_server
-        self.application = application
         self.register_action_received_event()
 
     def new_turn(self, turn_number):
