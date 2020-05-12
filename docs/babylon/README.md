@@ -12,19 +12,30 @@ First, we will look at the file structure for the babylon part of the game page:
 ```
 babylon
 │
+├── assetPacks
+│   ├── assetPack.ts
+│   ├── future.ts
+│   ├── ...
+│   └── getAssetPackForEra.ts
+|
 ├── entities
 │   ├── avatarManager.test.ts
 │   ├── avatarManager.ts
+│   ├── ...
 │   └── index.ts
 │
 ├── environment
 │   ├── index.ts
 │   ├── light.test.ts
 │   ├── light.ts
-│   └── terrain.ts
+│   ├── ...
+│   ├── environment.ts
+│   └── environmentManager.ts
 │
 ├── animation.ts
-├── interfaces.test.ts
+├── diff.ts
+├── gameEngine.ts
+├── ...
 ├── interfaces.ts
 └── orientation.ts
 ```
@@ -33,5 +44,7 @@ babylon
 We split the remaining elements of the game into two folders: 
 * **entities**: These populate the game world, and cover elements such as obstacles, avatars, and interactables.
 * **environment**: The elements of the game that make up the world, such as camera, light and terrain, as well as the renderer.
+
+The files inside **assetPacks** handle the loading and processing different 2D and 3D assets required for each different level, or *era*, of the game. *NOTE: the way this is currently written, each era has one only type of obstacle. However, as pointed out in the corresponding files, there are different textures and models ready to be loaded when the randomising functionality is implemented.*
 
 All classes in these folders implement the `GameNode` interface. Entities also implement the `DiffHandling` interface.

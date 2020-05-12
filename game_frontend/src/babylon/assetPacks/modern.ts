@@ -11,7 +11,7 @@ import {
   Scene
 } from 'babylonjs'
 
-export default class PreHistoryAssetPack extends AssetPack {
+export default class ModernAssetPack extends AssetPack {
   obstacleMaterial: StandardMaterial
 
   constructor (era: string, scene: Scene) {
