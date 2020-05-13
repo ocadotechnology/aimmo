@@ -5,6 +5,7 @@ import { Scheduler, of } from 'rxjs'
 import { map, mergeMap, catchError, switchMap, first, mapTo, timeout, ignoreElements, timeInterval } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 import { actions as analyticActions } from 'redux/features/Analytics'
+import { initialisePyodide } from '../../../pyodide/pyodide'
 
 const backgroundScheduler = Scheduler.async
 
@@ -26,6 +27,12 @@ const gameLoadedEpic = action$ => action$.pipe(
       mapTo(actions.gameLoaded())
     )
   )
+)
+
+const pyodideInitialisedEpic = action$ => action$.pipe(
+  ofType(types.SOCKET_CONNECT_TO_GAME_REQUEST),
+  switchMap(initialisePyodide),
+  mapTo(actions.gameLoaded())
 )
 
 const gameLoadedIntervalEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
@@ -83,5 +90,6 @@ export default {
   avatarUpdatingTimeoutEpic,
   gameLoadedEpic,
   gameLoadedIntervalEpic,
-  codeUpdatingIntervalEpic
+  codeUpdatingIntervalEpic,
+  pyodideInitialisedEpic
 }
