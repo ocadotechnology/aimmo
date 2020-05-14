@@ -21,6 +21,11 @@ export async function runAvatarCode (userCode, pyodideInitialised) {
   if (!pyodideInitialised) {
     return { action_type: 'wait' }
   }
+  if (avatarCode.includes('import')) {
+    console.log('Import cannot be used')
+    return { action_type: 'wait' }
+  }
+
   try {
     return Promise.race([
       new Promise((resolve, reject) =>
