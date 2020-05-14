@@ -15,7 +15,7 @@ import {
 } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 import { actions as analyticActions } from 'redux/features/Analytics'
-import { initialisePyodide } from '../../../pyodide/pyodide'
+import { initialisePyodide } from '../../../pyodide/pyodideRunner'
 
 const backgroundScheduler = Scheduler.async
 

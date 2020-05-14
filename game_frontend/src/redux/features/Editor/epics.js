@@ -5,7 +5,7 @@ import types from './types'
 import { Scheduler, of } from 'rxjs'
 import { map, mergeMap, catchError, debounceTime, mapTo, switchMap } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
-import { runAvatarCode } from '../../../pyodide/pyodide'
+import { runAvatarCode } from '../../../pyodide/pyodideRunner'
 
 const backgroundScheduler = Scheduler.async
 
