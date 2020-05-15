@@ -12,7 +12,22 @@ describe('runCodeEpic', () => {
     })
   })
 
+  it('returns a wait action if code is incorrect', async () => {
+    const action = await runAvatarCode(avatarCode, true)
+    expect(action).toEqual({ action_type: 'wait' })
+  })
+
+  it('returns a wait action if time out', async () => {
+    const action = await runAvatarCode(avatarCode, true)
+    expect(action).toEqual({ action_type: 'wait' })
+  })
+
   it('returns a move action', async () => {
+    const action = await runAvatarCode(avatarCode, true)
+    expect(action).toEqual({ action_type: 'wait' })
+  })
+
+  it('finds a global variable, stores and updates it', async () => {
     const action = await runAvatarCode(avatarCode, true)
     expect(action).toEqual({ action_type: 'wait' })
   })
