@@ -35,7 +35,6 @@ class GameRunner:
             communicator=self.communicator, game_state=self.game_state
         )
         self.turn_collector = turn_collector
-        self.turn_collector.new_turn(-1)
         self._end_turn_callback = lambda: None
 
     def set_end_turn_callback(self, callback_method):
@@ -85,6 +84,7 @@ class GameRunner:
 
     async def update(self):
         with GAME_TURN_TIME():
+            self.turn_collector.new_turn(self.game_state.turn_count)
             await self.update_workers()
             await self.update_simulation(
                 self.worker_manager.get_player_id_to_serialized_actions()
@@ -92,7 +92,6 @@ class GameRunner:
             self.worker_manager.clear_logs()
             self.game_state.avatar_manager.clear_all_avatar_logs()
             self.game_state.turn_count += 1
-            self.turn_collector.new_turn(self.game_state.turn_count)
 
     def _get_task_result_or_stop_loop(self, task):
         try:
