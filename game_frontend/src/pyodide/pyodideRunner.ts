@@ -12,7 +12,10 @@ export async function initialisePyodide () {
 
   await pyodide.runPythonAsync(`
 from simulation import direction
-from simulation.action import MoveAction
+from simulation import avatar_state
+from simulation import world_map
+from simulation import location
+from simulation.action import MoveAction, PickupAction, WaitAction
 `)
 }
 
@@ -22,7 +25,7 @@ export async function runNextTurn (userCode, pyodideInitialised) {
   }
 
   try {
-    return await pyodide.runPythonAsync(`next_turn(None, None).serialise()`)
+    return await pyodide.runPythonAsync(`next_turn(world_map, avatar_state).serialise()`)
   } catch (error) {
     console.log('python code incorrect')
     console.log(error)
