@@ -23,5 +23,5 @@ jobs:
         with:
           working-directory: game_frontend
           build: yarn install --ignore-engines
-          start: cd .. && pipenv install --system && python run.py
+          start: python /home/runner/aimmo/aimmo/run.py
           wait-on: http://localhost:8000
