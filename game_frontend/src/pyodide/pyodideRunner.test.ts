@@ -1,4 +1,5 @@
-import { runAvatarCode } from './pyodideRunner'
+import { runAvatarCode } from './pyodide'
+import * as pyodide from 'pyodide/pyodide'
 
 let avatarCode = `
 def next_turn(world_state, avatar_state):
@@ -12,8 +13,7 @@ describe('runCodeEpic', () => {
   })
 
   it('returns a move action', async () => {
-    return runAvatarCode(avatarCode, true).then(data => {
-      expect(data).toEqual({ action_type: 'wait' })
-    })
+    const action = await runAvatarCode(avatarCode, true)
+    expect(action).toEqual({ action_type: 'wait' })
   })
 })

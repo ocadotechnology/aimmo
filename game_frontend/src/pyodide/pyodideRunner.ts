@@ -1,3 +1,5 @@
+import * as pyodide from './pyodide'
+
 let avatarCode = `
 def next_turn(world_state, avatar_state):
     return MoveAction(direction.NORTH)`
@@ -29,7 +31,7 @@ export async function runAvatarCode (userCode, pyodideInitialised) {
           resolve({ action_type: 'wait' })
         }, 2000)
       ),
-      await runTheCode(avatarCode),
+      await runTheCode(avatarCode)
     ])
   } catch (error) {
     console.log('python code incorrect')
