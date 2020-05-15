@@ -23,5 +23,6 @@ jobs:
         with:
           working-directory: game_frontend
           build: yarn install --ignore-engines
-          start: python /home/runner/aimmo/aimmo/run.py
+          start: python /home/runner/aimmo/run.py
           wait-on: http://localhost:8000
+          wait-on-timeout: 200
