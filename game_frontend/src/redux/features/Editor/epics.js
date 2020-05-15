@@ -5,7 +5,7 @@ import types from './types'
 import { Scheduler, of } from 'rxjs'
 import { map, mergeMap, catchError, debounceTime, mapTo, switchMap } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
-import { runAvatarCode } from '../../../pyodide/pyodideRunner'
+import { runNextTurn } from '../../../pyodide/pyodideRunner'
 
 const backgroundScheduler = Scheduler.async
 
@@ -65,7 +65,7 @@ const nextActionEpic = (action$, state$, { api: { socket } }) =>
   action$.pipe(
     ofType(gameTypes.SOCKET_GAME_STATE_RECEIVED),
     switchMap(async () => {
-      const nextAction = await runAvatarCode(
+      const nextAction = await runNextTurn(
         state$.value.editor.code.codeOnServer,
         state$.value.editor.code.pythonInitialised
       )

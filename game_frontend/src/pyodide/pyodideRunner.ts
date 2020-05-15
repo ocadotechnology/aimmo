@@ -1,11 +1,3 @@
-let avatarCode = `
-turns = 0
-def next_turn(world_state, avatar_state):
-    global turns
-    turns = turns + 1
-    print("I've had", turns, "turn(s)")
-    return MoveAction(direction.NORTH)`
-
 let globals = []
 let globalFinder = /^(?!def\s|import\s)[\w\d]+\s*=\s*.*/gm
 
@@ -24,28 +16,17 @@ from simulation.action import MoveAction
 `)
 }
 
-export async function runAvatarCode (userCode, pyodideInitialised) {
+export async function runNextTurn (userCode, pyodideInitialised) {
   if (!pyodideInitialised) {
     return { action_type: 'wait' }
   }
-  let turn_globals = avatarCode.match(globalFinder)
-  await initialiseGlobals(turn_globals)
-
-  let globallessCode = avatarCode.replace(globalFinder, '')
 
   try {
-    return Promise.race([
-      new Promise((resolve, reject) =>
-        setTimeout(() => {
-          console.log('I got timed out')
-          resolve({ action_type: 'wait' })
-        }, 2000)
-      ),
-      await runTheCode(globallessCode)
-    ])
+    return await pyodide.runPythonAsync(`next_turn(None, None).serialise()`)
   } catch (error) {
     console.log('python code incorrect')
     console.log(error)
+    return { action_type: 'wait' }
   }
 }
 
@@ -58,10 +39,12 @@ async function initialiseGlobals (turn_globals) {
   }
 }
 
-async function runTheCode (userCode) {
-  return pyodide.runPythonAsync(`
-${userCode}
+export async function updateAvatarCode (userCode) {
+  let turn_globals = userCode.match(globalFinder)
+  await initialiseGlobals(turn_globals)
 
-next_turn(None, None).serialise()
-`)
+  let globallessCode = userCode.replace(globalFinder, '')
+  await pyodide.runPythonAsync(globallessCode)
+
+  return globallessCode
 }

@@ -3,6 +3,7 @@ import types from './types'
 import { gameTypes } from 'features/Game'
 import { RunCodeButtonStatus } from 'components/RunCodeButton'
 import { DEFAULT_CODE } from '../constants'
+import { updateAvatarCode } from '../../../pyodide/pyodideRunner'
 
 const codeReducer = (state = { pythonInitialised: false }, action) => {
   switch (action.type) {
@@ -20,7 +21,7 @@ const codeReducer = (state = { pythonInitialised: false }, action) => {
     case types.POST_CODE_SUCCESS:
       return {
         ...state,
-        codeOnServer: state.code,
+        codeOnServer: updateAvatarCode(state.code),
       }
     case types.RESET_CODE:
       return {
@@ -31,6 +32,7 @@ const codeReducer = (state = { pythonInitialised: false }, action) => {
       return {
         ...state,
         pythonInitialised: true,
+        codeOnServer: updateAvatarCode(state.codeOnServer),
       }
     default:
       return state
