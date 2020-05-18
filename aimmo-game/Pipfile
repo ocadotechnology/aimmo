@@ -9,12 +9,17 @@ docker = "*"
 kubernetes = "*"
 prometheus-client = "*"
 aioresponses = "*"
-pytest-mock = "*"
-
-[requires]
-python_version = "3.6.7"
 
 [dev-packages]
-pydocstyle = "*"
-"autopep8" = "*"
 pytest = "*"
+pytest-mock = "*"
+pytest-asyncio = "*"
+black = "==19.10b0"
+httmock = "*"
+asynctest = "*"
+hypothesis = "*"
+mock = "*"
+pytest-aiohttp = "*"
+
+[requires]
+python_version = "3.7.7"

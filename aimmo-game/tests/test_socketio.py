@@ -1,67 +1,12 @@
 import os
 import random
 import string
-from unittest import mock
 
+import mock
 import pytest
 import socketio
 
-import service
-from simulation.game_runner import GameRunner
-from .test_simulation.mock_avatar_manager import MockAvatarManager
-from .test_simulation.mock_communicator import MockCommunicator
-from .test_simulation.mock_game_state import MockGameState
-from .test_simulation.mock_worker_manager import MockWorkerManager
-
 TIME_TO_PROCESS_SOME_EVENT_LOOP = 0.1
-
-
-@pytest.fixture
-def game_id():
-    os.environ["GAME_ID"] = "1"
-    yield
-    del os.environ["GAME_ID"]
-
-
-@pytest.fixture
-def sid():
-    return "".join(
-        random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)
-        for _ in range(19)
-    )
-
-
-@pytest.fixture
-def app():
-    return service.setup_application(should_clean_token=False)
-
-
-@pytest.fixture
-def socketio_server(app):
-    return service.setup_socketIO_server(app, async_handlers=False)
-
-
-@pytest.fixture
-def game_api(app, socketio_server, game_id):
-    game_runner = GameRunner(
-        game_state_generator=lambda avatar_manager: MockGameState(
-            None, MockAvatarManager()
-        ),
-        communicator=MockCommunicator(),
-        port="0000",
-        worker_manager_class=MockWorkerManager,
-    )
-    return service.GameAPI(
-        game_state=game_runner.game_state,
-        worker_manager=game_runner.worker_manager,
-        application=app,
-        server=socketio_server,
-    )
-
-
-@pytest.fixture
-def client(app, aiohttp_client, loop):
-    return loop.run_until_complete(aiohttp_client(app))
 
 
 async def test_socketio_emit_called_when_worker_ready(
