@@ -10,7 +10,55 @@
 //
 //
 // -- This is a parent command --
-// Cypress.Commands.add("login", (email, password) => { ... })
+
+const username = 'admin'
+const password = 'admin'
+
+Cypress.Commands.add('login', () => {
+  cy.request('/accounts/login/')
+  cy.getCookie('csrftoken').then(csrfToken => {
+    cy.request({
+      method: 'POST',
+      url: '/accounts/login/',
+      failOnStatusCode: false,
+      form: true,
+      body: {
+        username,
+        password,
+        csrfmiddlewaretoken: csrfToken.value
+      }
+    })
+    cy.visit('/')
+  })
+})
+
+Cypress.Commands.add('addTestGame', () => {
+  cy.request('/games/new/')
+  cy.getCookie('csrftoken').then(csrfToken => {
+    cy.request({
+      method: 'POST',
+      url: '/games/new/',
+      failOnStatusCode: false,
+      form: true,
+      body: {
+        name: 'test',
+        csrfmiddlewaretoken: csrfToken.value
+      }
+    })
+  })
+})
+
+Cypress.Commands.add('deleteAllGames', () => {
+  cy.request('/api/games/').then(response => {
+    const games = response.body
+    for (let gameId of Object.keys(games)) {
+      cy.request({
+        method: 'DELETE',
+        url: `api/games/${gameId}/`
+      })
+    }
+  })
+})
 //
 //
 // -- This is a child command --

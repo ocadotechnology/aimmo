@@ -1,3 +1,4 @@
 {
-  "projectId": "v2a2id"
+  "projectId": "v2a2id",
+  "baseUrl": "http://localhost:8000/kurono/"
 }
