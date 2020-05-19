@@ -35,7 +35,7 @@ class RequestMock(object):
 
 
 @pytest.fixture
-def game_runner():
+def game_runner(turn_collector):
     async def mock_callback():
         pass
 
@@ -44,6 +44,7 @@ def game_runner():
         game_state_generator=lambda avatar_manager: game_state,
         port="0000",
         communicator=MockCommunicator(),
+        turn_collector=turn_collector,
         worker_manager_class=MockWorkerManager,
     )
 
