@@ -12,13 +12,13 @@ const connectToGame = () =>
     const {
       game_url_base: gameUrlBase,
       game_url_path: gameUrlPath,
-      avatar_id: avatarId,
+      avatar_id: avatarId
     } = action.payload.parameters
     socketIO = io(gameUrlBase, {
       path: gameUrlPath,
       query: {
-        avatar_id: avatarId,
-      },
+        avatar_id: avatarId
+      }
     })
     return socketIO
   })
@@ -32,7 +32,7 @@ const emitMove = () =>
   tap(() =>
     socketIO.emit('action', {
       action_type: 'move',
-      options: { direction: { x: -1, y: 0 } },
+      options: { direction: { x: -1, y: 0 } }
     })
   )
 

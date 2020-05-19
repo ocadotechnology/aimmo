@@ -1,44 +1,44 @@
 import types from './types'
 
 const getCodeRequest = () => ({
-  type: types.GET_CODE_REQUEST,
+  type: types.GET_CODE_REQUEST
 })
 
 const getCodeReceived = (code) => ({
   type: types.GET_CODE_SUCCESS,
   payload: {
-    code,
-  },
+    code
+  }
 })
 
 const postCodeRequest = () => ({
-  type: types.POST_CODE_REQUEST,
+  type: types.POST_CODE_REQUEST
 })
 
 const postCodeReceived = () => ({
-  type: types.POST_CODE_SUCCESS,
+  type: types.POST_CODE_SUCCESS
 })
 
 const changeCode = (code) => ({
   type: types.CHANGE_CODE,
   payload: {
-    code,
-  },
+    code
+  }
 })
 
 const resetCode = () => ({
-  type: types.RESET_CODE,
+  type: types.RESET_CODE
 })
 
 const keyPressed = (code) => ({
   type: types.KEY_PRESSED,
   payload: {
-    code,
-  },
+    code
+  }
 })
 
 const socketNextActionRequested = () => ({
-  type: types.SOCKET_NEXT_ACTION_REQUESTED,
+  type: types.SOCKET_NEXT_ACTION_REQUESTED
 })
 
 export default {
@@ -49,5 +49,5 @@ export default {
   changeCode,
   keyPressed,
   resetCode,
-  socketNextActionRequested,
+  socketNextActionRequested
 }

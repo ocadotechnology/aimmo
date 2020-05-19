@@ -1,7 +1,6 @@
 import { runAvatarCode } from './pyodide'
-import * as pyodide from 'pyodide/pyodide'
 
-let avatarCode = `
+const avatarCode = `
 def next_turn(world_state, avatar_state):
     return MoveAction(direction.NORTH)`
 

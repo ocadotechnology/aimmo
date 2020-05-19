@@ -11,7 +11,7 @@ import {
   mapTo,
   timeout,
   ignoreElements,
-  timeInterval,
+  timeInterval
 } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 import { actions as analyticActions } from 'redux/features/Analytics'
@@ -62,7 +62,7 @@ const connectToGameEpic = (action$, state$, { api: { socket } }) =>
       of({
         type: types.SOCKET_CONNECT_TO_GAME_FAIL,
         payload: error,
-        error: true,
+        error: true
       })
     )
   )
@@ -115,5 +115,5 @@ export default {
   gameLoadedEpic,
   gameLoadedIntervalEpic,
   codeUpdatingIntervalEpic,
-  pyodideInitialisedEpic,
+  pyodideInitialisedEpic
 }

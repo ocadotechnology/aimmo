@@ -19,7 +19,7 @@ const getCodeEpic = (action$, state$, { api }) =>
           of({
             type: types.GET_CODE_FAILURE,
             payload: error.xhr.response,
-            error: true,
+            error: true
           })
         )
       )
@@ -30,14 +30,14 @@ const postCodeEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.POST_CODE_REQUEST),
     api.post(`/kurono/api/code/${state$.value.game.connectionParameters.game_id}/`, () => ({
-      code: state$.value.editor.code.code,
+      code: state$.value.editor.code.code
     })),
     map((response) => actions.postCodeReceived()),
     catchError((error) =>
       of({
         type: types.POST_CODE_FAILURE,
         payload: error.xhr.response,
-        error: true,
+        error: true
       })
     )
   )
@@ -81,5 +81,5 @@ export default {
   changeCodeEpic,
   postCodeAnalyticsEpic,
   resetCodeAnalyticsEpic,
-  nextActionEpic,
+  nextActionEpic
 }
