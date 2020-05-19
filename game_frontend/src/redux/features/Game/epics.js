@@ -11,25 +11,25 @@ import {
   mapTo,
   timeout,
   ignoreElements,
-  timeInterval
+  timeInterval,
+  tap
 } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 import { actions as analyticActions } from 'redux/features/Analytics'
-import { initialisePyodide } from '../../../pyodide/pyodideRunner'
 
 const backgroundScheduler = Scheduler.async
 
 const getConnectionParametersEpic = (action$, state$, { api: { get } }) =>
   action$.pipe(
     ofType(types.SOCKET_CONNECT_TO_GAME_REQUEST),
-    mergeMap((action) =>
+    mergeMap(action =>
       get(`games/${state$.value.game.connectionParameters.game_id}/connection_parameters/`).pipe(
-        map((response) => actions.connectionParametersReceived(response))
+        map(response => actions.connectionParametersReceived(response))
       )
     )
   )
 
-const gameLoadedEpic = (action$) =>
+const gameLoadedEpic = action$ =>
   action$.pipe(
     ofType(types.SOCKET_CONNECT_TO_GAME_REQUEST),
     switchMap(() =>
@@ -37,10 +37,13 @@ const gameLoadedEpic = (action$) =>
     )
   )
 
-const pyodideInitialisedEpic = (action$) =>
+const initialisePyodideEpic = (action$, state$, { pyodideRunner: { initialisePyodide } }) =>
   action$.pipe(
     ofType(types.SOCKET_CONNECT_TO_GAME_REQUEST),
     switchMap(initialisePyodide),
+    tap(() => {
+      console.log('sending pyodide init action')
+    }),
     mapTo({ type: 'PYTHON_INITIALISED' })
   )
 
@@ -48,7 +51,7 @@ const gameLoadedIntervalEpic = (action$, state$, dependencies, scheduler = backg
   action$.pipe(
     ofType(types.GAME_LOADED),
     timeInterval(scheduler),
-    map((timeInterval) =>
+    map(timeInterval =>
       analyticActions.sendAnalyticsTimingEvent('Kurono', 'Load', 'Game', timeInterval.interval)
     )
   )
@@ -58,7 +61,7 @@ const connectToGameEpic = (action$, state$, { api: { socket } }) =>
     ofType(types.CONNECTION_PARAMETERS_RECEIVED),
     socket.connectToGame(),
     socket.startListeners(),
-    catchError((error) =>
+    catchError(error =>
       of({
         type: types.SOCKET_CONNECT_TO_GAME_FAIL,
         payload: error,
@@ -96,7 +99,7 @@ const codeUpdatingIntervalEpic = (action$, state$, dependencies, scheduler = bac
           types.SOCKET_FEEDBACK_AVATAR_UPDATED_TIMEOUT
         ),
         timeInterval(scheduler),
-        map((timeInterval) =>
+        map(timeInterval =>
           analyticActions.sendAnalyticsTimingEvent(
             'Kurono',
             'Update',
@@ -115,5 +118,5 @@ export default {
   gameLoadedEpic,
   gameLoadedIntervalEpic,
   codeUpdatingIntervalEpic,
-  pyodideInitialisedEpic
+  initialisePyodideEpic
 }

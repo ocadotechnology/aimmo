@@ -6,6 +6,8 @@ const POST_CODE_REQUEST = 'features/Editor/POST_CODE_REQUEST'
 const POST_CODE_SUCCESS = 'features/Editor/POST_CODE_SUCCESS'
 const POST_CODE_FAILURE = 'features/Editor/POST_CODE_FAILURE'
 
+const AVATAR_CODE_UPDATED = 'features/Editor/AVATAR_CODE_UPDATED'
+
 const CHANGE_CODE = 'features/Editor/CHANGE_CODE'
 const KEY_PRESSED = 'features/Editor/KEY_PRESSED'
 
@@ -23,5 +25,6 @@ export default {
   CHANGE_CODE,
   KEY_PRESSED,
   RESET_CODE,
-  SOCKET_NEXT_ACTION_REQUESTED
+  SOCKET_NEXT_ACTION_REQUESTED,
+  AVATAR_CODE_UPDATED
 }

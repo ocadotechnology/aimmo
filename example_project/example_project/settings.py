@@ -37,6 +37,7 @@
 """Django settings for example_project project."""
 import os
 import subprocess
+import mimetypes
 
 
 ALLOWED_HOSTS = ["*"]
@@ -60,6 +61,8 @@ LANGUAGE_CODE = "en-gb"
 STATIC_ROOT = os.path.join(os.path.dirname(__file__), "static")
 STATIC_URL = "/static/"
 SECRET_KEY = "not-a-secret"
+
+mimetypes.add_type("application/wasm", ".wasm", True)
 
 ROOT_URLCONF = "example_project.urls"
 

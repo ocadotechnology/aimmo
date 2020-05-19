@@ -11,12 +11,12 @@ export class Game extends Component {
     showSnackbar: PropTypes.bool,
     snackbarMessage: PropTypes.string,
     snackbarShown: PropTypes.func,
-    gameState: PropTypes.func,
+    gameState: PropTypes.object,
     currentAvatarID: PropTypes.number,
-    gameLoaded: PropTypes.func,
+    gameLoaded: PropTypes.bool,
     centerCameraOnUserAvatar: PropTypes.func,
     cameraCenteredOnUserAvatar: PropTypes.bool,
-    mapPanned: PropTypes.bool
+    mapPanned: PropTypes.func
   }
 
   state = {

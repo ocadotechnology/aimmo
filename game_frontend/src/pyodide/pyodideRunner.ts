@@ -12,10 +12,12 @@ from simulation import direction
 from simulation import location
 from simulation.action import MoveAction, PickupAction, WaitAction
 `)
+  console.log('initialisePyodide finished')
 }
 
 export async function runNextTurn (userCode, pyodideInitialised) {
   if (!pyodideInitialised) {
+    console.log('got here')
     return { action_type: 'wait' }
   }
 
