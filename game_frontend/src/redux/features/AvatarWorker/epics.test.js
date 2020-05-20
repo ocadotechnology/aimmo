@@ -1,7 +1,6 @@
 /* eslint-env jest */
 
 import { TestScheduler } from 'rxjs/testing'
-import { ActionsObservable, StateObservable, combineEpics } from 'redux-observable'
 import epics from './epics'
 import actions from './actions'
 import { of } from 'rxjs'
@@ -16,8 +15,6 @@ const createTestScheduler = (frameTimeFactor = 10) => {
 }
 
 describe('avatarWorkerEpic', () => {
-  const avatarWorkerEpic = combineEpics(...Object.values(epics))
-
   it('starts initializing Pyodide when the game is connecting to the server', () => {
     const testScheduler = createTestScheduler()
 

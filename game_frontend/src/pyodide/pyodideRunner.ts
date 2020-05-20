@@ -1,5 +1,4 @@
-import { from, defer } from 'rxjs'
-import { Observable } from 'babylonjs'
+import { defer } from 'rxjs'
 
 export async function initializePyodide () {
   await languagePluginLoader
