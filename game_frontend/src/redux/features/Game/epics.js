@@ -37,16 +37,6 @@ const gameLoadedEpic = action$ =>
     )
   )
 
-const initialisePyodideEpic = (action$, state$, { pyodideRunner: { initialisePyodide } }) =>
-  action$.pipe(
-    ofType(types.SOCKET_CONNECT_TO_GAME_REQUEST),
-    switchMap(initialisePyodide),
-    tap(() => {
-      console.log('sending pyodide init action')
-    }),
-    mapTo({ type: 'PYTHON_INITIALISED' })
-  )
-
 const gameLoadedIntervalEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
   action$.pipe(
     ofType(types.GAME_LOADED),
@@ -117,6 +107,5 @@ export default {
   avatarUpdatingTimeoutEpic,
   gameLoadedEpic,
   gameLoadedIntervalEpic,
-  codeUpdatingIntervalEpic,
-  initialisePyodideEpic
+  codeUpdatingIntervalEpic
 }

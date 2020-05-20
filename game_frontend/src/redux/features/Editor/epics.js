@@ -57,23 +57,6 @@ const postCodeAnalyticsEpic = action$ =>
     mapTo(analyticActions.sendAnalyticsEvent('Kurono', 'Click', 'Run Code'))
   )
 
-const initialUpdateAvatarCodeEpic = (action$, state$, { pyodideRunner: { updateAvatarCode } }) =>
-  action$.pipe(
-    zip(
-      action$.pipe(ofType('PYTHON_INITIALISED'), take(1)),
-      action$.pipe(ofType(types.GET_CODE_SUCCESS), take(1))
-    ),
-    switchMap(() => updateAvatarCode(state$.value.editor.code.codeOnServer)),
-    mapTo(actions.avatarCodeUpdated())
-  )
-
-const updateAvatarCodeEpic = (action$, state$, { pyodideRunner: { updateAvatarCode } }) =>
-  action$.pipe(
-    ofType(types.POST_CODE_SUCCESS),
-    switchMap(() => updateAvatarCode(state$.value.editor.code.codeOnServer)),
-    mapTo(actions.avatarCodeUpdated())
-  )
-
 const resetCodeAnalyticsEpic = action$ =>
   action$.pipe(
     ofType(types.RESET_CODE),
@@ -87,26 +70,10 @@ const changeCodeEpic = (action$, state$, dependencies, scheduler = backgroundSch
     map(action => actions.changeCode(action.payload.code))
   )
 
-const nextActionEpic = (action$, state$, { api: { socket }, pyodideRunner: { runNextTurn } }) =>
-  action$.pipe(
-    ofType(gameTypes.SOCKET_GAME_STATE_RECEIVED),
-    switchMap(async () => {
-      const nextAction = await runNextTurn(
-        state$.value.editor.code.codeOnServer,
-        state$.value.editor.code.pythonInitialised
-      )
-      socket.emitAction(nextAction)
-    }),
-    mapTo({ type: 'dummy' })
-  )
-
 export default {
   getCodeEpic,
   postCodeEpic,
   changeCodeEpic,
   postCodeAnalyticsEpic,
-  initialUpdateAvatarCodeEpic,
-  updateAvatarCodeEpic,
-  resetCodeAnalyticsEpic,
-  nextActionEpic
+  resetCodeAnalyticsEpic
 }

@@ -41,10 +41,6 @@ const keyPressed = code => ({
   }
 })
 
-const socketNextActionRequested = () => ({
-  type: types.SOCKET_NEXT_ACTION_REQUESTED
-})
-
 export default {
   getCodeRequest,
   getCodeReceived,
@@ -53,6 +49,5 @@ export default {
   avatarCodeUpdated,
   changeCode,
   keyPressed,
-  resetCode,
-  socketNextActionRequested
+  resetCode
 }

@@ -4,7 +4,7 @@ import { gameTypes } from 'features/Game'
 import { RunCodeButtonStatus } from 'components/RunCodeButton'
 import { DEFAULT_CODE } from '../constants'
 
-const codeReducer = (state = { pythonInitialised: false }, action) => {
+const codeReducer = (state = {}, action) => {
   switch (action.type) {
     case types.GET_CODE_SUCCESS:
       return {
@@ -26,11 +26,6 @@ const codeReducer = (state = { pythonInitialised: false }, action) => {
       return {
         ...state,
         code: DEFAULT_CODE
-      }
-    case 'PYTHON_INITIALISED':
-      return {
-        ...state,
-        pythonInitialised: true
       }
     default:
       return state

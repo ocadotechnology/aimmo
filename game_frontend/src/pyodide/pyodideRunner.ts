@@ -1,4 +1,7 @@
-export async function initialisePyodide () {
+import { from, defer } from 'rxjs'
+import { Observable } from 'babylonjs'
+
+export async function initializePyodide () {
   await languagePluginLoader
   await pyodide.loadPackage(['micropip'])
   await pyodide.runPythonAsync(`
@@ -12,15 +15,9 @@ from simulation import direction
 from simulation import location
 from simulation.action import MoveAction, PickupAction, WaitAction
 `)
-  console.log('initialisePyodide finished')
 }
 
-export async function runNextTurn (userCode, pyodideInitialised) {
-  if (!pyodideInitialised) {
-    console.log('got here')
-    return { action_type: 'wait' }
-  }
-
+async function computeNextAction () {
   try {
     return await pyodide.runPythonAsync('next_turn(None, None).serialise()')
   } catch (error) {
@@ -29,6 +26,8 @@ export async function runNextTurn (userCode, pyodideInitialised) {
     return { action_type: 'wait' }
   }
 }
+
+export const computeNextAction$ = () => defer(computeNextAction)
 
 export async function updateAvatarCode (userCode) {
   await pyodide.runPythonAsync(userCode)
