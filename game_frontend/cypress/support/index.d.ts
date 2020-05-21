@@ -21,5 +21,11 @@ declare namespace Cypress {
      * @example cy.deleteAllGames()
      */
     deleteAllGames(): Chainable<Element>
+
+    /**
+     * Visit the first game returned in the /api/games api
+     * @example cy.visitAGame()
+     */
+    visitAGame(): Chainable<Element>
   }
 }

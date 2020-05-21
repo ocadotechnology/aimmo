@@ -51,12 +51,19 @@ Cypress.Commands.add('addTestGame', () => {
 Cypress.Commands.add('deleteAllGames', () => {
   cy.request('/api/games/').then(response => {
     const games = response.body
-    for (let gameId of Object.keys(games)) {
+    for (const gameId of Object.keys(games)) {
       cy.request({
         method: 'DELETE',
         url: `api/games/${gameId}/`
       })
     }
+  })
+})
+
+Cypress.Commands.add('visitAGame', () => {
+  cy.request('/api/games/').then(response => {
+    const gameId = Object.keys(response.body)[0]
+    cy.visit(`/play/${gameId}`)
   })
 })
 //
