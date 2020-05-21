@@ -20,8 +20,8 @@ async function computeNextAction () {
   try {
     return await pyodide.runPythonAsync('next_turn(None, None).serialise()')
   } catch (error) {
-    console.log('python code incorrect')
-    console.log(error)
+    console.warn('python code incorrect')
+    console.warn(error)
     return { action_type: 'wait' }
   }
 }
