@@ -63,7 +63,7 @@ Cypress.Commands.add('deleteAllGames', () => {
 Cypress.Commands.add('visitAGame', () => {
   cy.request('/api/games/').then(response => {
     const gameId = Object.keys(response.body)[0]
-    cy.visit(`/play/${gameId}`)
+    cy.visit(`/play/${gameId}/`)
   })
 })
 //
