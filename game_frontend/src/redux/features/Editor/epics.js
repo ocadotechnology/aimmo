@@ -13,30 +13,32 @@ const getCodeEpic = (action$, state$, { api }) =>
     mergeMap(action =>
       api.get(`code/${state$.value.game.connectionParameters.game_id}/`).pipe(
         map(response => actions.getCodeReceived(response.code)),
-        catchError(error => of({
-          type: types.GET_CODE_FAILURE,
-          payload: error.xhr.response,
-          error: true
-        }))
+        catchError(error =>
+          of({
+            type: types.GET_CODE_FAILURE,
+            payload: error.xhr.response,
+            error: true
+          })
+        )
       )
     )
   )
 
 const postCodeEpic = (action$, state$, { api }) =>
-  action$
-    .pipe(
-      ofType(types.POST_CODE_REQUEST),
-      api.post(
-        `/kurono/api/code/${state$.value.game.connectionParameters.game_id}/`,
-        () => ({ code: state$.value.editor.code.code })
-      ),
-      map(response => actions.postCodeReceived()),
-      catchError(error => of({
+  action$.pipe(
+    ofType(types.POST_CODE_REQUEST),
+    api.post(`/kurono/api/code/${state$.value.game.connectionParameters.game_id}/`, () => ({
+      code: state$.value.editor.code.code
+    })),
+    map(() => actions.postCodeReceived()),
+    catchError(error =>
+      of({
         type: types.POST_CODE_FAILURE,
         payload: error.xhr.response,
         error: true
-      }))
+      })
     )
+  )
 
 const postCodeAnalyticsEpic = action$ =>
   action$.pipe(

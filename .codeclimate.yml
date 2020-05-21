@@ -25,3 +25,4 @@ exclude_patterns:
   - "versioneer.py"
   - "game_frontend/djangoBundler.js"
   - "aimmo/avatar_examples/**"
+  - "aimmo/static/pyodide/**"

@@ -15,6 +15,10 @@
     "browser": true,
     "cypress/globals": true
   },
+  "globals": {
+    "pyodide": "readonly",
+    "languagePluginLoader": "readonly"
+  },
   "rules": {
     "react/jsx-handler-names": "off",
     "react/jsx-pascal-case": [

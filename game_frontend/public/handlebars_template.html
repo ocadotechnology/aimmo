@@ -68,15 +68,21 @@
   {{/if_eq}} {{#if_eq environment "staging"}}
   <!-- Staging environment -->
   <noscript
-    ><iframe
-      src="https://www.googletagmanager.com/ns.html?id=GTM-M32M5N5&gtm_auth=ZZqc7ZNE1mTX6vrV43Q_7g&gtm_preview=env-6&gtm_cookies_win=x"
-      height="0"
-      width="0"
-      style="display:none;visibility:hidden"
+  >
+    <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-M32M5N5&gtm_auth=ZZqc7ZNE1mTX6vrV43Q_7g&gtm_preview=env-6&gtm_cookies_win=x"
+            height="0"
+            width="0"
+            style="display:none;visibility:hidden"
     ></iframe
-  ></noscript>
+    >
+  </noscript>
   {{/if_eq}}
   <!-- End Google Tag Manager (noscript) -->
   <div id="root"></div>
+  <script>
+    window.languagePluginUrl = '/static/pyodide/'
+  </script>
+  <script src="{% static 'pyodide/pyodide.js' %}"></script>
+  <script src="{% static '{{ reactUrl }}' %}"></script>
 </body>
-<script src="{% static '{{ reactUrl }}' %}"></script>
