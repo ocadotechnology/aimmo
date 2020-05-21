@@ -16,11 +16,6 @@ def activity_monitor():
     return activity_monitor
 
 
-@pytest.fixture
-def event_loop():
-    return asyncio.get_event_loop()
-
-
 @pytest.mark.asyncio
 async def test_timer_stops_correctly(activity_monitor, event_loop):
     assert activity_monitor.active_users == 0

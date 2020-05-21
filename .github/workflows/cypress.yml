@@ -1,0 +1,32 @@
+name: End to end tests
+on: [pull_request]
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.x
+
+      - name: Use Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: Install python deps
+        run: |
+          pip install pipenv
+          pipenv install --system
+      - name: Cypress run
+        uses: cypress-io/github-action@v1.24.1
+        with:
+          working-directory: game_frontend
+          build: yarn install --ignore-engines
+          start: python ${{ github.workspace }}/run.py
+          wait-on: http://localhost:8000
+          wait-on-timeout: 200
+          record: true
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

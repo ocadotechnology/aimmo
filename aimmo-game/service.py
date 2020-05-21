@@ -18,6 +18,7 @@ from simulation import map_generator
 from simulation.django_communicator import DjangoCommunicator
 from simulation.game_runner import GameRunner
 from simulation.log_collector import LogCollector
+from turn_collector import TurnCollector
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -52,12 +53,10 @@ def setup_prometheus():
     app.add_routes([web.get("/{path_info:metrics}", wsgi_handler)])
 
 
-def setup_socketIO_server(
-    application, client_manager_class=socketio.AsyncManager, async_handlers=True
-):
+def setup_socketIO_server(application, async_handlers=True):
     socket_server = socketio.AsyncServer(
         async_mode="aiohttp",
-        client_manager=client_manager_class(),
+        client_manager=socketio.AsyncManager(),
         async_handlers=async_handlers,
         cors_allowed_origins=[
             "http://localhost:8000",
@@ -223,10 +222,12 @@ class GameAPI(object):
 def create_runner(port):
     settings = json.loads(os.environ["settings"])
     generator = getattr(map_generator, settings["GENERATOR"])(settings)
+    turn_collector = TurnCollector(socketio_server)
     return GameRunner(
         game_state_generator=generator.get_game_state,
         communicator=communicator,
         port=port,
+        turn_collector=turn_collector,
     )
 
 

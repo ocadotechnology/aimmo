@@ -4,11 +4,13 @@ import analyticsReducer, { analyticEpics } from './Analytics'
 import editorReducer, { editorEpics } from './Editor'
 import consoleLogReducer from './ConsoleLog'
 import gameReducer, { gameEpics } from './Game'
+import { avatarWorkerEpics } from './AvatarWorker'
 
 const rootEpic = combineEpics(
   ...Object.values(editorEpics),
   ...Object.values(gameEpics),
-  ...Object.values(analyticEpics)
+  ...Object.values(analyticEpics),
+  ...Object.values(avatarWorkerEpics)
 )
 
 const rootReducer = combineReducers({
@@ -18,7 +20,4 @@ const rootReducer = combineReducers({
   analytics: analyticsReducer
 })
 
-export {
-  rootEpic,
-  rootReducer
-}
+export { rootEpic, rootReducer }

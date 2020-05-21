@@ -18,10 +18,14 @@
         ],
         "noUnusedLocals": true,
         "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true
+        "noFallthroughCasesInSwitch": true,
+        "types": [
+            "cypress"
+        ]
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "cypress/**/*"
     ],
     "exclude": [
         ".git",
