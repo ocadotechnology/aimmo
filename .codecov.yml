@@ -7,7 +7,7 @@ fixes:
   - "aimmo-game-creator/::"
 
 ignore:
-  - "aimmo/static/pyodide/**"
+  - "aimmo/static/pyodide/**/*"
 
 comment:
   layout: "reach, diff, flags, files"
