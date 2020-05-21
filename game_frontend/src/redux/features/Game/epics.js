@@ -11,8 +11,7 @@ import {
   mapTo,
   timeout,
   ignoreElements,
-  timeInterval,
-  tap
+  timeInterval
 } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 import { actions as analyticActions } from 'redux/features/Analytics'
