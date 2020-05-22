@@ -1,5 +1,6 @@
 from .avatar_state import AvatarState
 from .location import Location
+from typing import Dict
 
 
 class Cell(object):
@@ -11,12 +12,15 @@ class Cell(object):
     def __init__(self, location, avatar=None, **kwargs):
         self.location = Location(**location)
         self.avatar = None
+        self.interactable = None
         if avatar:
             self.avatar = AvatarState(
                 location=avatar["location"],
                 score=avatar["score"],
                 health=avatar["health"],
                 backpack=avatar["backpack"],
+                id=0,
+                orientation="north",
             )
         for (key, value) in kwargs.items():
             setattr(self, key, value)
@@ -25,8 +29,8 @@ class Cell(object):
         return self.interactable is not None and self.interactable["type"] == "artefact"
 
     def __repr__(self):
-        return "Cell({} h={} a={} i={})".format(
-            self.location, self.habitable, self.avatar, self.interactable
+        return "Cell({} a={} i={})".format(
+            self.location, self.avatar, self.interactable
         )
 
     def __eq__(self, other):
@@ -36,17 +40,58 @@ class Cell(object):
         return not self == other
 
 
+class WorldMapCreator:
+    def generate_world_map_from_cells_data(cells) -> "WorldMap":
+        world_map_cells: Dict[Location, Cell] = {}
+        for cell_data in cells:
+            cell = Cell(**cell_data)
+            world_map_cells[cell.location] = cell
+        return WorldMap(world_map_cells)
+
+    def generate_world_map_from_game_state(game_state) -> "WorldMap":
+        cells: Dict[Location, Cell] = {}
+        for x in range(
+            game_state["southWestCorner"]["x"], game_state["northEastCorner"]["x"] + 1
+        ):
+            for y in range(
+                game_state["southWestCorner"]["y"],
+                game_state["northEastCorner"]["y"] + 1,
+            ):
+                cell = Cell({"x": x, "y": y})
+                cells[Location(x, y)] = cell
+
+        for interactable in game_state["interactables"]:
+            location = Location(
+                interactable["location"]["x"], interactable["location"]["y"]
+            )
+            cells[location].interactable = interactable
+
+        for obstacle in game_state["obstacles"]:
+            location = Location(obstacle["location"]["x"], obstacle["location"]["y"])
+            cells[location].obstacle = obstacle
+
+        for player in game_state["players"]:
+            location = Location(player["location"]["x"], player["location"]["y"])
+            cells[location].player = AvatarState(
+                {"x": location.x, "y": location.y},
+                player["health"],
+                player["score"],
+                player["backpack"],
+                player["id"],
+                player["orientation"],
+            )
+
+        return WorldMap(cells)
+
+
 class WorldMap(object):
 
     """
     The non-player world state.
     """
 
-    def __init__(self, cells):
-        self.cells = {}
-        for cell_data in cells:
-            cell = Cell(**cell_data)
-            self.cells[cell.location] = cell
+    def __init__(self, cells: Dict[Location, Cell]):
+        self.cells = cells
 
     def all_cells(self):
         return self.cells.values()

@@ -9,7 +9,7 @@ from aiohttp import web
 from avatar_runner import AvatarRunner
 from code_updater import CodeUpdater
 from simulation.avatar_state import AvatarState
-from simulation.world_map import WorldMap
+from simulation.world_map import WorldMap, WorldMapCreator
 
 app = web.Application()
 cors = aiohttp_cors.setup(app)
@@ -26,13 +26,15 @@ DATA_URL = ""
 @routes.post("/turn/")
 async def process_turn(request):
     data = json.loads(await request.content.read())
-    world_map = WorldMap(**data["world_map"])
+    world_map = WorldMapCreator.generate_world_map_from_cells_data(**data["world_map"])
     code, options = data["code"], data["options"]
     avatar_state = AvatarState(
         location=data["avatar_state"]["location"],
         score=data["avatar_state"]["score"],
         health=data["avatar_state"]["health"],
         backpack=data["avatar_state"]["backpack"],
+        id=0,
+        orientation="north",
     )
 
     response = avatar_runner.process_avatar_turn(world_map, avatar_state, code)
