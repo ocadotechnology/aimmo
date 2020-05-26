@@ -13,6 +13,7 @@ class Cell(object):
         self.location = Location(**location)
         self.avatar = None
         self.interactable = None
+        self.obstacle = None
         if avatar:
             self.avatar = AvatarState(
                 location=avatar["location"],
@@ -23,7 +24,12 @@ class Cell(object):
                 orientation="north",
             )
         for (key, value) in kwargs.items():
-            setattr(self, key, value)
+            if not key == "habitable":
+                setattr(self, key, value)
+    
+    @property
+    def habitable(self):
+        return not (self.avatar or self.obstacle)
 
     def has_artefact(self):
         return self.interactable is not None and self.interactable["type"] == "artefact"
