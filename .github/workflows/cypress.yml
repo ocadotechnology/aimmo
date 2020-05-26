@@ -17,7 +17,8 @@ jobs:
       - name: Install python deps
         run: |
           pip install pipenv
-          pipenv install --system
+          pipenv install
+          pipenv graph
       - name: Cypress run
         uses: cypress-io/github-action@v1.24.1
         with:
