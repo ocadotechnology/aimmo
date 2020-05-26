@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "0893ba45835dbf52898623cf2c83dc602cf660045e60271428934cd98cd20244"
+            "sha256": "e1eebddfd5bf229b22a1a1eb3decbd1c24360ac5d873d73d38ee5e7cbf5b6634"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,6 +16,10 @@
         ]
     },
     "default": {
+        "aimmo": {
+            "editable": true,
+            "path": "."
+        },
         "cachetools": {
             "hashes": [
                 "sha256:1d057645db16ca7fe1f3bd953558897603d6f0b9c51ed9d11eb4d071ec4e2aab",
@@ -51,10 +55,6 @@
             ],
             "index": "pypi",
             "version": "==4.2.0"
-        },
-        "e1839a8": {
-            "editable": true,
-            "path": "."
         },
         "eventlet": {
             "hashes": [
