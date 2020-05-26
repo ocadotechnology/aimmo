@@ -40,7 +40,9 @@ class TestWorldMap(TestCase):
         self.assertEqual(len(actual_cells), len(list(expected_locations)))
 
     def test_grid_size(self):
-        map = WorldMapCreator.generate_world_map_from_cells_data(self._generate_cells(1, 3))
+        map = WorldMapCreator.generate_world_map_from_cells_data(
+            self._generate_cells(1, 3)
+        )
         self.assertGridSize(map, 1, 3)
 
     def test_all_cells(self):
@@ -125,7 +127,7 @@ class TestWorldMap(TestCase):
 
     def test_cannot_move_to_uninhabitable_cell(self):
         cells = self._generate_cells()
-        cells[0]["habitable"] = False
+        cells[0]["obstacle"] = {"location": {"x": -1, "y": -1}}
         map = WorldMapCreator.generate_world_map_from_cells_data(cells)
         self.assertFalse(map.can_move_to(Location(-1, -1)))
 

@@ -26,7 +26,7 @@ class Cell(object):
         for (key, value) in kwargs.items():
             if not key == "habitable":
                 setattr(self, key, value)
-    
+
     @property
     def habitable(self):
         return not (self.avatar or self.obstacle)
