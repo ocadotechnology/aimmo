@@ -6,5 +6,5 @@ python setup.py bdist_wheel
 cd ..
 
 # Copy wheel to django's static directory
-mkdir aimmo/static/worker/
+mkdir -p aimmo/static/worker/
 cp aimmo-game-worker/dist/aimmo_avatar_api-0.0.0-py3-none-any.whl aimmo/static/worker/aimmo_avatar_api-0.0.0-py3-none-any.whl
