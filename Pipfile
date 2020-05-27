@@ -10,6 +10,7 @@ aimmo = {editable = true,path = "."}
 kubernetes = "*"
 eventlet = "*"
 docker = "*"
+wheel = "*"
 
 [requires]
 python_version = "3.6.7"
