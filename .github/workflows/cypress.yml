@@ -22,7 +22,7 @@ jobs:
           cd game_frontend
           yarn install
       - name: Cypress run
-        uses: prescottprue/github-action@inputs
+        uses: cypress-io/github-action@v1
         with:
           working-directory: game_frontend
           start: python ${{ github.workspace }}/run.py
