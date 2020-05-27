@@ -1,19 +1,10 @@
 {
   "parser": "@typescript-eslint/parser",
-  "extends": [
-    "standard",
-    "standard-react",
-    "plugin:cypress/recommended"
-  ],
-  "plugins": [
-    "@typescript-eslint"
-  ],
   "parserOptions": {
     "sourceType": "module"
   },
   "env": {
-    "browser": true,
-    "cypress/globals": true
+    "browser": true
   },
   "globals": {
     "pyodide": "readonly",
