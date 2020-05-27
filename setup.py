@@ -18,7 +18,8 @@ except ImportError:
 
 setup(
     name="aimmo",
-    packages=find_packages(),
+    packages=find_packages(exclude=["*.tests", "*.tests.*"]),
+    package_dir={"aimmo": "aimmo"},
     include_package_data=True,
     install_requires=[
         "django >= 1.10.8, <= 1.11.24",
@@ -29,7 +30,6 @@ setup(
         "requests",
         "six",
         "hypothesis",
-        "psutil >= 5.4, < 5.5",
     ],
     tests_require=["docker >= 3.5, < 3.6", "kubernetes == 5.0.0", "PyYAML == 4.2b1"],
     version=version,

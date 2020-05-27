@@ -40,7 +40,14 @@ const computeNextActionEpic = (
     switchMap(() =>
       action$.pipe(
         ofType(gameTypes.SOCKET_GAME_STATE_RECEIVED),
-        switchMap(computeNextAction$),
+        switchMap(({ payload: { gameState } }) =>
+          computeNextAction$(
+            gameState,
+            gameState.players.find(
+              player => player.id === state$.value.game.connectionParameters.currentAvatarID
+            )
+          )
+        ),
         tap(socket.emitAction),
         mapTo(actions.avatarsNextActionComputed())
       )

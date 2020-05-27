@@ -80,9 +80,6 @@
   {{/if_eq}}
   <!-- End Google Tag Manager (noscript) -->
   <div id="root"></div>
-  <script>
-    window.languagePluginUrl = '/static/pyodide/'
-  </script>
-  <script src="{% static 'pyodide/pyodide.js' %}"></script>
+  <script src="https://pyodide-cdn2.iodide.io/v0.15.0/full/pyodide.js"></script>
   <script src="{% static '{{ reactUrl }}' %}"></script>
 </body>

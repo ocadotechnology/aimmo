@@ -17,8 +17,8 @@ def get_version():
 
 setup(
     name="aimmo-avatar-api",
-    packages=find_packages(include=["simulation"]),
-    version=get_version(),
+    packages=find_packages(),
+    version="0.0.0",
     include_package_data=True,
     tests_require=["httmock", "mock"],
     test_suite="tests",
