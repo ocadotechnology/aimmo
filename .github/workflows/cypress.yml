@@ -18,13 +18,11 @@ jobs:
         run: |
           pip install pipenv
           pipenv install --system
-          python setup.py install
-          cd game_frontend
-          yarn install
       - name: Cypress run
         uses: cypress-io/github-action@v1
         with:
           working-directory: game_frontend
+          build: yarn install
           start: python ${{ github.workspace }}/run.py
           wait-on: http://localhost:8000
           wait-on-timeout: 400
