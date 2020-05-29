@@ -77,7 +77,7 @@ const RootJSX = () => (
 )
 
 if (window.Cypress) {
-  window.store = store
+  window.store = reduxStore
 }
 
 const root = document.getElementById('root')

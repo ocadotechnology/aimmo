@@ -11,6 +11,11 @@ describe('Cypress for aimmo', () => {
 
   it('has expected state on load', () => {
     cy.login()
+
+    cy.addTestGame()
+
+    cy.visitAGame()
+
     cy.window().its('store').invoke('getState').should('deep.equal', {
       todos: [
         {
