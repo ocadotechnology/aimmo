@@ -1,7 +1,7 @@
 /* eslint-env jest */
 import consoleLogReducer, { MAX_NUMBER_OF_STORED_LOGS } from './reducers'
 import actions from './actions'
-import { avatarWorkerActions, avatarWorkerTypes } from 'redux/features/AvatarWorker'
+import { avatarWorkerActions } from 'redux/features/AvatarWorker'
 
 describe('consoleLogReducer', () => {
   it('should return the initial state', () => {
