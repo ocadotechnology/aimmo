@@ -9,8 +9,8 @@ describe('<IDEConsole />', () => {
     const tree = createShallowWithTheme(
       <IDEConsole
         logs={[
-          { turn_count: '1', log: 'hello' },
-          { turn_count: '2', log: 'bye' }
+          { turnCount: '1', log: 'hello' },
+          { turnCount: '2', log: 'bye' }
         ]}
       />,
       'dark'

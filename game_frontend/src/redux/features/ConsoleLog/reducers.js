@@ -7,7 +7,7 @@ const consoleLogReducer = (state = { logs: [], workerLogs: {} }, action) => {
   switch (action.type) {
     case types.SOCKET_CONSOLE_LOG_RECEIVED: {
       const logsFromGame = action.payload.log
-      const workerLog = state.workerLogs[logsFromGame.turn_count] ?? ''
+      const workerLog = state.workerLogs[logsFromGame.turnCount] ?? ''
       if (workerLog) {
         logsFromGame.message = `${workerLog}\n${logsFromGame.message}`
       }
@@ -22,7 +22,12 @@ const consoleLogReducer = (state = { logs: [], workerLogs: {} }, action) => {
     case avatarWorkerTypes.AVATAR_CODE_UPDATED:
     case avatarWorkerTypes.AVATARS_NEXT_ACTION_COMPUTED: {
       const workerLogs = state.workerLogs
-      workerLogs[action.payload.turnCount] = action.payload.log
+      const turnCount = action.payload.turnCount
+      if (workerLogs[turnCount]) {
+        workerLogs[action.payload.turnCount] += `\n${action.payload.log}`
+      } else {
+        workerLogs[action.payload.turnCount] = action.payload.log
+      }
       return {
         ...state,
         workerLogs

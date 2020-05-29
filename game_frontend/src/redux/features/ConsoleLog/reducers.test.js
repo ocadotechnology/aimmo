@@ -1,6 +1,7 @@
 /* eslint-env jest */
 import consoleLogReducer, { MAX_NUMBER_OF_STORED_LOGS } from './reducers'
 import actions from './actions'
+import { avatarWorkerActions, avatarWorkerTypes } from 'redux/features/AvatarWorker'
 
 describe('consoleLogReducer', () => {
   it('should return the initial state', () => {
@@ -9,7 +10,7 @@ describe('consoleLogReducer', () => {
 
   it('should handle SOCKET_LOG_RECEIVED', () => {
     const expectedStateLog = {
-      turn_count: 1,
+      turnCount: 1,
       message: 'Hello, good morning, I got here in my code'
     }
 
@@ -20,10 +21,36 @@ describe('consoleLogReducer', () => {
     expect(actualState.logs[0].message).toEqual(expectedStateLog.message)
   })
 
-  it('should handle CLEAR_CONSOLE_LOG', () => {
-    const intialStateLog = { turn_count: 1, message: 'Hello, good morning, I got here in my code' }
+  it('should combine workerLogs with gameLogs', () => {
+    const expectedStateLog = {
+      turnCount: 1,
+      message: `
+Hello,
+I got here in my code
+Game says: that's cool
+`.trim()
+    }
+    const codeUpdatedAction = avatarWorkerActions.avatarCodeUpdated({ log: 'Hello,', turnCount: 1 })
+    const nextActionComputedAction = avatarWorkerActions.avatarsNextActionComputed({
+      log: 'I got here in my code',
+      turnCount: 1
+    })
+    const gameLogAction = actions.socketConsoleLogReceived({
+      turnCount: 1,
+      message: "Game says: that's cool"
+    })
 
-    const action = actions.socketConsoleLogReceived(intialStateLog)
+    let state = { logs: [], workerLogs: {} }
+    state = consoleLogReducer(state, codeUpdatedAction)
+    state = consoleLogReducer(state, nextActionComputedAction)
+    state = consoleLogReducer(state, gameLogAction)
+    expect(state.logs[0]).toStrictEqual(expectedStateLog)
+  })
+
+  it('should handle CLEAR_CONSOLE_LOG', () => {
+    const initialStateLog = { turnCount: 1, message: 'Hello, good morning, I got here in my code' }
+
+    const action = actions.socketConsoleLogReceived(initialStateLog)
     const initialState = consoleLogReducer(undefined, action)
 
     expect(initialState.logs).toHaveLength(1)
@@ -36,12 +63,12 @@ describe('consoleLogReducer', () => {
 
   it('should get rid of old logs past MAX_NUMBER_OF_STORED_LOGS', () => {
     const initialLogs = Array(MAX_NUMBER_OF_STORED_LOGS - 1).fill({
-      turn_count: 1,
+      turnCount: 1,
       message: 'Same old logs'
     })
-    const newLog = { turn_count: 1, message: "I'm a new log!" }
+    const newLog = { turnCount: 1, message: "I'm a new log!" }
     const ancientLogMessage = "I'm a new log!"
-    initialLogs.unshift({ turn_count: 0, message: ancientLogMessage })
+    initialLogs.unshift({ turnCount: 0, message: ancientLogMessage })
 
     const initialState = { logs: initialLogs, workerLogs: {} }
     const action = actions.socketConsoleLogReceived(newLog)

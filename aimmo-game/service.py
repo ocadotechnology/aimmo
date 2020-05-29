@@ -199,7 +199,7 @@ class GameAPI(object):
         if should_send_logs(player_logs):
             await self.socketio_server.emit(
                 "log",
-                {"message": player_logs, "turn_count": self.game_state.turn_count},
+                {"message": player_logs, "turnCount": self.game_state.turn_count},
                 room=sid,
             )
 
