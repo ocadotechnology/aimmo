@@ -45,7 +45,6 @@ def capture_output(stdout=None, stderr=None):
 
 async function computeNextAction (gameState, avatarState): Promise<ComputedTurnResult> {
   try {
-    // return Promise.resolve({ action: { action_type: 'wait' }, log: '', turnNumber: 0 })
     return await pyodide.runPythonAsync(`
 game_state = ${JSON.stringify(gameState)}
 world_map = WorldMapCreator.generate_world_map_from_game_state(game_state)
@@ -74,14 +73,12 @@ export function simplifyErrorMessageInLog (log: string): string {
   if (matches?.length >= 2) {
     return `Uh oh! Something isn't correct on line ${matches[1]}. Here's the error we got:\n${matches[2]}`
   }
+  // error not in next_turn function
   return log
     .split('\n')
     .slice(-2)
     .join('\n')
 }
-
-export const computeNextAction$ = (gameState: object, avatarState: object) =>
-  defer(() => computeNextAction(gameState, avatarState))
 
 export async function updateAvatarCode (
   userCode: string,
@@ -96,17 +93,7 @@ export async function updateAvatarCode (
       turnCount: turnCount + 1
     })
   }
-  //   const regex = /^(?!\s*$)/gm
-  //   const indentedUserCode = userCode.replace(regex, ' '.repeat(4))
-  //   const logs = await pyodide.runPythonAsync(`
-  // with capture_output() as output:
-  // ${indentedUserCode}
-
-  // stdout, stderr = output
-  // output_log = stdout.getvalue()
-  // error_log = stderr.getvalue()
-  // {"output": output_log, "error": error_log}
-  //   `)
-
-  //   console.log(logs)
 }
+
+export const computeNextAction$ = (gameState: object, avatarState: object) =>
+  defer(() => computeNextAction(gameState, avatarState))
