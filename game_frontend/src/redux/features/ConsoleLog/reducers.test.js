@@ -4,11 +4,14 @@ import actions from './actions'
 
 describe('consoleLogReducer', () => {
   it('should return the initial state', () => {
-    expect(consoleLogReducer(undefined, {})).toEqual({ logs: [] })
+    expect(consoleLogReducer(undefined, {})).toEqual({ logs: [], workerLogs: {} })
   })
 
   it('should handle SOCKET_LOG_RECEIVED', () => {
-    const expectedStateLog = { turn_count: 1, message: 'Hello, good morning, I got here in my code' }
+    const expectedStateLog = {
+      turn_count: 1,
+      message: 'Hello, good morning, I got here in my code'
+    }
 
     const action = actions.socketConsoleLogReceived(expectedStateLog)
     const actualState = consoleLogReducer(undefined, action)
@@ -32,12 +35,15 @@ describe('consoleLogReducer', () => {
   })
 
   it('should get rid of old logs past MAX_NUMBER_OF_STORED_LOGS', () => {
-    const initialLogs = Array(MAX_NUMBER_OF_STORED_LOGS - 1).fill({ turn_count: 1, message: 'Same old logs' })
-    const newLog = { turn_count: 1, message: 'I\'m a new log!' }
-    const ancientLogMessage = 'I\'m a new log!'
+    const initialLogs = Array(MAX_NUMBER_OF_STORED_LOGS - 1).fill({
+      turn_count: 1,
+      message: 'Same old logs'
+    })
+    const newLog = { turn_count: 1, message: "I'm a new log!" }
+    const ancientLogMessage = "I'm a new log!"
     initialLogs.unshift({ turn_count: 0, message: ancientLogMessage })
 
-    const initialState = { logs: initialLogs }
+    const initialState = { logs: initialLogs, workerLogs: {} }
     const action = actions.socketConsoleLogReceived(newLog)
     const actualState = consoleLogReducer(initialState, action)
 
