@@ -50,9 +50,6 @@ const initialState = {
     timeoutStatus: false,
     gameLoaded: false,
     cameraCenteredOnUserAvatar: true
-  },
-  consoleLog: {
-    logs: []
   }
 }
 

@@ -1,4 +1,4 @@
-import { switchMap, mapTo, zip, take, tap } from 'rxjs/operators'
+import { switchMap, mapTo, zip, take, tap, map } from 'rxjs/operators'
 
 import actions from './actions'
 import types from './types'
@@ -20,14 +20,16 @@ const initialUpdateAvatarCodeEpic = (action$, state$, { pyodideRunner: { updateA
       action$.pipe(ofType(editorTypes.GET_CODE_SUCCESS), take(1))
     ),
     switchMap(() => updateAvatarCode(state$.value.editor.code.codeOnServer)),
-    mapTo(actions.avatarCodeUpdated())
+    map(actions.avatarCodeUpdated)
   )
 
 const updateAvatarCodeEpic = (action$, state$, { pyodideRunner: { updateAvatarCode } }) =>
   action$.pipe(
     ofType(editorTypes.POST_CODE_SUCCESS),
-    switchMap(() => updateAvatarCode(state$.value.editor.code.codeOnServer)),
-    mapTo(actions.avatarCodeUpdated())
+    switchMap(() =>
+      updateAvatarCode(state$.value.editor.code.codeOnServer, state$.value.game.gameState.turnCount)
+    ),
+    map(actions.avatarCodeUpdated)
   )
 
 const computeNextActionEpic = (
@@ -49,7 +51,7 @@ const computeNextActionEpic = (
           )
         ),
         tap(socket.emitAction),
-        mapTo(actions.avatarsNextActionComputed())
+        map(actions.avatarsNextActionComputed)
       )
     )
   )

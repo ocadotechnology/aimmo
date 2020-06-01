@@ -15,8 +15,8 @@ describe('<LogEntries />', () => {
     const tree = createShallowWithTheme(
       <LogEntries
         logs={[
-          { turn_count: 0, message: 'hello' },
-          { turn_count: 1, message: 'bye' }
+          { turnCount: 0, message: 'hello' },
+          { turnCount: 1, message: 'bye' }
         ]}
       />,
       'dark'
@@ -41,40 +41,28 @@ describe('<LogEntries />', () => {
 
 describe('<LogData />', () => {
   it('renders correctly', () => {
-    const tree = createShallowWithTheme(
-      <LogData>This is my log</LogData>,
-      'dark'
-    )
+    const tree = createShallowWithTheme(<LogData>This is my log</LogData>, 'dark')
     expect(tree).toMatchSnapshot()
   })
 })
 
 describe('<LogEntry />', () => {
   it('renders correctly', () => {
-    const tree = createShallowWithTheme(
-      <LogEntry>This is my log row</LogEntry>,
-      'dark'
-    )
+    const tree = createShallowWithTheme(<LogEntry>This is my log row</LogEntry>, 'dark')
     expect(tree).toMatchSnapshot()
   })
 })
 
 describe('<LogTurn />', () => {
   it('renders correctly', () => {
-    const tree = createShallowWithTheme(
-      <LogTurn>My turn number goes here</LogTurn>,
-      'dark'
-    )
+    const tree = createShallowWithTheme(<LogTurn>My turn number goes here</LogTurn>, 'dark')
     expect(tree).toMatchSnapshot()
   })
 })
 
 describe('<BottomSnapper />', () => {
   it('renders correctly', () => {
-    const tree = createShallowWithTheme(
-      <BottomSnapper />,
-      'dark'
-    )
+    const tree = createShallowWithTheme(<BottomSnapper/>, 'dark')
     expect(tree).toMatchSnapshot()
   })
 })

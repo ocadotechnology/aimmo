@@ -109,7 +109,7 @@ describe('avatarWorkerEpic', () => {
       const output$ = epics.computeNextActionEpic(action$, state$, dependencies)
 
       expectObservable(output$).toBe('----a--a-a-', {
-        a: actions.avatarsNextActionComputed()
+        a: actions.avatarsNextActionComputed({ action_type: 'wait' })
       })
     })
     expect(dependencies.api.socket.emitAction).toBeCalled()

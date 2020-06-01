@@ -33,6 +33,7 @@ class GameState:
             "players": self.avatar_manager.serialize_players(),
             "interactables": serialize_interactables(self.world_map),
             "obstacles": self.world_map.serialize_obstacles(),
+            "turnCount": self.turn_count,
         }
 
     def serialize_for_worker(self, avatar_wrapper):
