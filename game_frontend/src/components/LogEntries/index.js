@@ -8,10 +8,8 @@ import TableRow from '@material-ui/core/TableRow'
 
 export const LogEntry = styled(TableRow)`
   overflow-anchor: none;
-  font-family: ${props =>
-    props.theme.additionalVariables.typography.code.fontFamily};
-  font-size: ${props =>
-    props.theme.additionalVariables.typography.code.fontSize};
+  font-family: ${props => props.theme.additionalVariables.typography.code.fontFamily};
+  font-size: ${props => props.theme.additionalVariables.typography.code.fontSize};
 `
 
 export const LogData = styled(TableCell)`
@@ -46,9 +44,9 @@ export default class LogEntries extends Component {
 
   generateLogEntries () {
     const logEntries = this.props.logs.map(logEntry => (
-      <LogEntry key={logEntry.turn_count}>
+      <LogEntry key={logEntry.turnCount}>
         <LogData>{logEntry.message}</LogData>
-        <LogTurn align='right'>Turn: {logEntry.turn_count}</LogTurn>
+        <LogTurn align='right'>Turn: {logEntry.turnCount}</LogTurn>
       </LogEntry>
     ))
     logEntries.push(
@@ -64,7 +62,12 @@ export default class LogEntries extends Component {
 
   render () {
     return (
-      <StyledTable size='small' innerRef={ref => { this.tableRef = ref }}>
+      <StyledTable
+        size='small'
+        innerRef={ref => {
+          this.tableRef = ref
+        }}
+      >
         <TableBody>{this.generateLogEntries()}</TableBody>
       </StyledTable>
     )
@@ -75,7 +78,7 @@ LogEntries.propTypes = {
   shouldActivateSnapToBottom: PropTypes.bool,
   logs: PropTypes.arrayOf(
     PropTypes.shape({
-      turn_count: PropTypes.int,
+      turnCount: PropTypes.int,
       message: PropTypes.string
     })
   )

@@ -4,12 +4,18 @@ const pyodideInitialized = () => ({
   type: types.PYODIDE_INITIALIZED
 })
 
-const avatarCodeUpdated = () => ({
-  type: types.AVATAR_CODE_UPDATED
+const avatarCodeUpdated = computedTurnResult => ({
+  type: types.AVATAR_CODE_UPDATED,
+  payload: {
+    ...computedTurnResult
+  }
 })
 
-const avatarsNextActionComputed = () => ({
-  type: types.AVATARS_NEXT_ACTION_COMPUTED
+const avatarsNextActionComputed = computedTurnResult => ({
+  type: types.AVATARS_NEXT_ACTION_COMPUTED,
+  payload: {
+    ...computedTurnResult
+  }
 })
 
 export default {

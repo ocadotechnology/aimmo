@@ -13,11 +13,11 @@ exports[`<IDEConsole /> renders correctly 1`] = `
         Array [
           Object {
             "log": "hello",
-            "turn_count": "1",
+            "turnCount": "1",
           },
           Object {
             "log": "bye",
-            "turn_count": "2",
+            "turnCount": "2",
           },
         ]
       }

@@ -83,7 +83,7 @@ async def test_send_updates_for_one_user(game_api, client, socketio_server, loop
     await socketio_client.disconnect()
 
     mock_log_listener.assert_has_calls(
-        [mock.call({"message": "Logs one", "turn_count": 0})]
+        [mock.call({"message": "Logs one", "turnCount": 0})]
     )
 
 
@@ -114,7 +114,7 @@ async def test_send_worker_and_avatar_logs_for_one_user(
     await socketio_client.disconnect()
 
     mock_log_listener.assert_has_calls(
-        [mock.call({"message": "Worker log\nAvatar log", "turn_count": 0})]
+        [mock.call({"message": "Worker log\nAvatar log", "turnCount": 0})]
     )
 
 
@@ -199,10 +199,10 @@ async def test_send_updates_for_multiple_users(game_api, client, socketio_server
     await socketio_client2.disconnect()
 
     mock_log_listener.assert_has_calls(
-        [mock.call({"message": "Logs one", "turn_count": 0})]
+        [mock.call({"message": "Logs one", "turnCount": 0})]
     )
     mock_log_listener2.assert_has_calls(
-        [mock.call({"message": "Logs two", "turn_count": 0})]
+        [mock.call({"message": "Logs two", "turnCount": 0})]
     )
 
 
