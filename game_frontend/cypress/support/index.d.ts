@@ -23,14 +23,15 @@ declare namespace Cypress {
     deleteAllGames(): Chainable<Element>
 
     /**
-     * Visit the first game returned in the /api/games api
+     * Visit the first game returned in the /api/games api.
      * @example cy.visitAGame()
      */
     visitAGame(): Chainable<Element>
 
     /**
-     * Visit the first game returned in the /api/games api
-     * @example cy.updateAvatarCode("test")
+     * Update the avatar's code in the first game returned in the /api/games api.
+     * @param avatarCode: the string that the avatar's code should be updated to.
+     * @example cy.updateAvatarCode("test code")
      */
     updateAvatarCode(avatarCode): Chainable<Element>
   }
