@@ -27,5 +27,11 @@ declare namespace Cypress {
      * @example cy.visitAGame()
      */
     visitAGame(): Chainable<Element>
+
+    /**
+     * Visit the first game returned in the /api/games api
+     * @example cy.updateAvatarCode("test")
+     */
+    updateAvatarCode(avatarCode): Chainable<Element>
   }
 }

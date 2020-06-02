@@ -66,6 +66,24 @@ Cypress.Commands.add('visitAGame', () => {
     cy.visit(`/play/${gameId}/`)
   })
 })
+
+Cypress.Commands.add('updateAvatarCode', (avatarCode) => {
+  cy.request('/api/games/').then(response => {
+    const gameID = Object.keys(response.body)[0]
+    cy.getCookie('csrftoken').then(csrfToken => {
+      cy.request({
+        method: 'POST',
+        url: `/api/code/${gameID}/`,
+        failOnStatusCode: true,
+        form: true,
+        body: {
+          code: avatarCode,
+          csrfmiddlewaretoken: csrfToken.value
+        }
+      })
+    })
+  })
+})
 //
 //
 // -- This is a child command --
