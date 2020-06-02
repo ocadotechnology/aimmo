@@ -2,7 +2,7 @@ import actions from './actions'
 import { actions as analyticActions } from 'redux/features/Analytics'
 import types from './types'
 import { Scheduler, of } from 'rxjs'
-import { map, mergeMap, catchError, debounceTime, mapTo } from 'rxjs/operators'
+import { map, mergeMap, catchError, mapTo } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
 const backgroundScheduler = Scheduler.async
@@ -55,7 +55,6 @@ const resetCodeAnalyticsEpic = action$ =>
 const changeCodeEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
   action$.pipe(
     ofType(types.KEY_PRESSED),
-    debounceTime(300, scheduler),
     map(action => actions.changeCode(action.payload.code))
   )
 
