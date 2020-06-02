@@ -2,9 +2,13 @@ import asyncio
 import logging
 import threading
 from abc import ABCMeta, abstractmethod
+from typing import TYPE_CHECKING
 
 from simulation.action import PRIORITIES
 from simulation.game_logic import EffectApplier, MapContext, MapExpander, PickupUpdater
+
+if TYPE_CHECKING:
+    from turn_collector import CollectedTurnActions
 
 LOGGER = logging.getLogger(__name__)
 
@@ -25,7 +29,7 @@ class SimulationRunner(object):
         self._lock = threading.RLock()
 
     @abstractmethod
-    async def run_turn(self, player_id_to_serialized_actions):
+    async def run_turn(self, collected_turn_actions: "CollectedTurnActions"):
         pass
 
     async def _run_turn_for_avatar(self, avatar, serialized_action):
@@ -96,13 +100,13 @@ class SimulationRunner(object):
         for player_id in player_ids:
             self.remove_avatar(player_id)
 
-    async def run_single_turn(self, player_id_to_serialized_actions):
-        await self.run_turn(player_id_to_serialized_actions)
+    async def run_single_turn(self, collected_turn_actions: "CollectedTurnActions"):
+        await self.run_turn(collected_turn_actions)
         self.update_environment()
 
 
 class SequentialSimulationRunner(SimulationRunner):
-    async def run_turn(self, player_id_to_serialized_actions):
+    async def run_turn(self, collected_turn_actions: "CollectedTurnActions"):
         """
         Get and apply each avatar's action in turn.
         """
@@ -110,7 +114,7 @@ class SequentialSimulationRunner(SimulationRunner):
 
         for avatar in avatars:
             await self._run_turn_for_avatar(
-                avatar, player_id_to_serialized_actions[avatar.player_id]
+                avatar, collected_turn_actions.get_action_for_player(avatar.player_id)
             )
             location_to_clear = avatar.action.target_location
             avatar.action.process(self.game_state.world_map)
@@ -122,7 +126,7 @@ class ConcurrentSimulationRunner(SimulationRunner):
         futures = [func(*arg) for arg in iterable_args]
         await asyncio.gather(*futures)
 
-    async def run_turn(self, player_id_to_serialized_actions):
+    async def run_turn(self, collected_turn_actions: "CollectedTurnActions"):
         """
         Concurrently get the intended actions from all avatars and register
         them on the world map. Then apply actions in order of priority.
@@ -130,7 +134,7 @@ class ConcurrentSimulationRunner(SimulationRunner):
 
         avatars = self.game_state.avatar_manager.active_avatars
         args = [
-            (avatar, player_id_to_serialized_actions[avatar.player_id])
+            (avatar, collected_turn_actions.get_action_for_player(avatar.player_id))
             for avatar in avatars
         ]
         await self.async_map(self._run_turn_for_avatar, args)
