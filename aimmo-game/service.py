@@ -91,7 +91,7 @@ class GameAPI(object):
         self.register_endpoints()
         self.worker_manager = worker_manager
         self.game_state = game_state
-        self.log_collector = LogCollector(worker_manager, game_state.avatar_manager)
+        self.log_collector = LogCollector(game_state.avatar_manager)
 
     async def async_map(self, func, iterable_args):
         futures = [func(arg) for arg in iterable_args]
@@ -155,9 +155,7 @@ class GameAPI(object):
 
     async def send_updates(self, sid):
         try:
-            await self._send_have_avatars_code_updated(sid)
             await self._send_game_state(sid)
-            await self._send_logs(sid)
         except KeyError:
             LOGGER.error(
                 f"Failed to send updates. No worker for player in session {sid}"
@@ -188,35 +186,13 @@ class GameAPI(object):
             LOGGER.error("No avatar ID found. User may not be authorised")
             LOGGER.error(f"query_string: {query_string}")
 
-    async def _send_logs(self, sid):
-        def should_send_logs(logs):
-            return bool(logs)
-
-        session_data = await self.socketio_server.get_session(sid)
-
-        player_logs = self.log_collector.collect_logs(session_data["id"])
-
-        if should_send_logs(player_logs):
-            await self.socketio_server.emit(
-                "log",
-                {"message": player_logs, "turnCount": self.game_state.turn_count},
-                room=sid,
-            )
-
     async def _send_game_state(self, sid):
+        session_data = await self.socketio_server.get_session(sid)
         serialized_game_state = self.game_state.serialize()
-        session_data = await self.socketio_server.get_session(sid)
-        worker = self.worker_manager.player_id_to_worker[session_data["id"]]
-        if worker.ready:
-            await self.socketio_server.emit(
-                "game-state", serialized_game_state, room=sid
-            )
-
-    async def _send_have_avatars_code_updated(self, sid):
-        session_data = await self.socketio_server.get_session(sid)
-        worker = self.worker_manager.player_id_to_worker[session_data["id"]]
-        if worker.has_code_updated:
-            await self.socketio_server.emit("feedback-avatar-updated", {}, room=sid)
+        serialized_game_state["playerLog"] = self.log_collector.collect_logs(
+            session_data["id"]
+        )
+        await self.socketio_server.emit("game-state", serialized_game_state, room=sid)
 
 
 def create_runner(port):
