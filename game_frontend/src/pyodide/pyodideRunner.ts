@@ -51,9 +51,10 @@ world_map = WorldMapCreator.generate_world_map_from_game_state(game_state)
 avatar_state = AvatarState(**${JSON.stringify(avatarState)})
 with capture_output() as output:
     action = next_turn(world_map, avatar_state)
-    if action is None:
-      raise Exception("Make sure you are returning an action")
-    action.serialise()
+    try:    
+        action.serialise()
+    except Exception as e:
+        raise Exception("Make sure you are returning an action")
 stdout, stderr = output
 logs = stdout.getvalue() + stderr.getvalue()
 {"action": action, "log": logs, "turnCount": game_state["turnCount"]}
