@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 import types from './types'
 import { gameTypes } from 'features/Game'
+import { avatarWorkerTypes } from 'features/AvatarWorker'
 import { RunCodeButtonStatus } from 'components/RunCodeButton'
 import { DEFAULT_CODE } from '../constants'
 
@@ -22,6 +23,11 @@ const codeReducer = (state = {}, action) => {
         ...state,
         codeOnServer: state.code
       }
+    case avatarWorkerTypes.AVATAR_CODE_UPDATED:
+      return {
+        ...state,
+        showSnackbarForAvatarUpdated: true
+      }
     case types.RESET_CODE:
       return {
         ...state,
@@ -39,16 +45,12 @@ const runCodeButtonReducer = (state = {}, action) => {
         ...state,
         status: RunCodeButtonStatus.updating
       }
-    case gameTypes.SOCKET_FEEDBACK_AVATAR_UPDATED_SUCCESS:
+    case avatarWorkerTypes.AVATAR_CODE_UPDATED:
       return {
         ...state,
         status: RunCodeButtonStatus.done
       }
-    case gameTypes.SOCKET_FEEDBACK_AVATAR_UPDATED_TIMEOUT:
-      return {
-        ...state,
-        status: RunCodeButtonStatus.error
-      }
+    case gameTypes.SOCKET_GAME_STATE_RECEIVED:
     case gameTypes.SNACKBAR_FOR_AVATAR_FEEDBACK_SHOWN:
       return {
         ...state,
