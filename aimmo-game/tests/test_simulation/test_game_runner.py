@@ -52,7 +52,7 @@ def game_runner(turn_collector):
 
 @pytest.mark.asyncio
 async def test_correct_url(game_runner):
-    game_runner.communicator.get_game_metadata = mock.MagicMock()
+    game_runner.communicator.get_game_metadata = mock.AsyncMock()
     await game_runner.update()
     # noinspection PyUnresolvedReferences
     game_runner.communicator.get_game_metadata.assert_called_once()
