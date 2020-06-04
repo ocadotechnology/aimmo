@@ -61,47 +61,12 @@ async def test_correct_url(game_runner):
 
 
 @pytest.mark.asyncio
-async def test_workers_and_avatars_added(game_runner):
+async def test_avatars_added(game_runner):
     game_runner.communicator.data = RequestMock(3).value
     await game_runner.update()
 
-    assert len(game_runner.worker_manager.final_workers) == 3
     for i in range(3):
         assert i in game_runner.game_state.avatar_manager.avatars_by_id
-        assert i in game_runner.worker_manager.final_workers
-        assert game_runner.worker_manager.get_code(i) == "code for %s" % i
-
-
-@pytest.mark.asyncio
-async def test_changed_code(game_runner):
-    game_runner.communicator.data = RequestMock(4).value
-    await game_runner.update()
-    game_runner.communicator.change_code(0, "changed 0")
-    game_runner.communicator.change_code(2, "changed 2")
-    await game_runner.update()
-
-    for i in range(4):
-        assert i in game_runner.worker_manager.final_workers
-        assert i in game_runner.game_state.avatar_manager.avatars_by_id
-
-    for i in (1, 3):
-        assert game_runner.worker_manager.get_code(i) in "code for %s" % i
-
-    for i in (0, 2):
-        assert i in game_runner.worker_manager.updated_workers
-        assert game_runner.worker_manager.get_code(i) in "changed %s" % i
-
-
-@pytest.mark.asyncio
-async def test_worker_logs_cleared_at_each_update(game_runner):
-    game_runner.communicator.data = RequestMock(3).value
-    await game_runner.update_workers()
-    first_worker = game_runner.worker_manager.player_id_to_worker[0]
-    first_worker.log = "worker test logs"
-
-    game_runner.worker_manager.clear_logs()
-
-    assert first_worker.log is None
 
 
 @pytest.mark.asyncio
@@ -125,10 +90,8 @@ async def test_remove_avatars(game_runner):
 
     for i in range(3):
         if i == 1:
-            assert i not in game_runner.worker_manager.final_workers
             assert i not in game_runner.game_state.avatar_manager.avatars_by_id
         else:
-            assert i in game_runner.worker_manager.final_workers
             assert i in game_runner.game_state.avatar_manager.avatars_by_id
 
 

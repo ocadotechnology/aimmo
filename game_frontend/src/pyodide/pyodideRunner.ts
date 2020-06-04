@@ -49,15 +49,15 @@ async function computeNextAction (gameState, avatarState): Promise<ComputedTurnR
 game_state = ${JSON.stringify(gameState)}
 world_map = WorldMapCreator.generate_world_map_from_game_state(game_state)
 avatar_state = AvatarState(**${JSON.stringify(avatarState)})
+serialized_action = {"action_type": "wait"}
 with capture_output() as output:
     action = next_turn(world_map, avatar_state)
-    try:    
-        action.serialise()
-    except Exception as e:
-        raise Exception("Make sure you are returning an action")
+    if action is None:
+      raise Exception("Make sure you are returning an action")
+    serialized_action = action.serialise()
 stdout, stderr = output
 logs = stdout.getvalue() + stderr.getvalue()
-{"action": action, "log": logs, "turnCount": game_state["turnCount"]}
+{"action": serialized_action, "log": logs, "turnCount": game_state["turnCount"] + 1}
     `)
   } catch (error) {
     return Promise.resolve({
@@ -86,7 +86,12 @@ export async function updateAvatarCode (
   turnCount: number
 ): Promise<ComputedTurnResult> {
   try {
-    return await pyodide.runPythonAsync(userCode)
+    await pyodide.runPythonAsync(userCode)
+    return Promise.resolve({
+      action: { action_type: 'wait' },
+      log: '',
+      turnCount: turnCount + 1
+    })
   } catch (error) {
     return Promise.resolve({
       action: { action_type: 'wait' },

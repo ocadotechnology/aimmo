@@ -41,7 +41,7 @@ class TestEffectExpiry:
         # Avatar moves EAST to (1,0) where pickup is located, then repeats it 5 times.
         for i in range(6):
             await self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialized_action()
+                self.game.turn_collector.collected_turn_actions
             )
 
         assert isinstance(list(self.avatar.effects)[0], pickup_created.effects[0])
@@ -51,7 +51,7 @@ class TestEffectExpiry:
         # Run 5 more turns and expect the effect to expire.
         for i in range(5):
             await self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialized_action()
+                self.game.turn_collector.collected_turn_actions
             )
 
         assert len(self.avatar.effects) == 0
@@ -69,7 +69,7 @@ class TestEffectExpiry:
         # Avatar moves EAST to (1,0) where pickup is located, then repeats it 5 times.
         for i in range(6):
             await self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialized_action()
+                self.game.turn_collector.collected_turn_actions
             )
 
         assert isinstance(list(self.avatar.effects)[0], pickup_created.effects[0])
@@ -79,7 +79,7 @@ class TestEffectExpiry:
         # Run 5 more turns and expect the effect to expire.
         for i in range(5):
             await self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialized_action()
+                self.game.turn_collector.collected_turn_actions
             )
 
         assert len(self.avatar.effects) == 0
@@ -102,7 +102,7 @@ class TestEffectExpiry:
 
         # Avatar moves EAST to (1,0) where pickup one is located.
         await self.game.simulation_runner.run_single_turn(
-            self.game.avatar_manager.get_player_id_to_serialized_action()
+            self.game.turn_collector.collected_turn_actions
         )
 
         assert isinstance(list(self.avatar.effects)[0], pickup_created_one.effects[0])
@@ -113,7 +113,7 @@ class TestEffectExpiry:
         # Move twice to the second pickup.
         for i in range(2):
             await self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialized_action()
+                self.game.turn_collector.collected_turn_actions
             )
 
         assert isinstance(list(self.avatar.effects)[1], pickup_created_two.effects[0])
@@ -123,7 +123,7 @@ class TestEffectExpiry:
         # Eight turns later, we expect the first effect to expire.
         for i in range(8):
             await self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialized_action()
+                self.game.turn_collector.collected_turn_actions
             )
 
         assert len(self.avatar.effects) == 1
@@ -133,7 +133,7 @@ class TestEffectExpiry:
         # Two turns later, the second pickup expires too.
         for i in range(2):
             await self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialized_action()
+                self.game.turn_collector.collected_turn_actions
             )
 
         assert len(self.avatar.effects) == 0
@@ -156,7 +156,7 @@ class TestEffectExpiry:
 
         # Avatar moves EAST to (1,0) where pickup one is located.
         await self.game.simulation_runner.run_single_turn(
-            self.game.avatar_manager.get_player_id_to_serialized_action()
+            self.game.turn_collector.collected_turn_actions
         )
 
         assert isinstance(list(self.avatar.effects)[0], pickup_created_one.effects[0])
@@ -167,7 +167,7 @@ class TestEffectExpiry:
         # Move twice to the second pickup.
         for i in range(2):
             await self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialized_action()
+                self.game.turn_collector.collected_turn_actions
             )
 
         assert isinstance(list(self.avatar.effects)[1], pickup_created_two.effects[0])
@@ -177,7 +177,7 @@ class TestEffectExpiry:
         # Eight turns later, we expect the first effect to expire.
         for i in range(8):
             await self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialized_action()
+                self.game.turn_collector.collected_turn_actions
             )
 
         assert len(self.avatar.effects) == 1
@@ -187,7 +187,7 @@ class TestEffectExpiry:
         # Two turns later, the second pickup expires too.
         for i in range(2):
             await self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialized_action()
+                self.game.turn_collector.collected_turn_actions
             )
 
         assert len(self.avatar.effects) == 0

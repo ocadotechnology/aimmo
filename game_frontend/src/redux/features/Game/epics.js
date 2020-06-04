@@ -1,5 +1,6 @@
 import actions from './actions'
 import types from './types'
+import { avatarWorkerTypes } from 'features/AvatarWorker'
 import { editorTypes } from 'features/Editor'
 import { Scheduler, of } from 'rxjs'
 import {
@@ -69,7 +70,7 @@ const avatarUpdatingTimeoutEpic = (
     ofType(editorTypes.POST_CODE_REQUEST),
     switchMap(() =>
       action$.pipe(
-        ofType(types.SOCKET_FEEDBACK_AVATAR_UPDATED_SUCCESS),
+        ofType(avatarWorkerTypes.AVATAR_CODE_UPDATED),
         timeout(25000, scheduler),
         first(),
         ignoreElements(),
@@ -83,10 +84,7 @@ const codeUpdatingIntervalEpic = (action$, state$, dependencies, scheduler = bac
     ofType(editorTypes.POST_CODE_REQUEST),
     switchMap(() =>
       action$.pipe(
-        ofType(
-          types.SOCKET_FEEDBACK_AVATAR_UPDATED_SUCCESS,
-          types.SOCKET_FEEDBACK_AVATAR_UPDATED_TIMEOUT
-        ),
+        ofType(avatarWorkerTypes.AVATAR_CODE_UPDATED),
         timeInterval(scheduler),
         map(timeInterval =>
           analyticActions.sendAnalyticsTimingEvent(
