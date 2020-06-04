@@ -86,7 +86,12 @@ export async function updateAvatarCode (
   turnCount: number
 ): Promise<ComputedTurnResult> {
   try {
-    return await pyodide.runPythonAsync(userCode)
+    await pyodide.runPythonAsync(userCode)
+    return Promise.resolve({
+      action: { action_type: 'wait' },
+      log: '',
+      turnCount: turnCount + 1
+    })
   } catch (error) {
     return Promise.resolve({
       action: { action_type: 'wait' },
