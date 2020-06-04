@@ -67,7 +67,7 @@ Cypress.Commands.add('visitAGame', () => {
   })
 })
 
-Cypress.Commands.add('updateAvatarCode', (avatarCode) => {
+Cypress.Commands.add('updateCode', (avatarCode) => {
   cy.request('/api/games/').then(response => {
     const gameID = Object.keys(response.body)[0]
     cy.getCookie('csrftoken').then(csrfToken => {

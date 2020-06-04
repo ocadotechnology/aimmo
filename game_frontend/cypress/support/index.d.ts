@@ -31,8 +31,8 @@ declare namespace Cypress {
     /**
      * Update the avatar's code in the first game returned in the /api/games api.
      * @param avatarCode: the string that the avatar's code should be updated to.
-     * @example cy.updateAvatarCode("test code")
+     * @example cy.updateCode("test code")
      */
-    updateAvatarCode(avatarCode): Chainable<Element>
+    updateCode(avatarCode): Chainable<Element>
   }
 }
