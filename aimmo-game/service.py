@@ -83,13 +83,10 @@ class GameAPI(object):
 
     routes = web.RouteTableDef()
 
-    def __init__(
-        self, game_state, worker_manager, application=app, server=socketio_server
-    ):
+    def __init__(self, game_state, application=app, server=socketio_server):
         self.app = application
         self.socketio_server = server
         self.register_endpoints()
-        self.worker_manager = worker_manager
         self.game_state = game_state
         self.log_collector = LogCollector(game_state.avatar_manager)
 
@@ -98,10 +95,9 @@ class GameAPI(object):
         await asyncio.gather(*futures)
 
     def register_endpoints(self):
-        self.register_player_data_view()
+        # self.register_healthcheck()
         self.register_world_update_on_connect()
         self.register_remove_session_id_from_mappings()
-        self.register_healthcheck()
         self.app.add_routes(self.routes)
 
     def open_connections_number(self):
@@ -121,20 +117,6 @@ class GameAPI(object):
             return web.Response(text="HEALTHY")
 
         return healthcheck
-
-    def register_player_data_view(self):
-        @self.routes.get("/player/{player_id}")
-        async def player_data(request: web.Request):
-            player_id = int(request.match_info["player_id"])
-            return web.json_response(
-                {
-                    "code": self.worker_manager.get_code(player_id),
-                    "options": {},
-                    "state": None,
-                }
-            )
-
-        return player_data
 
     def register_world_update_on_connect(self):
         @self.socketio_server.on("connect")
@@ -210,9 +192,7 @@ def create_runner(port):
 def run_game(port):
     game_runner = create_runner(port)
 
-    game_api = GameAPI(
-        game_state=game_runner.game_state, worker_manager=game_runner.worker_manager
-    )
+    game_api = GameAPI(game_state=game_runner.game_state)
     game_runner.set_end_turn_callback(game_api.send_updates_to_all)
     asyncio.ensure_future(game_runner.run())
 

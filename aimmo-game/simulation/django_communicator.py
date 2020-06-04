@@ -1,7 +1,6 @@
 import os
 
 import aiohttp
-import requests
 
 
 class DjangoCommunicator(object):
@@ -16,8 +15,9 @@ class DjangoCommunicator(object):
         self.completion_url = completion_url
         self.token_url = self.django_api_url + "token/"
 
-    def get_game_metadata(self):
-        return requests.get(f"{self.django_api_url}users/").json()
+    async def get_game_metadata(self):
+        async with self.session.get(f"{self.django_api_url}users/") as response:
+            return await response.json()
 
     def mark_game_complete(self, data=None):
         return requests.post(requests.post(self.completion_url, json=data))

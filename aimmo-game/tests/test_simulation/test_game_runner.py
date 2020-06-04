@@ -9,7 +9,6 @@ from simulation.game_state import GameState
 
 from .maps import InfiniteMap
 from .mock_communicator import MockCommunicator
-from .mock_worker_manager import MockWorkerManager
 
 
 class RequestMock(object):
@@ -45,7 +44,6 @@ def game_runner(turn_collector):
         port="0000",
         communicator=MockCommunicator(),
         turn_collector=turn_collector,
-        worker_manager_class=MockWorkerManager,
     )
 
     game_runner.set_end_turn_callback(mock_callback)
@@ -72,7 +70,7 @@ async def test_avatars_added(game_runner):
 @pytest.mark.asyncio
 async def test_avatar_logs_cleared_at_each_update(game_runner):
     game_runner.communicator.data = RequestMock(3).value
-    await game_runner.update_workers()
+    await game_runner.update_avatars()
     first_avatar = game_runner.game_state.avatar_manager.avatars_by_id[0]
     first_avatar.logs.append("avatar test logs")
 

@@ -35,19 +35,3 @@ class GameState:
             "obstacles": self.world_map.serialize_obstacles(),
             "turnCount": self.turn_count,
         }
-
-    def serialize_for_worker(self, avatar_wrapper):
-        with self._lock:
-            return {
-                "avatar_state": avatar_wrapper.serialize(),
-                "world_map": {
-                    "cells": [cell.serialize() for cell in self.world_map.all_cells()]
-                },
-            }
-
-    def get_serialized_game_states_for_workers(self):
-        with self._lock:
-            return {
-                player_id: self.serialize_for_worker(avatar_wrapper)
-                for player_id, avatar_wrapper in self.avatar_manager.avatars_by_id.items()
-            }

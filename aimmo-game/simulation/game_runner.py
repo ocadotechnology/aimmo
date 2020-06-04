@@ -6,7 +6,6 @@ from metrics import GAME_TURN_TIME
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.django_communicator import DjangoCommunicator
 from simulation.simulation_runner import ConcurrentSimulationRunner
-from simulation.worker_manager import WorkerManager
 
 if TYPE_CHECKING:
     from turn_collector import TurnCollector, CollectedTurnActions
@@ -24,11 +23,9 @@ class GameRunner:
         communicator: DjangoCommunicator,
         port,
         turn_collector: "TurnCollector",
-        worker_manager_class=WorkerManager,
     ):
         super(GameRunner, self).__init__()
 
-        self.worker_manager = worker_manager_class(port=port)
         self.game_state: "GameState" = game_state_generator(AvatarManager())
         self.communicator = communicator
         self.simulation_runner = ConcurrentSimulationRunner(
@@ -65,8 +62,8 @@ class GameRunner:
     def update_main_user(self, game_metadata):
         self.game_state.main_avatar_id = game_metadata["main_avatar"]
 
-    async def update_workers(self):
-        game_metadata = self.communicator.get_game_metadata()
+    async def update_avatars(self):
+        game_metadata = await self.communicator.get_game_metadata()
 
         users_to_add = self.get_users_to_add(game_metadata)
         users_to_delete = self.get_users_to_delete(game_metadata)
@@ -83,9 +80,8 @@ class GameRunner:
 
     async def update(self):
         with GAME_TURN_TIME():
-            await self.update_workers()
+            await self.update_avatars()
             await self.update_simulation(self.turn_collector.collected_turns)
-            self.worker_manager.clear_logs()
             self.game_state.avatar_manager.clear_all_avatar_logs()
             self.turn_collector.new_turn(self.game_state.turn_count)
 
