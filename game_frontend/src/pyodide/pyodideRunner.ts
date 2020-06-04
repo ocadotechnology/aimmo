@@ -43,7 +43,12 @@ def capture_output(stdout=None, stderr=None):
 `)
 }
 
-async function computeNextAction (gameState, avatarState): Promise<ComputedTurnResult> {
+function getAvatarStateFromGameState (gameState, playerAvatarID: number): object {
+  return gameState.players.find(player => player.id === playerAvatarID)
+}
+
+async function computeNextAction (gameState, playerAvatarID): Promise<ComputedTurnResult> {
+  const avatarState = getAvatarStateFromGameState(gameState, playerAvatarID)
   try {
     return await pyodide.runPythonAsync(`
 game_state = ${JSON.stringify(gameState)}
@@ -83,20 +88,24 @@ export function simplifyErrorMessageInLog (log: string): string {
 
 export async function updateAvatarCode (
   userCode: string,
-  turnCount: number
+  gameState: any,
+  playerAvatarID: number = 0
 ): Promise<ComputedTurnResult> {
   try {
     await pyodide.runPythonAsync(userCode)
+    if (gameState) {
+      return computeNextAction(gameState, playerAvatarID)
+    }
     return Promise.resolve({
       action: { action_type: 'wait' },
       log: '',
-      turnCount: turnCount + 1
+      turnCount: 0
     })
   } catch (error) {
     return Promise.resolve({
       action: { action_type: 'wait' },
       log: simplifyErrorMessageInLog(error.toString()),
-      turnCount: turnCount + 1
+      turnCount: gameState.turnCount + 1
     })
   }
 }

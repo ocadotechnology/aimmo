@@ -23,13 +23,27 @@ const initialUpdateAvatarCodeEpic = (action$, state$, { pyodideRunner: { updateA
     map(actions.avatarCodeUpdated)
   )
 
-const updateAvatarCodeEpic = (action$, state$, { pyodideRunner: { updateAvatarCode } }) =>
+const updateAvatarCodeEpic = (
+  action$,
+  state$,
+  { api: { socket }, pyodideRunner: { updateAvatarCode } }
+) =>
   action$.pipe(
-    ofType(editorTypes.POST_CODE_SUCCESS),
+    ofType(types.PYODIDE_INITIALIZED),
     switchMap(() =>
-      updateAvatarCode(state$.value.editor.code.codeOnServer, state$.value.game.gameState.turnCount)
-    ),
-    map(actions.avatarCodeUpdated)
+      action$.pipe(
+        ofType(editorTypes.POST_CODE_SUCCESS),
+        switchMap(() =>
+          updateAvatarCode(
+            state$.value.editor.code.codeOnServer,
+            state$.value.game.gameState,
+            state$.value.game.connectionParameters.currentAvatarID
+          )
+        ),
+        tap(socket.emitAction),
+        map(actions.avatarCodeUpdated)
+      )
+    )
   )
 
 const computeNextActionEpic = (
@@ -43,12 +57,7 @@ const computeNextActionEpic = (
       action$.pipe(
         ofType(gameTypes.SOCKET_GAME_STATE_RECEIVED),
         switchMap(({ payload: { gameState } }) =>
-          computeNextAction$(
-            gameState,
-            gameState.players.find(
-              player => player.id === state$.value.game.connectionParameters.currentAvatarID
-            )
-          )
+          computeNextAction$(gameState, state$.value.game.connectionParameters.currentAvatarID)
         ),
         tap(socket.emitAction),
         map(actions.avatarsNextActionComputed)

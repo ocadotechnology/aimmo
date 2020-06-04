@@ -46,11 +46,7 @@ const consoleLogReducer = (state = { logs: [], workerLogs: {} }, action) => {
     case avatarWorkerTypes.AVATARS_NEXT_ACTION_COMPUTED: {
       const workerLogs = state.workerLogs
       const turnCount = action.payload.turnCount
-      if (workerLogs[turnCount]) {
-        workerLogs[action.payload.turnCount] += `\n${action.payload.log}`
-      } else {
-        workerLogs[action.payload.turnCount] = action.payload.log
-      }
+      workerLogs[turnCount] = action.payload.log
       return {
         ...state,
         workerLogs
