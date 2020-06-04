@@ -7,9 +7,7 @@ import asyncio
 
 from turn_collector import TurnCollector
 from .test_socketio import TIME_TO_PROCESS_SOME_EVENT_LOOP
-
-if TYPE_CHECKING:
-    from turn_collector import CollectedTurnActions
+from turn_collector import CollectedTurnActions
 
 
 def test_calling_new_turn_gives_new_collected_turn_actions(turn_collector):
@@ -58,3 +56,9 @@ async def test_new_actions_update_collected_turns(
 
     await socketio_client.disconnect()
     await socketio_client_2.disconnect()
+
+
+def test_collected_turn_actions_gives_default_value():
+    turn_actions = CollectedTurnActions(0)
+
+    assert turn_actions.get_action_for_player(1) == {"action_type": "wait"}
