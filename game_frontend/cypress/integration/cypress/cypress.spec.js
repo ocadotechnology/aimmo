@@ -34,8 +34,6 @@ describe('Cypress for aimmo', () => {
 
     cy.visitAGame()
 
-    cy.wait(10000)
-
     let badCode = `def next_turn(world_state, avatar_state):
 return False`
 
@@ -44,11 +42,7 @@ return False`
     editor.clear()
     editor.type(badCode)
 
-    cy.wait(1000)
-
     cy.get('#post-code-button').click()
-
-    cy.wait(5000)
 
     const store = cy.window().its('store').invoke('getState')
     const actionType = store.its('avatarAction').its('avatarAction')
