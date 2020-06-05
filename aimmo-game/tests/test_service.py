@@ -18,9 +18,7 @@ class TestService(TestCase):
     @classmethod
     def setUpClass(cls):
         """ Register the api endpoints """
-        cls.game_api = service.GameAPI(
-            worker_manager=None, game_state=MockGameState(None, None)
-        )
+        cls.game_api = service.GameAPI(game_state=MockGameState(None, None))
 
     def setUp(self):
         """

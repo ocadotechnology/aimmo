@@ -1,8 +1,6 @@
 from simulation.avatar.avatar_wrapper import AvatarWrapper
 from simulation.log_collector import LogCollector
 from .mock_avatar_manager import MockAvatarManager
-from .mock_worker import MockWorker
-from .mock_worker_manager import MockWorkerManager
 
 
 def test_collect_logs():

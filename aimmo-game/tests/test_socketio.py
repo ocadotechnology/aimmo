@@ -37,7 +37,6 @@ async def test_send_updates_for_one_user(game_api, client, socketio_server, loop
 async def test_remove_session_id_on_disconnect(game_api, client, socketio_server, loop):
     socketio_client = socketio.AsyncClient(reconnection=False)
 
-    game_api.worker_manager.add_new_worker(1)
     game_api.game_state.avatar_manager.add_avatar(1)
 
     await socketio_client.connect(

@@ -6,7 +6,6 @@ from httmock import HTTMock
 
 from simulation.avatar import avatar_wrapper
 from simulation.location import Location
-from tests.test_simulation.concrete_worker import ConcreteWorker
 
 
 class MockEffect(object):
@@ -34,22 +33,8 @@ class MockAction(object):
         actions_created.append(self)
 
 
-class ActionRequest(object):
-    def __init__(self, options=None):
-        if options is None:
-            options = {}
-        self.options = options
-
-    def __call__(self, url, request):
-        return json.dumps({"action": {"action_type": "test", "options": self.options}})
-
-
-def InvalidJSONRequest(url, request):
-    return "EXCEPTION"
-
-
-def NonExistentActionRequest(url, request):
-    return json.dumps({"action": {"action_type": "fake", "option": {}}})
+test_action = json.dumps({"action": {"action_type": "test", "options": {}}})
+non_existent_action = json.dumps({"action": {"action_type": "fake", "options": {}}})
 
 
 avatar_wrapper.ACTIONS = {"test": MockAction}
@@ -59,25 +44,12 @@ class TestAvatarWrapper:
     def setup_method(self):
         global actions_created
         actions_created = []
-        self.worker = ConcreteWorker(1, 0)
         self.avatar = avatar_wrapper.AvatarWrapper(
             player_id=None, initial_location=None, avatar_appearance=None
         )
 
-    async def take_turn(self, request_mock):
-        with HTTMock(request_mock):
-
-            worker_data = await self.worker.fetch_data(None)
-            self.avatar.decide_action(worker_data)
-
-    async def test_bad_action_data_given(self, loop):
-        request_mock = InvalidJSONRequest
-        await self.take_turn(request_mock)
-        assert actions_created == [], "No action should have been applied"
-
     async def test_non_existent_action(self, loop):
-        request_mock = NonExistentActionRequest
-        await self.take_turn(request_mock)
+        self.avatar.decide_action(non_existent_action)
         assert actions_created == [], "No action should have been applied"
 
     def add_effects(self, num=2):
@@ -107,7 +79,7 @@ class TestAvatarWrapper:
         assert self.avatar.effects == set((effect2,))
 
     def test_effects_applied_on_invalid_action(self):
-        self.take_turn(InvalidJSONRequest)
+        self.avatar.decide_action(non_existent_action)
         effect = self.add_effects(1)[0]
         self.avatar.update_effects()
         assert effect.turns == 1

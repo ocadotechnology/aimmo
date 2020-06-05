@@ -1,9 +1,8 @@
 class LogCollector:
     """
     This class aggregates:
-    - the worker logs (logs coming from the worker)
     - the avatar logs (logs outputted by the game under certain conditions)
-    These logs are concatenated to form the `player_logs`.
+    These logs are concatenated to form the `playerLogs`.
     """
 
     def __init__(self, avatar_manager):
