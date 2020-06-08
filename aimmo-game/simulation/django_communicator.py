@@ -16,8 +16,11 @@ class DjangoCommunicator(object):
         self.token_url = self.django_api_url + "token/"
 
     async def get_game_metadata(self):
-        async with self.session.get(f"{self.django_api_url}users/") as response:
-            return await response.json()
+        try:
+            async with self.session.get(f"{self.django_api_url}users/") as response:
+                return await response.json()
+        except aiohttp.client_exceptions.ClientConnectionError:
+            return {"users": []}
 
     def mark_game_complete(self, data=None):
         return requests.post(requests.post(self.completion_url, json=data))
