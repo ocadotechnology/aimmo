@@ -1,13 +1,3 @@
 # Worker
 
----
-
-When we refer to a worker we are referring to a thread or
-a kubernetes containerised pod. The isn't part of the game 
-logic but ensures that the game can receive and receive 
-external data safely.
-
-The responsibilities include:
-* Stores worker data not directly to the simulation: logs, 
-serialised actions and code updated flags.
-* Fetches data from the remote service (thread / pod)
+A worker is the part of the game client frontend that computes the user's `next_turn` for that turn. We use [pyodide](https://github.com/iodide-project/pyodide), a library that allows us to run Python in the browser, to do this.
