@@ -27,7 +27,7 @@ game metadata from the Django API.
 The game interacts with the rest of the components as follows:
 
 - It is created by the game creator.
-- Collects actions (see [turn_collector](../../../aimmo-game/turn_collector.py)) computed by the user's client (see [workers](../workers/README.md))
+- Collects actions (see [turn_collector](../../../aimmo-game/turn_collector.py)) computed by the player's client (see [workers](../workers/README.md))
 - Send game states once per turn to the clients
 
 Once per turn it will:
