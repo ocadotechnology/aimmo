@@ -29,26 +29,61 @@ describe('Cypress for aimmo', () => {
   // })
   // http://localhost:8000/kurono/api/games/3/connection_parameters/
 
-  it('changes direction', () => {
-    cy.login()
+  it('changes avatar direction', () => {
+    changeAvatarCode("MOVE_SOUTH")
 
-    cy.updateCode(DEFAULT_CODE)
-
-    cy.visitAGame()
-    
-    cy.wait(5000)
-
-    cy.fixture("avatar_code").then(code => {
-      cy.window().its("store").invoke("dispatch", {type: "features/Editor/CHANGE_CODE", payload: code})
-    })
-
-    cy.window().its("store").invoke("dispatch", {type: "features/Editor/POST_CODE_SUCCESS"})
     cy.wait(5000)
 
     const store = cy.window().its('store').invoke('getState')
-    const actionType = store.its('avatarAction').its('avatarAction')
-      .its('action').its('action_type')
+    const action = store.its('avatarAction').its('avatarAction').its('action')
 
-    actionType.should('deep.equal', "wait")
+    action.should('deep.equal',
+      { action_type: 'move',
+      options: {
+        direction: {
+          x: 0,
+          y: -1
+        }
+      }})
+  })
+
+  it('returns wait action if code does not return an action', () => {
+    changeAvatarCode("RETURN_NOT_AN_ACTION")
+
+    cy.wait(5000)
+
+    const store = cy.window().its('store').invoke('getState')
+    const action = store.its('avatarAction').its('avatarAction').its('action')
+
+    action.should('deep.equal', { "action_type": "wait"})
+  })
+
+  it('returns wait action on syntax error', () => {
+    changeAvatarCode("SYNTAX_ERROR")
+
+    cy.wait(5000)
+
+    const store = cy.window().its('store').invoke('getState')
+    const action = store.its('avatarAction').its('avatarAction').its('action')
+
+    action.should('deep.equal', { "action_type": "wait"})
   })
 })
+
+function changeAvatarCode(avatarCode)
+{
+  cy.login()
+
+  cy.updateCode(DEFAULT_CODE)
+
+  cy.visitAGame()
+
+  cy.wait(5000)
+
+  cy.fixture("avatar_code").then(json => {
+    const code = json[avatarCode]
+    cy.window().its("store").invoke("dispatch", {type: "features/Editor/CHANGE_CODE", payload: code})
+  })
+
+  cy.window().its("store").invoke("dispatch", {type: "features/Editor/POST_CODE_SUCCESS"})
+}

@@ -1,5 +1,11 @@
 {
-    "BAD_CODE": {
+    "MOVE_SOUTH": {
+        "code": "def next_turn(world_state, avatar_state):\n    return MoveAction(direction.SOUTH)\n"
+    },
+    "RETURN_NOT_AN_ACTION": {
         "code": "def next_turn(world_state, avatar_state):\n    return False\n"
+    },
+    "SYNTAX_ERROR": {
+        "code": "def next_turn(world_state, avatar_state):\n    return MoveAction(direction.NORTH)))))\n"
     }
 }
