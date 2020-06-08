@@ -1,0 +1,5 @@
+{
+    "BAD_CODE": {
+        "code": "def next_turn(world_state, avatar_state):\n    return False\n"
+    }
+}
