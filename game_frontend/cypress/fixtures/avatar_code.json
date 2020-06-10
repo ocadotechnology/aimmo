@@ -1,11 +1,20 @@
 {
     "MOVE_SOUTH": {
-        "code": "def next_turn(world_state, avatar_state):\n    return MoveAction(direction.SOUTH)\n"
+        "avatarCode": {
+            "code": "def next_turn(world_state, avatar_state):\n    return MoveAction(direction.SOUTH)\n"
+        },
+        "expectedLog": ""
     },
     "RETURN_NOT_AN_ACTION": {
-        "code": "def next_turn(world_state, avatar_state):\n    return False\n"
+        "avatarCode": {
+            "code": "def next_turn(world_state, avatar_state):\n    return False\n"
+        },
+        "expectedLog": "AttributeError: 'bool' object has no attribute 'serialise'\n"
     },
     "SYNTAX_ERROR": {
-        "code": "def next_turn(world_state, avatar_state):\n    return MoveAction(direction.NORTH)))))\n"
+        "avatarCode": {
+            "code": "def next_turn(world_state, avatar_state):\n    return MoveAction(direction.NORTH)))))\n"
+        },
+        "expectedLog": ""
     }
 }

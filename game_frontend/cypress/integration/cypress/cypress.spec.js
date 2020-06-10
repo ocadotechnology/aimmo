@@ -32,58 +32,72 @@ describe('Cypress for aimmo', () => {
   it('changes avatar direction', () => {
     changeAvatarCode("MOVE_SOUTH")
 
-    cy.wait(5000)
-
-    const store = cy.window().its('store').invoke('getState')
-    const action = store.its('avatarAction').its('avatarAction').its('action')
+    const action = cy.window().its('store').invoke('getState').its('action')
+      .its('avatarAction').its('action')
 
     action.should('deep.equal',
-      { action_type: 'move',
+    {
+      action_type: 'move',
       options: {
         direction: {
           x: 0,
           y: -1
         }
-      }})
+      }
+    })
+
+    checkLog("MOVE_SOUTH")
   })
 
   it('returns wait action if code does not return an action', () => {
     changeAvatarCode("RETURN_NOT_AN_ACTION")
 
-    cy.wait(5000)
+    const action = cy.window().its('store').invoke('getState').its('action')
+      .its('avatarAction').its('action')
 
-    const store = cy.window().its('store').invoke('getState')
-    const action = store.its('avatarAction').its('avatarAction').its('action')
+    action.should('deep.equal', { action_type: 'wait' })
 
-    action.should('deep.equal', { "action_type": "wait"})
+    checkLog("RETURN_NOT_AN_ACTION")
   })
 
-  it('returns wait action on syntax error', () => {
-    changeAvatarCode("SYNTAX_ERROR")
-
-    cy.wait(5000)
-
-    const store = cy.window().its('store').invoke('getState')
-    const action = store.its('avatarAction').its('avatarAction').its('action')
-
-    action.should('deep.equal', { "action_type": "wait"})
-  })
+  // it('returns wait action on syntax error', () => {
+  //   changeAvatarCode("SYNTAX_ERROR")
+  //
+  //   const store = cy.window().its('store').invoke('getState')
+  //   const action = store.its('avatarAction').its('avatarAction').its('action')
+  //
+  //   action.should('deep.equal', { "action_type": "wait"})
+  // })
 })
 
-function changeAvatarCode(avatarCode)
-{
+function changeAvatarCode(avatarCodeType) {
   cy.login()
 
   cy.updateCode(DEFAULT_CODE)
 
+  cy.server().route('GET', 'static/worker/aimmo_avatar_api-0.0.0-py3-none-any.whl').as('getAvatarApi')
+
   cy.visitAGame()
 
-  cy.wait(5000)
-
   cy.fixture("avatar_code").then(json => {
-    const code = json[avatarCode]
+    const code = json[avatarCodeType]["avatarCode"]
     cy.window().its("store").invoke("dispatch", {type: "features/Editor/CHANGE_CODE", payload: code})
   })
 
   cy.window().its("store").invoke("dispatch", {type: "features/Editor/POST_CODE_SUCCESS"})
+
+  cy.wait('@getAvatarApi', {timeout: 20000})
+
+  cy.wait(2000)
+}
+
+function checkLog(avatarCodeType) {
+  cy.fixture("avatar_code").then(json => {
+    const expectedLog = json[avatarCodeType]["expectedLog"]
+
+    const log = cy.window().its('store').invoke('getState').its('action')
+      .its('avatarAction').its('log')
+
+    log.should('deep.equal', expectedLog)
+  })
 }
