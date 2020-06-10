@@ -1,7 +1,6 @@
 /// <reference types="cypress" />
 
 import { DEFAULT_CODE } from '../../../src/redux/features/constants'
-import { SocketIO, Server } from 'mock-socket'
 
 describe('Cypress for aimmo', () => {
   // it('can login, add and delete games', () => {
@@ -27,7 +26,6 @@ describe('Cypress for aimmo', () => {
   //     codeOnServer: DEFAULT_CODE
   //   })
   // })
-  // http://localhost:8000/kurono/api/games/3/connection_parameters/
 
   it('changes avatar direction', () => {
     changeAvatarCode("MOVE_SOUTH")
@@ -67,6 +65,77 @@ describe('Cypress for aimmo', () => {
   //   const action = store.its('avatarAction').its('avatarAction').its('action')
   //
   //   action.should('deep.equal', { "action_type": "wait"})
+  // })
+
+  it('prints with one print', () => {
+    changeAvatarCode("ONE_PRINT")
+
+    const action = cy.window().its('store').invoke('getState').its('action')
+      .its('avatarAction').its('action')
+
+    action.should('deep.equal',
+      {
+        action_type: 'move',
+        options: {
+          direction: {
+            x: 0,
+            y: 1
+          }
+        }
+      })
+
+    checkLog("ONE_PRINT")
+  })
+
+  it('prints with multiple prints', () => {
+    changeAvatarCode("TWO_PRINTS")
+
+    const action = cy.window().its('store').invoke('getState').its('action')
+      .its('avatarAction').its('action')
+
+    action.should('deep.equal',
+      {
+        action_type: 'move',
+        options: {
+          direction: {
+            x: 0,
+            y: 1
+          }
+        }
+      })
+
+    checkLog("TWO_PRINTS")
+  })
+
+  it('prints with a print in a separate function', () => {
+    changeAvatarCode("PRINTS_IN_DIFFERENT_FUNCTIONS")
+
+    const action = cy.window().its('store').invoke('getState').its('action')
+      .its('avatarAction').its('action')
+
+    action.should('deep.equal',
+      {
+        action_type: 'move',
+        options: {
+          direction: {
+            x: 0,
+            y: 1
+          }
+        }
+      })
+
+    checkLog("PRINTS_IN_DIFFERENT_FUNCTIONS")
+  })
+
+  // it('prints even if code if broken', () => {
+  //   changeAvatarCode("RETURN_NOT_AN_ACTION_WITH_PRINT")
+  //
+  //   const action = cy.window().its('store').invoke('getState').its('action')
+  //     .its('avatarAction').its('action')
+  //
+  //   action.should('deep.equal', { action_type: 'wait' })
+  //
+  //   checkLog("RETURN_NOT_AN_ACTION_WITH_PRINT")
   // })
 })
 

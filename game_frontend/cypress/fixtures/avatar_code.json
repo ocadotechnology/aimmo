@@ -16,5 +16,29 @@
             "code": "def next_turn(world_state, avatar_state):\n    return MoveAction(direction.NORTH)))))\n"
         },
         "expectedLog": ""
+    },
+    "ONE_PRINT": {
+        "avatarCode": {
+            "code": "def next_turn(world_map, avatar_state):\n    print('I AM A PRINT STATEMENT')\n    return MoveAction(direction.NORTH)"
+        },
+        "expectedLog": "I AM A PRINT STATEMENT\n"
+    },
+    "TWO_PRINTS": {
+        "avatarCode": {
+            "code": "def next_turn(world_map, avatar_state):\n    print('I AM A PRINT STATEMENT')\n    print('I AM ALSO A PRINT STATEMENT')\n    return MoveAction(direction.NORTH)"
+        },
+        "expectedLog": "I AM A PRINT STATEMENT\nI AM ALSO A PRINT STATEMENT\n"
+    },
+    "PRINTS_IN_DIFFERENT_FUNCTIONS": {
+        "avatarCode": {
+            "code": "def next_turn(world_map, avatar_state):\n    foo()\n    print('I AM NOT A NESTED PRINT')\n    return MoveAction(direction.NORTH)\n\ndef foo():\n    print('I AM A NESTED PRINT')"
+        },
+        "expectedLog": "I AM A NESTED PRINT\nI AM NOT A NESTED PRINT\n"
+    },
+    "RETURN_NOT_AN_ACTION_WITH_PRINT": {
+        "avatarCode": {
+            "code": "def next_turn(world_map, avatar_state):\n    print('THIS CODE IS BROKEN')\n    return None"
+        },
+        "expectedLog": ""
     }
 }
