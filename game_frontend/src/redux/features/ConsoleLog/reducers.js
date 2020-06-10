@@ -6,7 +6,7 @@ export const MAX_NUMBER_OF_STORED_LOGS = 600
 
 function createNewLogMessage (workerLog, gameLog) {
   if (gameLog && workerLog) {
-    return [gameLog, workerLog].join('\n')
+    return [workerLog, gameLog].join('\n')
   }
   if (gameLog) {
     return gameLog
@@ -25,7 +25,6 @@ const consoleLogReducer = (state = { logs: [], workerLogs: {} }, action) => {
         state.workerLogs[turnCount],
         action.payload.gameState.playerLog
       )
-      console.log(newLogMessage)
       if (!newLogMessage) {
         return state
       }
