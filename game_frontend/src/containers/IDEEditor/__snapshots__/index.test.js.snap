@@ -33,9 +33,6 @@ exports[`<IDEEditor /> matches snapshot when code is loaded 1`] = `
     }
     setOptions={
       Object {
-        "enableBasicAutocompletion": true,
-        "enableLiveAutocompletion": true,
-        "enableSnippets": true,
         "fontFamily": "'Source Code Pro', monospace",
         "showLineNumbers": true,
         "tabSize": 4,
@@ -45,7 +42,7 @@ exports[`<IDEEditor /> matches snapshot when code is loaded 1`] = `
     showPrintMargin={true}
     style={Object {}}
     tabSize={4}
-    theme="solarized_dark"
+    theme="tomorrow_night"
     value="def next_turn(...): pass"
     width="100%"
     wrapEnabled={false}
