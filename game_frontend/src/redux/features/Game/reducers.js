@@ -8,23 +8,6 @@ const gameReducer = (state = {}, action) => {
         gameState: action.payload.gameState,
         gameLoaded: true
       }
-    case types.SOCKET_FEEDBACK_AVATAR_UPDATED_SUCCESS:
-      return {
-        ...state,
-        showSnackbar: true,
-        snackbarMessage: 'Your Avatar has been updated with your new code!'
-      }
-    case types.SOCKET_FEEDBACK_AVATAR_UPDATED_TIMEOUT:
-      return {
-        ...state,
-        showSnackbar: true,
-        snackbarMessage: 'Sorry there has been a server error! Please try again in 30 seconds.'
-      }
-    case types.SNACKBAR_FOR_AVATAR_FEEDBACK_SHOWN:
-      return {
-        ...state,
-        showSnackbar: false
-      }
     case types.CONNECTION_PARAMETERS_RECEIVED:
       return {
         ...state,

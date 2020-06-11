@@ -15,9 +15,6 @@ const additionalVariables = {
       fontFamily: "'Source Code Pro', monospace",
       fontSize: '1rem'
     }
-  },
-  snackbar: {
-    borderRadius: '6px'
   }
 }
 
@@ -25,29 +22,10 @@ const shape = {
   borderRadius: '24px'
 }
 
-const overrides = {
-  MuiSnackbar: {
-    root: {
-      zIndex: '1000'
-    },
-    anchorOriginTopRight: {
-      right: '25% !important',
-      transform: 'translate(50%, 64px)'
-    }
-  },
-  MuiSnackbarContent: {
-    root: {
-      paddingRight: '14px',
-      paddingLeft: '14px'
-    }
-  }
-}
-
 const theme = {
   palette,
   additionalVariables,
   shape,
-  overrides,
   typography: {
     fontFamily: ['museo-sans', 'Source Code Pro'].join(','),
     display1: {

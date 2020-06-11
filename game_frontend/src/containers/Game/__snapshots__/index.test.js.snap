@@ -1,42 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Game /> renders correctly with snackbar 1`] = `
+exports[`<Game /> renders correctly 1`] = `
 <Fragment>
   <GameView
     connectToGame={[MockFunction]}
-  />
-  <WithTheme(Snackbar)
-    anchorOrigin={
-      Object {
-        "horizontal": "right",
-        "vertical": "top",
-      }
-    }
-    direction="up"
-    message="Snacks are the new way to keep fit"
-    onClose={[Function]}
-    open={true}
-    type="success"
-  />
-</Fragment>
-`;
-
-exports[`<Game /> renders correctly without snackbar 1`] = `
-<Fragment>
-  <GameView
-    connectToGame={[MockFunction]}
-  />
-  <WithTheme(Snackbar)
-    anchorOrigin={
-      Object {
-        "horizontal": "right",
-        "vertical": "top",
-      }
-    }
-    direction="up"
-    onClose={[Function]}
-    open={false}
-    type="success"
   />
 </Fragment>
 `;

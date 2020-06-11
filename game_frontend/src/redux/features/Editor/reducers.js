@@ -18,20 +18,26 @@ const codeReducer = (state = {}, action) => {
         ...state,
         code: action.payload.code
       }
+    case types.POST_CODE_REQUEST:
+      return {
+        ...state,
+        codeToBeSaved: action.payload.code
+      }
     case types.POST_CODE_SUCCESS:
       return {
         ...state,
-        codeOnServer: state.code
-      }
-    case avatarWorkerTypes.AVATAR_CODE_UPDATED:
-      return {
-        ...state,
-        showSnackbarForAvatarUpdated: true
+        codeOnServer: state.codeToBeSaved,
+        codeToBeSaved: null
       }
     case types.RESET_CODE:
       return {
         ...state,
-        code: DEFAULT_CODE
+        resetCodeTo: DEFAULT_CODE
+      }
+    case types.CODE_RESET:
+      return {
+        ...state,
+        resetCodeTo: null
       }
     default:
       return state
@@ -51,7 +57,6 @@ const runCodeButtonReducer = (state = {}, action) => {
         status: RunCodeButtonStatus.done
       }
     case gameTypes.SOCKET_GAME_STATE_RECEIVED:
-    case gameTypes.SNACKBAR_FOR_AVATAR_FEEDBACK_SHOWN:
       return {
         ...state,
         status: RunCodeButtonStatus.normal
