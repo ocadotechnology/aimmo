@@ -17,7 +17,6 @@ describe('editorReducer', () => {
   it('should handle GET_CODE_SUCCESS', () => {
     const expectedState = {
       code: {
-        code: 'class Avatar',
         codeOnServer: 'class Avatar'
       },
       runCodeButton: {}
