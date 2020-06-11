@@ -26,7 +26,6 @@ class TurnCollector:
         self.register_action_received_event()
 
     def new_turn(self, turn_number):
-        LOGGER.info("a new turn has started in the turn_collector")
         self.collected_turns = CollectedTurnActions(turn_number)
 
     def register_action_received_event(self):

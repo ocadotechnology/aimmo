@@ -4,7 +4,7 @@ The game worker is part of the [game_frontend](../../../game_frontend/README.md)
 
 The code for the worker is split up in two places:
 
-- The [aimmo-game-worker](../../../aimmo-game-worker/) directory which holds the worker api source code for the player
+- The [aimmo-game-worker](../../../aimmo-game-worker/) directory which holds the worker api source code for the player.
 - The corresponding [Pyodide runner](../../../game_frontend/src/pyodide) which uses the worker api to run the player's code.
 
 ## How the Avatar Worker works
@@ -15,4 +15,4 @@ The worker receives a game state of the current turn. It converts this into a re
 
 ### Responding to player's code changes
 
-When the player changes the code for their avatar, we redefine the `next_turn` function in pyodide and then recompute their `next_turn` action with then the new code. In the case of syntax errors with their code, we don't compute their `next_turn` and return a `WaitAction` with the errors they had in the logs.
+When the player changes the code for their avatar, we redefine the `next_turn` function in pyodide and then recompute their `next_turn` action with the new code. In the case of syntax errors with their code, we don't compute their `next_turn` and return a `WaitAction` with the errors they had in the logs.

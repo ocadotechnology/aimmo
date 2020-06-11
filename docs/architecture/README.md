@@ -1,6 +1,6 @@
 # Architecture
 
-This section describes the whole game architecture and how things are structured. Kurono consists of four main components, split into their own directories.
+This section describes the whole game architecture and how things are structured. Kurono consists of five main components, split into their own directories.
 
 ## Overview
 
@@ -12,9 +12,9 @@ This section describes the whole game architecture and how things are structured
 
 A Django app used to provide an api for game and code management.
 
-Game Frontend (`game)frontend` directory)
+[Game Frontend (`game_frontend` directory)](../../game_frontend/README.md)
 
-A React app using Babylon and Pyodide to present the game state to the player, run their code and allow them to edit it.
+A React app using [Babylon](https://www.babylonjs.com/) and [Pyodide](https://github.com/iodide-project/pyodide) to present the game state to the player, run their code and allow them to edit it.
 
 [Games (`aimmo-game` directory)](games/README.md)
 

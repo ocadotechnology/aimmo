@@ -80,9 +80,6 @@ socketio_server = setup_socketIO_server(app)
 
 
 class GameAPI(object):
-
-    routes = web.RouteTableDef()
-
     def __init__(self, game_state, application=app, server=socketio_server):
         self.app = application
         self.socketio_server = server
@@ -95,7 +92,8 @@ class GameAPI(object):
         await asyncio.gather(*futures)
 
     def register_endpoints(self):
-        # self.register_healthcheck()
+        self.routes = web.RouteTableDef()
+        self.register_healthcheck()
         self.register_world_update_on_connect()
         self.register_remove_session_id_from_mappings()
         self.app.add_routes(self.routes)

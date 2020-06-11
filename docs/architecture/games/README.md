@@ -36,8 +36,7 @@ Once per turn it will:
   actions.
 - Perform conflict resolution on these actions and then apply
   them.
-- Update the world with any other changes (eg move score
-  squares).
+- Update the world with any other changes to produce the next game state.
 
 Files for the game are stored in `aimmo-game`.
 

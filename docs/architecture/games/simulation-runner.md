@@ -9,8 +9,7 @@ runs as follows:
 - Get the [`AvatarWrapper`'s](avatar-wrapper-file) to
   deserialize and register their actions.
 - Update the environment using the [World Map](world-map-doc)
-- Check if the level is complete (the MMO will probably not
-  finish - this is a somewhat deprecated feature)
+- Check if the level is complete (this is a somewhat deprecated feature)
 
 The alternatives for pooling each avatar for its decisions are:
 
