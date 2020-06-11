@@ -40,5 +40,11 @@
             "code": "def next_turn(world_map, avatar_state):\n    print('THIS CODE IS BROKEN')\n    return None"
         },
         "expectedLog": ""
+    },
+    "GLOBAL_VARIABLE": {
+        "avatarCode": {
+            "code": "turn_count = 0\ndef next_turn(world_map, avatar_state):\n    global turn_count\n    turn_count += 1\n    print(turn_count)\n    return MoveAction(direction.NORTH)"
+        },
+        "expectedLog": "1"
     }
 }
