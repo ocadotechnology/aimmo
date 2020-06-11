@@ -22,7 +22,7 @@ describe('Cypress for aimmo', () => {
     const code = store.its('editor').its('code')
 
     code.should('deep.equal', {
-      code: DEFAULT_CODE,
+      code: "",
       codeOnServer: DEFAULT_CODE
     })
   })
@@ -57,6 +57,16 @@ describe('Cypress for aimmo', () => {
 
   it('stores, changes global variable and prints it out', () => {
     testAvatarCode("GLOBAL_VARIABLE")
+
+    cy.wait(2000)
+
+    const avatarAction = cy.window().its('store').invoke('getState')
+      .its('action.avatarAction')
+
+    avatarAction.then((value) => {
+      const secondLog = value['log']
+      expect(secondLog).to.deep.equal('2\n')
+    })
   })
 })
 
@@ -76,7 +86,7 @@ function changeAvatarCode(avatarCodeType) {
 
   cy.wait('@getAvatarApi', {timeout: 20000})
 
-  cy.wait(4000)
+  cy.wait(1000)
 }
 
 function testAvatarCode(avatarCodeType) {
@@ -85,9 +95,9 @@ function testAvatarCode(avatarCodeType) {
   const avatarAction = cy.window().its('store').invoke('getState')
     .its('action.avatarAction')
 
-  avatarAction.then((value) => {
-    const action = value['action']
-    const log = value['log']
+  avatarAction.then((avatarActionData) => {
+    const action = avatarActionData['action']
+    const log = avatarActionData['log']
 
     checkAction(avatarCodeType, action)
     checkLog(avatarCodeType, log)
