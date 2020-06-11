@@ -30,11 +30,16 @@ const resetCode = () => ({
   type: types.RESET_CODE
 })
 
+const codeReset = () => ({
+  type: types.CODE_RESET
+})
+
 export default {
   getCodeRequest,
   getCodeReceived,
   postCodeRequest,
   postCodeReceived,
   avatarCodeUpdated,
-  resetCode
+  resetCode,
+  codeReset
 }

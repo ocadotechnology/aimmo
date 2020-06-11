@@ -32,7 +32,12 @@ const codeReducer = (state = {}, action) => {
     case types.RESET_CODE:
       return {
         ...state,
-        code: DEFAULT_CODE
+        resetCodeTo: DEFAULT_CODE
+      }
+    case types.CODE_RESET:
+      return {
+        ...state,
+        resetCodeTo: null
       }
     default:
       return state

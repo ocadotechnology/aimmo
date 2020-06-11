@@ -25,17 +25,6 @@ describe('editorReducer', () => {
     const action = actions.getCodeReceived('class Avatar')
     expect(editorReducer({}, action)).toEqual(expectedState)
   })
-
-  it('should handle CHANGE_CODE', () => {
-    const expectedState = {
-      code: {
-        code: 'class Avatar'
-      },
-      runCodeButton: {}
-    }
-    const action = actions.changeCode('class Avatar')
-    expect(editorReducer({}, action)).toEqual(expectedState)
-  })
 })
 
 describe('runCodeButtonReducer', () => {
@@ -87,7 +76,7 @@ describe('resetCodeReducer', () => {
     }
     const expectedState = {
       code: {
-        code: DEFAULT_CODE
+        resetCodeTo: DEFAULT_CODE
       },
       runCodeButton: {}
     }
