@@ -3,166 +3,60 @@
 import { DEFAULT_CODE } from '../../../src/redux/features/constants'
 
 describe('Cypress for aimmo', () => {
-  // it('can login, add and delete games', () => {
-  //   cy.login()
-  //
-  //   cy.addTestGame()
-  //
-  //   cy.deleteAllGames()
-  // })
-  //
-  // it('has default code on load', () => {
-  //   cy.login()
-  //
-  //   cy.addTestGame()
-  //
-  //   cy.visitAGame()
-  //
-  //   const store = cy.window().its('store').invoke('getState')
-  //   const code = store.its('editor').its('code')
-  //
-  //   code.should('deep.equal', {
-  //     code: DEFAULT_CODE,
-  //     codeOnServer: DEFAULT_CODE
-  //   })
-  // })
+  it('can login, add and delete games', () => {
+    cy.login()
 
-  // it('changes avatar direction', () => {
-  //   changeAvatarCode("MOVE_SOUTH")
-  //
-  //   const action = cy.window().its('store').invoke('getState').its('action')
-  //     .its('avatarAction').its('action')
-  //
-  //   action.should('deep.equal',
-  //   {
-  //     action_type: 'move',
-  //     options: {
-  //       direction: {
-  //         x: 0,
-  //         y: -1
-  //       }
-  //     }
-  //   })
-  //
-  //   checkLog("MOVE_SOUTH")
-  // })
-  //
-  // it('returns wait action if code does not return an action', () => {
-  //   changeAvatarCode("RETURN_NOT_AN_ACTION")
-  //
-  //   const action = cy.window().its('store').invoke('getState').its('action')
-  //     .its('avatarAction').its('action')
-  //
-  //   action.should('deep.equal', { action_type: 'wait' })
-  //
-  //   checkLog("RETURN_NOT_AN_ACTION")
-  // })
-  //
-  // // it('returns wait action on syntax error', () => {
-  // //   changeAvatarCode("SYNTAX_ERROR")
-  // //
-  // //   const store = cy.window().its('store').invoke('getState')
-  // //   const action = store.its('avatarAction').its('avatarAction').its('action')
-  // //
-  // //   action.should('deep.equal', { "action_type": "wait"})
-  // // })
-  //
-  // it('prints with one print', () => {
-  //   changeAvatarCode("ONE_PRINT")
-  //
-  //   const action = cy.window().its('store').invoke('getState').its('action')
-  //     .its('avatarAction').its('action')
-  //
-  //   action.should('deep.equal',
-  //     {
-  //       action_type: 'move',
-  //       options: {
-  //         direction: {
-  //           x: 0,
-  //           y: 1
-  //         }
-  //       }
-  //     })
-  //
-  //   checkLog("ONE_PRINT")
-  // })
-  //
-  // it('prints with multiple prints', () => {
-  //   changeAvatarCode("TWO_PRINTS")
-  //
-  //   const action = cy.window().its('store').invoke('getState').its('action')
-  //     .its('avatarAction').its('action')
-  //
-  //   action.should('deep.equal',
-  //     {
-  //       action_type: 'move',
-  //       options: {
-  //         direction: {
-  //           x: 0,
-  //           y: 1
-  //         }
-  //       }
-  //     })
-  //
-  //   checkLog("TWO_PRINTS")
-  // })
-  //
-  // it('prints with a print in a separate function', () => {
-  //   changeAvatarCode("PRINTS_IN_DIFFERENT_FUNCTIONS")
-  //
-  //   const state = cy.window().its('store').invoke('getState')
-  //
-  //   let action = state.its('action.avatarAction.action')
-  //
-  //   action.should('deep.equal',
-  //     {
-  //       action_type: 'move',
-  //       options: {
-  //         direction: {
-  //           x: 0,
-  //           y: 1
-  //         }
-  //       }
-  //     })
-  //
-  //   checkLog("PRINTS_IN_DIFFERENT_FUNCTIONS", state)
-  // })
+    cy.addTestGame()
 
-  // it('prints even if code if broken', () => {
-  //   changeAvatarCode("RETURN_NOT_AN_ACTION_WITH_PRINT")
-  //
-  //   const action = cy.window().its('store').invoke('getState').its('action')
-  //     .its('avatarAction').its('action')
-  //
-  //   action.should('deep.equal', { action_type: 'wait' })
-  //
-  //   checkLog("RETURN_NOT_AN_ACTION_WITH_PRINT")
-  // })
+    cy.deleteAllGames()
+  })
+
+  it('has default code on load', () => {
+    cy.login()
+
+    cy.addTestGame()
+
+    cy.visitAGame()
+
+    const store = cy.window().its('store').invoke('getState')
+    const code = store.its('editor').its('code')
+
+    code.should('deep.equal', {
+      code: DEFAULT_CODE,
+      codeOnServer: DEFAULT_CODE
+    })
+  })
+
+  it('changes avatar direction', () => {
+    testAvatarCode("MOVE_SOUTH")
+  })
+
+  it('returns wait action if code does not return an action', () => {
+    testAvatarCode("RETURN_NOT_AN_ACTION")
+  })
+
+  it('returns wait action on syntax error', () => {
+    testAvatarCode("SYNTAX_ERROR")
+  })
+
+  it('prints with one print', () => {
+    testAvatarCode("ONE_PRINT")
+  })
+
+  it('prints with multiple prints', () => {
+    testAvatarCode("TWO_PRINTS")
+  })
+
+  it('prints with a print in a separate function', () => {
+    testAvatarCode("PRINTS_IN_DIFFERENT_FUNCTIONS")
+  })
+
+  it('prints even if code if broken', () => {
+    testAvatarCode("RETURN_NOT_AN_ACTION_WITH_PRINT")
+  })
 
   it('stores, changes global variable and prints it out', () => {
-    changeAvatarCode("GLOBAL_VARIABLE")
-
-    const avatarAction = cy.window().its('store').invoke('getState').its('action').its('avatarAction')
-    console.log(avatarAction)
-
-    cy.wrap(avatarAction)
-    console.log(avatarAction)
-
-    // avatarAction[action].should('deep.equal',
-    //   {
-    //     action_type: 'move',
-    //     options: {
-    //       direction: {
-    //         x: 0,
-    //         y: 1
-    //       }
-    //     }
-    //   })
-    //
-    // cy.fixture("avatar_code").then(json => {
-    //   const expectedLog = json["GLOBAL_VARIABLE"]["expectedLog"]
-    //   avatarAction[log].should('deep.equal', expectedLog)
-    // })
+    testAvatarCode("GLOBAL_VARIABLE")
   })
 })
 
@@ -177,22 +71,42 @@ function changeAvatarCode(avatarCodeType) {
 
   cy.fixture("avatar_code").then(json => {
     const code = json[avatarCodeType]["avatarCode"]
-    cy.window().its("store").invoke("dispatch", {type: "features/Editor/CHANGE_CODE", payload: code})
+    cy.window().its("store").invoke("dispatch", {type: "features/Editor/POST_CODE_REQUEST", payload: code})
   })
-
-  cy.window().its("store").invoke("dispatch", {type: "features/Editor/POST_CODE_SUCCESS"})
 
   cy.wait('@getAvatarApi', {timeout: 20000})
 
-  cy.wait(2000)
+  cy.wait(4000)
 }
 
-function checkLog(avatarCodeType, state) {
+function testAvatarCode(avatarCodeType) {
+  changeAvatarCode(avatarCodeType)
+
+  const avatarAction = cy.window().its('store').invoke('getState')
+    .its('action.avatarAction')
+
+  avatarAction.then((value) => {
+    const action = value['action']
+    const log = value['log']
+
+    checkAction(avatarCodeType, action)
+    checkLog(avatarCodeType, log)
+  })
+}
+
+function checkAction(avatarCodeType, action) {
+  cy.fixture("avatar_code").then(codeJson => {
+    const expectedAction = codeJson[avatarCodeType]["expectedAction"]
+
+    cy.fixture("avatar_actions").then(actionsJson => {
+      expect(action).to.deep.equal(actionsJson[expectedAction])
+    })
+  })
+}
+
+function checkLog(avatarCodeType, log) {
   cy.fixture("avatar_code").then(json => {
     const expectedLog = json[avatarCodeType]["expectedLog"]
-
-    let log = state.its('action.avatarAction.log')
-
-    log.should('deep.equal', expectedLog)
+    expect(log).to.deep.equal(expectedLog)
   })
 }
