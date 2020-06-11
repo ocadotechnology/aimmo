@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<IDEEditor /> matches snapshot 1`] = `
+exports[`<IDEEditor /> matches snapshot when code is loaded 1`] = `
 <styled.div>
   <ReactAce
     cursorStart={1}
@@ -17,8 +17,8 @@ exports[`<IDEEditor /> matches snapshot 1`] = `
     mode="python"
     name="ace_editor"
     navigateToFileEnd={true}
-    onChange={null}
-    onLoad={[MockFunction]}
+    onChange={[Function]}
+    onLoad={null}
     onPaste={null}
     onScroll={null}
     placeholder={null}
@@ -45,16 +45,27 @@ exports[`<IDEEditor /> matches snapshot 1`] = `
     showPrintMargin={true}
     style={Object {}}
     tabSize={4}
-    theme="idle_fingers"
-    value="class Avatar"
+    theme="solarized_dark"
+    value="def next_turn(...): pass"
     width="100%"
     wrapEnabled={false}
   />
   <Styled(RunCodeButton)
     aria-label="Run Code"
     id="post-code-button"
+    isCodeOnServerDifferent={false}
+    whenClicked={[Function]}
+  />
+</styled.div>
+`;
+
+exports[`<IDEEditor /> matches snapshot when code isn't loaded 1`] = `
+<styled.div>
+  <Styled(RunCodeButton)
+    aria-label="Run Code"
+    id="post-code-button"
     isCodeOnServerDifferent={true}
-    whenClicked={[MockFunction]}
+    whenClicked={[Function]}
   />
 </styled.div>
 `;

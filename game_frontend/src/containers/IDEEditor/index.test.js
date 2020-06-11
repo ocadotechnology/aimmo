@@ -4,7 +4,7 @@ import { IDEEditor, IDEEditorLayout } from 'containers/IDEEditor'
 import createShallowWithTheme from 'testHelpers/createShallow'
 
 describe('<IDEEditor />', () => {
-  it('matches snapshot', () => {
+  it("matches snapshot when code isn't loaded", () => {
     const props = {
       code: 'class Avatar',
       getCode: jest.fn(),
@@ -15,11 +15,24 @@ describe('<IDEEditor />', () => {
 
     expect(component).toMatchSnapshot()
   })
+  it('matches snapshot when code is loaded', () => {
+    const props = {
+      code: 'class Avatar',
+      getCode: jest.fn(),
+      postCode: jest.fn(),
+      codeOnServer: 'def next_turn(...): pass'
+    }
 
-  it('does not call post code as button is intially disabled', () => {
+    const component = createShallowWithTheme(<IDEEditor {...props} />, 'dark')
+
+    expect(component).toMatchSnapshot()
+  })
+
+  it('does not call post code as button is initially disabled', () => {
     const postCode = jest.fn()
     const props = {
-      postCode
+      postCode,
+      getCode: jest.fn()
     }
 
     const component = createShallowWithTheme(<IDEEditor {...props} />, 'dark')

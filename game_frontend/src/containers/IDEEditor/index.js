@@ -7,7 +7,7 @@ import RunCodeButton from 'components/RunCodeButton'
 import { connect } from 'react-redux'
 import { actions as editorActions } from 'features/Editor'
 
-import 'ace-builds/src-noconflict/theme-solarized_dark'
+import 'ace-builds/src-noconflict/theme-tomorrow_night'
 import 'ace-builds/src-noconflict/mode-python'
 
 export const IDEEditorLayout = styled.div`
@@ -25,6 +25,16 @@ export const PositionedRunCodeButton = styled(RunCodeButton)`
 `
 
 export class IDEEditor extends PureComponent {
+  static propTypes = {
+    codeOnServer: PropTypes.string,
+    getCode: PropTypes.func,
+    resetCodeTo: PropTypes.string,
+    codeReset: PropTypes.func,
+    theme: PropTypes.object,
+    postCode: PropTypes.func,
+    runCodeButtonStatus: PropTypes.object
+  }
+
   state = {
     code: '',
     codeLoaded: false
@@ -40,6 +50,13 @@ export class IDEEditor extends PureComponent {
         code: props.codeOnServer,
         codeLoaded: true
       }
+    } else if (props.resetCodeTo) {
+      const derivedState = {
+        ...state,
+        code: props.resetCodeTo
+      }
+      props.codeReset()
+      return derivedState
     }
     return state
   }
@@ -50,9 +67,6 @@ export class IDEEditor extends PureComponent {
 
   options () {
     return {
-      enableBasicAutocompletion: true,
-      enableLiveAutocompletion: true,
-      enableSnippets: true,
       showLineNumbers: true,
       tabSize: 4,
       fontFamily: this.props.theme.additionalVariables.typography.code.fontFamily
@@ -72,15 +86,13 @@ export class IDEEditor extends PureComponent {
       return (
         <AceEditor
           mode='python'
-          theme='solarized_dark'
+          theme='tomorrow_night'
           name='ace_editor'
-          // onLoad={this.props.getCode}
           onChange={this.codeChanged}
           fontSize={this.props.theme.additionalVariables.typography.code.fontSize}
           showPrintMargin
           showGutter
           highlightActiveLine
-          // debounceChangePeriod={300}
           value={this.state.code}
           width='100%'
           height='100%'
@@ -106,23 +118,15 @@ export class IDEEditor extends PureComponent {
   }
 }
 
-IDEEditor.propTypes = {
-  codeOnServer: PropTypes.string,
-  getCode: PropTypes.func,
-  codeChanged: PropTypes.func,
-  theme: PropTypes.object,
-  postCode: PropTypes.func,
-  runCodeButtonStatus: PropTypes.object
-}
-
 const mapStateToProps = state => ({
   codeOnServer: state.editor.code.codeOnServer,
+  resetCodeTo: state.editor.code.resetCodeTo,
   runCodeButtonStatus: state.editor.runCodeButton
 })
 
 const mapDispatchToProps = {
   getCode: editorActions.getCodeRequest,
-  codeChanged: editorActions.changeCode,
+  codeReset: editorActions.codeReset,
   postCode: editorActions.postCodeRequest
 }
 
