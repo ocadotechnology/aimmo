@@ -11,8 +11,11 @@ const getCodeReceived = code => ({
   }
 })
 
-const postCodeRequest = () => ({
-  type: types.POST_CODE_REQUEST
+const postCodeRequest = code => ({
+  type: types.POST_CODE_REQUEST,
+  payload: {
+    code
+  }
 })
 
 const postCodeReceived = () => ({
@@ -23,22 +26,8 @@ const avatarCodeUpdated = () => ({
   type: types.AVATAR_CODE_UPDATED
 })
 
-const changeCode = code => ({
-  type: types.CHANGE_CODE,
-  payload: {
-    code
-  }
-})
-
 const resetCode = () => ({
   type: types.RESET_CODE
-})
-
-const keyPressed = code => ({
-  type: types.KEY_PRESSED,
-  payload: {
-    code
-  }
 })
 
 export default {
@@ -47,7 +36,5 @@ export default {
   postCodeRequest,
   postCodeReceived,
   avatarCodeUpdated,
-  changeCode,
-  keyPressed,
   resetCode
 }

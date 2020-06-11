@@ -1,15 +1,14 @@
 import styled from 'styled-components'
 import React, { PureComponent } from 'react'
 import AceEditor from 'react-ace'
-import 'brace/theme/idle_fingers'
-import 'brace/mode/python'
-import 'brace/snippets/python'
-import 'brace/ext/language_tools'
 import PropTypes from 'prop-types'
 import { withTheme } from '@material-ui/core/styles'
 import RunCodeButton from 'components/RunCodeButton'
 import { connect } from 'react-redux'
 import { actions as editorActions } from 'features/Editor'
+
+import 'ace-builds/src-noconflict/theme-solarized_dark'
+import 'ace-builds/src-noconflict/mode-python'
 
 export const IDEEditorLayout = styled.div`
   position: relative;
@@ -26,8 +25,27 @@ export const PositionedRunCodeButton = styled(RunCodeButton)`
 `
 
 export class IDEEditor extends PureComponent {
-  isCodeOnServerDifferent () {
-    return this.props.code !== this.props.codeOnServer
+  state = {
+    code: '',
+    codeLoaded: false
+  }
+
+  componentDidMount () {
+    this.props.getCode()
+  }
+
+  static getDerivedStateFromProps (props, state) {
+    if (!state.codeLoaded && props.codeOnServer) {
+      return {
+        code: props.codeOnServer,
+        codeLoaded: true
+      }
+    }
+    return state
+  }
+
+  isCodeOnServerDifferent = () => {
+    return this.state.code !== this.props.codeOnServer
   }
 
   options () {
@@ -41,30 +59,47 @@ export class IDEEditor extends PureComponent {
     }
   }
 
-  render () {
-    return (
-      <IDEEditorLayout>
+  postCode = () => {
+    this.props.postCode(this.state.code)
+  }
+
+  codeChanged = code => {
+    this.setState({ code })
+  }
+
+  renderEditor () {
+    if (this.state.codeLoaded) {
+      return (
         <AceEditor
           mode='python'
-          theme='idle_fingers'
+          theme='solarized_dark'
           name='ace_editor'
-          onLoad={this.props.getCode}
-          onChange={this.props.editorChanged}
+          // onLoad={this.props.getCode}
+          onChange={this.codeChanged}
           fontSize={this.props.theme.additionalVariables.typography.code.fontSize}
           showPrintMargin
           showGutter
           highlightActiveLine
-          value={this.props.code}
+          // debounceChangePeriod={300}
+          value={this.state.code}
           width='100%'
           height='100%'
           setOptions={this.options()}
         />
+      )
+    }
+  }
+
+  render () {
+    return (
+      <IDEEditorLayout>
+        {this.renderEditor()}
         <PositionedRunCodeButton
           runCodeButtonStatus={this.props.runCodeButtonStatus}
           isCodeOnServerDifferent={this.isCodeOnServerDifferent()}
           aria-label='Run Code'
           id='post-code-button'
-          whenClicked={this.props.postCode}
+          whenClicked={this.postCode}
         />
       </IDEEditorLayout>
     )
@@ -72,24 +107,22 @@ export class IDEEditor extends PureComponent {
 }
 
 IDEEditor.propTypes = {
-  code: PropTypes.string,
   codeOnServer: PropTypes.string,
   getCode: PropTypes.func,
-  editorChanged: PropTypes.func,
+  codeChanged: PropTypes.func,
   theme: PropTypes.object,
   postCode: PropTypes.func,
   runCodeButtonStatus: PropTypes.object
 }
 
 const mapStateToProps = state => ({
-  code: state.editor.code.code,
   codeOnServer: state.editor.code.codeOnServer,
   runCodeButtonStatus: state.editor.runCodeButton
 })
 
 const mapDispatchToProps = {
   getCode: editorActions.getCodeRequest,
-  editorChanged: editorActions.keyPressed,
+  codeChanged: editorActions.changeCode,
   postCode: editorActions.postCodeRequest
 }
 

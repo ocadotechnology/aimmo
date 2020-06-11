@@ -27,8 +27,8 @@ const getCodeEpic = (action$, state$, { api }) =>
 const postCodeEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.POST_CODE_REQUEST),
-    api.post(`/kurono/api/code/${state$.value.game.connectionParameters.game_id}/`, () => ({
-      code: state$.value.editor.code.code
+    api.post(`/kurono/api/code/${state$.value.game.connectionParameters.game_id}/`, action => ({
+      code: action.payload.code
     })),
     map(() => actions.postCodeReceived()),
     catchError(error =>
@@ -52,16 +52,9 @@ const resetCodeAnalyticsEpic = action$ =>
     mapTo(analyticActions.sendAnalyticsEvent('Kurono', 'Click', 'Reset Code'))
   )
 
-const changeCodeEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
-  action$.pipe(
-    ofType(types.KEY_PRESSED),
-    map(action => actions.changeCode(action.payload.code))
-  )
-
 export default {
   getCodeEpic,
   postCodeEpic,
-  changeCodeEpic,
   postCodeAnalyticsEpic,
   resetCodeAnalyticsEpic
 }
