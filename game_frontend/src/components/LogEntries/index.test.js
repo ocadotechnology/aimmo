@@ -62,7 +62,7 @@ describe('<LogTurn />', () => {
 
 describe('<BottomSnapper />', () => {
   it('renders correctly', () => {
-    const tree = createShallowWithTheme(<BottomSnapper/>, 'dark')
+    const tree = createShallowWithTheme(<BottomSnapper />, 'dark')
     expect(tree).toMatchSnapshot()
   })
 })

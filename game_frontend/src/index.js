@@ -64,7 +64,7 @@ const RootJSX = () => (
     <MuiThemeProvider theme={darkTheme}>
       <StyledComponentsThemeProvider theme={darkTheme}>
         <Provider store={reduxStore}>
-          <GamePage/>
+          <GamePage />
         </Provider>
       </StyledComponentsThemeProvider>
     </MuiThemeProvider>
@@ -76,4 +76,4 @@ if (window.Cypress) {
 }
 
 const root = document.getElementById('root')
-render(<RootJSX/>, root)
+render(<RootJSX />, root)
