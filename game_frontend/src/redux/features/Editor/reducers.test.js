@@ -2,6 +2,7 @@
 import editorReducer from './reducers'
 import actions from './actions'
 import { actions as gameActions } from 'features/Game'
+import { avatarWorkerActions } from 'features/AvatarWorker'
 import { RunCodeButtonStatus } from 'components/RunCodeButton'
 
 describe('editorReducer', () => {
@@ -58,11 +59,11 @@ describe('runCodeButtonReducer', () => {
       }
     }
 
-    const action = gameActions.socketFeedbackAvatarUpdatedSuccess()
+    const action = avatarWorkerActions.avatarCodeUpdated()
     expect(editorReducer({}, action)).toEqual(expectedState)
   })
 
-  it('should set the button status to normal when the snackbar has been shown', () => {
+  it('should set the button status to normal when the next game-state comes in', () => {
     const expectedState = {
       code: {},
       runCodeButton: {
@@ -70,7 +71,7 @@ describe('runCodeButtonReducer', () => {
       }
     }
 
-    const action = gameActions.snackbarShown()
+    const action = gameActions.socketGameStateReceived({})
     expect(editorReducer({}, action)).toEqual(expectedState)
   })
 })

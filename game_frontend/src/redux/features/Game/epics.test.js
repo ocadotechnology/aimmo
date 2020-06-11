@@ -7,9 +7,9 @@ import actions from './actions'
 import { actions as editorActions } from 'features/Editor'
 import { delay, mapTo } from 'rxjs/operators'
 import { actions as analyticActions } from 'redux/features/Analytics'
+import { avatarWorkerActions } from 'features/AvatarWorker'
 
-const deepEquals = (actual, expected) =>
-  expect(actual).toEqual(expected)
+const deepEquals = (actual, expected) => expect(actual).toEqual(expected)
 
 const createTestScheduler = (frameTimeFactor = 10) => {
   TestScheduler.frameTimeFactor = frameTimeFactor
@@ -40,18 +40,12 @@ describe('connectToGameEpic', () => {
     }
 
     const testScheduler = createTestScheduler()
-    const source$ = ActionsObservable.from(
-      testScheduler.createColdObservable(marbles1, values)
-    )
+    const source$ = ActionsObservable.from(testScheduler.createColdObservable(marbles1, values))
 
-    const mockConnectToGame = () =>
-      mapTo({ type: 'socket' })
+    const mockConnectToGame = () => mapTo({ type: 'socket' })
 
     const mockStartListeners = () =>
-      pipe(
-        delay(10, testScheduler),
-        mapTo(actions.socketGameStateReceived(gameState))
-      )
+      pipe(delay(10, testScheduler), mapTo(actions.socketGameStateReceived(gameState)))
 
     const mockAPI = {
       api: {
@@ -84,12 +78,9 @@ describe('getConnectionParametersEpic', () => {
     }
 
     const testScheduler = createTestScheduler()
-    const source$ = ActionsObservable.from(
-      testScheduler.createColdObservable(marbles1, values)
-    )
+    const source$ = ActionsObservable.from(testScheduler.createColdObservable(marbles1, values))
 
-    const mockGetJSON = () =>
-      of({ avatar_id: 1 })
+    const mockGetJSON = () => of({ avatar_id: 1 })
 
     const mockAPI = {
       api: {
@@ -108,41 +99,6 @@ describe('getConnectionParametersEpic', () => {
 
     testScheduler.expectObservable(actual).toBe(marbles2, values)
     testScheduler.flush()
-  })
-})
-
-describe('avatarUpdatingTimeoutEpic', () => {
-  it('dispatches an SET_TIMEOUT action when we sent code to update the avatar but nothing has come back in 25s', () => {
-    const testScheduler = createTestScheduler()
-
-    testScheduler.run(({ hot, cold, expectObservable }) => {
-      const action$ = hot('--a--a-- 24999ms -', {
-        a: editorActions.postCodeRequest()
-      })
-
-      const state$ = null
-      const output$ = epics.avatarUpdatingTimeoutEpic(action$, state$, {}, testScheduler)
-
-      expectObservable(output$).toBe('------ 24999ms b--', {
-        b: actions.socketFeedbackAvatarUpdatedTimeout()
-      })
-    })
-  })
-
-  it('does not dispatch an SET_TIMEOUT action when we sent code to update the avatar and it does not timeout', () => {
-    const testScheduler = createTestScheduler()
-
-    testScheduler.run(({ hot, cold, expectObservable }) => {
-      const action$ = hot('--a--- 10s -b--a--b--', {
-        a: editorActions.postCodeRequest(),
-        b: actions.socketFeedbackAvatarUpdatedSuccess()
-      })
-
-      const state$ = null
-      const output$ = epics.avatarUpdatingTimeoutEpic(action$, state$, {}, testScheduler)
-
-      expectObservable(output$).toBe('----', {})
-    })
   })
 })
 
@@ -191,7 +147,7 @@ describe('codeUpdatingIntervalEpic', () => {
     testScheduler.run(({ hot, cold, expectObservable }) => {
       const action$ = hot('--a-b--a--b-', {
         a: editorActions.postCodeRequest(),
-        b: actions.socketFeedbackAvatarUpdatedSuccess()
+        b: avatarWorkerActions.avatarCodeUpdated()
       })
 
       const state$ = null

@@ -8,7 +8,7 @@ import { fromEvent, pipe, merge } from 'rxjs'
 var socketIO
 
 const connectToGame = () =>
-  map((action) => {
+  map(action => {
     const {
       game_url_base: gameUrlBase,
       game_url_path: gameUrlPath,
@@ -24,9 +24,9 @@ const connectToGame = () =>
   })
 
 const listenFor = (eventName, socket, action) =>
-  fromEvent(socket, eventName).pipe(map((event) => action(event)))
+  fromEvent(socket, eventName).pipe(map(event => action(event)))
 
-const emitAction = (nextAction) => socketIO.emit('action', nextAction)
+const emitAction = nextAction => socketIO.emit('action', nextAction)
 
 const emitMove = () =>
   tap(() =>
@@ -38,16 +38,10 @@ const emitMove = () =>
 
 const startListeners = () =>
   pipe(
-    mergeMap((socket) =>
+    mergeMap(socket =>
       merge(
         listenFor('game-state', socket, gameActions.socketGameStateReceived),
-        listenFor('log', socket, consoleLogActions.socketConsoleLogReceived),
-        listenFor(
-          'feedback-avatar-updated',
-          socket,
-          gameActions.socketFeedbackAvatarUpdatedSuccess
-        ),
-        listenFor('next-action', socket, editorActions.socketNextActionRequested)
+        listenFor('log', socket, consoleLogActions.socketConsoleLogReceived)
       )
     )
   )

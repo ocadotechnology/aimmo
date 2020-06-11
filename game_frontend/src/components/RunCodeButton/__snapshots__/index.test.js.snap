@@ -10,9 +10,6 @@ exports[`<MarginedBugIcon /> matches snapshot 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
-        "snackbar": Object {
-          "borderRadius": "6px",
-        },
         "typography": Object {
           "code": Object {
             "fontFamily": "'Source Code Pro', monospace",
@@ -54,23 +51,7 @@ exports[`<MarginedBugIcon /> matches snapshot 1`] = `
           "minHeight": 56,
         },
       },
-      "overrides": Object {
-        "MuiSnackbar": Object {
-          "anchorOriginTopRight": Object {
-            "right": "25% !important",
-            "transform": "translate(50%, 64px)",
-          },
-          "root": Object {
-            "zIndex": "1000",
-          },
-        },
-        "MuiSnackbarContent": Object {
-          "root": Object {
-            "paddingLeft": "14px",
-            "paddingRight": "14px",
-          },
-        },
-      },
+      "overrides": Object {},
       "palette": Object {
         "action": Object {
           "activatedOpacity": 0.24,
@@ -338,9 +319,6 @@ exports[`<MarginedCheckCircle /> matches snapshot 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
-        "snackbar": Object {
-          "borderRadius": "6px",
-        },
         "typography": Object {
           "code": Object {
             "fontFamily": "'Source Code Pro', monospace",
@@ -382,23 +360,7 @@ exports[`<MarginedCheckCircle /> matches snapshot 1`] = `
           "minHeight": 56,
         },
       },
-      "overrides": Object {
-        "MuiSnackbar": Object {
-          "anchorOriginTopRight": Object {
-            "right": "25% !important",
-            "transform": "translate(50%, 64px)",
-          },
-          "root": Object {
-            "zIndex": "1000",
-          },
-        },
-        "MuiSnackbarContent": Object {
-          "root": Object {
-            "paddingLeft": "14px",
-            "paddingRight": "14px",
-          },
-        },
-      },
+      "overrides": Object {},
       "palette": Object {
         "action": Object {
           "activatedOpacity": 0.24,
@@ -666,9 +628,6 @@ exports[`<MarginedCircularProgress /> matches snapshot 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
-        "snackbar": Object {
-          "borderRadius": "6px",
-        },
         "typography": Object {
           "code": Object {
             "fontFamily": "'Source Code Pro', monospace",
@@ -710,23 +669,7 @@ exports[`<MarginedCircularProgress /> matches snapshot 1`] = `
           "minHeight": 56,
         },
       },
-      "overrides": Object {
-        "MuiSnackbar": Object {
-          "anchorOriginTopRight": Object {
-            "right": "25% !important",
-            "transform": "translate(50%, 64px)",
-          },
-          "root": Object {
-            "zIndex": "1000",
-          },
-        },
-        "MuiSnackbarContent": Object {
-          "root": Object {
-            "paddingLeft": "14px",
-            "paddingRight": "14px",
-          },
-        },
-      },
+      "overrides": Object {},
       "palette": Object {
         "action": Object {
           "activatedOpacity": 0.24,
@@ -994,9 +937,6 @@ exports[`<MarginedPlayIcon /> matches snapshot 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
-        "snackbar": Object {
-          "borderRadius": "6px",
-        },
         "typography": Object {
           "code": Object {
             "fontFamily": "'Source Code Pro', monospace",
@@ -1038,23 +978,7 @@ exports[`<MarginedPlayIcon /> matches snapshot 1`] = `
           "minHeight": 56,
         },
       },
-      "overrides": Object {
-        "MuiSnackbar": Object {
-          "anchorOriginTopRight": Object {
-            "right": "25% !important",
-            "transform": "translate(50%, 64px)",
-          },
-          "root": Object {
-            "zIndex": "1000",
-          },
-        },
-        "MuiSnackbarContent": Object {
-          "root": Object {
-            "paddingLeft": "14px",
-            "paddingRight": "14px",
-          },
-        },
-      },
+      "overrides": Object {},
       "palette": Object {
         "action": Object {
           "activatedOpacity": 0.24,

@@ -23,11 +23,6 @@ const codeReducer = (state = {}, action) => {
         ...state,
         codeOnServer: state.code
       }
-    case avatarWorkerTypes.AVATAR_CODE_UPDATED:
-      return {
-        ...state,
-        showSnackbarForAvatarUpdated: true
-      }
     case types.RESET_CODE:
       return {
         ...state,
@@ -51,7 +46,6 @@ const runCodeButtonReducer = (state = {}, action) => {
         status: RunCodeButtonStatus.done
       }
     case gameTypes.SOCKET_GAME_STATE_RECEIVED:
-    case gameTypes.SNACKBAR_FOR_AVATAR_FEEDBACK_SHOWN:
       return {
         ...state,
         status: RunCodeButtonStatus.normal

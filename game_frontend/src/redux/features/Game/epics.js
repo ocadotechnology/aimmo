@@ -60,25 +60,6 @@ const connectToGameEpic = (action$, state$, { api: { socket } }) =>
     )
   )
 
-const avatarUpdatingTimeoutEpic = (
-  action$,
-  state$,
-  dependencies,
-  scheduler = backgroundScheduler
-) =>
-  action$.pipe(
-    ofType(editorTypes.POST_CODE_REQUEST),
-    switchMap(() =>
-      action$.pipe(
-        ofType(avatarWorkerTypes.AVATAR_CODE_UPDATED),
-        timeout(25000, scheduler),
-        first(),
-        ignoreElements(),
-        catchError(() => of(actions.socketFeedbackAvatarUpdatedTimeout()))
-      )
-    )
-  )
-
 const codeUpdatingIntervalEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
   action$.pipe(
     ofType(editorTypes.POST_CODE_REQUEST),
@@ -101,7 +82,6 @@ const codeUpdatingIntervalEpic = (action$, state$, dependencies, scheduler = bac
 export default {
   getConnectionParametersEpic,
   connectToGameEpic,
-  avatarUpdatingTimeoutEpic,
   gameLoadedEpic,
   gameLoadedIntervalEpic,
   codeUpdatingIntervalEpic
