@@ -14,7 +14,7 @@ setup(
         "aiohttp-cors",
         "aiohttp-wsgi",
         "eventlet",
-        "python-socketio==4.4.0",
+        "python-socketio==4.6.0",
         "requests",
         "six",
         "kubernetes",

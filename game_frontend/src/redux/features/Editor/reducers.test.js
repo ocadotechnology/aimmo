@@ -2,6 +2,7 @@
 import editorReducer from './reducers'
 import actions from './actions'
 import { actions as gameActions } from 'features/Game'
+import { avatarWorkerActions } from 'features/AvatarWorker'
 import { RunCodeButtonStatus } from 'components/RunCodeButton'
 
 describe('editorReducer', () => {
@@ -16,23 +17,11 @@ describe('editorReducer', () => {
   it('should handle GET_CODE_SUCCESS', () => {
     const expectedState = {
       code: {
-        code: 'class Avatar',
         codeOnServer: 'class Avatar'
       },
       runCodeButton: {}
     }
     const action = actions.getCodeReceived('class Avatar')
-    expect(editorReducer({}, action)).toEqual(expectedState)
-  })
-
-  it('should handle CHANGE_CODE', () => {
-    const expectedState = {
-      code: {
-        code: 'class Avatar'
-      },
-      runCodeButton: {}
-    }
-    const action = actions.changeCode('class Avatar')
     expect(editorReducer({}, action)).toEqual(expectedState)
   })
 })
@@ -58,11 +47,11 @@ describe('runCodeButtonReducer', () => {
       }
     }
 
-    const action = gameActions.socketFeedbackAvatarUpdatedSuccess()
+    const action = avatarWorkerActions.avatarCodeUpdated()
     expect(editorReducer({}, action)).toEqual(expectedState)
   })
 
-  it('should set the button status to normal when the snackbar has been shown', () => {
+  it('should set the button status to normal when the next game-state comes in', () => {
     const expectedState = {
       code: {},
       runCodeButton: {
@@ -70,7 +59,7 @@ describe('runCodeButtonReducer', () => {
       }
     }
 
-    const action = gameActions.snackbarShown()
+    const action = gameActions.socketGameStateReceived({})
     expect(editorReducer({}, action)).toEqual(expectedState)
   })
 })
@@ -86,7 +75,7 @@ describe('resetCodeReducer', () => {
     }
     const expectedState = {
       code: {
-        code: DEFAULT_CODE
+        resetCodeTo: DEFAULT_CODE
       },
       runCodeButton: {}
     }

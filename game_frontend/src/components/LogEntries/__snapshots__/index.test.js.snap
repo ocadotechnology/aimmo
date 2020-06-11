@@ -21,9 +21,6 @@ exports[`<LogData /> renders correctly 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
-        "snackbar": Object {
-          "borderRadius": "6px",
-        },
         "typography": Object {
           "code": Object {
             "fontFamily": "'Source Code Pro', monospace",
@@ -65,23 +62,7 @@ exports[`<LogData /> renders correctly 1`] = `
           "minHeight": 56,
         },
       },
-      "overrides": Object {
-        "MuiSnackbar": Object {
-          "anchorOriginTopRight": Object {
-            "right": "25% !important",
-            "transform": "translate(50%, 64px)",
-          },
-          "root": Object {
-            "zIndex": "1000",
-          },
-        },
-        "MuiSnackbarContent": Object {
-          "root": Object {
-            "paddingLeft": "14px",
-            "paddingRight": "14px",
-          },
-        },
-      },
+      "overrides": Object {},
       "palette": Object {
         "action": Object {
           "activatedOpacity": 0.24,
@@ -438,9 +419,6 @@ exports[`<LogEntry /> renders correctly 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
-        "snackbar": Object {
-          "borderRadius": "6px",
-        },
         "typography": Object {
           "code": Object {
             "fontFamily": "'Source Code Pro', monospace",
@@ -482,23 +460,7 @@ exports[`<LogEntry /> renders correctly 1`] = `
           "minHeight": 56,
         },
       },
-      "overrides": Object {
-        "MuiSnackbar": Object {
-          "anchorOriginTopRight": Object {
-            "right": "25% !important",
-            "transform": "translate(50%, 64px)",
-          },
-          "root": Object {
-            "zIndex": "1000",
-          },
-        },
-        "MuiSnackbarContent": Object {
-          "root": Object {
-            "paddingLeft": "14px",
-            "paddingRight": "14px",
-          },
-        },
-      },
+      "overrides": Object {},
       "palette": Object {
         "action": Object {
           "activatedOpacity": 0.24,
@@ -770,9 +732,6 @@ exports[`<LogTurn /> renders correctly 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
-        "snackbar": Object {
-          "borderRadius": "6px",
-        },
         "typography": Object {
           "code": Object {
             "fontFamily": "'Source Code Pro', monospace",
@@ -814,23 +773,7 @@ exports[`<LogTurn /> renders correctly 1`] = `
           "minHeight": 56,
         },
       },
-      "overrides": Object {
-        "MuiSnackbar": Object {
-          "anchorOriginTopRight": Object {
-            "right": "25% !important",
-            "transform": "translate(50%, 64px)",
-          },
-          "root": Object {
-            "zIndex": "1000",
-          },
-        },
-        "MuiSnackbarContent": Object {
-          "root": Object {
-            "paddingLeft": "14px",
-            "paddingRight": "14px",
-          },
-        },
-      },
+      "overrides": Object {},
       "palette": Object {
         "action": Object {
           "activatedOpacity": 0.24,
@@ -1100,9 +1043,6 @@ exports[`<StyledTable /> renders correctly 1`] = `
   theme={
     Object {
       "additionalVariables": Object {
-        "snackbar": Object {
-          "borderRadius": "6px",
-        },
         "typography": Object {
           "code": Object {
             "fontFamily": "'Source Code Pro', monospace",
@@ -1144,23 +1084,7 @@ exports[`<StyledTable /> renders correctly 1`] = `
           "minHeight": 56,
         },
       },
-      "overrides": Object {
-        "MuiSnackbar": Object {
-          "anchorOriginTopRight": Object {
-            "right": "25% !important",
-            "transform": "translate(50%, 64px)",
-          },
-          "root": Object {
-            "zIndex": "1000",
-          },
-        },
-        "MuiSnackbarContent": Object {
-          "root": Object {
-            "paddingLeft": "14px",
-            "paddingRight": "14px",
-          },
-        },
-      },
+      "overrides": Object {},
       "palette": Object {
         "action": Object {
           "activatedOpacity": 0.24,

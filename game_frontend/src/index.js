@@ -45,8 +45,6 @@ const initialState = {
     connectionParameters: {
       game_id: getGameIDFromURL() || 1
     },
-    showSnackbar: false,
-    snackbarMessage: '',
     timeoutStatus: false,
     gameLoaded: false,
     cameraCenteredOnUserAvatar: true

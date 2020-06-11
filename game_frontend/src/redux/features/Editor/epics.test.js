@@ -7,8 +7,7 @@ import epics from './epics'
 import actions from './actions'
 import types from './types'
 
-const deepEquals = (actual, expected) =>
-  expect(actual).toEqual(expected)
+const deepEquals = (actual, expected) => expect(actual).toEqual(expected)
 
 const createTestScheduler = (frameTimeFactor = 10) => {
   TestScheduler.frameTimeFactor = frameTimeFactor
@@ -27,9 +26,7 @@ describe('getCodeEpic', () => {
     }
 
     const testScheduler = createTestScheduler()
-    const source$ = ActionsObservable.from(
-      testScheduler.createColdObservable(marbles1, values)
-    )
+    const source$ = ActionsObservable.from(testScheduler.createColdObservable(marbles1, values))
     const mockGetJSON = () => {
       return of({ code })
     }
@@ -64,13 +61,9 @@ describe('postCodeEpic', () => {
     }
 
     const testScheduler = createTestScheduler()
-    const source$ = ActionsObservable.from(
-      testScheduler.createColdObservable(marbles1, values)
-    )
+    const source$ = ActionsObservable.from(testScheduler.createColdObservable(marbles1, values))
 
-    const mockPost = (url, body) => action$ => action$.pipe(
-      mapTo({})
-    )
+    const mockPost = (url, body) => action$ => action$.pipe(mapTo({}))
     const mockAPI = { api: { post: mockPost } }
 
     const initialState = {
@@ -107,14 +100,10 @@ describe('postCodeEpic', () => {
     }
 
     const testScheduler = createTestScheduler()
-    const source$ = ActionsObservable.from(
-      testScheduler.createColdObservable(marbles1, values)
-    )
+    const source$ = ActionsObservable.from(testScheduler.createColdObservable(marbles1, values))
 
     const error = { xhr: { response: 'oh no!' } }
-    const mockPost = (url, body) => action$ => action$.pipe(
-      mergeMapTo(throwError(error))
-    )
+    const mockPost = (url, body) => action$ => action$.pipe(mergeMapTo(throwError(error)))
     const mockAPI = { api: { post: mockPost } }
 
     const initialState = {
@@ -132,29 +121,6 @@ describe('postCodeEpic', () => {
     const actual = epics.postCodeEpic(source$, state$, mockAPI)
 
     testScheduler.expectObservable(actual).toBe(marbles2, values)
-    testScheduler.flush()
-  })
-})
-
-describe('changeCodeEpic', () => {
-  it('makes sure the state is not constantly updating due to changes in the editor', () => {
-    const sourceMarbles = '-a-a--------'
-    const expectMarbles = '---------b--'
-
-    const values = {
-      a: actions.keyPressed(''),
-      b: actions.changeCode('')
-    }
-
-    const testScheduler = createTestScheduler(50)
-    const source$ = ActionsObservable.from(
-      testScheduler.createColdObservable(sourceMarbles, values)
-    )
-
-    const state$ = new StateObservable(new Subject(), {})
-    const actual = epics.changeCodeEpic(source$, state$, {}, testScheduler)
-
-    testScheduler.expectObservable(actual).toBe(expectMarbles, values)
     testScheduler.flush()
   })
 })
