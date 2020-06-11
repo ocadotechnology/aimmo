@@ -95,7 +95,7 @@ class GameAPI(object):
         await asyncio.gather(*futures)
 
     def register_endpoints(self):
-        # self.register_healthcheck()
+        self.register_healthcheck()
         self.register_world_update_on_connect()
         self.register_remove_session_id_from_mappings()
         self.app.add_routes(self.routes)

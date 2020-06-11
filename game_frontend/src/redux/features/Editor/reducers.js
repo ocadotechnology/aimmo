@@ -10,7 +10,6 @@ const codeReducer = (state = {}, action) => {
     case types.GET_CODE_SUCCESS:
       return {
         ...state,
-        code: action.payload.code,
         codeOnServer: action.payload.code
       }
     case types.CHANGE_CODE:
@@ -18,16 +17,10 @@ const codeReducer = (state = {}, action) => {
         ...state,
         code: action.payload.code
       }
-    case types.POST_CODE_REQUEST:
-      return {
-        ...state,
-        codeToBeSaved: action.payload.code
-      }
     case types.POST_CODE_SUCCESS:
       return {
         ...state,
-        codeOnServer: state.codeToBeSaved,
-        codeToBeSaved: null
+        codeOnServer: state.codeToBeSaved
       }
     case types.RESET_CODE:
       return {
