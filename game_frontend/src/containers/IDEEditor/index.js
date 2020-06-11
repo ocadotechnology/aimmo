@@ -7,7 +7,7 @@ import RunCodeButton from 'components/RunCodeButton'
 import { connect } from 'react-redux'
 import { actions as editorActions } from 'features/Editor'
 
-import 'ace-builds/src-noconflict/theme-tomorrow_night'
+import 'ace-builds/src-noconflict/theme-idle_fingers'
 import 'ace-builds/src-noconflict/mode-python'
 
 export const IDEEditorLayout = styled.div`
@@ -86,7 +86,7 @@ export class IDEEditor extends PureComponent {
       return (
         <AceEditor
           mode='python'
-          theme='tomorrow_night'
+          theme='idle_fingers'
           name='ace_editor'
           onChange={this.codeChanged}
           fontSize={this.props.theme.additionalVariables.typography.code.fontSize}
