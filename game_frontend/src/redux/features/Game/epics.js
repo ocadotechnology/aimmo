@@ -3,17 +3,7 @@ import types from './types'
 import { avatarWorkerTypes } from 'features/AvatarWorker'
 import { editorTypes } from 'features/Editor'
 import { Scheduler, of } from 'rxjs'
-import {
-  map,
-  mergeMap,
-  catchError,
-  switchMap,
-  first,
-  mapTo,
-  timeout,
-  ignoreElements,
-  timeInterval
-} from 'rxjs/operators'
+import { map, mergeMap, catchError, switchMap, first, mapTo, timeInterval } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 import { actions as analyticActions } from 'redux/features/Analytics'
 

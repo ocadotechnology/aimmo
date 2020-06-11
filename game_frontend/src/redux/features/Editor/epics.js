@@ -1,11 +1,9 @@
 import actions from './actions'
 import { actions as analyticActions } from 'redux/features/Analytics'
 import types from './types'
-import { Scheduler, of } from 'rxjs'
+import { of } from 'rxjs'
 import { map, mergeMap, catchError, mapTo } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
-
-const backgroundScheduler = Scheduler.async
 
 const getCodeEpic = (action$, state$, { api }) =>
   action$.pipe(
