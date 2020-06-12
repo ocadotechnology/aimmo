@@ -62,7 +62,7 @@ describe('Cypress for aimmo', () => {
     testAvatarCode("PRINTS_IN_DIFFERENT_FUNCTIONS")
   })
 
-  it('prints even if code if broken', () => {
+  it('prints error message if code if broken', () => {
     testAvatarCode("RETURN_NOT_AN_ACTION_WITH_PRINT")
   })
 
@@ -105,7 +105,7 @@ function changeAvatarCode(avatarCodeType) {
 
   cy.visitAGame()
 
-  cy.wait('@getAvatarApi', {timeout: 20000})
+  cy.wait('@getAvatarApi', {timeout: 30000})
 
   cy.fixture("avatar_code").then(json => {
     const code = json[avatarCodeType]["avatarCode"]
