@@ -52,7 +52,6 @@
         "avatarCode": {
             "code": "turn_count = 0\ndef next_turn(world_map, avatar_state):\n    global turn_count\n    turn_count += 1\n    print(turn_count)\n    return MoveAction(direction.NORTH)"
         },
-        "expectedAction": "MOVE_NORTH",
-        "expectedLog": "1\n"
+        "expectedAction": "MOVE_NORTH"
     }
 }

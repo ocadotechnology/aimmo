@@ -19,7 +19,7 @@ describe('Cypress for aimmo', () => {
     cy.visitAGame()
 
     const store = cy.window().its('store').invoke('getState')
-    const code = store.its('editor').its('code')
+    const code = store.its('editor.code')
 
     code.should('deep.equal', {
       code: "",
@@ -35,8 +35,19 @@ describe('Cypress for aimmo', () => {
     testAvatarCode("RETURN_NOT_AN_ACTION")
   })
 
-  it('returns wait action on syntax error', () => {
+  it('returns previous action and prints syntax warning on syntax error', () => {
     testAvatarCode("SYNTAX_ERROR")
+
+    cy.wait(2000)
+
+    const consoleLog = cy.window().its('store').invoke('getState')
+      .its('consoleLog.logs.0')
+
+    consoleLog.then((logData) => {
+      const message = logData['message']
+
+      expect(message).to.deep.equal('SyntaxError: invalid syntax\n')
+    })
   })
 
   it('prints with one print', () => {
@@ -56,16 +67,31 @@ describe('Cypress for aimmo', () => {
   })
 
   it('stores, changes global variable and prints it out', () => {
-    testAvatarCode("GLOBAL_VARIABLE")
+    let variableValue;
+
+    changeAvatarCode("GLOBAL_VARIABLE")
+
+    const firstAvatarAction = cy.window().its('store').invoke('getState')
+      .its('action.avatarAction')
+
+    firstAvatarAction.then((avatarActionData) => {
+      const action = avatarActionData['action']
+      const log = avatarActionData['log']
+      variableValue = parseInt(log.replace("\n", ""))
+
+      checkAction("GLOBAL_VARIABLE", action)
+    })
 
     cy.wait(2000)
 
-    const avatarAction = cy.window().its('store').invoke('getState')
+    const nextAvatarAction = cy.window().its('store').invoke('getState')
       .its('action.avatarAction')
 
-    avatarAction.then((value) => {
-      const secondLog = value['log']
-      expect(secondLog).to.deep.equal('2\n')
+    nextAvatarAction.then((avatarActionData) => {
+      const secondLog = avatarActionData['log']
+      const nextVariableValue = secondLog.replace("\n", "")
+
+      expect(parseInt(nextVariableValue)).to.equal(variableValue+1)
     })
   })
 })
@@ -79,14 +105,14 @@ function changeAvatarCode(avatarCodeType) {
 
   cy.visitAGame()
 
+  cy.wait('@getAvatarApi', {timeout: 20000})
+
   cy.fixture("avatar_code").then(json => {
     const code = json[avatarCodeType]["avatarCode"]
     cy.window().its("store").invoke("dispatch", {type: "features/Editor/POST_CODE_REQUEST", payload: code})
   })
 
-  cy.wait('@getAvatarApi', {timeout: 20000})
-
-  cy.wait(1000)
+  cy.wait(5000)
 }
 
 function testAvatarCode(avatarCodeType) {
