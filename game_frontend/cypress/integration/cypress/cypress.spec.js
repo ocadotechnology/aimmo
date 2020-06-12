@@ -3,13 +3,13 @@
 import { DEFAULT_CODE } from '../../../src/redux/features/constants'
 
 describe('Cypress for aimmo', () => {
-  // it('can login, add and delete games', () => {
-  //   cy.login()
-  //
-  //   cy.addTestGame()
-  //
-    // cy.deleteAllGames()
-  // })
+  it('can login, add and delete games', () => {
+    cy.login()
+
+    cy.addTestGame()
+
+    cy.deleteAllGames()
+  })
 
   it('has default code on load', () => {
     cy.login()
