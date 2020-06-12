@@ -8,7 +8,7 @@ describe('Cypress for aimmo', () => {
 
     cy.addTestGame()
 
-    cy.deleteAllGames()
+    // cy.deleteAllGames()
   })
 
   it('has default code on load', () => {
