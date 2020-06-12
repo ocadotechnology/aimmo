@@ -12,29 +12,25 @@ import createMountWithTheme from 'testHelpers/createMount'
 
 describe('<LogEntries />', () => {
   it('renders correctly with logs', () => {
-    const tree = createShallowWithTheme(
-      <LogEntries
-        logs={[
-          { turnCount: 0, message: 'hello' },
-          { turnCount: 1, message: 'bye' }
-        ]}
-      />,
-      'dark'
-    )
+    const logs = new Map([
+      [0, 'hello'],
+      [1, 'bye']
+    ])
+    const tree = createShallowWithTheme(<LogEntries logs={logs} />, 'dark')
     expect(tree).toMatchSnapshot()
   })
 
   it('renders correctly without logs', () => {
-    const tree = createShallowWithTheme(<LogEntries logs={[]} />, 'dark')
+    const tree = createShallowWithTheme(<LogEntries logs={new Map()} />, 'dark')
     expect(tree).toMatchSnapshot()
   })
 
   it('calls `scrollIntoView` only when shouldActivateSnapToBottom is true', () => {
     const scrollIntoViewMock = jest.fn()
     HTMLElement.prototype.scrollIntoView = scrollIntoViewMock
-    const tree = createMountWithTheme(<LogEntries logs={[]} />, 'dark')
+    const tree = createMountWithTheme(<LogEntries logs={new Map()} />, 'dark')
     expect(scrollIntoViewMock).not.toBeCalled()
-    tree.setProps({ logs: [], shouldActivateSnapToBottom: true })
+    tree.setProps({ logs: new Map(), shouldActivateSnapToBottom: true })
     expect(scrollIntoViewMock.mock).toMatchSnapshot()
   })
 })

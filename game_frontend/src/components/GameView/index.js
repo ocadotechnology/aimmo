@@ -55,7 +55,7 @@ export default class GameView extends Component {
     cameraCenteredOnUserAvatar: PropTypes.bool,
     mapPanned: PropTypes.func,
     centerCameraOnUserAvatar: PropTypes.func,
-    environment: PropTypes.string
+    environment: PropTypes.object
   }
 
   componentDidMount () {
@@ -85,22 +85,14 @@ export default class GameView extends Component {
   }
 
   renderGameView = () => {
-    return (
-      <canvas
-        style={{ width: '100%', height: '100%' }}
-        ref={this.onCanvasLoaded}
-      />
-    )
+    return <canvas style={{ width: '100%', height: '100%' }} ref={this.onCanvasLoaded} />
   }
 
   renderLoadingScreen = () => {
     return (
       <LoadingBackgroundOverlay>
         <CircularProgress color='inherit' />
-        <LoadingText
-          variant='body1'
-          color='inherit'
-        >
+        <LoadingText variant='body1' color='inherit'>
           Building game world...
         </LoadingText>
       </LoadingBackgroundOverlay>

@@ -32,6 +32,11 @@ export const StyledTable = styled(Table)`
 `
 
 export default class LogEntries extends Component {
+  static propTypes = {
+    shouldActivateSnapToBottom: PropTypes.bool,
+    logs: PropTypes.instanceOf(Map)
+  }
+
   isOverflown ({ clientWidth, clientHeight, scrollWidth, scrollHeight }) {
     return scrollHeight > clientHeight || scrollWidth > clientWidth
   }
@@ -43,10 +48,10 @@ export default class LogEntries extends Component {
   }
 
   generateLogEntries () {
-    const logEntries = this.props.logs.map(logEntry => (
-      <LogEntry key={logEntry.turnCount}>
-        <LogData>{logEntry.message}</LogData>
-        <LogTurn align='right'>Turn: {logEntry.turnCount}</LogTurn>
+    const logEntries = Array.from(this.props.logs, ([turnCount, message]) => (
+      <LogEntry key={turnCount}>
+        <LogData>{message}</LogData>
+        <LogTurn align='right'>Turn: {turnCount}</LogTurn>
       </LogEntry>
     ))
     logEntries.push(
@@ -72,14 +77,4 @@ export default class LogEntries extends Component {
       </StyledTable>
     )
   }
-}
-
-LogEntries.propTypes = {
-  shouldActivateSnapToBottom: PropTypes.bool,
-  logs: PropTypes.arrayOf(
-    PropTypes.shape({
-      turnCount: PropTypes.int,
-      message: PropTypes.string
-    })
-  )
 }

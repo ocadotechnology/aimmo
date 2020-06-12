@@ -38,7 +38,7 @@ export const StyledConsole = styled.div`
 
 export class IDEConsole extends Component {
   static propTypes = {
-    logs: PropTypes.arrayOf(PropTypes.object),
+    logs: PropTypes.instanceOf(Map),
     resetCode: PropTypes.func,
     clearConsoleLogs: PropTypes.func
   }
