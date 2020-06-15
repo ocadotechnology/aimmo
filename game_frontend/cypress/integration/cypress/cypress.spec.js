@@ -5,15 +5,13 @@ import { DEFAULT_CODE } from '../../../src/redux/features/constants'
 describe('Cypress for aimmo', () => {
   beforeEach(() => {
     cy.login()
-    cy.addTestGame()
-    cy.visitAGame()
-  })
-
-  afterEach(() => {
     cy.deleteAllGames()
+    cy.addTestGame()
   })
 
   it('has default code on load', () => {
+    cy.visitAGame()
+
     const store = cy.window().its('store').invoke('getState')
     const code = store.its('editor.code')
 
@@ -109,15 +107,17 @@ describe('Cypress for aimmo', () => {
 
 function changeAvatarCode(avatarCodeType) {
   cy.server().route('GET', 'static/worker/aimmo_avatar_api-0.0.0-py3-none-any.whl').as('getAvatarApi')
-
+  cy.server().route('GET', 'static/babylon/models/avatar_model.babylon').as('getAvatarModel')
+  cy.visitAGame()
   cy.wait('@getAvatarApi', {timeout: 30000})
+  cy.wait('@getAvatarModel', {timeout: 30000})
 
   cy.fixture("avatarCodes").then(avatarCodes => {
     const code = avatarCodes[avatarCodeType]["avatarCode"]
     cy.window().its("store").invoke("dispatch", {type: "features/Editor/POST_CODE_REQUEST", payload: code})
   })
 
-  cy.wait(5000)
+  cy.wait(2000)
 }
 
 function testAvatarCode(avatarCodeType) {
