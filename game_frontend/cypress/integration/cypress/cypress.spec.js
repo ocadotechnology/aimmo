@@ -50,6 +50,21 @@ describe('Cypress for aimmo', () => {
     })
   })
 
+  it('returns previous action and prints indentation warning on indentation error', () => {
+    testAvatarCode("INDENTATION_ERROR")
+
+    cy.wait(2000)
+
+    const consoleLog = cy.window().its('store').invoke('getState')
+      .its('consoleLog.logs.0')
+
+    consoleLog.then((logData) => {
+      const message = logData['message']
+
+      expect(message).to.deep.equal('IndentationError: expected an indented block\n')
+    })
+  })
+
   it('prints with one print', () => {
     testAvatarCode("ONE_PRINT")
   })
@@ -107,8 +122,8 @@ function changeAvatarCode(avatarCodeType) {
 
   cy.wait('@getAvatarApi', {timeout: 30000})
 
-  cy.fixture("avatar_code").then(json => {
-    const code = json[avatarCodeType]["avatarCode"]
+  cy.fixture("avatarCodes").then(avatarCodes => {
+    const code = avatarCodes[avatarCodeType]["avatarCode"]
     cy.window().its("store").invoke("dispatch", {type: "features/Editor/POST_CODE_REQUEST", payload: code})
   })
 
@@ -131,17 +146,17 @@ function testAvatarCode(avatarCodeType) {
 }
 
 function checkAction(avatarCodeType, action) {
-  cy.fixture("avatar_code").then(codeJson => {
-    const expectedAction = codeJson[avatarCodeType]["expectedAction"]
+  cy.fixture("avatarCodes").then(avatarCodes => {
+    const expectedAction = avatarCodes[avatarCodeType]["expectedAction"]
 
-    cy.fixture("avatar_actions").then(actionsJson => {
-      expect(action).to.deep.equal(actionsJson[expectedAction])
+    cy.fixture("avatarActions").then(avatarActions => {
+      expect(action).to.deep.equal(avatarActions[expectedAction])
     })
   })
 }
 
 function checkLog(avatarCodeType, log) {
-  cy.fixture("avatar_code").then(json => {
+  cy.fixture("avatarCodes").then(json => {
     const expectedLog = json[avatarCodeType]["expectedLog"]
     expect(log).to.deep.equal(expectedLog)
   })
