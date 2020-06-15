@@ -22,15 +22,66 @@ describe('Cypress for aimmo', () => {
   })
 
   it('changes avatar direction', () => {
-    testAvatarCode("MOVE_SOUTH")
+    const avatarCode = {
+      code:
+`def next_turn(world_state, avatar_state):
+    return MoveAction(direction.SOUTH)
+`
+    }
+
+    const expectedAction = {
+      action_type: 'move',
+      options: {
+        direction: {
+          x: 0,
+          y: -1
+        }
+      }
+    }
+
+    const expectedLog = ``
+
+    testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
 
   it('returns wait action if code does not return an action', () => {
-    testAvatarCode("RETURN_NOT_AN_ACTION")
+    const avatarCode = {
+      code:
+`def next_turn(world_state, avatar_state):
+    return False
+`
+    }
+
+    const expectedAction = { action_type: 'wait' }
+
+    const expectedLog =
+`AttributeError: 'bool' object has no attribute 'serialise'
+`
+
+    testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
 
   it('returns previous action and prints syntax warning on syntax error', () => {
-    testAvatarCode("SYNTAX_ERROR")
+    const avatarCode = {
+      code:
+`def next_turn(world_state, avatar_state):
+    return MoveAction(direction.)
+`
+    }
+
+    const expectedAction = {
+      action_type: 'move',
+      options: {
+        direction: {
+          x: 0,
+          y: 1
+        }
+      }
+    }
+
+    const expectedLog = ``
+
+    testAvatarCode(avatarCode, expectedAction, expectedLog)
 
     cy.wait(2000)
 
@@ -45,7 +96,26 @@ describe('Cypress for aimmo', () => {
   })
 
   it('returns previous action and prints indentation warning on indentation error', () => {
-    testAvatarCode("INDENTATION_ERROR")
+    const avatarCode = {
+      code:
+`def next_turn(world_state, avatar_state):
+return MoveAction(direction.NORTH)
+`
+    }
+
+    const expectedAction = {
+      action_type: 'move',
+      options: {
+        direction: {
+          x: 0,
+          y: 1
+        }
+      }
+    }
+
+    const expectedLog = ``
+
+    testAvatarCode(avatarCode, expectedAction, expectedLog)
 
     cy.wait(2000)
 
@@ -60,35 +130,147 @@ describe('Cypress for aimmo', () => {
   })
 
   it('prints with one print', () => {
-    testAvatarCode("ONE_PRINT")
+    const avatarCode = {
+      code:
+`def next_turn(world_state, avatar_state):
+    print('I AM A PRINT STATEMENT')
+    return MoveAction(direction.NORTH)
+`
+    }
+
+    const expectedAction = {
+      action_type: 'move',
+      options: {
+        direction: {
+          x: 0,
+          y: 1
+        }
+      }
+    }
+
+    const expectedLog =
+`I AM A PRINT STATEMENT
+`
+
+    testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
 
   it('prints with multiple prints', () => {
-    testAvatarCode("TWO_PRINTS")
+    const avatarCode = {
+      code:
+`def next_turn(world_state, avatar_state):
+    print('I AM A PRINT STATEMENT')
+    print('I AM ALSO A PRINT STATEMENT')
+    return MoveAction(direction.NORTH)
+`
+    }
+
+    const expectedAction = {
+      action_type: 'move',
+      options: {
+        direction: {
+          x: 0,
+          y: 1
+        }
+      }
+    }
+
+    const expectedLog =
+`I AM A PRINT STATEMENT
+I AM ALSO A PRINT STATEMENT
+`
+
+    testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
 
   it('prints with a print in a separate function', () => {
-    testAvatarCode("PRINTS_IN_DIFFERENT_FUNCTIONS")
+    const avatarCode = {
+      code:
+`def next_turn(world_map, avatar_state):
+    foo()
+    print('I AM NOT A NESTED PRINT')
+    return MoveAction(direction.NORTH)
+
+def foo():
+    print('I AM A NESTED PRINT')
+`
+    }
+
+    const expectedAction = {
+      action_type: 'move',
+      options: {
+        direction: {
+          x: 0,
+          y: 1
+        }
+      }
+    }
+
+    const expectedLog =
+`I AM A NESTED PRINT
+I AM NOT A NESTED PRINT
+`
+
+    testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
 
   it('prints error message if code if broken', () => {
-    testAvatarCode("RETURN_NOT_AN_ACTION_WITH_PRINT")
+    const avatarCode = {
+      code:
+`def next_turn(world_state, avatar_state):
+    print('THIS CODE IS BROKEN')
+    return None
+`
+    }
+
+    const expectedAction = { action_type: 'wait' }
+
+    const expectedLog =
+`Exception: Make sure you are returning an action
+`
+
+    testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
 
   it('stores, changes global variable and prints it out', () => {
     let variableValue;
 
-    changeAvatarCode("GLOBAL_VARIABLE")
+    const avatarCode = {
+      code:
+`turn_count = 0
+def next_turn(world_map, avatar_state):
+    global turn_count
+    turn_count += 1
+    print(turn_count)
+    return MoveAction(direction.NORTH)
+`
+    }
+
+    const expectedAction = {
+      action_type: 'move',
+      options: {
+        direction: {
+          x: 0,
+          y: 1
+        }
+      }
+    }
+
+    loadGame()
+
+    cy.window().its("store").invoke("dispatch", {type: "features/Editor/POST_CODE_REQUEST", payload: avatarCode})
+
+    cy.wait(5000)
 
     const firstAvatarAction = cy.window().its('store').invoke('getState')
       .its('action.avatarAction')
 
     firstAvatarAction.then((avatarActionData) => {
-      const action = avatarActionData['action']
+      const avatarAction = avatarActionData['action']
       const log = avatarActionData['log']
       variableValue = parseInt(log.replace("\n", ""))
 
-      checkAction("GLOBAL_VARIABLE", action)
+      expect(avatarAction).to.deep.equal(expectedAction)
     })
 
     cy.wait(2000)
@@ -105,49 +287,31 @@ describe('Cypress for aimmo', () => {
   })
 })
 
-function changeAvatarCode(avatarCodeType) {
-  cy.server().route('GET', 'static/worker/aimmo_avatar_api-0.0.0-py3-none-any.whl').as('getAvatarApi')
-  cy.server().route('GET', 'static/babylon/models/avatar_model.babylon').as('getAvatarModel')
-  cy.visitAGame()
-  cy.wait('@getAvatarApi', {timeout: 30000})
-  cy.wait('@getAvatarModel', {timeout: 30000})
+function testAvatarCode(avatarCode, expectedAction, expectedLog) {
+  loadGame()
 
-  cy.fixture("avatarCodes").then(avatarCodes => {
-    const code = avatarCodes[avatarCodeType]["avatarCode"]
-    cy.window().its("store").invoke("dispatch", {type: "features/Editor/POST_CODE_REQUEST", payload: code})
-  })
+  cy.window().its("store").invoke("dispatch", {type: "features/Editor/POST_CODE_REQUEST", payload: avatarCode})
 
-  cy.wait(2000)
-}
-
-function testAvatarCode(avatarCodeType) {
-  changeAvatarCode(avatarCodeType)
+  cy.wait(5000)
 
   const avatarAction = cy.window().its('store').invoke('getState')
     .its('action.avatarAction')
 
   avatarAction.then((avatarActionData) => {
-    const action = avatarActionData['action']
-    const log = avatarActionData['log']
+    const avatarAction = avatarActionData['action']
+    const avatarLog = avatarActionData['log']
 
-    checkAction(avatarCodeType, action)
-    checkLog(avatarCodeType, log)
+    expect(avatarAction).to.deep.equal(expectedAction)
+    expect(avatarLog).to.deep.equal(expectedLog)
   })
 }
 
-function checkAction(avatarCodeType, action) {
-  cy.fixture("avatarCodes").then(avatarCodes => {
-    const expectedAction = avatarCodes[avatarCodeType]["expectedAction"]
+function loadGame() {
+  cy.server().route('GET', 'static/worker/aimmo_avatar_api-0.0.0-py3-none-any.whl').as('getAvatarApi')
+  cy.server().route('GET', 'static/babylon/models/avatar_model.babylon').as('getAvatarModel')
 
-    cy.fixture("avatarActions").then(avatarActions => {
-      expect(action).to.deep.equal(avatarActions[expectedAction])
-    })
-  })
-}
+  cy.visitAGame()
 
-function checkLog(avatarCodeType, log) {
-  cy.fixture("avatarCodes").then(json => {
-    const expectedLog = json[avatarCodeType]["expectedLog"]
-    expect(log).to.deep.equal(expectedLog)
-  })
+  cy.wait('@getAvatarApi', {timeout: 30000})
+  cy.wait('@getAvatarModel', {timeout: 30000})
 }
