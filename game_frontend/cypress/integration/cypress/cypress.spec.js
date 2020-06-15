@@ -3,21 +3,17 @@
 import { DEFAULT_CODE } from '../../../src/redux/features/constants'
 
 describe('Cypress for aimmo', () => {
-  it('can login, add and delete games', () => {
+  beforeEach(() => {
     cy.login()
-
     cy.addTestGame()
+    cy.visitAGame()
+  })
 
+  afterEach(() => {
     cy.deleteAllGames()
   })
 
   it('has default code on load', () => {
-    cy.login()
-
-    cy.addTestGame()
-
-    cy.visitAGame()
-
     const store = cy.window().its('store').invoke('getState')
     const code = store.its('editor.code')
 
@@ -112,13 +108,7 @@ describe('Cypress for aimmo', () => {
 })
 
 function changeAvatarCode(avatarCodeType) {
-  cy.login()
-
-  cy.updateCode(DEFAULT_CODE)
-
   cy.server().route('GET', 'static/worker/aimmo_avatar_api-0.0.0-py3-none-any.whl').as('getAvatarApi')
-
-  cy.visitAGame()
 
   cy.wait('@getAvatarApi', {timeout: 30000})
 
