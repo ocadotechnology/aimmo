@@ -5,11 +5,8 @@ const GET_CODE_FAILURE = 'features/Editor/GET_CODE_FAILURE'
 const POST_CODE_REQUEST = 'features/Editor/POST_CODE_REQUEST'
 const POST_CODE_SUCCESS = 'features/Editor/POST_CODE_SUCCESS'
 const POST_CODE_FAILURE = 'features/Editor/POST_CODE_FAILURE'
-
-const CHANGE_CODE = 'features/Editor/CHANGE_CODE'
-const KEY_PRESSED = 'features/Editor/KEY_PRESSED'
-
 const RESET_CODE = 'features/Editor/RESET_CODE'
+const CODE_RESET = 'features/Editor/CODE_RESET'
 
 export default {
   GET_CODE_REQUEST,
@@ -18,7 +15,6 @@ export default {
   POST_CODE_REQUEST,
   POST_CODE_SUCCESS,
   POST_CODE_FAILURE,
-  CHANGE_CODE,
-  KEY_PRESSED,
-  RESET_CODE
+  RESET_CODE,
+  CODE_RESET
 }

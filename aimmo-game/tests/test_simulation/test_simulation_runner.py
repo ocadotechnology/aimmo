@@ -22,6 +22,7 @@ from .dummy_avatar import (
 from .maps import InfiniteMap, MockCell, MockPickup
 from .mock_communicator import MockCommunicator
 from .mock_game_state import MockGameState
+from turn_collector import CollectedTurnActions
 
 ORIGIN = Location(0, 0)
 
@@ -89,7 +90,7 @@ class TestSimulationRunner:
         return self.avatar_manager.get_avatar(player_id)
 
     async def run_turn(self):
-        await self.simulation_runner.run_turn(self.avatar_manager.avatars_by_id)
+        await self.simulation_runner.run_turn(CollectedTurnActions(0))
 
     def test_add_avatar(self):
         self.construct_simulation_runner([], [])

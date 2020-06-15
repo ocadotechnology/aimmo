@@ -1,18 +1,9 @@
 import actions from './actions'
 import types from './types'
+import { avatarWorkerTypes } from 'features/AvatarWorker'
 import { editorTypes } from 'features/Editor'
 import { Scheduler, of } from 'rxjs'
-import {
-  map,
-  mergeMap,
-  catchError,
-  switchMap,
-  first,
-  mapTo,
-  timeout,
-  ignoreElements,
-  timeInterval
-} from 'rxjs/operators'
+import { map, mergeMap, catchError, switchMap, first, mapTo, timeInterval } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 import { actions as analyticActions } from 'redux/features/Analytics'
 
@@ -59,34 +50,12 @@ const connectToGameEpic = (action$, state$, { api: { socket } }) =>
     )
   )
 
-const avatarUpdatingTimeoutEpic = (
-  action$,
-  state$,
-  dependencies,
-  scheduler = backgroundScheduler
-) =>
-  action$.pipe(
-    ofType(editorTypes.POST_CODE_REQUEST),
-    switchMap(() =>
-      action$.pipe(
-        ofType(types.SOCKET_FEEDBACK_AVATAR_UPDATED_SUCCESS),
-        timeout(25000, scheduler),
-        first(),
-        ignoreElements(),
-        catchError(() => of(actions.socketFeedbackAvatarUpdatedTimeout()))
-      )
-    )
-  )
-
 const codeUpdatingIntervalEpic = (action$, state$, dependencies, scheduler = backgroundScheduler) =>
   action$.pipe(
     ofType(editorTypes.POST_CODE_REQUEST),
     switchMap(() =>
       action$.pipe(
-        ofType(
-          types.SOCKET_FEEDBACK_AVATAR_UPDATED_SUCCESS,
-          types.SOCKET_FEEDBACK_AVATAR_UPDATED_TIMEOUT
-        ),
+        ofType(avatarWorkerTypes.AVATAR_CODE_UPDATED),
         timeInterval(scheduler),
         map(timeInterval =>
           analyticActions.sendAnalyticsTimingEvent(
@@ -103,7 +72,6 @@ const codeUpdatingIntervalEpic = (action$, state$, dependencies, scheduler = bac
 export default {
   getConnectionParametersEpic,
   connectToGameEpic,
-  avatarUpdatingTimeoutEpic,
   gameLoadedEpic,
   gameLoadedIntervalEpic,
   codeUpdatingIntervalEpic

@@ -44,6 +44,10 @@ def create_superuser_if_missing(username, password):
         )
 
 
+def build_worker_package():
+    run_command(["./aimmo_runner/build_worker_wheel.sh"])
+
+
 def run(
     use_minikube,
     server_wait=True,
@@ -52,6 +56,9 @@ def run(
     build_target=None,
 ):
     logging.basicConfig()
+
+    build_worker_package()
+
     if test_env:
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "test_settings")
     else:

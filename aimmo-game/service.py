@@ -80,28 +80,22 @@ socketio_server = setup_socketIO_server(app)
 
 
 class GameAPI(object):
-
-    routes = web.RouteTableDef()
-
-    def __init__(
-        self, game_state, worker_manager, application=app, server=socketio_server
-    ):
+    def __init__(self, game_state, application=app, server=socketio_server):
         self.app = application
         self.socketio_server = server
         self.register_endpoints()
-        self.worker_manager = worker_manager
         self.game_state = game_state
-        self.log_collector = LogCollector(worker_manager, game_state.avatar_manager)
+        self.log_collector = LogCollector(game_state.avatar_manager)
 
     async def async_map(self, func, iterable_args):
         futures = [func(arg) for arg in iterable_args]
         await asyncio.gather(*futures)
 
     def register_endpoints(self):
-        self.register_player_data_view()
+        self.routes = web.RouteTableDef()
+        self.register_healthcheck()
         self.register_world_update_on_connect()
         self.register_remove_session_id_from_mappings()
-        self.register_healthcheck()
         self.app.add_routes(self.routes)
 
     def open_connections_number(self):
@@ -122,20 +116,6 @@ class GameAPI(object):
 
         return healthcheck
 
-    def register_player_data_view(self):
-        @self.routes.get("/player/{player_id}")
-        async def player_data(request: web.Request):
-            player_id = int(request.match_info["player_id"])
-            return web.json_response(
-                {
-                    "code": self.worker_manager.get_code(player_id),
-                    "options": {},
-                    "state": None,
-                }
-            )
-
-        return player_data
-
     def register_world_update_on_connect(self):
         @self.socketio_server.on("connect")
         async def world_update_on_connect(sid, environ):
@@ -155,9 +135,7 @@ class GameAPI(object):
 
     async def send_updates(self, sid):
         try:
-            await self._send_have_avatars_code_updated(sid)
             await self._send_game_state(sid)
-            await self._send_logs(sid)
         except KeyError:
             LOGGER.error(
                 f"Failed to send updates. No worker for player in session {sid}"
@@ -188,35 +166,13 @@ class GameAPI(object):
             LOGGER.error("No avatar ID found. User may not be authorised")
             LOGGER.error(f"query_string: {query_string}")
 
-    async def _send_logs(self, sid):
-        def should_send_logs(logs):
-            return bool(logs)
-
-        session_data = await self.socketio_server.get_session(sid)
-
-        player_logs = self.log_collector.collect_logs(session_data["id"])
-
-        if should_send_logs(player_logs):
-            await self.socketio_server.emit(
-                "log",
-                {"message": player_logs, "turn_count": self.game_state.turn_count},
-                room=sid,
-            )
-
     async def _send_game_state(self, sid):
+        session_data = await self.socketio_server.get_session(sid)
         serialized_game_state = self.game_state.serialize()
-        session_data = await self.socketio_server.get_session(sid)
-        worker = self.worker_manager.player_id_to_worker[session_data["id"]]
-        if worker.ready:
-            await self.socketio_server.emit(
-                "game-state", serialized_game_state, room=sid
-            )
-
-    async def _send_have_avatars_code_updated(self, sid):
-        session_data = await self.socketio_server.get_session(sid)
-        worker = self.worker_manager.player_id_to_worker[session_data["id"]]
-        if worker.has_code_updated:
-            await self.socketio_server.emit("feedback-avatar-updated", {}, room=sid)
+        serialized_game_state["playerLog"] = self.log_collector.collect_logs(
+            session_data["id"]
+        )
+        await self.socketio_server.emit("game-state", serialized_game_state, room=sid)
 
 
 def create_runner(port):
@@ -234,9 +190,7 @@ def create_runner(port):
 def run_game(port):
     game_runner = create_runner(port)
 
-    game_api = GameAPI(
-        game_state=game_runner.game_state, worker_manager=game_runner.worker_manager
-    )
+    game_api = GameAPI(game_state=game_runner.game_state)
     game_runner.set_end_turn_callback(game_api.send_updates_to_all)
     asyncio.ensure_future(game_runner.run())
 

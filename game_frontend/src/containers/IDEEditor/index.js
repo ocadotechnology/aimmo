@@ -1,15 +1,14 @@
 import styled from 'styled-components'
 import React, { PureComponent } from 'react'
 import AceEditor from 'react-ace'
-import 'brace/theme/idle_fingers'
-import 'brace/mode/python'
-import 'brace/snippets/python'
-import 'brace/ext/language_tools'
 import PropTypes from 'prop-types'
 import { withTheme } from '@material-ui/core/styles'
 import RunCodeButton from 'components/RunCodeButton'
 import { connect } from 'react-redux'
 import { actions as editorActions } from 'features/Editor'
+
+import 'ace-builds/src-noconflict/theme-idle_fingers'
+import 'ace-builds/src-noconflict/mode-python'
 
 export const IDEEditorLayout = styled.div`
   position: relative;
@@ -26,70 +25,108 @@ export const PositionedRunCodeButton = styled(RunCodeButton)`
 `
 
 export class IDEEditor extends PureComponent {
-  isCodeOnServerDifferent () {
-    return this.props.code !== this.props.codeOnServer
+  static propTypes = {
+    codeOnServer: PropTypes.string,
+    getCode: PropTypes.func,
+    resetCodeTo: PropTypes.string,
+    codeReset: PropTypes.func,
+    theme: PropTypes.object,
+    postCode: PropTypes.func,
+    runCodeButtonStatus: PropTypes.object
+  }
+
+  state = {
+    code: '',
+    codeLoaded: false
+  }
+
+  componentDidMount () {
+    this.props.getCode()
+  }
+
+  static getDerivedStateFromProps (props, state) {
+    if (!state.codeLoaded && props.codeOnServer) {
+      return {
+        code: props.codeOnServer,
+        codeLoaded: true
+      }
+    } else if (props.resetCodeTo) {
+      const derivedState = {
+        ...state,
+        code: props.resetCodeTo
+      }
+      props.codeReset()
+      return derivedState
+    }
+    return state
+  }
+
+  isCodeOnServerDifferent = () => {
+    return this.state.code !== this.props.codeOnServer
   }
 
   options () {
     return {
-      enableBasicAutocompletion: true,
-      enableLiveAutocompletion: true,
-      enableSnippets: true,
       showLineNumbers: true,
       tabSize: 4,
       fontFamily: this.props.theme.additionalVariables.typography.code.fontFamily
     }
   }
 
-  render () {
-    return (
-      <IDEEditorLayout>
+  postCode = () => {
+    this.props.postCode(this.state.code)
+  }
+
+  codeChanged = code => {
+    this.setState({ code })
+  }
+
+  renderEditor () {
+    if (this.state.codeLoaded) {
+      return (
         <AceEditor
           mode='python'
           theme='idle_fingers'
           name='ace_editor'
-          onLoad={this.props.getCode}
-          onChange={this.props.editorChanged}
+          onChange={this.codeChanged}
           fontSize={this.props.theme.additionalVariables.typography.code.fontSize}
           showPrintMargin
           showGutter
           highlightActiveLine
-          value={this.props.code}
+          value={this.state.code}
           width='100%'
           height='100%'
           setOptions={this.options()}
         />
+      )
+    }
+  }
+
+  render () {
+    return (
+      <IDEEditorLayout>
+        {this.renderEditor()}
         <PositionedRunCodeButton
           runCodeButtonStatus={this.props.runCodeButtonStatus}
           isCodeOnServerDifferent={this.isCodeOnServerDifferent()}
           aria-label='Run Code'
           id='post-code-button'
-          whenClicked={this.props.postCode}
+          whenClicked={this.postCode}
         />
       </IDEEditorLayout>
     )
   }
 }
 
-IDEEditor.propTypes = {
-  code: PropTypes.string,
-  codeOnServer: PropTypes.string,
-  getCode: PropTypes.func,
-  editorChanged: PropTypes.func,
-  theme: PropTypes.object,
-  postCode: PropTypes.func,
-  runCodeButtonStatus: PropTypes.object
-}
-
 const mapStateToProps = state => ({
-  code: state.editor.code.code,
   codeOnServer: state.editor.code.codeOnServer,
+  resetCodeTo: state.editor.code.resetCodeTo,
   runCodeButtonStatus: state.editor.runCodeButton
 })
 
 const mapDispatchToProps = {
   getCode: editorActions.getCodeRequest,
-  editorChanged: editorActions.keyPressed,
+  codeReset: editorActions.codeReset,
   postCode: editorActions.postCodeRequest
 }
 

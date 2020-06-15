@@ -1,4 +1,4 @@
-import { switchMap, mapTo, zip, take, tap } from 'rxjs/operators'
+import { switchMap, mapTo, zip, take, tap, map } from 'rxjs/operators'
 
 import actions from './actions'
 import types from './types'
@@ -20,14 +20,30 @@ const initialUpdateAvatarCodeEpic = (action$, state$, { pyodideRunner: { updateA
       action$.pipe(ofType(editorTypes.GET_CODE_SUCCESS), take(1))
     ),
     switchMap(() => updateAvatarCode(state$.value.editor.code.codeOnServer)),
-    mapTo(actions.avatarCodeUpdated())
+    map(actions.avatarCodeUpdated)
   )
 
-const updateAvatarCodeEpic = (action$, state$, { pyodideRunner: { updateAvatarCode } }) =>
+const updateAvatarCodeEpic = (
+  action$,
+  state$,
+  { api: { socket }, pyodideRunner: { updateAvatarCode } }
+) =>
   action$.pipe(
-    ofType(editorTypes.POST_CODE_SUCCESS),
-    switchMap(() => updateAvatarCode(state$.value.editor.code.codeOnServer)),
-    mapTo(actions.avatarCodeUpdated())
+    ofType(types.PYODIDE_INITIALIZED),
+    switchMap(() =>
+      action$.pipe(
+        ofType(editorTypes.POST_CODE_SUCCESS),
+        switchMap(() =>
+          updateAvatarCode(
+            state$.value.editor.code.codeOnServer,
+            state$.value.game.gameState,
+            state$.value.game.connectionParameters.currentAvatarID
+          )
+        ),
+        tap(socket.emitAction),
+        map(actions.avatarCodeUpdated)
+      )
+    )
   )
 
 const computeNextActionEpic = (
@@ -40,9 +56,11 @@ const computeNextActionEpic = (
     switchMap(() =>
       action$.pipe(
         ofType(gameTypes.SOCKET_GAME_STATE_RECEIVED),
-        switchMap(computeNextAction$),
+        switchMap(({ payload: { gameState } }) =>
+          computeNextAction$(gameState, state$.value.game.connectionParameters.currentAvatarID)
+        ),
         tap(socket.emitAction),
-        mapTo(actions.avatarsNextActionComputed())
+        map(actions.avatarsNextActionComputed)
       )
     )
   )

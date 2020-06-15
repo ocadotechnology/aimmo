@@ -39,7 +39,7 @@ async def test_artefact_applies_correctly(game, cell):
     # Move to the cell with the artefact
 
     await game.simulation_runner.run_single_turn(
-        game.avatar_manager.get_player_id_to_serialized_action()
+        game.turn_collector.collected_turn_actions
     )
 
     assert cell.interactable is not None
@@ -49,7 +49,7 @@ async def test_artefact_applies_correctly(game, cell):
     avatar.set_next_action(PickupAction(avatar))
 
     await game.simulation_runner.run_single_turn(
-        game.avatar_manager.get_player_id_to_serialized_action()
+        game.turn_collector.collected_turn_actions
     )
 
     assert cell.avatar == avatar

@@ -9,7 +9,6 @@ from turn_collector import TurnCollector
 from .test_simulation.mock_avatar_manager import MockAvatarManager
 from .test_simulation.mock_communicator import MockCommunicator
 from .test_simulation.mock_game_state import MockGameState
-from .test_simulation.mock_worker_manager import MockWorkerManager
 
 
 @pytest.fixture
@@ -43,13 +42,9 @@ def game_api(app, turn_collector, socketio_server, game_id):
         communicator=MockCommunicator(),
         port="0000",
         turn_collector=turn_collector,
-        worker_manager_class=MockWorkerManager,
     )
     return GameAPI(
-        game_state=game_runner.game_state,
-        worker_manager=game_runner.worker_manager,
-        application=app,
-        server=socketio_server,
+        game_state=game_runner.game_state, application=app, server=socketio_server,
     )
 
 

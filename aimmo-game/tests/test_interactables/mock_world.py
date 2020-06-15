@@ -4,6 +4,7 @@ from simulation import map_generator
 from simulation.simulation_runner import SequentialSimulationRunner
 from tests.test_simulation.mock_communicator import MockCommunicator
 from tests.test_simulation.dummy_avatar import DummyAvatarManager, MoveEastDummy
+from tests.test_simulation.mock_turn_collector import MockTurnCollector
 
 SETTINGS = {"START_HEIGHT": 5, "START_WIDTH": 5, "OBSTACLE_RATIO": 0}
 
@@ -34,3 +35,4 @@ class MockWorld(object):
         self.simulation_runner = simulation_runner_class(
             game_state=self.game_state, communicator=MockCommunicator()
         )
+        self.turn_collector = MockTurnCollector()

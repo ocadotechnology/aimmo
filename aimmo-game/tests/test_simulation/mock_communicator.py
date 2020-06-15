@@ -20,7 +20,7 @@ class MockCommunicator(object):
             ],
         }
 
-    def get_game_metadata(self):
+    async def get_game_metadata(self):
         return self.data
 
     def mark_game_complete(self):

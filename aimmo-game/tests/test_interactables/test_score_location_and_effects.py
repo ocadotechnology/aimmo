@@ -41,7 +41,7 @@ async def test_score_location_increase_score_of_avatar(test_data, loop):
     }
 
     await game.simulation_runner.run_single_turn(
-        game.avatar_manager.get_player_id_to_serialized_action()
+        game.turn_collector.collected_turn_actions
     )
 
     assert cell.avatar is game.avatar_manager.get_avatar(1)
@@ -60,14 +60,14 @@ async def test_score_locations_persist_and_keep_giving_score_effects(test_data, 
     cell.interactable = ScoreLocation(cell)
 
     await game.simulation_runner.run_single_turn(
-        game.avatar_manager.get_player_id_to_serialized_action()
+        game.turn_collector.collected_turn_actions
     )
 
     assert cell.avatar is game.avatar_manager.get_avatar(1)
     assert cell.avatar.score is 1
 
     await game.simulation_runner.run_single_turn(
-        game.avatar_manager.get_player_id_to_serialized_action()
+        game.turn_collector.collected_turn_actions
     )
 
     assert cell.avatar.score is 2

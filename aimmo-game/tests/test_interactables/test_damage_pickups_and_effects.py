@@ -30,7 +30,7 @@ class TestDamagePickupsAndEffects:
             "location": {"x": self.cell.location.x, "y": self.cell.location.y},
         }
         await self.game.simulation_runner.run_single_turn(
-            self.game.avatar_manager.get_player_id_to_serialized_action()
+            self.game.turn_collector.collected_turn_actions
         )
 
         assert self.cell.avatar == self.game.avatar_manager.get_avatar(1)
@@ -48,7 +48,7 @@ class TestDamagePickupsAndEffects:
         self.cell.interactable = pickup_created
 
         await self.game.simulation_runner.run_single_turn(
-            self.game.avatar_manager.get_player_id_to_serialized_action()
+            self.game.turn_collector.collected_turn_actions
         )
 
         assert (

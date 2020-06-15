@@ -128,6 +128,7 @@ jobs:
         - yarn --frozen-lockfile
         - popd
       script:
+        - ./aimmo_runner/build_worker_wheel.sh
         - pushd game_frontend
         - node djangoBundler.js
         - popd
@@ -185,11 +186,6 @@ jobs:
         - docker build --no-cache -t ocadotechnology/aimmo-game-worker:${TRAVIS_TAG:1} aimmo-game-worker/
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
         - docker push ocadotechnology/aimmo-game-worker:${TRAVIS_TAG:1}
-    - name: "Build and publish aimmo-avatar-api PyPi package"
-      install:
-        - pip install twine
-      script:
-        - bash publish_aimmo_avatar_api.sh
     - stage: Notify Semaphore (Staging)
       script:
         - "curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}"

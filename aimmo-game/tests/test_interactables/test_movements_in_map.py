@@ -49,7 +49,7 @@ class TestMovementsInMap:
 
         for i in range(number_of_movements):
             await self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialized_action()
+                self.game.turn_collector.collected_turn_actions
             )
 
     async def test_movement_five_times_in_all_directions(self, loop):
@@ -124,7 +124,7 @@ class TestMovementsInMap:
 
         for i in range(2):
             await self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialized_action()
+                self.game.turn_collector.collected_turn_actions
             )
 
         assert self.avatar.location == Location(1, 0)
@@ -142,7 +142,7 @@ class TestMovementsInMap:
         assert avatar_two.location == Location(3, 0)
         for i in range(2):
             await self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialized_action()
+                self.game.turn_collector.collected_turn_actions
             )
 
         # Avatar 1 & Avatar 2 only managed to move once.
@@ -159,7 +159,7 @@ class TestMovementsInMap:
 
         for i in range(2):
             await self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialized_action()
+                self.game.turn_collector.collected_turn_actions
             )
 
         # Avatar 1 & Avatar 2 managed to only move only once.
@@ -174,7 +174,7 @@ class TestMovementsInMap:
         assert self.avatar.location == Location(0, 0)
         assert avatar_two.location == Location(1, 0)
         await self.game.simulation_runner.run_single_turn(
-            self.game.avatar_manager.get_player_id_to_serialized_action()
+            self.game.turn_collector.collected_turn_actions
         )
 
         assert self.avatar.location == Location(0, 0)
@@ -189,7 +189,7 @@ class TestMovementsInMap:
 
         for i in range(5):
             await self.game.simulation_runner.run_single_turn(
-                self.game.avatar_manager.get_player_id_to_serialized_action()
+                self.game.turn_collector.collected_turn_actions
             )
 
         assert self.avatar.location == Location(0, 0)

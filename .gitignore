@@ -79,8 +79,8 @@ test-bin/
 # Hypothesis seed examples
 aimmo-game/.hypothesis
 
-# Unity Build
-aimmo/static/unity/**
+# Worker api generated wheel
+aimmo/static/worker/
 
 # Frontend generated files
 aimmo/static/react/

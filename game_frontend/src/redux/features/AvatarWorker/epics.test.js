@@ -93,18 +93,23 @@ describe('avatarWorkerEpic', () => {
       }
     }
 
-    const state$ = { value: { avatarWorker: { pyodideInitialized: true } } }
+    const state$ = {
+      value: {
+        game: { connectionParameters: { currentAvatarID: 1 } },
+        avatarWorker: { pyodideInitialized: true }
+      }
+    }
 
     testScheduler.run(({ hot, cold, expectObservable }) => {
       const action$ = hot('-p--g--g-g-', {
-        g: gameActions.socketGameStateReceived({}),
+        g: gameActions.socketGameStateReceived({ players: [{ id: 1 }] }),
         p: actions.pyodideInitialized()
       })
 
       const output$ = epics.computeNextActionEpic(action$, state$, dependencies)
 
       expectObservable(output$).toBe('----a--a-a-', {
-        a: actions.avatarsNextActionComputed()
+        a: actions.avatarsNextActionComputed({ action_type: 'wait' })
       })
     })
     expect(dependencies.api.socket.emitAction).toBeCalled()
