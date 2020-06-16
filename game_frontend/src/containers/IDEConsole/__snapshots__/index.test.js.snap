@@ -10,16 +10,10 @@ exports[`<IDEConsole /> renders correctly 1`] = `
   >
     <LogEntries
       logs={
-        Array [
-          Object {
-            "log": "hello",
-            "turnCount": "1",
-          },
-          Object {
-            "log": "bye",
-            "turnCount": "2",
-          },
-        ]
+        Map {
+          0 => "hello",
+          1 => "bye",
+        }
       }
       shouldActivateSnapToBottom={false}
     />

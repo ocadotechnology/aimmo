@@ -1,6 +1,7 @@
 import types from './types'
 import { avatarWorkerTypes } from 'redux/features/AvatarWorker'
 import { gameTypes } from 'redux/features/Game'
+import produce from 'immer'
 
 export const MAX_NUMBER_OF_STORED_LOGS = 600
 
@@ -16,45 +17,35 @@ function createNewLogMessage (workerLog, gameLog) {
   }
 }
 
-const consoleLogReducer = (state = { logs: [], workerLogs: {} }, action) => {
+const consoleLogReducer = (state = { logs: new Map(), gameLog: '' }, action) => {
   switch (action.type) {
     case gameTypes.SOCKET_GAME_STATE_RECEIVED: {
-      const turnCount = action.payload.gameState.turnCount
-      const workerLogs = state.workerLogs
-      const newLogMessage = createNewLogMessage(
-        state.workerLogs[turnCount],
-        action.payload.gameState.playerLog
-      )
-      if (!newLogMessage) {
-        return state
-      }
-      const newLog = {
-        turnCount: turnCount,
-        message: newLogMessage
-      }
-      let logs = [...state.logs, newLog]
-      logs = logs.slice(-MAX_NUMBER_OF_STORED_LOGS)
-      delete workerLogs[turnCount]
       return {
         ...state,
-        workerLogs,
-        logs: logs
+        gameLog: action.payload.gameState.playerLog
       }
     }
     case avatarWorkerTypes.AVATAR_CODE_UPDATED:
     case avatarWorkerTypes.AVATARS_NEXT_ACTION_COMPUTED: {
-      const workerLogs = state.workerLogs
+      const gameLog = state.gameLog
       const turnCount = action.payload.turnCount
-      workerLogs[turnCount] = action.payload.log
-      return {
-        ...state,
-        workerLogs
+      const newLogMessage = createNewLogMessage(action.payload.log, gameLog)
+      if (!newLogMessage) {
+        return state
       }
+      const nextState = produce(state, draftState => {
+        const logs = draftState.logs
+        logs.set(turnCount, newLogMessage)
+        if (logs.size > MAX_NUMBER_OF_STORED_LOGS) {
+          logs.delete(logs.keys().next().value)
+        }
+      })
+      return nextState
     }
     case types.CLEAR_CONSOLE_LOGS:
       return {
         ...state,
-        logs: []
+        logs: new Map()
       }
     default:
       return state

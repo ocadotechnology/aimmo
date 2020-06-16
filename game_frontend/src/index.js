@@ -10,11 +10,14 @@ import { darkTheme } from 'theme'
 
 import { Provider } from 'react-redux'
 import configureStore from './redux/store'
+import { enableMapSet } from 'immer'
 
 import ReactGA from 'react-ga'
 
 import GamePage from 'components/GamePage'
 import { RunCodeButtonStatus } from 'components/RunCodeButton'
+
+enableMapSet()
 
 WebFont.load({
   typekit: {
