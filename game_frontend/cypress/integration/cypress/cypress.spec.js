@@ -292,18 +292,28 @@ function testAvatarCode(avatarCode, expectedAction, expectedLog) {
 
   cy.window().its("store").invoke("dispatch", {type: "features/Editor/POST_CODE_REQUEST", payload: avatarCode})
 
-  cy.wait(5000)
+  const getComputedTurnResult = win => {
+    return win.store.getState().action.avatarAction
+  }
 
-  const avatarAction = cy.window().its('store').invoke('getState')
-    .its('action.avatarAction')
+  cy.window().pipe(getComputedTurnResult).should(computedTurnResult => {
+    expect(computedTurnResult).to.not.be.undefined
 
-  avatarAction.then((avatarActionData) => {
-    const avatarAction = avatarActionData['action']
-    const avatarLog = avatarActionData['log']
+    const avatarAction = computedTurnResult.action
+    const avatarLog = computedTurnResult.log
 
     expect(avatarAction).to.deep.equal(expectedAction)
     expect(avatarLog).to.deep.equal(expectedLog)
   })
+  
+  // its('store').invoke('getState')
+  //   .its('action.avatarAction').then(avatarActionData => {
+  //   const avatarAction = avatarActionData['action']
+  //   const avatarLog = avatarActionData['log']
+
+  //   expect(avatarAction).to.deep.equal(expectedAction)
+  //   expect(avatarLog).to.deep.equal(expectedLog)
+  // })
 }
 
 function loadGame() {
