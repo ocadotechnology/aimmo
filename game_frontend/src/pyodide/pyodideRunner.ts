@@ -100,8 +100,7 @@ export async function updateAvatarCode (
     await pyodide.runPythonAsync(userCode)
     if (gameState) {
       return computeNextAction(gameState, playerAvatarID)
-    }
-    else {
+    } else {
       return Promise.resolve({
         action: { action_type: 'wait' },
         log: '',
