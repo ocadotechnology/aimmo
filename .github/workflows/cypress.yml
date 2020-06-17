@@ -28,7 +28,7 @@ jobs:
           install: false
           working-directory: game_frontend
           wait-on: http://localhost:8000
-          wait-on-timeout: 600
+          wait-on-timeout: 400
           record: true
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
