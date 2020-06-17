@@ -60,13 +60,12 @@ Cypress.Commands.add('deleteAllGames', () => {
   })
 })
 
-Cypress.Commands.add('visitAGame', initialCode => {
+Cypress.Commands.add('visitAGame', () => {
   cy.request('/api/games/').then(response => {
     const gameId = Object.keys(response.body)[0]
     cy.fixture('initialState.json').then(initialState => {
       cy.visit(`/play/${gameId}/`, {
         onBeforeLoad: win => {
-          initialState.editor.code.codeToBeSaved = initialCode
           win.initialState = initialState
         }
       })

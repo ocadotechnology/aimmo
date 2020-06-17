@@ -24,9 +24,8 @@ declare namespace Cypress {
 
     /**
      * Visit the first game returned in the /api/games api.
-     * Set the initial code to the argument.
-     * @example cy.visitAGame("test code")
+     * @example cy.visitAGame()
      */
-    visitAGame(initialCode): Chainable<Element>
+    visitAGame(): Chainable<Element>
   }
 }

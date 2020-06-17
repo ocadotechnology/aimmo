@@ -177,75 +177,60 @@ I AM NOT A NESTED PRINT
     testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
 
-//   it('stores, changes global variable and prints it out', () => {
-//     let variableValue;
-//
-//     const avatarCode = {
-//       code: `turn_count = 0
-// def next_turn(world_map, avatar_state):
-//     global turn_count
-//     turn_count += 1
-//     print(turn_count)
-//     return MoveAction(direction.NORTH)
-// `
-//     }
-//
-//     const expectedAction = {
-//       action_type: 'move',
-//       options: {
-//         direction: {
-//           x: 0,
-//           y: 1
-//         }
-//       }
-//     }
-//
-//     const expectedLog = `1
-// `
-//
-//     testAvatarCode(avatarCode, expectedAction, expectedLog)
+  it('stores, changes global variable and prints it out', () => {
+    const avatarCode = {
+      code: `turn_count = 0
+def next_turn(world_map, avatar_state):
+    global turn_count
+    turn_count += 1
+    print(turn_count)
+    return MoveAction(direction.NORTH)
+`
+    }
 
-    // const getComputedTurnResult = win => {
-    //   const state = win.store.getState()
-    //   return state.action.avatarAction
-    // }
-    //
-    // cy.window()
-    //   .pipe(getComputedTurnResult)
-    //   .should(computedTurnResult => {
-    //     expect(computedTurnResult).to.not.be.undefined
-    //
-    //     const avatarLog = computedTurnResult.log
-    //
-    //     expect(avatarLog).to.deep.equal("2")
-    //   })
+    const expectedAction = {
+      action_type: 'move',
+      options: {
+        direction: {
+          x: 0,
+          y: 1
+        }
+      }
+    }
 
-    // const firstAvatarAction = cy.window().its('store').invoke('getState')
-    //   .its('action.avatarAction')
-    //
-    // firstAvatarAction.then((avatarActionData) => {
-    //   const avatarAction = avatarActionData['action']
-    //   const log = avatarActionData['log']
-    //   variableValue = parseInt(log.replace("\n", ""))
-    //
-    //   expect(avatarAction).to.deep.equal(expectedAction)
-    // })
-    //
-    // cy.wait(2000)
-    //
-    // const nextAvatarAction = cy.window().its('store').invoke('getState')
-    //   .its('action.avatarAction')
-    //
-    // nextAvatarAction.then((avatarActionData) => {
-    //   const secondLog = avatarActionData['log']
-    //   const nextVariableValue = secondLog.replace("\n", "")
-    //
-    //   expect(parseInt(nextVariableValue)).to.equal(variableValue+1)
-    // })
-  // })
+    const firstExpectedLog = `1
+`
+
+    testAvatarCode(avatarCode, expectedAction, firstExpectedLog)
+
+    cy.fixture('gameState.json').then(gameState => {
+      gameState["turnCount"] = 2
+      cy.window()
+        .its('store')
+        .invoke('dispatch', { type: 'features/Game/SOCKET_GAME_STATE_RECEIVED', payload: gameState })
+    })
+
+    const secondExpectedLog = `2
+`
+    checkComputedTurnResult(expectedAction, secondExpectedLog)
+  })
 })
 
 function testAvatarCode (avatarCode, expectedAction, expectedLog) {
+  cy.window()
+    .its('store')
+    .invoke('dispatch', { type: 'features/Editor/GET_CODE_SUCCESS', payload: avatarCode })
+
+  cy.fixture('gameState.json').then(gameState => {
+    cy.window()
+      .its('store')
+      .invoke('dispatch', { type: 'features/Game/SOCKET_GAME_STATE_RECEIVED', payload: gameState })
+  })
+
+  checkComputedTurnResult(expectedAction, expectedLog)
+}
+
+function checkComputedTurnResult(expectedAction, expectedLog) {
   const getComputedTurnResult = win => {
     const state = win.store.getState()
     return state.action.avatarAction
@@ -264,7 +249,7 @@ function testAvatarCode (avatarCode, expectedAction, expectedLog) {
     })
 }
 
-function loadGame (initialCode) {
+function loadGame() {
   cy.server()
     .route('GET', 'https://pyodide-cdn2.iodide.io/v0.15.0/full/pyodide.asm.data')
     .as('getPyodide')
@@ -272,7 +257,7 @@ function loadGame (initialCode) {
     .route('GET', 'static/worker/aimmo_avatar_api-0.0.0-py3-none-any.whl')
     .as('getAvatarApi')
 
-  cy.visitAGame(initialCode)
+  cy.visitAGame()
 
   cy.window()
     .its('store')
@@ -280,16 +265,4 @@ function loadGame (initialCode) {
 
   cy.wait('@getPyodide')
   cy.wait('@getAvatarApi')
-
-  initialCode = { code: DEFAULT_CODE}
-
-  cy.window()
-    .its('store')
-    .invoke('dispatch', { type: 'features/Editor/GET_CODE_SUCCESS', payload: initialCode })
-
-  cy.fixture('gameState.json').then(gameState => {
-    cy.window()
-      .its('store')
-      .invoke('dispatch', { type: 'features/Game/SOCKET_GAME_STATE_RECEIVED', payload: gameState })
-  })
 }
