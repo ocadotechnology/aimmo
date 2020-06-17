@@ -1,7 +1,7 @@
 import io from 'socket.io-client'
 import { actions as gameActions } from '../features/Game'
 import { actions as consoleLogActions } from '../features/ConsoleLog'
-import { map, mergeMap, tap } from 'rxjs/operators'
+import { map, mergeMap } from 'rxjs/operators'
 import { fromEvent, pipe, merge } from 'rxjs'
 
 var socketIO
