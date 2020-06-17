@@ -24,15 +24,9 @@ declare namespace Cypress {
 
     /**
      * Visit the first game returned in the /api/games api.
-     * @example cy.visitAGame()
+     * Set the initial code to the argument.
+     * @example cy.visitAGame("test code")
      */
-    visitAGame(): Chainable<Element>
-
-    /**
-     * Update the avatar's code in the first game returned in the /api/games api.
-     * @param avatarCode: the string that the avatar's code should be updated to.
-     * @example cy.updateCode("test code")
-     */
-    updateCode(avatarCode): Chainable<Element>
+    visitAGame(initialCode): Chainable<Element>
   }
 }

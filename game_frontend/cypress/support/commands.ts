@@ -60,25 +60,14 @@ Cypress.Commands.add('deleteAllGames', () => {
   })
 })
 
-Cypress.Commands.add('visitAGame', () => {
+Cypress.Commands.add('visitAGame', initialCode => {
   cy.request('/api/games/').then(response => {
     const gameId = Object.keys(response.body)[0]
-    cy.visit(`/play/${gameId}/`)
-  })
-})
-
-Cypress.Commands.add('updateCode', (avatarCode) => {
-  cy.request('/api/games/').then(response => {
-    const gameID = Object.keys(response.body)[0]
-    cy.getCookie('csrftoken').then(csrfToken => {
-      cy.request({
-        method: 'POST',
-        url: `/api/code/${gameID}/`,
-        failOnStatusCode: true,
-        form: true,
-        body: {
-          code: avatarCode,
-          csrfmiddlewaretoken: csrfToken.value
+    cy.fixture('initialState.json').then(initialState => {
+      cy.visit(`/play/${gameId}/`, {
+        onBeforeLoad: win => {
+          initialState.editor.code.codeToBeSaved = initialCode
+          win.initialState = initialState
         }
       })
     })

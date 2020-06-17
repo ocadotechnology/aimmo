@@ -35,7 +35,7 @@ ReactGA.initialize('UA-49883146-1', {
 
 ReactGA.pageview(`/kurono/play/${getGameIDFromURL()}`)
 
-const initialState = {
+const initialState = (window.Cypress && window.initialState) || {
   editor: {
     code: {
       code: ''
