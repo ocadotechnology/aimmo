@@ -1,5 +1,4 @@
 {
   "projectId": "v2a2id",
-  "baseUrl": "http://localhost:8000/kurono/",
-  "defaultCommandTimeout": 10000
+  "baseUrl": "http://localhost:8000/kurono/"
 }
