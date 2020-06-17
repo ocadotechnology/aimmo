@@ -59,7 +59,9 @@ export default class GameView extends Component {
   }
 
   componentDidMount () {
-    this.props.connectToGame()
+    if (!this.props.gameLoaded) {
+      this.props.connectToGame()
+    }
     const environment = this.props.environment ?? new StandardEnvironment(this.canvas)
     this.gameEngine = new GameEngine(this.handleMapPanned, environment)
   }
