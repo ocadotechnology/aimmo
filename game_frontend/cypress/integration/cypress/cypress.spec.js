@@ -25,62 +25,51 @@ describe('Cypress for aimmo', () => {
     testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
 
-//   it('returns previous action and prints syntax warning on syntax error', () => {
-//     const avatarCode = `def next_turn(world_state, avatar_state):
-// return MoveAction(direction.)`
+  it('returns wait action and prints syntax warning on syntax error', () => {
+    const avatarCode = {
+      code: `def next_turn(world_state, avatar_state):
+    return MoveAction(direction.)
+`
+    }
 
-    // let editor = cy.get(".ace_text-input").first().focus()
-    //
-    // editor.clear()
-    // editor.type(avatarCode)
-    //
-    // cy.get('#post-code-button').click()
+    const expectedAction = { action_type: 'wait' }
 
-    // testAvatarCode(avatarCode, expectedAction, expectedLog)
+    const expectedLog = ``
 
-    // const consoleLog = cy.window().its('store').invoke('getState')
-    //   .its('consoleLog.logs.0')
-    //
-    // consoleLog.then((logData) => {
-    //   const message = logData['message']
-    //
-    //   expect(message).to.deep.equal('SyntaxError: invalid syntax\n')
-    // })
-  // })
+    testAvatarCode(avatarCode, expectedAction, expectedLog)
 
-  //   it('returns previous action and prints indentation warning on indentation error', () => {
-  //     const avatarCode = {
-  //       code:
-  // `def next_turn(world_state, avatar_state):
-  // return MoveAction(direction.NORTH)
-  // `
-  //     }
+    cy.window()
+      .its('store')
+      .invoke('getState')
+      .its('consoleLog.logs').then(logs => {
+      const log = logs.entries().next().value[1]
+      expect(log).to.deep.equal(`SyntaxError: invalid syntax
+`)
+    })
+  })
 
-  //     const expectedAction = {
-  //       action_type: 'move',
-  //       options: {
-  //         direction: {
-  //           x: 0,
-  //           y: 1
-  //         }
-  //       }
-  //     }
+    it('returns wait action and prints indentation warning on indentation error', () => {
+      const avatarCode = {
+        code: `def next_turn(world_state, avatar_state):
+return MoveAction(direction.NORTH)
+`
+      }
 
-  //     const expectedLog = ``
+      const expectedAction = { action_type: 'wait' }
 
-  //     testAvatarCode(avatarCode, expectedAction, expectedLog)
+      const expectedLog = ``
 
-  //     cy.wait(2000)
+      testAvatarCode(avatarCode, expectedAction, expectedLog)
 
-  //     const consoleLog = cy.window().its('store').invoke('getState')
-  //       .its('consoleLog.logs.0')
-
-  //     consoleLog.then((logData) => {
-  //       const message = logData['message']
-
-  //       expect(message).to.deep.equal('IndentationError: expected an indented block\n')
-  //     })
-  //   })
+      cy.window()
+        .its('store')
+        .invoke('getState')
+        .its('consoleLog.logs').then(logs => {
+      const log = logs.entries().next().value[1]
+      expect(log).to.deep.equal(`IndentationError: expected an indented block
+`)
+      })
+    })
 
   it('prints with one print', () => {
     const avatarCode = {
@@ -161,7 +150,7 @@ I AM NOT A NESTED PRINT
     testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
 
-  it('prints error message if code if broken', () => {
+  it('prints error message if code is broken', () => {
     const avatarCode = {
       code: `def next_turn(world_state, avatar_state):
     print('THIS CODE IS BROKEN')
