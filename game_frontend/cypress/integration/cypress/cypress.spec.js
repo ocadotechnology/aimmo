@@ -7,10 +7,11 @@ describe('Cypress for aimmo', () => {
     cy.login()
     cy.deleteAllGames()
     cy.addTestGame()
-    loadGame()
   })
 
   it('returns wait action if code does not return an action', () => {
+    loadGame()
+
     const avatarCode = {
       code: `def next_turn(world_state, avatar_state):
     return False
@@ -26,6 +27,8 @@ describe('Cypress for aimmo', () => {
   })
 
   it('returns wait action and prints syntax warning on syntax error', () => {
+    loadGame()
+
     const avatarCode = {
       code: `def next_turn(world_state, avatar_state):
     return MoveAction(direction.)
@@ -49,6 +52,8 @@ describe('Cypress for aimmo', () => {
   })
 
     it('returns wait action and prints indentation warning on indentation error', () => {
+      loadGame()
+
       const avatarCode = {
         code: `def next_turn(world_state, avatar_state):
 return MoveAction(direction.NORTH)
@@ -72,6 +77,8 @@ return MoveAction(direction.NORTH)
     })
 
   it('prints with one print', () => {
+    loadGame()
+
     const avatarCode = {
       code: `def next_turn(world_state, avatar_state):
     print('I AM A PRINT STATEMENT')
@@ -96,6 +103,8 @@ return MoveAction(direction.NORTH)
   })
 
   it('prints with multiple prints', () => {
+    loadGame()
+
     const avatarCode = {
       code: `def next_turn(world_state, avatar_state):
     print('I AM A PRINT STATEMENT')
@@ -122,6 +131,8 @@ I AM ALSO A PRINT STATEMENT
   })
 
   it('prints with a print in a separate function', () => {
+    loadGame()
+
     const avatarCode = {
       code: `def next_turn(world_map, avatar_state):
     foo()
@@ -151,6 +162,8 @@ I AM NOT A NESTED PRINT
   })
 
   it('prints error message if code is broken', () => {
+    loadGame()
+
     const avatarCode = {
       code: `def next_turn(world_state, avatar_state):
     print('THIS CODE IS BROKEN')
@@ -167,6 +180,8 @@ I AM NOT A NESTED PRINT
   })
 
   it('stores, changes global variable and prints it out', () => {
+    loadGame()
+
     const avatarCode = {
       code: `turn_count = 0
 def next_turn(world_map, avatar_state):
