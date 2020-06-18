@@ -48,6 +48,15 @@ parser.add_argument(
     help="""Specify if you don't wish to build the Docker images.""",
 )
 
+parser.add_argument(
+    "-c",
+    "--using-cypress",
+    dest="using_cypress",
+    action="store_true",
+    default=False,
+    help="""Specify if you don't wish to build the Docker images.""",
+)
+
 if __name__ == "__main__":
     try:
         args = parser.parse_args()
@@ -56,6 +65,7 @@ if __name__ == "__main__":
             args.use_minikube,
             args.server_wait,
             args.docker,
+            using_cypress=args.using_cypress,
             build_target=args.build_target,
         )
     except Exception as err:

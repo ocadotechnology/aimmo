@@ -52,6 +52,7 @@ def run(
     use_minikube,
     server_wait,
     docker,
+    using_cypress=False,
     capture_output=False,
     test_env=False,
     build_target=None,
@@ -67,6 +68,20 @@ def run(
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
 
     django.setup()
+
+    if using_cypress:
+        settings.DEBUG = False
+    os.environ["NODE_ENV"] = "development" if settings.DEBUG else "production"
+
+
+    if using_cypress:
+        run_command(["node", _FRONTEND_BUNDLER_JS], capture_output=capture_output)
+    else:
+        frontend_bundler = run_command_async(
+            ["node", _FRONTEND_BUNDLER_JS], capture_output=capture_output
+        )
+        PROCESSES.append(frontend_bundler)
+
     run_command(
         ["pip", "install", "-e", ROOT_DIR_LOCATION], capture_output=capture_output
     )
@@ -84,7 +99,7 @@ def run(
     create_superuser_if_missing(username="admin", password="admin")
 
     server_args = []
-    if docker:
+    if not using_cypress:
         if use_minikube:
             parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             sys.path.append(os.path.join(parent_dir, "aimmo_runner"))
@@ -108,16 +123,11 @@ def run(
                 docker_scripts.build_docker_images(build_target=build_target)
                 docker_scripts.start_game_creator()
 
-    os.environ["NODE_ENV"] = "development" if settings.DEBUG else "production"
     os.environ["SERVER_ENV"] = "local"
     server = run_command_async(
         ["python", _MANAGE_PY, "runserver"] + server_args, capture_output=capture_output
     )
-    frontend_bundler = run_command_async(
-        ["node", _FRONTEND_BUNDLER_JS], capture_output=capture_output
-    )
     PROCESSES.append(server)
-    PROCESSES.append(frontend_bundler)
 
     if server_wait:
         try:
@@ -126,6 +136,5 @@ def run(
             pass
 
         server.wait()
-        return PROCESSES
 
-    return 0
+    return PROCESSES

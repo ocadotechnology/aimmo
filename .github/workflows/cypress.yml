@@ -21,11 +21,7 @@ jobs:
           cd game_frontend
           yarn install
       - name: Build project
-        run: python ${{ github.workspace }}/run.py -ns -nd
-      - name: Build frontend
-        run: node ${{ github.workspace }}/game_frontend/djangoBundler.js &
-      - name: Run server
-        run: python ${{ github.workspace }}/example_project/manage.py runserver &
+        run: python ${{ github.workspace }}/run.py -c &
       - name: Cypress run
         uses: cypress-io/github-action@v1
         with:
