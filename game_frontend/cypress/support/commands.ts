@@ -67,7 +67,8 @@ Cypress.Commands.add('visitAGame', () => {
       cy.visit(`/play/${gameId}/`, {
         onBeforeLoad: win => {
           win.initialState = initialState
-        }
+        },
+        retryOnStatusCodeFailure: true
       })
     })
   })
