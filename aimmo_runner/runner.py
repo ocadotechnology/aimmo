@@ -126,5 +126,6 @@ def run(
             pass
 
         server.wait()
+        return PROCESSES
 
-    return PROCESSES
+    return 0
