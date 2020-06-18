@@ -30,7 +30,7 @@ jobs:
           wait-on: http://localhost:8000
           wait-on-timeout: 600
           record: true
-          config: requestTimeout=10000, pageLoadTimeout=120000
+          config: requestTimeout=10000, pageLoadTimeout=120000, failOnStatusCode=false
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
