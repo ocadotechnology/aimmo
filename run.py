@@ -31,24 +31,6 @@ parser.add_argument(
                             Options: runner, tester  """,
 )
 parser.add_argument(
-    "-ns",
-    "--no-server",
-    dest="server_wait",
-    action="store_false",
-    default=True,
-    help="""Specify if you don't wish to start and wait for the server. If not, the
-    run command will end after building the docker images.""",
-)
-parser.add_argument(
-    "-nd",
-    "--no-docker",
-    dest="docker",
-    action="store_false",
-    default=True,
-    help="""Specify if you don't wish to build the Docker images.""",
-)
-
-parser.add_argument(
     "-c",
     "--using-cypress",
     dest="using_cypress",
@@ -63,8 +45,6 @@ if __name__ == "__main__":
 
         runner.run(
             args.use_minikube,
-            args.server_wait,
-            args.docker,
             using_cypress=args.using_cypress,
             build_target=args.build_target,
         )

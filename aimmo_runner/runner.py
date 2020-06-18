@@ -50,8 +50,7 @@ def build_worker_package():
 
 def run(
     use_minikube,
-    server_wait,
-    docker,
+    server_wait=True,
     using_cypress=False,
     capture_output=False,
     test_env=False,
@@ -72,7 +71,6 @@ def run(
     if using_cypress:
         settings.DEBUG = False
     os.environ["NODE_ENV"] = "development" if settings.DEBUG else "production"
-
 
     if using_cypress:
         run_command(["node", _FRONTEND_BUNDLER_JS], capture_output=capture_output)
