@@ -39,12 +39,25 @@ parser.add_argument(
     help="""Specify if you don't wish to start and wait for the server. If not, the
     run command will end after building the docker images.""",
 )
+parser.add_argument(
+    "-nd",
+    "--no-docker",
+    dest="docker",
+    action="store_false",
+    default=True,
+    help="""Specify if you don't wish to build the Docker images.""",
+)
 
 if __name__ == "__main__":
     try:
         args = parser.parse_args()
 
-        runner.run(args.use_minikube, args.server_wait, build_target=args.build_target)
+        runner.run(
+            args.use_minikube,
+            args.server_wait,
+            args.docker,
+            build_target=args.build_target,
+        )
     except Exception as err:
         traceback.print_exc()
         raise

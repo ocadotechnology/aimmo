@@ -20,6 +20,8 @@ jobs:
           pipenv install --system
           cd game_frontend
           yarn install
+      - name: Build project
+        run: python ${{ github.workspace }}/run.py -ns -nd
       - name: Build frontend
         run: node ${{ github.workspace }}/game_frontend/djangoBundler.js &
       - name: Run server

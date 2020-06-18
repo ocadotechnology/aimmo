@@ -51,6 +51,7 @@ def build_worker_package():
 def run(
     use_minikube,
     server_wait,
+    docker,
     capture_output=False,
     test_env=False,
     build_target=None,
@@ -83,28 +84,29 @@ def run(
     create_superuser_if_missing(username="admin", password="admin")
 
     server_args = []
-    if use_minikube:
-        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        sys.path.append(os.path.join(parent_dir, "aimmo_runner"))
+    if docker:
+        if use_minikube:
+            parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            sys.path.append(os.path.join(parent_dir, "aimmo_runner"))
 
-        os.chdir(ROOT_DIR_LOCATION)
+            os.chdir(ROOT_DIR_LOCATION)
 
-        # Import minikube here, so we can install the dependencies first
-        from aimmo_runner import minikube
+            # Import minikube here, so we can install the dependencies first
+            from aimmo_runner import minikube
 
-        minikube.start(build_target=build_target)
+            minikube.start(build_target=build_target)
 
-        server_args.append("0.0.0.0:8000")
-        os.environ["AIMMO_MODE"] = "minikube"
-    else:
-        time.sleep(2)
-        os.environ["AIMMO_MODE"] = "threads"
-        docker_scripts.delete_containers()
-        if build_target == "tester":
-            run_command(["python", "all_tests.py"])
+            server_args.append("0.0.0.0:8000")
+            os.environ["AIMMO_MODE"] = "minikube"
         else:
-            docker_scripts.build_docker_images(build_target=build_target)
-            docker_scripts.start_game_creator()
+            time.sleep(2)
+            os.environ["AIMMO_MODE"] = "threads"
+            docker_scripts.delete_containers()
+            if build_target == "tester":
+                run_command(["python", "all_tests.py"])
+            else:
+                docker_scripts.build_docker_images(build_target=build_target)
+                docker_scripts.start_game_creator()
 
     os.environ["NODE_ENV"] = "development" if settings.DEBUG else "production"
     os.environ["SERVER_ENV"] = "local"
