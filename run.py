@@ -1,10 +1,11 @@
 #!/usr/bin/env python
+import argparse
 import os
 import signal
-import sys
-import time
 import traceback
-import argparse
+
+import time
+
 from aimmo_runner import runner
 
 parser = argparse.ArgumentParser(description="Runs Kurono.")
@@ -29,12 +30,21 @@ parser.add_argument(
                             but it is recommended that you used 'all_tests.py'
                             Options: runner, tester  """,
 )
+parser.add_argument(
+    "-ns",
+    "--no-server",
+    dest="server_wait",
+    action="store_false",
+    default=True,
+    help="""Specify if you don't wish to start and wait for the server. If not, the
+    run command will end after building the docker images.""",
+)
 
 if __name__ == "__main__":
     try:
         args = parser.parse_args()
 
-        runner.run(args.use_minikube, build_target=args.build_target)
+        runner.run(args.use_minikube, args.server_wait, build_target=args.build_target)
     except Exception as err:
         traceback.print_exc()
         raise

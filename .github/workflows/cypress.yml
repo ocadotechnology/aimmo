@@ -20,17 +20,20 @@ jobs:
           pipenv install --system
           cd game_frontend
           yarn install
-      - name: Start servers
-        run: python ${{ github.workspace }}/run.py &
+      - name: Build project
+        run: python ${{ github.workspace }}/run.py -ns
+      - name: Build frontend
+        run: node ${{ github.workspace }}/game_frontend/djangoBundler.js &
+      - name: Run server
+        run: python ${{ github.workspace }}/example_project/manage.py runserver &
       - name: Cypress run
         uses: cypress-io/github-action@v1
         with:
           install: false
           working-directory: game_frontend
           wait-on: http://localhost:8000
-          wait-on-timeout: 600
+          wait-on-timeout: 400
           record: true
-          config: requestTimeout=10000, pageLoadTimeout=300000
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

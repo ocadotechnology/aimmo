@@ -50,7 +50,7 @@ def build_worker_package():
 
 def run(
     use_minikube,
-    server_wait=True,
+    server_wait,
     capture_output=False,
     test_env=False,
     build_target=None,
@@ -117,7 +117,7 @@ def run(
     PROCESSES.append(server)
     PROCESSES.append(frontend_bundler)
 
-    if server_wait is True:
+    if server_wait:
         try:
             game.wait()
         except NameError:
