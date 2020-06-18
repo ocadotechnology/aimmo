@@ -261,5 +261,5 @@ function loadGame (avatarCode) {
     .invoke('dispatch', { type: 'features/AvatarWorker/INITIALIZE_PYODIDE' })
 
   cy.wait('@getPyodide')
-  cy.wait('@getAvatarApi', { timeout: 10000 })
+  cy.wait('@getAvatarApi', { timeout: 20000 })
 }
