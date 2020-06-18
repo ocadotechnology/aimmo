@@ -20,7 +20,7 @@ describe('Cypress for aimmo', () => {
     cy.route({
       method: 'GET',
       url: '/kurono/api/code/*',
-      response: { code: avatarCode }
+      response: avatarCode
     })
 
     const expectedAction = { action_type: 'wait' }
