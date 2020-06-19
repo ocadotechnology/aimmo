@@ -18,7 +18,7 @@ describe('Cypress for aimmo', () => {
 
     const expectedAction = { action_type: 'wait' }
 
-    const expectedLog = "AttributeError: 'bool' object has no attribute 'serialise'\n"
+    const expectedLog = 'AttributeError: \'bool\' object has no attribute \'serialise\'\n'
 
     testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
@@ -42,7 +42,7 @@ describe('Cypress for aimmo', () => {
       .its('consoleLog.logs')
       .then(logs => {
         const log = logs.entries().next().value[1]
-        expect(log).to.deep.equal("SyntaxError: invalid syntax\n")
+        expect(log).to.deep.equal('SyntaxError: invalid syntax\n')
       })
   })
 
@@ -55,7 +55,7 @@ return MoveAction(direction.NORTH)`
 
     const expectedAction = { action_type: 'wait' }
 
-    const expectedLog = ""
+    const expectedLog = ''
 
     testAvatarCode(avatarCode, expectedAction, expectedLog)
 
@@ -65,7 +65,7 @@ return MoveAction(direction.NORTH)`
       .its('consoleLog.logs')
       .then(logs => {
         const log = logs.entries().next().value[1]
-        expect(log).to.deep.equal("IndentationError: expected an indented block\n")
+        expect(log).to.deep.equal('IndentationError: expected an indented block\n')
       })
   })
 
@@ -87,7 +87,7 @@ return MoveAction(direction.NORTH)`
       }
     }
 
-    const expectedLog = "I AM A PRINT STATEMENT\n"
+    const expectedLog = 'I AM A PRINT STATEMENT\n'
 
     testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
@@ -157,7 +157,7 @@ I AM NOT A NESTED PRINT\n`
 
     const expectedAction = { action_type: 'wait' }
 
-    const expectedLog = "Exception: Make sure you are returning an action\n"
+    const expectedLog = 'Exception: Make sure you are returning an action\n'
 
     testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
@@ -183,7 +183,7 @@ def next_turn(world_map, avatar_state):
       }
     }
 
-    const firstExpectedLog = "1\n"
+    const firstExpectedLog = '1\n'
 
     testAvatarCode(avatarCode, expectedAction, firstExpectedLog)
 
@@ -197,7 +197,7 @@ def next_turn(world_map, avatar_state):
         })
     })
 
-    const secondExpectedLog = "2\n"
+    const secondExpectedLog = '2\n'
     checkComputedTurnResult(expectedAction, secondExpectedLog)
   })
 })

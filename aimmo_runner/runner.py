@@ -48,6 +48,16 @@ def build_worker_package():
     run_command(["./aimmo_runner/build_worker_wheel.sh"])
 
 
+def build_frontend(using_cypress, capture_output):
+    if using_cypress:
+        run_command(["node", _FRONTEND_BUNDLER_JS], capture_output=capture_output)
+    else:
+        frontend_bundler = run_command_async(
+            ["node", _FRONTEND_BUNDLER_JS], capture_output=capture_output
+        )
+        PROCESSES.append(frontend_bundler)
+
+
 def start_game_servers(use_minikube, build_target, server_args):
     if use_minikube:
         parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -97,13 +107,7 @@ def run(
         settings.DEBUG = False
     os.environ["NODE_ENV"] = "development" if settings.DEBUG else "production"
 
-    if using_cypress:
-        run_command(["node", _FRONTEND_BUNDLER_JS], capture_output=capture_output)
-    else:
-        frontend_bundler = run_command_async(
-            ["node", _FRONTEND_BUNDLER_JS], capture_output=capture_output
-        )
-        PROCESSES.append(frontend_bundler)
+    build_frontend(using_cypress, capture_output)
 
     run_command(
         ["pip", "install", "-e", ROOT_DIR_LOCATION], capture_output=capture_output
