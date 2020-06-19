@@ -107,14 +107,19 @@ export async function updateAvatarCode (
       turnCount: turnCount
     })
   } catch (error) {
-    await pyodide.runPythonAsync(`def next_turn(world_map, avatar_state):
-  return WaitAction()`)
-    return Promise.resolve({
-      action: { action_type: 'wait' },
-      log: simplifyErrorMessageInLog(error.toString()),
-      turnCount: turnCount
-    })
+    return await setAvatarCodeToWaitActionOnError(error, turnCount)
   }
+}
+
+async function setAvatarCodeToWaitActionOnError (error, turnCount) {
+  await pyodide.runPythonAsync(
+`def next_turn(world_map, avatar_state):
+    return WaitAction()`)
+  return Promise.resolve({
+    action: { action_type: 'wait' },
+    log: simplifyErrorMessageInLog(error.toString()),
+    turnCount: turnCount
+  })
 }
 
 export const computeNextAction$ = (gameState: object, avatarState: object) =>

@@ -13,12 +13,12 @@ describe('Cypress for aimmo', () => {
     const avatarCode = {
       code:
 `def next_turn(world_state, avatar_state):
-    return False\n`
+    return False`
     }
 
     const expectedAction = { action_type: 'wait' }
 
-    const expectedLog = `AttributeError: 'bool' object has no attribute 'serialise'\n`
+    const expectedLog = "AttributeError: 'bool' object has no attribute 'serialise'\n"
 
     testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
@@ -27,7 +27,7 @@ describe('Cypress for aimmo', () => {
     const avatarCode = {
       code:
 `def next_turn(world_state, avatar_state):
-    return MoveAction(direction.)\n`
+    return MoveAction(direction.)`
     }
 
     const expectedAction = { action_type: 'wait' }
@@ -42,7 +42,7 @@ describe('Cypress for aimmo', () => {
       .its('consoleLog.logs')
       .then(logs => {
         const log = logs.entries().next().value[1]
-        expect(log).to.deep.equal(`SyntaxError: invalid syntax\n`)
+        expect(log).to.deep.equal("SyntaxError: invalid syntax\n")
       })
   })
 
@@ -50,12 +50,12 @@ describe('Cypress for aimmo', () => {
     const avatarCode = {
       code:
 `def next_turn(world_state, avatar_state):
-return MoveAction(direction.NORTH)\n`
+return MoveAction(direction.NORTH)`
     }
 
     const expectedAction = { action_type: 'wait' }
 
-    const expectedLog = ``
+    const expectedLog = ""
 
     testAvatarCode(avatarCode, expectedAction, expectedLog)
 
@@ -65,7 +65,7 @@ return MoveAction(direction.NORTH)\n`
       .its('consoleLog.logs')
       .then(logs => {
         const log = logs.entries().next().value[1]
-        expect(log).to.deep.equal(`IndentationError: expected an indented block\n`)
+        expect(log).to.deep.equal("IndentationError: expected an indented block\n")
       })
   })
 
@@ -74,7 +74,7 @@ return MoveAction(direction.NORTH)\n`
       code:
 `def next_turn(world_state, avatar_state):
     print('I AM A PRINT STATEMENT')
-    return MoveAction(direction.NORTH)\n`
+    return MoveAction(direction.NORTH)`
     }
 
     const expectedAction = {
@@ -87,7 +87,7 @@ return MoveAction(direction.NORTH)\n`
       }
     }
 
-    const expectedLog = `I AM A PRINT STATEMENT\n`
+    const expectedLog = "I AM A PRINT STATEMENT\n"
 
     testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
@@ -98,7 +98,7 @@ return MoveAction(direction.NORTH)\n`
 `def next_turn(world_state, avatar_state):
     print('I AM A PRINT STATEMENT')
     print('I AM ALSO A PRINT STATEMENT')
-    return MoveAction(direction.NORTH)\n`
+    return MoveAction(direction.NORTH)`
     }
 
     const expectedAction = {
@@ -127,7 +127,7 @@ I AM ALSO A PRINT STATEMENT\n`
     return MoveAction(direction.NORTH)
 
 def foo():
-    print('I AM A NESTED PRINT')\n`
+    print('I AM A NESTED PRINT')`
     }
 
     const expectedAction = {
@@ -152,12 +152,12 @@ I AM NOT A NESTED PRINT\n`
       code:
 `def next_turn(world_state, avatar_state):
     print('THIS CODE IS BROKEN')
-    return None\n`
+    return None`
     }
 
     const expectedAction = { action_type: 'wait' }
 
-    const expectedLog = `Exception: Make sure you are returning an action\n`
+    const expectedLog = "Exception: Make sure you are returning an action\n"
 
     testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
@@ -170,7 +170,7 @@ def next_turn(world_map, avatar_state):
     global turn_count
     turn_count += 1
     print(turn_count)
-    return MoveAction(direction.NORTH)\n`
+    return MoveAction(direction.NORTH)`
     }
 
     const expectedAction = {
@@ -183,7 +183,7 @@ def next_turn(world_map, avatar_state):
       }
     }
 
-    const firstExpectedLog = `1\n`
+    const firstExpectedLog = "1\n"
 
     testAvatarCode(avatarCode, expectedAction, firstExpectedLog)
 
@@ -197,7 +197,7 @@ def next_turn(world_map, avatar_state):
         })
     })
 
-    const secondExpectedLog = `2\n`
+    const secondExpectedLog = "2\n"
     checkComputedTurnResult(expectedAction, secondExpectedLog)
   })
 })

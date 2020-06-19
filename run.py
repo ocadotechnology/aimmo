@@ -37,7 +37,8 @@ parser.add_argument(
     action="store_true",
     default=False,
     help="""Specify if you want to run the project for running Cypress tests. This
-    disables the building of the Docker images.""",
+    disables the building of the Docker images and builds the frontend in production 
+    mode without watching for changes.""",
 )
 
 if __name__ == "__main__":
