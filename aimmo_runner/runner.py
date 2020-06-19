@@ -48,6 +48,31 @@ def build_worker_package():
     run_command(["./aimmo_runner/build_worker_wheel.sh"])
 
 
+def start_game_servers(use_minikube, build_target, server_args):
+    if use_minikube:
+        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        sys.path.append(os.path.join(parent_dir, "aimmo_runner"))
+
+        os.chdir(ROOT_DIR_LOCATION)
+
+        # Import minikube here, so we can install the dependencies first
+        from aimmo_runner import minikube
+
+        minikube.start(build_target=build_target)
+
+        server_args.append("0.0.0.0:8000")
+        os.environ["AIMMO_MODE"] = "minikube"
+    else:
+        time.sleep(2)
+        os.environ["AIMMO_MODE"] = "threads"
+        docker_scripts.delete_containers()
+        if build_target == "tester":
+            run_command(["python", "all_tests.py"])
+        else:
+            docker_scripts.build_docker_images(build_target=build_target)
+            docker_scripts.start_game_creator()
+
+
 def run(
     use_minikube,
     server_wait=True,
@@ -98,28 +123,7 @@ def run(
 
     server_args = []
     if not using_cypress:
-        if use_minikube:
-            parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            sys.path.append(os.path.join(parent_dir, "aimmo_runner"))
-
-            os.chdir(ROOT_DIR_LOCATION)
-
-            # Import minikube here, so we can install the dependencies first
-            from aimmo_runner import minikube
-
-            minikube.start(build_target=build_target)
-
-            server_args.append("0.0.0.0:8000")
-            os.environ["AIMMO_MODE"] = "minikube"
-        else:
-            time.sleep(2)
-            os.environ["AIMMO_MODE"] = "threads"
-            docker_scripts.delete_containers()
-            if build_target == "tester":
-                run_command(["python", "all_tests.py"])
-            else:
-                docker_scripts.build_docker_images(build_target=build_target)
-                docker_scripts.start_game_creator()
+        start_game_servers(use_minikube, build_target, server_args)
 
     os.environ["SERVER_ENV"] = "local"
     server = run_command_async(

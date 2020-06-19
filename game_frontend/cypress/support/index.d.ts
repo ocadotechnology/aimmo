@@ -27,5 +27,12 @@ declare namespace Cypress {
      * @example cy.visitAGame()
      */
     visitAGame(): Chainable<Element>
+
+    /**
+     * Load and visit the first game and set its avatar code to the avatarCode object.
+     * It waits for Pyodide and the Avatar API to load.
+     * @example cy.loadGameWithAvatarCode({code: "test code"})
+     */
+    loadGameWithAvatarCode(avatarCode): Chainable<Element>
   }
 }

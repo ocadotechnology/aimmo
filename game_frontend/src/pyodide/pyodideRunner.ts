@@ -100,13 +100,12 @@ export async function updateAvatarCode (
     await pyodide.runPythonAsync(userCode)
     if (gameState) {
       return computeNextAction(gameState, playerAvatarID)
-    } else {
-      return Promise.resolve({
-        action: { action_type: 'wait' },
-        log: '',
-        turnCount: turnCount
-      })
     }
+    return Promise.resolve({
+      action: { action_type: 'wait' },
+      log: '',
+      turnCount: turnCount
+    })
   } catch (error) {
     await pyodide.runPythonAsync(`def next_turn(world_map, avatar_state):
   return WaitAction()`)

@@ -36,7 +36,8 @@ parser.add_argument(
     dest="using_cypress",
     action="store_true",
     default=False,
-    help="""Specify if you don't wish to build the Docker images.""",
+    help="""Specify if you want to run the project for running Cypress tests. This
+    disables the building of the Docker images.""",
 )
 
 if __name__ == "__main__":

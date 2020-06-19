@@ -11,24 +11,23 @@ describe('Cypress for aimmo', () => {
 
   it('returns wait action if code does not return an action', () => {
     const avatarCode = {
-      code: `def next_turn(world_state, avatar_state):
-    return False
-`
+      code:
+`def next_turn(world_state, avatar_state):
+    return False\n`
     }
 
     const expectedAction = { action_type: 'wait' }
 
-    const expectedLog = `AttributeError: 'bool' object has no attribute 'serialise'
-`
+    const expectedLog = `AttributeError: 'bool' object has no attribute 'serialise'\n`
 
     testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
 
   it('returns wait action and prints syntax warning on syntax error', () => {
     const avatarCode = {
-      code: `def next_turn(world_state, avatar_state):
-    return MoveAction(direction.)
-`
+      code:
+`def next_turn(world_state, avatar_state):
+    return MoveAction(direction.)\n`
     }
 
     const expectedAction = { action_type: 'wait' }
@@ -43,16 +42,15 @@ describe('Cypress for aimmo', () => {
       .its('consoleLog.logs')
       .then(logs => {
         const log = logs.entries().next().value[1]
-        expect(log).to.deep.equal(`SyntaxError: invalid syntax
-`)
+        expect(log).to.deep.equal(`SyntaxError: invalid syntax\n`)
       })
   })
 
   it('returns wait action and prints indentation warning on indentation error', () => {
     const avatarCode = {
-      code: `def next_turn(world_state, avatar_state):
-return MoveAction(direction.NORTH)
-`
+      code:
+`def next_turn(world_state, avatar_state):
+return MoveAction(direction.NORTH)\n`
     }
 
     const expectedAction = { action_type: 'wait' }
@@ -67,17 +65,16 @@ return MoveAction(direction.NORTH)
       .its('consoleLog.logs')
       .then(logs => {
         const log = logs.entries().next().value[1]
-        expect(log).to.deep.equal(`IndentationError: expected an indented block
-`)
+        expect(log).to.deep.equal(`IndentationError: expected an indented block\n`)
       })
   })
 
   it('prints with one print', () => {
     const avatarCode = {
-      code: `def next_turn(world_state, avatar_state):
+      code:
+`def next_turn(world_state, avatar_state):
     print('I AM A PRINT STATEMENT')
-    return MoveAction(direction.NORTH)
-`
+    return MoveAction(direction.NORTH)\n`
     }
 
     const expectedAction = {
@@ -90,19 +87,18 @@ return MoveAction(direction.NORTH)
       }
     }
 
-    const expectedLog = `I AM A PRINT STATEMENT
-`
+    const expectedLog = `I AM A PRINT STATEMENT\n`
 
     testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
 
   it('prints with multiple prints', () => {
     const avatarCode = {
-      code: `def next_turn(world_state, avatar_state):
+      code:
+`def next_turn(world_state, avatar_state):
     print('I AM A PRINT STATEMENT')
     print('I AM ALSO A PRINT STATEMENT')
-    return MoveAction(direction.NORTH)
-`
+    return MoveAction(direction.NORTH)\n`
     }
 
     const expectedAction = {
@@ -115,23 +111,23 @@ return MoveAction(direction.NORTH)
       }
     }
 
-    const expectedLog = `I AM A PRINT STATEMENT
-I AM ALSO A PRINT STATEMENT
-`
+    const expectedLog =
+`I AM A PRINT STATEMENT
+I AM ALSO A PRINT STATEMENT\n`
 
     testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
 
   it('prints with a print in a separate function', () => {
     const avatarCode = {
-      code: `def next_turn(world_map, avatar_state):
+      code:
+`def next_turn(world_map, avatar_state):
     foo()
     print('I AM NOT A NESTED PRINT')
     return MoveAction(direction.NORTH)
 
 def foo():
-    print('I AM A NESTED PRINT')
-`
+    print('I AM A NESTED PRINT')\n`
     }
 
     const expectedAction = {
@@ -144,38 +140,37 @@ def foo():
       }
     }
 
-    const expectedLog = `I AM A NESTED PRINT
-I AM NOT A NESTED PRINT
-`
+    const expectedLog =
+`I AM A NESTED PRINT
+I AM NOT A NESTED PRINT\n`
 
     testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
 
   it('prints error message if code is broken', () => {
     const avatarCode = {
-      code: `def next_turn(world_state, avatar_state):
+      code:
+`def next_turn(world_state, avatar_state):
     print('THIS CODE IS BROKEN')
-    return None
-`
+    return None\n`
     }
 
     const expectedAction = { action_type: 'wait' }
 
-    const expectedLog = `Exception: Make sure you are returning an action
-`
+    const expectedLog = `Exception: Make sure you are returning an action\n`
 
     testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
 
   it('stores, changes global variable and prints it out', () => {
     const avatarCode = {
-      code: `turn_count = 0
+      code:
+`turn_count = 0
 def next_turn(world_map, avatar_state):
     global turn_count
     turn_count += 1
     print(turn_count)
-    return MoveAction(direction.NORTH)
-`
+    return MoveAction(direction.NORTH)\n`
     }
 
     const expectedAction = {
@@ -188,8 +183,7 @@ def next_turn(world_map, avatar_state):
       }
     }
 
-    const firstExpectedLog = `1
-`
+    const firstExpectedLog = `1\n`
 
     testAvatarCode(avatarCode, expectedAction, firstExpectedLog)
 
@@ -203,14 +197,13 @@ def next_turn(world_map, avatar_state):
         })
     })
 
-    const secondExpectedLog = `2
-`
+    const secondExpectedLog = `2\n`
     checkComputedTurnResult(expectedAction, secondExpectedLog)
   })
 })
 
 function testAvatarCode (avatarCode, expectedAction, expectedLog) {
-  loadGame(avatarCode)
+  cy.loadGameWithAvatarCode(avatarCode)
 
   cy.fixture('gameState.json').then(gameState => {
     cy.window()
@@ -238,28 +231,4 @@ function checkComputedTurnResult (expectedAction, expectedLog) {
       expect(avatarAction).to.deep.equal(expectedAction)
       expect(avatarLog).to.deep.equal(expectedLog)
     })
-}
-
-function loadGame (avatarCode) {
-  cy.server()
-    .route({
-    method: 'GET',
-    url: '/kurono/api/code/*',
-    response: avatarCode
-  })
-  cy.server()
-    .route('GET', 'https://pyodide-cdn2.iodide.io/v0.15.0/full/pyodide.asm.data')
-    .as('getPyodide')
-  cy.server()
-    .route('GET', 'static/worker/aimmo_avatar_api-0.0.0-py3-none-any.whl')
-    .as('getAvatarApi')
-
-  cy.visitAGame()
-
-  cy.window()
-    .its('store')
-    .invoke('dispatch', { type: 'features/AvatarWorker/INITIALIZE_PYODIDE' })
-
-  cy.wait('@getPyodide')
-  cy.wait('@getAvatarApi', { timeout: 20000 })
 }
