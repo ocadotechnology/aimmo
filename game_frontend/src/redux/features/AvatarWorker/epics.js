@@ -8,7 +8,7 @@ import { editorTypes } from '../Editor'
 
 const initializePyodideEpic = (action$, state$, { pyodideRunner: { initializePyodide } }) =>
   action$.pipe(
-    ofType(gameTypes.SOCKET_CONNECT_TO_GAME_REQUEST),
+    ofType(gameTypes.SOCKET_CONNECT_TO_GAME_REQUEST, types.INITIALIZE_PYODIDE),
     switchMap(initializePyodide),
     mapTo(actions.pyodideInitialized())
   )

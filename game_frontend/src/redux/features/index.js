@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
 import { combineEpics } from 'redux-observable'
+import actionReducer from './AvatarWorker/reducers'
 import { analyticEpics } from './Analytics'
 import editorReducer, { editorEpics } from './Editor'
 import consoleLogReducer from './ConsoleLog'
@@ -16,7 +17,8 @@ const rootEpic = combineEpics(
 const rootReducer = combineReducers({
   editor: editorReducer,
   game: gameReducer,
-  consoleLog: consoleLogReducer
+  consoleLog: consoleLogReducer,
+  action: actionReducer
 })
 
 export { rootEpic, rootReducer }

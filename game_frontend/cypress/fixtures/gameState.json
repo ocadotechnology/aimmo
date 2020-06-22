@@ -1,0 +1,42 @@
+{
+  "gameState": {
+    "era": "future",
+    "southWestCorner": {
+      "x": -15,
+      "y": -15
+    },
+    "northEastCorner": {
+      "x": 15,
+      "y": 15
+    },
+    "players": [
+      {
+        "location": { "x": 1, "y": 1 },
+        "health": 10,
+        "score": 10,
+        "backpack": {},
+        "id": 1,
+        "orientation": "north"
+      }
+    ],
+    "interactables": [
+      {
+        "type": "artefact",
+        "location": {
+          "x": -8,
+          "y": 15
+        }
+      }
+    ],
+    "obstacles": [
+      {
+        "location": { "x": 2, "y": 2 },
+        "width": 1,
+        "height": 1,
+        "type": "wall",
+        "orientation": "north"
+      }
+    ],
+    "turnCount": 1
+  }
+}

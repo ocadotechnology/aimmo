@@ -63,8 +63,38 @@ Cypress.Commands.add('deleteAllGames', () => {
 Cypress.Commands.add('visitAGame', () => {
   cy.request('/api/games/').then(response => {
     const gameId = Object.keys(response.body)[0]
-    cy.visit(`/play/${gameId}/`)
+    cy.fixture('initialState.json').then(initialState => {
+      cy.visit(`/play/${gameId}/`, {
+        onBeforeLoad: win => {
+          win.initialState = initialState
+        }
+      })
+    })
   })
+})
+
+Cypress.Commands.add('loadGameWithAvatarCode', avatarCode => {
+  cy.server()
+    .route({
+      method: 'GET',
+      url: '/kurono/api/code/*',
+      response: avatarCode
+    })
+  cy.server()
+    .route('GET', 'https://pyodide-cdn2.iodide.io/v0.15.0/full/pyodide.asm.data')
+    .as('getPyodide')
+  cy.server()
+    .route('GET', 'static/worker/aimmo_avatar_api-0.0.0-py3-none-any.whl')
+    .as('getAvatarApi')
+
+  cy.visitAGame()
+
+  cy.window()
+    .its('store')
+    .invoke('dispatch', { type: 'features/AvatarWorker/INITIALIZE_PYODIDE' })
+
+  cy.wait('@getPyodide')
+  cy.wait('@getAvatarApi', { timeout: 20000 })
 })
 //
 //

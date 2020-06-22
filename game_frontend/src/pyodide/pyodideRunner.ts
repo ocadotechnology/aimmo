@@ -91,6 +91,11 @@ export async function updateAvatarCode (
   gameState: any,
   playerAvatarID: number = 0
 ): Promise<ComputedTurnResult> {
+  let turnCount = 0
+  if (gameState) {
+    turnCount = gameState.turnCount + 1
+  }
+
   try {
     await pyodide.runPythonAsync(userCode)
     if (gameState) {
@@ -99,15 +104,22 @@ export async function updateAvatarCode (
     return Promise.resolve({
       action: { action_type: 'wait' },
       log: '',
-      turnCount: 0
+      turnCount: turnCount
     })
   } catch (error) {
+    await setAvatarCodeToWaitActionOnError()
     return Promise.resolve({
       action: { action_type: 'wait' },
       log: simplifyErrorMessageInLog(error.toString()),
-      turnCount: gameState.turnCount + 1
+      turnCount: turnCount
     })
   }
+}
+
+async function setAvatarCodeToWaitActionOnError () {
+  await pyodide.runPythonAsync(
+`def next_turn(world_map, avatar_state):
+    return WaitAction()`)
 }
 
 export const computeNextAction$ = (gameState: object, avatarState: object) =>

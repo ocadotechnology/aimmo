@@ -20,8 +20,8 @@ jobs:
           pipenv install --system
           cd game_frontend
           yarn install
-      - name: Start servers
-        run: python ${{ github.workspace }}/run.py &
+      - name: Build project and run server
+        run: python ${{ github.workspace }}/run.py -c &
       - name: Cypress run
         uses: cypress-io/github-action@v1
         with:

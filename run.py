@@ -1,10 +1,11 @@
 #!/usr/bin/env python
+import argparse
 import os
 import signal
-import sys
-import time
 import traceback
-import argparse
+
+import time
+
 from aimmo_runner import runner
 
 parser = argparse.ArgumentParser(description="Runs Kurono.")
@@ -29,12 +30,26 @@ parser.add_argument(
                             but it is recommended that you used 'all_tests.py'
                             Options: runner, tester  """,
 )
+parser.add_argument(
+    "-c",
+    "--using-cypress",
+    dest="using_cypress",
+    action="store_true",
+    default=False,
+    help="""Specify if you want to run the project for running Cypress tests. This
+    disables the building of the Docker images and builds the frontend in production 
+    mode without watching for changes.""",
+)
 
 if __name__ == "__main__":
     try:
         args = parser.parse_args()
 
-        runner.run(args.use_minikube, build_target=args.build_target)
+        runner.run(
+            args.use_minikube,
+            using_cypress=args.using_cypress,
+            build_target=args.build_target,
+        )
     except Exception as err:
         traceback.print_exc()
         raise

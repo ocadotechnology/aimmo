@@ -48,41 +48,17 @@ def build_worker_package():
     run_command(["./aimmo_runner/build_worker_wheel.sh"])
 
 
-def run(
-    use_minikube,
-    server_wait=True,
-    capture_output=False,
-    test_env=False,
-    build_target=None,
-):
-    logging.basicConfig()
-
-    build_worker_package()
-
-    if test_env:
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "test_settings")
+def build_frontend(using_cypress, capture_output):
+    if using_cypress:
+        run_command(["node", _FRONTEND_BUNDLER_JS], capture_output=capture_output)
     else:
-        sys.path.append(os.path.join(ROOT_DIR_LOCATION, "example_project"))
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
-
-    django.setup()
-    run_command(
-        ["pip", "install", "-e", ROOT_DIR_LOCATION], capture_output=capture_output
-    )
-
-    if not test_env:
-        run_command(
-            ["python", _MANAGE_PY, "migrate", "--noinput"],
-            capture_output=capture_output,
+        frontend_bundler = run_command_async(
+            ["node", _FRONTEND_BUNDLER_JS], capture_output=capture_output
         )
-        run_command(
-            ["python", _MANAGE_PY, "collectstatic", "--noinput"],
-            capture_output=capture_output,
-        )
+        PROCESSES.append(frontend_bundler)
 
-    create_superuser_if_missing(username="admin", password="admin")
 
-    server_args = []
+def start_game_servers(use_minikube, build_target, server_args):
     if use_minikube:
         parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         sys.path.append(os.path.join(parent_dir, "aimmo_runner"))
@@ -106,18 +82,60 @@ def run(
             docker_scripts.build_docker_images(build_target=build_target)
             docker_scripts.start_game_creator()
 
+
+def run(
+    use_minikube,
+    server_wait=True,
+    using_cypress=False,
+    capture_output=False,
+    test_env=False,
+    build_target=None,
+):
+    logging.basicConfig()
+
+    build_worker_package()
+
+    if test_env:
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "test_settings")
+    else:
+        sys.path.append(os.path.join(ROOT_DIR_LOCATION, "example_project"))
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
+
+    django.setup()
+
+    if using_cypress:
+        settings.DEBUG = False
     os.environ["NODE_ENV"] = "development" if settings.DEBUG else "production"
+
+    build_frontend(using_cypress, capture_output)
+
+    run_command(
+        ["pip", "install", "-e", ROOT_DIR_LOCATION], capture_output=capture_output
+    )
+
+    if not test_env:
+        run_command(
+            ["python", _MANAGE_PY, "migrate", "--noinput"],
+            capture_output=capture_output,
+        )
+        run_command(
+            ["python", _MANAGE_PY, "collectstatic", "--noinput"],
+            capture_output=capture_output,
+        )
+
+    create_superuser_if_missing(username="admin", password="admin")
+
+    server_args = []
+    if not using_cypress:
+        start_game_servers(use_minikube, build_target, server_args)
+
     os.environ["SERVER_ENV"] = "local"
     server = run_command_async(
         ["python", _MANAGE_PY, "runserver"] + server_args, capture_output=capture_output
     )
-    frontend_bundler = run_command_async(
-        ["node", _FRONTEND_BUNDLER_JS], capture_output=capture_output
-    )
     PROCESSES.append(server)
-    PROCESSES.append(frontend_bundler)
 
-    if server_wait is True:
+    if server_wait:
         try:
             game.wait()
         except NameError:

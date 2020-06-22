@@ -1,0 +1,19 @@
+{
+  "editor": {
+    "code": {
+      "code": ""
+    },
+    "runCodeButton": {
+      "status": "normal"
+    }
+  },
+  "game": {
+    "connectionParameters": {
+      "game_id": 1,
+      "currentAvatarID": 1
+    },
+    "timeoutStatus": false,
+    "gameLoaded": true,
+    "cameraCenteredOnUserAvatar": true
+  }
+}
