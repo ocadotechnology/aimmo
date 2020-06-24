@@ -115,7 +115,7 @@ class Worksheet(models.Model):
     ERA_CHOICES = [(i+1, ERAS[i]) for i in range(0, len(ERAS))]
 
     name = models.CharField(max_length=100)
-    era = models.CharField(
-        max_length=20, choices=ERA_CHOICES, default=ERA_CHOICES[0][0]
+    era = models.PositiveSmallIntegerField(
+        choices=ERA_CHOICES, default=ERA_CHOICES[0][0]
     )
     starter_code = models.TextField()
