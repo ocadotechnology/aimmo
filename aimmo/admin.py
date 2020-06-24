@@ -54,8 +54,8 @@ class AvatarDataAdmin(admin.ModelAdmin):
 
 
 class WorksheetDataAdmin(admin.ModelAdmin):
-    search_fields = ["id", "name"]
-    list_display = ["id", "name"]
+    search_fields = ["id", "name", "era"]
+    list_display = ["id", "name", "era"]
 
 
 admin.site.register(Game, GameDataAdmin)
