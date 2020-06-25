@@ -1,6 +1,7 @@
-import os
-
 import aiohttp
+import json
+import os
+import requests
 
 
 class DjangoCommunicator(object):
@@ -18,8 +19,9 @@ class DjangoCommunicator(object):
     async def get_game_metadata(self):
         try:
             async with self.session.get(f"{self.django_api_url}users/") as response:
-                return await response.json()
-        except aiohttp.client_exceptions.ClientConnectionError:
+                data = await response.read()
+                return json.loads(data)
+        except aiohttp.ClientConnectionError:
             return {"users": []}
 
     def mark_game_complete(self, data=None):
