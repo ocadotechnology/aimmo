@@ -10,8 +10,6 @@ GAME_GENERATORS = [("Main", "Open World")] + [  # Default
     ("Level%s" % i, "Level %s" % i) for i in range(1, app_settings.MAX_LEVEL + 1)
 ]
 
-ERAS = ["future", "ancient", "modern day", "prehistoric", "broken future"]
-
 
 def generate_auth_token():
     return urlsafe_b64encode(urandom(16))
@@ -112,7 +110,13 @@ class LevelAttempt(models.Model):
 
 
 class Worksheet(models.Model):
-    ERA_CHOICES = [(i+1, ERAS[i]) for i in range(0, len(ERAS))]
+    ERA_CHOICES = [
+        (1, "future"),
+        (2, "ancient"),
+        (3, "modern day"),
+        (4, "prehistoric"),
+        (5, "broken future"),
+    ]
 
     name = models.CharField(max_length=100)
     era = models.PositiveSmallIntegerField(

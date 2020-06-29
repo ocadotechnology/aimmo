@@ -4,7 +4,7 @@ from .base_test_migration import MigrationTestCase
 
 class TestMigrationAlterGameToken(MigrationTestCase):
     start_migration = "0013_alter_game_can_play"
-    dest_migration = "0014_worksheet"
+    dest_migration = "0014_add_worksheet_model"
 
     def test_worksheet_model_exists(self):
         model_names = [
