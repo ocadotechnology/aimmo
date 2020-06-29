@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+
 from .base_test_migration import MigrationTestCase
 
 
