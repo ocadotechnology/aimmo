@@ -107,3 +107,19 @@ class LevelAttempt(models.Model):
 
     class Meta:
         unique_together = ("level_number", "user")
+
+
+class Worksheet(models.Model):
+    ERA_CHOICES = [
+        (1, "future"),
+        (2, "ancient"),
+        (3, "modern day"),
+        (4, "prehistoric"),
+        (5, "broken future"),
+    ]
+
+    name = models.CharField(max_length=100)
+    era = models.PositiveSmallIntegerField(
+        choices=ERA_CHOICES, default=ERA_CHOICES[0][0]
+    )
+    starter_code = models.TextField()
