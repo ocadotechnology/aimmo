@@ -35,6 +35,7 @@ class TestViews(TestCase):
         "name": "test",
         "status": "r",
         "settings": '{"GENERATOR": "Main", "OBSTACLE_RATIO": 0.1, "PICKUP_SPAWN_CHANCE": 0.1, "SCORE_DESPAWN_CHANCE": 0.05, "START_HEIGHT": 31, "START_WIDTH": 31, "TARGET_NUM_CELLS_PER_AVATAR": 16.0, "TARGET_NUM_PICKUPS_PER_AVATAR": 1.2, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
+        "worksheet_id": None,
     }
 
     EXPECTED_GAME_LIST = {"1": EXPECTED_GAME_DETAIL, "2": EXPECTED_GAME_DETAIL}
@@ -253,7 +254,7 @@ class TestViews(TestCase):
         client_two.login(username="test2", password="password2")
 
         self.game.public = True
-        self.game.can_play = [first_user, second_user]
+        self.game.can_play.set([first_user, second_user])
         self.game.save()
 
         first_response = client_one.get(
@@ -280,7 +281,7 @@ class TestViews(TestCase):
         client_one = Client()
 
         self.game.public = True
-        self.game.can_play = [user]
+        self.game.can_play.set([user])
         self.game.save()
 
         first_response = client_one.get(
@@ -299,7 +300,7 @@ class TestViews(TestCase):
         client = self.login()
 
         self.game.public = True
-        self.game.can_play = [user]
+        self.game.can_play.set([user])
         self.game.save()
 
         current_avatar_api_response = client.get(
@@ -450,13 +451,13 @@ class TestViews(TestCase):
         client = self.login()
 
         response = client.get(reverse("game-detail", kwargs={"pk": self.game.id}))
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_add_game(self):
         client = self.login()
 
         response = client.post(reverse("kurono/new_game"), data={"name": "test"})
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
     def test_adding_a_game_creates_an_avatar(self):
         client = self.login()

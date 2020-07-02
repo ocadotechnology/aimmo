@@ -1,9 +1,7 @@
-from __future__ import absolute_import
-
 from .base_test_migration import MigrationTestCase
 
 
-class TestMigrationAlterGameToken(MigrationTestCase):
+class TestMigrationAddWorksheetModel(MigrationTestCase):
     start_migration = "0013_alter_game_can_play"
     dest_migration = "0014_add_worksheet_model"
 

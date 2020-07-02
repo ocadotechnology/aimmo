@@ -8,6 +8,7 @@ class GameSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=100)
     settings = serializers.SerializerMethodField("get_settings_as_dict")
     status = serializers.CharField(max_length=1)
+    worksheet_id = serializers.IntegerField(read_only=True)
 
     def get_settings_as_dict(self, game):
         return json.dumps(game.settings_as_dict(), sort_keys=True)
