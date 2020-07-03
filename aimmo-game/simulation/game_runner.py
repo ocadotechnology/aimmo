@@ -59,9 +59,6 @@ class GameRunner:
             if player_in_avatar_manager_but_not_metadata(player_id)
         ]
 
-    def update_main_user(self, game_metadata):
-        self.game_state.main_avatar_id = game_metadata["main_avatar"]
-
     async def update_avatars(self):
         game_metadata = await self.communicator.get_game_metadata()
 
@@ -70,8 +67,6 @@ class GameRunner:
 
         self.simulation_runner.add_avatars(users_to_add)
         self.simulation_runner.delete_avatars(users_to_delete)
-
-        self.update_main_user(game_metadata)
 
     async def update_simulation(self, player_id_to_serialized_actions):
         await self.simulation_runner.run_single_turn(player_id_to_serialized_actions)
