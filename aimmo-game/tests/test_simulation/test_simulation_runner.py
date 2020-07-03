@@ -130,28 +130,6 @@ class TestSimulationRunner:
         self.simulation_runner.update_environment()
         assert len(self.simulation_runner.game_state.avatar_manager.avatars_by_id) == 3
 
-    def test_grid_expand(self):
-        self.construct_simulation_runner([], [])
-        settings = SETTINGS.copy()
-        settings["TARGET_NUM_CELLS_PER_AVATAR"] = 5
-        self.simulation_runner.game_state.world_map = WorldMap(
-            self._generate_grid(), settings
-        )
-        self.simulation_runner.update(1, self.simulation_runner.game_state)
-        print(self.simulation_runner.game_state.world_map)
-        assert self.simulation_runner.game_state.world_map.is_on_map(Location(-1, -1))
-        assert self.simulation_runner.game_state.world_map.is_on_map(Location(-1, 2))
-        assert self.simulation_runner.game_state.world_map.is_on_map(Location(2, 2))
-        assert self.simulation_runner.game_state.world_map.is_on_map(Location(2, -1))
-        self.assertGridSize(self.simulation_runner.game_state.world_map, 4)
-
-        self.simulation_runner.update(4, self.simulation_runner.game_state)
-        self.assertGridSize(self.simulation_runner.game_state.world_map, 6)
-        assert self.simulation_runner.game_state.world_map.is_on_map(Location(0, 3))
-        assert self.simulation_runner.game_state.world_map.is_on_map(Location(3, 0))
-        assert self.simulation_runner.game_state.world_map.is_on_map(Location(-2, 0))
-        assert self.simulation_runner.game_state.world_map.is_on_map(Location(0, -2))
-
     def test_grid_doesnt_expand(self):
         self.construct_simulation_runner([], [])
         settings = SETTINGS.copy()

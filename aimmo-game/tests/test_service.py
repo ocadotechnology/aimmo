@@ -57,7 +57,6 @@ class TestService(TestCase):
         player_list = self.world_state_json["players"]
         self.assertEqual(len(player_list), 1)
         details = player_list[0]
-        print("Player list: {}".format(player_list))
         self.assertEqual(details["id"], 1)
         self.assertEqual(details["location"]["x"], 0)
         self.assertEqual(details["location"]["y"], -1)
