@@ -9,12 +9,13 @@ from typing import TYPE_CHECKING
 from .game_logic.map_updaters import PickupUpdater
 
 if TYPE_CHECKING:
-    from typing import List
+    from typing import List, Dict, Callable
     from .game_logic.map_updaters import _MapUpdater
 
 
 @dataclass
 class WorksheetData:
+    worksheet_id: int
     era: str
     map_updaters: "List[_MapUpdater]"
 
@@ -28,14 +29,16 @@ ERA_CHOICES = {
 }
 
 
-_worksheet_id_to_map_updaters = {1: [PickupUpdater]}
+_worksheet_id_to_map_updaters = {1: [PickupUpdater], 2: [PickupUpdater]}
 
 
 def get_worksheet_data() -> WorksheetData:
     worksheet_id = os.environ.get("worksheet_id", 1)
-    map_updaters = _worksheet_id_to_map_updaters.get(worksheet_id, [])
+    map_updaters = _worksheet_id_to_map_updaters.get(int(worksheet_id), [])
     era_id = os.environ.get("era", "1")
-    return WorksheetData(era=ERA_CHOICES[int(era_id)], map_updaters=map_updaters)
+    return WorksheetData(
+        worksheet_id=1, era=ERA_CHOICES[int(era_id)], map_updaters=map_updaters
+    )
 
 
 WORKSHEET = get_worksheet_data()
