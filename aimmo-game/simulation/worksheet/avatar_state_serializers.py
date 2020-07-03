@@ -30,7 +30,7 @@ def _worksheet2_avatar_state_serializer(
     }
 
 
-worksheet_id_to_avatar_state_serializer: Dict[int, Any] = {
+worksheet_id_to_avatar_state_serializer: Dict[str, worksheet.AvatarStateSerializer] = {
     "1": _worksheet1_avatar_state_serializer,
     "2": _worksheet2_avatar_state_serializer,
 }
