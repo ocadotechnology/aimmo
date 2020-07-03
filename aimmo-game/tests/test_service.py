@@ -60,9 +60,7 @@ class TestService(TestCase):
         self.assertEqual(details["id"], 1)
         self.assertEqual(details["location"]["x"], 0)
         self.assertEqual(details["location"]["y"], -1)
-        self.assertEqual(details["health"], 5)
         self.assertEqual(details["orientation"], "north")
-        self.assertEqual(details["score"], 0)
 
     def test_correct_json_score_locations(self):
         """
