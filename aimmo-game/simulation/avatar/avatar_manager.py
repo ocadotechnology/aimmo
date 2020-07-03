@@ -1,5 +1,7 @@
+from typing import List
 from simulation.avatar.avatar_wrapper import AvatarWrapper
 from simulation.avatar.avatar_appearance import AvatarAppearance
+from simulation.worksheet import WORKSHEET, WorksheetData
 
 
 class AvatarManager(object):
@@ -7,8 +9,9 @@ class AvatarManager(object):
     Stores all game avatars.
     """
 
-    def __init__(self):
+    def __init__(self, worksheet: WorksheetData = WORKSHEET):
         self.avatars_by_id = {}
+        self.worksheet = worksheet
 
     def add_avatar(self, player_id, location):
         avatar = AvatarWrapper(
@@ -28,7 +31,7 @@ class AvatarManager(object):
             avatar.clear_logs()
 
     @property
-    def avatars(self):
+    def avatars(self) -> List[AvatarWrapper]:
         return list(self.avatars_by_id.values())
 
     @property
@@ -40,4 +43,6 @@ class AvatarManager(object):
         To be called on a required update of players in the front-end of the game.
         """
 
-        return [player.serialize() for player in self.avatars]
+        return [
+            self.worksheet.avatar_state_serializer(avatar) for avatar in self.avatars
+        ]

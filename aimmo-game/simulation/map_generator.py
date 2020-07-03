@@ -25,10 +25,7 @@ class _BaseGenerator(object):
         self.settings = settings
 
     def get_game_state(self, avatar_manager):
-        return GameState(self.get_map(), avatar_manager, self.check_complete)
-
-    def check_complete(self, game_state):
-        return False
+        return GameState(self.get_map(), avatar_manager)
 
     @abc.abstractmethod
     def get_map(self):

@@ -1,4 +1,5 @@
-from threading import RLock
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from simulation.interactables import serialize_interactables
@@ -15,11 +16,11 @@ class GameState:
     Encapsulates the entire game state, including avatars, their code, and the world.
     """
 
-    def __init__(self, world_map, avatar_manager, worksheet=WORKSHEET):
-        self.world_map: "WorldMap" = world_map
-        self.avatar_manager: "AvatarManager" = avatar_manager
+    def __init__(self, world_map, avatar_manager, worksheet: WorksheetData = WORKSHEET):
+        self.world_map: WorldMap = world_map
+        self.avatar_manager: AvatarManager = avatar_manager
         self.turn_count: int = 0
-        self.worksheet: "WorksheetData" = worksheet
+        self.worksheet: WorksheetData = worksheet
 
     def serialize(self):
         return {

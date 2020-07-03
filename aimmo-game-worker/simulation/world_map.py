@@ -1,6 +1,6 @@
-from .avatar_state import AvatarState
+from .avatar_state import create_avatar_state
 from .location import Location
-from typing import Dict
+from typing import Dict, List
 
 
 class Cell(object):
@@ -15,14 +15,7 @@ class Cell(object):
         self.interactable = None
         self.obstacle = None
         if avatar:
-            self.avatar = AvatarState(
-                location=avatar["location"],
-                score=avatar["score"],
-                health=avatar["health"],
-                backpack=avatar["backpack"],
-                id=0,
-                orientation="north",
-            )
+            self.avatar = create_avatar_state(avatar)
         for (key, value) in kwargs.items():
             if not key == "habitable":
                 setattr(self, key, value)
@@ -47,7 +40,7 @@ class Cell(object):
 
 
 class WorldMapCreator:
-    def generate_world_map_from_cells_data(cells) -> "WorldMap":
+    def generate_world_map_from_cells_data(cells: List[Cell]) -> "WorldMap":
         world_map_cells: Dict[Location, Cell] = {}
         for cell_data in cells:
             cell = Cell(**cell_data)
@@ -78,14 +71,7 @@ class WorldMapCreator:
 
         for player in game_state["players"]:
             location = Location(player["location"]["x"], player["location"]["y"])
-            cells[location].player = AvatarState(
-                {"x": location.x, "y": location.y},
-                player["health"],
-                player["score"],
-                player["backpack"],
-                player["id"],
-                player["orientation"],
-            )
+            cells[location].player = create_avatar_state(player)
 
         return WorldMap(cells)
 
