@@ -41,14 +41,6 @@ def generate_grid(columns=2, rows=2):
     return grid
 
 
-class serializer(object):
-    def __init__(self, content):
-        self.content = content
-
-    def serialize(self):
-        return self.content
-
-
 class TestWorldMap(TestCase):
     def setUp(self):
         self.settings = WORLD_MAP_SETTINGS
