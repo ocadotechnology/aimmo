@@ -4,7 +4,7 @@ from unittest import TestCase
 
 from simulation.game_state import GameState
 from simulation.location import Location
-from simulation.worksheet import WorksheetData
+from simulation.worksheet.worksheet import WorksheetData
 
 from .dummy_avatar import DummyAvatar, DummyAvatarManager
 from .maps import WorldMap, EmptyMap

@@ -6,11 +6,10 @@ from typing import TYPE_CHECKING
 
 from simulation.action import PRIORITIES
 from simulation.game_logic import EffectApplier, MapContext, PickupUpdater
-from simulation.worksheet import get_worksheet_data
+from simulation.worksheet import WORKSHEET, WorksheetData
 
 if TYPE_CHECKING:
     from turn_collector import CollectedTurnActions
-    from simulation.worksheet import WorksheetData
 
 LOGGER = logging.getLogger(__name__)
 
@@ -25,10 +24,10 @@ class SimulationRunner(object):
     daemon = True
     __metaclass__ = ABCMeta
 
-    def __init__(self, game_state, communicator):
+    def __init__(self, game_state, communicator, worksheet: WorksheetData = WORKSHEET):
         self.game_state = game_state
         self.communicator = communicator
-        self.worksheet: WorksheetData = get_worksheet_data()
+        self.worksheet: WorksheetData = WORKSHEET
         self._lock = threading.RLock()
 
     @abstractmethod
