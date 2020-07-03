@@ -114,22 +114,3 @@ class TestMainGenerator(_BaseGeneratorTestCase):
 
     def test_shortest_path(self):
         m = self.get_map(START_WIDTH=4)
-
-
-class TestLevel1Generator(_BaseGeneratorTestCase):
-    GENERATOR_CLASS = map_generator.Level1
-
-    def test_width_5(self):
-        self.assertEqual(self.get_map().num_cols, 5)
-
-    def test_height_1(self):
-        self.assertEqual(self.get_map().num_rows, 1)
-
-    def test_static_spawn(self):
-        game_state = self.get_game_state()
-        sim_runner = SequentialSimulationRunner(game_state, None)
-        for i in range(5):
-            sim_runner.add_avatar(i)
-            self.assertEqual(
-                game_state.avatar_manager.avatars_by_id[i].location, Location(-2, 0)
-            )

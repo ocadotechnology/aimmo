@@ -190,28 +190,3 @@ class PriorityQueuef(object):
 
     def __len__(self):
         return self.queue.qsize()
-
-
-class _BaseLevelGenerator(_BaseGenerator):
-    __metaclass__ = abc.ABCMeta
-
-    def __init__(self, *args, **kwargs):
-        super(_BaseLevelGenerator, self).__init__(*args, **kwargs)
-        self.settings.update(DEFAULT_LEVEL_SETTINGS)
-
-
-class Level1(_BaseLevelGenerator):
-    def get_map(self):
-        world_map = WorldMap.generate_empty_map(1, 5, self.settings)
-        world_map = WorldMapStaticSpawnDecorator(world_map, Location(-2, 0))
-        world_map.get_cell(Location(2, 0)).interactable = ScoreLocation(
-            world_map.get_cell(Location(2, 0))
-        )
-        return world_map
-
-    def check_complete(self, game_state):
-        try:
-            main_avatar = game_state.get_main_avatar()
-        except KeyError:
-            return False
-        return main_avatar.score > 0
