@@ -1,14 +1,18 @@
 from __future__ import absolute_import
 
 from string import ascii_uppercase
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
 from simulation.avatar.avatar_appearance import AvatarAppearance
+from simulation.game_logic import PickupUpdater
+from simulation.worksheet import WorksheetData
 from simulation.interactables.pickups import Artefact
 from simulation.interactables.score_location import ScoreLocation
 from simulation.location import Location
 from simulation.simulation_runner import ConcurrentSimulationRunner
 from simulation.world_map import WorldMap
+from turn_collector import CollectedTurnActions
+
 from .dummy_avatar import (
     DeadDummy,
     DummyAvatar,
@@ -22,7 +26,6 @@ from .dummy_avatar import (
 from .maps import InfiniteMap, MockCell, MockPickup
 from .mock_communicator import MockCommunicator
 from .mock_game_state import MockGameState
-from turn_collector import CollectedTurnActions
 
 ORIGIN = Location(0, 0)
 
@@ -248,6 +251,15 @@ class TestSimulationRunner:
         assert (
             len(list(self.simulation_runner.game_state.world_map.pickup_cells())) == 0
         )
+
+    def test_updates_map_based_on_worksheet(self):
+        self.construct_simulation_runner([], [])
+        map_updater: Mock = Mock(wraps=PickupUpdater)
+        worksheet_with_mock_updater = WorksheetData(
+            era="test era", map_updaters=[map_updater]
+        )
+        self.simulation_runner.update(1, self.simulation_runner.game_state)
+        map_updater.assert_called_once()
 
     async def test_run_turn(self, loop):
         """

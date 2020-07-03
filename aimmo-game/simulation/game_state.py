@@ -1,10 +1,13 @@
 from threading import RLock
+from typing import TYPE_CHECKING
 
 from simulation.interactables import serialize_interactables
-from typing import TYPE_CHECKING
+from simulation.worksheet import WORKSHEET
 
 if TYPE_CHECKING:
     from simulation.world_map import WorldMap
+    from simulation.avatar.avatar_manager import AvatarManager
+    from simulation.worksheet import WorksheetData
 
 
 class GameState:
@@ -12,22 +15,15 @@ class GameState:
     Encapsulates the entire game state, including avatars, their code, and the world.
     """
 
-    def __init__(
-        self, world_map, avatar_manager, completion_check_callback=lambda: None
-    ):
+    def __init__(self, world_map, avatar_manager, worksheet=WORKSHEET):
         self.world_map: "WorldMap" = world_map
-        self.avatar_manager = avatar_manager
-        self.main_avatar_id = None
-        self.turn_count = 0
-        self._lock = RLock()
-
-    def get_main_avatar(self):
-        with self._lock:
-            return self.avatar_manager.avatars_by_id[self.main_avatar_id]
+        self.avatar_manager: "AvatarManager" = avatar_manager
+        self.turn_count: int = 0
+        self.worksheet: "WorksheetData" = worksheet
 
     def serialize(self):
         return {
-            "era": "future",
+            "era": self.worksheet.era,
             "southWestCorner": self.world_map.get_serialized_south_west_corner(),
             "northEastCorner": self.world_map.get_serialized_north_east_corner(),
             "players": self.avatar_manager.serialize_players(),
