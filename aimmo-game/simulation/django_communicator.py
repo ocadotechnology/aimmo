@@ -1,5 +1,4 @@
 import aiohttp
-import json
 import os
 import requests
 
@@ -19,10 +18,9 @@ class DjangoCommunicator(object):
     async def get_game_metadata(self):
         try:
             async with self.session.get(f"{self.django_api_url}users/") as response:
-                data = await response.read()
-                return json.loads(data)
-        except aiohttp.ClientConnectionError:
-            return {"users": []}
+                return await response.read()
+        except (aiohttp.ClientConnectionError, aiohttp.ContentTypeError):
+            pass
 
     def mark_game_complete(self, data=None):
         return requests.post(requests.post(self.completion_url, json=data))

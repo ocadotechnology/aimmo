@@ -65,13 +65,14 @@ class GameRunner:
     async def update_avatars(self):
         game_metadata = await self.communicator.get_game_metadata()
 
-        users_to_add = self.get_users_to_add(game_metadata)
-        users_to_delete = self.get_users_to_delete(game_metadata)
+        if game_metadata:
+            users_to_add = self.get_users_to_add(game_metadata)
+            users_to_delete = self.get_users_to_delete(game_metadata)
 
-        self.simulation_runner.add_avatars(users_to_add)
-        self.simulation_runner.delete_avatars(users_to_delete)
+            self.simulation_runner.add_avatars(users_to_add)
+            self.simulation_runner.delete_avatars(users_to_delete)
 
-        self.update_main_user(game_metadata)
+            self.update_main_user(game_metadata)
 
     async def update_simulation(self, player_id_to_serialized_actions):
         await self.simulation_runner.run_single_turn(player_id_to_serialized_actions)
