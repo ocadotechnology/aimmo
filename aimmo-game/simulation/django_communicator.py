@@ -20,9 +20,9 @@ class DjangoCommunicator(object):
                 if response.status == 200:
                     return await response.read()
                 else:
-                    pass
+                    raise GameMetadataFetchFailedError
         except (aiohttp.ClientConnectionError, aiohttp.ContentTypeError):
-            pass
+            raise GameMetadataFetchFailedError
 
     async def patch_token(self, data):
         response = await self.session.patch(
@@ -38,3 +38,7 @@ class DjangoCommunicator(object):
 
     async def close_session(self, app):
         await self.session.close()
+
+
+class GameMetadataFetchFailedError(Exception):
+    pass
