@@ -70,9 +70,6 @@ class SimulationRunner(object):
         MapExpander().update(self.game_state.world_map, context=context)
         PickupUpdater().update(self.game_state.world_map, context=context)
 
-    def _mark_complete(self):
-        self.communicator.mark_game_complete(data=self.game_state.serialize())
-
     def add_avatar(self, player_id, location=None):
         with self._lock:
             location = (
