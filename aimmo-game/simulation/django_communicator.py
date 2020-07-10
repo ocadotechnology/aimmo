@@ -18,7 +18,7 @@ class DjangoCommunicator(object):
         try:
             async with self.session.get(f"{self.django_api_url}users/") as response:
                 if response.status == 200:
-                    return await response.read()
+                    return await response.json()
                 else:
                     raise GameMetadataFetchFailedError
         except (aiohttp.ClientConnectionError, aiohttp.ContentTypeError):
