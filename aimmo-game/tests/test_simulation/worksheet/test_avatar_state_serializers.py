@@ -8,7 +8,6 @@ def test_worksheet1_avatar_state():
     worksheet1 = worksheets[1]
     avatar_wrapper = AvatarWrapper(1, Location(0, 0), MagicMock())
     serialized_avatar_state = worksheet1.avatar_state_serializer(avatar_wrapper)
-    print(serialized_avatar_state)
     assert serialized_avatar_state == {
         "id": 1,
         "orientation": "north",
