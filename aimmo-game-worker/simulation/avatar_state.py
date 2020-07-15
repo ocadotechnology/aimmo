@@ -9,4 +9,3 @@ def create_avatar_state(avatar_state_json: Dict):
     return namedtuple("AvatarState", avatar_state_json.keys())(
         *avatar_state_json.values()
     )
-

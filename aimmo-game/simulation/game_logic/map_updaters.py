@@ -66,4 +66,3 @@ class PickupUpdater(_MapUpdater):
         for cell in locations:
             cell.interactable = Artefact(cell)
             LOGGER.info("Adding new pickup at %s of type %s", cell, cell.interactable)
-

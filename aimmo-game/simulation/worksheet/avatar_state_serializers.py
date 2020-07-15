@@ -20,4 +20,3 @@ def worksheet2_avatar_state_serializer(avatar: AvatarWrapper) -> Dict:
         "orientation": avatar.orientation,
         "backpack": [artefact.serialize() for artefact in avatar.backpack],
     }
-
