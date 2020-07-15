@@ -6,6 +6,8 @@ from django.db import models
 
 from aimmo import app_settings
 
+DEFAULT_WORKSHEET_ID = 1
+
 GAME_GENERATORS = [("Main", "Open World")] + [  # Default
     ("Level%s" % i, "Level %s" % i) for i in range(1, app_settings.MAX_LEVEL + 1)
 ]
@@ -24,6 +26,25 @@ class GameQuerySet(models.QuerySet):
 
     def exclude_inactive(self):
         return self.filter(completed=False)
+
+
+class Worksheet(models.Model):
+    ERA_CHOICES = [
+        (1, "future"),
+        (2, "ancient"),
+        (3, "modern day"),
+        (4, "prehistoric"),
+        (5, "broken future"),
+    ]
+
+    name = models.CharField(max_length=100)
+    era = models.PositiveSmallIntegerField(
+        choices=ERA_CHOICES, default=ERA_CHOICES[0][0]
+    )
+    starter_code = models.TextField()
+
+    def __str__(self):
+        return f"{self.id}: {self.name}"
 
 
 class Game(models.Model):
@@ -61,6 +82,7 @@ class Game(models.Model):
     start_height = models.IntegerField(default=31)
     start_width = models.IntegerField(default=31)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=RUNNING)
+    worksheet = models.ForeignKey(Worksheet, blank=True, null=True)
 
     @property
     def is_active(self):
@@ -107,19 +129,3 @@ class LevelAttempt(models.Model):
 
     class Meta:
         unique_together = ("level_number", "user")
-
-
-class Worksheet(models.Model):
-    ERA_CHOICES = [
-        (1, "future"),
-        (2, "ancient"),
-        (3, "modern day"),
-        (4, "prehistoric"),
-        (5, "broken future"),
-    ]
-
-    name = models.CharField(max_length=100)
-    era = models.PositiveSmallIntegerField(
-        choices=ERA_CHOICES, default=ERA_CHOICES[0][0]
-    )
-    starter_code = models.TextField()

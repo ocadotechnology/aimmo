@@ -2,7 +2,13 @@ from unittest import TestCase
 
 from simulation.cell import Cell
 
-from .test_world_map import serializer
+
+class serializer(object):
+    def __init__(self, content):
+        self.content = content
+
+    def serialize(self):
+        return self.content
 
 
 class TestCell(TestCase):

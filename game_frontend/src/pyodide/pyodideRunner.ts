@@ -20,7 +20,7 @@ from simulation import direction
 from simulation import location
 from simulation.action import MoveAction, PickupAction, WaitAction
 from simulation.world_map import WorldMapCreator
-from simulation.avatar_state import AvatarState
+from simulation.avatar_state import create_avatar_state
 from io import StringIO
 import contextlib
 
@@ -53,7 +53,7 @@ async function computeNextAction (gameState, playerAvatarID): Promise<ComputedTu
     return await pyodide.runPythonAsync(`
 game_state = ${JSON.stringify(gameState)}
 world_map = WorldMapCreator.generate_world_map_from_game_state(game_state)
-avatar_state = AvatarState(**${JSON.stringify(avatarState)})
+avatar_state = create_avatar_state(${JSON.stringify(avatarState)})
 serialized_action = {"action_type": "wait"}
 with capture_output() as output:
     action = next_turn(world_map, avatar_state)
@@ -118,8 +118,9 @@ export async function updateAvatarCode (
 
 async function setAvatarCodeToWaitActionOnError () {
   await pyodide.runPythonAsync(
-`def next_turn(world_map, avatar_state):
-    return WaitAction()`)
+    `def next_turn(world_map, avatar_state):
+    return WaitAction()`
+  )
 }
 
 export const computeNextAction$ = (gameState: object, avatarState: object) =>

@@ -62,9 +62,6 @@ class GameRunner:
             if player_in_avatar_manager_but_not_metadata(player_id)
         ]
 
-    def update_main_user(self, game_metadata):
-        self.game_state.main_avatar_id = game_metadata["main_avatar"]
-
     async def update_avatars(self):
         try:
             game_metadata = await self.communicator.get_game_metadata()
@@ -73,8 +70,6 @@ class GameRunner:
 
             self.simulation_runner.add_avatars(users_to_add)
             self.simulation_runner.delete_avatars(users_to_delete)
-
-            self.update_main_user(game_metadata)
         except GameMetadataFetchFailedError:
             LOGGER.error("Game metadata fetch failed, not updating avatars this turn")
             pass
