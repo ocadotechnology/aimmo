@@ -30,6 +30,7 @@ setup(
         "hypothesis",
         "mock",
         "pytest-aiohttp",
+        "aioresponses",
     ],
     setup_requires=["pytest-runner"],
     test_suite="tests",
