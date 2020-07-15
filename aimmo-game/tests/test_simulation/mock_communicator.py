@@ -1,24 +1,27 @@
+DUMMY_GAME_METADATA = {
+    "main_avatar": 1,
+    "users": [
+        {
+            "id": 1,
+            "code": "class Avatar(object):\n"
+            "    def next_turn(self, world_view, events):\n"
+            "        from simulation.action import WaitAction\n"
+            "        return WaitAction()\n",
+        },
+        {
+            "id": 2,
+            "code": "class Avatar(object):\n"
+            "    def next_turn(self, world_view, events):\n"
+            "        from simulation.action import WaitAction\n"
+            "        return WaitAction()\n",
+        },
+    ],
+}
+
+
 class MockCommunicator(object):
     def __init__(self):
-        self.data = {
-            "main_avatar": 1,
-            "users": [
-                {
-                    "id": 1,
-                    "code": "class Avatar(object):\n"
-                    "    def next_turn(self, world_view, events):\n"
-                    "        from simulation.action import WaitAction\n"
-                    "        return WaitAction()\n",
-                },
-                {
-                    "id": 2,
-                    "code": "class Avatar(object):\n"
-                    "    def next_turn(self, world_view, events):\n"
-                    "        from simulation.action import WaitAction\n"
-                    "        return WaitAction()\n",
-                },
-            ],
-        }
+        self.data = DUMMY_GAME_METADATA
 
     async def get_game_metadata(self):
         return self.data

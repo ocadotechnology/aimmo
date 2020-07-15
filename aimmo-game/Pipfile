@@ -20,6 +20,7 @@ asynctest = "*"
 hypothesis = "*"
 mock = "*"
 pytest-aiohttp = "*"
+aioresponses = "*"
 
 [requires]
 python_version = "3.7.7"
