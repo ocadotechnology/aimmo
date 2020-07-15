@@ -27,9 +27,7 @@ django_api_url = os.environ.get(
     "GAME_API_URL", "http://localhost:8000/kurono/api/games/"
 )
 
-communicator = DjangoCommunicator(
-    django_api_url=django_api_url, completion_url=django_api_url + "complete/"
-)
+communicator = DjangoCommunicator(django_api_url=django_api_url)
 activity_monitor = ActivityMonitor(communicator)
 
 

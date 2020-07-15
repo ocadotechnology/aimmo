@@ -8,10 +8,9 @@ class DjangoCommunicator(object):
     and the django server
     """
 
-    def __init__(self, django_api_url, completion_url):
+    def __init__(self, django_api_url):
         self.session = aiohttp.ClientSession()
         self.django_api_url = django_api_url
-        self.completion_url = completion_url
         self.token_url = self.django_api_url + "token/"
 
     async def get_game_metadata(self):
