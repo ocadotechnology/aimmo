@@ -42,18 +42,6 @@ def get_ip():
     return IP
 
 
-def restart_ingress_addon(minikube):
-    """
-    Ingress needs to be restarted for old paths to be removed at startup.
-    :param minikube: Executable minikube installed beforehand.
-    """
-    try:
-        run_command([minikube, "addons", "disable", "ingress"])
-    except:
-        pass
-    run_command([minikube, "addons", "enable", "ingress"])
-
-
 def create_ingress_yaml():
     """
     Loads a ingress yaml file into a python object.
@@ -168,7 +156,6 @@ def start(build_target=None):
     start_cluster(MINIKUBE_EXECUTABLE)
     create_roles()
     build_docker_images(MINIKUBE_EXECUTABLE, build_target=build_target)
-    restart_ingress_addon(MINIKUBE_EXECUTABLE)
     ingress = create_ingress_yaml()
     game_creator = create_creator_yaml()
     restart_pods(game_creator, ingress)
