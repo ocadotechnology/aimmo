@@ -45,6 +45,7 @@ SETTINGS = {
         "django.contrib.staticfiles",
         "django_js_reverse",
         "rest_framework",
+        "common",
     ],
     "TEMPLATES": [
         {
