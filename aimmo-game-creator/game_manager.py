@@ -232,7 +232,7 @@ class KubernetesGameManager(GameManager):
 
     def __init__(self, *args, **kwargs):
         kubernetes.config.load_incluster_config()
-        self.extension_api = kubernetes.client.ExtensionsV1beta1Api()
+        self.networking_api = kubernetes.client.NetworkingV1beta1Api()
         self.api = kubernetes.client.CoreV1Api()
         self.secret_creator = TokenSecretCreator()
 
@@ -364,25 +364,25 @@ class KubernetesGameManager(GameManager):
             self.secret_creator.create_secret(name, K8S_NAMESPACE, data)
 
     def _add_path_to_ingress(self, game_id):
-        backend = kubernetes.client.V1beta1IngressBackend(
+        backend = kubernetes.client.NetworkingV1beta1IngressBackend(
             KubernetesGameManager._create_game_name(game_id), 80
         )
-        path = kubernetes.client.V1beta1HTTPIngressPath(
+        path = kubernetes.client.NetworkingV1beta1HTTPIngressPath(
             backend, "/{}".format(KubernetesGameManager._create_game_name(game_id))
         )
 
         patch = [{"op": "add", "path": "/spec/rules/0/http/paths/-", "value": path}]
 
-        self.extension_api.patch_namespaced_ingress("aimmo-ingress", "default", patch)
+        self.networking_api.patch_namespaced_ingress("aimmo-ingress", "default", patch)
 
     def _remove_path_from_ingress(self, game_id):
-        backend = kubernetes.client.V1beta1IngressBackend(
+        backend = kubernetes.client.NetworkingV1beta1IngressBackend(
             KubernetesGameManager._create_game_name(game_id), 80
         )
-        path = kubernetes.client.V1beta1HTTPIngressPath(
+        path = kubernetes.client.NetworkingV1beta1HTTPIngressPath(
             backend, "/{}".format(KubernetesGameManager._create_game_name(game_id))
         )
-        ingress = self.extension_api.list_namespaced_ingress("default").items[0]
+        ingress = self.networking_api.list_namespaced_ingress("default").items[0]
         paths = ingress.spec.rules[0].http.paths
         try:
             index_to_delete = paths.index(path)
@@ -396,7 +396,7 @@ class KubernetesGameManager(GameManager):
             }
         ]
 
-        self.extension_api.patch_namespaced_ingress("aimmo-ingress", "default", patch)
+        self.networking_api.patch_namespaced_ingress("aimmo-ingress", "default", patch)
 
     def _remove_resources(self, game_id, resource_type):
         resource_functions = {

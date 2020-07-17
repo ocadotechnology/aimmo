@@ -5,8 +5,12 @@ name = "pypi"
 
 [packages]
 kubernetes = "*"
-aimmo-game-creator = {editable = true, path = "."}
+aimmo-game-creator = {editable = true,path = "."}
 docker = "*"
+google-cloud-logging = "*"
 
 [requires]
 python_version = "3.6.7"
+
+[dev-packages]
+black = "==19.10b0"
