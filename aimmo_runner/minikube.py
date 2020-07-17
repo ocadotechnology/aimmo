@@ -26,7 +26,7 @@ def get_ip():
     """
     os_name = platform.system()
     if os_name == "Darwin":
-        return "192.168.99.1"
+        return "192.168.64.1"
 
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -92,7 +92,14 @@ def start_cluster(minikube):
         run_command([minikube, "start", "--memory=2048", "--cpus=2"])
 
 
-def delete_components(api_instance, extensions_api_instance):
+def delete_components(api_instance, apps_api_instance, networking_api_instance):
+    for rs in apps_api_instance.list_namespaced_replica_set("default").items:
+        apps_api_instance.delete_namespaced_replica_set(
+            body=kubernetes.client.V1DeleteOptions(),
+            name=rs.metadata.name,
+            namespace="default",
+            grace_period_seconds=0,
+        )
     for rc in api_instance.list_namespaced_replication_controller("default").items:
         api_instance.delete_namespaced_replication_controller(
             body=kubernetes.client.V1DeleteOptions(),
@@ -111,8 +118,8 @@ def delete_components(api_instance, extensions_api_instance):
         api_instance.delete_namespaced_service(
             name=service.metadata.name, namespace="default"
         )
-    for ingress in extensions_api_instance.list_namespaced_ingress("default").items:
-        extensions_api_instance.delete_namespaced_ingress(
+    for ingress in networking_api_instance.list_namespaced_ingress("default").items:
+        networking_api_instance.delete_namespaced_ingress(
             name=ingress.metadata.name,
             namespace="default",
             body=kubernetes.client.V1DeleteOptions(),
@@ -129,13 +136,14 @@ def restart_pods(game_creator_yaml, ingress_yaml):
     print("Restarting pods")
     kubernetes.config.load_kube_config(context="minikube")
     api_instance = kubernetes.client.CoreV1Api()
-    extensions_api_instance = kubernetes.client.ExtensionsV1beta1Api()
+    apps_api_instance = kubernetes.client.AppsV1Api()
+    networking_api_instance = kubernetes.client.NetworkingV1beta1Api()
 
-    delete_components(api_instance, extensions_api_instance)
+    delete_components(api_instance, apps_api_instance, networking_api_instance)
     time.sleep(TIME_FOR_COMPONENTS_TO_DELETE)
 
-    extensions_api_instance.create_namespaced_ingress("default", ingress_yaml)
-    api_instance.create_namespaced_replication_controller(
+    networking_api_instance.create_namespaced_ingress("default", ingress_yaml)
+    apps_api_instance.create_namespaced_replica_set(
         body=game_creator_yaml, namespace="default"
     )
 
