@@ -17,7 +17,7 @@ from aimmo_runner import runner, docker_scripts
 
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-APPS = ("aimmo/", "integration_tests/")
+APPS = ("aimmo/",)
 
 
 def print_help():
