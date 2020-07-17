@@ -232,7 +232,7 @@ class KubernetesGameManager(GameManager):
 
     def __init__(self, *args, **kwargs):
         kubernetes.config.load_incluster_config()
-        self.extension_api = kubernetes.client.ExtensionsV1beta1Api()
+        self.networking_api = kubernetes.client.NetworkingV1beta1Api()
         self.api = kubernetes.client.CoreV1Api()
         self.secret_creator = TokenSecretCreator()
 
