@@ -5,7 +5,8 @@ from abc import ABCMeta, abstractmethod
 from typing import TYPE_CHECKING
 
 from simulation.action import PRIORITIES
-from simulation.game_logic import EffectApplier, MapContext, MapExpander, PickupUpdater
+from simulation.game_logic import EffectApplier, MapContext, PickupUpdater
+from simulation.worksheet import WORKSHEET, WorksheetData
 
 if TYPE_CHECKING:
     from turn_collector import CollectedTurnActions
@@ -23,9 +24,10 @@ class SimulationRunner(object):
     daemon = True
     __metaclass__ = ABCMeta
 
-    def __init__(self, game_state, communicator):
+    def __init__(self, game_state, communicator, worksheet: WorksheetData = WORKSHEET):
         self.game_state = game_state
         self.communicator = communicator
+        self.worksheet: WorksheetData = WORKSHEET
         self._lock = threading.RLock()
 
     @abstractmethod
@@ -67,11 +69,8 @@ class SimulationRunner(object):
 
     def _update_map(self, num_avatars):
         context = MapContext(num_avatars=num_avatars)
-        MapExpander().update(self.game_state.world_map, context=context)
-        PickupUpdater().update(self.game_state.world_map, context=context)
-
-    def _mark_complete(self):
-        self.communicator.mark_game_complete(data=self.game_state.serialize())
+        for MapUpdater in self.worksheet.map_updaters:
+            MapUpdater().update(self.game_state.world_map, context=context)
 
     def add_avatar(self, player_id, location=None):
         with self._lock:

@@ -1,14 +1,18 @@
 from __future__ import absolute_import
 
 from string import ascii_uppercase
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
 from simulation.avatar.avatar_appearance import AvatarAppearance
+from simulation.game_logic import PickupUpdater
+from simulation.worksheet import WorksheetData
 from simulation.interactables.pickups import Artefact
 from simulation.interactables.score_location import ScoreLocation
 from simulation.location import Location
 from simulation.simulation_runner import ConcurrentSimulationRunner
 from simulation.world_map import WorldMap
+from turn_collector import CollectedTurnActions
+
 from .dummy_avatar import (
     DeadDummy,
     DummyAvatar,
@@ -22,7 +26,6 @@ from .dummy_avatar import (
 from .maps import InfiniteMap, MockCell, MockPickup
 from .mock_communicator import MockCommunicator
 from .mock_game_state import MockGameState
-from turn_collector import CollectedTurnActions
 
 ORIGIN = Location(0, 0)
 
@@ -41,6 +44,16 @@ SETTINGS = {
 }
 
 
+def generate_grid(columns=2, rows=2):
+    alphabet = iter(ascii_uppercase)
+    grid = {
+        Location(x, y): MockCell(Location(x, y), name=next(alphabet))
+        for x in range(columns)
+        for y in range(rows)
+    }
+    return grid
+
+
 class TestSimulationRunner:
     """
         Key:
@@ -50,15 +63,6 @@ class TestSimulationRunner:
             o : Avatar successfully moved
             ! : Dead avatar (that should be waiting)
     """
-
-    def _generate_grid(self, columns=2, rows=2):
-        alphabet = iter(ascii_uppercase)
-        grid = {
-            Location(x, y): MockCell(Location(x, y), name=next(alphabet))
-            for x in range(columns)
-            for y in range(rows)
-        }
-        return grid
 
     def assertGridSize(self, world_map, expected_columns, expected_rows=None):
         if expected_rows is None:
@@ -130,34 +134,12 @@ class TestSimulationRunner:
         self.simulation_runner.update_environment()
         assert len(self.simulation_runner.game_state.avatar_manager.avatars_by_id) == 3
 
-    def test_grid_expand(self):
-        self.construct_simulation_runner([], [])
-        settings = SETTINGS.copy()
-        settings["TARGET_NUM_CELLS_PER_AVATAR"] = 5
-        self.simulation_runner.game_state.world_map = WorldMap(
-            self._generate_grid(), settings
-        )
-        self.simulation_runner.update(1, self.simulation_runner.game_state)
-        print(self.simulation_runner.game_state.world_map)
-        assert self.simulation_runner.game_state.world_map.is_on_map(Location(-1, -1))
-        assert self.simulation_runner.game_state.world_map.is_on_map(Location(-1, 2))
-        assert self.simulation_runner.game_state.world_map.is_on_map(Location(2, 2))
-        assert self.simulation_runner.game_state.world_map.is_on_map(Location(2, -1))
-        self.assertGridSize(self.simulation_runner.game_state.world_map, 4)
-
-        self.simulation_runner.update(4, self.simulation_runner.game_state)
-        self.assertGridSize(self.simulation_runner.game_state.world_map, 6)
-        assert self.simulation_runner.game_state.world_map.is_on_map(Location(0, 3))
-        assert self.simulation_runner.game_state.world_map.is_on_map(Location(3, 0))
-        assert self.simulation_runner.game_state.world_map.is_on_map(Location(-2, 0))
-        assert self.simulation_runner.game_state.world_map.is_on_map(Location(0, -2))
-
-    def test_grid_doesnt_expand(self):
+    def test_grid_does_not_expand(self):
         self.construct_simulation_runner([], [])
         settings = SETTINGS.copy()
         settings["TARGET_NUM_CELLS_PER_AVATAR"] = 4
         self.simulation_runner.game_state.world_map = WorldMap(
-            self._generate_grid(), settings
+            generate_grid(), settings
         )
         self.simulation_runner.update(1, self.simulation_runner.game_state)
         self.assertGridSize(self.simulation_runner.game_state.world_map, 2)
@@ -166,7 +148,7 @@ class TestSimulationRunner:
         self.construct_simulation_runner([], [])
         settings = SETTINGS.copy()
         settings["TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR"] = 0
-        grid = self._generate_grid()
+        grid = generate_grid()
         grid[Location(0, 1)].interactable = ScoreLocation(grid[Location(0, 1)])
         self.simulation_runner.game_state.world_map = WorldMap(grid, settings)
         self.simulation_runner.update(1, self.simulation_runner.game_state)
@@ -178,7 +160,7 @@ class TestSimulationRunner:
 
     def test_scores_applied(self):
         self.construct_simulation_runner([], [])
-        grid = self._generate_grid()
+        grid = generate_grid()
         avatar = DummyAvatar()
         grid[Location(1, 1)].interactable = ScoreLocation(grid[Location(1, 1)])
         grid[Location(1, 1)].avatar = avatar
@@ -190,7 +172,7 @@ class TestSimulationRunner:
         self.construct_simulation_runner([], [])
         settings = SETTINGS.copy()
         settings["TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR"] = 1
-        grid = self._generate_grid()
+        grid = generate_grid()
         grid[Location(0, 1)].interactable = ScoreLocation(grid[Location(0, 1)])
         self.simulation_runner.game_state.world_map = WorldMap(grid, settings)
         self.simulation_runner.update(1, self.simulation_runner.game_state)
@@ -204,7 +186,7 @@ class TestSimulationRunner:
         self.construct_simulation_runner([], [])
         settings = SETTINGS.copy()
         settings["TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR"] = 1
-        grid = self._generate_grid(1, 1)
+        grid = generate_grid(1, 1)
         grid[Location(0, 0)].avatar = "avatar"
         self.simulation_runner.game_state.world_map = WorldMap(grid, settings)
         self.simulation_runner.update(1, self.simulation_runner.game_state)
@@ -216,7 +198,7 @@ class TestSimulationRunner:
         settings["TARGET_NUM_PICKUPS_PER_AVATAR"] = 1
         settings["PICKUP_SPAWN_CHANCE"] = 1
         self.simulation_runner.game_state.world_map = WorldMap(
-            self._generate_grid(), settings
+            generate_grid(), settings
         )
         self.simulation_runner.update(1, self.simulation_runner.game_state)
         assert (
@@ -232,7 +214,7 @@ class TestSimulationRunner:
 
     def test_pickups_applied(self):
         self.construct_simulation_runner([], [])
-        grid = self._generate_grid()
+        grid = generate_grid()
         avatar = DummyAvatar()
         pickup = MockPickup(target=avatar)
         grid[Location(1, 1)].interactable = pickup
@@ -246,7 +228,7 @@ class TestSimulationRunner:
         self.construct_simulation_runner([], [])
         settings = SETTINGS.copy()
         settings["TARGET_NUM_PICKUPS_PER_AVATAR"] = 1
-        grid = self._generate_grid()
+        grid = generate_grid()
         grid[Location(0, 1)].interactable = mockPickup()
         self.simulation_runner.game_state.world_map = WorldMap(grid, settings)
         self.simulation_runner.update(1, self.simulation_runner.game_state)
@@ -263,13 +245,23 @@ class TestSimulationRunner:
         self.construct_simulation_runner([], [])
         settings = SETTINGS.copy()
         settings["TARGET_NUM_PICKUPS_PER_AVATAR"] = 1
-        grid = self._generate_grid(1, 1)
+        grid = generate_grid(1, 1)
         grid[Location(0, 0)].interactable = ScoreLocation(grid[Location(0, 0)])
         self.simulation_runner.game_state.world_map = WorldMap(grid, settings)
         self.simulation_runner.update(1, self.simulation_runner.game_state)
         assert (
             len(list(self.simulation_runner.game_state.world_map.pickup_cells())) == 0
         )
+
+    def test_updates_map_based_on_worksheet(self):
+        self.construct_simulation_runner([], [])
+        map_updater: Mock = Mock(wraps=PickupUpdater)
+        worksheet_with_mock_updater = WorksheetData(
+            worksheet_id=1, era="test era", map_updaters=[map_updater]
+        )
+        self.simulation_runner.worksheet = worksheet_with_mock_updater
+        self.simulation_runner.update(1, self.simulation_runner.game_state)
+        map_updater.assert_called_once()
 
     async def test_run_turn(self, loop):
         """
@@ -448,7 +440,3 @@ class TestSimulationRunner:
         [self.assert_at(avatars[i], locations[i]) for i in range(5)]
         await self.run_turn()
         [self.assert_at(avatars[i], locations[i]) for i in range(5)]
-
-
-if __name__ == "__main__":
-    unittest.main()

@@ -13,7 +13,7 @@ rules:
 - apiGroups: [""] # "" indicates the core API group
   resources: ["replicationcontrollers", "pods", "services", "secrets"]
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-- apiGroups: ["extensions"]
+- apiGroups: ["networking.k8s.io"]
   resources: ["ingresses"]
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 

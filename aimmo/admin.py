@@ -5,7 +5,7 @@ import uuid
 from django.contrib import admin
 
 from .game_creator import create_avatar_for_user
-from .models import Avatar, Game, User
+from .models import Avatar, Game, User, Worksheet
 
 NUMBER_OF_AVATARS_TO_ADD = 10
 
@@ -53,5 +53,11 @@ class AvatarDataAdmin(admin.ModelAdmin):
         return obj.game
 
 
+class WorksheetDataAdmin(admin.ModelAdmin):
+    search_fields = ["id", "name", "era"]
+    list_display = ["id", "name", "era"]
+
+
 admin.site.register(Game, GameDataAdmin)
 admin.site.register(Avatar, AvatarDataAdmin)
+admin.site.register(Worksheet, WorksheetDataAdmin)

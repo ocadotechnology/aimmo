@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 import logging
+from simulation.location import Location
 from simulation.action import MoveAction, WaitAction
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.avatar.avatar_wrapper import AvatarWrapper
@@ -10,7 +11,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class DummyAvatar(AvatarWrapper):
-    def __init__(self, player_id=1, initial_location=(0, 0)):
+    def __init__(self, player_id=1, initial_location=Location(0, 0)):
         # TODO: extract avatar state and state-altering methods into a new class.
         #       The new class is to be shared between DummyAvatarRunner and AvatarRunner
         super(DummyAvatar, self).__init__(
@@ -137,7 +138,7 @@ class DummyAvatarManager(AvatarManager):
             dummy_list = []
         self.dummy_list = dummy_list
 
-    def add_avatar(self, player_id, location=(0, 0)):
+    def add_avatar(self, player_id, location=Location(0, 0)):
         try:
             dummy = self.dummy_list.pop(0)
         except IndexError:

@@ -4,11 +4,14 @@ from typing import TYPE_CHECKING
 
 from metrics import GAME_TURN_TIME
 from simulation.avatar.avatar_manager import AvatarManager
-from simulation.django_communicator import DjangoCommunicator
+from simulation.django_communicator import (
+    DjangoCommunicator,
+    GameMetadataFetchFailedError,
+)
 from simulation.simulation_runner import ConcurrentSimulationRunner
 
 if TYPE_CHECKING:
-    from turn_collector import TurnCollector, CollectedTurnActions
+    from turn_collector import TurnCollector
     from simulation.game_state import GameState
 
 LOGGER = logging.getLogger(__name__)
@@ -59,19 +62,17 @@ class GameRunner:
             if player_in_avatar_manager_but_not_metadata(player_id)
         ]
 
-    def update_main_user(self, game_metadata):
-        self.game_state.main_avatar_id = game_metadata["main_avatar"]
-
     async def update_avatars(self):
-        game_metadata = await self.communicator.get_game_metadata()
+        try:
+            game_metadata = await self.communicator.get_game_metadata()
+            users_to_add = self.get_users_to_add(game_metadata)
+            users_to_delete = self.get_users_to_delete(game_metadata)
 
-        users_to_add = self.get_users_to_add(game_metadata)
-        users_to_delete = self.get_users_to_delete(game_metadata)
-
-        self.simulation_runner.add_avatars(users_to_add)
-        self.simulation_runner.delete_avatars(users_to_delete)
-
-        self.update_main_user(game_metadata)
+            self.simulation_runner.add_avatars(users_to_add)
+            self.simulation_runner.delete_avatars(users_to_delete)
+        except GameMetadataFetchFailedError:
+            LOGGER.error("Game metadata fetch failed, not updating avatars this turn")
+            pass
 
     async def update_simulation(self, player_id_to_serialized_actions):
         await self.simulation_runner.run_single_turn(player_id_to_serialized_actions)

@@ -1,5 +1,9 @@
 import types from './types'
 
+const initializePyodide = () => ({
+  type: types.INITIALIZE_PYODIDE
+})
+
 const pyodideInitialized = () => ({
   type: types.PYODIDE_INITIALIZED
 })
@@ -19,6 +23,7 @@ const avatarsNextActionComputed = computedTurnResult => ({
 })
 
 export default {
+  initializePyodide,
   pyodideInitialized,
   avatarCodeUpdated,
   avatarsNextActionComputed

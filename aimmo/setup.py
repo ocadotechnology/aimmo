@@ -7,7 +7,6 @@ setup(
     include_package_data=True,
     install_requires=[
         "eventlet",
-        "flask",
         "requests",
         "six",
         "djangorestframework>=3.8.2, < 3.9.0",
