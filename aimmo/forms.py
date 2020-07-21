@@ -29,6 +29,7 @@ class AddGameForm(ModelForm):
             "start_height",
             "start_width",
             "status",
+            "worksheet",
         ]
 
     def clean(self):

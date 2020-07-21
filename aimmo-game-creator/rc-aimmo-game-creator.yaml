@@ -1,5 +1,5 @@
-apiVersion: v1
-kind: ReplicationController
+apiVersion: apps/v1
+kind: ReplicaSet
 metadata:
   name: aimmo-game-creator
 spec:
@@ -7,7 +7,8 @@ spec:
   # selector identifies the set of Pods that this
   # replication controller is responsible for managing
   selector:
-    app: aimmo-game-creator
+    matchLabels:
+      app: aimmo-game-creator
   # podTemplate defines the 'cookie cutter' used for creating
   # new pods when necessary
   template:
