@@ -18,6 +18,7 @@ export class StandardEnvironment implements Environment {
   constructor (canvas: HTMLCanvasElement) {
     this.canvas = canvas
     this.engine = new Engine(this.canvas, true, {}, true)
+    this.engine.enableOfflineSupport = true
 
     this.scene = new Scene(this.engine)
 
