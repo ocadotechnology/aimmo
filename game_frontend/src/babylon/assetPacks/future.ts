@@ -5,12 +5,15 @@ import {
   Vector3,
   TransformNode,
   AbstractMesh,
-  Scene
+  Scene,
+  Color4
 } from 'babylonjs'
 import AssetPack from './assetPack'
 
 export default class FutureAssetPack extends AssetPack {
   obstacleMaterial: StandardMaterial
+
+  backgroundColor = new Color4(0.69, 0.729, 0.988)
 
   constructor (era: string, scene: Scene) {
     super(era, scene)

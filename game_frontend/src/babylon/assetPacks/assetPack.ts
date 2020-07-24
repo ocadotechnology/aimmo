@@ -7,7 +7,8 @@ import {
   Scene,
   Vector3,
   TransformNode,
-  AbstractMesh
+  AbstractMesh,
+  Color4
 } from 'babylonjs'
 
 const tileSizes = {
@@ -46,6 +47,8 @@ export default class AssetPack {
 
   interactableMaterials: Record<string, StandardMaterial>
   importMeshAsync: Function
+
+  backgroundColor: Color4 = Color4.FromColor3(Color3.White())
 
   constructor (era: string, scene: Scene, importMeshAsync: Function = SceneLoader.ImportMeshAsync) {
     this.scene = scene

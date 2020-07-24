@@ -8,11 +8,14 @@ import {
   Axis,
   Space,
   AbstractMesh,
-  Scene
+  Scene,
+  Color4
 } from 'babylonjs'
 
 export default class ModernAssetPack extends AssetPack {
   obstacleMaterial: StandardMaterial
+
+  backgroundColor = new Color4(0.419, 0.678, 0.035)
 
   constructor (era: string, scene: Scene) {
     super(era, scene)

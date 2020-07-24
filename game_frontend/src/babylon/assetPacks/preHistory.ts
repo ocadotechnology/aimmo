@@ -8,11 +8,14 @@ import {
   Axis,
   Space,
   AbstractMesh,
-  Scene
+  Scene,
+  Color4
 } from 'babylonjs'
 
 export default class PreHistoryAssetPack extends AssetPack {
   obstacleMaterial: StandardMaterial
+
+  backgroundColor = new Color4(0.698, 0.796, 0.376)
 
   constructor (era: string, scene: Scene) {
     super(era, scene)
