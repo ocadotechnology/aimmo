@@ -1,19 +1,20 @@
 import abc
-import heapq
 import logging
 import random
 from itertools import tee
 from queue import PriorityQueue
+
+from dataclasses import dataclass
+from simulation.cell import Cell
 from typing import Any
 
 from six.moves import range, zip
 
 from simulation.direction import ALL_DIRECTIONS
 from simulation.game_state import GameState
-from simulation.interactables.score_location import ScoreLocation
-from simulation.level_settings import DEFAULT_LEVEL_SETTINGS
 from simulation.location import Location
-from simulation.world_map import WorldMap, WorldMapStaticSpawnDecorator
+from simulation.world_map import WorldMap
+from simulation.worksheet import WorksheetData, WORKSHEET
 
 LOGGER = logging.getLogger(__name__)
 
@@ -32,6 +33,22 @@ class _BaseGenerator(object):
         pass
 
 
+@dataclass
+class Obstacle:
+    texture_choice: int
+    orientation = "north"
+    width: int = 1
+    height: int = 1
+
+    def serialize(self, cell: Cell):
+        return {"location": cell.location.serialize(), "texture": self.texture_choice}
+
+
+def _make_obstacle(worksheet: WorksheetData = WORKSHEET):
+    texture_choice = random.randint(1, worksheet.number_of_obstacle_textures)
+    return Obstacle(texture_choice)
+
+
 class Main(_BaseGenerator):
     def get_map(self):
         height = self.settings["START_HEIGHT"]
@@ -47,11 +64,11 @@ class Main(_BaseGenerator):
                 cell.location != always_empty_location
                 and random.random() < self.settings["OBSTACLE_RATIO"]
             ):
-                cell.habitable = False
+                cell.obstacle = _make_obstacle()
                 # So long as all habitable neighbours can still reach each other, then the
                 # map cannot get bisected.
                 if not _all_habitable_neighbours_can_reach_each_other(cell, world_map):
-                    cell.habitable = True
+                    cell.obstacle = None
 
         return world_map
 
