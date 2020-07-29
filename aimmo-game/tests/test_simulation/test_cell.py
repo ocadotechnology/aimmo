@@ -23,7 +23,7 @@ class TestCell(TestCase):
         self.assertNotEqual(cell1, cell2)
 
     def _create_full_cell(self):
-        cell = Cell(serializer("location"), False, False)
+        cell = Cell(serializer("location"), {}, False)
         cell.avatar = serializer("avatar")
         cell.interactable = serializer("interactable")
         self.expected = {

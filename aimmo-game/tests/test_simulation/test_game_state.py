@@ -31,6 +31,9 @@ class TestGameState(TestCase):
     def test_game_state_serialized_era_is_from_worksheet(self):
         (game_state, _, _, _) = self.game_state_with_two_avatars()
         game_state.worksheet = WorksheetData(
-            worksheet_id=1, era="test era", map_updaters=[]
+            worksheet_id=1,
+            era="test era",
+            number_of_obstacle_textures=1,
+            map_updaters=[],
         )
         assert game_state.serialize()["era"] == "test era"

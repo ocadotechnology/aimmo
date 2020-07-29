@@ -257,7 +257,10 @@ class TestSimulationRunner:
         self.construct_simulation_runner([], [])
         map_updater: Mock = Mock(wraps=PickupUpdater)
         worksheet_with_mock_updater = WorksheetData(
-            worksheet_id=1, era="test era", map_updaters=[map_updater]
+            worksheet_id=1,
+            era="test era",
+            number_of_obstacle_textures=1,
+            map_updaters=[map_updater],
         )
         self.simulation_runner.worksheet = worksheet_with_mock_updater
         self.simulation_runner.update(1, self.simulation_runner.game_state)
