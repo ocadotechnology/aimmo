@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from simulation.avatar.avatar_wrapper import AvatarWrapper
-    from simulation.map_generator import Obstacle
+    from simulation.obstacle import Obstacle
 
 
 class Cell(object):
@@ -13,11 +13,9 @@ class Cell(object):
     Any position on the world grid.
     """
 
-    def __init__(
-        self, location: Location, obstacle: "Obstacle" = None, partially_fogged=False
-    ):
+    def __init__(self, location: Location, partially_fogged=False):
         self.location: Location = location
-        self.obstacle: Obstacle = obstacle
+        self.obstacle: Obstacle = None
         self.avatar: "AvatarWrapper" = None
         self.interactable = None
         self.partially_fogged = partially_fogged

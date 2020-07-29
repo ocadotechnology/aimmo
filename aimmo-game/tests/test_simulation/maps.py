@@ -5,7 +5,7 @@ from simulation.game_logic import SpawnLocationFinder
 from simulation.interactables.score_location import ScoreLocation
 from simulation.location import Location
 from simulation.world_map import WorldMap
-from simulation.map_generator import Obstacle
+from simulation.obstacle import Obstacle
 
 
 class MockPickup(object):
