@@ -19,7 +19,7 @@ class Obstacle:
 
     def make_obstacle(worksheet: WorksheetData = WORKSHEET) -> "Obstacle":
         """
-        Returns an obstacle with a randomly generated texture choice based on number of different 
+        Returns an obstacle with a randomly generated texture choice based on number of different
         obstacle textures indicated in the worksheet.
 
         Args:
