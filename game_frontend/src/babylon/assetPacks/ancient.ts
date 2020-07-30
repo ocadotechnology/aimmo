@@ -13,7 +13,7 @@ import AssetPack from './assetPack'
 export default class AncientAssetPack extends AssetPack {
   obstacleMaterial: StandardMaterial
 
-  backgroundColor = new Color4(0.87, 0.176, 0.007)
+  backgroundColor = new Color4(0.47, 0.47, 0.47)
 
   constructor (era: string, scene: Scene) {
     super(era, scene)

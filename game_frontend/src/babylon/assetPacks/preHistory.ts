@@ -15,7 +15,7 @@ import {
 export default class PreHistoryAssetPack extends AssetPack {
   obstacleMaterials: StandardMaterial[]
 
-  backgroundColor = new Color4(0.698, 0.796, 0.376)
+  backgroundColor = new Color4(0.2, 0.35, 0.2)
 
   constructor (era: string, scene: Scene) {
     super(era, scene)
