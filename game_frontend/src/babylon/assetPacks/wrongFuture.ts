@@ -13,7 +13,7 @@ import AssetPack from './assetPack'
 export default class WrongFutureAssetPack extends AssetPack {
   obstacleMaterial: StandardMaterial
 
-  backgroundColor = new Color4(0.24, 0.19, 0.19)
+  backgroundColor = new Color4(0.086, 0.003, 0.007)
 
   constructor (era: string, scene: Scene) {
     super(era, scene)
