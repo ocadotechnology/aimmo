@@ -1,3 +1,4 @@
+from simulation.obstacle import Obstacle
 from unittest import TestCase
 
 from simulation.cell import Cell
@@ -23,7 +24,8 @@ class TestCell(TestCase):
         self.assertNotEqual(cell1, cell2)
 
     def _create_full_cell(self):
-        cell = Cell(serializer("location"), False, False)
+        cell = Cell(serializer("location"), False)
+        cell.obstacle = Obstacle(1)
         cell.avatar = serializer("avatar")
         cell.interactable = serializer("interactable")
         self.expected = {

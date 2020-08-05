@@ -1,9 +1,11 @@
+from simulation.location import Location
 from simulation.action import MoveAction
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from simulation.avatar.avatar_wrapper import AvatarWrapper
+    from simulation.obstacle import Obstacle
 
 
 class Cell(object):
@@ -11,9 +13,9 @@ class Cell(object):
     Any position on the world grid.
     """
 
-    def __init__(self, location, habitable=True, partially_fogged=False):
-        self.location = location
-        self.habitable = habitable
+    def __init__(self, location: Location, partially_fogged=False):
+        self.location: Location = location
+        self.obstacle: Obstacle = None
         self.avatar: "AvatarWrapper" = None
         self.interactable = None
         self.partially_fogged = partially_fogged
@@ -36,6 +38,10 @@ class Cell(object):
 
     def __hash__(self):
         return hash(self.location)
+
+    @property
+    def habitable(self):
+        return self.obstacle is None
 
     @property
     def moves(self):

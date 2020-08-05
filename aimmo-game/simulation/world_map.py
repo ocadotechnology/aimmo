@@ -7,6 +7,7 @@ from simulation.interactables.pickups import ALL_PICKUPS
 from simulation.interactables.score_location import ScoreLocation
 from simulation.level_settings import DEFAULT_LEVEL_SETTINGS
 from simulation.location import Location
+from typing import List
 
 LOGGER = getLogger(__name__)
 
@@ -50,7 +51,7 @@ class WorldMap(object):
                 grid[location] = Cell(location)
         return cls(grid, new_settings)
 
-    def all_cells(self):
+    def all_cells(self) -> List[Cell]:
         return self.grid.values()
 
     def interactable_cells(self):
@@ -223,7 +224,9 @@ class WorldMap(object):
             }
 
         return [
-            serialize_obstacle(cell) for cell in self.all_cells() if not cell.habitable
+            cell.obstacle.serialize(cell)
+            for cell in self.all_cells()
+            if not cell.habitable
         ]
 
 
