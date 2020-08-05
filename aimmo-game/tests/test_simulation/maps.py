@@ -5,6 +5,7 @@ from simulation.game_logic import SpawnLocationFinder
 from simulation.interactables.score_location import ScoreLocation
 from simulation.location import Location
 from simulation.world_map import WorldMap
+from simulation.obstacle import Obstacle
 
 
 class MockPickup(object):
@@ -35,7 +36,7 @@ class MockCell(Cell):
         actions=[],
     ):
         self.location = location
-        self.habitable = habitable
+        self.obstacle = Obstacle(1) if not habitable else None
         self.avatar = avatar
         self.interactable = interactable
         self.name = name

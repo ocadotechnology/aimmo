@@ -7,7 +7,8 @@ import {
   Scene,
   Vector3,
   TransformNode,
-  AbstractMesh
+  AbstractMesh,
+  Color4
 } from 'babylonjs'
 
 const tileSizes = {
@@ -22,7 +23,6 @@ export interface StandardAsset {
   name: string
   modelURL: string
   modelName: string
-  textureURL: string
   materialName: string
 }
 
@@ -34,6 +34,7 @@ export interface PlaneAsset {
 }
 
 export default class AssetPack {
+  era: string
   scene: Scene
   obstacleInfo: StandardAsset
   terrainInfo: PlaneAsset
@@ -47,11 +48,14 @@ export default class AssetPack {
   interactableMaterials: Record<string, StandardMaterial>
   importMeshAsync: Function
 
+  backgroundColor: Color4 = Color4.FromColor3(Color3.White())
+
   constructor (era: string, scene: Scene, importMeshAsync: Function = SceneLoader.ImportMeshAsync) {
+    this.era = era
     this.scene = scene
     this.importMeshAsync = importMeshAsync
-    this.obstacleInfo = getObstacleAssetInfoForEra(era)
-    this.terrainInfo = this.getTerrainInfoForEra(era)
+    this.obstacleInfo = this.getObstacleAssetInfo()
+    this.terrainInfo = this.getTerrainInfo()
     this.interactableMaterials = {
       artefact: this.createInteractableMaterial('artefact')
     }
@@ -66,7 +70,12 @@ export default class AssetPack {
     return material
   }
 
-  async createObstacle (name: string, location: Vector3, parent: TransformNode) {
+  async createObstacle (
+    name: string,
+    location: Vector3,
+    textureChoice: number,
+    parent: TransformNode
+  ) {
     const { meshes } = await this.importMeshAsync(
       this.obstacleInfo.name,
       this.obstacleInfo.modelURL,
@@ -145,22 +154,25 @@ export default class AssetPack {
     return terrain
   }
 
-  protected getTerrainInfoForEra (era: string): PlaneAsset {
+  protected getTerrainInfo (): PlaneAsset {
     return {
       name: 'terrain',
-      tileSize: tileSizes[era],
-      materialName: `terrain_material_${era}`,
-      textureURL: `/static/babylon/terrain/terrain_${era}.jpg`
+      tileSize: tileSizes[this.era],
+      materialName: `terrain_material_${this.era}`,
+      textureURL: `/static/babylon/terrain/terrain_${this.era}.jpg`
     }
   }
-}
 
-function getObstacleAssetInfoForEra (era: string): StandardAsset {
-  return {
-    name: 'obstacle',
-    modelURL: '/static/babylon/obstacles/',
-    modelName: `obstacle_model_${era}.babylon`,
-    textureURL: `/static/babylon/obstacles/obstacle_${era}.jpg`,
-    materialName: `obstacle_material_${era}`
+  protected getObstacleAssetInfo (): StandardAsset {
+    return {
+      name: 'obstacle',
+      modelURL: '/static/babylon/obstacles/',
+      modelName: `obstacle_model_${this.era}.babylon`,
+      materialName: `obstacle_material_${this.era}`
+    }
+  }
+
+  protected getTextureURL (choice: number) {
+    return `/static/babylon/obstacles/obstacle_${this.era}_${choice}.jpg`
   }
 }

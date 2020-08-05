@@ -47,6 +47,7 @@ export default class ObstacleManager implements GameNode, DiffHandling {
     await this.assetPack.createObstacle(
       `obstacle: ${obstacle.id}`,
       new BABYLON.Vector3(obstacle.value.location.x, 0, obstacle.value.location.y),
+      obstacle.value.texture,
       this.obstacleNode
     )
   }

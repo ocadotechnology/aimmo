@@ -5,33 +5,37 @@ import {
   Vector3,
   TransformNode,
   AbstractMesh,
-  Scene
+  Scene,
+  Color4
 } from 'babylonjs'
 import AssetPack from './assetPack'
 
 export default class WrongFutureAssetPack extends AssetPack {
-    obstacleMaterial: StandardMaterial
+  obstacleMaterial: StandardMaterial
 
-    constructor (era: string, scene: Scene) {
-      super(era, scene)
-      this.obstacleMaterial = this.makeObstacleMaterial()
-    }
+  backgroundColor = new Color4(0.086, 0.003, 0.007)
 
-    makeObstacleMaterial (): StandardMaterial {
-      const material = new StandardMaterial(this.obstacleInfo.materialName, this.scene)
-      material.diffuseTexture = new Texture(this.obstacleInfo.textureURL, this.scene)
-      material.specularColor = new Color3(0, 0, 0)
-      material.diffuseColor = new Color3(1, 1, 1)
-      return material
-    }
+  constructor (era: string, scene: Scene) {
+    super(era, scene)
+    this.obstacleMaterial = this.makeObstacleMaterial()
+  }
 
-    async createObstacle (
-      name: string,
-      location: Vector3,
-      parent: TransformNode
-    ): Promise<AbstractMesh> {
-      const obstacle = await super.createObstacle(name, location, parent)
-      obstacle.material = this.obstacleMaterial
-      return obstacle
-    }
+  makeObstacleMaterial (): StandardMaterial {
+    const material = new StandardMaterial(this.obstacleInfo.materialName, this.scene)
+    material.diffuseTexture = new Texture(this.getTextureURL(1), this.scene)
+    material.specularColor = new Color3(0, 0, 0)
+    material.diffuseColor = new Color3(1, 1, 1)
+    return material
+  }
+
+  async createObstacle (
+    name: string,
+    location: Vector3,
+    textureChoice: number,
+    parent: TransformNode
+  ): Promise<AbstractMesh> {
+    const obstacle = await super.createObstacle(name, location, textureChoice, parent)
+    obstacle.material = this.obstacleMaterial
+    return obstacle
+  }
 }
