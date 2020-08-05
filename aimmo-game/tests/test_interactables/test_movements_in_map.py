@@ -119,7 +119,7 @@ class TestMovementsInMap:
         """
         self.set_up_environment([MoveEastDummy])
         obstacle_cell = self.game.game_state.world_map.get_cell(Location(2, 0))
-        obstacle_cell.habitable = False
+        obstacle_cell.obstacle = {}
         assert self.avatar.location == Location(0, 0)
 
         for i in range(2):

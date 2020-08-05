@@ -18,6 +18,12 @@ export default class EnvironmentManager {
     this.camera = new Camera(this.environment)
     this.light = new Light(this.environment)
     this.terrain = new Terrain(this.assetPack)
+
+    this.setSceneBackground()
+  }
+
+  private setSceneBackground () {
+    this.environment.scene.clearColor = this.assetPack.backgroundColor
   }
 
   resizeBabylonWindow = () => {

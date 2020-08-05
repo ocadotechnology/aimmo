@@ -29,6 +29,7 @@ class WorksheetData:
     worksheet_id: int
     era: str
     map_updaters: "List[_MapUpdater]"
+    number_of_obstacle_textures: int
     avatar_state_serializer: AvatarStateSerializer = worksheet1_avatar_state_serializer
 
 
@@ -37,12 +38,14 @@ worksheets = {
         worksheet_id=1,
         era="future",
         map_updaters=[PickupUpdater],
+        number_of_obstacle_textures=1,
         avatar_state_serializer=worksheet1_avatar_state_serializer,
     ),
     2: WorksheetData(
         worksheet_id=2,
         era="future",
         map_updaters=[PickupUpdater],
+        number_of_obstacle_textures=1,
         avatar_state_serializer=worksheet2_avatar_state_serializer,
     ),
 }
