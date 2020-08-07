@@ -26,6 +26,7 @@ from simulation.avatar_state import create_avatar_state
 from io import StringIO
 import contextlib
 
+
 @contextlib.contextmanager
 def capture_output(stdout=None, stderr=None):
   """Temporarily switches stdout and stderr to stringIO objects or variable."""
@@ -56,7 +57,7 @@ serialized_action = {"action_type": "wait"}
 with capture_output() as output:
     action = next_turn(world_map, avatar_state)
     if action is None:
-      raise Exception("Make sure you are returning an action")
+        raise Exception("Make sure you are returning an action")
     serialized_action = action.serialise()
 stdout, stderr = output
 logs = stdout.getvalue() + stderr.getvalue()
