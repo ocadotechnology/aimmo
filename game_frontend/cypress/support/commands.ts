@@ -92,7 +92,7 @@ Cypress.Commands.add('loadGameWithAvatarCode', avatarCode => {
   }
 
   cy.window()
-    .pipe(getRunCodeButtonStatus)
+    .pipe(getRunCodeButtonStatus, { timeout: 10000 })
     .should('eq', 'done')
 })
 //
