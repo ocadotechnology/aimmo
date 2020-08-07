@@ -1,8 +1,7 @@
-import { defer, of } from 'rxjs'
+import { defer } from 'rxjs'
 import { spawn, Worker, ModuleThread, Thread } from 'threads'
 import ComputedTurnResult from './computedTurnResult'
 import { PyodideWorker } from './webWorker'
-import consoleLogReducer from 'redux/features/ConsoleLog/reducers'
 
 let worker: ModuleThread<PyodideWorker>
 let workerReady = false

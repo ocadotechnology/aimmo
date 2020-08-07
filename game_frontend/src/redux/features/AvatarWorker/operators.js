@@ -1,4 +1,4 @@
-import { of, Scheduler } from 'rxjs'
+import { of } from 'rxjs'
 import { timeout, catchError } from 'rxjs/operators'
 
 const PYODIDE_WORKER_PROCESSING_TIME = 1000
