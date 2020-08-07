@@ -74,18 +74,11 @@ Cypress.Commands.add('visitAGame', () => {
 })
 
 Cypress.Commands.add('loadGameWithAvatarCode', avatarCode => {
-  cy.server()
-    .route({
-      method: 'GET',
-      url: '/kurono/api/code/*',
-      response: avatarCode
-    })
-  cy.server()
-    .route('GET', 'https://pyodide-cdn2.iodide.io/v0.15.0/full/pyodide.asm.data')
-    .as('getPyodide')
-  cy.server()
-    .route('GET', 'static/worker/aimmo_avatar_api-0.0.0-py3-none-any.whl')
-    .as('getAvatarApi')
+  cy.server().route({
+    method: 'GET',
+    url: '/kurono/api/code/*',
+    response: avatarCode
+  })
 
   cy.visitAGame()
 
@@ -93,8 +86,14 @@ Cypress.Commands.add('loadGameWithAvatarCode', avatarCode => {
     .its('store')
     .invoke('dispatch', { type: 'features/AvatarWorker/INITIALIZE_PYODIDE' })
 
-  cy.wait('@getPyodide')
-  cy.wait('@getAvatarApi', { timeout: 20000 })
+  const getRunCodeButtonStatus = win => {
+    const state = win.store.getState()
+    return state.editor.runCodeButton.status
+  }
+
+  cy.window()
+    .pipe(getRunCodeButtonStatus)
+    .should('eq', 'done')
 })
 //
 //

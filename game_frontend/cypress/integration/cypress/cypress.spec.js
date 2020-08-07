@@ -11,28 +11,26 @@ describe('Cypress for aimmo', () => {
 
   it('returns wait action if code does not return an action', () => {
     const avatarCode = {
-      code:
-`def next_turn(world_state, avatar_state):
+      code: `def next_turn(world_state, avatar_state):
     return False`
     }
 
     const expectedAction = { action_type: 'wait' }
 
-    const expectedLog = 'AttributeError: \'bool\' object has no attribute \'serialise\'\n'
+    const expectedLog = "AttributeError: 'bool' object has no attribute 'serialise'\n"
 
     testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
 
   it('returns wait action and prints syntax warning on syntax error', () => {
     const avatarCode = {
-      code:
-`def next_turn(world_state, avatar_state):
+      code: `def next_turn(world_state, avatar_state):
     return MoveAction(direction.)`
     }
 
     const expectedAction = { action_type: 'wait' }
 
-    const expectedLog = ``
+    const expectedLog = ''
 
     testAvatarCode(avatarCode, expectedAction, expectedLog)
 
@@ -48,8 +46,7 @@ describe('Cypress for aimmo', () => {
 
   it('returns wait action and prints indentation warning on indentation error', () => {
     const avatarCode = {
-      code:
-`def next_turn(world_state, avatar_state):
+      code: `def next_turn(world_state, avatar_state):
 return MoveAction(direction.NORTH)`
     }
 
@@ -71,8 +68,7 @@ return MoveAction(direction.NORTH)`
 
   it('prints with one print', () => {
     const avatarCode = {
-      code:
-`def next_turn(world_state, avatar_state):
+      code: `def next_turn(world_state, avatar_state):
     print('I AM A PRINT STATEMENT')
     return MoveAction(direction.NORTH)`
     }
@@ -94,8 +90,7 @@ return MoveAction(direction.NORTH)`
 
   it('prints with multiple prints', () => {
     const avatarCode = {
-      code:
-`def next_turn(world_state, avatar_state):
+      code: `def next_turn(world_state, avatar_state):
     print('I AM A PRINT STATEMENT')
     print('I AM ALSO A PRINT STATEMENT')
     return MoveAction(direction.NORTH)`
@@ -111,8 +106,7 @@ return MoveAction(direction.NORTH)`
       }
     }
 
-    const expectedLog =
-`I AM A PRINT STATEMENT
+    const expectedLog = `I AM A PRINT STATEMENT
 I AM ALSO A PRINT STATEMENT\n`
 
     testAvatarCode(avatarCode, expectedAction, expectedLog)
@@ -120,8 +114,7 @@ I AM ALSO A PRINT STATEMENT\n`
 
   it('prints with a print in a separate function', () => {
     const avatarCode = {
-      code:
-`def next_turn(world_map, avatar_state):
+      code: `def next_turn(world_map, avatar_state):
     foo()
     print('I AM NOT A NESTED PRINT')
     return MoveAction(direction.NORTH)
@@ -140,8 +133,7 @@ def foo():
       }
     }
 
-    const expectedLog =
-`I AM A NESTED PRINT
+    const expectedLog = `I AM A NESTED PRINT
 I AM NOT A NESTED PRINT\n`
 
     testAvatarCode(avatarCode, expectedAction, expectedLog)
@@ -149,8 +141,7 @@ I AM NOT A NESTED PRINT\n`
 
   it('prints error message if code is broken', () => {
     const avatarCode = {
-      code:
-`def next_turn(world_state, avatar_state):
+      code: `def next_turn(world_state, avatar_state):
     print('THIS CODE IS BROKEN')
     return None`
     }
@@ -164,8 +155,7 @@ I AM NOT A NESTED PRINT\n`
 
   it('stores, changes global variable and prints it out', () => {
     const avatarCode = {
-      code:
-`turn_count = 0
+      code: `turn_count = 0
 def next_turn(world_map, avatar_state):
     global turn_count
     turn_count += 1
@@ -188,7 +178,7 @@ def next_turn(world_map, avatar_state):
     testAvatarCode(avatarCode, expectedAction, firstExpectedLog)
 
     cy.fixture('gameState.json').then(gameState => {
-      gameState['turnCount'] = 2
+      gameState.turnCount = 2
       cy.window()
         .its('store')
         .invoke('dispatch', {
