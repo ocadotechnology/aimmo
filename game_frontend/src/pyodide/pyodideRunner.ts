@@ -13,7 +13,7 @@ export async function initializePyodide () {
 }
 
 async function initializePyodideWorker () {
-  worker = await spawn<PyodideWorker>(new Worker('./webworker.ts'))
+  worker = await spawn<PyodideWorker>(new Worker('./webWorker.ts'))
   await worker.initializePyodide()
 }
 
