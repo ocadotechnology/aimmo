@@ -29,6 +29,7 @@
     "babel-plugin-module-resolver": "^3.2.0",
     "cypress": "^4.7.0",
     "cypress-pipe": "^1.7.0",
+    "cypress-terminal-report": "^1.4.2",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "enzyme-to-json": "^3.3.5",
