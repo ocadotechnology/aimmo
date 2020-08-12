@@ -73,8 +73,6 @@ Cypress.Commands.add('visitAGame', () => {
   })
 })
 
-Cypress.Commands.overwrite('log', (subject, message) => cy.task('log', message))
-
 Cypress.Commands.add('loadGameWithAvatarCode', avatarCode => {
   cy.server().route({
     method: 'GET',
