@@ -86,14 +86,14 @@ Cypress.Commands.add('loadGameWithAvatarCode', avatarCode => {
     .its('store')
     .invoke('dispatch', { type: 'features/AvatarWorker/INITIALIZE_PYODIDE' })
 
-  // const getRunCodeButtonStatus = win => {
-  //   const state = win.store.getState()
-  //   return state.editor.runCodeButton.status
-  // }
+  const isAvatarWorkerInitialized = win => {
+    const state = win.store.getState()
+    return state.avatarWorker.initialized
+  }
 
-  // cy.window()
-  //   .pipe(getRunCodeButtonStatus, { timeout: 10000 })
-  //   .should('eq', 'done')
+  cy.window()
+    .pipe(isAvatarWorkerInitialized, { timeout: 10000 })
+    .should('eq', true)
 })
 //
 //

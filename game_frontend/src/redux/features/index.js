@@ -5,7 +5,7 @@ import { analyticEpics } from './Analytics'
 import editorReducer, { editorEpics } from './Editor'
 import consoleLogReducer from './ConsoleLog'
 import gameReducer, { gameEpics } from './Game'
-import { avatarWorkerEpics } from './AvatarWorker'
+import avatarWorkerReducer, { avatarWorkerEpics } from './AvatarWorker'
 
 const rootEpic = combineEpics(
   ...Object.values(editorEpics),
@@ -18,7 +18,8 @@ const rootReducer = combineReducers({
   editor: editorReducer,
   game: gameReducer,
   consoleLog: consoleLogReducer,
-  action: actionReducer
+  action: actionReducer,
+  avatarWorker: avatarWorkerReducer
 })
 
 export { rootEpic, rootReducer }
