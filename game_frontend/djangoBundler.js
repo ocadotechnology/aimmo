@@ -48,6 +48,7 @@ function generateGameIDEHTML (reactFileName) {
 bundler.on('bundled', bundle => {
   const entryPointHTML = fs.readFileSync(bundle.name, 'utf-8')
   const reactUrl = getReactURL(entryPointHTML)
+  console.log(reactUrl)
   const gameIDEHTML = generateGameIDEHTML(reactUrl)
 
   fs.writeFile(`${templateFolder}/game_ide.html`, gameIDEHTML, error => {
