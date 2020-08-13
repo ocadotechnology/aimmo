@@ -192,23 +192,3 @@ def next_turn(world_map, avatar_state):
     checkComputedTurnResult(expectedAction, secondExpectedLog)
   })
 })
-
-it('Gives a timeout message when the worker takes too long to respond', () => {
-  const avatarCode = {
-    code: `
-def next_turn(world_map, avatar_state):
-    while True:
-        pass
-    return MoveAction(direction.NORTH)
-`
-  }
-
-  const expectedAction = {
-    action_type: 'wait'
-  }
-
-  const expectedLog =
-    'Hmm... your avatar is taking a long time to respond, is there a 🐛 in your code?'
-
-  testAvatarCode(avatarCode, expectedAction, expectedLog)
-})
