@@ -154,7 +154,8 @@ describe('avatarWorkerEpic', () => {
       expectObservable(output$).toBe('---- 1s a----', {
         a: actions.avatarsNextActionComputed({
           action: { action_type: 'wait' },
-          log: 'Hmm... your avatar is taking a long time to respond, is there a 🐛 in your code?',
+          log:
+            "Hmm, we haven't had an action back from your avatar this turn. Is there a 🐞 in your code?",
           turnCount: 2
         })
       })
