@@ -75,7 +75,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
     )
     const avatarMesh = meshes[0]
     avatarMesh.name = `avatar: ${avatar.value.id}`
-    avatarMesh.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1)
+    avatarMesh.scaling = new BABYLON.Vector3(0.2, 0.2, 0.2)
     avatarMesh.computeBonesUsingShaders = false
     avatarMesh.material = this.shaderMaterial
     avatarMesh.parent = this.avatarNode
@@ -122,6 +122,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
     marker.material = this.markerMaterial
 
     marker.parent = avatarMesh
+    marker.scaling = new BABYLON.Vector3(1.25, 1.25, 1.25)
     marker.position = new BABYLON.Vector3(0, MARKER_HEIGHT, 0)
   }
 
