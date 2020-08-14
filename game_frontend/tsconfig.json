@@ -9,7 +9,8 @@
         "jsx": "preserve",
         "lib": [
             "es2017",
-            "dom"
+            "dom",
+            "WebWorker.ImportScripts"
         ],
         "outDir": "./dist/",
         "baseUrl": "./src",

@@ -21,7 +21,7 @@ def test_data():
     cell = game.game_state.world_map.get_cell(Location(0, 0))
 
     # Avatar will try to move North, so we force it to stay in place
-    game.game_state.world_map.get_cell(Location(1, 0)).habitable = False
+    game.game_state.world_map.get_cell(Location(1, 0)).obstacle = {}
 
     return game, cell
 

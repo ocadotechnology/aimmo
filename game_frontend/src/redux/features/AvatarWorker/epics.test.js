@@ -6,6 +6,7 @@ import actions from './actions'
 import { of } from 'rxjs'
 import { actions as editorActions } from 'features/Editor'
 import { actions as gameActions } from 'features/Game'
+import { delay } from 'rxjs/operators'
 
 const deepEquals = (actual, expected) => expect(actual).toEqual(expected)
 
@@ -113,5 +114,53 @@ describe('avatarWorkerEpic', () => {
       })
     })
     expect(dependencies.api.socket.emitAction).toBeCalled()
+  })
+
+  it('handles a pyodide worker timing out and resets it', () => {
+    const testScheduler = createTestScheduler()
+
+    const dependencies = {
+      pyodideRunner: {
+        computeNextAction$: () => of({ action_type: 'move' }).pipe(delay(2000)),
+        resetWorker: jest.fn()
+      },
+      api: {
+        socket: {
+          emitAction: jest.fn()
+        }
+      }
+    }
+
+    const state$ = {
+      value: {
+        game: { gameState: { turnCount: 1 }, connectionParameters: { currentAvatarID: 1 } },
+        avatarWorker: { pyodideInitialized: true },
+        editor: {
+          code: {
+            codeOnServer: 'some python code'
+          }
+        }
+      }
+    }
+
+    testScheduler.run(({ hot, cold, expectObservable }) => {
+      const action$ = hot('-p--g----', {
+        g: gameActions.socketGameStateReceived({ players: [{ id: 1 }] }),
+        p: actions.pyodideInitialized()
+      })
+
+      const output$ = epics.computeNextActionEpic(action$, state$, dependencies)
+
+      expectObservable(output$).toBe('---- 1s a----', {
+        a: actions.avatarsNextActionComputed({
+          action: { action_type: 'wait' },
+          log:
+            "Hmm, we haven't had an action back from your avatar this turn. Is there a 🐞 in your code?",
+          turnCount: 2
+        })
+      })
+    })
+    expect(dependencies.api.socket.emitAction).toBeCalled()
+    expect(dependencies.pyodideRunner.resetWorker).toBeCalled()
   })
 })

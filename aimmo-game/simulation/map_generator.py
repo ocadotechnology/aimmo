@@ -1,5 +1,4 @@
 import abc
-import heapq
 import logging
 import random
 from itertools import tee
@@ -10,10 +9,9 @@ from six.moves import range, zip
 
 from simulation.direction import ALL_DIRECTIONS
 from simulation.game_state import GameState
-from simulation.interactables.score_location import ScoreLocation
-from simulation.level_settings import DEFAULT_LEVEL_SETTINGS
 from simulation.location import Location
-from simulation.world_map import WorldMap, WorldMapStaticSpawnDecorator
+from simulation.obstacle import Obstacle
+from simulation.world_map import WorldMap
 
 LOGGER = logging.getLogger(__name__)
 
@@ -47,11 +45,11 @@ class Main(_BaseGenerator):
                 cell.location != always_empty_location
                 and random.random() < self.settings["OBSTACLE_RATIO"]
             ):
-                cell.habitable = False
+                cell.obstacle = Obstacle.make_obstacle()
                 # So long as all habitable neighbours can still reach each other, then the
                 # map cannot get bisected.
                 if not _all_habitable_neighbours_can_reach_each_other(cell, world_map):
-                    cell.habitable = True
+                    cell.obstacle = None
 
         return world_map
 

@@ -1,5 +1,15 @@
 import { GameNode, DiffHandling, DiffProcessor } from '../interfaces'
-import * as BABYLON from 'babylonjs'
+import {
+  AbstractMesh,
+  SceneLoader,
+  TransformNode,
+  StandardMaterial,
+  Texture,
+  Vector3,
+  ShaderMaterial,
+  Scene,
+  Color3
+} from 'babylonjs'
 import { Environment } from '../environment/environment'
 import { DiffItem } from '../diff'
 import setOrientation from '../orientation'
@@ -9,24 +19,21 @@ const MARKER_HEIGHT = 12
 
 export default class AvatarManager implements GameNode, DiffHandling {
   object: any
-  currentAvatarMesh: BABYLON.AbstractMesh
-  scene: BABYLON.Scene
-  avatarNode: BABYLON.TransformNode
-  markerMaterial: BABYLON.StandardMaterial
+  currentAvatarMesh: AbstractMesh
+  scene: Scene
+  avatarNode: TransformNode
+  markerMaterial: StandardMaterial
   currentAvatarID: number
   gameStateProcessor: DiffProcessor
   importMesh: Function
-  shaderMaterial: BABYLON.ShaderMaterial
+  shaderMaterial: ShaderMaterial
 
-  constructor (
-    environment: Environment,
-    importMesh: Function = BABYLON.SceneLoader.ImportMeshAsync
-  ) {
+  constructor (environment: Environment, importMesh: Function = SceneLoader.ImportMeshAsync) {
     this.importMesh = importMesh
     this.gameStateProcessor = new DiffProcessor(this)
 
     this.scene = environment.scene
-    this.avatarNode = new BABYLON.TransformNode('Avatars', environment.scene)
+    this.avatarNode = new TransformNode('Avatars', environment.scene)
     this.object = this.avatarNode
     this.avatarNode.parent = environment.onTerrainNode
 
@@ -35,16 +42,16 @@ export default class AvatarManager implements GameNode, DiffHandling {
   }
 
   setupMarkerMaterial (): void {
-    this.markerMaterial = new BABYLON.StandardMaterial('avatar marker', this.scene)
-    this.markerMaterial.diffuseTexture = new BABYLON.Texture(
+    this.markerMaterial = new StandardMaterial('avatar marker', this.scene)
+    this.markerMaterial.diffuseTexture = new Texture(
       '/static/babylon/models/avatar_marker_texture.png',
       this.scene
     )
-    this.markerMaterial.specularColor = new BABYLON.Color3(0, 0, 0)
+    this.markerMaterial.specularColor = new Color3(0, 0, 0)
   }
 
   setupShaderMaterial (): void {
-    this.shaderMaterial = new BABYLON.ShaderMaterial(
+    this.shaderMaterial = new ShaderMaterial(
       'Avatar shader',
       this.scene,
       '/static/babylon/models/toonshader',
@@ -55,7 +62,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
     )
     this.shaderMaterial.setTexture(
       'textureSampler',
-      new BABYLON.Texture('/static/babylon/models/avatar_texture.png', this.scene)
+      new Texture('/static/babylon/models/avatar_texture.png', this.scene)
     )
   }
 
@@ -75,11 +82,11 @@ export default class AvatarManager implements GameNode, DiffHandling {
     )
     const avatarMesh = meshes[0]
     avatarMesh.name = `avatar: ${avatar.value.id}`
-    avatarMesh.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1)
+    avatarMesh.scaling = new Vector3(0.2, 0.2, 0.2)
     avatarMesh.computeBonesUsingShaders = false
     avatarMesh.material = this.shaderMaterial
     avatarMesh.parent = this.avatarNode
-    avatarMesh.position = new BABYLON.Vector3(avatar.value.location.x, 0, avatar.value.location.y)
+    avatarMesh.position = new Vector3(avatar.value.location.x, 0, avatar.value.location.y)
     setOrientation(avatarMesh, avatar.value.orientation)
 
     if (avatar.value.id === this.currentAvatarID) {
@@ -93,7 +100,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
       return node.name === `avatar: ${avatar.value.id}`
     })[0]
 
-    const toPosition = new BABYLON.Vector3(avatar.value.location.x, 0, avatar.value.location.y)
+    const toPosition = new Vector3(avatar.value.location.x, 0, avatar.value.location.y)
 
     const moveAnimation = createMoveAnimation(avatarToAnimate.position, toPosition)
     this.scene.beginDirectAnimation(
@@ -122,7 +129,8 @@ export default class AvatarManager implements GameNode, DiffHandling {
     marker.material = this.markerMaterial
 
     marker.parent = avatarMesh
-    marker.position = new BABYLON.Vector3(0, MARKER_HEIGHT, 0)
+    marker.scaling = new Vector3(1.25, 1.25, 1.25)
+    marker.position = new Vector3(0, MARKER_HEIGHT, 0)
   }
 
   setCurrentAvatarID (avatarID: number) {

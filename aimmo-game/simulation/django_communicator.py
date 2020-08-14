@@ -1,5 +1,6 @@
 import aiohttp
 import os
+from asyncio import TimeoutError
 
 
 class DjangoCommunicator(object):
@@ -9,7 +10,8 @@ class DjangoCommunicator(object):
     """
 
     def __init__(self, django_api_url):
-        self.session = aiohttp.ClientSession()
+        timeout = aiohttp.ClientTimeout(total=1)
+        self.session = aiohttp.ClientSession(timeout=timeout)
         self.django_api_url = django_api_url
         self.token_url = self.django_api_url + "token/"
 
@@ -20,7 +22,7 @@ class DjangoCommunicator(object):
                     return await response.json()
                 else:
                     raise GameMetadataFetchFailedError
-        except (aiohttp.ClientConnectionError, aiohttp.ContentTypeError):
+        except (aiohttp.ClientConnectionError, aiohttp.ContentTypeError, TimeoutError):
             raise GameMetadataFetchFailedError
 
     async def patch_token(self, data):

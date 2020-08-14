@@ -55,12 +55,12 @@ class TestService(TestCase):
         NOTE: Orientation (and others) may be hard coded. This test WILL and SHOULD fail if the functionality is added.
         """
         player_list = self.world_state_json["players"]
-        self.assertEqual(len(player_list), 1)
+        assert len(player_list) == 1
         details = player_list[0]
-        self.assertEqual(details["id"], 1)
-        self.assertEqual(details["location"]["x"], 0)
-        self.assertEqual(details["location"]["y"], -1)
-        self.assertEqual(details["orientation"], "north")
+        assert details["id"] == 1
+        assert details["location"]["x"] == 0
+        assert details["location"]["y"] == -1
+        assert details["orientation"] == "north"
 
     def test_correct_json_score_locations(self):
         """
@@ -112,10 +112,7 @@ class TestService(TestCase):
               WILL and SHOULD fail.
         """
         obstacle_list = self.world_state_json["obstacles"]
-        self.assertEqual(len(obstacle_list), 1)
-        self.assertEqual(obstacle_list[0]["location"]["x"], 1)
-        self.assertEqual(obstacle_list[0]["location"]["y"], 0)
-        self.assertEqual(obstacle_list[0]["orientation"], "north")
-        self.assertEqual(obstacle_list[0]["width"], 1)
-        self.assertEqual(obstacle_list[0]["height"], 1)
-        self.assertEqual(obstacle_list[0]["type"], "wall")
+        assert len(obstacle_list) == 1
+        assert obstacle_list[0]["location"]["x"] == 1
+        assert obstacle_list[0]["location"]["y"] == 0
+        assert obstacle_list[0]["texture"] == 1
