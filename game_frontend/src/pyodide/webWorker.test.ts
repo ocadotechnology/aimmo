@@ -1,5 +1,6 @@
 /* eslint-env jest */
-import { simplifyErrorMessageInLog } from './pyodideRunner'
+import { simplifyErrorMessageInLog } from './webWorker'
+jest.mock('threads/worker')
 
 describe('Error formatting', () => {
   it('makes the traceback returned from pyodide more readable', () => {
