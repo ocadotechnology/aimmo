@@ -24,7 +24,7 @@ describe('Avatar worker in a web worker', () => {
     }
 
     const expectedLog =
-      "Hmmm, we haven't had an action back from your avatar this turn. Is there a 🐞 in your code?"
+      "Hmm, we haven't had an action back from your avatar this turn. Is there a 🐞 in your code?"
 
     testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
