@@ -30,7 +30,7 @@ setup(
         "requests",
         "six",
         "hypothesis",
-        "cfl-common-test @ https://test-files.pythonhosted.org/packages/00/a8/08be861e496afbb359626fcb2aa52838cac0ff1aeb0ccb4be3d17441776d/cfl_common_test-0.0.0-py3-none-any.whl"
+        "cfl-common"
     ],
     tests_require=["docker >= 3.5, < 3.6", "kubernetes == 5.0.0", "PyYAML == 4.2b1"],
     version=version,
