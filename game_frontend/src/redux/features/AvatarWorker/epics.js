@@ -2,9 +2,13 @@ import { switchMap, mapTo, zip, take, tap, map } from 'rxjs/operators'
 
 import actions from './actions'
 import types from './types'
+import { timeoutIfWorkerTakesTooLong } from './operators'
 import { ofType } from 'redux-observable'
 import { gameTypes } from '../Game'
 import { editorTypes } from '../Editor'
+import { from, Scheduler } from 'rxjs'
+
+const backgroundScheduler = Scheduler.async
 
 const initializePyodideEpic = (action$, state$, { pyodideRunner: { initializePyodide } }) =>
   action$.pipe(
@@ -13,6 +17,9 @@ const initializePyodideEpic = (action$, state$, { pyodideRunner: { initializePyo
     mapTo(actions.pyodideInitialized())
   )
 
+/**
+ * Sets the avatar code in the pyodide worker as soon as the worker is fully initialized and we have fetched the code.
+ */
 const initialUpdateAvatarCodeEpic = (action$, state$, { pyodideRunner: { updateAvatarCode } }) =>
   action$.pipe(
     zip(
@@ -26,7 +33,8 @@ const initialUpdateAvatarCodeEpic = (action$, state$, { pyodideRunner: { updateA
 const updateAvatarCodeEpic = (
   action$,
   state$,
-  { api: { socket }, pyodideRunner: { updateAvatarCode } }
+  { api: { socket }, pyodideRunner: { updateAvatarCode, resetWorker } },
+  scheduler = backgroundScheduler
 ) =>
   action$.pipe(
     ofType(types.PYODIDE_INITIALIZED),
@@ -34,11 +42,13 @@ const updateAvatarCodeEpic = (
       action$.pipe(
         ofType(editorTypes.POST_CODE_SUCCESS),
         switchMap(() =>
-          updateAvatarCode(
-            state$.value.editor.code.codeOnServer,
-            state$.value.game.gameState,
-            state$.value.game.connectionParameters.currentAvatarID
-          )
+          from(
+            updateAvatarCode(
+              state$.value.editor.code.codeOnServer,
+              state$.value.game.gameState,
+              state$.value.game.connectionParameters.currentAvatarID
+            )
+          ).pipe(timeoutIfWorkerTakesTooLong(state$, resetWorker, scheduler))
         ),
         tap(socket.emitAction),
         map(actions.avatarCodeUpdated)
@@ -46,10 +56,15 @@ const updateAvatarCodeEpic = (
     )
   )
 
+/**
+ * For each game state that we receive, we compute the avatar's next action and send it to the game server.
+ * @returns a redux action that contains the avatar's next action
+ */
 const computeNextActionEpic = (
   action$,
   state$,
-  { api: { socket }, pyodideRunner: { computeNextAction$ } }
+  { api: { socket }, pyodideRunner: { computeNextAction$, resetWorker } },
+  scheduler = backgroundScheduler
 ) =>
   action$.pipe(
     ofType(types.PYODIDE_INITIALIZED),
@@ -57,7 +72,10 @@ const computeNextActionEpic = (
       action$.pipe(
         ofType(gameTypes.SOCKET_GAME_STATE_RECEIVED),
         switchMap(({ payload: { gameState } }) =>
-          computeNextAction$(gameState, state$.value.game.connectionParameters.currentAvatarID)
+          computeNextAction$(
+            gameState,
+            state$.value.game.connectionParameters.currentAvatarID
+          ).pipe(timeoutIfWorkerTakesTooLong(state$, resetWorker, scheduler))
         ),
         tap(socket.emitAction),
         map(actions.avatarsNextActionComputed)
