@@ -3,7 +3,7 @@ dist: trusty
 group: edge
 language: python
 python:
-  - "3.6.7"
+  - "3.7"
 services:
   - docker
 env:
