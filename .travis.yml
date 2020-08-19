@@ -8,7 +8,6 @@ services:
   - docker
 env:
   global:
-    - DOCKER_BUILDKIT=1
     - secure: "TNhj8oXrtBzCkkJDA8qbDmqUggK9Kbsy8Itgi0+VmXB+3bVRornZMS38ppaFz+BVOTdL80ZvN2s/OPV106QjFv0Hx1MmWAw4kNST2QBtxFXBHRKYtr7NtBN0jr11el1fG83YdpeZYQbc5aqbJ4OPz2GpfhGfDVhVGPjMFMKXI5XbTbbl+HCEL67ywozt964LhpuuXTaX7jgYFiJUtcwkYRUaDYY3ryJvMSOx95AjKyRMNC5JlgAqbJuYsOTm1eVZtfQ1jYVvd/NuAHOMDNpZWvcIaxTuc3k4XZh4UPryuRJWfjgjIq6kua7Q6ho6W2GbDgN2b/9lIldkTR8QfLSnCNLJIg6KJZ2gmIQg7u+nZHemdugo9XkvfmKXfB/t3HChFX1HNtS4gSeIn874IynLHx3UJ1lxm7BdDbF4Jjijffj5uWDGqVj3/Myd2jdFTJCoLJXvYI7la6ouMzXW5aDFhy2UXK2A3q7aBbaD64+U1R7YPGIyvfAd7NCF11vtRvJGI/fNjO5S1EuSacrQm7CiXu0rd0L5EOSU85XNTQsWN6xxJKEcc8Hx9YLRXkmR7gK9LoEPTUwFbfVXBUvnOsZav3MOBBxzj4+eLxkx2B1vbY2Lx5yPAqyWwi3vet46NEZUIKgqK+xRYQKj6dj3OF1gx7LOcyhpyevdpTZotiEx0C4=" # SNAP_API_AUTH
 git:
   depth: false
@@ -61,7 +60,7 @@ jobs:
     - name: "aimmo-game"
       before_install:
         - cd aimmo-game
-        - docker build --target tester -t ocadotechnology/aimmo-game:test .
+        - docker build -t ocadotechnology/aimmo-game:test --target tester .
       install:
         - pip install codecov
       script:
@@ -75,7 +74,7 @@ jobs:
     - name: "aimmo-game-creator"
       before_install:
         - cd aimmo-game-creator
-        - docker build --target tester -t  ocadotechnology/aimmo-game-creator:test .
+        - docker build -t ocadotechnology/aimmo-game-creator:test --target tester .
       install:
         - pip install codecov
       script:
@@ -89,7 +88,7 @@ jobs:
     - name: "aimmo-game-worker"
       before_install:
         - cd aimmo-game-worker
-        - docker build --target tester -t ocadotechnology/aimmo-game-worker:test .
+        - docker build -t ocadotechnology/aimmo-game-worker:test --target tester .
       install:
         - pip install codecov
       script:
