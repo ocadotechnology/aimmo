@@ -62,6 +62,8 @@ STATIC_ROOT = os.path.join(os.path.dirname(__file__), "static")
 STATIC_URL = "/static/"
 SECRET_KEY = "not-a-secret"
 
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
 mimetypes.add_type("application/wasm", ".wasm", True)
 
 ROOT_URLCONF = "example_project.urls"
@@ -72,7 +74,7 @@ INSTALLED_APPS = (
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "aimmo",
+    "portal",
 )
 
 LOGGING = {
