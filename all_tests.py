@@ -57,7 +57,7 @@ def run_tests(compute_coverage, use_docker=True):
                     "run",
                     "--concurrency=eventlet",
                     "--source=.",
-                    "setup.py",
+                    "../example_project/manage.py",
                     "test",
                 ],
                 cwd=dir,

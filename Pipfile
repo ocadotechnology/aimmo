@@ -4,6 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
+pytest = "*"
+pytest-django = ">=3.7.0, <3.8.0"
 
 [packages]
 aimmo = {editable = true,path = "."}

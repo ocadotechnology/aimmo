@@ -72,6 +72,7 @@ db.sqlite3
 
 # static folder
 example_project/example_project/static/
+test_project/test_project/static/
 
 # Created during minikube testing
 test-bin/
