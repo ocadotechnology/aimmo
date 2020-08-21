@@ -14,7 +14,7 @@ git:
   depth: false
 stages:
   - name: test
-    if: tag IS blank AND type IN (pull_request)
+    if: tag IS blank AND ((branch IN (development) OR type IN (pull_request))
   - name: release
     if: tag IS blank AND ((branch IN (master, development) AND NOT type IN (pull_request)) OR env(DEPLOY_TO_DEV) = true)
   - name: Merge master into development after release
