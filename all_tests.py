@@ -17,7 +17,7 @@ from aimmo_runner import runner, docker_scripts
 
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-APPS = ("aimmo/",)
+APPS = ("aimmo",)
 
 
 def print_help():
@@ -53,17 +53,14 @@ def run_tests(compute_coverage, use_docker=True):
         if compute_coverage and app != "":
             result = subprocess.call(
                 [
-                    "coverage",
-                    "run",
-                    "--concurrency=eventlet",
-                    "--source=.",
-                    "../example_project/manage.py",
-                    "test",
-                ],
-                cwd=dir,
+                    "pytest",
+                    "--cov=.",
+                    "--cov-report=xml",
+                    app
+                ]
             )
         else:
-            result = subprocess.call([sys.executable, "setup.py", "test"], cwd=dir)
+            result = subprocess.call(["pytest", app])
         if result != 0:
             print("Tests failed: {}".format(result))
             failed_apps.append(app)

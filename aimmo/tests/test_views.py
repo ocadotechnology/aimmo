@@ -7,6 +7,7 @@ from rest_framework import status
 
 from aimmo import app_settings, models
 from aimmo.serializers import GameSerializer
+from common.models import Teacher, UserProfile
 
 app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
     "base %s" % game_id,
@@ -46,6 +47,10 @@ class TestViews(TestCase):
         cls.user = User.objects.create_user("test", "test@example.com", "password")
         cls.user.is_staff = True
         cls.user.save()
+        profile = UserProfile(user=cls.user)
+        profile.save()
+        teacher = Teacher(user=profile)
+        teacher.save()
         cls.game = models.Game(id=1, name="test", public=True)
         cls.game.save()
 
