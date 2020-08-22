@@ -92,6 +92,8 @@ jobs:
     - name: "Javascript Tests"
       language: node_js
       install:
+        - nvm install 12
+        - nvm use 12
         - cd game_frontend && yarn --frozen-lockfile
       script:
         - yarn lint
