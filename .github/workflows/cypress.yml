@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install pipenv
-          pipenv install --system
+          pipenv install --system --dev
           cd game_frontend
           yarn install
       - name: Build project and run server
