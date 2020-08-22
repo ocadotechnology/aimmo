@@ -8,6 +8,8 @@ fixes:
 
 ignore:
   - "aimmo/static/pyodide/**/*"
+  - ".travis.yml"
+  - "docs/**/*"
 
 comment:
   layout: "reach, diff, flags, files"
