@@ -1,5 +1,6 @@
 dist: xenial
-group: edge
+os:
+  - linux
 language: python
 python:
   - "3.7"
@@ -13,7 +14,7 @@ git:
   depth: false
 stages:
   - name: test
-    if: tag IS blank AND ((branch IN (development) OR type IN (pull_request))
+    if: tag IS blank AND (branch = development OR type = pull_request)
   - name: release
     if: tag IS blank AND ((branch IN (master, development) AND NOT type IN (pull_request)) OR env(DEPLOY_TO_DEV) = true)
   - name: Merge master into development after release
@@ -91,8 +92,6 @@ jobs:
         - bash <(curl -s https://codecov.io/bash)
     - name: "Javascript Tests"
       language: node_js
-      node_js:
-        - 12
       install:
         - cd game_frontend && yarn --frozen-lockfile
       script:
@@ -101,8 +100,6 @@ jobs:
       after_success:
         - bash <(curl -s https://codecov.io/bash)
     - stage: Release
-      node_js:
-        - 12
       env:
         - NODE_ENV=production
         - SERVER_ENV=$(if [ "$TRAVIS_BRANCH" = "master" ]; then echo "default"; else echo "staging"; fi)
