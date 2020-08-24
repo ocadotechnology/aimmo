@@ -74,7 +74,7 @@ INSTALLED_APPS = (
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "portal",
+    "aimmo",
 )
 
 LOGGING = {

@@ -99,10 +99,7 @@ def run(
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "test_settings")
     else:
         sys.path.insert(0, os.path.join(ROOT_DIR_LOCATION, "example_project"))
-        if using_cypress:
-            os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.local_settings")
-        else:
-            os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
 
     django.setup()
 
