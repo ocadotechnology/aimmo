@@ -40,6 +40,7 @@ DEFAULT_SETTINGS = {"AUTOCONFIG_INDEX_VIEW": "aimmo/home", "STATIC_URL": "/stati
 
 SETTINGS = {
     "INSTALLED_APPS": [
+        "common",
         "django.contrib.auth",
         "django.contrib.messages",
         "django.contrib.staticfiles",

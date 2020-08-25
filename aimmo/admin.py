@@ -35,6 +35,7 @@ class GameDataAdmin(admin.ModelAdmin):
     raw_id_fields = ["owner", "main_user", "can_play"]
     readonly_fields = ["players", "auth_token"]
     actions = [add_test_avatars_to_games]
+    exclude = ["game_class"]
 
     def players(self, obj):
         return "\n".join([u.first_name for u in obj.can_play.all()])

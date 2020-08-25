@@ -30,6 +30,7 @@ setup(
         "requests",
         "six",
         "hypothesis",
+        "cfl-common==3.*"
     ],
     tests_require=["docker >= 3.5, < 3.6", "kubernetes == 5.0.0", "PyYAML == 4.2b1"],
     version=version,
