@@ -58,7 +58,13 @@ class Game(models.Model):
     name = models.CharField(max_length=100)
     auth_token = models.CharField(max_length=24, blank=True)
     owner = models.ForeignKey(User, blank=True, null=True, related_name="owned_games")
-    game_class = models.ForeignKey(Class, blank=True, null=True, related_name="games_for_class")
+    game_class = models.ForeignKey(
+        Class,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="games_for_class",
+    )
     public = models.BooleanField(default=False)
     can_play = models.ManyToManyField(
         User,

@@ -1,7 +1,7 @@
 from .base_test_migration import MigrationTestCase
 
 
-class TestMigrationLinkWorksheetWithGame(MigrationTestCase):
+class TestMigrationLinkClassToGame(MigrationTestCase):
     start_migration = "0015_game_worksheet"
     dest_migration = "0016_game_class"
 
