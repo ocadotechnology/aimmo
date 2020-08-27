@@ -98,7 +98,7 @@ def run(
     if test_env:
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "test_settings")
     else:
-        sys.path.append(os.path.join(ROOT_DIR_LOCATION, "example_project"))
+        sys.path.insert(0, os.path.join(ROOT_DIR_LOCATION, "example_project"))
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
 
     django.setup()
