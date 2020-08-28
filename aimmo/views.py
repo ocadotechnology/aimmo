@@ -15,7 +15,6 @@ from rest_framework.views import APIView
 
 from . import forms
 from . import game_renderer
-from .app_settings import get_users_for_new_game
 from .exceptions import UserCannotPlayGameException
 from .models import Avatar, Game
 from .game_creator import create_game, create_avatar_for_user
@@ -88,7 +87,7 @@ class GameViewSet(
 
     def list(self, request):
         response = {}
-        for game in Game.objects.exclude_inactive():
+        for game in Game.objects.all():
             serializer = GameSerializer(game)
             response[game.pk] = serializer.data
         return Response(response)

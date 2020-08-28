@@ -10,7 +10,6 @@ GAME_SERVER_URL_FUNCTION = getattr(settings, "AIMMO_GAME_SERVER_URL_FUNCTION", N
 GAME_SERVER_PORT_FUNCTION = getattr(settings, "AIMMO_GAME_SERVER_PORT_FUNCTION", None)
 GAME_SERVER_SSL_FLAG = getattr(settings, "AIMMO_GAME_SERVER_SSL_FLAG", False)
 CAN_DELETE_GAME_CLASS = getattr(settings, "CAN_DELETE_GAME_CLASS", None)
-USERS_FOR_NEW_AIMMO_GAME = getattr(settings, "USERS_FOR_NEW_AIMMO_GAME", None)
 
 
 class DummyPermission(permissions.BasePermission):

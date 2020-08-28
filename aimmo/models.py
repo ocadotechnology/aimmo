@@ -8,6 +8,7 @@ from aimmo import app_settings
 
 from common.models import Class
 
+
 DEFAULT_WORKSHEET_ID = 1
 
 GAME_GENERATORS = [("Main", "Open World")] + [  # Default
@@ -17,17 +18,6 @@ GAME_GENERATORS = [("Main", "Open World")] + [  # Default
 
 def generate_auth_token():
     return urlsafe_b64encode(urandom(16))
-
-
-class GameQuerySet(models.QuerySet):
-    def for_user(self, user):
-        if user.is_authenticated():
-            return self.filter(models.Q(public=True) | models.Q(can_play=user))
-        else:
-            return self.filter(public=True)
-
-    def exclude_inactive(self):
-        return self.filter(completed=False)
 
 
 class Worksheet(models.Model):
@@ -75,7 +65,6 @@ class Game(models.Model):
     main_user = models.ForeignKey(
         User, blank=True, null=True, related_name="games_for_user"
     )
-    objects = GameQuerySet.as_manager()
     static_data = models.TextField(blank=True, null=True)
 
     # Game config
@@ -101,7 +90,13 @@ class Game(models.Model):
         return self.name
 
     def can_user_play(self, user):
-        return self.public or user in self.can_play.all()
+        try:
+            return (
+                self.game_class.students.filter(new_user=user).exists()
+                or user == self.game_class.teacher.new_user
+            )
+        except AttributeError:
+            return False
 
     def settings_as_dict(self):
         return {
