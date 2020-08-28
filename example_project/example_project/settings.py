@@ -44,6 +44,8 @@ ALLOWED_HOSTS = ["*"]
 
 DEBUG = True
 
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",  # Add 'postgresql_psycopg2', 'mysql',
@@ -74,7 +76,7 @@ INSTALLED_APPS = (
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "aimmo",
+    "portal",
 )
 
 LOGGING = {
