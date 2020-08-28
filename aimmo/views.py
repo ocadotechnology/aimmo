@@ -171,8 +171,7 @@ def add_game(request):
     if request.method == "POST":
         form = forms.AddGameForm(playable_games, data=request.POST)
         if form.is_valid():
-            users_to_add_to_game = get_users_for_new_game(request)
-            game = create_game(request.user, form, users_to_add_to_game)
+            game = create_game(request.user, form)
             return redirect("kurono/play", id=game.id)
     else:
         form = forms.AddGameForm(playable_games)

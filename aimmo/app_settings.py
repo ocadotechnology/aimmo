@@ -22,19 +22,6 @@ class DummyPermission(permissions.BasePermission):
         return True
 
 
-def get_users_for_new_game(request):
-    """
-    Imports and calls a function defined in portal, that decides
-    which users should be added to the newly created game.
-    :param request:
-    :return: List of User objects
-    """
-    if USERS_FOR_NEW_AIMMO_GAME:
-        func = import_string(USERS_FOR_NEW_AIMMO_GAME)
-        return func(request)
-    return User.objects.all()
-
-
 def get_can_delete_game_class():
     if CAN_DELETE_GAME_CLASS:
         return import_string(CAN_DELETE_GAME_CLASS)

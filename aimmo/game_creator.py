@@ -8,7 +8,7 @@ import os
 from .models import Avatar
 
 
-def create_game(main_user, form, users_to_add_to_game):
+def create_game(main_user, form):
     """
     Creates a Game by:
     - saving the form
@@ -26,8 +26,6 @@ def create_game(main_user, form, users_to_add_to_game):
     game.owner = main_user
     game.main_user = main_user
     game.save()
-    if users_to_add_to_game is not None:
-        game.can_play.add(*users_to_add_to_game)
     create_avatar_for_user(main_user, game.id)
     return game
 
