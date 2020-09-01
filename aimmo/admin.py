@@ -40,8 +40,11 @@ class GameDataAdmin(admin.ModelAdmin):
     exclude = ["game_class"]
 
     def players(self, obj):
-        # TODO: handle can_play here
-        return "\n".join([u.first_name for u in obj.can_play.all()])
+        players = "\n".join(
+            [student.new_user.first_name for student in obj.game_class.students.all()]
+        )
+        players = players.join(obj.game_class.teacher.new_user.first_name)
+        return players
 
 
 class AvatarDataAdmin(admin.ModelAdmin):
