@@ -1,12 +1,16 @@
 from aimmo.models import Game
 from django.core.exceptions import ValidationError
-from django.forms import ModelForm
+from django.forms import ModelForm, ModelChoiceField, Select
+from django.db.models.query import QuerySet
 
 
 class AddGameForm(ModelForm):
-    def __init__(self, playable_games, *args, **kwargs):
+    def __init__(self, playable_games, classes: QuerySet, *args, **kwargs):
         self.playable_games = playable_games
         super(AddGameForm, self).__init__(*args, **kwargs)
+        self.fields["game_class"].queryset = classes
+
+    game_class = ModelChoiceField(queryset=None, widget=Select, required=True)
 
     class Meta:
         model = Game
@@ -30,7 +34,6 @@ class AddGameForm(ModelForm):
             "start_width",
             "status",
             "worksheet",
-            "game_class",
         ]
 
     def clean(self):
