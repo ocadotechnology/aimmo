@@ -71,11 +71,6 @@ urlpatterns = [
         r"^jsreverse/$", urls_js, name="kurono/js_reverse"
     ),  # TODO: Pull request to make django_js_reverse.urls
     url(r"^games/new/$", views.add_game, name="kurono/new_game"),
-    # TODO: this is a quickfix for redirecting for the Unity resources
-    url(
-        r"^watch/(?P<id>[0-9]+)/(?P<resource>.[0-9A-Za-z/.]+)$",
-        RedirectView.as_view(url="/static/unity/%(resource)s", permanent=False),
-    ),
     url(
         r"^favicon/.ico$",
         RedirectView.as_view(url="/static/favicon.ico", permanent=True),
