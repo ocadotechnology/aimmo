@@ -10,10 +10,8 @@ from .models import Avatar, Game, User, Worksheet
 class GameDataAdmin(admin.ModelAdmin):
     search_fields = ["id", "name", "owner__username", "owner__email"]
     list_display = ["id", "name", "owner"]
-    raw_id_fields = ["owner", "main_user", "can_play"]
+    raw_id_fields = ["owner", "main_user", "can_play", "game_class"]
     readonly_fields = ["players", "auth_token"]
-    # TODO: need to be able to change this in the admin console
-    exclude = ["game_class"]
 
     def players(self, obj):
         players = "\n".join(
