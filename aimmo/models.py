@@ -89,7 +89,18 @@ class Game(models.Model):
     def __str__(self):
         return self.name
 
-    def can_user_play(self, user):
+    def can_user_play(self, user: User) -> bool:
+        """Checks whether the given user has permission to play the game.
+
+        A user can play the game if they are part of the game's class or 
+        the teacher of that class.
+
+        Args:
+            user: A standard django User object
+
+        Returns:
+            bool: True if user can play the game, False otherwise
+        """
         try:
             return (
                 self.game_class.students.filter(new_user=user).exists()
