@@ -61,16 +61,10 @@ urlpatterns = [
         views.mark_game_complete,
         name="kurono/complete_game",
     ),
-    url(
-        r"^api/games/(?P<game_id>[0-9]+)/current_avatar/$",
-        views.current_avatar_in_game,
-        name="kurono/current_avatar_in_game",
-    ),
     url(r"^api/", include(router.urls)),
     url(
         r"^jsreverse/$", urls_js, name="kurono/js_reverse"
     ),  # TODO: Pull request to make django_js_reverse.urls
-    url(r"^games/new/$", views.add_game, name="kurono/new_game"),
     url(
         r"^favicon/.ico$",
         RedirectView.as_view(url="/static/favicon.ico", permanent=True),

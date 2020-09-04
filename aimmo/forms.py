@@ -1,12 +1,13 @@
-from aimmo.models import Game
 from django.core.exceptions import ValidationError
-from django.forms import ModelForm, ModelChoiceField, Select
 from django.db.models.query import QuerySet
+from django.forms import ModelChoiceField, ModelForm, Select
+
+from aimmo.models import Game
+from common.models import Class
 
 
 class AddGameForm(ModelForm):
-    def __init__(self, playable_games, classes: QuerySet, *args, **kwargs):
-        self.playable_games = playable_games
+    def __init__(self, classes: QuerySet, *args, **kwargs):
         super(AddGameForm, self).__init__(*args, **kwargs)
         self.fields["game_class"].queryset = classes
 
@@ -33,19 +34,12 @@ class AddGameForm(ModelForm):
             "start_height",
             "start_width",
             "status",
-            "worksheet",
         ]
 
     def clean(self):
-        name = self.cleaned_data["name"]
+        game_class: Class = self.cleaned_data.get("game_class")
 
-        playable_games_names = [
-            playable_game.name
-            for playable_game in self.playable_games
-            if self.playable_games and name
-        ]
-
-        if name in playable_games_names:
-            raise ValidationError("Sorry, a game with this name already exists.")
+        if game_class and not Class.objects.filter(pk=game_class.id).exists():
+            raise ValidationError("Sorry, an invalid class was entered")
 
         return self.cleaned_data

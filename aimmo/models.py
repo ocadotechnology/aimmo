@@ -82,6 +82,12 @@ class Game(models.Model):
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=RUNNING)
     worksheet = models.ForeignKey(Worksheet, blank=True, null=True)
 
+    class Meta:
+        unique_together = (
+            "game_class",
+            "worksheet",
+        )
+
     @property
     def is_active(self):
         return not self.completed
@@ -92,7 +98,7 @@ class Game(models.Model):
     def can_user_play(self, user: User) -> bool:
         """Checks whether the given user has permission to play the game.
 
-        A user can play the game if they are part of the game's class or 
+        A user can play the game if they are part of the game's class or
         the teacher of that class.
 
         Args:

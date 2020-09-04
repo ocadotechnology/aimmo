@@ -1,23 +1,27 @@
-from __future__ import absolute_import
-
 import logging
-import os
+from typing import Tuple
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 from rest_framework import mixins, status, viewsets
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.decorators import (
+    api_view,
+    authentication_classes,
+    permission_classes,
+)
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from . import forms
 from . import game_renderer
 from .exceptions import UserCannotPlayGameException
+from .game_creator import create_avatar_for_user, create_game
 from .models import Avatar, Game
-from .game_creator import create_game, create_avatar_for_user
 from .permissions import (
     CanDeleteGameOrReadOnly,
     CsrfExemptSessionAuthentication,
@@ -28,21 +32,14 @@ from .serializers import GameSerializer
 LOGGER = logging.getLogger(__name__)
 
 
-def _post_code_success_response(message):
-    return _create_response("SUCCESS", message)
-
-
-def _create_response(status, message):
-    response = {"status": status, "message": message}
-    return JsonResponse(response)
-
-
 @login_required
 def code(request, id):
     if not request.user:
+        print("no user")
         return HttpResponseForbidden()
     game = get_object_or_404(Game, id=id)
     if not game.can_user_play(request.user):
+        print("user can't play")
         raise Http404
     try:
         avatar = game.avatar_set.get(owner=request.user)
@@ -93,6 +90,9 @@ class GameViewSet(
         return Response(response)
 
 
+@api_view(["GET"])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
 def connection_parameters(request, game_id):
     """
     An API view which returns the correct connection settings required
@@ -104,7 +104,7 @@ def connection_parameters(request, game_id):
     """
     env_connection_settings = game_renderer.get_environment_connection_settings(game_id)
 
-    avatar_id, response = get_avatar_id(request, game_id)
+    avatar_id, response = get_avatar_id(request.user, game_id)
 
     if avatar_id:
         env_connection_settings.update({"avatar_id": avatar_id})
@@ -163,52 +163,26 @@ def watch_game(request, id):
     return game_renderer.render_game(request, game)
 
 
-@login_required
-def add_game(request):
-    playable_games = request.user.playable_games.all()
-
-    if request.method == "POST":
-        form = forms.AddGameForm(playable_games, data=request.POST)
-        if form.is_valid():
-            game = create_game(request.user, form)
-            return redirect("kurono/play", id=game.id)
-    else:
-        form = forms.AddGameForm(playable_games)
-    return render(request, "players/add_game.html", {"form": form})
-
-
-def current_avatar_in_game(request, game_id):
-    avatar_id, response = get_avatar_id(request, game_id)
-
-    if avatar_id:
-        return JsonResponse({"current_avatar_id": avatar_id})
-    else:
-        return response
-
-
-def get_avatar_id(request, game_id):
+def get_avatar_id(user: User, game_id) -> Tuple[int, HttpResponse]:
     avatar_id = None
-    response = None
+    response = Response(status=status.HTTP_200_OK)
 
     try:
-        avatar_id = game_renderer.get_avatar_id_from_user(
-            user=request.user, game_id=game_id
-        )
+        avatar_id = game_renderer.get_avatar_id_from_user(user=user, game_id=game_id)
     except UserCannotPlayGameException:
         LOGGER.warning(
-            "HTTP 401 returned. User {} unauthorised to play.".format(request.user.id)
+            "HTTP 401 returned. User {} unauthorised to play.".format(user.id)
         )
         response = HttpResponse("User unauthorized to play", status=401)
     except Avatar.DoesNotExist:
         LOGGER.warning(
-            "Avatar does not exist for user {} in game {}".format(
-                request.user.id, game_id
-            )
+            "Avatar does not exist for user {} in game {}".format(user.id, game_id)
         )
         response = HttpResponse("Avatar does not exist for this user", status=404)
+    except Http404 as e:
+        response = HttpResponse("Game does not exist", status=404)
     except Exception as e:
-        LOGGER.error("Unknown error occurred while getting connection parameters!")
-        LOGGER.error(e)
+        LOGGER.error(f"Unknown error occurred while getting connection parameters: {e}")
         response = HttpResponse(
             "Unknown error occurred when getting the current avatar", status=500
         )
