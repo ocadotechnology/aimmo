@@ -50,6 +50,7 @@ class Game(models.Model):
     owner = models.ForeignKey(User, blank=True, null=True, related_name="owned_games")
     game_class = models.ForeignKey(
         Class,
+        verbose_name="Class",
         on_delete=models.CASCADE,
         blank=True,
         null=True,

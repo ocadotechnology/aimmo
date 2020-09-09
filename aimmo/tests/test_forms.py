@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from aimmo.models import Worksheet
 from django.contrib.auth.models import User
 import pytest
@@ -34,9 +35,10 @@ def worksheet(db) -> Worksheet:
     return Worksheet.objects.create(name="Test worksheet", starter_code="Trout")
 
 
-def test_create_game(class1: Class):
+def test_create_game(class1: Class, worksheet: Worksheet):
     form = AddGameForm(
-        Class.objects.all(), data={"name": "test1", "game_class": class1.id}
+        Class.objects.all(),
+        data={"name": "test1", "game_class": class1.id, "worksheet": worksheet.id},
     )
     assert form.is_valid()
 
@@ -46,8 +48,11 @@ def test_create_game(class1: Class):
 
 
 @pytest.mark.django_db
-def test_form_with_non_existing_class():
-    form = AddGameForm(Class.objects.all(), data={"name": "test1", "game_class": 12345})
+def test_form_with_non_existing_class_and_worksheet():
+    form = AddGameForm(
+        Class.objects.all(),
+        data={"name": "test1", "game_class": 12345, "worksheet": 12345},
+    )
     assert not form.is_valid()
 
 
@@ -64,8 +69,9 @@ def test_cannot_create_duplicate_game(class1: Class, worksheet: Worksheet):
         Class.objects.all(),
         data={"name": "test2", "game_class": class1.id, "worksheet": worksheet.id},
     )
-    _ = form.save()
-    assert form.errors == {}
+    with pytest.raises(ValidationError) as excinfo:
+        _ = form.save()
+        assert excinfo.value == "Game with this Class and Worksheet already exists."
 
 
 # class TestForms(TestCase):

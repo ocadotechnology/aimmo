@@ -1,3 +1,4 @@
+from aimmo.tests.test_forms import worksheet
 import json
 
 import pytest
@@ -9,7 +10,7 @@ from rest_framework import status
 from aimmo import app_settings, models
 from aimmo.forms import AddGameForm
 from aimmo.game_creator import create_game
-from aimmo.models import Game
+from aimmo.models import Game, Worksheet
 from aimmo.serializers import GameSerializer
 from aimmo.views import get_avatar_id
 from common.models import Class, Student, Teacher, UserProfile
@@ -47,7 +48,7 @@ class TestViews(TestCase):
         "name": "test",
         "status": "r",
         "settings": '{"GENERATOR": "Main", "OBSTACLE_RATIO": 0.1, "PICKUP_SPAWN_CHANCE": 0.1, "SCORE_DESPAWN_CHANCE": 0.05, "START_HEIGHT": 31, "START_WIDTH": 31, "TARGET_NUM_CELLS_PER_AVATAR": 16.0, "TARGET_NUM_PICKUPS_PER_AVATAR": 1.2, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
-        "worksheet_id": "2",
+        "worksheet_id": "3",
     }
 
     EXPECTED_GAME_LIST = {"1": EXPECTED_GAME_DETAIL, "2": EXPECTED_GAME_DETAIL}
@@ -67,10 +68,11 @@ class TestViews(TestCase):
         teacher.save()
         cls.klass, _, _ = create_class_directly(cls.user.email)
         cls.klass.save()
+        cls.worksheet = Worksheet.objects.create(
+            name="test worksheet", starter_code="test code"
+        )
         cls.game = models.Game(
-            id=1,
-            name="test",
-            game_class=cls.klass,
+            id=1, name="test", game_class=cls.klass, worksheet=cls.worksheet
         )
         cls.game.save()
 
@@ -397,8 +399,8 @@ class TestViews(TestCase):
         Check for 204 when deleting a game
         """
         client = self.login()
-
-        game2 = models.Game(id=2, name="test", public=True)
+        worksheet = Worksheet.objects.create(name="test", starter_code="test")
+        game2 = models.Game(id=2, name="test", worksheet=worksheet)
         game2.save()
 
         response = client.delete(reverse("game-detail", kwargs={"pk": self.game.id}))
@@ -436,7 +438,7 @@ class TestViews(TestCase):
         self.game.main_user = self.user
         self.game.save()
 
-        game2 = models.Game(id=2, name="test", public=True)
+        game2 = models.Game(id=2, name="test", worksheet=self.worksheet)
         game2.save()
 
         c = Client()
@@ -451,11 +453,17 @@ class TestViews(TestCase):
 
     def test_adding_a_game_creates_an_avatar(self):
         client = self.login()
+        worksheet = Worksheet.objects.create(name="test", starter_code="test")
+        worksheet.save()
         game: Game = create_game(
             self.user,
             AddGameForm(
                 Class.objects.all(),
-                data={"name": "new game", "game_class": self.klass.id},
+                data={
+                    "name": "new game",
+                    "game_class": self.klass.id,
+                    "worksheet": worksheet.id,
+                },
             ),
         )
         game = models.Game.objects.get(pk=2)
