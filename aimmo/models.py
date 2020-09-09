@@ -80,7 +80,7 @@ class Game(models.Model):
     start_height = models.IntegerField(default=31)
     start_width = models.IntegerField(default=31)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=RUNNING)
-    worksheet = models.ForeignKey(Worksheet, blank=True, null=True)
+    worksheet = models.ForeignKey(Worksheet)
 
     class Meta:
         unique_together = (

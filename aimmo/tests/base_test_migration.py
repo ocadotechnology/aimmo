@@ -1,6 +1,7 @@
 from django.apps import apps
 from django.db import connection
 from django.db.migrations.executor import MigrationExecutor
+from django.db.migrations.state import StateApps
 from django.test import TestCase
 
 
@@ -25,10 +26,23 @@ class MigrationTestCase(TestCase):
         # Rebuild graph. Done between invocations of migrate()
         executor.loader.build_graph()
 
+        # Setup any test data needed
+        self.setUpDataBeforeMigration(
+            executor.loader.project_state([self.app_name, self.start_migration]).apps
+        )
+
         # Run the migration you want to test
         executor.migrate([(self.app_name, self.dest_migration)])
 
         # This application can now be used to get the latest models for testing
-        self.django_application = executor.loader.project_state(
+        self.django_application: StateApps = executor.loader.project_state(
             [(self.app_name, self.dest_migration)]
         ).apps
+
+    def setUpDataBeforeMigration(self, django_application: StateApps):
+        """Used to setup test data after start_migration and before dest_migration
+
+        Args:
+            django_application: This application can be used to get the models for testing
+        """
+        pass
