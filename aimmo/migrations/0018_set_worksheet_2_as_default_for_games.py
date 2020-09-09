@@ -13,13 +13,17 @@ class Migration(migrations.Migration):
         worksheet2 = Worksheet.objects.get(name="Present Day II")
         games_with_no_worksheet = Game.objects.filter(worksheet=None)
         for game in games_with_no_worksheet:
-            game.worksheet = worksheet2.id
+            game.worksheet = worksheet2
+            game.save()
 
-    dependencies = [
-        ("aimmo", "0016_game_class"),
+    def dummy_reverse(apps, schema_editor):
+        """It's not possible to reverse this data migration
+        but we want to allow Django to reverse previous migrations.
+        """
+        pass
+
+    operations = [
+        migrations.RunPython(
+            set_worksheet_2_as_default_for_games, reverse_code=dummy_reverse
+        )
     ]
-
-    operations = [migrations.RunPython(set_worksheet_2_as_default_for_games)]
-
-
-# TODO: write test for this

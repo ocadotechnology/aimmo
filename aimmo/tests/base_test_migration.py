@@ -21,15 +21,13 @@ class MigrationTestCase(TestCase):
     def setUp(self):
         executor = MigrationExecutor(connection)
         # Migrate to start_migration (the migration before the one you want to test)
-        executor.migrate([(self.app_name, self.start_migration)])
+        project_state = executor.migrate([(self.app_name, self.start_migration)])
 
         # Rebuild graph. Done between invocations of migrate()
         executor.loader.build_graph()
 
         # Setup any test data needed
-        self.setUpDataBeforeMigration(
-            executor.loader.project_state([self.app_name, self.start_migration]).apps
-        )
+        self.setUpDataBeforeMigration(project_state.apps)
 
         # Run the migration you want to test
         executor.migrate([(self.app_name, self.dest_migration)])

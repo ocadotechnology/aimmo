@@ -32,7 +32,7 @@ class TestMigrationWorksheet2AsDefault(MigrationTestCase):
     def setUpDataBeforeMigration(self, django_application: StateApps):
         Game = django_application.get_model(self.app_name, "Game")
         Worksheet = django_application.get_model(self.app_name, "Worksheet")
-        worksheet1 = Worksheet.objects.filter(name="Present Day I: The Museum")
+        worksheet1 = Worksheet.objects.get(name="Present Day I: The Museum")
         game_with_worksheet = Game.objects.create(
             name="game with worksheet before migration", worksheet=worksheet1
         )
@@ -46,11 +46,11 @@ class TestMigrationWorksheet2AsDefault(MigrationTestCase):
     def test_worksheet_2_is_default_for_games_without_one(self):
         Game = self.django_application.get_model(self.app_name, "Game")
         Worksheet = self.django_application.get_model(self.app_name, "Worksheet")
-        worksheet2 = Worksheet.objects.filter(name="Present Day II")
-        game_with_worksheet = Game.objects.filter(
+        worksheet2 = Worksheet.objects.get(name="Present Day II")
+        game_with_worksheet = Game.objects.get(
             name="game with worksheet before migration"
         )
-        game_without_worksheet = Game.objects.filter(
+        game_without_worksheet = Game.objects.get(
             name="game without worksheet before migration"
         )
         assert game_with_worksheet.worksheet is not None
