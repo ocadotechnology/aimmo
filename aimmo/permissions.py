@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 from rest_framework import authentication, permissions
 
-from .app_settings import CanDelete
+from common.permissions import CanDeleteGame
 
 
 class CsrfExemptSessionAuthentication(authentication.SessionAuthentication):
@@ -64,4 +64,4 @@ class CanDeleteGameOrReadOnly(permissions.BasePermission):
             return GameHasToken().has_object_permission(request, view, obj)
         else:
             can_play = CanUserPlay().has_object_permission(request, view, obj)
-            return CanDelete().has_permission(request, view) and can_play
+            return CanDeleteGame().has_permission(request, view) and can_play

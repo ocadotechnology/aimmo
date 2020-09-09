@@ -1,7 +1,7 @@
 from aimmo.models import Game
 from django import template
 
-from portal.permissions import logged_in_as_student, logged_in_as_teacher
+from common.permissions import logged_in_as_student, logged_in_as_teacher
 
 register = template.Library()
 
