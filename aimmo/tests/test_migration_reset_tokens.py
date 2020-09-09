@@ -1,27 +1,19 @@
-from importlib import import_module
+from django.db.migrations.state import StateApps
 
-from django.apps import apps
-from django.db import connection
-from django.test import TestCase
-
-from aimmo.models import Game
-
-# Our filename starts with a number, so we use import_module
-data_migration = import_module("aimmo.migrations.0011_reset_game_tokens")
+from aimmo.tests.base_test_migration import MigrationTestCase
 
 
-class ResetGameTokensTests(TestCase):
-    def __init__(self, *args, **kwargs):
-        super(ResetGameTokensTests, self).__init__(*args, **kwargs)
+class TestMigrationResetGameTokens(MigrationTestCase):
+    start_migration = "0010_alter_game_token"
+    dest_migration = "0011_reset_game_tokens"
 
-        self.token = "I AM A TOKEN!"
-
-    def test_reset_token(self):
+    def setUpDataBeforeMigration(self, django_application: StateApps):
+        Game = django_application.get_model(self.app_name, "Game")
         game = Game.objects.create(id=1, name="test", public=True)
-        game.auth_token = self.token
+        game.auth_token = "I'm a token"
         game.save()
 
-        data_migration.reset_tokens(apps, connection.schema_editor())
-
+    def test_reset_token(self):
+        Game = self.django_application.get_model(self.app_name, "Game")
         game = Game.objects.get(id=1)
-        self.assertEqual(game.auth_token, "")
+        assert game.auth_token == ""
