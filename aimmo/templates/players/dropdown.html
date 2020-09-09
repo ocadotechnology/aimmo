@@ -1,8 +1,0 @@
-<ul class="dropdown-menu">
-    <li class="navbar-brand">Open Play Games</li>
-    {% for game in open_play_games %}
-    <li><a href="{% url base_url id=game.id %}">{{ game.name }}</a></li>
-    {% endfor %}
-    <li role="seperator" class="divider"></li>
-    <li><a href="{% url 'kurono/new_game' %}">Create a new game</a></li>
-</ul>
