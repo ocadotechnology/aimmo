@@ -11,7 +11,6 @@ INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "portal",
-    "aimmo",
     "aimmo_runner",
 ]
 
