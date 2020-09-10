@@ -48,10 +48,19 @@ def test_create_game(class1: Class, worksheet: Worksheet):
 
 
 @pytest.mark.django_db
-def test_form_with_non_existing_class_and_worksheet():
+def test_form_with_non_existing_class(worksheet: Worksheet):
     form = AddGameForm(
         Class.objects.all(),
-        data={"name": "test1", "game_class": 12345, "worksheet": 12345},
+        data={"name": "test1", "game_class": 12345, "worksheet": worksheet.id},
+    )
+    assert not form.is_valid()
+
+
+@pytest.mark.django_db
+def test_form_with_non_existing_worksheet(class1: Class):
+    form = AddGameForm(
+        Class.objects.all(),
+        data={"name": "test1", "game_class": class1.id, "worksheet": 12345},
     )
     assert not form.is_valid()
 
@@ -72,25 +81,3 @@ def test_cannot_create_duplicate_game(class1: Class, worksheet: Worksheet):
     with pytest.raises(ValidationError) as excinfo:
         _ = form.save()
         assert excinfo.value == "Game with this Class and Worksheet already exists."
-
-
-# class TestForms(TestCase):
-#     @classmethod
-#     def setUpTestData(cls):
-#         cls.user1 = User.objects.create_user("test", "test@example.com", "password")
-#         cls.user1.save()
-#         cls.game = models.Game(id=1, name="test", public=False)
-#         cls.game.save()
-
-#     def test_create_game(self):
-#         form = forms.AddGameForm([self.game], {"name": "test2"})
-#         self.assertTrue(form.is_valid())
-#         new_game = form.save()
-#         self.assertEqual(new_game.name, "test2")
-
-#     def test_cannot_create_duplicate_game(self):
-#         form = forms.AddGameForm([self.game], {"name": "test"})
-#         self.assertFalse(form.is_valid())
-#         self.assertEqual(
-#             form.errors, {"__all__": [u"Sorry, a game with this name already exists."]}
-# )
