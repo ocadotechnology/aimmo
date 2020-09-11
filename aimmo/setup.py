@@ -8,7 +8,6 @@ setup(
     install_requires=[
         "eventlet",
         "requests",
-        "six",
         "djangorestframework>=3.8.2, < 3.9.0",
     ],
     tests_require=[],
