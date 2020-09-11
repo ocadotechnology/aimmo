@@ -65,6 +65,7 @@ def test_form_with_non_existing_worksheet(class1: Class):
     assert not form.is_valid()
 
 
+@pytest.mark.django_db
 def test_cannot_create_duplicate_game(class1: Class, worksheet: Worksheet):
     # Create first game
     form = AddGameForm(
@@ -81,3 +82,21 @@ def test_cannot_create_duplicate_game(class1: Class, worksheet: Worksheet):
     with pytest.raises(ValidationError) as excinfo:
         _ = form.save()
         assert excinfo.value == "Game with this Class and Worksheet already exists."
+
+
+@pytest.mark.django_db
+def test_cannot_add_game_for_classes_not_given_to_form(
+    class1: Class, worksheet: Worksheet, teacher1_email: str
+):
+    # Make query set for form
+    class_query_set = Class.objects.filter(id=class1.id)
+
+    # Create class not in the query set
+    klass, _, _ = create_class_directly(teacher1_email)
+
+    form = AddGameForm(
+        class_query_set,
+        data={"name": "test1", "game_class": klass.id, "worksheet": worksheet.id},
+    )
+
+    assert not form.is_valid()
