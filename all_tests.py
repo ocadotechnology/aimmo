@@ -32,7 +32,12 @@ def main():
         compute_coverage = "--coverage" in sys.argv or "-c" in sys.argv
         use_docker = "--no-docker-container-tests" not in sys.argv
         runner.run_command(["pip", "install", "-e", BASE_DIR])
+        _run_migrations()
         sys.exit(run_tests(compute_coverage, use_docker=use_docker))
+
+
+def _run_migrations():
+    runner.run_command(["python", "example_project/manage.py", "makemigrations"])
 
 
 def run_tests(compute_coverage, use_docker=True):
@@ -51,14 +56,7 @@ def run_tests(compute_coverage, use_docker=True):
         print("Testing {}".format(app))
         dir = os.path.join(BASE_DIR, app)
         if compute_coverage and app != "":
-            result = subprocess.call(
-                [
-                    "pytest",
-                    "--cov=.",
-                    "--cov-report=xml",
-                    app
-                ]
-            )
+            result = subprocess.call(["pytest", "--cov=.", "--cov-report=xml", app])
         else:
             result = subprocess.call(["pytest", app])
         if result != 0:
