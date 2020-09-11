@@ -31,7 +31,6 @@ def main():
     else:
         compute_coverage = "--coverage" in sys.argv or "-c" in sys.argv
         use_docker = "--no-docker-container-tests" not in sys.argv
-        runner.run_command(["pip", "install", "-e", BASE_DIR])
         sys.exit(run_tests(compute_coverage, use_docker=use_docker))
 
 
@@ -51,14 +50,7 @@ def run_tests(compute_coverage, use_docker=True):
         print("Testing {}".format(app))
         dir = os.path.join(BASE_DIR, app)
         if compute_coverage and app != "":
-            result = subprocess.call(
-                [
-                    "pytest",
-                    "--cov=.",
-                    "--cov-report=xml",
-                    app
-                ]
-            )
+            result = subprocess.call(["pytest", "--cov=.", "--cov-report=xml", app])
         else:
             result = subprocess.call(["pytest", app])
         if result != 0:
