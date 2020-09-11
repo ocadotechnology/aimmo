@@ -7,14 +7,11 @@ name = "pypi"
 pytest = "*"
 pytest-django = ">=3.7.0, <3.8.0"
 pytest-pythonpath = "*"
-codeforlife-portal = "==3.3.0"
-rapid-router = "==2.4.0"
-django-classy-tags = "==1.*"
+codeforlife-portal = "*"
 pytest-cov = "*"
 
 [packages]
 aimmo = {editable = true,path = "."}
-cfl-common = "==3.3.0"
 kubernetes = "*"
 eventlet = "*"
 docker = "*"
