@@ -1,13 +1,24 @@
+from aimmo.tests.test_forms import worksheet
 import json
 
+import pytest
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
 from rest_framework import status
 
 from aimmo import app_settings, models
+from aimmo.forms import AddGameForm
+from aimmo.game_creator import create_game
+from aimmo.models import Game, Worksheet
 from aimmo.serializers import GameSerializer
-from common.models import Teacher, UserProfile
+from aimmo.views import get_avatar_id
+from common.models import Class, Student, Teacher, UserProfile
+from common.tests.utils.classes import create_class_directly
+from common.tests.utils.student import (
+    create_independent_student_directly,
+    create_school_student_directly,
+)
 
 app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
     "base %s" % game_id,
@@ -37,39 +48,46 @@ class TestViews(TestCase):
         "name": "test",
         "status": "r",
         "settings": '{"GENERATOR": "Main", "OBSTACLE_RATIO": 0.1, "PICKUP_SPAWN_CHANCE": 0.1, "SCORE_DESPAWN_CHANCE": 0.05, "START_HEIGHT": 31, "START_WIDTH": 31, "TARGET_NUM_CELLS_PER_AVATAR": 16.0, "TARGET_NUM_PICKUPS_PER_AVATAR": 1.2, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
-        "worksheet_id": "2",
+        "worksheet_id": "3",
     }
 
     EXPECTED_GAME_LIST = {"1": EXPECTED_GAME_DETAIL, "2": EXPECTED_GAME_DETAIL}
 
     @classmethod
     def setUpTestData(cls):
-        cls.user = User.objects.create_user("test", "test@example.com", "password")
+        cls.user: User = User.objects.create_user(
+            "test", "test@example.com", "password"
+        )
         cls.user.is_staff = True
         cls.user.save()
-        profile = UserProfile(user=cls.user)
-        profile.save()
-        teacher = Teacher(user=profile)
+        user_profile: UserProfile = UserProfile(user=cls.user)
+        user_profile.save()
+        teacher: Teacher = Teacher.objects.create(
+            user=user_profile, new_user=cls.user, title="Mx"
+        )
         teacher.save()
-        cls.game = models.Game(id=1, name="test", public=True)
+        cls.klass, _, _ = create_class_directly(cls.user.email)
+        cls.klass.save()
+        cls.worksheet = Worksheet.objects.create(
+            name="test worksheet", starter_code="test code"
+        )
+        cls.game = models.Game(
+            id=1, name="test", game_class=cls.klass, worksheet=cls.worksheet
+        )
         cls.game.save()
 
     def setUp(self):
         self.game.refresh_from_db()
 
-    def login(self):
+    def login(self, username: str = "test", password: str = "password"):
         c = Client()
-        c.login(username="test", password="password")
+        c.login(username=username, password=password)
         return c
 
     def _go_to_page(self, link, kwarg_name, game_id):
         c = Client()
         response = c.get(reverse(link, kwargs={kwarg_name: game_id}))
         return response
-
-    def _make_game_private(self):
-        self.game.public = False
-        self.game.save()
 
     def test_add_new_code(self):
         c = self.login()
@@ -94,9 +112,8 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_code_for_non_authed_user(self):
-        self.game.public = False
-        self.game.save()
-        c = self.login()
+        username, password, _ = create_independent_student_directly()
+        c = self.login(username=username, password=password)
         response = c.post(reverse("kurono/code", kwargs={"id": 1}), {"code": self.CODE})
         self.assertEqual(response.status_code, 404)
 
@@ -124,24 +141,21 @@ class TestViews(TestCase):
     def test_play(self):
         c = self.login()
         response = c.get(reverse("kurono/play", kwargs={"id": 1}))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["current_user_player_key"], self.user.pk)
-        self.assertEqual(response.context["game_url_base"], "base 1")
-        self.assertEqual(response.context["game_url_path"], "path 1")
+        assert response.status_code == 200
+        assert response.context["current_user_player_key"] == self.user.pk
+        assert response.context["game_url_base"] == "base 1"
+        assert response.context["game_url_path"] == "path 1"
 
     def test_play_for_non_existent_game(self):
         c = self.login()
         response = c.get(reverse("kurono/play", kwargs={"id": 2}))
         self.assertEqual(response.status_code, 404)
 
-    def _run_test_for_unauthorised_user(self, link, kwarg_name, status_code):
-        self._make_game_private()
-        c = self.login()
-        response = c.get(reverse(link, kwargs={kwarg_name: 1}))
-        self.assertEqual(response.status_code, status_code)
-
     def test_play_for_unauthorised_user(self):
-        self._run_test_for_unauthorised_user("kurono/play", "id", 404)
+        username, password, _ = create_independent_student_directly()
+        c = self.login(username=username, password=password)
+        response = c.get(reverse("kurono/play", kwargs={"id": 1}))
+        assert response.status_code == 404
 
     def test_play_inactive_level(self):
         c = self.login()
@@ -235,53 +249,38 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(game.status, models.Game.RUNNING)
 
-    def test_current_avatar_api_for_non_existent_game(self):
-        response = self._go_to_page("kurono/current_avatar_in_game", "game_id", 1)
-        self.assertEqual(response.status_code, 404)
+    def test_get_avatar_id_for_non_existent_game(self):
+        _, response = get_avatar_id(self.user, 1)
+        assert response.status_code == 404
 
-    def test_current_avatar_api_for_unauthorised_games(self):
-        self._run_test_for_unauthorised_user(
-            "kurono/current_avatar_in_game", "game_id", 401
-        )
+    def test_get_avatar_id_for_unauthorised_games(self):
+        _, _, independent_student = create_independent_student_directly()
+        _, response = get_avatar_id(independent_student.new_user, 1)
+        assert response.status_code == 401
 
-    def test_current_avatar_api_for_two_users(self):
+    def test_get_avatar_id_for_two_users(self):
         # Set up the first avatar
         first_user = self.user
         models.Avatar(owner=first_user, code=self.CODE, game=self.game).save()
         client_one = self.login()
 
         # Set up the second avatar
-        second_user = User.objects.create_user(
-            "test2", "test2@example.com", "password2"
-        )
-        second_user.save()
-        models.Avatar(owner=second_user, code=self.CODE, game=self.game).save()
+        _, _, second_user = create_school_student_directly(self.klass.access_code)
+        models.Avatar(owner=second_user.new_user, code=self.CODE, game=self.game).save()
         client_two = Client()
         client_two.login(username="test2", password="password2")
 
-        self.game.public = True
-        self.game.can_play.set([first_user, second_user])
-        self.game.save()
-
-        first_response = client_one.get(
-            reverse("kurono/current_avatar_in_game", kwargs={"game_id": 1})
-        )
-        second_response = client_two.get(
-            reverse("kurono/current_avatar_in_game", kwargs={"game_id": 1})
-        )
+        first_avatar_id, first_response = get_avatar_id(first_user, 1)
+        second_avatar_id, second_response = get_avatar_id(second_user.new_user, 1)
 
         # Status code starts with 2, success response can be different than 200.
-        self.assertEqual(str(first_response.status_code)[0], "2")
-        self.assertEqual(str(second_response.status_code)[0], "2")
+        assert str(first_response.status_code)[0] == "2"
+        assert str(second_response.status_code)[0] == "2"
 
-        # JSON is returned as string so needs to be evaluated.
-        first_id = json.loads(first_response.content)["current_avatar_id"]
-        second_id = json.loads(second_response.content)["current_avatar_id"]
+        assert first_avatar_id == 1
+        assert second_avatar_id == 2
 
-        self.assertEqual(first_id, 1)
-        self.assertEqual(second_id, 2)
-
-    def test_current_avatar_api_call_returns_404_for_logged_out_user(self):
+    def test_connection_parameters_api_call_returns_404_for_logged_out_user(self):
         user = self.user
         models.Avatar(owner=user, code=self.CODE, game=self.game).save()
         client_one = Client()
@@ -291,12 +290,12 @@ class TestViews(TestCase):
         self.game.save()
 
         first_response = client_one.get(
-            reverse("kurono/current_avatar_in_game", kwargs={"game_id": 1})
+            reverse("kurono/connection_parameters", kwargs={"game_id": 1})
         )
 
-        self.assertEqual(first_response.status_code, 404)
+        assert first_response.status_code == 403
 
-    def test_id_of_current_avatar_same_as_games_url(self):
+    def test_id_of_connection_parameters_same_as_games_url(self):
         """
         Ensures that the id's are consistent throughout the project. Check for ID's received
         by the current_avatar URL as well as the games URL api.
@@ -305,20 +304,14 @@ class TestViews(TestCase):
         models.Avatar(owner=user, code=self.CODE, game=self.game).save()
         client = self.login()
 
-        self.game.public = True
-        self.game.can_play.set([user])
-        self.game.save()
-
-        current_avatar_api_response = client.get(
-            reverse("kurono/current_avatar_in_game", kwargs={"game_id": 1})
-        )
+        connection_parameters_response = client.get(
+            reverse("kurono/connection_parameters", kwargs={"game_id": 1})
+        ).json()
         games_api_response = client.get(
             reverse("kurono/game_user_details", kwargs={"id": 1})
         )
 
-        current_avatar_id = json.loads(current_avatar_api_response.content)[
-            "current_avatar_id"
-        ]
+        current_avatar_id = connection_parameters_response["avatar_id"]
         games_api_users = json.loads(games_api_response.content)["users"]
 
         self.assertEqual(current_avatar_id, 1)
@@ -406,8 +399,8 @@ class TestViews(TestCase):
         Check for 204 when deleting a game
         """
         client = self.login()
-
-        game2 = models.Game(id=2, name="test", public=True)
+        worksheet = Worksheet.objects.create(name="test", starter_code="test")
+        game2 = models.Game(id=2, name="test", worksheet=worksheet)
         game2.save()
 
         response = client.delete(reverse("game-detail", kwargs={"pk": self.game.id}))
@@ -423,8 +416,8 @@ class TestViews(TestCase):
         """
         Check for 403 when attempting to delete a game without being authorized
         """
-        self._make_game_private()
-        c = self.login()
+        username, password, _ = create_independent_student_directly()
+        c = self.login(username=username, password=password)
         response = c.delete(reverse("game-detail", kwargs={"pk": self.game.id}))
         self.assertEqual(response.status_code, 403)
 
@@ -445,7 +438,7 @@ class TestViews(TestCase):
         self.game.main_user = self.user
         self.game.save()
 
-        game2 = models.Game(id=2, name="test", public=True)
+        game2 = models.Game(id=2, name="test", worksheet=self.worksheet)
         game2.save()
 
         c = Client()
@@ -455,19 +448,24 @@ class TestViews(TestCase):
 
     def test_view_one_game(self):
         client = self.login()
-
         response = client.get(reverse("game-detail", kwargs={"pk": self.game.id}))
         self.assertEqual(response.status_code, 200)
 
-    def test_add_game(self):
-        client = self.login()
-
-        response = client.post(reverse("kurono/new_game"), data={"name": "test"})
-        self.assertEqual(response.status_code, 302)
-
     def test_adding_a_game_creates_an_avatar(self):
         client = self.login()
-        response = client.post(reverse("kurono/new_game"), data={"name": "test"})
+        worksheet = Worksheet.objects.create(name="test", starter_code="test")
+        worksheet.save()
+        game: Game = create_game(
+            self.user,
+            AddGameForm(
+                Class.objects.all(),
+                data={
+                    "name": "new game",
+                    "game_class": self.klass.id,
+                    "worksheet": worksheet.id,
+                },
+            ),
+        )
         game = models.Game.objects.get(pk=2)
         avatar = game.avatar_set.get(owner=client.session["_auth_user_id"])
-        self.assertIsNotNone(avatar)
+        assert avatar is not None

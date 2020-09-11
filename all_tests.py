@@ -31,7 +31,12 @@ def main():
     else:
         compute_coverage = "--coverage" in sys.argv or "-c" in sys.argv
         use_docker = "--no-docker-container-tests" not in sys.argv
+        _run_migrations()
         sys.exit(run_tests(compute_coverage, use_docker=use_docker))
+
+
+def _run_migrations():
+    runner.run_command(["python", "example_project/manage.py", "makemigrations"])
 
 
 def run_tests(compute_coverage, use_docker=True):
