@@ -28,7 +28,6 @@ setup(
         "djangorestframework>=3.8.2, < 3.9.0",
         "eventlet",
         "requests",
-        "six",
         "hypothesis",
         "cfl-common",
     ],
