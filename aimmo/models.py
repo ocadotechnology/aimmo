@@ -8,6 +8,7 @@ from aimmo import app_settings
 
 from common.models import Class
 
+
 DEFAULT_WORKSHEET_ID = 1
 
 GAME_GENERATORS = [("Main", "Open World")] + [  # Default
@@ -17,17 +18,6 @@ GAME_GENERATORS = [("Main", "Open World")] + [  # Default
 
 def generate_auth_token():
     return urlsafe_b64encode(urandom(16))
-
-
-class GameQuerySet(models.QuerySet):
-    def for_user(self, user):
-        if user.is_authenticated():
-            return self.filter(models.Q(public=True) | models.Q(can_play=user))
-        else:
-            return self.filter(public=True)
-
-    def exclude_inactive(self):
-        return self.filter(completed=False)
 
 
 class Worksheet(models.Model):
@@ -60,6 +50,7 @@ class Game(models.Model):
     owner = models.ForeignKey(User, blank=True, null=True, related_name="owned_games")
     game_class = models.ForeignKey(
         Class,
+        verbose_name="Class",
         on_delete=models.CASCADE,
         blank=True,
         null=True,
@@ -75,7 +66,6 @@ class Game(models.Model):
     main_user = models.ForeignKey(
         User, blank=True, null=True, related_name="games_for_user"
     )
-    objects = GameQuerySet.as_manager()
     static_data = models.TextField(blank=True, null=True)
 
     # Game config
@@ -91,7 +81,13 @@ class Game(models.Model):
     start_height = models.IntegerField(default=31)
     start_width = models.IntegerField(default=31)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=RUNNING)
-    worksheet = models.ForeignKey(Worksheet, blank=True, null=True)
+    worksheet = models.ForeignKey(Worksheet)
+
+    class Meta:
+        unique_together = (
+            "game_class",
+            "worksheet",
+        )
 
     @property
     def is_active(self):
@@ -100,8 +96,25 @@ class Game(models.Model):
     def __str__(self):
         return self.name
 
-    def can_user_play(self, user):
-        return self.public or user in self.can_play.all()
+    def can_user_play(self, user: User) -> bool:
+        """Checks whether the given user has permission to play the game.
+
+        A user can play the game if they are part of the game's class or
+        the teacher of that class.
+
+        Args:
+            user: A standard django User object
+
+        Returns:
+            bool: True if user can play the game, False otherwise
+        """
+        try:
+            return (
+                self.game_class.students.filter(new_user=user).exists()
+                or user == self.game_class.teacher.new_user
+            )
+        except AttributeError:
+            return False
 
     def settings_as_dict(self):
         return {
