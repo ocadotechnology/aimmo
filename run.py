@@ -3,10 +3,13 @@ import argparse
 import os
 import signal
 import traceback
+import logging
 
 import time
 
 from aimmo_runner import runner
+
+logging.basicConfig()
 
 parser = argparse.ArgumentParser(description="Runs Kurono.")
 
