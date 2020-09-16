@@ -21,7 +21,9 @@ jobs:
           cd game_frontend
           yarn install
       - name: Build project and run server
-        run: python ${{ github.workspace }}/run.py -c &
+        run: |
+          python ${{ github.workspace }}/run.py -c &
+          sleep 120
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
