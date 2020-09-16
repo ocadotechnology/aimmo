@@ -22,8 +22,7 @@ jobs:
           yarn install
       - name: Build project and run server
         run: |
-          python ${{ github.workspace }}/run.py -c &
-          sleep 120
+          python ${{ github.workspace }}/run.py -c
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
