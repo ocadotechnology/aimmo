@@ -20,6 +20,8 @@ jobs:
           pipenv install --system
           cd game_frontend
           yarn install
+      - name: Test python action
+        run: python -c "print('hello')"
       - name: Build project and run server
         run: python ${{ github.workspace }}/run.py -c
       - name: Cypress run
