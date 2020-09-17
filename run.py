@@ -59,6 +59,6 @@ if __name__ == "__main__":
         raise
     finally:
         print("something went really wrong and I went here")
-        os.killpg(0, signal.SIGTERM)
-        time.sleep(0.9)
-        os.killpg(0, signal.SIGKILL)
+        # os.killpg(0, signal.SIGTERM)
+        # time.sleep(0.9)
+        # os.killpg(0, signal.SIGKILL)
