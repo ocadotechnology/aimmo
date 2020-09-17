@@ -11,16 +11,16 @@
 //
 // -- This is a parent command --
 
-const username = 'admin'
-const password = 'admin'
+const username = 'alberteinstein@codeforlife.com'
+const password = 'Password1'
 
 Cypress.Commands.add('login', () => {
-  cy.request('/accounts/login/')
+  cy.request('/login/teacher/')
   cy.getCookie('csrftoken').then(csrfToken => {
     cy.request({
       method: 'POST',
-      url: '/accounts/login/',
-      failOnStatusCode: false,
+      url: '/login/teacher/',
+      failOnStatusCode: true,
       form: true,
       body: {
         username,
@@ -33,11 +33,11 @@ Cypress.Commands.add('login', () => {
 })
 
 Cypress.Commands.add('addTestGame', () => {
-  cy.request('/games/new/')
+  cy.request('/kurono/')
   cy.getCookie('csrftoken').then(csrfToken => {
     cy.request({
       method: 'POST',
-      url: '/games/new/',
+      url: '/kurono/',
       failOnStatusCode: false,
       form: true,
       body: {
@@ -49,22 +49,22 @@ Cypress.Commands.add('addTestGame', () => {
 })
 
 Cypress.Commands.add('deleteAllGames', () => {
-  cy.request('/api/games/').then(response => {
+  cy.request('/kurono/api/games/').then(response => {
     const games = response.body
     for (const gameId of Object.keys(games)) {
       cy.request({
         method: 'DELETE',
-        url: `api/games/${gameId}/`
+        url: `/kurono/api/games/${gameId}/`
       })
     }
   })
 })
 
 Cypress.Commands.add('visitAGame', () => {
-  cy.request('/api/games/').then(response => {
+  cy.request('/kurono/api/games/').then(response => {
     const gameId = Object.keys(response.body)[0]
     cy.fixture('initialState.json').then(initialState => {
-      cy.visit(`/play/${gameId}/`, {
+      cy.visit(`/kurono/play/${gameId}/`, {
         onBeforeLoad: win => {
           win.initialState = initialState
         }
