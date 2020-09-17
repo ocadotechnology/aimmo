@@ -1,11 +1,7 @@
 #!/usr/bin/env python
 import argparse
-import os
-import signal
-import traceback
 import logging
-
-import time
+import traceback
 
 from aimmo_runner import runner
 
@@ -54,11 +50,5 @@ if __name__ == "__main__":
             build_target=args.build_target,
         )
     except Exception as err:
-        print("something went wrong and I got here")
         traceback.print_exc()
         raise
-    finally:
-        print("something went really wrong and I went here")
-        os.killpg(0, signal.SIGTERM)
-        time.sleep(0.9)
-        os.killpg(0, signal.SIGKILL)

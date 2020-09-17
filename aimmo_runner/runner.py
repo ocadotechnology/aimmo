@@ -93,9 +93,6 @@ def run(
 ):
     logging.basicConfig()
 
-
-    print("got here")
-
     build_worker_package()
 
     if test_env:
