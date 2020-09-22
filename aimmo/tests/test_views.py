@@ -40,7 +40,7 @@ class TestViews(TestCase):
         ],
     }
 
-    EXPECTED_GAME1_DETAIL = {
+    EXPECTED_GAME_DETAIL = {
         "era": "1",
         "name": "test",
         "owner_id": "21",
@@ -49,16 +49,7 @@ class TestViews(TestCase):
         "worksheet_id": "3",
     }
 
-    EXPECTED_GAME2_DETAIL = {
-        "era": "1",
-        "name": "test",
-        "owner_id": "21",
-        "status": "r",
-        "settings": '{"GENERATOR": "Main", "OBSTACLE_RATIO": 0.1, "PICKUP_SPAWN_CHANCE": 0.1, "SCORE_DESPAWN_CHANCE": 0.05, "START_HEIGHT": 31, "START_WIDTH": 31, "TARGET_NUM_CELLS_PER_AVATAR": 16.0, "TARGET_NUM_PICKUPS_PER_AVATAR": 1.2, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
-        "worksheet_id": "3",
-    }
-
-    EXPECTED_GAME_LIST = {"1": EXPECTED_GAME1_DETAIL, "2": EXPECTED_GAME2_DETAIL}
+    EXPECTED_GAME_LIST = {"1": EXPECTED_GAME_DETAIL, "2": EXPECTED_GAME_DETAIL}
 
     @classmethod
     def setUpTestData(cls):
@@ -456,10 +447,6 @@ class TestViews(TestCase):
 
         c = Client()
         response = c.get(reverse("game-list"))
-
-        print(response.content)
-        print("------------------------------------------------")
-        print(self.EXPECTED_GAME_LIST)
 
         self.assertJSONEqual(response.content, self.EXPECTED_GAME_LIST)
 
