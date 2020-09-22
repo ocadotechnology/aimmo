@@ -457,7 +457,8 @@ class TestViews(TestCase):
         c = Client()
         response = c.get(reverse("game-list"))
 
-        print(response)
+        print(response.body)
+        print("------------------------------------------------")
         print(self.EXPECTED_GAME_LIST)
 
         self.assertJSONEqual(response.content, self.EXPECTED_GAME_LIST)
