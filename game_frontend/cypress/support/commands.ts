@@ -13,6 +13,8 @@
 
 const username = 'alberteinstein@codeforlife.com'
 const password = 'Password1'
+const user_id = 2
+const class_id = 1
 
 Cypress.Commands.add('login', () => {
   cy.request('/login/teacher/')
@@ -25,7 +27,8 @@ Cypress.Commands.add('login', () => {
       body: {
         username,
         password,
-        csrfmiddlewaretoken: csrfToken.value
+        csrfmiddlewaretoken: csrfToken.value,
+        'g-recaptcha-response': 'something',
       }
     })
     cy.visit('/')
@@ -38,10 +41,12 @@ Cypress.Commands.add('addTestGame', () => {
     cy.request({
       method: 'POST',
       url: '/kurono/',
-      failOnStatusCode: false,
+      failOnStatusCode: true,
       form: true,
       body: {
         name: 'test',
+        class_id,
+        worksheet: 2,
         csrfmiddlewaretoken: csrfToken.value
       }
     })
@@ -52,19 +57,30 @@ Cypress.Commands.add('deleteAllGames', () => {
   cy.request('/kurono/api/games/').then(response => {
     const games = response.body
     for (const gameId of Object.keys(games)) {
-      cy.request({
-        method: 'DELETE',
-        url: `/kurono/api/games/${gameId}/`
-      })
+      if (games[gameId]['owner_id'] == user_id)
+      {
+        cy.request({
+          method: 'DELETE',
+          url: `/kurono/api/games/${gameId}/`
+        })
+      }
     }
   })
 })
 
 Cypress.Commands.add('visitAGame', () => {
   cy.request('/kurono/api/games/').then(response => {
-    const gameId = Object.keys(response.body)[0]
+    const games = response.body
+    let firstUserGameId
+    for (const gameId of Object.keys(games))
+    {
+      if (games[gameId]['owner_id'] == user_id) {
+        firstUserGameId = gameId
+        break
+      }
+    }
     cy.fixture('initialState.json').then(initialState => {
-      cy.visit(`/kurono/play/${gameId}/`, {
+      cy.visit(`/kurono/play/${firstUserGameId}/`, {
         onBeforeLoad: win => {
           win.initialState = initialState
         }

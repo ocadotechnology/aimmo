@@ -4,10 +4,14 @@ from rest_framework import serializers
 
 class GameSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=100)
+    owner_id = serializers.SerializerMethodField()
     settings = serializers.SerializerMethodField("get_settings_as_dict")
     status = serializers.CharField(max_length=1)
     worksheet_id = serializers.SerializerMethodField()
     era = serializers.SerializerMethodField("get_worksheet_era")
+
+    def get_owner_id(self, game):
+        return str(game.owner.id)
 
     def get_worksheet_id(self, game):
         try:
