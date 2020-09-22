@@ -440,13 +440,13 @@ class TestViews(TestCase):
         self.game.main_user = self.user
         self.game.save()
 
-        game2 = models.Game(id=2, name="test", worksheet=self.worksheet)
+        game2 = models.Game(
+            id=2, owner=self.user, name="test", worksheet=self.worksheet
+        )
         game2.save()
 
         c = Client()
         response = c.get(reverse("game-list"))
-
-        print(response.content)
 
         self.assertJSONEqual(response.content, self.EXPECTED_GAME_LIST)
 
