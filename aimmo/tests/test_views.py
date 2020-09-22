@@ -446,8 +446,8 @@ class TestViews(TestCase):
         )
 
     def test_list_all_games(self):
-        self.game.main_user = self.user
-        self.game.save()
+        # self.game.main_user = self.user
+        # self.game.save()
 
         game2 = models.Game(
             id=2, owner=self.user, name="test", worksheet=self.worksheet
