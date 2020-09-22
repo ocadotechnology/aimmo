@@ -457,7 +457,7 @@ class TestViews(TestCase):
         c = Client()
         response = c.get(reverse("game-list"))
 
-        print(response.text())
+        print(response.content)
         print("------------------------------------------------")
         print(self.EXPECTED_GAME_LIST)
 
