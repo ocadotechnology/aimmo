@@ -446,6 +446,8 @@ class TestViews(TestCase):
         c = Client()
         response = c.get(reverse("game-list"))
 
+        print(response.content)
+
         self.assertJSONEqual(response.content, self.EXPECTED_GAME_LIST)
 
     def test_view_one_game(self):
