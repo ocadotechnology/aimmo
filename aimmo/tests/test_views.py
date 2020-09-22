@@ -43,7 +43,7 @@ class TestViews(TestCase):
     EXPECTED_GAME1_DETAIL = {
         "era": "1",
         "name": "test",
-        "owner_id": "1",
+        "owner_id": "21",
         "status": "r",
         "settings": '{"GENERATOR": "Main", "OBSTACLE_RATIO": 0.1, "PICKUP_SPAWN_CHANCE": 0.1, "SCORE_DESPAWN_CHANCE": 0.05, "START_HEIGHT": 31, "START_WIDTH": 31, "TARGET_NUM_CELLS_PER_AVATAR": 16.0, "TARGET_NUM_PICKUPS_PER_AVATAR": 1.2, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
         "worksheet_id": "3",
@@ -446,8 +446,8 @@ class TestViews(TestCase):
         )
 
     def test_list_all_games(self):
-        # self.game.main_user = self.user
-        # self.game.save()
+        self.game.main_user = self.user
+        self.game.save()
 
         game2 = models.Game(
             id=2, owner=self.user, name="test", worksheet=self.worksheet
