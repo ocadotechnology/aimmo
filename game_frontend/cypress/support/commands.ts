@@ -45,7 +45,7 @@ Cypress.Commands.add('addTestGame', () => {
       form: true,
       body: {
         name: 'test',
-        class_id,
+        game_class: class_id,
         worksheet: 2,
         csrfmiddlewaretoken: csrfToken.value
       }
@@ -72,6 +72,7 @@ Cypress.Commands.add('visitAGame', () => {
   cy.request('/kurono/api/games/').then(response => {
     const games = response.body
     let firstUserGameId
+    console.log(games)
     for (const gameId of Object.keys(games))
     {
       if (games[gameId]['owner_id'] == user_id) {
