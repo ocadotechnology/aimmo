@@ -56,8 +56,8 @@ Cypress.Commands.add('addTestGame', () => {
 Cypress.Commands.add('deleteAllGames', () => {
   cy.request('/kurono/api/games/').then(response => {
     const games = response.body
-    for (const gameId of Object.keys(games)) {
-      if (games[gameId]['owner_id'] == user_id)
+    for (const [gameId, gameData] of Object.entries(games)) {
+      if (gameData['owner_id'] == user_id)
       {
         cy.request({
           method: 'DELETE',
@@ -72,10 +72,9 @@ Cypress.Commands.add('visitAGame', () => {
   cy.request('/kurono/api/games/').then(response => {
     const games = response.body
     let firstUserGameId
-    console.log(games)
-    for (const gameId of Object.keys(games))
+    for (const [gameId, gameData] of Object.entries(games))
     {
-      if (games[gameId]['owner_id'] == user_id) {
+      if (gameData['owner_id'] == user_id) {
         firstUserGameId = gameId
         break
       }
