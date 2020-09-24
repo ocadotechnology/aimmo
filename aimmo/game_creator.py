@@ -37,8 +37,6 @@ def create_avatar_for_user(user, game_id):
 
     :param user: The user the Avatar is for.
     :param game_id: The id of the game in which the Avatar is created.
-    :param avatar_template_name: Optional. The name of the default code template for
-    the Avatar.
     :return: The initialised Avatar object.
     """
     game: Game = Game.objects.get(id=1)
