@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
-export function testAvatarCode (avatarCode, expectedAction, expectedLog) {
-  cy.loadGameWithAvatarCode(avatarCode)
+export function testAvatarCode (avatarCode, expectedAction, expectedLog, gameId) {
+  cy.loadGameWithAvatarCode(avatarCode, gameId)
 
   cy.fixture('gameState.json').then(gameState => {
     cy.window()

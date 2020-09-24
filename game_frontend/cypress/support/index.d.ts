@@ -23,16 +23,18 @@ declare namespace Cypress {
     deleteAllGames(): Chainable<Element>
 
     /**
-     * Visit the first game returned in the /api/games api.
-     * @example cy.visitAGame()
+     * Visit a game from the /api/games api.
+     * Takes in an id to specify which game to visit.
+     * @example cy.visitAGame(2)
      */
-    visitAGame(): Chainable<Element>
+    visitAGame(gameId): Chainable<Element>
 
     /**
-     * Load and visit the first game and set its avatar code to the avatarCode object.
+     * Load and visit a game and set its avatar code to the avatarCode object.
+     * Takes in an id to specify which game to load.
      * It waits for Pyodide and the Avatar API to load.
-     * @example cy.loadGameWithAvatarCode({code: "test code"})
+     * @example cy.loadGameWithAvatarCode({code: "test code"}, 2)
      */
-    loadGameWithAvatarCode(avatarCode): Chainable<Element>
+    loadGameWithAvatarCode(avatarCode, gameId): Chainable<Element>
   }
 }

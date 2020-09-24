@@ -13,6 +13,7 @@
 
 const username = 'alberteinstein@codeforlife.com'
 const password = 'Password1'
+const game_name = 'Cypress test game'
 const user_id = 2
 const class_id = 1
 
@@ -28,7 +29,7 @@ Cypress.Commands.add('login', () => {
         username,
         password,
         csrfmiddlewaretoken: csrfToken.value,
-        'g-recaptcha-response': 'something',
+        'g-recaptcha-response': 'something'
       }
     })
     cy.visit('/')
@@ -36,67 +37,35 @@ Cypress.Commands.add('login', () => {
 })
 
 Cypress.Commands.add('addTestGame', () => {
-  cy.request('/kurono/')
-  cy.getCookie('csrftoken').then(csrfToken => {
-    cy.request({
-      method: 'POST',
-      url: '/kurono/',
-      failOnStatusCode: true,
-      form: true,
-      body: {
-        name: 'test',
-        game_class: class_id,
-        worksheet: 2,
-        csrfmiddlewaretoken: csrfToken.value
+  cy.visit('/kurono/')
+
+  cy.get('#create_new_game_button').click()
+  cy.get('[name=name]').type(game_name)
+  cy.get('#id_game_class').select('1')
+  cy.get('#id_worksheet').select('2')
+  cy.get('#create_game_button').click()
+
+  return cy.url().then(url => url.split('/').pop())
+})
+
+Cypress.Commands.add('visitAGame', gameId => {
+  cy.fixture('initialState.json').then(initialState => {
+    cy.visit(`/kurono/play/${gameId}/`, {
+      onBeforeLoad: win => {
+        win.initialState = initialState
       }
     })
   })
 })
 
-Cypress.Commands.add('deleteAllGames', () => {
-  cy.request('/kurono/api/games/').then(response => {
-    const games = response.body
-    for (const [gameId, gameData] of Object.entries(games)) {
-      if (gameData['owner_id'] == user_id)
-      {
-        cy.request({
-          method: 'DELETE',
-          url: `/kurono/api/games/${gameId}/`
-        })
-      }
-    }
-  })
-})
-
-Cypress.Commands.add('visitAGame', () => {
-  cy.request('/kurono/api/games/').then(response => {
-    const games = response.body
-    let firstUserGameId
-    for (const [gameId, gameData] of Object.entries(games))
-    {
-      if (gameData['owner_id'] == user_id) {
-        firstUserGameId = gameId
-        break
-      }
-    }
-    cy.fixture('initialState.json').then(initialState => {
-      cy.visit(`/kurono/play/${firstUserGameId}/`, {
-        onBeforeLoad: win => {
-          win.initialState = initialState
-        }
-      })
-    })
-  })
-})
-
-Cypress.Commands.add('loadGameWithAvatarCode', avatarCode => {
+Cypress.Commands.add('loadGameWithAvatarCode', (avatarCode, gameId) => {
   cy.server().route({
     method: 'GET',
     url: '/kurono/api/code/*',
     response: avatarCode
   })
 
-  cy.visitAGame()
+  cy.visitAGame(gameId)
 
   cy.window()
     .its('store')
