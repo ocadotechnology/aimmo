@@ -8,4 +8,4 @@ import os
 if os.environ.get("RUN_MAIN", None) != "true":
     default_app_config = "aimmo.apps.AimmoAppConfig"
 
-__version__ = '0.58.1b6192'
+__version__ = '0.58.2b6197'
