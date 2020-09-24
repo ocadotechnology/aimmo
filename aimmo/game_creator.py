@@ -5,7 +5,7 @@ from __future__ import absolute_import
 
 import os
 
-from .models import Avatar
+from aimmo.models import Avatar, Game
 
 
 def create_game(main_user, form):
@@ -30,7 +30,7 @@ def create_game(main_user, form):
     return game
 
 
-def create_avatar_for_user(user, game_id, avatar_template_name="simple_avatar"):
+def create_avatar_for_user(user, game_id):
     """
     Creates an Avatar object for a user. Sets the initial code to simple avatar code
     (unless specified otherwise).
@@ -41,11 +41,7 @@ def create_avatar_for_user(user, game_id, avatar_template_name="simple_avatar"):
     the Avatar.
     :return: The initialised Avatar object.
     """
-    initial_code_file_name = os.path.join(
-        os.path.abspath(os.path.dirname(__file__)),
-        "avatar_examples/{}.py".format(avatar_template_name),
-    )
-    with open(initial_code_file_name) as initial_code_file:
-        initial_code = initial_code_file.read()
-        avatar = Avatar.objects.create(owner=user, code=initial_code, game_id=game_id)
+    game: Game = Game.objects.get(id=1)
+    initial_code = game.worksheet.starter_code
+    avatar = Avatar.objects.create(owner=user, code=initial_code, game_id=game_id)
     return avatar
