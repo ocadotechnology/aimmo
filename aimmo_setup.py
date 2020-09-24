@@ -164,7 +164,7 @@ def install_nodejs():  # Linux only
 
 def run_pipenv_install():  # OS independent
     print('Running "pipenv install"...')
-    _cmd("pipenv install")
+    _cmd("pipenv install --dev")
 
 
 def set_up_frontend_dependencies():  # Mac & Linux only

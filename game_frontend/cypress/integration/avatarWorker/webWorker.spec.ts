@@ -3,10 +3,13 @@
 import { testAvatarCode } from '../../support/avatarCodeTester'
 
 describe('Avatar worker in a web worker', () => {
+  before(() => {
+    cy.login()
+    cy.addTestGame()
+  })
+
   beforeEach(() => {
     cy.login()
-    cy.deleteAllGames()
-    cy.addTestGame()
   })
 
   it('Gives a timeout message when the worker takes too long to respond', () => {
