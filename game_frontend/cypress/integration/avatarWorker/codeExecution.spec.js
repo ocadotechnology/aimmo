@@ -3,11 +3,13 @@
 import { testAvatarCode, checkComputedTurnResult } from '../../support/avatarCodeTester'
 
 describe('Avatar worker', () => {
-  let gameId
+  before(() => {
+    cy.login()
+    cy.addTestGame()
+  })
 
   beforeEach(() => {
     cy.login()
-    gameId = cy.addTestGame()
   })
 
   it('returns wait action if code does not return an action', () => {
@@ -20,7 +22,7 @@ describe('Avatar worker', () => {
 
     const expectedLog = "AttributeError: 'bool' object has no attribute 'serialise'\n"
 
-    testAvatarCode(avatarCode, expectedAction, expectedLog, gameId)
+    testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
 
   it('returns wait action and prints syntax warning on syntax error', () => {
@@ -33,7 +35,7 @@ describe('Avatar worker', () => {
 
     const expectedLog = ''
 
-    testAvatarCode(avatarCode, expectedAction, expectedLog, gameId)
+    testAvatarCode(avatarCode, expectedAction, expectedLog)
 
     cy.window()
       .its('store')
@@ -55,7 +57,7 @@ return MoveAction(direction.NORTH)`
 
     const expectedLog = ''
 
-    testAvatarCode(avatarCode, expectedAction, expectedLog, gameId)
+    testAvatarCode(avatarCode, expectedAction, expectedLog)
 
     cy.window()
       .its('store')
@@ -79,14 +81,14 @@ return MoveAction(direction.NORTH)`
       options: {
         direction: {
           x: 0,
-          y: gameId
+          y: 1
         }
       }
     }
 
     const expectedLog = 'I AM A PRINT STATEMENT\n'
 
-    testAvatarCode(avatarCode, expectedAction, expectedLog, gameId)
+    testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
 
   it('prints with multiple prints', () => {
@@ -110,7 +112,7 @@ return MoveAction(direction.NORTH)`
     const expectedLog = `I AM A PRINT STATEMENT
 I AM ALSO A PRINT STATEMENT\n`
 
-    testAvatarCode(avatarCode, expectedAction, expectedLog, gameId)
+    testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
 
   it('prints with a print in a separate function', () => {
@@ -137,7 +139,7 @@ def foo():
     const expectedLog = `I AM A NESTED PRINT
 I AM NOT A NESTED PRINT\n`
 
-    testAvatarCode(avatarCode, expectedAction, expectedLog, gameId)
+    testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
 
   it('prints error message if code is broken', () => {
@@ -151,7 +153,7 @@ I AM NOT A NESTED PRINT\n`
 
     const expectedLog = 'Exception: Make sure you are returning an action\n'
 
-    testAvatarCode(avatarCode, expectedAction, expectedLog, gameId)
+    testAvatarCode(avatarCode, expectedAction, expectedLog)
   })
 
   it('stores, changes global variable and prints it out', () => {
@@ -176,7 +178,7 @@ def next_turn(world_map, avatar_state):
 
     const firstExpectedLog = '1\n'
 
-    testAvatarCode(avatarCode, expectedAction, firstExpectedLog, gameId)
+    testAvatarCode(avatarCode, expectedAction, firstExpectedLog)
 
     cy.fixture('gameState.json').then(gameState => {
       gameState.turnCount = 2
@@ -189,6 +191,6 @@ def next_turn(world_map, avatar_state):
     })
 
     const secondExpectedLog = '2\n'
-    checkComputedTurnResult(expectedAction, secondExpectedLog, gameId)
+    checkComputedTurnResult(expectedAction, secondExpectedLog)
   })
 })

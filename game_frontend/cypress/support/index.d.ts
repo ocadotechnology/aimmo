@@ -16,25 +16,16 @@ declare namespace Cypress {
     addTestGame(): Chainable<Element>
 
     /**
-     * Custom command to delete all games on the database.
-     * Requires you to be logged in.
-     * @example cy.deleteAllGames()
+     * Visit the first game returned in the /api/games api.
+     * @example cy.visitAGame()
      */
-    deleteAllGames(): Chainable<Element>
+    visitAGame(): Chainable<Element>
 
     /**
-     * Visit a game from the /api/games api.
-     * Takes in an id to specify which game to visit.
-     * @example cy.visitAGame(2)
-     */
-    visitAGame(gameId): Chainable<Element>
-
-    /**
-     * Load and visit a game and set its avatar code to the avatarCode object.
-     * Takes in an id to specify which game to load.
+     * Load and visit the first game and set its avatar code to the avatarCode object.
      * It waits for Pyodide and the Avatar API to load.
-     * @example cy.loadGameWithAvatarCode({code: "test code"}, 2)
+     * @example cy.loadGameWithAvatarCode({code: "test code"})
      */
-    loadGameWithAvatarCode(avatarCode, gameId): Chainable<Element>
+    loadGameWithAvatarCode(avatarCode): Chainable<Element>
   }
 }
