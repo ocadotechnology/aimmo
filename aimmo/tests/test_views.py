@@ -1,11 +1,6 @@
 import json
 
 import pytest
-from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
-from django.test import Client, TestCase
-from rest_framework import status
-
 from aimmo import app_settings, models
 from aimmo.forms import AddGameForm
 from aimmo.game_creator import create_game
@@ -18,6 +13,10 @@ from common.tests.utils.student import (
     create_independent_student_directly,
     create_school_student_directly,
 )
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.test import Client, TestCase
+from rest_framework import status
 
 app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
     "base %s" % game_id,
@@ -104,7 +103,7 @@ class TestViews(TestCase):
             models.Avatar.objects.get(owner__username="test").code, self.CODE
         )
 
-    def test_code_for_non_existant_game(self):
+    def test_code_for_non_existent_game(self):
         c = self.login()
         response = c.post(reverse("kurono/code", kwargs={"id": 2}), {"code": self.CODE})
         self.assertEqual(response.status_code, 404)

@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 import argparse
-import os
-import signal
+import logging
 import traceback
 
-import time
-
 from aimmo_runner import runner
+
+logging.basicConfig()
 
 parser = argparse.ArgumentParser(description="Runs Kurono.")
 
@@ -53,7 +52,3 @@ if __name__ == "__main__":
     except Exception as err:
         traceback.print_exc()
         raise
-    finally:
-        os.killpg(0, signal.SIGTERM)
-        time.sleep(0.9)
-        os.killpg(0, signal.SIGKILL)

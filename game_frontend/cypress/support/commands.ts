@@ -11,21 +11,25 @@
 //
 // -- This is a parent command --
 
-const username = 'admin'
-const password = 'admin'
+const username = 'alberteinstein@codeforlife.com'
+const password = 'Password1'
+const game_name = 'Cypress test game'
+const user_id = 2
+const class_id = 1
 
 Cypress.Commands.add('login', () => {
-  cy.request('/accounts/login/')
+  cy.request('/login/teacher/')
   cy.getCookie('csrftoken').then(csrfToken => {
     cy.request({
       method: 'POST',
-      url: '/accounts/login/',
-      failOnStatusCode: false,
+      url: '/login/teacher/',
+      failOnStatusCode: true,
       form: true,
       body: {
         username,
         password,
-        csrfmiddlewaretoken: csrfToken.value
+        csrfmiddlewaretoken: csrfToken.value,
+        'g-recaptcha-response': 'something'
       }
     })
     cy.visit('/')
@@ -33,38 +37,36 @@ Cypress.Commands.add('login', () => {
 })
 
 Cypress.Commands.add('addTestGame', () => {
-  cy.request('/games/new/')
+  cy.request('/kurono/')
   cy.getCookie('csrftoken').then(csrfToken => {
     cy.request({
       method: 'POST',
-      url: '/games/new/',
+      url: '/kurono/',
       failOnStatusCode: false,
       form: true,
       body: {
-        name: 'test',
+        name: game_name,
+        game_class: class_id,
+        worksheet: 2,
         csrfmiddlewaretoken: csrfToken.value
       }
     })
   })
 })
 
-Cypress.Commands.add('deleteAllGames', () => {
-  cy.request('/api/games/').then(response => {
-    const games = response.body
-    for (const gameId of Object.keys(games)) {
-      cy.request({
-        method: 'DELETE',
-        url: `api/games/${gameId}/`
-      })
-    }
-  })
-})
-
 Cypress.Commands.add('visitAGame', () => {
-  cy.request('/api/games/').then(response => {
-    const gameId = Object.keys(response.body)[0]
+  cy.request('/kurono/api/games/').then(response => {
+    const games = response.body
+    let testGameId
+    for (const [gameId, gameData] of Object.entries(games))
+    {
+      if (gameData['name'] == game_name) {
+        testGameId = gameId
+        break
+      }
+    }
     cy.fixture('initialState.json').then(initialState => {
-      cy.visit(`/play/${gameId}/`, {
+      cy.visit(`/kurono/play/${testGameId}/`, {
         onBeforeLoad: win => {
           win.initialState = initialState
         }
