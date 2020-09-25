@@ -1,13 +1,12 @@
 from base64 import urlsafe_b64encode
 from os import urandom
 
+from common.models import Class
 from django.contrib.auth.models import User
 from django.db import models
+from wagtail.snippets.models import register_snippet
 
 from aimmo import app_settings
-
-from common.models import Class
-
 
 DEFAULT_WORKSHEET_ID = 1
 
@@ -20,6 +19,7 @@ def generate_auth_token():
     return urlsafe_b64encode(urandom(16))
 
 
+@register_snippet
 class Worksheet(models.Model):
     ERA_CHOICES = [
         (1, "future"),
