@@ -30,9 +30,13 @@ class Worksheet(models.Model):
     ]
 
     name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
     era = models.PositiveSmallIntegerField(
         choices=ERA_CHOICES, default=ERA_CHOICES[0][0]
     )
+    thumbnail_text = models.CharField(max_length=100, blank=True)
+    thumbnail_image_path = models.CharField(max_length=255)
+
     starter_code = models.TextField()
 
     def __str__(self):
