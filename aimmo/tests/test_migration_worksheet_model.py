@@ -37,10 +37,18 @@ class TestMigrationAddInfoToWorksheetModel(MigrationTestCase):
             Worksheet._meta.get_field("description").get_internal_type() == "TextField"
         )
         assert (
+                Worksheet._meta.get_field("image_path").get_internal_type()
+                == "CharField"
+        )
+        assert (
             Worksheet._meta.get_field("thumbnail_image_path").get_internal_type()
             == "CharField"
         )
         assert (
             Worksheet._meta.get_field("thumbnail_text").get_internal_type()
             == "CharField"
+        )
+        assert (
+                Worksheet._meta.get_field("sort_order").get_internal_type()
+                == "IntegerField"
         )

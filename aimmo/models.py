@@ -1,6 +1,6 @@
-from base64 import urlsafe_b64encode
 from os import urandom
 
+from base64 import urlsafe_b64encode
 from common.models import Class
 from django.contrib.auth.models import User
 from django.db import models
@@ -19,6 +19,11 @@ def generate_auth_token():
     return urlsafe_b64encode(urandom(16))
 
 
+class WorksheetManager(models.Manager):
+    def sorted(self):
+        return self.get_queryset().order_by("sort_order")
+
+
 @register_snippet
 class Worksheet(models.Model):
     ERA_CHOICES = [
@@ -31,11 +36,16 @@ class Worksheet(models.Model):
 
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
+    image_path = models.CharField(max_length=255, blank=True)
     era = models.PositiveSmallIntegerField(
         choices=ERA_CHOICES, default=ERA_CHOICES[0][0]
     )
     thumbnail_text = models.CharField(max_length=100, blank=True)
-    thumbnail_image_path = models.CharField(max_length=255)
+    thumbnail_image_path = models.CharField(max_length=255, blank=True)
+
+    sort_order = models.IntegerField(default=0)
+
+    objects = WorksheetManager()
 
     starter_code = models.TextField()
 
@@ -88,10 +98,7 @@ class Game(models.Model):
     worksheet = models.ForeignKey(Worksheet)
 
     class Meta:
-        unique_together = (
-            "game_class",
-            "worksheet",
-        )
+        unique_together = ("game_class", "worksheet")
 
     @property
     def is_active(self):
