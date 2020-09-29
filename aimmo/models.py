@@ -21,7 +21,7 @@ def generate_auth_token():
 
 class WorksheetManager(models.Manager):
     def sorted(self):
-        return self.get_queryset().order_by("era")
+        return self.get_queryset().order_by("sort_order")
 
 
 @register_snippet
@@ -36,12 +36,15 @@ class Worksheet(models.Model):
 
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
+    short_description = models.TextField(blank=True)
     image_path = models.CharField(max_length=255, blank=True)
+    active_image_path = models.CharField(max_length=255, blank=True)
     era = models.PositiveSmallIntegerField(
         choices=ERA_CHOICES, default=ERA_CHOICES[0][0]
     )
     thumbnail_text = models.CharField(max_length=100, blank=True)
     thumbnail_image_path = models.CharField(max_length=255, blank=True)
+    sort_order = models.IntegerField(default=0)
 
     objects = WorksheetManager()
 
