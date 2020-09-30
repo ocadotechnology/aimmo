@@ -1,13 +1,15 @@
 /// <reference types="cypress" />
 
-import { DEFAULT_CODE } from '../../../src/redux/features/constants'
 import { testAvatarCode, checkComputedTurnResult } from '../../support/avatarCodeTester'
 
 describe('Avatar worker', () => {
+  before(() => {
+    cy.login()
+    cy.addTestGame()
+  })
+
   beforeEach(() => {
     cy.login()
-    cy.deleteAllGames()
-    cy.addTestGame()
   })
 
   it('returns wait action if code does not return an action', () => {

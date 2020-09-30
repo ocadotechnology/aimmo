@@ -16,13 +16,6 @@ declare namespace Cypress {
     addTestGame(): Chainable<Element>
 
     /**
-     * Custom command to delete all games on the database.
-     * Requires you to be logged in.
-     * @example cy.deleteAllGames()
-     */
-    deleteAllGames(): Chainable<Element>
-
-    /**
      * Visit the first game returned in the /api/games api.
      * @example cy.visitAGame()
      */

@@ -1,24 +1,22 @@
-from aimmo.tests.test_forms import worksheet
 import json
 
 import pytest
-from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
-from django.test import Client, TestCase
-from rest_framework import status
-
 from aimmo import app_settings, models
 from aimmo.forms import AddGameForm
 from aimmo.game_creator import create_game
 from aimmo.models import Game, Worksheet
 from aimmo.serializers import GameSerializer
 from aimmo.views import get_avatar_id
-from common.models import Class, Student, Teacher, UserProfile
+from common.models import Class, Teacher, UserProfile
 from common.tests.utils.classes import create_class_directly
 from common.tests.utils.student import (
     create_independent_student_directly,
     create_school_student_directly,
 )
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.test import Client, TestCase
+from rest_framework import status
 
 app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
     "base %s" % game_id,
@@ -26,13 +24,12 @@ app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
 )
 app_settings.GAME_SERVER_PORT_FUNCTION = lambda game_id: 0
 app_settings.GAME_SERVER_SSL_FLAG = True
-DEFAULT_CODE = """def next_turn(world_state, avatar_state):
-    return MoveAction(direction.NORTH)
-"""
 
 
 class TestViews(TestCase):
     CODE = "class Avatar: pass"
+
+    WORKSHEET_ID = 3
 
     EXPECTED_GAMES = {
         "main_avatar": 1,
@@ -48,7 +45,7 @@ class TestViews(TestCase):
         "name": "test",
         "status": "r",
         "settings": '{"GENERATOR": "Main", "OBSTACLE_RATIO": 0.1, "PICKUP_SPAWN_CHANCE": 0.1, "SCORE_DESPAWN_CHANCE": 0.05, "START_HEIGHT": 31, "START_WIDTH": 31, "TARGET_NUM_CELLS_PER_AVATAR": 16.0, "TARGET_NUM_PICKUPS_PER_AVATAR": 1.2, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
-        "worksheet_id": "3",
+        "worksheet_id": str(WORKSHEET_ID),
     }
 
     EXPECTED_GAME_LIST = {"1": EXPECTED_GAME_DETAIL, "2": EXPECTED_GAME_DETAIL}
@@ -106,7 +103,7 @@ class TestViews(TestCase):
             models.Avatar.objects.get(owner__username="test").code, self.CODE
         )
 
-    def test_code_for_non_existant_game(self):
+    def test_code_for_non_existent_game(self):
         c = self.login()
         response = c.post(reverse("kurono/code", kwargs={"id": 2}), {"code": self.CODE})
         self.assertEqual(response.status_code, 404)
@@ -117,11 +114,12 @@ class TestViews(TestCase):
         response = c.post(reverse("kurono/code", kwargs={"id": 1}), {"code": self.CODE})
         self.assertEqual(response.status_code, 404)
 
-    def test_default_code(self):
+    def test_worksheet_starter_code(self):
+        worksheet = Worksheet.objects.get(id=self.WORKSHEET_ID)
         c = self.login()
         response = c.get(reverse("kurono/code", kwargs={"id": 1}))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(DEFAULT_CODE, json.loads(response.content)["code"])
+        self.assertEqual(worksheet.starter_code, json.loads(response.content)["code"])
 
     def test_retrieve_code(self):
         models.Avatar(owner=self.user, code=self.CODE, game=self.game).save()
