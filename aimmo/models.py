@@ -44,6 +44,8 @@ class Worksheet(models.Model):
     )
     thumbnail_text = models.CharField(max_length=100, blank=True)
     thumbnail_image_path = models.CharField(max_length=255, blank=True)
+    teacher_pdf_name = models.CharField(max_length=255, blank=True)
+    student_pdf_name = models.CharField(max_length=255, blank=True)
     sort_order = models.IntegerField(default=0)
 
     objects = WorksheetManager()

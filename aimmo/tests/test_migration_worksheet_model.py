@@ -59,3 +59,20 @@ class TestMigrationAddInfoToWorksheetModel(MigrationTestCase):
             Worksheet._meta.get_field("sort_order").get_internal_type()
             == "IntegerField"
         )
+
+
+class TestMigrationAddPdfNamesToWorksheetModel(MigrationTestCase):
+    start_migration = "0020_add_info_to_worksheet"
+    dest_migration = "0021_add_pdf_names_to_worksheet"
+
+    def test_worksheet_has_new_fields_added(self):
+        Worksheet = self.django_application.get_model(self.app_name, "Worksheet")
+
+        assert (
+            Worksheet._meta.get_field("teacher_pdf_name").get_internal_type()
+            == "CharField"
+        )
+        assert (
+            Worksheet._meta.get_field("student_pdf_name").get_internal_type()
+            == "CharField"
+        )
