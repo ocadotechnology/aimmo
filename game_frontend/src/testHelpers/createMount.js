@@ -1,8 +1,8 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import { ThemeProvider } from 'styled-components'
 import { createMount } from '@material-ui/core/test-utils'
 import themeVariants from 'theme'
-import { ThemeProvider } from 'styled-components'
-import PropTypes from 'prop-types'
 
 const ThemeProviderWrapper = ({ children, theme }) => (
   <ThemeProvider theme={theme}>{children}</ThemeProvider>
