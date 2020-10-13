@@ -5,9 +5,7 @@ exports[`<IDEConsole /> renders correctly 1`] = `
   <ConsoleBar
     clearConsoleClicked={[Function]}
   />
-  <styled.div
-    innerRef={[Function]}
-  >
+  <styled.div>
     <LogEntries
       logs={
         Map {

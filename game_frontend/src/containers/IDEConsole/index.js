@@ -88,7 +88,7 @@ export class IDEConsole extends Component {
           handleResetCodeClicked={this.props.resetCode}
         />
         <StyledConsole
-          innerRef={ref => {
+          ref={ref => {
             this.consoleRef = ref
           }}
         >

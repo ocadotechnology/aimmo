@@ -355,7 +355,6 @@ Object {
 
 exports[`<LogEntries /> renders correctly with logs 1`] = `
 <Styled(WithStyles(ForwardRef(Table)))
-  innerRef={[Function]}
   size="small"
 >
   <WithStyles(ForwardRef(TableBody))>
@@ -386,7 +385,6 @@ exports[`<LogEntries /> renders correctly with logs 1`] = `
       </Styled(WithStyles(ForwardRef(TableCell)))>
     </Styled(WithStyles(ForwardRef(TableRow)))>
     <styled.tr
-      innerRef={[Function]}
       key="-1"
     />
   </WithStyles(ForwardRef(TableBody))>
@@ -395,12 +393,10 @@ exports[`<LogEntries /> renders correctly with logs 1`] = `
 
 exports[`<LogEntries /> renders correctly without logs 1`] = `
 <Styled(WithStyles(ForwardRef(Table)))
-  innerRef={[Function]}
   size="small"
 >
   <WithStyles(ForwardRef(TableBody))>
     <styled.tr
-      innerRef={[Function]}
       key="-1"
     />
   </WithStyles(ForwardRef(TableBody))>
