@@ -92,3 +92,7 @@ aimmo/templates/players/game_ide.html
 # Game Frontend
 node_modules
 game_frontend/package-lock.json
+
+# Cypress generated folders
+game_frontend/cypress/screenshots
+game_frontend/cypress/videos
