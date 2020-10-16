@@ -17,8 +17,8 @@ export const KuronoAppBar = styled(AppBar)`
   justify-content: space-between;
 `
 
-const appData = window.appData;
-const urlForAimmoDashboard = (appData && appData.urlForAimmoDashboard) ? appData.urlForAimmoDashboard : '';
+const appData = window.appData
+const urlForAimmoDashboard = (appData && appData.urlForAimmoDashboard) ? appData.urlForAimmoDashboard : ''
 
 export default class NavigationBar extends Component {
   render () {
