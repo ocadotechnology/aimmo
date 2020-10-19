@@ -7,7 +7,7 @@ testLogoClickNavigatesToUrl = (url) => {
 
 testExitButtonClickNavigatesToUrl = (url) => {
   cy.get('nav > header').contains('Exit game').click()
-  cy.url().should('eq', Cypress.config().baseUrl + 'teach/kurono/dashboard/')
+  cy.url().should('eq', url)
 }
 
 describe('Teacher user', () => {
