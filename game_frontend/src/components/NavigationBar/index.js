@@ -21,6 +21,33 @@ const appData = window.appData
 const urlForAimmoDashboard = (appData && appData.urlForAimmoDashboard) ? appData.urlForAimmoDashboard : ''
 
 export default class NavigationBar extends Component {
+  renderLogoToolbar = () => {
+    return (
+      <LogoToolbar>
+        <IconButton
+          href={urlForAimmoDashboard}
+          aria-label='Kurono dashboard'
+          color='inherit'
+        >
+          <KuronoLogo fontSize='large' />
+        </IconButton>
+      </LogoToolbar>
+    )
+  }
+
+  renderButtonToolbar = () => {
+    return (
+      <Toolbar>
+        <Button
+          href={urlForAimmoDashboard}
+          variant='outlined'
+        >
+          Exit game
+        </Button>
+      </Toolbar>
+    )
+  }
+
   render () {
     return (
       <NavigationBarLayout>
@@ -28,23 +55,8 @@ export default class NavigationBar extends Component {
           color='secondary'
           position='sticky'
         >
-          <LogoToolbar>
-            <IconButton
-              href={urlForAimmoDashboard}
-              aria-label='Kurono dashboard'
-              color='inherit'
-            >
-              <KuronoLogo fontSize='large' />
-            </IconButton>
-          </LogoToolbar>
-          <Toolbar>
-            <Button
-              href={urlForAimmoDashboard}
-              variant='outlined'
-            >
-              Exit game
-            </Button>
-          </Toolbar>
+          {this.renderLogoToolbar()}
+          {this.renderButtonToolbar()}
         </KuronoAppBar>
       </NavigationBarLayout>
     )
