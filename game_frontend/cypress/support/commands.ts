@@ -16,6 +16,8 @@ const password = 'Password1'
 const game_name = 'Cypress test game'
 const user_id = 2
 const class_id = 1
+const student_username = 'Leonardo'
+const student_access_code = 'AB123'
 
 Cypress.Commands.add('login', () => {
   cy.request('/login/teacher/')
@@ -36,12 +38,37 @@ Cypress.Commands.add('login', () => {
   })
 })
 
-Cypress.Commands.add('addTestGame', () => {
-  cy.request('/kurono/')
+Cypress.Commands.add('studentLogin', () => {
+  cy.request('/login/student/')
   cy.getCookie('csrftoken').then(csrfToken => {
     cy.request({
       method: 'POST',
-      url: '/kurono/',
+      url: '/login/student/',
+      failOnStatusCode: true,
+      form: true,
+      body: {
+        username: student_username,
+        password,
+        access_code: student_access_code,
+        csrfmiddlewaretoken: csrfToken.value,
+        'g-recaptcha-response': 'something'
+      }
+    })
+    cy.visit('/')
+  })
+})
+
+Cypress.Commands.add('logout', () => {
+  cy.request('/logout/')
+  cy.visit('/')
+})
+
+Cypress.Commands.add('addTestGame', () => {
+  cy.request('/teach/kurono/dashboard/')
+  cy.getCookie('csrftoken').then(csrfToken => {
+    cy.request({
+      method: 'POST',
+      url: '/teach/kurono/dashboard/',
       failOnStatusCode: false,
       form: true,
       body: {

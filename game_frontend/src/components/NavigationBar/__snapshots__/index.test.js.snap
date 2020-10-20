@@ -2,7 +2,7 @@
 
 exports[`<NavigationBar /> renders correctly 1`] = `
 <styled.nav>
-  <WithStyles(ForwardRef(AppBar))
+  <Styled(WithStyles(ForwardRef(AppBar)))
     color="secondary"
     position="sticky"
   >
@@ -10,14 +10,22 @@ exports[`<NavigationBar /> renders correctly 1`] = `
       <WithStyles(ForwardRef(IconButton))
         aria-label="Kurono dashboard"
         color="inherit"
-        href="/kurono"
+        href=""
       >
         <KuronoLogo
           fontSize="large"
         />
       </WithStyles(ForwardRef(IconButton))>
     </Styled(WithStyles(ForwardRef(Toolbar)))>
-  </WithStyles(ForwardRef(AppBar))>
+    <WithStyles(ForwardRef(Toolbar))>
+      <WithStyles(ForwardRef(Button))
+        href=""
+        variant="outlined"
+      >
+        Exit game
+      </WithStyles(ForwardRef(Button))>
+    </WithStyles(ForwardRef(Toolbar))>
+  </Styled(WithStyles(ForwardRef(AppBar)))>
 </styled.nav>
 `;
 

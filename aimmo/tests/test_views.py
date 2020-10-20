@@ -29,8 +29,6 @@ app_settings.GAME_SERVER_SSL_FLAG = True
 class TestViews(TestCase):
     CODE = "class Avatar: pass"
 
-    WORKSHEET_ID = 3
-
     EXPECTED_GAMES = {
         "main_avatar": 1,
         "users": [
@@ -39,16 +37,6 @@ class TestViews(TestCase):
             {"id": 3, "code": "test3"},
         ],
     }
-
-    EXPECTED_GAME_DETAIL = {
-        "era": "1",
-        "name": "test",
-        "status": "r",
-        "settings": '{"GENERATOR": "Main", "OBSTACLE_RATIO": 0.1, "PICKUP_SPAWN_CHANCE": 0.1, "SCORE_DESPAWN_CHANCE": 0.05, "START_HEIGHT": 31, "START_WIDTH": 31, "TARGET_NUM_CELLS_PER_AVATAR": 16.0, "TARGET_NUM_PICKUPS_PER_AVATAR": 1.2, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
-        "worksheet_id": str(WORKSHEET_ID),
-    }
-
-    EXPECTED_GAME_LIST = {"1": EXPECTED_GAME_DETAIL, "2": EXPECTED_GAME_DETAIL}
 
     @classmethod
     def setUpTestData(cls):
@@ -72,6 +60,18 @@ class TestViews(TestCase):
             id=1, name="test", game_class=cls.klass, worksheet=cls.worksheet
         )
         cls.game.save()
+
+        cls.EXPECTED_GAME_DETAIL = {
+            "era": "1",
+            "name": "test",
+            "status": "r",
+            "settings": '{"GENERATOR": "Main", "OBSTACLE_RATIO": 0.1, "PICKUP_SPAWN_CHANCE": 0.1, "SCORE_DESPAWN_CHANCE": 0.05, "START_HEIGHT": 31, "START_WIDTH": 31, "TARGET_NUM_CELLS_PER_AVATAR": 16.0, "TARGET_NUM_PICKUPS_PER_AVATAR": 1.2, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
+            "worksheet_id": str(cls.worksheet.id),
+        }
+        cls.EXPECTED_GAME_LIST = {
+            "1": cls.EXPECTED_GAME_DETAIL,
+            "2": cls.EXPECTED_GAME_DETAIL
+        }
 
     def setUp(self):
         self.game.refresh_from_db()
@@ -115,11 +115,10 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_worksheet_starter_code(self):
-        worksheet = Worksheet.objects.get(id=self.WORKSHEET_ID)
         c = self.login()
         response = c.get(reverse("kurono/code", kwargs={"id": 1}))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(worksheet.starter_code, json.loads(response.content)["code"])
+        self.assertEqual(self.worksheet.starter_code, json.loads(response.content)["code"])
 
     def test_retrieve_code(self):
         models.Avatar(owner=self.user, code=self.CODE, game=self.game).save()
