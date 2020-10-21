@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<IDE /> renders correctly 1`] = `
-<ThemeProvider
+<Component
   theme={
     Object {
       "additionalVariables": Object {
@@ -606,5 +606,5 @@ exports[`<IDE /> renders correctly 1`] = `
     <Connect(WithTheme(IDEEditor)) />
     <Connect(IDEConsole) />
   </ThemeProvider>
-</ThemeProvider>
+</Component>
 `;

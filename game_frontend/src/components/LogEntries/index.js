@@ -57,7 +57,7 @@ export default class LogEntries extends Component {
     logEntries.push(
       <BottomSnapper
         key={-1}
-        innerRef={ref => {
+        ref={ref => {
           this.bottomSnapperRef = ref
         }}
       />
@@ -69,7 +69,7 @@ export default class LogEntries extends Component {
     return (
       <StyledTable
         size='small'
-        innerRef={ref => {
+        ref={ref => {
           this.tableRef = ref
         }}
       >

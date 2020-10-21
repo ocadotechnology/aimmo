@@ -1,4 +1,5 @@
 {% load static %}
+{% load app_tags %}
 <!DOCTYPE html>
 
 <head>
@@ -50,6 +51,11 @@
       overflow: hidden;
     }
   </style>
+  <script>
+    var appData = {
+      urlForAimmoDashboard: "{% url_for_aimmo_dashboard %}"
+    };
+  </script>
 </head>
 
 <body>
