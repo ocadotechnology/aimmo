@@ -8,7 +8,7 @@ admin.autodiscover()
 
 urlpatterns = [
     url(r"^", include(portal_urls)),
-    url(r"^administration/", include(admin.site.urls)),
+    url(r'^administration/', include((admin.site.urls[0], 'admin'), namespace='admin')),
     url(r"^rapidrouter/", include(game_urls)),
     url(r"^kurono/", include(aimmo_urls)),
 ]
