@@ -166,12 +166,3 @@ class Avatar(models.Model):
 
     class Meta:
         unique_together = ("owner", "game")
-
-
-class LevelAttempt(models.Model):
-    level_number = models.IntegerField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    game = models.OneToOneField(Game, on_delete=models.CASCADE)
-
-    class Meta:
-        unique_together = ("level_number", "user")
