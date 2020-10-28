@@ -8,17 +8,37 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('aimmo', '0013_alter_game_can_play'),
+        ("aimmo", "0013_alter_game_can_play"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Worksheet',
+            name="Worksheet",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('era', models.PositiveSmallIntegerField(choices=[(1, 'future'), (2, 'ancient'), (3, 'modern day'), (4, 'prehistoric'), (5, 'broken future')], default=1)),
-                ('starter_code', models.TextField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                (
+                    "era",
+                    models.PositiveSmallIntegerField(
+                        choices=[
+                            (1, "future"),
+                            (2, "ancient"),
+                            (3, "modern day"),
+                            (4, "prehistoric"),
+                            (5, "broken future"),
+                        ],
+                        default=1,
+                    ),
+                ),
+                ("starter_code", models.TextField()),
             ],
         ),
     ]

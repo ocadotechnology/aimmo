@@ -101,17 +101,22 @@ class Migration(migrations.Migration):
                         related_name="owned_games",
                         to=settings.AUTH_USER_MODEL,
                         null=True,
+                        on_delete=models.SET_NULL,
                     ),
                 ),
             ],
         ),
         migrations.AddField(
-            model_name="avatar", name="game", field=models.ForeignKey(to="aimmo.Game")
+            model_name="avatar",
+            name="game",
+            field=models.ForeignKey(to="aimmo.Game", on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name="avatar",
             name="owner",
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+            ),
         ),
         migrations.AlterUniqueTogether(
             name="avatar", unique_together=set([("owner", "game")])
