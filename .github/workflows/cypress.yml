@@ -18,6 +18,7 @@ jobs:
         run: |
           pip install pipenv
           pipenv install --dev --system
+          pip install django==2.0
           cd game_frontend
           yarn install
       - name: Build project and run server
