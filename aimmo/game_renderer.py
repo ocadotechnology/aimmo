@@ -7,6 +7,10 @@ from django.shortcuts import render, get_object_or_404
 
 from aimmo import app_settings, exceptions
 from .models import Game
+import kubernetes
+from kubernetes.client.api.custom_objects_api import CustomObjectsApi
+from kubernetes.client.api_client import ApiClient
+import time
 
 
 def render_game(request, game):
@@ -37,12 +41,27 @@ def get_environment_connection_settings(game_id):
     :return: A dict object with all relevant settings.
     """
 
+    kubernetes.config.load_kube_config(context="agones")
+
+    api_client = ApiClient()
+    api_instance = CustomObjectsApi(api_client)
     return {
-        "game_url_base": _add_game_port_to_game_base(game_id),
+        # "game_url_base": _add_game_port_to_game_base(game_id),
+        "game_url_base": get_games_url_base(api_instance, game_id),
         "game_url_path": app_settings.GAME_SERVER_URL_FUNCTION(game_id)[1],
         "game_ssl_flag": app_settings.GAME_SERVER_SSL_FLAG,
         "game_id": game_id,
     }
+
+def get_games_url_base(api_instance: CustomObjectsApi, game_id: int) -> str:
+    result = api_instance.list_namespaced_custom_object(group="agones.dev", version="v1", namespace="default", plural="gameservers", label_selector = f"game-id={game_id}")
+    try:
+        game_server_status = result["items"][0]["status"]
+        return f"http://{game_server_status['address']}:{game_server_status['ports'][0]['port']}"
+    except (KeyError, IndexError):
+        time.sleep(0.2)
+        return get_games_url_base(api_instance, game_id)
+
 
 
 def _add_game_port_to_game_base(game_id):
@@ -67,6 +86,7 @@ def get_avatar_id_from_user(user, game_id):
     :param game_id: The game ID in which the avatar is being requested from.
     :return: An integer containing the avatar_ID.
     """
+
     game = get_object_or_404(Game, id=game_id)
     if not game.can_user_play(user):
         raise exceptions.UserCannotPlayGameException

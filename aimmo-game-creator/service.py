@@ -23,6 +23,7 @@ def main():
     game_manager = game_manager_class(
         os.environ.get("GAME_API_URL", "http://{}:8000/kurono/api/games/".format(host))
     )
+    logging.info(f"THIS IS THE HOST: {host}")
     game_manager.run()
 
 

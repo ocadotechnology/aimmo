@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import sys
+from typing import Any, Dict
 from urllib.parse import parse_qs
 
 import aiohttp_cors
@@ -19,19 +20,22 @@ from simulation.django_communicator import DjangoCommunicator
 from simulation.game_runner import GameRunner
 from simulation.log_collector import LogCollector
 from turn_collector import TurnCollector
+from agones.sdk_pb2_grpc import SDK as AgonesSDK, SDKStub as AgonesSDKStub, SDKServicer
+from agones import sdk_pb2
+import grpc
+import nest_asyncio
+
+nest_asyncio.apply()
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-django_api_url = os.environ.get(
-    "GAME_API_URL", "http://localhost:8000/kurono/api/games/"
-)
 
-communicator = DjangoCommunicator(django_api_url=django_api_url)
-activity_monitor = ActivityMonitor(communicator)
+channel = grpc.aio.insecure_channel(f"localhost:{os.environ['AGONES_SDK_GRPC_PORT']}")
+agones_stub = AgonesSDKStub(channel)
 
 
-def setup_application(should_clean_token=True):
+def setup_application(communicator: DjangoCommunicator, should_clean_token=True):
     async def clean_token(app):
         LOGGER.info("Cleaning token!")
         await communicator.patch_token(data={"token": ""})
@@ -46,9 +50,9 @@ def setup_application(should_clean_token=True):
     return application
 
 
-def setup_prometheus():
-    wsgi_handler = WSGIHandler(make_wsgi_app())
-    app.add_routes([web.get("/{path_info:metrics}", wsgi_handler)])
+# def setup_prometheus():
+#     wsgi_handler = WSGIHandler(make_wsgi_app())
+#     app.add_routes([web.get("/{path_info:metrics}", wsgi_handler)])
 
 
 def setup_socketIO_server(application, async_handlers=True):
@@ -71,16 +75,10 @@ def setup_socketIO_server(application, async_handlers=True):
     return socket_server
 
 
-app = setup_application()
-cors = aiohttp_cors.setup(app)
-
-socketio_server = setup_socketIO_server(app)
-
-
 class GameAPI(object):
-    def __init__(self, game_state, application=app, server=socketio_server):
+    def __init__(self, game_state, application, socketio_server):
         self.app = application
-        self.socketio_server = server
+        self.socketio_server = socketio_server
         self.register_endpoints()
         self.game_state = game_state
         self.log_collector = LogCollector(game_state.avatar_manager)
@@ -118,6 +116,7 @@ class GameAPI(object):
         @self.socketio_server.on("connect")
         async def world_update_on_connect(sid, environ):
             LOGGER.info(f"Socket connected for session id: {sid}")
+            # LOGGER.info(environ)
             query = environ["QUERY_STRING"]
             avatar_id = self._find_avatar_id_from_query(sid, query)
             await self.socketio_server.save_session(sid, {"id": avatar_id})
@@ -173,9 +172,8 @@ class GameAPI(object):
         await self.socketio_server.emit("game-state", serialized_game_state, room=sid)
 
 
-def create_runner(port):
-    settings = json.loads(os.environ["settings"])
-    generator = getattr(map_generator, settings["GENERATOR"])(settings)
+def create_runner(port, socketio_server, communicator: DjangoCommunicator):
+    generator = map_generator.Main({})
     turn_collector = TurnCollector(socketio_server)
     return GameRunner(
         game_state_generator=generator.get_game_state,
@@ -185,29 +183,104 @@ def create_runner(port):
     )
 
 
-def run_game(port):
-    game_runner = create_runner(port)
+future_app = asyncio.Future()
+future_port = asyncio.Future()
 
-    game_api = GameAPI(game_state=game_runner.game_state)
+
+def run_game(port, game_id, django_api_url):
+    global activity_monitor
+    global cors
+    global communicator
+
+    LOGGER.info("got to run game")
+    communicator = DjangoCommunicator(django_api_url=django_api_url)
+    activity_monitor = ActivityMonitor(communicator, agones_stub)
+
+    app = setup_application(communicator)
+    cors = aiohttp_cors.setup(app)
+    socketio_server = setup_socketIO_server(app)
+
+    game_runner = create_runner(port, socketio_server, communicator)
+
+    asyncio.ensure_future(initialize_game_token(communicator, game_id))
+
+    game_api = GameAPI(
+        game_state=game_runner.game_state,
+        application=app,
+        socketio_server=socketio_server,
+    )
     game_runner.set_end_turn_callback(game_api.send_updates_to_all)
+
     asyncio.ensure_future(game_runner.run())
+    # run_server(app)
+    LOGGER.info("setting the future app")
+    # try:
+    future_app.set_result(app)
+    # except asyncio.base_futures.InvalidStateError:
+    #     pass
+
+
+async def watch_for_updates():
+    is_already_allocated = False
+    LOGGER.info("starting to watch for updates")
+    empty_request = sdk_pb2.Empty()
+    async for game_server_update in agones_stub.WatchGameServer(empty_request):
+        if game_server_update.status.state == "Allocated" and not is_already_allocated:
+            LOGGER.info("NEW GAME SERVER UPDATE!")
+            LOGGER.info(game_server_update)
+            is_already_allocated = True
+            labels: Dict[str, Any] = game_server_update.object_meta.labels
+            annotations: Dict[str, Any] = game_server_update.object_meta.annotations
+            game_id = labels["game-id"]
+            os.environ["worksheet_id"] = labels["worksheet_id"]
+            os.environ["GAME_API_URL"] = annotations["game-api-url"]
+            django_api_url = annotations["game-api-url"]
+            port = 5000
+            run_game(port, game_id, django_api_url)
+
+
+def setup_healthcheck():
+    def empty_response_generator():
+        while True:
+            emp_request = sdk_pb2.Empty()
+            yield emp_request
+
+    agones_stub.Health(empty_response_generator())
+
+
+def send_ready_state():
+    empty_request = sdk_pb2.Empty()
+    agones_stub.Ready(empty_request)
+
+
+async def get_app():
+    app = await future_app
+    LOGGER.info(f"we have an app: {app}")
+    return app
+
+
+async def run_server():
+    port = 5000
+    host = sys.argv[1]
+    LOGGER.info(f"this is the host: {host}")
+    web.run_app(get_app(), port=port)
 
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
-    host = sys.argv[1]
 
-    if os.environ["WORKER"] == "local":
-        port = int(os.environ["EXTERNAL_PORT"])
-    else:
-        port = int(sys.argv[2])
+    LOGGER.info("running")
+    setup_healthcheck()
+    LOGGER.info("setup healthcheck")
+    asyncio.ensure_future(watch_for_updates())
+    LOGGER.info("setup watch handler")
+    send_ready_state()
 
-    asyncio.ensure_future(initialize_game_token(communicator))
-    run_game(port)
-
-    setup_prometheus()
+    # setup_prometheus()
+    LOGGER.info("running web server eventually")
+    asyncio.get_event_loop().run_until_complete(run_server())
 
     logging.getLogger("socketio").setLevel(logging.ERROR)
     logging.getLogger("engineio").setLevel(logging.ERROR)
-    LOGGER.info("starting the server")
-    web.run_app(app, host=host, port=port)
+    logging.getLogger("aiohttp.server").setLevel(logging.DEBUG)
+

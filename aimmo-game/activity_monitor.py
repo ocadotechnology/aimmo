@@ -9,6 +9,7 @@ from enum import Enum
 from requests import codes
 from types import CoroutineType
 from typing import TYPE_CHECKING
+from agones.sdk_pb2_grpc import SDKStub as AgonesSDKStub
 
 if TYPE_CHECKING:
     from simulation.django_communicator import DjangoCommunicator
@@ -33,12 +34,15 @@ class ActivityMonitor:
     of time, the game is marked as stopped and the pods will be shut down shortly after
     """
 
-    def __init__(self, django_communicator: "DjangoCommunicator"):
+    def __init__(
+        self, django_communicator: "DjangoCommunicator", agones_stub: AgonesSDKStub
+    ):
         self.timer = Timer(
             SECONDS_TILL_CONSIDERED_INACTIVE, self.change_status_to_stopped
         )
         self.active_users = 0
         self.django_communicator = django_communicator
+        self.agones_stub = agones_stub
 
     def _start_timer(self):
         if self.timer.cancelled():
@@ -71,7 +75,9 @@ class ActivityMonitor:
         )
 
         if response.status != codes["ok"]:
-            LOGGER.error(f"Game could not be stopped. {response}")
+            LOGGER.error(f"Game status could not be changed: {response}")
+
+        # self.agones_stub.Shutdown()
 
 
 class Timer:

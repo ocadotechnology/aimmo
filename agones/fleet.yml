@@ -1,0 +1,34 @@
+apiVersion: "agones.dev/v1"
+kind: Fleet
+metadata:
+  name: aimmo-game
+spec:
+  replicas: 5
+  strategy:
+    type: Recreate
+  template:
+    spec:
+      ports:
+        - name: default
+          protocol: TCPUDP
+          containerPort: 5000
+      template:
+        spec:
+          serviceAccountName: worker-manager
+          containers:
+            - name: aimmo-game
+              image: ocadotechnology/aimmo-game:test
+              env:
+              - name: GAME_API_URL
+                value: https://localhost:8000/api/
+              - name: GAME_MANAGER
+                value: kubernetes
+              - name: USING_MINIKUBE
+                value: "true"
+              resources:
+                requests:
+                  memory: "64Mi"
+                  cpu: "24m"
+                limits:
+                  memory: "124Mi"
+                  cpu: "95m"

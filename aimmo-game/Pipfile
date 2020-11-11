@@ -4,11 +4,17 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-aimmo-game = {path = ".",editable = true}
+aimmo-game = { path = ".", editable = true }
 docker = "*"
 kubernetes = "*"
 prometheus-client = "*"
 aioresponses = "*"
+grpcio = "*"
+protobuf = "*"
+aiohttp = "*"
+idna-ssl = "*"
+google-api-python-client = "*"
+nest-asyncio = "*"
 
 [dev-packages]
 pytest = "*"

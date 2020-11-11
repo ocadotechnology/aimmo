@@ -5,6 +5,7 @@ import os
 import kubernetes
 import requests
 from requests import codes
+from kubernetes.config import load_incluster_config, load_kube_config
 
 LOGGER = logging.getLogger(__name__)
 
@@ -13,12 +14,11 @@ def _decode_token_from_secret(secret):
     return base64.b64decode(secret.data["token"]).decode()
 
 
-async def initialize_game_token(communicator):
+async def initialize_game_token(communicator, game_id):
     """Get game token and store it somewhere accessible."""
-    if os.environ["WORKER"] == "kubernetes":
-        kubernetes.config.load_incluster_config()
+    if os.environ.get("WORKER") == "kubernetes":
+        load_incluster_config()
         api = kubernetes.client.CoreV1Api()
-        game_id = os.environ.get("GAME_ID")
 
         secret = api.read_namespaced_secret(f"game-{game_id}-token", "default")
         os.environ["TOKEN"] = _decode_token_from_secret(secret)

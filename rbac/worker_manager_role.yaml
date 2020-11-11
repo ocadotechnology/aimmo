@@ -20,6 +20,36 @@ rules:
 
 ---
 
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: worker-manager
+rules:
+- apiGroups: [""] 
+  resources: ["events"]
+  verbs: ["create", "patch"]
+- apiGroups: ["agones.dev"] 
+  resources: ["gameservers"]
+  verbs: ["list", "update", "watch", "patch"]
+
+---
+
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: manage-workers
+subjects:
+- kind: ServiceAccount
+  name: worker-manager # Name is case sensitive
+  namespace: default
+  apiGroup: ""
+roleRef:
+  kind: ClusterRole #this must be Role or ClusterRole
+  name: worker-manager # this must match the name of the Role or ClusterRole you wish to bind to
+  apiGroup: ""
+
+---
+
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:

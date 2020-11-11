@@ -71,7 +71,7 @@ def create_creator_yaml():
         content = yaml.safe_load(
             orig_file.read()
             .replace("latest", "test")
-            .replace("REPLACE_ME", "http://%s:8000/kurono/api/games/" % get_ip())
+            .replace("REPLACE_ME", "http://192.168.99.1:8000/kurono/api/games/")
         )
     return content
 
@@ -96,30 +96,30 @@ def delete_components(api_instance, apps_api_instance, networking_api_instance):
             namespace="default",
             grace_period_seconds=0,
         )
-    for rc in api_instance.list_namespaced_replication_controller("default").items:
-        api_instance.delete_namespaced_replication_controller(
-            body=kubernetes.client.V1DeleteOptions(),
-            name=rc.metadata.name,
-            namespace="default",
-            grace_period_seconds=0,
-        )
-    for pod in api_instance.list_namespaced_pod("default").items:
-        api_instance.delete_namespaced_pod(
-            body=kubernetes.client.V1DeleteOptions(),
-            name=pod.metadata.name,
-            namespace="default",
-            grace_period_seconds=0,
-        )
-    for service in api_instance.list_namespaced_service("default").items:
-        api_instance.delete_namespaced_service(
-            name=service.metadata.name, namespace="default"
-        )
-    for ingress in networking_api_instance.list_namespaced_ingress("default").items:
-        networking_api_instance.delete_namespaced_ingress(
-            name=ingress.metadata.name,
-            namespace="default",
-            body=kubernetes.client.V1DeleteOptions(),
-        )
+    # for rc in api_instance.list_namespaced_replication_controller("default").items:
+    #     api_instance.delete_namespaced_replication_controller(
+    #         body=kubernetes.client.V1DeleteOptions(),
+    #         name=rc.metadata.name,
+    #         namespace="default",
+    #         grace_period_seconds=0,
+    #     )
+    # for pod in api_instance.list_namespaced_pod("default").items:
+    #     api_instance.delete_namespaced_pod(
+    #         body=kubernetes.client.V1DeleteOptions(),
+    #         name=pod.metadata.name,
+    #         namespace="default",
+    #         grace_period_seconds=0,
+    #     )
+    # for service in api_instance.list_namespaced_service("default").items:
+    #     api_instance.delete_namespaced_service(
+    #         name=service.metadata.name, namespace="default"
+    #     )
+    # for ingress in networking_api_instance.list_namespaced_ingress("default").items:
+    #     networking_api_instance.delete_namespaced_ingress(
+    #         name=ingress.metadata.name,
+    #         namespace="default",
+    #         body=kubernetes.client.V1DeleteOptions(),
+    #     )
 
 
 def restart_pods(game_creator_yaml, ingress_yaml):
@@ -130,15 +130,17 @@ def restart_pods(game_creator_yaml, ingress_yaml):
     :param ingress_yaml: Ingress yaml settings file.
     """
     print("Restarting pods")
-    kubernetes.config.load_kube_config(context="minikube")
+    kubernetes.config.load_kube_config(context="agones")
     api_instance = kubernetes.client.CoreV1Api()
     apps_api_instance = kubernetes.client.AppsV1Api()
     networking_api_instance = kubernetes.client.NetworkingV1beta1Api()
 
     delete_components(api_instance, apps_api_instance, networking_api_instance)
+    run_command(["kubectl", "delete", "fleet", "aimmo-game", "--ignore-not-found"])
     time.sleep(TIME_FOR_COMPONENTS_TO_DELETE)
 
-    networking_api_instance.create_namespaced_ingress("default", ingress_yaml)
+    run_command(["kubectl", "create", "-f", "agones/fleet.yml"])
+    # networking_api_instance.create_namespaced_ingress("default", ingress_yaml)
     apps_api_instance.create_namespaced_replica_set(
         body=game_creator_yaml, namespace="default"
     )
@@ -161,8 +163,8 @@ def start(build_target=None):
         raise ValueError("Requires 64-bit")
     create_test_bin()
     os.environ["MINIKUBE_PATH"] = MINIKUBE_EXECUTABLE
-    start_cluster(MINIKUBE_EXECUTABLE)
-    enable_ingress_addon(MINIKUBE_EXECUTABLE)
+    # start_cluster(MINIKUBE_EXECUTABLE)
+    # enable_ingress_addon(MINIKUBE_EXECUTABLE)
     create_roles()
     build_docker_images(MINIKUBE_EXECUTABLE, build_target=build_target)
     ingress = create_ingress_yaml()

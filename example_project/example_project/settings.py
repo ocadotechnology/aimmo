@@ -103,14 +103,14 @@ MIDDLEWARE = [
 
 def get_game_url_base_and_path(game):
     if os.environ.get("AIMMO_MODE", "") == "minikube":
-        return "local.aimmo.codeforlife.education", "/game-%s" % game
+        return "local.aimmo.codeforlife.education", ""
     else:
         return "localhost", ""
 
 
 def get_game_port(game):
     if os.environ.get("AIMMO_MODE", "") == "minikube":
-        return 0
+        return 7347
 
     return 6001 + int(game) * 1000
 

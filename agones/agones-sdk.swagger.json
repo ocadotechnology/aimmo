@@ -1,0 +1,462 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "sdk.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/allocate": {
+      "post": {
+        "summary": "Call to self Allocation the GameServer",
+        "operationId": "Allocate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sdkEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sdkEmpty"
+            }
+          }
+        ],
+        "tags": [
+          "SDK"
+        ]
+      }
+    },
+    "/gameserver": {
+      "get": {
+        "summary": "Retrieve the current GameServer data",
+        "operationId": "GetGameServer",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sdkGameServer"
+            }
+          }
+        },
+        "tags": [
+          "SDK"
+        ]
+      }
+    },
+    "/health": {
+      "post": {
+        "summary": "Send a Empty every d Duration to declare that this GameSever is healthy",
+        "operationId": "Health",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sdkEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " (streaming inputs)",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sdkEmpty"
+            }
+          }
+        ],
+        "tags": [
+          "SDK"
+        ]
+      }
+    },
+    "/metadata/annotation": {
+      "put": {
+        "summary": "Apply a Annotation to the backing GameServer metadata",
+        "operationId": "SetAnnotation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sdkEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sdkKeyValue"
+            }
+          }
+        ],
+        "tags": [
+          "SDK"
+        ]
+      }
+    },
+    "/metadata/label": {
+      "put": {
+        "summary": "Apply a Label to the backing GameServer metadata",
+        "operationId": "SetLabel",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sdkEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sdkKeyValue"
+            }
+          }
+        ],
+        "tags": [
+          "SDK"
+        ]
+      }
+    },
+    "/ready": {
+      "post": {
+        "summary": "Call when the GameServer is ready",
+        "operationId": "Ready",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sdkEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sdkEmpty"
+            }
+          }
+        ],
+        "tags": [
+          "SDK"
+        ]
+      }
+    },
+    "/reserve": {
+      "post": {
+        "summary": "Marks the GameServer as the Reserved state for Duration",
+        "operationId": "Reserve",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sdkEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sdkDuration"
+            }
+          }
+        ],
+        "tags": [
+          "SDK"
+        ]
+      }
+    },
+    "/shutdown": {
+      "post": {
+        "summary": "Call when the GameServer is shutting down",
+        "operationId": "Shutdown",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sdkEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sdkEmpty"
+            }
+          }
+        ],
+        "tags": [
+          "SDK"
+        ]
+      }
+    },
+    "/watch/gameserver": {
+      "get": {
+        "summary": "Send GameServer details whenever the GameServer is updated",
+        "operationId": "WatchGameServer",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "$ref": "#/x-stream-definitions/sdkGameServer"
+            }
+          }
+        },
+        "tags": [
+          "SDK"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "GameServerObjectMeta": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "uid": {
+          "type": "string"
+        },
+        "resource_version": {
+          "type": "string"
+        },
+        "generation": {
+          "type": "string",
+          "format": "int64"
+        },
+        "creation_timestamp": {
+          "type": "string",
+          "format": "int64",
+          "title": "timestamp is in Epoch format, unit: seconds"
+        },
+        "deletion_timestamp": {
+          "type": "string",
+          "format": "int64",
+          "title": "optional deletion timestamp in Epoch format, unit: seconds"
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "representation of the K8s ObjectMeta resource"
+    },
+    "GameServerSpec": {
+      "type": "object",
+      "properties": {
+        "health": {
+          "$ref": "#/definitions/SpecHealth"
+        }
+      }
+    },
+    "GameServerStatus": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StatusPort"
+          }
+        },
+        "players": {
+          "$ref": "#/definitions/StatusPlayerStatus",
+          "title": "[Stage:Alpha]\n[FeatureFlag:PlayerTracking]"
+        }
+      }
+    },
+    "SpecHealth": {
+      "type": "object",
+      "properties": {
+        "disabled": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "period_seconds": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "failure_threshold": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "initial_delay_seconds": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "StatusPlayerStatus": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "string",
+          "format": "int64"
+        },
+        "capacity": {
+          "type": "string",
+          "format": "int64"
+        },
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "[Stage:Alpha]\n[FeatureFlag:PlayerTracking]"
+    },
+    "StatusPort": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "runtimeStreamError": {
+      "type": "object",
+      "properties": {
+        "grpc_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "http_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "http_status": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "sdkDuration": {
+      "type": "object",
+      "properties": {
+        "seconds": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "title": "time duration, in seconds"
+    },
+    "sdkEmpty": {
+      "type": "object",
+      "title": "I am Empty"
+    },
+    "sdkGameServer": {
+      "type": "object",
+      "properties": {
+        "object_meta": {
+          "$ref": "#/definitions/GameServerObjectMeta"
+        },
+        "spec": {
+          "$ref": "#/definitions/GameServerSpec"
+        },
+        "status": {
+          "$ref": "#/definitions/GameServerStatus"
+        }
+      },
+      "description": "A GameServer Custom Resource Definition object\nWe will only export those resources that make the most\nsense. Can always expand to more as needed."
+    },
+    "sdkKeyValue": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "title": "Key, Value entry"
+    }
+  },
+  "x-stream-definitions": {
+    "sdkGameServer": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/sdkGameServer"
+        },
+        "error": {
+          "$ref": "#/definitions/runtimeStreamError"
+        }
+      },
+      "title": "Stream result of sdkGameServer"
+    }
+  }
+}
