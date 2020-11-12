@@ -1,12 +1,4 @@
 import json
-
-import pytest
-from aimmo import app_settings, models
-from aimmo.forms import AddGameForm
-from aimmo.game_creator import create_game
-from aimmo.models import Game, Worksheet
-from aimmo.serializers import GameSerializer
-from aimmo.views import get_avatar_id
 from common.models import Class, Teacher, UserProfile
 from common.tests.utils.classes import create_class_directly
 from common.tests.utils.student import (
@@ -14,9 +6,16 @@ from common.tests.utils.student import (
     create_school_student_directly,
 )
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
+from django.urls import reverse
 from rest_framework import status
+
+from aimmo import app_settings, models
+from aimmo.forms import AddGameForm
+from aimmo.game_creator import create_game
+from aimmo.models import Game, Worksheet
+from aimmo.serializers import GameSerializer
+from aimmo.views import get_avatar_id
 
 app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
     "base %s" % game_id,
