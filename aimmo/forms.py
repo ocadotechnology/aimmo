@@ -35,6 +35,13 @@ class AddGameForm(ModelForm):
             "start_width",
             "status",
         ]
+    
+    def full_clean(self) -> None:
+        super(AddGameForm, self).full_clean()
+        try:
+            self.instance.validate_unique()
+        except ValidationError as e:
+            self._update_errors(e)
 
     def clean(self):
         game_class: Class = self.cleaned_data.get("game_class")
