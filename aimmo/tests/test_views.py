@@ -53,24 +53,28 @@ class TestViews(TestCase):
         teacher.save()
         cls.klass, _, _ = create_class_directly(cls.user.email)
         cls.klass.save()
-        cls.worksheet = Worksheet.objects.create(
+        cls.worksheet: Worksheet = Worksheet.objects.create(
             name="test worksheet", starter_code="test code"
+        )
+        cls.worksheet2: Worksheet = Worksheet.objects.create(
+            name="test worksheet 2", starter_code="test code"
         )
         cls.game = models.Game(
             id=1, name="test", game_class=cls.klass, worksheet=cls.worksheet
         )
         cls.game.save()
 
-        cls.EXPECTED_GAME_DETAIL = {
+        cls.EXPECTED_GAME_DETAIL = lambda worksheet_id: {
             "era": "1",
             "name": "test",
             "status": "r",
             "settings": '{"GENERATOR": "Main", "OBSTACLE_RATIO": 0.1, "PICKUP_SPAWN_CHANCE": 0.1, "SCORE_DESPAWN_CHANCE": 0.05, "START_HEIGHT": 31, "START_WIDTH": 31, "TARGET_NUM_CELLS_PER_AVATAR": 16.0, "TARGET_NUM_PICKUPS_PER_AVATAR": 1.2, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
-            "worksheet_id": str(cls.worksheet.id),
+            "class_id": str(cls.klass.id),
+            "worksheet_id": str(worksheet_id),
         }
         cls.EXPECTED_GAME_LIST = {
-            "1": cls.EXPECTED_GAME_DETAIL,
-            "2": cls.EXPECTED_GAME_DETAIL
+            "1": cls.EXPECTED_GAME_DETAIL(cls.worksheet.id),
+            "2": cls.EXPECTED_GAME_DETAIL(cls.worksheet2.id),
         }
 
     def setUp(self):
@@ -118,7 +122,9 @@ class TestViews(TestCase):
         c = self.login()
         response = c.get(reverse("kurono/code", kwargs={"id": 1}))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.worksheet.starter_code, json.loads(response.content)["code"])
+        self.assertEqual(
+            self.worksheet.starter_code, json.loads(response.content)["code"]
+        )
 
     def test_retrieve_code(self):
         models.Avatar(owner=self.user, code=self.CODE, game=self.game).save()
@@ -435,7 +441,9 @@ class TestViews(TestCase):
         self.game.main_user = self.user
         self.game.save()
 
-        game2 = models.Game(id=2, name="test", worksheet=self.worksheet)
+        game2 = models.Game(
+            id=2, name="test", game_class=self.klass, worksheet=self.worksheet2
+        )
         game2.save()
 
         c = Client()
@@ -457,7 +465,6 @@ class TestViews(TestCase):
             AddGameForm(
                 Class.objects.all(),
                 data={
-                    "name": "new game",
                     "game_class": self.klass.id,
                     "worksheet": worksheet.id,
                 },
