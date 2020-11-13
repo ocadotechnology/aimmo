@@ -21,6 +21,7 @@ jobs:
           pip install --upgrade git+https://github.com/ocadotechnology/codeforlife-portal@django_2_0_test
           pip install --upgrade git+https://github.com/ocadotechnology/rapid-router@django_2_0_test
           pip install --upgrade "git+https://github.com/ocadotechnology/codeforlife-portal@django_2_0_test#egg=cfl-common&subdirectory=cfl_common"
+          pip install django==2.2
           cd game_frontend
           yarn install
       - name: Build project and run server
