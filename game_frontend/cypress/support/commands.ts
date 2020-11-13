@@ -87,7 +87,7 @@ Cypress.Commands.add('visitAGame', () => {
     const games = response.body
     let testGameId
     for (const [gameId, gameData] of Object.entries(games)) {
-      if (gameData['game_class'] == class_id && gameData['worksheet'] == worksheet_id) {
+      if (gameData['class_id'] == class_id && gameData['worksheet_id'] == worksheet_id) {
         testGameId = gameId
         break
       }
