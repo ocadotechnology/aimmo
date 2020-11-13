@@ -70,7 +70,7 @@ class TestViews(TestCase):
         }
         cls.EXPECTED_GAME_LIST = {
             "1": cls.EXPECTED_GAME_DETAIL,
-            "2": cls.EXPECTED_GAME_DETAIL
+            "2": cls.EXPECTED_GAME_DETAIL,
         }
 
     def setUp(self):
@@ -118,7 +118,9 @@ class TestViews(TestCase):
         c = self.login()
         response = c.get(reverse("kurono/code", kwargs={"id": 1}))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.worksheet.starter_code, json.loads(response.content)["code"])
+        self.assertEqual(
+            self.worksheet.starter_code, json.loads(response.content)["code"]
+        )
 
     def test_retrieve_code(self):
         models.Avatar(owner=self.user, code=self.CODE, game=self.game).save()
@@ -457,7 +459,6 @@ class TestViews(TestCase):
             AddGameForm(
                 Class.objects.all(),
                 data={
-                    "name": "new game",
                     "game_class": self.klass.id,
                     "worksheet": worksheet.id,
                 },

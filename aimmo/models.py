@@ -62,7 +62,7 @@ class Game(models.Model):
     PAUSED = "p"
     STATUS_CHOICES = ((RUNNING, "running"), (STOPPED, "stopped"), (PAUSED, "paused"))
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, blank=True, null=True)
     auth_token = models.CharField(max_length=24, blank=True)
     owner = models.ForeignKey(User, blank=True, null=True, related_name="owned_games")
     game_class = models.ForeignKey(

@@ -17,6 +17,7 @@ class AddGameForm(ModelForm):
         model = Game
         exclude = [
             "Main",
+            "name",
             "owner",
             "auth_token",
             "completed",
