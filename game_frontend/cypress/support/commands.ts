@@ -16,6 +16,7 @@ const password = 'Password1'
 const game_name = 'Cypress test game'
 const user_id = 2
 const class_id = 1
+const worksheet_id = 2
 const student_username = 'Leonardo'
 const student_access_code = 'AB123'
 
@@ -74,7 +75,7 @@ Cypress.Commands.add('addTestGame', () => {
       body: {
         name: game_name,
         game_class: class_id,
-        worksheet: 2,
+        worksheet: worksheet_id,
         csrfmiddlewaretoken: csrfToken.value
       }
     })
@@ -85,9 +86,8 @@ Cypress.Commands.add('visitAGame', () => {
   cy.request('/kurono/api/games/').then(response => {
     const games = response.body
     let testGameId
-    for (const [gameId, gameData] of Object.entries(games))
-    {
-      if (gameData['name'] == game_name) {
+    for (const [gameId, gameData] of Object.entries(games)) {
+      if (gameData['game_class'] == class_id && gameData['worksheet'] == worksheet_id) {
         testGameId = gameId
         break
       }
