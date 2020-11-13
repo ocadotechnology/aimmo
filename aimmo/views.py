@@ -113,16 +113,6 @@ def connection_parameters(request, game_id):
         return response
 
 
-@csrf_exempt
-@require_http_methods(["POST"])
-def mark_game_complete(request, id):
-    game = get_object_or_404(Game, id=id)
-    game.completed = True
-    game.static_data = request.body
-    game.save()
-    return HttpResponse("Done!")
-
-
 class GameTokenView(APIView):
     """
     View to Game tokens, used to prove a request comes from a game.
