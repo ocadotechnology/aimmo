@@ -35,7 +35,7 @@ class AddGameForm(ModelForm):
             "start_width",
             "status",
         ]
-    
+
     def full_clean(self) -> None:
         super(AddGameForm, self).full_clean()
         try:

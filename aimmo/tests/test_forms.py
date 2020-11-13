@@ -79,9 +79,11 @@ def test_cannot_create_duplicate_game(class1: Class, worksheet: Worksheet):
         Class.objects.all(),
         data={"name": "test2", "game_class": class1.id, "worksheet": worksheet.id},
     )
-    with pytest.raises(ValidationError) as excinfo:
-        _ = form.save()
-        assert excinfo.value == "Game with this Class and Worksheet already exists."
+
+    assert not form.is_valid()
+    assert "Game with this Class and Worksheet already exists." in form.errors.get(
+        "__all__"
+    )
 
 
 @pytest.mark.django_db
