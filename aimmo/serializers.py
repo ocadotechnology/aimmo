@@ -1,6 +1,8 @@
-from aimmo.models import Game
 import json
+
 from rest_framework import serializers
+
+from aimmo.models import Game
 
 
 class GameSerializer(serializers.Serializer):
