@@ -1,7 +1,8 @@
 #!/bin/sh
+cd "$(dirname "$0")"
 
 # build the wheel
-cd aimmo-game-worker
+cd ../aimmo-game-worker
 python setup.py bdist_wheel
 cd ..
 

@@ -45,7 +45,7 @@ def create_superuser_if_missing(username, password):
 
 
 def build_worker_package():
-    run_command(["./aimmo_runner/build_worker_wheel.sh"], capture_output=True)
+    run_command([os.path.join(ROOT_DIR_LOCATION, "aimmo_runner", "build_worker_wheel.sh")], capture_output=True)
 
 
 def build_frontend(using_cypress, capture_output):
