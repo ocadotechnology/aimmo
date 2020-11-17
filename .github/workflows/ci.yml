@@ -3,8 +3,6 @@ on: push  # TODO: change to PR
 jobs:
   build:
     runs-on: ubuntu-18.04
-    env:
-      NODE_ENV: production
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -28,6 +26,8 @@ jobs:
         yarn test --coverage
     # TODO: codecov
     - name: Bundle Frontend
+      env:
+        NODE_ENV: production
       run: |
         cd game_frontend
         node djangoBundler.js
