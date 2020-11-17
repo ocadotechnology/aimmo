@@ -25,6 +25,10 @@ jobs:
         yarn lint
         yarn test --coverage
     # TODO: codecov
+    - name: Bundle Frontend
+      run: |
+        cd game_frontend
+        node djangoBundler.js
     - name: Run Python tests
       run: python all_tests.py -c --no-docker-container-tests
     # TODO: codecov
