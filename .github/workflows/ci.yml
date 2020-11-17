@@ -3,6 +3,8 @@ on: push  # TODO: change to PR
 jobs:
   build:
     runs-on: ubuntu-18.04
+    env:
+      NODE_ENV: production
     steps:
     - name: Checkout
       uses: actions/checkout@v2
