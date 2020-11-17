@@ -18,8 +18,17 @@ jobs:
         pip install pipenv
         pipenv install --dev --system
         cd game_frontend
-        yarn install
-    - name: Cypress run
+        yarn --frozen-lockfile
+    - name: Run Javascript tests
+      run: |
+        cd game_frontend
+        yarn lint
+        yarn test --coverage
+    # TODO: codecov
+    - name: Run Python tests
+      run: python all_tests.py -c --no-docker-container-tests
+    # TODO: codecov
+    - name: Run Cypress tests
       uses: cypress-io/github-action@v2
       with:
         install: false
