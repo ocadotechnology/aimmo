@@ -1,7 +1,7 @@
 name: CI
 on: push  # TODO: change to PR
 jobs:
-  # build:
+  # test:
   #   runs-on: ubuntu-18.04
   #   steps:
   #   - name: Checkout
@@ -46,7 +46,7 @@ jobs:
   #     env:
   #       CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
   #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  build-aimmo-game:
+  test-aimmo-game:
     runs-on: ubuntu-18.04
     steps:
     - name: Checkout
@@ -57,6 +57,40 @@ jobs:
         docker build -t ocadotechnology/aimmo-game:test --target tester .
     - name: Run tests
       run: docker run -i -p 5000:5000 ocadotechnology/aimmo-game:test /bin/bash -c "coverage run setup.py test && coverage xml"
+    - name: Get the coverage data from the container
+      run: |
+        read CONTAINERID <<< $(docker ps --all -q | head -1)
+        docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
+        docker cp -a $CONTAINERID:coverage.xml $(pwd)/coverage.xml
+      # TODO: codecov
+  test-aimmo-game-creator:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Build docker image
+      run: |
+        cd aimmo-game-creator
+        docker build -t ocadotechnology/aimmo-game-creator:test --target tester .
+    - name: Run tests
+      run: docker run -i -p 5000:5000 ocadotechnology/aimmo-game-creator:test /bin/bash -c "coverage run setup.py test && coverage xml"
+    - name: Get the coverage data from the container
+      run: |
+        read CONTAINERID <<< $(docker ps --all -q | head -1)
+        docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
+        docker cp -a $CONTAINERID:coverage.xml $(pwd)/coverage.xml
+      # TODO: codecov
+  test-aimmo-game-worker:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Build docker image
+      run: |
+        cd aimmo-game-worker
+        docker build -t ocadotechnology/aimmo-game-worker:test --target tester .
+    - name: Run tests
+      run: docker run -i -p 5000:5000 ocadotechnology/aimmo-game-worker:test /bin/bash -c "coverage run setup.py test && coverage xml"
     - name: Get the coverage data from the container
       run: |
         read CONTAINERID <<< $(docker ps --all -q | head -1)
