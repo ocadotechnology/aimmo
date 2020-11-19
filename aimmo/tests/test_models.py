@@ -1,29 +1,57 @@
-from django.apps import apps
-from django.db import models
+import pytest
+from django.contrib.auth.models import User
+from django.db.models.deletion import ProtectedError
 from django.test import TestCase
+
+from aimmo.models import Game, Worksheet
 
 
 class TestModels(TestCase):
-    def test_models_on_delete(self):
-        aimmo_models = apps.get_app_config("aimmo").get_models()
+    def test_game_owner_on_delete(self):
+        """
+        Given a game and a user, where the user is the owner of the game,
+        When the user is deleted,
+        Then the game's owner field is set to null.
+        """
+        user = User.objects.create_user("test", "test@example.com", "password")
+        game = Game(id=1, name="Test Game")
+        game.owner = user
+        game.save()
 
-        for model in aimmo_models:
-            remote_fields = self._get_model_remote_fields(model)
+        user.delete()
+        game = Game.objects.get(id=1)
 
-            for field in remote_fields:
-                if model.__name__ == "Game" and (
-                    field.name == "owner" or field.name == "main_user"
-                ):
-                    assert field.remote_field.on_delete == models.SET_NULL
-                elif model.__name__ == "Game" and field.name == "worksheet":
-                    assert field.remote_field.on_delete == models.PROTECT
-                else:
-                    assert field.remote_field.on_delete == models.CASCADE
+        assert game.owner is None
 
-    def _get_model_remote_fields(self, model):
-        return [
-            field
-            for field in model._meta.get_fields()
-            if isinstance(field, models.ForeignKey)
-            or isinstance(field, models.OneToOneField)
-        ]
+    def test_game_main_user_on_delete(self):
+        """
+        Given a game and a user, where the user is the main user of the game,
+        When the user is deleted,
+        Then the game's main_user field is set to null.
+        """
+        user = User.objects.create_user("test", "test@example.com", "password")
+        game = Game(id=1, name="Test Game")
+        game.main_user = user
+        game.save()
+
+        user.delete()
+        game = Game.objects.get(id=1)
+
+        assert game.main_user is None
+
+    def test_game_worksheet_on_delete(self):
+        """
+        Given a game and its worksheet,
+        When anyone tries to delete the worksheet,
+        Then a ProtectedError is raised and the worksheet isn't deleted.
+        """
+        game = Game(id=1, name="Test Game")
+        worksheet = Worksheet.objects.create(
+            name="test worksheet", starter_code="test code"
+        )
+
+        game.worksheet = worksheet
+        game.save()
+
+        with pytest.raises(ProtectedError):
+            worksheet.delete()
