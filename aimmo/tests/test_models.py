@@ -14,7 +14,10 @@ class TestModels(TestCase):
         Then the game's owner field is set to null.
         """
         user = User.objects.create_user("test", "test@example.com", "password")
-        game = Game(id=1, name="Test Game")
+        worksheet = Worksheet.objects.create(
+            name="test worksheet", starter_code="test code"
+        )
+        game = Game(id=1, name="Test Game", worksheet=worksheet)
         game.owner = user
         game.save()
 
@@ -30,7 +33,10 @@ class TestModels(TestCase):
         Then the game's main_user field is set to null.
         """
         user = User.objects.create_user("test", "test@example.com", "password")
-        game = Game(id=1, name="Test Game")
+        worksheet = Worksheet.objects.create(
+            name="test worksheet", starter_code="test code"
+        )
+        game = Game(id=1, name="Test Game", worksheet=worksheet)
         game.main_user = user
         game.save()
 
