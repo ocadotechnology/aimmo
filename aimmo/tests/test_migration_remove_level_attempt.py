@@ -2,8 +2,8 @@ from .base_test_migration import MigrationTestCase
 
 
 class TestMigrationRemoveLevelAttemptModel(MigrationTestCase):
-    start_migration = "0021_add_pdf_names_to_worksheet"
-    dest_migration = "0022_remove_level_attempt"
+    start_migration = "0022_allow_games_to_have_no_name"
+    dest_migration = "0023_remove_level_attempt"
 
     def test_level_attempt_model_removed(self):
         model_names = [

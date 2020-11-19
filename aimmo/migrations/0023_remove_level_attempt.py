@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('aimmo', '0021_add_pdf_names_to_worksheet'),
+        ('aimmo', '0022_allow_games_to_have_no_name'),
     ]
 
     operations = [
