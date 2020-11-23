@@ -9,13 +9,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('aimmo', '0014_add_worksheet_model'),
+        ("aimmo", "0014_add_worksheet_model"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='game',
-            name='worksheet',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='aimmo.Worksheet'),
+            model_name="game",
+            name="worksheet",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="aimmo.Worksheet",
+            ),
         ),
     ]

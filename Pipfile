@@ -5,9 +5,9 @@ name = "pypi"
 
 [dev-packages]
 pytest = "*"
-pytest-django = ">=3.7.0, <3.8.0"
+pytest-django = "==4.1.0"
 pytest-pythonpath = "*"
-codeforlife-portal = "*"
+#codeforlife-portal = "*"
 pytest-cov = "*"
 
 [packages]

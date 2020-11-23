@@ -9,4 +9,5 @@ class TestMigrationLinkClassToGame(MigrationTestCase):
         Game = self.django_application.get_model(self.app_name, "Game")
 
         self.assertEquals(
-            Game._meta.get_field("game_class").get_internal_type(), "ForeignKey")
+            Game._meta.get_field("game_class").get_internal_type(), "ForeignKey"
+        )

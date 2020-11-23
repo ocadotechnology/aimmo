@@ -8,18 +8,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('aimmo', '0020_add_info_to_worksheet'),
+        ("aimmo", "0020_add_info_to_worksheet"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='worksheet',
-            name='student_pdf_name',
+            model_name="worksheet",
+            name="student_pdf_name",
             field=models.CharField(blank=True, max_length=255),
         ),
         migrations.AddField(
-            model_name='worksheet',
-            name='teacher_pdf_name',
+            model_name="worksheet",
+            name="teacher_pdf_name",
             field=models.CharField(blank=True, max_length=255),
         ),
     ]
