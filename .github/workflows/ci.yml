@@ -2,7 +2,7 @@ name: CI
 on:
   push:
     branches:
-    - master
+    - development
   pull_request:
 jobs:
   test:
@@ -10,7 +10,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
+    - name: Setup Python
+      uses: actions/setup-python@v2
       with:
         python-version: 3.7.x
     - name: Use Node.js
