@@ -23,7 +23,6 @@ setup(
     include_package_data=True,
     install_requires=[
         "django==2.2.17",
-        # "django-autoconfig >= 0.3.6, < 1.0.0",
         "django-js-reverse==0.9.1",
         "djangorestframework==3.12.2",
         "eventlet==0.29.1",
