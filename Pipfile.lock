@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f4ff4104caffe0ae39de3f8d6ceb1af6a12c39511e1c9704562e6f53d760ebc5"
+            "sha256": "68b0e620e9d7e18c7ba098896c9f1b8f23321d582d22a207f924a2362f618588"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -61,7 +61,7 @@
         "django-autoconfig": {
             "editable": true,
             "git": "https://github.com/ocadotechnology/django-autoconfig.git",
-            "ref": "de155953a7ab45e74eb334713a424c14d611fde0"
+            "ref": "f4a6d48b92f1ee9149a56af566b3806e2bd8fec0"
         },
         "django-js-reverse": {
             "hashes": [
