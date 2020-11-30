@@ -18,9 +18,9 @@ jobs:
         run: |
           pip install pipenv
           pipenv install --dev --system
-          pip install -U git+https://github.com/ocadotechnology/rapid-router@django_2_upgrade
-          pip install -U git+https://github.com/ocadotechnology/codeforlife-portal@django_2_upgrade
-          pip install -U "git+https://github.com/ocadotechnology/codeforlife-portal@django_2_upgrade#egg=cfl-common&subdirectory=cfl_common"
+          pip install -U git+https://github.com/ocadotechnology/rapid-router@upgrade_dependencies
+          pip install -U git+https://github.com/ocadotechnology/codeforlife-portal@upgrade_dependencies
+          pip install -U "git+https://github.com/ocadotechnology/codeforlife-portal@upgrade_dependencies#egg=cfl-common&subdirectory=cfl_common"
           cd game_frontend
           yarn --frozen-lockfile
       - name: Build project and run server
