@@ -12,6 +12,7 @@ pytest-cov = "*"
 
 [packages]
 aimmo = {editable = true,path = "."}
+django-autoconfig = { git = 'https://github.com/ocadotechnology/django-autoconfig.git', ref = 'master', editable = true }
 kubernetes = "*"
 eventlet = "*"
 docker = "*"
