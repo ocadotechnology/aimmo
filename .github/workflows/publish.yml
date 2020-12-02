@@ -39,6 +39,10 @@ jobs:
         run: |
           cd game_frontend
           node djangoBundler.js
+      - name: Setup git username
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "action@github.com"
       - name: Semantic Release
         run: |
           pip install git+https://github.com/ocadotechnology/python-semantic-release.git@add_beta_releases
