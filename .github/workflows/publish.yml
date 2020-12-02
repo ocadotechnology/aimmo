@@ -47,6 +47,10 @@ jobs:
         run: |
           pip install git+https://github.com/ocadotechnology/python-semantic-release.git@add_beta_releases
           semantic-release publish --branch=${GITHUB_REF##*/} --build=${{ github.run_number }}
+        env:
+          GH_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+          PYPI_USERNAME: __token__
+          PYPI_PASSWORD: ${{ secrets.PYPI_TOKEN }}
       - name: Notify Semaphore (Staging)
         run: curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}
         env:
