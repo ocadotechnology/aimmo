@@ -9,7 +9,7 @@ on:
 jobs:
   publish:
     name: Publish aimmo PyPi package
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # if: ${{ github.event.workflow_run.conclusion == 'success' }}  # TODO: uncomment after testing
     runs-on: ubuntu-18.04
     env:
       NODE_ENV: production
