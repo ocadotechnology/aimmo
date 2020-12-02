@@ -1,58 +1,49 @@
 name: Publish Python Package
 on:
+  push:
   workflow_run:
-    workflows: ["CI"]
+    workflows: ['CI']
     branches: [master]
     types:
       - completed
 jobs:
   publish:
+    name: Publish aimmo PyPi package
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-18.04
     env:
       NODE_ENV: production
-      DEPLOY_TO_DEV: ${{ secrets.DEPLOY_TO_DEV }}
+      GIT_BRANCH: ${GITHUB_REF##*/}
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.7.x
-    - name: Use Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: 14.x
-    - name: Install frontend dependencies
-      run: |
-        cd game_frontend
-        yarn --frozen-lockfile
-    - name: Build worker wheel
-      run: ./aimmo_runner/build_worker_wheel.sh
-    - name: Bundle Frontend
-      run: |
-        cd game_frontend
-        node djangoBundler.js
-    - name: Setup git username
-      run: |
-        git config --global user.name "semantic-release (via Github Actions)"
-        git config --global user.email "semantic-release@github-actions"
-    - name: Semantic Release
-      run: |
-        pip install git+https://github.com/ocadotechnology/python-semantic-release.git@add_beta_releases
-        semantic-release publish --branch=${{ github.ref }} --build=${{ github.run_number }} --dev=${DEPLOY_TO_DEV}
-    - name: Create Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        # tag_name: ${{ github.ref }}
-        # release_name: ${{ github.ref }}
-        draft: false
-        prerelease: false
-    - name: Notify Semaphore (Staging)
-      env:
-        SEMAPHORE_PROJECT_ID: ${{ secrets.SEMAPHORE_PROJECT_ID }}
-        SEMAPHORE_API_AUTH: ${{ secrets.SEMAPHORE_API_AUTH }}
-      run: curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.x
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: Install frontend dependencies
+        run: |
+          cd game_frontend
+          yarn --frozen-lockfile
+      - name: Build worker wheel
+        run: ./aimmo_runner/build_worker_wheel.sh
+      - name: Bundle Frontend
+        run: |
+          cd game_frontend
+          node djangoBundler.js
+      - name: Semantic Release
+        run: |
+          pip install git+https://github.com/ocadotechnology/python-semantic-release.git@add_beta_releases
+          semantic-release publish --branch=${GIT_BRANCH} --build=${{ github.run_number }}
+      - name: Notify Semaphore (Staging)
+        run: curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}
+        env:
+          SEMAPHORE_PROJECT_ID: ${{ secrets.SEMAPHORE_PROJECT_ID }}
+          SEMAPHORE_API_AUTH: ${{ secrets.SEMAPHORE_API_AUTH }}
