@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-18.04
     env:
       NODE_ENV: production
-      GIT_BRANCH: ${GITHUB_REF##*/}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -43,7 +42,7 @@ jobs:
       - name: Semantic Release
         run: |
           pip install git+https://github.com/ocadotechnology/python-semantic-release.git@add_beta_releases
-          semantic-release publish --branch=${GIT_BRANCH} --build=${{ github.run_number }}
+          semantic-release publish --branch=${GITHUB_REF##*/} --build=${{ github.run_number }}
       - name: Notify Semaphore (Staging)
         run: curl -d POST -v https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}
         env:
