@@ -32,6 +32,8 @@ jobs:
         run: |
           cd game_frontend
           yarn --frozen-lockfile
+      - name: Install wheel
+        run: pip install wheel
       - name: Build worker wheel
         run: ./aimmo_runner/build_worker_wheel.sh
       - name: Bundle Frontend
