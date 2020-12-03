@@ -1,7 +1,7 @@
 name: Agones
 on: [push]
 jobs:
-  cypress-run:
+  build-docker-images:
     runs-on: ubuntu-16.04
     steps:
       - name: Cancel Previous Runs
