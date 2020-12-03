@@ -36,18 +36,20 @@ jobs:
         id: game
         uses: docker/build-push-action@v2
         with:
-          context: aimmo-game
+          file: aimmo-game/Dockerfile
           tags: ocadotechnology/aimmo-game:agones
+          target: runner
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
       - name: Build and push aimmo-game-creator
-        id: aimmo-game-creator
+        id: game_creator
         uses: docker/build-push-action@v2
         with:
-          context: game_creator
+          file: aimmo-game-creator/Dockerfile
           tags: ocadotechnology/aimmo-game-creator:agones
+          target: runner
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
