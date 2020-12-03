@@ -80,5 +80,14 @@ jobs:
           cluster_name: dev-aimmo-agones
           location: europe-west1-c
 
-      - name: Get pods
-        run: kubectl get pods
+      - name: Generate fleet.yml
+        uses: cuchi/jinja2-action@v1.2.0
+        with:
+          template: agones/fleet.yml.j2
+          output_file: agones/fleet.yml
+          strict: true
+          variables: |
+            image_tag=agones-dev-v${{ github.run_number }}
+
+      - name: Deploy new fleet
+        run: kubectl apply -f agones/fleet.yml
