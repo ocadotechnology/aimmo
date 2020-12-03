@@ -74,5 +74,11 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
-      - name: Use gcloud CLI
-        run: gcloud info
+      - name: Connect to GKE cluster
+        uses: google-github-actions/get-gke-credentials@main
+        with:
+          cluster_name: dev-aimmo-agones
+          location: europe-west1-c
+
+      - name: Get pods
+        run: kubectl get pods
