@@ -33,18 +33,26 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push aimmo-game
-        id: aimmo-game
+        id: game
         uses: docker/build-push-action@v2
         with:
           context: aimmo-game
           tags: ocadotechnology/aimmo-game:agones
           push: true
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+
       - name: Build and push aimmo-game-creator
         id: aimmo-game-creator
         uses: docker/build-push-action@v2
         with:
-          context: aimmo-game-creator
+          context: game_creator
           tags: ocadotechnology/aimmo-game-creator:agones
           push: true
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+
       - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+        run: |
+          echo ${{ steps.game.outputs.digest }}
+          echo ${{ steps.game_creator.outputs.digest }}
