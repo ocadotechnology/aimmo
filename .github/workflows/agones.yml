@@ -60,3 +60,19 @@ jobs:
         run: |
           echo ${{ steps.game.outputs.digest }}
           echo ${{ steps.game_creator.outputs.digest }}
+
+  deploy-agones-fleet:
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Use gcloud CLI
+        run: gcloud info
