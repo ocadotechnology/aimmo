@@ -36,6 +36,7 @@ jobs:
         id: game
         uses: docker/build-push-action@v2
         with:
+          context: aimmo-game
           file: aimmo-game/Dockerfile
           tags: ocadotechnology/aimmo-game:agones
           target: runner
@@ -47,6 +48,7 @@ jobs:
         id: game_creator
         uses: docker/build-push-action@v2
         with:
+          context: aimmo-game-creator
           file: aimmo-game-creator/Dockerfile
           tags: ocadotechnology/aimmo-game-creator:agones
           target: runner
