@@ -92,8 +92,8 @@ jobs:
 
       - name: Create new deployment and config
         run: |
-          gcloud game servers deployments create deployment-dev-${{ github.run_number }}
-          gcloud game servers configs create config-dev-${{ github.run_number }} --deployment deployment-dev-${{ github.run_number }} --fleet-configs-file agones/fleet.yml
+          gcloud game servers deployments create deployment-dev-{{ github.run_number }}
+          gcloud game servers configs create config-dev-{{ github.run_number }} --deployment deployment-dev-{{ github.run_number }} --fleet-configs-file agones/fleet.yml
 
       - name: Rollout Deployment
-        run: gcloud game servers deployments update-rollout deployment-dev-${{ github.run_number }} --default-config config-dev-${{ github.run_number }} --no-dry-run
+        run: gcloud game servers deployments update-rollout deployment-dev-{{ github.run_number }} --default-config config-dev-{{ github.run_number }} --no-dry-run
