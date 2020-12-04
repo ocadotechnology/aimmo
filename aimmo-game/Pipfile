@@ -15,6 +15,7 @@ aiohttp = "*"
 idna-ssl = "*"
 google-api-python-client = "*"
 nest-asyncio = "*"
+google-cloud-logging = "*"
 
 [dev-packages]
 pytest = "*"

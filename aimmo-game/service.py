@@ -24,6 +24,8 @@ from agones.sdk_pb2_grpc import SDK as AgonesSDK, SDKStub as AgonesSDKStub, SDKS
 from agones import sdk_pb2
 import grpc
 import nest_asyncio
+import google.cloud.logging
+from google.auth.exceptions import DefaultCredentialsError
 
 nest_asyncio.apply()
 
@@ -243,6 +245,7 @@ def setup_healthcheck():
     def empty_response_generator():
         while True:
             emp_request = sdk_pb2.Empty()
+            LOGGER.debug("sending healthcheck")
             yield emp_request
 
     agones_stub.Health(empty_response_generator())
@@ -265,10 +268,19 @@ async def run_server():
     LOGGER.info(f"this is the host: {host}")
     web.run_app(get_app(), port=port)
 
+def setup_logging():
+    logging.basicConfig(level=logging.DEBUG)
+    try:
+        logging_client = google.cloud.logging.Client()
+        logging_client.get_default_handler()
+        logging_client.setup_logging()
+    except DefaultCredentialsError:
+        logging.info(
+            "No google credentials provided, not connecting google logging client"
+        )
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
-
+    setup_logging()
     LOGGER.info("running")
     setup_healthcheck()
     LOGGER.info("setup healthcheck")
