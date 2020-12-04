@@ -98,7 +98,7 @@ jobs:
           strict: true
           variables: |
             image_tag=agones-dev-v${{ github.run_number }}
-            game_api_url=https://dev-dot-decent-digit-629.appspot.com:8000/kurono/api/games/
+            game_api_url=https://dev-dot-decent-digit-629.appspot.com/kurono/api/games/
 
       - name: Deploy new fleet
         run: kubectl apply -f agones/fleet.yml
