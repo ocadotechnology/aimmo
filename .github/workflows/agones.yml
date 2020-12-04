@@ -91,4 +91,4 @@ jobs:
             image_tag=agones-dev-v${{ github.run_number }}
 
       - name: Deploy new fleet
-        run: kubectl create -f agones/fleet.yml
+        run: kubectl apply -f agones/fleet.yml
