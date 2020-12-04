@@ -90,5 +90,18 @@ jobs:
           variables: |
             image_tag=agones-dev-v${{ github.run_number }}
 
+      - name: Generate game-creator-deployment.yml
+        uses: cuchi/jinja2-action@v1.2.0
+        with:
+          template: agones/game-creator-deployment.yml.j2
+          output_file: agones/game-creator-deployment.yml
+          strict: true
+          variables: |
+            image_tag=agones-dev-v${{ github.run_number }}
+            game_api_url=https://dev-dot-decent-digit-629.appspot.com:8000/kurono/api/games/
+
       - name: Deploy new fleet
         run: kubectl apply -f agones/fleet.yml
+
+      - name: Deploy aimmo-game-creator
+        run: kubectl apply -f game-creator-deployment.yml
