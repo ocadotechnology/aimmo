@@ -104,4 +104,4 @@ jobs:
         run: kubectl apply -f agones/fleet.yml
 
       - name: Deploy aimmo-game-creator
-        run: kubectl apply -f game-creator-deployment.yml
+        run: kubectl apply -f agones/game-creator-deployment.yml

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aimmo-game-creator-deployment
+  labels:
+    app: aimmo-game-creator
+spec:
+  replicas: 1
+  # selector identifies the set of Pods that this
+  # replica set is responsible for managing
+  selector:
+    matchLabels:
+      app: aimmo-game-creator
+  # podTemplate defines the 'cookie cutter' used for creating
+  # new pods when necessary
+  template:
+    metadata:
+      labels:
+        # Important: these labels need to match the selector above
+        # The api server enforces this constraint.
+        app: aimmo-game-creator
+    spec:
+      containers:
+        - name: aimmo-game-creator
+          image: ocadotechnology/aimmo-game-creator:{{ image_tag }}
+          ports:
+            - containerPort: 80
+          env:
+            - name: GAME_API_URL
+              value: {{ game_api_url }}
+            - name: GAME_MANAGER
+              value: kubernetes
