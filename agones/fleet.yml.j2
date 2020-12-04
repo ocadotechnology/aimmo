@@ -12,6 +12,8 @@ spec:
         - name: default
           protocol: TCPUDP
           containerPort: 5000
+      health:
+        initialDelaySeconds: 30
       template:
         spec:
           serviceAccountName: worker-manager
