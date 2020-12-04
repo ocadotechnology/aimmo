@@ -78,8 +78,8 @@ jobs:
       - name: Connect to GKE cluster
         uses: google-github-actions/get-gke-credentials@main
         with:
-          cluster_name: dev-aimmo-agones
-          location: europe-west1-c
+          cluster_name: agones-terraform-dev
+          location: europe-west1-b
 
       - name: Generate fleet.yml
         uses: cuchi/jinja2-action@v1.2.0
@@ -91,4 +91,4 @@ jobs:
             image_tag=agones-dev-v${{ github.run_number }}
 
       - name: Deploy new fleet
-        run: kubectl apply -f agones/fleet.yml
+        run: kubectl create -f agones/fleet.yml
