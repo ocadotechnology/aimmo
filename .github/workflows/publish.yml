@@ -39,18 +39,17 @@ jobs:
         run: |
           cd game_frontend
           node djangoBundler.js
-      - name: Setup git username
+      - name: Set branch
+        id: branch
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "action@github.com"
-      - name: Semantic Release
-        run: |
-          pip install git+https://github.com/ocadotechnology/python-semantic-release.git@add_beta_releases
-          semantic-release publish --branch=${GITHUB_REF##*/} --build=${{ github.run_number }}
-        env:
-          GH_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
-          PYPI_USERNAME: __token__
-          PYPI_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+          echo "::set-output name=branch::${GITHUB_REF##*/}"  # get the substring from GITHUB_REF after the last '/'
+      - name: Release rapid-router
+        uses: ocadotechnology/python-semantic-release@updated-beta-releases
+        with:
+          github_token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+          pypi_token: ${{ secrets.PYPI_TOKEN }}
+          branch: ${{ steps.branch.outputs.branch }}
+          build: ${{ github.run_number }}
 
   publish-docker-images:
     name: Publish aimmo Docker images
@@ -85,7 +84,7 @@ jobs:
         with:
           context: aimmo-game
           file: aimmo-game/Dockerfile
-          tags: ocadotechnology/aimmo-game:${{ steps.docker_tag.outputs.tag }}  
+          tags: ocadotechnology/aimmo-game:${{ steps.docker_tag.outputs.tag }}
           target: runner
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -96,7 +95,7 @@ jobs:
         with:
           context: aimmo-game-creator
           file: aimmo-game-creator/Dockerfile
-          tags: ocadotechnology/aimmo-game-creator:${{ steps.docker_tag.outputs.tag }}  
+          tags: ocadotechnology/aimmo-game-creator:${{ steps.docker_tag.outputs.tag }}
           target: runner
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -105,7 +104,7 @@ jobs:
         run: |
           echo ${{ steps.game.outputs.digest }}
           echo ${{ steps.game_creator.outputs.digest }}
-  
+
   notify-semaphore:
     name: Publish aimmo PyPi package
     needs: [publish, publish-docker-images]
