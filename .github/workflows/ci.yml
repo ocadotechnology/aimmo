@@ -12,10 +12,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.7.x
+          architecture: x64
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
@@ -60,6 +63,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Build docker image
         run: |
           cd aimmo-game
@@ -80,6 +85,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Build docker image
         run: |
           cd aimmo-game-creator
@@ -100,6 +107,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Build docker image
         run: |
           cd aimmo-game-worker
