@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.61.5b22 (2020-12-08)
+### Fix
+* Try to publish docker on push tags v* (#1430) ([`f6bebfe`](https://github.com/ocadotechnology/aimmo/commit/f6bebfedfdbfc7d4996586445ed4ed9cb4e1e68d))
+
 ## v0.61.4b17 (2020-12-08)
 ### Fix
 * Attempt github.event.head_commit.author.email (#1429) ([`cda3e5a`](https://github.com/ocadotechnology/aimmo/commit/cda3e5aa61fb69a578ff465d08ab0fda46cd4a10))
