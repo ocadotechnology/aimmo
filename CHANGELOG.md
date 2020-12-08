@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.61.3b12 (2020-12-08)
+### Fix
+* Run publish docker only on tags and debug... (#1428) ([`caa2355`](https://github.com/ocadotechnology/aimmo/commit/caa2355166dcf769af74682ba65a6a6afcbf1991))
+
 ## v0.61.2b4 (2020-12-08)
 
 
