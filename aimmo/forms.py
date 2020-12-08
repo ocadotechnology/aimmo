@@ -1,9 +1,9 @@
+from common.models import Class
 from django.core.exceptions import ValidationError
 from django.db.models.query import QuerySet
 from django.forms import ModelChoiceField, ModelForm, Select
 
 from aimmo.models import Game
-from common.models import Class
 
 
 class AddGameForm(ModelForm):
@@ -11,7 +11,9 @@ class AddGameForm(ModelForm):
         super(AddGameForm, self).__init__(*args, **kwargs)
         self.fields["game_class"].queryset = classes
 
-    game_class = ModelChoiceField(queryset=None, widget=Select, required=True)
+    game_class = ModelChoiceField(
+        queryset=None, widget=Select, label="Class", required=True
+    )
 
     class Meta:
         model = Game
@@ -36,9 +38,7 @@ class AddGameForm(ModelForm):
             "start_width",
             "status",
         ]
-        labels = {
-            "worksheet": "Challenge"
-        }
+        labels = {"worksheet": "Challenge"}
 
     def full_clean(self) -> None:
         super(AddGameForm, self).full_clean()
