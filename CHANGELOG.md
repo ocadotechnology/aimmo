@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.61.6b27 (2020-12-08)
+### Fix
+* Cleanup github actions (#1431) ([`66f2801`](https://github.com/ocadotechnology/aimmo/commit/66f2801c1f1b1e5842c1e13658230c3c61f7a983))
+
 ## v0.61.5b22 (2020-12-08)
 ### Fix
 * Try to publish docker on push tags v* (#1430) ([`f6bebfe`](https://github.com/ocadotechnology/aimmo/commit/f6bebfedfdbfc7d4996586445ed4ed9cb4e1e68d))
