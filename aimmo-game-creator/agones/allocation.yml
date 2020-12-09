@@ -1,4 +1,4 @@
-apiVersion: "allocation.agones.dev/v1"
+apiVersion: 'allocation.agones.dev/v1'
 kind: GameServerAllocation
 metadata:
   generateName: game-allocation-
@@ -34,6 +34,7 @@ spec:
   # You can use this to tell the server necessary session data
   metadata:
     labels:
-      mode: class
-    # annotations:
-      # map: garden22
+      'game-id': '101'
+      'worksheet-id': '1'
+    annotations:
+      'game-api-url': 'https://dev-dot-decent-digit-629.appspot.com:8000/kurono/api/games/101/'
