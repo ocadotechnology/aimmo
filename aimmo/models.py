@@ -157,11 +157,11 @@ class Avatar(models.Model):
     class Meta:
         unique_together = ("owner", "game")
 
+# Removed in Django 2 upgrade
+# class LevelAttempt(models.Model):
+#     level_number = models.IntegerField()
+#     user = models.ForeignKey(User)
+#     game = models.OneToOneField(Game)
 
-class LevelAttempt(models.Model):
-    level_number = models.IntegerField()
-    user = models.ForeignKey(User)
-    game = models.OneToOneField(Game)
-
-    class Meta:
-        unique_together = ("level_number", "user")
+#     class Meta:
+#         unique_together = ("level_number", "user")
