@@ -41,7 +41,7 @@ def get_environment_connection_settings(game_id):
     :return: A dict object with all relevant settings.
     """
 
-    kubernetes.config.load_kube_config(context="agones")
+    # kubernetes.config.load_kube_config(context="agones")
 
     api_client = ApiClient()
     api_instance = CustomObjectsApi(api_client)
@@ -58,6 +58,7 @@ def get_games_url_base(api_instance: CustomObjectsApi, game_id: int) -> str:
     try:
         game_server_status = result["items"][0]["status"]
         return f"http://{game_server_status['address']}:{game_server_status['ports'][0]['port']}"
+        # return 404 if not found 
     except (KeyError, IndexError):
         time.sleep(0.2)
         return get_games_url_base(api_instance, game_id)
