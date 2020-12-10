@@ -57,7 +57,7 @@ class AddGameForm(ModelForm):
         if game_class and not Class.objects.filter(pk=game_class.id).exists():
             raise ValidationError("Sorry, an invalid class was entered")
 
-        if worksheet and not Worksheet.objects.fitler(pk=worksheet.id).exists():
+        if worksheet and not Worksheet.objects.filter(pk=worksheet.id).exists():
             raise ValidationError("Sorry, an invalid challenge was entered")
 
         return self.cleaned_data
