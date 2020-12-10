@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.61.7b38 (2020-12-10)
+### Fix
+* Rename worksheet label to Challenge (#1427) ([`9529bf0`](https://github.com/ocadotechnology/aimmo/commit/9529bf08064b014f93c983965444195f94c18af6))
+
 ## v0.61.6b32 (2020-12-10)
 
 
