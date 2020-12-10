@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v0.61.6b32 (2020-12-10)
+
+
 ## v0.61.6b27 (2020-12-08)
 ### Fix
 * Cleanup github actions (#1431) ([`66f2801`](https://github.com/ocadotechnology/aimmo/commit/66f2801c1f1b1e5842c1e13658230c3c61f7a983))
