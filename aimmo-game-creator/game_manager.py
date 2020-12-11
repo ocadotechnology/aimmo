@@ -10,7 +10,7 @@ from base64 import b64encode
 from concurrent import futures
 from concurrent.futures import ALL_COMPLETED
 from enum import Enum
-
+from kubernetes.client.api.custom_objects_api import CustomObjectsApi
 import docker
 import kubernetes
 from kubernetes.client import CoreV1Api
@@ -408,6 +408,10 @@ class KubernetesGameManager(GameManager):
         LOGGER.info("Game started - {}".format(game_id))
 
     def delete_game(self, game_id):
+        api_instance = CustomObjectsApi(self.api_client)
+        result = api_instance.list_namespaced_custom_object(group="agones.dev", version="v1", namespace="default", plural="gameservers", label_selector = f"game-id={game_id}")
+        name = result["items"][0]["metadata"]["name"]
+        api_instance.delete_namespaced_custom_object(group="agones.dev", version="v1", namespace="default", plural="gameservers", name=name)
         # self._remove_path_from_ingress(game_id)
         # self._remove_resources(game_id, "ReplicationController")
         # self._remove_resources(game_id, "Pod")

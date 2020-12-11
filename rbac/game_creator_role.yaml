@@ -4,35 +4,35 @@ metadata:
   name: game-creator
 
 ---
-
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: game-creator
 rules:
-- apiGroups: [""] # "" indicates the core API group
-  resources: ["replicationcontrollers", "pods", "services", "secrets"]
-  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-- apiGroups: ["networking.k8s.io"]
-  resources: ["ingresses"]
-  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-- apiGroups: ["allocation.agones.dev"]
-  resources: ["gameserverallocations"]
-  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: [''] # "" indicates the core API group
+    resources: ['replicationcontrollers', 'pods', 'services', 'secrets']
+    verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete']
+  - apiGroups: ['networking.k8s.io']
+    resources: ['ingresses']
+    verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete']
+  - apiGroups: ['allocation.agones.dev']
+    resources: ['gameserverallocations']
+    verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete']
+  - apiGroups: ['agones.dev']
+    resources: ['gameservers']
+    verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete']
 
 ---
-
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: create-games
 subjects:
-- kind: ServiceAccount
-  name: game-creator # Name is case sensitive
-  namespace: default
-  apiGroup: ""
+  - kind: ServiceAccount
+    name: game-creator # Name is case sensitive
+    namespace: default
+    apiGroup: ''
 roleRef:
   kind: ClusterRole #this must be Role or ClusterRole
   name: game-creator # this must match the name of the Role or ClusterRole you wish to bind to
-  apiGroup: ""
-  
+  apiGroup: ''

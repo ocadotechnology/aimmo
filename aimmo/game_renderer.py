@@ -10,7 +10,6 @@ from .models import Game
 from django.http import Http404
 from kubernetes.client.api.custom_objects_api import CustomObjectsApi
 from kubernetes.client.api_client import ApiClient
-import time
 
 
 def render_game(request, game):
@@ -40,7 +39,6 @@ def get_environment_connection_settings(game_id):
     api_client = ApiClient()
     api_instance = CustomObjectsApi(api_client)
     return {
-        # "game_url_base": _add_game_port_to_game_base(game_id),
         "game_url_base": get_games_url_base(api_instance, game_id),
         "game_url_path": app_settings.GAME_SERVER_URL_FUNCTION(game_id)[1],
         "game_ssl_flag": app_settings.GAME_SERVER_SSL_FLAG,

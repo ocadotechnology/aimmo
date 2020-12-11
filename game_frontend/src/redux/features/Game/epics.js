@@ -11,7 +11,8 @@ import {
   first,
   mapTo,
   timeInterval,
-  retry
+  retry,
+  tap
 } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 import { actions as analyticActions } from 'redux/features/Analytics'
@@ -23,10 +24,10 @@ const getConnectionParametersEpic = (action$, state$, { api: { get } }) =>
     ofType(types.SOCKET_CONNECT_TO_GAME_REQUEST),
     mergeMap(action =>
       get(`games/${state$.value.game.connectionParameters.game_id}/connection_parameters/`).pipe(
-        map(response => actions.connectionParametersReceived(response))
+        map(response => actions.connectionParametersReceived(response)),
+        retry(5)
       )
-    ),
-    retry(5)
+    )
   )
 
 const gameLoadedEpic = action$ =>
