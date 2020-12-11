@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404
 
 from aimmo import app_settings, exceptions
 from .models import Game
-import kubernetes
+from django.http import Http404
 from kubernetes.client.api.custom_objects_api import CustomObjectsApi
 from kubernetes.client.api_client import ApiClient
 import time
@@ -25,10 +25,6 @@ def render_game(request, game):
         "static_data": game.static_data or "{}",
     }
 
-    connection_settings = get_environment_connection_settings(game.id)
-
-    context.update(connection_settings)
-
     return render(request, "players/game_ide.html", context)
 
 
@@ -40,8 +36,6 @@ def get_environment_connection_settings(game_id):
     :param game_id: Integer with the ID of the game.
     :return: A dict object with all relevant settings.
     """
-
-    # kubernetes.config.load_kube_config(context="agones")
 
     api_client = ApiClient()
     api_instance = CustomObjectsApi(api_client)
@@ -60,8 +54,9 @@ def get_games_url_base(api_instance: CustomObjectsApi, game_id: int) -> str:
         return f"http://{game_server_status['address']}:{game_server_status['ports'][0]['port']}"
         # return 404 if not found 
     except (KeyError, IndexError):
-        time.sleep(0.2)
-        return get_games_url_base(api_instance, game_id)
+        raise Http404
+        # time.sleep(0.2)
+        # return get_games_url_base(api_instance, game_id)
 
 
 

@@ -3,7 +3,16 @@ import types from './types'
 import { avatarWorkerTypes } from 'features/AvatarWorker'
 import { editorTypes } from 'features/Editor'
 import { Scheduler, of } from 'rxjs'
-import { map, mergeMap, catchError, switchMap, first, mapTo, timeInterval } from 'rxjs/operators'
+import {
+  map,
+  mergeMap,
+  catchError,
+  switchMap,
+  first,
+  mapTo,
+  timeInterval,
+  retry
+} from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 import { actions as analyticActions } from 'redux/features/Analytics'
 
@@ -16,7 +25,8 @@ const getConnectionParametersEpic = (action$, state$, { api: { get } }) =>
       get(`games/${state$.value.game.connectionParameters.game_id}/connection_parameters/`).pipe(
         map(response => actions.connectionParametersReceived(response))
       )
-    )
+    ),
+    retry(5)
   )
 
 const gameLoadedEpic = action$ =>
