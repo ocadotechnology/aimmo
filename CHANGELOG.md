@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.61.8b52 (2020-12-15)
+### Fix
+* Remove github action check on tests (#1436) ([`28de816`](https://github.com/ocadotechnology/aimmo/commit/28de816723ee79e245d5183afcff2edb5211e89a))
+
 ## v0.61.7b46 (2020-12-14)
 
 
