@@ -28,7 +28,7 @@ setup(
         "eventlet==0.29.1",
         "requests==2.25.0",
         "hypothesis==5.41.3",
-        # "cfl-common",
+        "cfl-common @ git+https://github.com/ocadotechnology/codeforlife_portal@django_2_upgrade#egg=cfl-common&subdirectory=cfl_common",
     ],
     tests_require=["docker >= 3.5, < 3.6", "kubernetes == 5.0.0", "PyYAML == 4.2b1"],
     version=version,
