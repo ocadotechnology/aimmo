@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.61.9b59 (2020-12-16)
+### Fix
+* Don't fix cfl-common version ([`f4231a8`](https://github.com/ocadotechnology/aimmo/commit/f4231a89220b355af98bdd7de39d4ac17786179c))
+
 ## v0.61.8b55 (2020-12-16)
 ### Feature
 * Upgrade to Django 2.2 (#1416) ([`2489966`](https://github.com/ocadotechnology/aimmo/commit/24899663c60e914c17eb06197967adb437b5c0e1))
