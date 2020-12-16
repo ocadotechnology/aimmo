@@ -2,6 +2,15 @@
 
 <!--next-version-placeholder-->
 
+## v0.61.8b55 (2020-12-16)
+### Feature
+* Upgrade to Django 2.2 (#1416) ([`2489966`](https://github.com/ocadotechnology/aimmo/commit/24899663c60e914c17eb06197967adb437b5c0e1))
+
+### Fix
+* Fix branch names ([`d9379b9`](https://github.com/ocadotechnology/aimmo/commit/d9379b9d8ee0fbef3966db1b6e8e993af06a61a1))
+* Merge in development ([`f06d6f2`](https://github.com/ocadotechnology/aimmo/commit/f06d6f2575fe19e509cd436a59028685dbec73b8))
+* Upgrade dependencies (#1420) ([`e62d6c8`](https://github.com/ocadotechnology/aimmo/commit/e62d6c8602e26f923f23ab3e5452c82b7493d695))
+
 ## v0.61.8b52 (2020-12-15)
 ### Fix
 * Remove github action check on tests (#1436) ([`28de816`](https://github.com/ocadotechnology/aimmo/commit/28de816723ee79e245d5183afcff2edb5211e89a))
