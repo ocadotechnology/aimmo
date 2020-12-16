@@ -64,7 +64,13 @@ class Game(models.Model):
 
     name = models.CharField(max_length=100, blank=True, null=True)
     auth_token = models.CharField(max_length=24, blank=True)
-    owner = models.ForeignKey(User, blank=True, null=True, related_name="owned_games")
+    owner = models.ForeignKey(
+        User,
+        blank=True,
+        null=True,
+        related_name="owned_games",
+        on_delete=models.SET_NULL,
+    )
     game_class = models.ForeignKey(
         Class,
         verbose_name="Class",
@@ -81,7 +87,11 @@ class Game(models.Model):
     )
     completed = models.BooleanField(default=False)
     main_user = models.ForeignKey(
-        User, blank=True, null=True, related_name="games_for_user"
+        User,
+        blank=True,
+        null=True,
+        related_name="games_for_user",
+        on_delete=models.SET_NULL,
     )
     static_data = models.TextField(blank=True, null=True)
 
@@ -98,7 +108,7 @@ class Game(models.Model):
     start_height = models.IntegerField(default=31)
     start_width = models.IntegerField(default=31)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=RUNNING)
-    worksheet = models.ForeignKey(Worksheet)
+    worksheet = models.ForeignKey(Worksheet, on_delete=models.PROTECT)
 
     class Meta:
         unique_together = ("game_class", "worksheet")
@@ -149,19 +159,10 @@ class Game(models.Model):
 
 
 class Avatar(models.Model):
-    owner = models.ForeignKey(User)
-    game = models.ForeignKey(Game)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
     code = models.TextField()
     auth_token = models.CharField(max_length=24, default=generate_auth_token)
 
     class Meta:
         unique_together = ("owner", "game")
-
-
-class LevelAttempt(models.Model):
-    level_number = models.IntegerField()
-    user = models.ForeignKey(User)
-    game = models.OneToOneField(Game)
-
-    class Meta:
-        unique_together = ("level_number", "user")

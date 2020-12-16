@@ -26,9 +26,6 @@ class MockCommunicator(object):
     async def get_game_metadata(self):
         return self.data
 
-    def mark_game_complete(self):
-        return {}
-
     def patch_game(self, data):
         return data
 
