@@ -11,8 +11,7 @@ import {
   first,
   mapTo,
   timeInterval,
-  retry,
-  tap
+  retry
 } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 import { actions as analyticActions } from 'redux/features/Analytics'
