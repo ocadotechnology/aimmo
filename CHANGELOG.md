@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v0.61.9 (2020-12-16)
+
+
 ## v0.61.9b59 (2020-12-16)
 ### Fix
 * Don't fix cfl-common version ([`f4231a8`](https://github.com/ocadotechnology/aimmo/commit/f4231a89220b355af98bdd7de39d4ac17786179c))
