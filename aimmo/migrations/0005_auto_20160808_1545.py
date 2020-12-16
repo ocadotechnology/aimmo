@@ -50,6 +50,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 to=settings.AUTH_USER_MODEL,
                 null=True,
+                on_delete=models.SET_NULL,
             ),
         ),
         migrations.AlterField(
@@ -60,17 +61,20 @@ class Migration(migrations.Migration):
                 blank=True,
                 to=settings.AUTH_USER_MODEL,
                 null=True,
+                on_delete=models.SET_NULL,
             ),
         ),
         migrations.AddField(
             model_name="levelattempt",
             name="game",
-            field=models.OneToOneField(to="aimmo.Game"),
+            field=models.OneToOneField(to="aimmo.Game", on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name="levelattempt",
             name="user",
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+            ),
         ),
         migrations.AlterUniqueTogether(
             name="levelattempt", unique_together=set([("level_number", "user")])

@@ -18,4 +18,3 @@ class TestMigrationLinkWorksheetWithGame(MigrationTestCase):
         test_game.save()
 
         self.assertEqual(test_game.worksheet.id, test_worksheet.id)
-
