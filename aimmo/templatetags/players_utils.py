@@ -23,5 +23,5 @@ def get_user_playable_games(context, base_url):
         playable_games = Game.objects.none()
     return {
         "base_url": base_url,
-        "open_play_games": playable_games if user.is_authenticated() else None,
+        "open_play_games": playable_games if user.is_authenticated else None,
     }

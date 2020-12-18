@@ -38,11 +38,6 @@ urlpatterns = [
         views.connection_parameters,
         name="kurono/connection_parameters",
     ),
-    url(
-        r"^api/games/(?P<id>[0-9]+)/complete/$",
-        views.mark_game_complete,
-        name="kurono/complete_game",
-    ),
     url(r"^api/", include(router.urls)),
     url(
         r"^jsreverse/$", urls_js, name="kurono/js_reverse"

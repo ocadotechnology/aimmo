@@ -7,22 +7,26 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('aimmo', '0011_reset_game_tokens'),
+        ("aimmo", "0011_reset_game_tokens"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='game',
-            name='generator',
+            model_name="game",
+            name="generator",
             field=models.CharField(
-                choices=[('Main', 'Open World'), ('Level1', 'Level 1')], default='Main',
-                max_length=20),
+                choices=[("Main", "Open World"), ("Level1", "Level 1")],
+                default="Main",
+                max_length=20,
+            ),
         ),
         migrations.AlterField(
-            model_name='game',
-            name='status',
+            model_name="game",
+            name="status",
             field=models.CharField(
-                choices=[('r', 'running'), ('s', 'stopped'), ('p', 'paused')],
-                default='r', max_length=1),
+                choices=[("r", "running"), ("s", "stopped"), ("p", "paused")],
+                default="r",
+                max_length=1,
+            ),
         ),
     ]

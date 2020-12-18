@@ -1,12 +1,4 @@
 import json
-
-import pytest
-from aimmo import app_settings, models
-from aimmo.forms import AddGameForm
-from aimmo.game_creator import create_game
-from aimmo.models import Game, Worksheet
-from aimmo.serializers import GameSerializer
-from aimmo.views import get_avatar_id
 from common.models import Class, Teacher, UserProfile
 from common.tests.utils.classes import create_class_directly
 from common.tests.utils.student import (
@@ -14,9 +6,16 @@ from common.tests.utils.student import (
     create_school_student_directly,
 )
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
+from django.urls import reverse
 from rest_framework import status
+
+from aimmo import app_settings, models
+from aimmo.forms import AddGameForm
+from aimmo.game_creator import create_game
+from aimmo.models import Game, Worksheet
+from aimmo.serializers import GameSerializer
+from aimmo.views import get_avatar_id
 
 app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
     "base %s" % game_id,
@@ -187,39 +186,6 @@ class TestViews(TestCase):
     def test_games_api_for_non_existent_game(self):
         response = self._go_to_page("kurono/game_user_details", "id", 5)
         self.assertEqual(response.status_code, 404)
-
-    def _run_mark_complete_test(self, request_method, game_id, success_expected):
-        c = Client()
-        if request_method == "POST":
-            response = c.post(reverse("kurono/complete_game", kwargs={"id": game_id}))
-        else:
-            response = c.get(reverse("kurono/complete_game", kwargs={"id": game_id}))
-        self.assertEqual(response.status_code == 200, success_expected)
-        self.assertEqual(models.Game.objects.get(id=1).completed, success_expected)
-
-    def test_mark_complete(self):
-        self._run_mark_complete_test("POST", 1, True)
-
-    def test_mark_complete_for_non_existent_game(self):
-        self._run_mark_complete_test("POST", 3, False)
-
-    def test_mark_complete_requires_POST(self):
-        self._run_mark_complete_test("GET", 1, False)
-
-    def test_mark_complete_has_no_csrf_check(self):
-        c = Client(enforce_csrf_checks=True)
-        response = c.post(reverse("kurono/complete_game", kwargs={"id": 1}))
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(models.Game.objects.get(id=1).completed)
-
-    def test_mark_complete_with_data(self):
-        c = Client()
-        c.post(
-            reverse("kurono/complete_game", kwargs={"id": 1}),
-            "static",
-            content_type="application/json",
-        )
-        self.assertEqual(models.Game.objects.get(id=1).static_data, "static")
 
     def test_stop_game(self):
         game = models.Game.objects.get(id=1)

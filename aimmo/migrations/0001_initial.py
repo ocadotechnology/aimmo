@@ -22,7 +22,12 @@ class Migration(migrations.Migration):
                         primary_key=True,
                     ),
                 ),
-                ("player", models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                (
+                    "player",
+                    models.ForeignKey(
+                        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
@@ -38,7 +43,12 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("code", models.TextField()),
-                ("user", models.OneToOneField(to=settings.AUTH_USER_MODEL)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+                    ),
+                ),
             ],
         ),
     ]
