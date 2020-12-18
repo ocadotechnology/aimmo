@@ -43,14 +43,6 @@ def run_command_async(args, capture_output=False):
     return p
 
 
-def create_test_bin():
-    try:
-        os.makedirs(TEST_BIN)
-    except OSError as err:
-        if err.errno != errno.EEXIST:
-            raise
-
-
 def binary_exists(filename):
     # Check if binary is callable on our path
     try:

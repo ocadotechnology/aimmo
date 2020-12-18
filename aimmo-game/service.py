@@ -9,23 +9,25 @@ from typing import Any, Dict
 from urllib.parse import parse_qs
 
 import aiohttp_cors
+import google.cloud.logging
+import grpc
+import nest_asyncio
 import socketio
-from activity_monitor import ActivityMonitor
 from aiohttp import web
 from aiohttp_wsgi import WSGIHandler
-from authentication import initialize_game_token
+from google.auth.exceptions import DefaultCredentialsError
+from kubernetes.config import load_incluster_config
 from prometheus_client import make_wsgi_app
+
+from activity_monitor import ActivityMonitor
+from agones import sdk_pb2
+from agones.sdk_pb2_grpc import SDKStub as AgonesSDKStub
+from authentication import initialize_game_token
 from simulation import map_generator
 from simulation.django_communicator import DjangoCommunicator
 from simulation.game_runner import GameRunner
 from simulation.log_collector import LogCollector
 from turn_collector import TurnCollector
-from agones.sdk_pb2_grpc import SDK as AgonesSDK, SDKStub as AgonesSDKStub, SDKServicer
-from agones import sdk_pb2
-import grpc
-import nest_asyncio
-import google.cloud.logging
-from google.auth.exceptions import DefaultCredentialsError
 
 nest_asyncio.apply()
 
@@ -118,7 +120,6 @@ class GameAPI(object):
         @self.socketio_server.on("connect")
         async def world_update_on_connect(sid, environ):
             LOGGER.info(f"Socket connected for session id: {sid}")
-            # LOGGER.info(environ)
             query = environ["QUERY_STRING"]
             avatar_id = self._find_avatar_id_from_query(sid, query)
             await self.socketio_server.save_session(sid, {"id": avatar_id})
@@ -268,6 +269,7 @@ async def run_server():
     LOGGER.info(f"this is the host: {host}")
     web.run_app(get_app(), port=port)
 
+
 def setup_logging():
     logging.basicConfig(level=logging.DEBUG)
     try:
@@ -279,7 +281,9 @@ def setup_logging():
             "No google credentials provided, not connecting google logging client"
         )
 
+
 if __name__ == "__main__":
+    load_incluster_config()
     setup_logging()
     LOGGER.info("running")
     setup_healthcheck()

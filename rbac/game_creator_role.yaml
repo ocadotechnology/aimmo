@@ -10,17 +10,14 @@ metadata:
   name: game-creator
 rules:
   - apiGroups: [''] # "" indicates the core API group
-    resources: ['replicationcontrollers', 'pods', 'services', 'secrets']
-    verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete']
-  - apiGroups: ['networking.k8s.io']
-    resources: ['ingresses']
-    verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete']
+    resources: ['secrets']
+    verbs: ['get', 'list', 'create', 'update', 'patch', 'delete']
   - apiGroups: ['allocation.agones.dev']
     resources: ['gameserverallocations']
-    verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete']
+    verbs: ['create']
   - apiGroups: ['agones.dev']
     resources: ['gameservers']
-    verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete']
+    verbs: ['get', 'list', 'delete']
 
 ---
 kind: ClusterRoleBinding

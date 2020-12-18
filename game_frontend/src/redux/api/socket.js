@@ -8,13 +8,8 @@ var socketIO
 
 const connectToGame = () =>
   map(action => {
-    const {
-      game_url_base: gameUrlBase,
-      game_url_path: gameUrlPath,
-      avatar_id: avatarId
-    } = action.payload.parameters
+    const { game_url_base: gameUrlBase, avatar_id: avatarId } = action.payload.parameters
     socketIO = io(gameUrlBase, {
-      path: gameUrlPath,
       query: {
         avatar_id: avatarId
       }

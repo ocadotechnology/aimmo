@@ -4,63 +4,55 @@ metadata:
   name: worker-manager
 
 ---
-
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   namespace: default
   name: worker-manager
 rules:
-- apiGroups: [""] # "" indicates the core API group
-  resources: ["pods"]
-  verbs: ["create", "delete", "get", "list"]
-- apiGroups: [""] 
-  resources: ["secrets"]
-  verbs: ["get", "list", "watch"]
+  - apiGroups: [''] # "" indicates the core API group
+    resources: ['pods']
+    verbs: ['create', 'delete', 'get', 'list']
+  - apiGroups: ['']
+    resources: ['secrets']
+    verbs: ['get', 'list', 'watch']
 
 ---
-
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: worker-manager
 rules:
-- apiGroups: [""] 
-  resources: ["events"]
-  verbs: ["create", "patch"]
-- apiGroups: ["agones.dev"] 
-  resources: ["gameservers"]
-  verbs: ["list", "update", "watch", "patch"]
+  - apiGroups: ['agones.dev']
+    resources: ['gameservers']
+    verbs: ['list', 'update', 'watch', 'patch', 'delete']
 
 ---
-
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: manage-workers
 subjects:
-- kind: ServiceAccount
-  name: worker-manager # Name is case sensitive
-  namespace: default
-  apiGroup: ""
+  - kind: ServiceAccount
+    name: worker-manager # Name is case sensitive
+    namespace: default
+    apiGroup: ''
 roleRef:
   kind: ClusterRole #this must be Role or ClusterRole
   name: worker-manager # this must match the name of the Role or ClusterRole you wish to bind to
-  apiGroup: ""
+  apiGroup: ''
 
 ---
-
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: manage-workers
   namespace: default
 subjects:
-- kind: ServiceAccount
-  name: worker-manager # Name is case sensitive
-  apiGroup: ""
+  - kind: ServiceAccount
+    name: worker-manager # Name is case sensitive
+    apiGroup: ''
 roleRef:
   kind: Role #this must be Role or ClusterRole
   name: worker-manager # this must match the name of the Role or ClusterRole you wish to bind to
-  apiGroup: ""
-  
+  apiGroup: ''

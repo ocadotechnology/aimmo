@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: worker
-
-# By default service accounts start with no rights, 
-# So we do not need to Rolebind anything here.

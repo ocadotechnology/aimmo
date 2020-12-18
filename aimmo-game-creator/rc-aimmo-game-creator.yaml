@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: ReplicaSet
+kind: Deployment
 metadata:
   name: aimmo-game-creator
 spec:
@@ -20,21 +20,21 @@ spec:
     spec:
       serviceAccountName: game-creator
       containers:
-      - name: aimmo-game-creator
-        image: ocadotechnology/aimmo-game-creator:latest
-        imagePullPolicy: Never
-        ports:
-        - containerPort: 80
-        env:
-        - name: IMAGE_SUFFIX
-          value: latest
-        - name: GAME_API_URL
-          value: REPLACE_ME
-        - name: GAME_MANAGER
-          value: kubernetes
-        - name: USING_MINIKUBE
-          value: "true"
-        securityContext:
-          capabilities:
-            drop:
-              - all
+        - name: aimmo-game-creator
+          image: ocadotechnology/aimmo-game-creator:test
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: IMAGE_SUFFIX
+              value: test
+            - name: GAME_API_URL
+              value: REPLACE_ME
+            - name: GAME_MANAGER
+              value: kubernetes
+            - name: USING_MINIKUBE
+              value: 'true'
+          securityContext:
+            capabilities:
+              drop:
+                - all
