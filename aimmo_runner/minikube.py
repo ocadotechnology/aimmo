@@ -4,6 +4,8 @@ import platform
 import time
 
 import kubernetes
+from kubernetes.client import AppsV1Api
+from kubernetes.config import load_kube_config
 import yaml
 
 from .docker_scripts import build_docker_images
@@ -23,15 +25,15 @@ def create_creator_yaml():
     with open(orig_path) as orig_file:
         content = yaml.safe_load(
             orig_file.read().replace(
-                "REPLACE_ME", "http://host.minikube.internal:8000/kurono/api/games/"
+                "REPLACE_ME", "http://192.168.99.1:8000/kurono/api/games/"
             )
         )
     return content
 
 
-def delete_components(apps_api_instance):
-    for rs in apps_api_instance.list_namespaced_replica_set("default").items:
-        apps_api_instance.delete_namespaced_replica_set(
+def delete_components(apps_api_instance: AppsV1Api):
+    for rs in apps_api_instance.list_namespaced_deployment("default").items:
+        apps_api_instance.delete_namespaced_deployment(
             body=kubernetes.client.V1DeleteOptions(),
             name=rs.metadata.name,
             namespace="default",
@@ -51,13 +53,13 @@ def restart_pods(game_creator_yaml):
     """
     print("Restarting pods")
     # We assume the minikube was started with a profile called "agones"
-    kubernetes.config.load_kube_config(context="agones")
-    apps_api_instance = kubernetes.client.AppsV1Api()
+    load_kube_config(context="agones")
+    apps_api_instance = AppsV1Api()
 
     delete_components(apps_api_instance)
 
     run_command(["kubectl", "create", "-f", "agones/fleet.yml"])
-    apps_api_instance.create_namespaced_replica_set(
+    apps_api_instance.create_namespaced_deployment(
         body=game_creator_yaml, namespace="default"
     )
 

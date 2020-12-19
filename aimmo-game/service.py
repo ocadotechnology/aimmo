@@ -146,7 +146,7 @@ class GameAPI(object):
             socket_ids = self.socketio_server.manager.get_participants("/", None)
             await self.async_map(self.send_updates, socket_ids)
         except KeyError as e:
-            LOGGER.error("No open socket connections")
+            LOGGER.warning("No open socket connections")
         self.update_active_users()
 
     def _find_avatar_id_from_query(self, session_id, query_string):
@@ -299,4 +299,3 @@ if __name__ == "__main__":
     logging.getLogger("socketio").setLevel(logging.ERROR)
     logging.getLogger("engineio").setLevel(logging.ERROR)
     logging.getLogger("aiohttp.server").setLevel(logging.DEBUG)
-

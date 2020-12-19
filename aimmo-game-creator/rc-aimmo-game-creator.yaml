@@ -22,7 +22,7 @@ spec:
       containers:
         - name: aimmo-game-creator
           image: ocadotechnology/aimmo-game-creator:test
-          imagePullPolicy: Always
+          imagePullPolicy: Never
           ports:
             - containerPort: 80
           env:

@@ -66,6 +66,11 @@ def start_game_servers(build_target, server_args):
     sys.path.append(os.path.join(parent_dir, "aimmo_runner"))
     os.chdir(ROOT_DIR_LOCATION)
 
+    # Import minikube here, so we can install the dependencies first
+    from aimmo_runner import minikube
+
+    minikube.start(build_target=build_target)
+
     server_args.append("0.0.0.0:8000")
     os.environ["AIMMO_MODE"] = "minikube"
 

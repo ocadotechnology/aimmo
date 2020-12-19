@@ -204,7 +204,7 @@ class KubernetesGameManager(GameManager):
             LOGGER.info("Removing: {}".format(resource.metadata.name))
             self.api.delete_namespaced_secret(resource.metadata.name, K8S_NAMESPACE)
 
-    def _create_game_server_allocation(self, game_id: int):
+    def _create_game_server_allocation(self, game_id: int, worksheet_id: int):
         self.custom_objects_api.create_namespaced_custom_object(
             group="allocation.agones.dev",
             version="v1",
@@ -220,7 +220,7 @@ class KubernetesGameManager(GameManager):
                     "metadata": {
                         "labels": {
                             "game-id": game_id,
-                            "worksheet_id": "1",
+                            "worksheet_id": worksheet_id,
                         },
                         "annotations": {
                             "game-api-url": f"{self.games_url}{game_id}/",
@@ -256,7 +256,7 @@ class KubernetesGameManager(GameManager):
 
     def delete_game(self, game_id):
         self._delete_game_server(game_id)
-        self._remove_game_secret(game_id)
+        self._delete_game_secret(game_id)
 
 
 GAME_MANAGERS = {"kubernetes": KubernetesGameManager}
