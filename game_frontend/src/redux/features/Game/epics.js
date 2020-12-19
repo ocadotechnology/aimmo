@@ -2,7 +2,7 @@ import actions from './actions'
 import types from './types'
 import { avatarWorkerTypes } from 'features/AvatarWorker'
 import { editorTypes } from 'features/Editor'
-import { of } from 'rxjs'
+import { Scheduler, of } from 'rxjs'
 import {
   map,
   mergeMap,

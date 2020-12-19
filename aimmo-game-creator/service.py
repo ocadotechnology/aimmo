@@ -9,7 +9,7 @@ from game_manager import GAME_MANAGERS
 
 
 def main():
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     try:
         logging_client = google.cloud.logging.Client()
         logging_client.get_default_handler()

@@ -204,8 +204,10 @@ class KubernetesGameManager(GameManager):
             LOGGER.info("Removing: {}".format(resource.metadata.name))
             self.api.delete_namespaced_secret(resource.metadata.name, K8S_NAMESPACE)
 
-    def _create_game_server_allocation(self, game_id: int, worksheet_id: int):
-        self.custom_objects_api.create_namespaced_custom_object(
+    def _create_game_server_allocation(
+        self, game_id: int, worksheet_id: int, retry_count: int = 0
+    ):
+        result = self.custom_objects_api.create_namespaced_custom_object(
             group="allocation.agones.dev",
             version="v1",
             namespace="default",
@@ -229,6 +231,12 @@ class KubernetesGameManager(GameManager):
                 },
             },
         )
+        LOGGER.info(result)
+        if result["status"]["state"] == "UnAllocated" and retry_count < 5:
+            time.sleep(5)
+            self._create_game_server_allocation(
+                game_id, worksheet_id, retry_count=retry_count + 1
+            )
 
     def _delete_game_server(self, game_id):
         result = self.custom_objects_api.list_namespaced_custom_object(
