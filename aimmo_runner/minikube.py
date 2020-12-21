@@ -1,7 +1,7 @@
 #!/user/bin/env python
 import os
 import platform
-import time
+import atexit
 
 import kubernetes
 from kubernetes.client import AppsV1Api
@@ -12,7 +12,17 @@ from .docker_scripts import build_docker_images
 from .shell_api import BASE_DIR, run_command
 
 MINIKUBE_EXECUTABLE = "minikube"
-TIME_FOR_COMPONENTS_TO_DELETE = 5
+
+
+def get_ip():
+    internal_ip = str(
+        run_command(
+            "minikube -p agones ssh grep host.minikube.internal /etc/hosts".split(),
+            capture_output=True,
+        ).split()[0],
+        "utf-8",
+    )
+    return internal_ip
 
 
 def create_creator_yaml():
@@ -25,13 +35,14 @@ def create_creator_yaml():
     with open(orig_path) as orig_file:
         content = yaml.safe_load(
             orig_file.read().replace(
-                "REPLACE_ME", "http://192.168.99.1:8000/kurono/api/games/"
+                "REPLACE_ME", f"http://{get_ip()}:8000/kurono/api/games/"
             )
         )
     return content
 
 
-def delete_components(apps_api_instance: AppsV1Api):
+def delete_components():
+    apps_api_instance = AppsV1Api()
     for rs in apps_api_instance.list_namespaced_deployment("default").items:
         apps_api_instance.delete_namespaced_deployment(
             body=kubernetes.client.V1DeleteOptions(),
@@ -39,10 +50,7 @@ def delete_components(apps_api_instance: AppsV1Api):
             namespace="default",
             grace_period_seconds=0,
         )
-
-    # For development purposes, we want to recreate all gameservers in the fleet, whether they are allocated or not
-    run_command(["kubectl", "delete", "fleet", "aimmo-game", "--ignore-not-found"])
-    time.sleep(TIME_FOR_COMPONENTS_TO_DELETE)
+    delete_fleet_on_exit()
 
 
 def restart_pods(game_creator_yaml):
@@ -52,13 +60,10 @@ def restart_pods(game_creator_yaml):
     :param game_creator_yaml: Replication controller yaml settings file.
     """
     print("Restarting pods")
-    # We assume the minikube was started with a profile called "agones"
-    load_kube_config(context="agones")
-    apps_api_instance = AppsV1Api()
-
-    delete_components(apps_api_instance)
 
     run_command(["kubectl", "create", "-f", "agones/fleet.yml"])
+
+    apps_api_instance = AppsV1Api()
     apps_api_instance.create_namespaced_deployment(
         body=game_creator_yaml, namespace="default"
     )
@@ -72,6 +77,18 @@ def create_roles():
     run_command(["kubectl", "apply", "-Rf", "rbac"])
 
 
+def delete_fleet_on_exit():
+    run_command(
+        [
+            "kubectl",
+            "delete",
+            "fleet",
+            "aimmo-game",
+            "--ignore-not-found",
+        ]
+    )
+
+
 def start(build_target=None):
     """
     The entry point to the minikube class. Sends calls appropriately to set
@@ -80,8 +97,13 @@ def start(build_target=None):
     if platform.machine().lower() not in ("amd64", "x86_64"):
         raise ValueError("Requires 64-bit")
     os.environ["MINIKUBE_PATH"] = MINIKUBE_EXECUTABLE
+
+    # We assume the minikube was started with a profile called "agones"
+    load_kube_config(context="agones")
+
     create_roles()
     build_docker_images(MINIKUBE_EXECUTABLE, build_target=build_target)
     game_creator = create_creator_yaml()
     restart_pods(game_creator)
+    atexit.register(delete_components)
     print("Cluster ready")
