@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 
 import asyncio
-import json
 import logging
 import os
-import sys
 from typing import Any, Dict
 from urllib.parse import parse_qs
 
@@ -14,10 +12,8 @@ import grpc
 import nest_asyncio
 import socketio
 from aiohttp import web
-from aiohttp_wsgi import WSGIHandler
 from google.auth.exceptions import DefaultCredentialsError
 from kubernetes.config import load_incluster_config
-from prometheus_client import make_wsgi_app
 
 from activity_monitor import ActivityMonitor
 from agones import sdk_pb2
@@ -52,11 +48,6 @@ def setup_application(communicator: DjangoCommunicator, should_clean_token=True)
     application.on_shutdown.append(communicator.close_session)
 
     return application
-
-
-# def setup_prometheus():
-#     wsgi_handler = WSGIHandler(make_wsgi_app())
-#     app.add_routes([web.get("/{path_info:metrics}", wsgi_handler)])
 
 
 def setup_socketIO_server(application, async_handlers=True):
@@ -195,7 +186,6 @@ def run_game(port, game_id, django_api_url):
     global cors
     global communicator
 
-    LOGGER.info("got to run game")
     communicator = DjangoCommunicator(django_api_url=django_api_url)
     activity_monitor = ActivityMonitor(communicator, agones_stub)
 
@@ -215,22 +205,17 @@ def run_game(port, game_id, django_api_url):
     game_runner.set_end_turn_callback(game_api.send_updates_to_all)
 
     asyncio.ensure_future(game_runner.run())
-    # run_server(app)
-    LOGGER.info("setting the future app")
-    # try:
     future_app.set_result(app)
-    # except asyncio.base_futures.InvalidStateError:
-    #     pass
 
 
 async def watch_for_updates():
     is_already_allocated = False
-    LOGGER.info("starting to watch for updates")
+    LOGGER.info("starting to watch for game server updates")
     empty_request = sdk_pb2.Empty()
     async for game_server_update in agones_stub.WatchGameServer(empty_request):
         if game_server_update.status.state == "Allocated" and not is_already_allocated:
-            LOGGER.info("NEW GAME SERVER UPDATE!")
-            LOGGER.info(game_server_update)
+            LOGGER.info(f"Game server allocated")
+            LOGGER.debug(game_server_update)
             is_already_allocated = True
             labels: Dict[str, Any] = game_server_update.object_meta.labels
             annotations: Dict[str, Any] = game_server_update.object_meta.annotations
@@ -246,32 +231,35 @@ def setup_healthcheck():
     def empty_response_generator():
         while True:
             emp_request = sdk_pb2.Empty()
-            LOGGER.debug("sending healthcheck")
             yield emp_request
 
+    LOGGER.debug("Setting up healthcheck")
     agones_stub.Health(empty_response_generator())
 
 
 def send_ready_state():
     empty_request = sdk_pb2.Empty()
     agones_stub.Ready(empty_request)
+    LOGGER.info("Game server ready for allocation")
 
 
 async def get_app():
     app = await future_app
-    LOGGER.info(f"we have an app: {app}")
     return app
 
 
 async def run_server():
     port = 5000
-    host = sys.argv[1]
-    LOGGER.info(f"this is the host: {host}")
     web.run_app(get_app(), port=port)
 
 
 def setup_logging():
     logging.basicConfig(level=logging.DEBUG)
+
+    logging.getLogger("socketio").setLevel(logging.ERROR)
+    logging.getLogger("engineio").setLevel(logging.ERROR)
+    logging.getLogger("aiohttp.server").setLevel(logging.INFO)
+
     try:
         logging_client = google.cloud.logging.Client()
         logging_client.get_default_handler()
@@ -285,17 +273,8 @@ def setup_logging():
 if __name__ == "__main__":
     load_incluster_config()
     setup_logging()
-    LOGGER.info("running")
     setup_healthcheck()
-    LOGGER.info("setup healthcheck")
     asyncio.ensure_future(watch_for_updates())
-    LOGGER.info("setup watch handler")
     send_ready_state()
 
-    # setup_prometheus()
-    LOGGER.info("running web server eventually")
     asyncio.get_event_loop().run_until_complete(run_server())
-
-    logging.getLogger("socketio").setLevel(logging.ERROR)
-    logging.getLogger("engineio").setLevel(logging.ERROR)
-    logging.getLogger("aiohttp.server").setLevel(logging.DEBUG)

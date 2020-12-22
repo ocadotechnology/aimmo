@@ -8,7 +8,6 @@ import time
 import django
 from django.conf import settings
 
-from . import docker_scripts
 from .shell_api import log, run_command, run_command_async
 
 sys.path.append("/home/travis/build/ocadotechnology/aimmo")
@@ -24,7 +23,6 @@ except KeyError:
     ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
 
 _MANAGE_PY = os.path.join(ROOT_DIR_LOCATION, "example_project", "manage.py")
-_SERVICE_PY = os.path.join(ROOT_DIR_LOCATION, "aimmo-game-creator", "service.py")
 _FRONTEND_BUNDLER_JS = os.path.join(
     ROOT_DIR_LOCATION, "game_frontend", "djangoBundler.js"
 )

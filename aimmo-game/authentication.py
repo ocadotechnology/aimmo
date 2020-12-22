@@ -13,11 +13,10 @@ def _decode_token_from_secret(secret):
 
 async def initialize_game_token(communicator, game_id):
     """Get game token and store it somewhere accessible."""
-    if os.environ.get("WORKER") == "kubernetes":
-        api = CoreV1Api()
-        secret = api.read_namespaced_secret(f"game-{game_id}-token", "default")
-        os.environ["TOKEN"] = _decode_token_from_secret(secret)
-        LOGGER.info("Token set!")
+    api = CoreV1Api()
+    secret = api.read_namespaced_secret(f"game-{game_id}-token", "default")
+    os.environ["TOKEN"] = _decode_token_from_secret(secret)
+    LOGGER.info("Token set!")
 
     response = await communicator.patch_token({"token": os.environ["TOKEN"]})
     if response.status != 200:
