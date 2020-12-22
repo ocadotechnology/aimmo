@@ -7,12 +7,12 @@ name = "pypi"
 pytest = "*"
 pytest-django = "==4.1.0"
 pytest-pythonpath = "*"
-#codeforlife-portal = "*"
+codeforlife-portal = "*"
 pytest-cov = "*"
 
 [packages]
 aimmo = {editable = true,path = "."}
-django-autoconfig = { git = 'https://github.com/ocadotechnology/django-autoconfig.git', ref = 'master', editable = true }
+django-autoconfig = { git = 'https://github.com/ocadotechnology/django-autoconfig.git', ref = 'master' }
 kubernetes = "*"
 eventlet = "*"
 docker = "*"
