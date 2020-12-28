@@ -54,10 +54,13 @@ def run_tests(compute_coverage, use_docker=True):
     for app in APPS:
         print("Testing {}".format(app))
         dir = os.path.join(BASE_DIR, app)
+        env = {"RUNNING_TESTS": True}
         if compute_coverage and app != "":
-            result = subprocess.call(["pytest", "--cov=.", "--cov-report=xml", app])
+            result = subprocess.call(
+                ["pytest", "--cov=.", "--cov-report=xml", app], env=env
+            )
         else:
-            result = subprocess.call(["pytest", app])
+            result = subprocess.call(["pytest", app], env=env)
         if result != 0:
             print("Tests failed: {}".format(result))
             failed_apps.append(app)

@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
     logging.basicConfig()
 
-    if not os.environ.get("USING_CYPRESS", False):
+    if not os.environ.get("RUNNING_TESTS", False):
         load_kube_config(context="agones")
 
     execute_from_command_line(sys.argv)

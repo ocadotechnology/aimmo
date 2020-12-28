@@ -120,7 +120,7 @@ def run(
     if not using_cypress:
         start_game_servers(build_target, server_args)
     else:
-        env_prefixes = ["$USING_CYPRESS"]
+        env_prefixes = ["$RUNNING_TESTS"]
 
     os.environ["SERVER_ENV"] = "local"
     server = run_command_async(

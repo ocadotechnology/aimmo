@@ -80,21 +80,21 @@ def install_docker(operatingSystem):
         raise Exception
 
 
-def install_virtualbox(operatingSystem):
-    """
-    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is available)
+# def install_virtualbox(operatingSystem):
+#     """
+#     :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is available)
 
-    OS dependant, so it must be passed to this function in order to run correctly.
-    """
-    print("Installing Virtualbox...")
-    if operatingSystem == OStypes["mac"]:
-        _cmd("brew cask install virtualbox")
-    elif operatingSystem == OStypes["linux"]:
-        _cmd("sudo apt-get install virtualbox")
-    elif operatingSystem == OStypes["windows"]:
-        pass
-    else:
-        raise Exception
+#     OS dependant, so it must be passed to this function in order to run correctly.
+#     """
+#     print("Installing Virtualbox...")
+#     if operatingSystem == OStypes["mac"]:
+#         _cmd("brew cask install virtualbox")
+#     elif operatingSystem == OStypes["linux"]:
+#         _cmd("sudo apt-get install virtualbox")
+#     elif operatingSystem == OStypes["windows"]:
+#         pass
+#     else:
+#         raise Exception
 
 
 def install_minikube(operatingSystem):
@@ -258,31 +258,8 @@ def mac_setup(hostOS):
         install_pipenv(hostOS)
         run_pipenv_install()
         install_docker(hostOS)
-        install_virtualbox(hostOS)
         install_minikube(hostOS)
         install_kurbernetes(hostOS)
-
-        print(
-            "---------------------------------------------------------------------------------------------------"
-        )
-        print(
-            "| You now need to get the unity package from the aimmo-unity repo, place its contents            |"
-        )
-        print(
-            "| in aimmo/aimmo/static/unity.  (folder may not exist yet)                                        |"
-        )
-        print(
-            "| You may also need to open docker, just to finalise the install.                                 |"
-        )
-        print(
-            "---------------------------------------------------------------------------------------------------"
-        )
-        print(
-            "| Everything should now be ready for you to use Kurono! :D                                        |"
-        )
-        print(
-            "---------------------------------------------------------------------------------------------------"
-        )
 
     except CalledProcessError as e:
         print("A command has return an exit code != 0, so something has gone wrong.")
@@ -319,25 +296,6 @@ def linux_setup(hostOS):
         install_kurbernetes(hostOS)
         install_docker(hostOS)
         add_aimmo_to_hosts_file()
-
-        print(
-            "---------------------------------------------------------------------------------------------------"
-        )
-        print(
-            "| You now need to get the unity package from the aimmo-unity repo, place its contents            |"
-        )
-        print(
-            "| in aimmo/aimmo/static/unity  (folder may not exist yet)                                         |"
-        )
-        print(
-            "---------------------------------------------------------------------------------------------------"
-        )
-        print(
-            "| Everything should now be ready for you to use Kurono! :D                                        |"
-        )
-        print(
-            "---------------------------------------------------------------------------------------------------"
-        )
 
     except CalledProcessError as e:
         print("Command returned an exit code != 0, so something has gone wrong.")
