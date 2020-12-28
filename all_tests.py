@@ -36,9 +36,8 @@ def main():
 
 
 def _run_migrations():
-    env = {"RUNNING_TESTS": True}
     runner.run_command(
-        ["python", "example_project/manage.py", "makemigrations"], env=env
+        ["$RUNNING_TESTS", "python", "example_project/manage.py", "makemigrations"]
     )
 
 
