@@ -36,7 +36,10 @@ def main():
 
 
 def _run_migrations():
-    runner.run_command(["python", "example_project/manage.py", "makemigrations"])
+    env = {"RUNNING_TESTS": True}
+    runner.run_command(
+        ["python", "example_project/manage.py", "makemigrations"], env=env
+    )
 
 
 def run_tests(compute_coverage, use_docker=True):
