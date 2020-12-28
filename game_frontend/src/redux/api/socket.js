@@ -1,4 +1,4 @@
-import io from 'socket.io-client'
+import { io } from 'socket.io-client'
 import { actions as gameActions } from '../features/Game'
 import { actions as consoleLogActions } from '../features/ConsoleLog'
 import { map, mergeMap } from 'rxjs/operators'

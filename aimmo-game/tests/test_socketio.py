@@ -5,11 +5,14 @@ import string
 import mock
 import pytest
 import socketio
+from socketio.asyncio_server import AsyncServer
 
 TIME_TO_PROCESS_SOME_EVENT_LOOP = 0.1
 
 
-async def test_send_updates_for_one_user(game_api, client, socketio_server, loop):
+async def test_send_updates_for_one_user(
+    game_api, client, socketio_server: AsyncServer, loop
+):
     socketio_client = socketio.AsyncClient(reconnection=False)
     mock_listener = mock.MagicMock()
 
@@ -21,13 +24,15 @@ async def test_send_updates_for_one_user(game_api, client, socketio_server, loop
     avatar.logs = ["Avatar log"]
 
     await socketio_client.connect(
-        f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
+        f"http://{client.server.host}:{client.server.port}?avatar_id=1",
     )
+    await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
 
     await game_api.send_updates_to_all()
 
     await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
     await socketio_client.disconnect()
+    await socketio_client.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
 
     expected_game_state = game_api.game_state.serialize()
     expected_game_state["playerLog"] = "Avatar log"
@@ -35,14 +40,14 @@ async def test_send_updates_for_one_user(game_api, client, socketio_server, loop
 
 
 async def test_remove_session_id_on_disconnect(game_api, client, socketio_server, loop):
+    socketio_server.eio.start_service_task = False
     socketio_client = socketio.AsyncClient(reconnection=False)
 
     game_api.game_state.avatar_manager.add_avatar(1)
 
     await socketio_client.connect(
-        f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
+        f"http://{client.server.host}:{client.server.port}?avatar_id=1"
     )
-
     await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
 
     assert len(socketio_server.eio.sockets) == 1

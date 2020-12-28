@@ -3,17 +3,19 @@
 import asyncio
 import logging
 import os
-from typing import Any, Dict
+from asyncio.events import AbstractEventLoop
+from dataclasses import dataclass
+from typing import Any, Awaitable, Dict
 from urllib.parse import parse_qs
 
 import aiohttp_cors
 import google.cloud.logging
 import grpc
-import nest_asyncio
 import socketio
 from aiohttp import web
 from google.auth.exceptions import DefaultCredentialsError
 from kubernetes.config import load_incluster_config
+from socketio.asyncio_server import AsyncServer
 
 from activity_monitor import ActivityMonitor
 from agones import sdk_pb2
@@ -25,14 +27,8 @@ from simulation.game_runner import GameRunner
 from simulation.log_collector import LogCollector
 from turn_collector import TurnCollector
 
-nest_asyncio.apply()
-
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
-
-
-channel = grpc.aio.insecure_channel(f"localhost:{os.environ['AGONES_SDK_GRPC_PORT']}")
-agones_stub = AgonesSDKStub(channel)
 
 
 def setup_application(communicator: DjangoCommunicator, should_clean_token=True):
@@ -51,7 +47,7 @@ def setup_application(communicator: DjangoCommunicator, should_clean_token=True)
 
 
 def setup_socketIO_server(application, async_handlers=True):
-    socket_server = socketio.AsyncServer(
+    socket_server = AsyncServer(
         async_mode="aiohttp",
         client_manager=socketio.AsyncManager(),
         async_handlers=async_handlers,
@@ -71,12 +67,19 @@ def setup_socketIO_server(application, async_handlers=True):
 
 
 class GameAPI(object):
-    def __init__(self, game_state, application, socketio_server):
+    def __init__(
+        self,
+        game_state,
+        application,
+        socketio_server: AsyncServer,
+        activity_monitor: ActivityMonitor,
+    ):
         self.app = application
         self.socketio_server = socketio_server
         self.register_endpoints()
         self.game_state = game_state
         self.log_collector = LogCollector(game_state.avatar_manager)
+        self.activity_monitor = activity_monitor
 
     async def async_map(self, func, iterable_args):
         futures = [func(arg) for arg in iterable_args]
@@ -98,7 +101,7 @@ class GameAPI(object):
             return 0
 
     def update_active_users(self):
-        activity_monitor.active_users = self.open_connections_number()
+        self.activity_monitor.active_users = self.open_connections_number()
 
     def register_healthcheck(self):
         @self.routes.get("/game-{game_id}")
@@ -110,10 +113,10 @@ class GameAPI(object):
     def register_world_update_on_connect(self):
         @self.socketio_server.on("connect")
         async def world_update_on_connect(sid, environ):
-            LOGGER.info(f"Socket connected for session id: {sid}")
             query = environ["QUERY_STRING"]
             avatar_id = self._find_avatar_id_from_query(sid, query)
             await self.socketio_server.save_session(sid, {"id": avatar_id})
+            LOGGER.info(f"Socket connected for session id: {sid}")
 
         return world_update_on_connect
 
@@ -126,18 +129,24 @@ class GameAPI(object):
 
     async def send_updates(self, sid):
         try:
+            LOGGER.info(f"sending updates to {sid}")
             await self._send_game_state(sid)
-        except KeyError:
-            LOGGER.error(
-                f"Failed to send updates. No worker for player in session {sid}"
-            )
+        except KeyError as e:
+            LOGGER.error(f"Failed to send updates: {e}")
 
     async def send_updates_to_all(self):
         try:
-            socket_ids = self.socketio_server.manager.get_participants("/", None)
+            LOGGER.info("sending updates to all")
+            LOGGER.info(f"rooms: {self.socketio_server.manager.rooms}")
+            socket_ids = [
+                sid
+                for (sid, _) in self.socketio_server.manager.get_participants("/", None)
+            ]
+            LOGGER.info(f"socket_ids: f{socket_ids}")
             await self.async_map(self.send_updates, socket_ids)
         except KeyError as e:
             LOGGER.warning("No open socket connections")
+            LOGGER.error(e)
         self.update_active_users()
 
     def _find_avatar_id_from_query(self, session_id, query_string):
@@ -158,7 +167,9 @@ class GameAPI(object):
             LOGGER.error(f"query_string: {query_string}")
 
     async def _send_game_state(self, sid):
+        LOGGER.info(f"sending updates for {sid}")
         session_data = await self.socketio_server.get_session(sid)
+        LOGGER.info(f"session data for {sid}: {session_data}")
         serialized_game_state = self.game_state.serialize()
         serialized_game_state["playerLog"] = self.log_collector.collect_logs(
             session_data["id"]
@@ -182,12 +193,10 @@ future_port = asyncio.Future()
 
 
 def run_game(port, game_id, django_api_url):
-    global activity_monitor
     global cors
-    global communicator
 
     communicator = DjangoCommunicator(django_api_url=django_api_url)
-    activity_monitor = ActivityMonitor(communicator, agones_stub)
+    activity_monitor = ActivityMonitor(communicator)
 
     app = setup_application(communicator)
     cors = aiohttp_cors.setup(app)
@@ -201,6 +210,7 @@ def run_game(port, game_id, django_api_url):
         game_state=game_runner.game_state,
         application=app,
         socketio_server=socketio_server,
+        activity_monitor=activity_monitor,
     )
     game_runner.set_end_turn_callback(game_api.send_updates_to_all)
 
@@ -208,15 +218,23 @@ def run_game(port, game_id, django_api_url):
     future_app.set_result(app)
 
 
-async def watch_for_updates():
-    is_already_allocated = False
-    LOGGER.info("starting to watch for game server updates")
+@dataclass
+class GameAllocationInfo:
+    port: int
+    game_id: int
+    django_api_url: str
+
+
+async def wait_for_allocation(
+    agones_stub: AgonesSDKStub,
+) -> Awaitable[GameAllocationInfo]:
+    LOGGER.info("waiting for allocation")
     empty_request = sdk_pb2.Empty()
     async for game_server_update in agones_stub.WatchGameServer(empty_request):
-        if game_server_update.status.state == "Allocated" and not is_already_allocated:
+        LOGGER.info(game_server_update)
+        if game_server_update.status.state == "Allocated":
             LOGGER.info(f"Game server allocated")
             LOGGER.debug(game_server_update)
-            is_already_allocated = True
             labels: Dict[str, Any] = game_server_update.object_meta.labels
             annotations: Dict[str, Any] = game_server_update.object_meta.annotations
             game_id = labels["game-id"]
@@ -224,10 +242,10 @@ async def watch_for_updates():
             os.environ["GAME_API_URL"] = annotations["game-api-url"]
             django_api_url = annotations["game-api-url"]
             port = 5000
-            run_game(port, game_id, django_api_url)
+            return GameAllocationInfo(port, game_id, django_api_url)
 
 
-def setup_healthcheck():
+def setup_healthcheck(agones_stub: AgonesSDKStub):
     def empty_response_generator():
         while True:
             emp_request = sdk_pb2.Empty()
@@ -237,7 +255,7 @@ def setup_healthcheck():
     agones_stub.Health(empty_response_generator())
 
 
-def send_ready_state():
+def send_ready_state(agones_stub: AgonesSDKStub):
     empty_request = sdk_pb2.Empty()
     agones_stub.Ready(empty_request)
     LOGGER.info("Game server ready for allocation")
@@ -246,11 +264,6 @@ def send_ready_state():
 async def get_app():
     app = await future_app
     return app
-
-
-async def run_server():
-    port = 5000
-    web.run_app(get_app(), port=port)
 
 
 def setup_logging():
@@ -271,10 +284,19 @@ def setup_logging():
 
 
 if __name__ == "__main__":
+    event_loop = asyncio.get_event_loop()
+    channel = grpc.aio.insecure_channel(
+        f"localhost:{os.environ['AGONES_SDK_GRPC_PORT']}",
+        options=(("grpc.enable_http_proxy", 0),),
+    )
+    agones_stub = AgonesSDKStub(channel)
     load_incluster_config()
     setup_logging()
-    setup_healthcheck()
-    asyncio.ensure_future(watch_for_updates())
-    send_ready_state()
+    setup_healthcheck(agones_stub)
+    send_ready_state(agones_stub)
+    game_metadata: GameAllocationInfo = event_loop.run_until_complete(
+        wait_for_allocation(agones_stub)
+    )
 
-    asyncio.get_event_loop().run_until_complete(run_server())
+    run_game(game_metadata.port, game_metadata.game_id, game_metadata.django_api_url)
+    web.run_app(get_app(), port=game_metadata.port)

@@ -14,8 +14,9 @@ protobuf = "*"
 aiohttp = "*"
 idna-ssl = "*"
 google-api-python-client = "*"
-nest-asyncio = "*"
 google-cloud-logging = "*"
+python-socketio = "5.0.3"
+eventlet = "*"
 
 [dev-packages]
 pytest = "*"

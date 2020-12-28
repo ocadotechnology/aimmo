@@ -78,6 +78,8 @@ def create_roles():
 
 
 def delete_fleet_on_exit():
+    print("Exiting")
+    print("Deleting aimmo-game fleet")
     run_command(
         [
             "kubectl",
