@@ -4,12 +4,14 @@ import os
 
 import google.cloud.logging
 from google.auth.exceptions import DefaultCredentialsError
+from kubernetes.config import load_incluster_config
 
 from game_manager import GAME_MANAGERS
 
 
 def main():
     logging.basicConfig(level=logging.INFO)
+    load_incluster_config()
     try:
         logging_client = google.cloud.logging.Client()
         logging_client.get_default_handler()

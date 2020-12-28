@@ -165,7 +165,6 @@ class KubernetesGameManager(GameManager):
     """Manages games running on Kubernetes cluster"""
 
     def __init__(self, *args, **kwargs):
-        kubernetes.config.load_incluster_config()
         self.networking_api = kubernetes.client.NetworkingV1beta1Api()
         self.api: CoreV1Api = kubernetes.client.CoreV1Api()
         self.secret_creator = TokenSecretCreator()
@@ -230,7 +229,6 @@ class KubernetesGameManager(GameManager):
                 },
             },
         )
-        LOGGER.info(result)
         if result["status"]["state"] == "UnAllocated" and retry_count < 5:
             time.sleep(5)
             self._create_game_server_allocation(

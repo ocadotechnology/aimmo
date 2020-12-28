@@ -10,7 +10,6 @@ class TokenSecretCreator:
     """Creates a kubernetes secret to store a games token."""
 
     def __init__(self):
-        kubernetes.config.load_incluster_config()
         self.api = kubernetes.client.CoreV1Api()
 
     def create_secret_object(self, name: str, namespace: str, data: dict):
