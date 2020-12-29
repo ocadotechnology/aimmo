@@ -262,7 +262,7 @@ class TestViews(TestCase):
 
         assert first_response.status_code == 403
 
-    @patch("kubernetes.client.api.custom_objects_api.CustomObjectsApi")
+    @patch("aimmo.game_renderer.CustomObjectsApi")
     def test_id_of_connection_parameters_same_as_games_url(self, custom_objects_api):
         """
         Ensures that the id's are consistent throughout the project. Check for ID's received
