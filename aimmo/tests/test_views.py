@@ -16,6 +16,7 @@ from aimmo.game_creator import create_game
 from aimmo.models import Game, Worksheet
 from aimmo.serializers import GameSerializer
 from aimmo.views import get_avatar_id
+from unittest.mock import patch
 
 app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
     "base %s" % game_id,
@@ -144,9 +145,6 @@ class TestViews(TestCase):
         c = self.login()
         response = c.get(reverse("kurono/play", kwargs={"id": 1}))
         assert response.status_code == 200
-        assert response.context["current_user_player_key"] == self.user.pk
-        assert response.context["game_url_base"] == "base 1"
-        assert response.context["game_url_path"] == "path 1"
 
     def test_play_for_non_existent_game(self):
         c = self.login()
@@ -264,11 +262,15 @@ class TestViews(TestCase):
 
         assert first_response.status_code == 403
 
-    def test_id_of_connection_parameters_same_as_games_url(self):
+    @patch("kubernetes.client.api.custom_objects_api.CustomObjectsApi")
+    def test_id_of_connection_parameters_same_as_games_url(self, custom_objects_api):
         """
         Ensures that the id's are consistent throughout the project. Check for ID's received
         by the current_avatar URL as well as the games URL api.
         """
+        custom_objects_api.list_namespaced_custom_object.return_value = {
+            "items": [{"status": {"address": "base", "ports": [{"port": 4321}]}}]
+        }
         user = self.user
         models.Avatar(owner=user, code=self.CODE, game=self.game).save()
         client = self.login()
