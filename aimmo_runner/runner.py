@@ -116,15 +116,12 @@ def run(
     create_superuser_if_missing(username="admin", password="admin")
 
     server_args = []
-    env_prefixes = []
     if not using_cypress:
         start_game_servers(build_target, server_args)
-    else:
-        env_prefixes = ["$RUNNING_TESTS"]
 
     os.environ["SERVER_ENV"] = "local"
     server = run_command_async(
-        env_prefixes + ["python", _MANAGE_PY, "runserver"] + server_args,
+        ["python", _MANAGE_PY, "runserver"] + server_args,
         capture_output=capture_output,
     )
     PROCESSES.append(server)

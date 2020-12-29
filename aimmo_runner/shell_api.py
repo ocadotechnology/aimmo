@@ -36,10 +36,11 @@ def run_command(args, capture_output=False):
 
 
 def run_command_async(args, capture_output=False):
+    env = os.environ.copy()
     if capture_output is True:
-        p = subprocess.Popen(args, stdout=FNULL, stderr=subprocess.STDOUT)
+        p = subprocess.Popen(args, stdout=FNULL, stderr=subprocess.STDOUT, env=env)
     else:
-        p = subprocess.Popen(args)
+        p = subprocess.Popen(args, env=env)
     return p
 
 
