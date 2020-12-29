@@ -136,8 +136,6 @@ class GameAPI(object):
 
     async def send_updates_to_all(self):
         try:
-            LOGGER.info("sending updates to all")
-            LOGGER.info(f"rooms: {self.socketio_server.manager.rooms}")
             socket_ids = [
                 sid
                 for (sid, _) in self.socketio_server.manager.get_participants("/", None)
@@ -167,9 +165,7 @@ class GameAPI(object):
             LOGGER.error(f"query_string: {query_string}")
 
     async def _send_game_state(self, sid):
-        LOGGER.info(f"sending updates for {sid}")
         session_data = await self.socketio_server.get_session(sid)
-        LOGGER.info(f"session data for {sid}: {session_data}")
         serialized_game_state = self.game_state.serialize()
         serialized_game_state["playerLog"] = self.log_collector.collect_logs(
             session_data["id"]
@@ -220,29 +216,25 @@ def run_game(port, game_id, django_api_url):
 
 @dataclass
 class GameAllocationInfo:
-    port: int
     game_id: int
     django_api_url: str
+    port: int = 5000
 
 
 async def wait_for_allocation(
     agones_stub: AgonesSDKStub,
 ) -> Awaitable[GameAllocationInfo]:
-    LOGGER.info("waiting for allocation")
     empty_request = sdk_pb2.Empty()
     async for game_server_update in agones_stub.WatchGameServer(empty_request):
-        LOGGER.info(game_server_update)
         if game_server_update.status.state == "Allocated":
             LOGGER.info(f"Game server allocated")
-            LOGGER.debug(game_server_update)
             labels: Dict[str, Any] = game_server_update.object_meta.labels
             annotations: Dict[str, Any] = game_server_update.object_meta.annotations
             game_id = labels["game-id"]
             os.environ["worksheet_id"] = labels["worksheet_id"]
             os.environ["GAME_API_URL"] = annotations["game-api-url"]
             django_api_url = annotations["game-api-url"]
-            port = 5000
-            return GameAllocationInfo(port, game_id, django_api_url)
+            return GameAllocationInfo(game_id, django_api_url)
 
 
 def setup_healthcheck(agones_stub: AgonesSDKStub):
@@ -251,7 +243,6 @@ def setup_healthcheck(agones_stub: AgonesSDKStub):
             emp_request = sdk_pb2.Empty()
             yield emp_request
 
-    LOGGER.debug("Setting up healthcheck")
     agones_stub.Health(empty_response_generator())
 
 
