@@ -30,7 +30,7 @@ def create_creator_yaml():
     Loads a replication controller yaml file into a python object.
     """
     orig_path = os.path.join(
-        BASE_DIR, "aimmo-game-creator", "rc-aimmo-game-creator.yaml"
+        BASE_DIR, "aimmo-game-creator", "aimmo-game-creator-deployment.yaml"
     )
     with open(orig_path) as orig_file:
         content = yaml.safe_load(
