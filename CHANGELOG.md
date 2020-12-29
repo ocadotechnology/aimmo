@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v0.61.10 (2020-12-23)
+
+
+## v0.61.10b67 (2020-12-22)
+### Fix
+* Remove build dependencies (#1440) ([`f12d566`](https://github.com/ocadotechnology/aimmo/commit/f12d5665297d7b424b6fcdd0c6cf9ae9d569e4f0))
+
 ## v0.61.9 (2020-12-16)
 
 
