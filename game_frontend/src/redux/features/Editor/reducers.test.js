@@ -66,16 +66,19 @@ describe('runCodeButtonReducer', () => {
 
 describe('resetCodeReducer', () => {
   it('should reset the code the the initial code', () => {
-    const DEFAULT_CODE = `def next_turn(world_state, avatar_state):
+    const starterCode = `def next_turn(world_state, avatar_state):
     return MoveAction(direction.NORTH)
 `
     const initialState = {
-      code: {},
+      code: {
+        starterCode: starterCode
+      },
       runCodeButton: {}
     }
     const expectedState = {
       code: {
-        resetCodeTo: DEFAULT_CODE
+        starterCode: starterCode,
+        resetCodeTo: starterCode
       },
       runCodeButton: {}
     }

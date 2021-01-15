@@ -14,24 +14,24 @@ export const IDEConsoleSection = styled.section`
 `
 
 export const StyledConsole = styled.div`
-  color: ${props => props.theme.palette.text.primary};
-  background-color: ${props => props.theme.palette.background.default};
-  font-family: ${props => props.theme.additionalVariables.typography.code.fontFamily};
+  color: ${(props) => props.theme.palette.text.primary};
+  background-color: ${(props) => props.theme.palette.background.default};
+  font-family: ${(props) => props.theme.additionalVariables.typography.code.fontFamily};
   overflow-y: auto;
   height: 100%;
 
   ::-webkit-scrollbar {
-    background-color: ${props => props.theme.palette.divider};
+    background-color: ${(props) => props.theme.palette.divider};
   }
 
   ::-webkit-scrollbar-track {
-    background: ${props => props.theme.palette.divider};
+    background: ${(props) => props.theme.palette.divider};
   }
 
   ::-webkit-scrollbar-thumb {
-    background: ${props => props.theme.palette.grey.A200};
+    background: ${(props) => props.theme.palette.grey.A200};
     border-radius: 100px;
-    border: ${props => props.theme.spacing(0.25)}px solid transparent;
+    border: ${(props) => props.theme.spacing(0.25)}px solid transparent;
     background-clip: content-box;
   }
 `
@@ -40,35 +40,35 @@ export class IDEConsole extends Component {
   static propTypes = {
     logs: PropTypes.instanceOf(Map),
     resetCode: PropTypes.func,
-    clearConsoleLogs: PropTypes.func
+    clearConsoleLogs: PropTypes.func,
   }
 
   // see https://blog.eqrion.net/pin-to-bottom/
   state = {
     activatedScrollToBottom: false,
-    shouldActivateSnapToBottom: false
+    shouldActivateSnapToBottom: false,
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     this.snapToBottomIfNeeded()
   }
 
-  isOverflown ({ clientHeight, scrollHeight }) {
+  isOverflown({ clientHeight, scrollHeight }) {
     return scrollHeight > clientHeight
   }
 
-  isOverflownForTheFirstTime () {
+  isOverflownForTheFirstTime() {
     return (
       !this.state.activatedScrollToBottom && this.consoleRef && this.isOverflown(this.consoleRef)
     )
   }
 
-  snapToBottomIfNeeded () {
+  snapToBottomIfNeeded() {
     if (this.isOverflownForTheFirstTime()) {
       this.setState({
         ...this.state,
         shouldActivateSnapToBottom: true,
-        activatedScrollToBottom: true
+        activatedScrollToBottom: true,
       })
     } else if (this.state.activatedScrollToBottom && this.state.shouldActivateSnapToBottom) {
       this.setState({ ...this.state, shouldActivateSnapToBottom: false })
@@ -80,15 +80,21 @@ export class IDEConsole extends Component {
     this.setState({ ...this.state, activatedScrollToBottom: false })
   }
 
-  render () {
+  resetCode = () => {
+    if (confirm('Are you sure you want to reset to the starter code?')) {
+      this.props.resetCode()
+    }
+  }
+
+  render() {
     return (
       <IDEConsoleSection>
         <ConsoleBar
           clearConsoleClicked={this.clearConsole}
-          handleResetCodeClicked={this.props.resetCode}
+          handleResetCodeClicked={this.resetCode}
         />
         <StyledConsole
-          ref={ref => {
+          ref={(ref) => {
             this.consoleRef = ref
           }}
         >
@@ -102,13 +108,13 @@ export class IDEConsole extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  logs: state.consoleLog.logs
+const mapStateToProps = (state) => ({
+  logs: state.consoleLog.logs,
 })
 
 const mapDispatchToProps = {
   clearConsoleLogs: actions.clearConsoleLogs,
-  resetCode: editorActions.resetCode
+  resetCode: editorActions.resetCode,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(IDEConsole)
