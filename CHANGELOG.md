@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.61.11b93 (2021-01-18)
+### Fix
+* Reset code to worksheet's default (#1445) ([`2ce3a68`](https://github.com/ocadotechnology/aimmo/commit/2ce3a68d8bde41a85ae0cc90e46cdf4d958492b8))
+
 ## v0.61.10 (2020-12-23)
 
 
