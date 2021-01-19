@@ -71,13 +71,12 @@ class Game(models.Model):
         related_name="owned_games",
         on_delete=models.SET_NULL,
     )
-    game_class = models.ForeignKey(
+    game_class = models.OneToOneField(
         Class,
         verbose_name="Class",
         on_delete=models.CASCADE,
         blank=True,
         null=True,
-        related_name="games_for_class",
     )
     public = models.BooleanField(default=False)
     can_play = models.ManyToManyField(
@@ -108,10 +107,9 @@ class Game(models.Model):
     start_height = models.IntegerField(default=31)
     start_width = models.IntegerField(default=31)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=RUNNING)
-    worksheet = models.ForeignKey(Worksheet, on_delete=models.PROTECT)
-
-    class Meta:
-        unique_together = ("game_class", "worksheet")
+    worksheet = models.ForeignKey(
+        Worksheet, on_delete=models.PROTECT, default=DEFAULT_WORKSHEET_ID
+    )
 
     @property
     def is_active(self):
