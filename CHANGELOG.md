@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v0.61.12b96 (2021-01-19)
+### Fix
+* Make worksheet editable in serializer (#1446) ([`f716538`](https://github.com/ocadotechnology/aimmo/commit/f716538fdeffce04585aade6b2981cc47d994ba0))
+
+## v0.61.11b93 (2021-01-18)
+### Fix
+* Reset code to worksheet's default (#1445) ([`2ce3a68`](https://github.com/ocadotechnology/aimmo/commit/2ce3a68d8bde41a85ae0cc90e46cdf4d958492b8))
+
 ## v0.61.10 (2020-12-23)
 
 

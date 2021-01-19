@@ -50,7 +50,9 @@ def code(request, id):
         avatar.save()
         return HttpResponse(status=200)
     else:
-        return JsonResponse({"code": avatar.code})
+        return JsonResponse(
+            {"code": avatar.code, "starterCode": game.worksheet.starter_code}
+        )
 
 
 class GameUsersView(APIView):

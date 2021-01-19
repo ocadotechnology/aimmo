@@ -130,7 +130,10 @@ class TestViews(TestCase):
         c = self.login()
         response = c.get(reverse("kurono/code", kwargs={"id": 1}))
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content, {"code": self.CODE})
+        self.assertJSONEqual(
+            response.content,
+            {"code": self.CODE, "starterCode": self.game.worksheet.starter_code},
+        )
 
     def _associate_game_as_level_num(self, level_num=1, user=None, game=None):
         if game is None:
