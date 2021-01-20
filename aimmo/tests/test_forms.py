@@ -35,54 +35,45 @@ def worksheet(db) -> Worksheet:
     return Worksheet.objects.create(name="Test worksheet", starter_code="Trout")
 
 
-def test_create_game(class1: Class, worksheet: Worksheet):
+def test_create_game(class1: Class):
     form = AddGameForm(
         Class.objects.all(),
-        data={"game_class": class1.id, "worksheet": worksheet.id},
+        data={"game_class": class1.id},
     )
     assert form.is_valid()
 
     game = form.save()
     assert game.game_class == class1
-    assert game.worksheet == worksheet
+    assert game.worksheet.id == 1
 
 
 @pytest.mark.django_db
-def test_form_with_non_existing_class(worksheet: Worksheet):
+def test_form_with_non_existing_class():
     form = AddGameForm(
         Class.objects.all(),
-        data={"game_class": 12345, "worksheet": worksheet.id},
+        data={"game_class": 12345},
     )
     assert not form.is_valid()
 
 
 @pytest.mark.django_db
-def test_form_with_non_existing_worksheet(class1: Class):
-    form = AddGameForm(
-        Class.objects.all(),
-        data={"game_class": class1.id, "worksheet": 12345},
-    )
-    assert not form.is_valid()
-
-
-@pytest.mark.django_db
-def test_cannot_create_duplicate_game(class1: Class, worksheet: Worksheet):
+def test_cannot_create_duplicate_game(class1: Class):
     # Create first game
     form = AddGameForm(
         Class.objects.all(),
-        data={"game_class": class1.id, "worksheet": worksheet.id},
+        data={"game_class": class1.id},
     )
     _ = form.save()
 
-    # Create second game with the same class and worksheet
+    # Create second game with the same class
     form = AddGameForm(
         Class.objects.all(),
-        data={"game_class": class1.id, "worksheet": worksheet.id},
+        data={"game_class": class1.id},
     )
 
     assert not form.is_valid()
-    assert "Game with this Class and Worksheet already exists." in form.errors.get(
-        "__all__"
+    assert "Game with this Class already exists." in (
+        message for errors in form.errors.values() for message in errors
     )
 
 
