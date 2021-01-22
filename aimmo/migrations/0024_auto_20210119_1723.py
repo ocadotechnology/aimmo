@@ -13,31 +13,40 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunSQL(
             """
+            CREATE TEMPORARY TABLE aimmo_games_to_delete AS
+            SELECT
+                id
+            FROM
+                aimmo_game ag
+            JOIN (
+                SELECT
+                    owner_id,
+                    game_class_id,
+                    MAX(id) target_game_id
+                FROM
+                    aimmo_game
+                GROUP BY
+                    owner_id,
+                    game_class_id
+                HAVING
+                    count(*) > 1) duplicate_game ON
+                ag.owner_id = duplicate_game.owner_id
+                AND ag.game_class_id = duplicate_game.game_class_id
+                AND ag.id != duplicate_game.target_game_id;
+
+            DELETE
+            FROM
+                aimmo_avatar
+            WHERE
+                game_id IN aimmo_games_to_delete;
+                
             DELETE
             FROM
                 aimmo_game
             WHERE
-                id IN (
-                SELECT
-                    id
-                FROM
-                    aimmo_game ag
-                JOIN (
-                    SELECT
-                        owner_id,
-                        game_class_id,
-                        MAX(id) target_game_id
-                    FROM
-                        aimmo_game
-                    GROUP BY
-                        owner_id,
-                        game_class_id
-                    HAVING
-                        count(*) > 1) duplicate_game ON
-                    ag.owner_id = duplicate_game.owner_id
-                    AND ag.game_class_id = duplicate_game.game_class_id
-                    AND ag.id != duplicate_game.target_game_id)
-            """
+                id IN aimmo_games_to_delete;
+            """,
+            migrations.RunSQL.noop
         ),
         migrations.AlterField(
             model_name="game",
