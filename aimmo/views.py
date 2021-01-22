@@ -18,9 +18,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from portal.game_creator import create_avatar_for_user
+
 from . import game_renderer
 from .exceptions import UserCannotPlayGameException
-from .game_creator import create_avatar_for_user, create_game
 from .models import Avatar, Game
 from .permissions import (
     CanDeleteGameOrReadOnly,

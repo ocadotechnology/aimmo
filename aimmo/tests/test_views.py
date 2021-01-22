@@ -10,9 +10,10 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from rest_framework import status
 
+from portal.forms.add_game import AddGameForm
+from portal.game_creator import create_game
+
 from aimmo import app_settings, models
-from aimmo.forms import AddGameForm
-from aimmo.game_creator import create_game
 from aimmo.models import Game, Worksheet
 from aimmo.serializers import GameSerializer
 from aimmo.views import get_avatar_id
