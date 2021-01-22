@@ -39,14 +39,14 @@ class Migration(migrations.Migration):
                 aimmo_avatar
             WHERE
                 game_id IN aimmo_games_to_delete;
-                
+
             DELETE
             FROM
                 aimmo_game
             WHERE
                 id IN aimmo_games_to_delete;
             """,
-            migrations.RunSQL.noop
+            migrations.RunSQL.noop,
         ),
         migrations.AlterField(
             model_name="game",
