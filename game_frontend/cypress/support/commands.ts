@@ -16,7 +16,7 @@ const password = 'Password1'
 const game_name = 'Cypress test game'
 const user_id = 2
 const class_id = 1
-const worksheet_id = 2
+const worksheet_id = 1
 const student_username = 'Leonardo'
 const student_access_code = 'AB123'
 

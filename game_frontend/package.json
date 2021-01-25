@@ -59,7 +59,7 @@
     "babylonjs": "^4.1.0",
     "core-js": "3",
     "handlebars": "^4.7.6",
-    "immer": "^7.0.1",
+    "immer": "^8.0.1",
     "js-cookie": "^2.2.1",
     "lodash.isequal": "^4.5.0",
     "parcel-bundler": "^1.12.4",

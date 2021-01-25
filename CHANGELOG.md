@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v0.62.1b119 (2021-01-25)
+### Fix
+* Cleanup add game dropdown (#1451) ([`a0144c9`](https://github.com/ocadotechnology/aimmo/commit/a0144c9d8bbcce474091377e0dc522e76f728c99))
+
+## v0.62.0b114 (2021-01-25)
+### Feature
+* Add game dropdown (#1450) ([`a013f26`](https://github.com/ocadotechnology/aimmo/commit/a013f26994fa418afd39e47d61d19152b9542e7e))
+
+## v0.61.12b104 (2021-01-21)
+
+
 ## v0.61.12 (2021-01-19)
 
 

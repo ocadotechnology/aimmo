@@ -19,8 +19,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from . import game_renderer
+from .avatar_creator import create_avatar_for_user
 from .exceptions import UserCannotPlayGameException
-from .game_creator import create_avatar_for_user, create_game
 from .models import Avatar, Game
 from .permissions import (
     CanDeleteGameOrReadOnly,
