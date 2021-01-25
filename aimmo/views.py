@@ -18,9 +18,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from portal.game_creator import create_avatar_for_user
-
 from . import game_renderer
+from .avatar_creator import create_avatar_for_user
 from .exceptions import UserCannotPlayGameException
 from .models import Avatar, Game
 from .permissions import (
