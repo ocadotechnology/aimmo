@@ -38,13 +38,21 @@ class Migration(migrations.Migration):
             FROM
                 aimmo_avatar
             WHERE
-                game_id IN aimmo_games_to_delete;
+                game_id IN (
+                SELECT
+                    id
+                FROM
+                    aimmo_games_to_delete);
 
             DELETE
             FROM
                 aimmo_game
             WHERE
-                id IN aimmo_games_to_delete;
+                id IN (
+                SELECT
+                    id
+                FROM
+                    aimmo_games_to_delete);
             """,
             migrations.RunSQL.noop,
         ),
