@@ -10,9 +10,10 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from rest_framework import status
 
+from portal.forms.add_game import AddGameForm
+from portal.game_creator import create_game
+
 from aimmo import app_settings, models
-from aimmo.forms import AddGameForm
-from aimmo.game_creator import create_game
 from aimmo.models import Game, Worksheet
 from aimmo.serializers import GameSerializer
 from aimmo.views import get_avatar_id
@@ -52,6 +53,8 @@ class TestViews(TestCase):
         teacher.save()
         cls.klass, _, _ = create_class_directly(cls.user.email)
         cls.klass.save()
+        cls.klass2, _, _ = create_class_directly(cls.user.email)
+        cls.klass2.save()
         cls.worksheet: Worksheet = Worksheet.objects.create(
             name="test worksheet", starter_code="test code"
         )
@@ -62,19 +65,6 @@ class TestViews(TestCase):
             id=1, name="test", game_class=cls.klass, worksheet=cls.worksheet
         )
         cls.game.save()
-
-        cls.EXPECTED_GAME_DETAIL = lambda worksheet_id: {
-            "era": "1",
-            "name": "test",
-            "status": "r",
-            "settings": '{"GENERATOR": "Main", "OBSTACLE_RATIO": 0.1, "PICKUP_SPAWN_CHANCE": 0.1, "SCORE_DESPAWN_CHANCE": 0.05, "START_HEIGHT": 31, "START_WIDTH": 31, "TARGET_NUM_CELLS_PER_AVATAR": 16.0, "TARGET_NUM_PICKUPS_PER_AVATAR": 1.2, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
-            "class_id": str(cls.klass.id),
-            "worksheet_id": str(worksheet_id),
-        }
-        cls.EXPECTED_GAME_LIST = {
-            "1": cls.EXPECTED_GAME_DETAIL(cls.worksheet.id),
-            "2": cls.EXPECTED_GAME_DETAIL(cls.worksheet2.id),
-        }
 
     def setUp(self):
         self.game.refresh_from_db()
@@ -410,15 +400,28 @@ class TestViews(TestCase):
         self.game.main_user = self.user
         self.game.save()
 
-        game2 = models.Game(
-            id=2, name="test", game_class=self.klass, worksheet=self.worksheet2
-        )
+        game2 = models.Game(id=2, name="test", game_class=self.klass2)
         game2.save()
+
+        def expected_game_detail(class_id, worksheet_id):
+            return {
+                "era": "1",
+                "name": "test",
+                "status": "r",
+                "settings": '{"GENERATOR": "Main", "OBSTACLE_RATIO": 0.1, "PICKUP_SPAWN_CHANCE": 0.1, "SCORE_DESPAWN_CHANCE": 0.05, "START_HEIGHT": 31, "START_WIDTH": 31, "TARGET_NUM_CELLS_PER_AVATAR": 16.0, "TARGET_NUM_PICKUPS_PER_AVATAR": 1.2, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
+                "class_id": str(class_id),
+                "worksheet_id": str(worksheet_id),
+            }
+
+        expected_game_list = {
+            "1": expected_game_detail(self.klass.id, self.worksheet.id),
+            "2": expected_game_detail(self.klass2.id, 1),
+        }
 
         c = Client()
         response = c.get(reverse("game-list"))
 
-        self.assertJSONEqual(response.content, self.EXPECTED_GAME_LIST)
+        self.assertJSONEqual(response.content, expected_game_list)
 
     def test_view_one_game(self):
         client = self.login()
@@ -427,15 +430,12 @@ class TestViews(TestCase):
 
     def test_adding_a_game_creates_an_avatar(self):
         client = self.login()
-        worksheet = Worksheet.objects.create(name="test", starter_code="test")
-        worksheet.save()
         game: Game = create_game(
             self.user,
             AddGameForm(
                 Class.objects.all(),
                 data={
-                    "game_class": self.klass.id,
-                    "worksheet": worksheet.id,
+                    "game_class": self.klass2.id,
                 },
             ),
         )
