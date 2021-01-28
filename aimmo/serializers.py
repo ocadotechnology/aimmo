@@ -41,3 +41,6 @@ class GameSerializer(serializers.Serializer):
         )
         instance.save()
         return instance
+
+class GameIdsSerializer(serializers.Serializer):
+    game_ids = serializers.MultipleChoiceField(choices=Game.objects.all().values_list('pk', flat=True))

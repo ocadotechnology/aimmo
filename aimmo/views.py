@@ -13,10 +13,13 @@ from rest_framework.decorators import (
     api_view,
     authentication_classes,
     permission_classes,
+    action
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from common.permissions import CanDeleteGame
 
 from . import game_renderer
 from .avatar_creator import create_avatar_for_user
@@ -27,7 +30,7 @@ from .permissions import (
     CsrfExemptSessionAuthentication,
     GameHasToken,
 )
-from .serializers import GameSerializer
+from .serializers import GameSerializer, GameIdsSerializer
 
 LOGGER = logging.getLogger(__name__)
 
@@ -90,6 +93,12 @@ class GameViewSet(
             serializer = GameSerializer(game)
             response[game.pk] = serializer.data
         return Response(response)
+    
+    @action(detail=False, methods=['post'], serializer_class=GameIdsSerializer, permission_classes=(CanDeleteGame,))
+    def delete_games(self, request):
+        game_ids = request.data.getlist('game_ids')
+        Game.objects.filter(pk__in=game_ids, game_class__teacher__new_user=request.user).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(["GET"])
