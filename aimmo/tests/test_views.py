@@ -8,10 +8,9 @@ from common.tests.utils.student import (
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.urls import reverse
-from rest_framework import status
-
 from portal.forms.add_game import AddGameForm
 from portal.game_creator import create_game
+from rest_framework import status
 
 from aimmo import app_settings, models
 from aimmo.models import Game, Worksheet
@@ -56,10 +55,10 @@ class TestViews(TestCase):
         cls.klass2, _, _ = create_class_directly(cls.user.email)
         cls.klass2.save()
         cls.worksheet: Worksheet = Worksheet.objects.create(
-            name="test worksheet", starter_code="test code"
+            name="test worksheet", starter_code="test code 1"
         )
         cls.worksheet2: Worksheet = Worksheet.objects.create(
-            name="test worksheet 2", starter_code="test code"
+            name="test worksheet 2", starter_code="test code 2"
         )
         cls.game = models.Game(
             id=1, name="test", game_class=cls.klass, worksheet=cls.worksheet
@@ -442,3 +441,35 @@ class TestViews(TestCase):
         game = models.Game.objects.get(pk=2)
         avatar = game.avatar_set.get(owner=client.session["_auth_user_id"])
         assert avatar is not None
+
+    def test_update_game_worksheet_updates_avatar_codes(self):
+        # Set up the first avatar
+        first_user = self.user
+        models.Avatar(owner=first_user, code=self.CODE, game=self.game).save()
+        client1 = self.login()
+
+        # Set up the second avatar
+        _, _, second_user = create_school_student_directly(self.klass.access_code)
+        models.Avatar(owner=second_user.new_user, code=self.CODE, game=self.game).save()
+
+        client2 = Client()
+        client2.login(username="test2", password="password2")
+
+        data = json.dumps({"worksheet_id": self.worksheet2.id})
+
+        response = client1.put(
+            reverse("game-detail", kwargs={"pk": self.game.id}),
+            data,
+            content_type="application/json",
+        )
+
+        assert response.status_code == 200
+
+        game = models.Game.objects.get(id=1)
+        avatar1 = models.Avatar.objects.get(id=1)
+        avatar2 = models.Avatar.objects.get(id=2)
+
+        assert game.worksheet == self.worksheet2
+
+        assert avatar1.code == self.worksheet2.starter_code
+        assert avatar2.code == self.worksheet2.starter_code
