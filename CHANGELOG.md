@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.62.2b127 (2021-01-28)
+### Fix
+* Update game's avatars with worksheet's code on change (#1454) ([`110636f`](https://github.com/ocadotechnology/aimmo/commit/110636f743092a974ef0992e0dbe46c1aae1f90b))
+
 ## v0.62.1 (2021-01-25)
 
 
