@@ -1,7 +1,7 @@
 import json
 from rest_framework import serializers
 
-from aimmo.models import Game
+from aimmo.models import Game, Avatar, Worksheet
 
 
 class GameSerializer(serializers.Serializer):
@@ -39,5 +39,14 @@ class GameSerializer(serializers.Serializer):
         instance.worksheet_id = validated_data.get(
             "worksheet_id", instance.worksheet_id
         )
+
+        if "worksheet_id" in validated_data:
+            avatars = Avatar.objects.filter(game=instance)
+            worksheet = Worksheet.objects.get(id=instance.worksheet_id)
+
+            for avatar in avatars:
+                avatar.code = worksheet.starter_code
+                avatar.save()
+
         instance.save()
         return instance
