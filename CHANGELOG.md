@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.63.0b135 (2021-02-01)
+### Feature
+* Delete multiple games (#1456) ([`6f4d5ed`](https://github.com/ocadotechnology/aimmo/commit/6f4d5ed216bc03de4c194c3c1aca3b5e29e522e0))
+
 ## v0.62.2 (2021-01-28)
 
 
