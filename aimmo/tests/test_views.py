@@ -473,3 +473,49 @@ class TestViews(TestCase):
 
         assert avatar1.code == self.worksheet2.starter_code
         assert avatar2.code == self.worksheet2.starter_code
+
+    def test_delete_games(self):
+        # Create a new teacher with a game to make sure it's not affected
+        new_user: User = User.objects.create_user(
+            "test2", "test2@example.com", "password"
+        )
+        new_user.is_staff = True
+        new_user.save()
+        new_user_profile: UserProfile = UserProfile(user=new_user)
+        new_user_profile.save()
+        new_teacher: Teacher = Teacher.objects.create(
+            user=new_user_profile, new_user=new_user, title="Mx"
+        )
+        new_teacher.save()
+        new_klass, _, _ = create_class_directly(new_user.email)
+        new_user.save()
+        new_game = models.Game(
+            name="test2", game_class=new_klass, worksheet=self.worksheet
+        )
+        new_game.save()
+
+        # Create a game for the second class
+        game2 = models.Game(
+            name="test", game_class=self.klass2, worksheet=self.worksheet
+        )
+        game2.save()
+
+        data = {"game_ids": [self.game.id, game2.id, new_game.id]}
+
+        # Try to login as a student and delete games - they shouldn't have access
+        _, student_password, student = create_school_student_directly(
+            self.klass.access_code
+        )
+        client = self.login(
+            username=student.new_user.username, password=student_password
+        )
+        response = client.post(reverse("game-delete-games"), data)
+        assert response.status_code == 403
+        assert Game.objects.count() == 3
+
+        # Login as initial teacher and delete games - only his games should be deleted
+        client = self.login()
+        response = client.post(reverse("game-delete-games"), data)
+        assert response.status_code == 204
+        assert Game.objects.count() == 1
+        assert Game.objects.get(pk=new_game.id)
