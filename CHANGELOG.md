@@ -2,6 +2,45 @@
 
 <!--next-version-placeholder-->
 
+## v0.63.0 (2021-02-01)
+
+
+## v0.63.0b135 (2021-02-01)
+### Feature
+* Delete multiple games (#1456) ([`6f4d5ed`](https://github.com/ocadotechnology/aimmo/commit/6f4d5ed216bc03de4c194c3c1aca3b5e29e522e0))
+
+## v0.62.2 (2021-01-28)
+
+
+## v0.62.2b127 (2021-01-28)
+### Fix
+* Update game's avatars with worksheet's code on change (#1454) ([`110636f`](https://github.com/ocadotechnology/aimmo/commit/110636f743092a974ef0992e0dbe46c1aae1f90b))
+
+## v0.62.1 (2021-01-25)
+
+
+## v0.62.1b119 (2021-01-25)
+### Fix
+* Cleanup add game dropdown (#1451) ([`a0144c9`](https://github.com/ocadotechnology/aimmo/commit/a0144c9d8bbcce474091377e0dc522e76f728c99))
+
+## v0.62.0b114 (2021-01-25)
+### Feature
+* Add game dropdown (#1450) ([`a013f26`](https://github.com/ocadotechnology/aimmo/commit/a013f26994fa418afd39e47d61d19152b9542e7e))
+
+## v0.61.12b104 (2021-01-21)
+
+
+## v0.61.12 (2021-01-19)
+
+
+## v0.61.12b96 (2021-01-19)
+### Fix
+* Make worksheet editable in serializer (#1446) ([`f716538`](https://github.com/ocadotechnology/aimmo/commit/f716538fdeffce04585aade6b2981cc47d994ba0))
+
+## v0.61.11b93 (2021-01-18)
+### Fix
+* Reset code to worksheet's default (#1445) ([`2ce3a68`](https://github.com/ocadotechnology/aimmo/commit/2ce3a68d8bde41a85ae0cc90e46cdf4d958492b8))
+
 ## v0.61.10 (2020-12-23)
 
 

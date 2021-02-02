@@ -1,11 +1,11 @@
 /// <reference types="cypress" />
 
-testLogoClickNavigatesToUrl = (url) => {
+function testLogoClickNavigatesToUrl(url) {
   cy.get('nav > header a[aria-label="Kurono dashboard"]').click()
   cy.url().should('eq', url)
 }
 
-testExitButtonClickNavigatesToUrl = (url) => {
+function testExitButtonClickNavigatesToUrl(url) {
   cy.get('nav > header').contains('Exit game').click()
   cy.url().should('eq', url)
 }

@@ -8,11 +8,11 @@ from common.tests.utils.student import (
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.urls import reverse
+from portal.forms.add_game import AddGameForm
+from portal.game_creator import create_game
 from rest_framework import status
 
 from aimmo import app_settings, models
-from aimmo.forms import AddGameForm
-from aimmo.game_creator import create_game
 from aimmo.models import Game, Worksheet
 from aimmo.serializers import GameSerializer
 from aimmo.views import get_avatar_id
@@ -53,29 +53,18 @@ class TestViews(TestCase):
         teacher.save()
         cls.klass, _, _ = create_class_directly(cls.user.email)
         cls.klass.save()
+        cls.klass2, _, _ = create_class_directly(cls.user.email)
+        cls.klass2.save()
         cls.worksheet: Worksheet = Worksheet.objects.create(
-            name="test worksheet", starter_code="test code"
+            name="test worksheet", starter_code="test code 1"
         )
         cls.worksheet2: Worksheet = Worksheet.objects.create(
-            name="test worksheet 2", starter_code="test code"
+            name="test worksheet 2", starter_code="test code 2"
         )
         cls.game = models.Game(
             id=1, name="test", game_class=cls.klass, worksheet=cls.worksheet
         )
         cls.game.save()
-
-        cls.EXPECTED_GAME_DETAIL = lambda worksheet_id: {
-            "era": "1",
-            "name": "test",
-            "status": "r",
-            "settings": '{"GENERATOR": "Main", "OBSTACLE_RATIO": 0.1, "PICKUP_SPAWN_CHANCE": 0.1, "SCORE_DESPAWN_CHANCE": 0.05, "START_HEIGHT": 31, "START_WIDTH": 31, "TARGET_NUM_CELLS_PER_AVATAR": 16.0, "TARGET_NUM_PICKUPS_PER_AVATAR": 1.2, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
-            "class_id": str(cls.klass.id),
-            "worksheet_id": str(worksheet_id),
-        }
-        cls.EXPECTED_GAME_LIST = {
-            "1": cls.EXPECTED_GAME_DETAIL(cls.worksheet.id),
-            "2": cls.EXPECTED_GAME_DETAIL(cls.worksheet2.id),
-        }
 
     def setUp(self):
         self.game.refresh_from_db()
@@ -131,7 +120,10 @@ class TestViews(TestCase):
         c = self.login()
         response = c.get(reverse("kurono/code", kwargs={"id": 1}))
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content, {"code": self.CODE})
+        self.assertJSONEqual(
+            response.content,
+            {"code": self.CODE, "starterCode": self.game.worksheet.starter_code},
+        )
 
     def _associate_game_as_level_num(self, level_num=1, user=None, game=None):
         if game is None:
@@ -409,15 +401,28 @@ class TestViews(TestCase):
         self.game.main_user = self.user
         self.game.save()
 
-        game2 = models.Game(
-            id=2, name="test", game_class=self.klass, worksheet=self.worksheet2
-        )
+        game2 = models.Game(id=2, name="test", game_class=self.klass2)
         game2.save()
+
+        def expected_game_detail(class_id, worksheet_id):
+            return {
+                "era": "1",
+                "name": "test",
+                "status": "r",
+                "settings": '{"GENERATOR": "Main", "OBSTACLE_RATIO": 0.1, "PICKUP_SPAWN_CHANCE": 0.1, "SCORE_DESPAWN_CHANCE": 0.05, "START_HEIGHT": 31, "START_WIDTH": 31, "TARGET_NUM_CELLS_PER_AVATAR": 16.0, "TARGET_NUM_PICKUPS_PER_AVATAR": 1.2, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
+                "class_id": str(class_id),
+                "worksheet_id": str(worksheet_id),
+            }
+
+        expected_game_list = {
+            "1": expected_game_detail(self.klass.id, self.worksheet.id),
+            "2": expected_game_detail(self.klass2.id, 1),
+        }
 
         c = Client()
         response = c.get(reverse("game-list"))
 
-        self.assertJSONEqual(response.content, self.EXPECTED_GAME_LIST)
+        self.assertJSONEqual(response.content, expected_game_list)
 
     def test_view_one_game(self):
         client = self.login()
@@ -426,18 +431,93 @@ class TestViews(TestCase):
 
     def test_adding_a_game_creates_an_avatar(self):
         client = self.login()
-        worksheet = Worksheet.objects.create(name="test", starter_code="test")
-        worksheet.save()
         game: Game = create_game(
             self.user,
             AddGameForm(
                 Class.objects.all(),
                 data={
-                    "game_class": self.klass.id,
-                    "worksheet": worksheet.id,
+                    "game_class": self.klass2.id,
                 },
             ),
         )
         game = models.Game.objects.get(pk=2)
         avatar = game.avatar_set.get(owner=client.session["_auth_user_id"])
         assert avatar is not None
+
+    def test_update_game_worksheet_updates_avatar_codes(self):
+        # Set up the first avatar
+        first_user = self.user
+        models.Avatar(owner=first_user, code=self.CODE, game=self.game).save()
+        client1 = self.login()
+
+        # Set up the second avatar
+        _, _, second_user = create_school_student_directly(self.klass.access_code)
+        models.Avatar(owner=second_user.new_user, code=self.CODE, game=self.game).save()
+
+        client2 = Client()
+        client2.login(username="test2", password="password2")
+
+        data = json.dumps({"worksheet_id": self.worksheet2.id})
+
+        response = client1.put(
+            reverse("game-detail", kwargs={"pk": self.game.id}),
+            data,
+            content_type="application/json",
+        )
+
+        assert response.status_code == 200
+
+        game = models.Game.objects.get(id=1)
+        avatar1 = models.Avatar.objects.get(id=1)
+        avatar2 = models.Avatar.objects.get(id=2)
+
+        assert game.worksheet == self.worksheet2
+
+        assert avatar1.code == self.worksheet2.starter_code
+        assert avatar2.code == self.worksheet2.starter_code
+
+    def test_delete_games(self):
+        # Create a new teacher with a game to make sure it's not affected
+        new_user: User = User.objects.create_user(
+            "test2", "test2@example.com", "password"
+        )
+        new_user.is_staff = True
+        new_user.save()
+        new_user_profile: UserProfile = UserProfile(user=new_user)
+        new_user_profile.save()
+        new_teacher: Teacher = Teacher.objects.create(
+            user=new_user_profile, new_user=new_user, title="Mx"
+        )
+        new_teacher.save()
+        new_klass, _, _ = create_class_directly(new_user.email)
+        new_user.save()
+        new_game = models.Game(
+            name="test2", game_class=new_klass, worksheet=self.worksheet
+        )
+        new_game.save()
+
+        # Create a game for the second class
+        game2 = models.Game(
+            name="test", game_class=self.klass2, worksheet=self.worksheet
+        )
+        game2.save()
+
+        data = {"game_ids": [self.game.id, game2.id, new_game.id]}
+
+        # Try to login as a student and delete games - they shouldn't have access
+        _, student_password, student = create_school_student_directly(
+            self.klass.access_code
+        )
+        client = self.login(
+            username=student.new_user.username, password=student_password
+        )
+        response = client.post(reverse("game-delete-games"), data)
+        assert response.status_code == 403
+        assert Game.objects.count() == 3
+
+        # Login as initial teacher and delete games - only his games should be deleted
+        client = self.login()
+        response = client.post(reverse("game-delete-games"), data)
+        assert response.status_code == 204
+        assert Game.objects.count() == 1
+        assert Game.objects.get(pk=new_game.id)
