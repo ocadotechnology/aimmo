@@ -3,13 +3,14 @@ Any helper functions used for the game.
 """
 from __future__ import absolute_import
 
-from django.shortcuts import render, get_object_or_404
-
-from aimmo import app_settings, exceptions
-from .models import Game
 from django.http import Http404
+from django.shortcuts import get_object_or_404, render
 from kubernetes.client.api.custom_objects_api import CustomObjectsApi
 from kubernetes.client.api_client import ApiClient
+
+from aimmo import app_settings, exceptions
+
+from .models import Game
 
 
 def render_game(request, game):

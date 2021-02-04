@@ -3,7 +3,6 @@
 import asyncio
 import logging
 import os
-from asyncio.events import AbstractEventLoop
 from dataclasses import dataclass
 from typing import Any, Awaitable, Dict
 from urllib.parse import parse_qs

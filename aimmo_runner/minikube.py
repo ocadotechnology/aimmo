@@ -1,12 +1,12 @@
 #!/user/bin/env python
+import atexit
 import os
 import platform
-import atexit
 
 import kubernetes
+import yaml
 from kubernetes.client import AppsV1Api
 from kubernetes.config import load_kube_config
-import yaml
 
 from .docker_scripts import build_docker_images
 from .shell_api import BASE_DIR, run_command

@@ -80,23 +80,6 @@ def install_docker(operatingSystem):
         raise Exception
 
 
-# def install_virtualbox(operatingSystem):
-#     """
-#     :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is available)
-
-#     OS dependant, so it must be passed to this function in order to run correctly.
-#     """
-#     print("Installing Virtualbox...")
-#     if operatingSystem == OStypes["mac"]:
-#         _cmd("brew cask install virtualbox")
-#     elif operatingSystem == OStypes["linux"]:
-#         _cmd("sudo apt-get install virtualbox")
-#     elif operatingSystem == OStypes["windows"]:
-#         pass
-#     else:
-#         raise Exception
-
-
 def install_minikube(operatingSystem):
     """
     :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is available)
