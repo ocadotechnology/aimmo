@@ -23,9 +23,6 @@ This can be done either manually or using the setup script.
 - First you get the [brew](https://brew.sh/) package manager. Then:
 - Follow the instructions at [game frontend documentation](https://github.com/ocadotechnology/aimmo/blob/master/game_frontend/README.md) in order to set up the frontend requirements, (you should be in the game_frontend folder for this step).
 - Run `brew install pipenv`, followed by `pipenv install --dev`, then `pipenv shell`. This will get and activate the virtualenv we recommend for the project. (more information on [pipenv](https://pipenv.readthedocs.io/en/latest/))
-
-The game should now be set up to run locally (If you ran the setup script, it will have done these next steps for you). If you wish to be able to run the project with [Kubernetes](https://kubernetes.io/) and containers, follow these next steps:
-
 - Install both [Docker](https://www.docker.com/) and [Virtualbox](https://www.virtualbox.org/wiki/Downloads), using: \* `brew update && brew cask install docker virtualbox`
 - Install a fixed version of Minikube, (current version is 0.25.2, this can be confirmed [here](https://github.com/ocadotechnology/aimmo/blob/b0fd1bf852b1b2630a8546d173798ec9a670c480/.travis.yml#L23)). To get this, run: \* `curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-darwin-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/`
 - To install kubectl (Kubernetes), use: \* `curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.9.4/bin/darwin/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/`
@@ -35,9 +32,8 @@ The game should now be set up to run locally (If you ran the setup script, it wi
 #### To run Kurono:
 
 - Ensure you are inside the python virtualenv, `pipenv shell`.
-- To run **locally**, use: `python run.py`.
-- If you want to run the project with [Kubernetes](https://kubernetes.io/), first run: `minikube start`.
-- Now use `python run.py -k` to run the project using the Kubernetes cluster.
+- First start the agones cluster with: `minikube start -p agones`.
+- Now use `python run.py` to run the project.
 
 ## Ubuntu setup
 
@@ -54,10 +50,6 @@ This can be done either manually or using the setup script.
 - Follow the instructions at [game frontend documentation](https://github.com/ocadotechnology/aimmo/blob/master/game_frontend/README.md) in order to set up the frontend requirements, (you should be in the `game_frontend` folder for this step).
 - Next run `sudo apt-get install python-pip`, followed by `pip install pipenv` to get the [pipenv](https://pipenv.readthedocs.io/en/latest/)) virtual environment.
 - Now use `pipenv install --dev` and `pipenv shell` to get the requirements for the project and enter the virtualenv.
-
-The game should now be set up to run locally (If you ran the setup script, it will have done these next steps for you). If you wish to be able to run the project with [Kubernetes](https://kubernetes.io/) and containers, follow these next steps:
-
-- If not already installed follow the [Virtualbox installation instructions](https://www.virtualbox.org/wiki/Downloads).
 - Install [Snap](https://snapcraft.io/)) using `sudo apt install snapd`.
 - Now run `sudo snap install kubectl --classic` to install kubectl ([Kubernetes](https://kubernetes.io/)).
 - To install [Docker](https://www.docker.com/), either use `sudo apt-get install docker-ce` to install a fixed version of the latest release, or follow the Ubuntu install instructions on the [Docker website](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository).
@@ -67,9 +59,8 @@ The game should now be set up to run locally (If you ran the setup script, it wi
 #### To run Kurono:
 
 - Ensure you are inside the python virtualenv, `pipenv shell`.
-- To run **locally**, use: `python run.py`.
-- If you want to run the project with [Kubernetes](https://kubernetes.io/), first run: `minikube start`.
-- Now use `python run.py -k` to run the project using the Kubernetes cluster.
+- First start the agones cluster with: `minikube start -p agones`.
+- Now use `python run.py` to run the project.
 
 ## Windows setup
 
@@ -88,9 +79,8 @@ The game should now be set up to run locally. If you wish to be able to run the 
 #### To run Kurono:
 
 - Ensure you are inside the python virtualenv, `pipenv shell`.
-- To run **locally**, use: `python run.py`.
-- If you want to run the project with [Kubernetes](https://kubernetes.io/), first run: `minikube start`.
-- Now use `python run.py -k` to run the project using the Kubernetes cluster.
+- First start the agones cluster with: `minikube start -p agones`.
+- Now use `python run.py` to run the project.
 
 ## Useful information
 
