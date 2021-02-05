@@ -7,9 +7,15 @@ fixes:
   - "aimmo-game-creator/::"
 
 ignore:
-  - "aimmo/static/pyodide/**/*"
   - ".travis.yml"
+  - "aimmo_setup.py"
+  - "all_tests.py"
+  - "run.py"
   - "docs/**/*"
+  - "aimmo/static/pyodide/**/*"
+  - "aimmo-game/agones/**/*"
+  - "aimmo_runner/**/*"
+  - "test_utils/**/*"
 
 comment:
   layout: "reach, diff, flags, files"
@@ -17,4 +23,6 @@ comment:
   require_changes: false
   require_base: no
   require_head: yes
-  branches: !master , !development
+  branches:
+    - "!master"
+    - "!development"
