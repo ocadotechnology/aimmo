@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.63.1b147 (2021-02-08)
+### Fix
+* Create and drop temp table in migration (#1458) ([`dee2492`](https://github.com/ocadotechnology/aimmo/commit/dee24924754734094b52bd5d5ee8ce8a4d304bab))
+
 ## v0.63.0 (2021-02-01)
 
 
