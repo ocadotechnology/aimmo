@@ -26,7 +26,11 @@ This can be done either manually or using the setup script.
 - Install both [Docker](https://www.docker.com/) and [Virtualbox](https://www.virtualbox.org/wiki/Downloads), using: \* `brew update && brew cask install docker virtualbox`
 - Install a fixed version of Minikube, (current version is 0.25.2, this can be confirmed [here](https://github.com/ocadotechnology/aimmo/blob/b0fd1bf852b1b2630a8546d173798ec9a670c480/.travis.yml#L23)). To get this, run: \* `curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-darwin-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/`
 - To install kubectl (Kubernetes), use: \* `curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.9.4/bin/darwin/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/`
-- Alter your `/etc/hosts` file by adding the following line to the end of the file: `192.168.99.100 local.aimmo.codeforlife.education`. You may need to use sudo for this step as the file is protected.
+- Install helm: `brew install helm`
+- Add agones repo to helm: `helm repo add agones https://agones.dev/chart/stable && helm repo update`
+- Create a minikube profile for agones: `minikube start -p agones`.
+- Set the minikube profile to agones: `minikube profile agones`, then install agones using helm: `helm install aimmo --namespace agones-system --create-namespace agones/agones`
+- Alter your `/etc/hosts` file by adding the following line to the end of the file: `192.168.99.100 local.aimmo.codeforlife.education`. You may need to use sudo for this step as the file is protected. The IP address may be different on your machine, double check it with `minikube -p agones ssh grep host.minikube.internal /etc/hosts` (get only the IP address from this output)
 - Follow the instructions for [deploying Portainer](https://portainer.io/install.html), to create a dashboard for your local docker containers.
 
 #### To run Kurono:
@@ -53,7 +57,12 @@ This can be done either manually or using the setup script.
 - Install [Snap](https://snapcraft.io/)) using `sudo apt install snapd`.
 - Now run `sudo snap install kubectl --classic` to install kubectl ([Kubernetes](https://kubernetes.io/)).
 - To install [Docker](https://www.docker.com/), either use `sudo apt-get install docker-ce` to install a fixed version of the latest release, or follow the Ubuntu install instructions on the [Docker website](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository).
-- Alter your `/etc/hosts` file by adding the following line to the end of the file: `192.168.99.100 local.aimmo.codeforlife.education`. You may need to use sudo for this step as the file is protected.
+- Install a fixed version of Minikube, (current version is 0.25.2, this can be confirmed [here](https://github.com/ocadotechnology/aimmo/blob/b0fd1bf852b1b2630a8546d173798ec9a670c480/.travis.yml#L23)). To get this, run: \* `curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-darwin-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/`.
+- Install helm: `sudo snap install helm --classic`
+- Add agones repo to helm: `helm repo add agones https://agones.dev/chart/stable && helm repo update`
+- Create a minikube profile for agones: `minikube start -p agones`.
+- Set the minikube profile to agones: `minikube profile agones`, then install agones using helm: `helm install aimmo --namespace agones-system --create-namespace agones/agones`
+- Alter your `/etc/hosts` file by adding the following line to the end of the file: `192.168.49.1 local.aimmo.codeforlife.education`. You may need to use sudo for this step as the file is protected. The IP address may be different on your machine, double check it with `minikube -p agones ssh grep host.minikube.internal /etc/hosts` (get only the IP address from this output)
 - Follow the instructions for [deploying Portainer](https://portainer.io/install.html), to create a dashboard for your local docker containers.
 
 #### To run Kurono:
@@ -70,10 +79,14 @@ This can be done either manually or using the setup script.
 
 The game should now be set up to run locally. If you wish to be able to run the project with [Kubernetes](https://kubernetes.io/) and containers, follow these next steps:
 
-- If not already installed follow the [Virtualbox installation instructions](https://www.virtualbox.org/wiki/Downloads).
 - Next, [download chocolatey](https://chocolatey.org/) and run `choco install kubernetes-cli`.
 - Then follow the [docker installation instructions for Windows](https://docs.docker.com/docker-for-windows/).
-- Alter your `/etc/hosts` file by adding the following line to the end of the file: `192.168.99.100 local.aimmo.codeforlife.education`. You may need admin privileges for this step as the file is protected.
+- Install minikube: `choco install minikube`
+- Install helm: `choco install kubernetes-helm`
+- Add agones repo to helm: `helm repo add agones https://agones.dev/chart/stable && helm repo update`
+- Create a minikube profile for agones: `minikube start -p agones`.
+- Set the minikube profile to agones: `minikube profile agones`, then install agones using helm: `helm install aimmo --namespace agones-system --create-namespace agones/agones`
+- Alter your `/etc/hosts` file by adding the following line to the end of the file: `192.168.99.100 local.aimmo.codeforlife.education`. You may need to use sudo for this step as the file is protected. The IP address may be different on your machine, double check it with `minikube -p agones ssh grep host.minikube.internal /etc/hosts` (get only the IP address from this output)
 - Follow the instructions for [deploying Portainer](https://portainer.io/install.html), to create a dashboard for your local docker containers.
 
 #### To run Kurono:
