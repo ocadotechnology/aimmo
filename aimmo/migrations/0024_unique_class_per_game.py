@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunSQL(
             """
-            CREATE TEMPORARY TABLE aimmo_games_to_delete AS
+            CREATE TEMPORARY TABLE temp.aimmo_games_to_delete AS
             SELECT
                 id
             FROM
@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
                 SELECT
                     id
                 FROM
-                    aimmo_games_to_delete);
+                    temp.aimmo_games_to_delete);
 
             DELETE
             FROM
@@ -52,7 +52,9 @@ class Migration(migrations.Migration):
                 SELECT
                     id
                 FROM
-                    aimmo_games_to_delete);
+                    temp.aimmo_games_to_delete);
+
+            DROP TABLE temp.aimmo_games_to_delete;
             """,
             migrations.RunSQL.noop,
         ),
