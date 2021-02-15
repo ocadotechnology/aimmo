@@ -58,7 +58,7 @@
     "babylon": "^6.18.0",
     "babylonjs": "^4.1.0",
     "core-js": "3",
-    "handlebars": "^4.7.6",
+    "handlebars": "^4.7.7",
     "immer": "^8.0.1",
     "js-cookie": "^2.2.1",
     "lodash.isequal": "^4.5.0",
