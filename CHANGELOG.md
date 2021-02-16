@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.64.0b162 (2021-02-16)
+### Feature
+* Use Agones to manage gameservers (#1439) ([`edc731d`](https://github.com/ocadotechnology/aimmo/commit/edc731de8a4f5222253c69f0e41c1db96e1b556b))
+
 ## v0.63.1b156 (2021-02-10)
 
 
