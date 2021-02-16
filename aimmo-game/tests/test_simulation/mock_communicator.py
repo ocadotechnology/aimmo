@@ -34,3 +34,6 @@ class MockCommunicator(object):
         for i in range(len(users)):
             if users[i]["id"] == avatar_id:
                 users[i]["code"] = new_code
+
+    async def close_session(self, app):
+        pass

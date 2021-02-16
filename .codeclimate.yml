@@ -1,5 +1,5 @@
 ---
-version: "2"
+version: '2'
 plugins:
   csslint:
     enabled: true
@@ -19,15 +19,16 @@ plugins:
   scss-lint:
     enabled: false
 exclude_patterns:
-  - "**/node_modules/"
-  - "**/*.test.js"
-  - "*/tests/**/*.py"
-  - "game/_version.py"
-  - "versioneer.py"
-  - "game_frontend/djangoBundler.js"
-  - "game_frontend/dist/"
-  - "aimmo/avatar_examples/**"
-  - "aimmo/static/pyodide/**"
-  - "aimmo/static/react/"
-  - "example_project/example_project/static"
-  - "build/"
+  - '**/node_modules/'
+  - '**/*.test.js'
+  - '*/tests/**/*.py'
+  - 'game/_version.py'
+  - 'versioneer.py'
+  - 'game_frontend/djangoBundler.js'
+  - 'game_frontend/dist/'
+  - 'aimmo/avatar_examples/**'
+  - 'aimmo/static/pyodide/**'
+  - 'aimmo/static/react/'
+  - 'aimmo-game/agones/**'
+  - 'example_project/example_project/static'
+  - 'build/'

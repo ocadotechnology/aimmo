@@ -36,19 +36,12 @@ def run_command(args, capture_output=False):
 
 
 def run_command_async(args, capture_output=False):
+    env = os.environ.copy()
     if capture_output is True:
-        p = subprocess.Popen(args, stdout=FNULL, stderr=subprocess.STDOUT)
+        p = subprocess.Popen(args, stdout=FNULL, stderr=subprocess.STDOUT, env=env)
     else:
-        p = subprocess.Popen(args)
+        p = subprocess.Popen(args, env=env)
     return p
-
-
-def create_test_bin():
-    try:
-        os.makedirs(TEST_BIN)
-    except OSError as err:
-        if err.errno != errno.EEXIST:
-            raise
 
 
 def binary_exists(filename):

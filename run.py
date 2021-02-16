@@ -10,14 +10,6 @@ logging.basicConfig()
 parser = argparse.ArgumentParser(description="Runs Kurono.")
 
 parser.add_argument(
-    "-k",
-    "--kube",
-    dest="use_minikube",
-    action="store_true",
-    default=False,
-    help="To specify if you want to use your minikube enviroment for Kurono, default is basic docker containers.",
-)
-parser.add_argument(
     "-t",
     "--target",
     dest="build_target",
@@ -45,7 +37,6 @@ if __name__ == "__main__":
         args = parser.parse_args()
 
         runner.run(
-            args.use_minikube,
             using_cypress=args.using_cypress,
             build_target=args.build_target,
         )

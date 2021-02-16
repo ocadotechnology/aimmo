@@ -5,6 +5,7 @@ from json import dumps
 
 from game_manager import TOKEN_MAX_LENGTH, GameManager, KubernetesGameManager
 from httmock import HTTMock
+from unittest.mock import MagicMock, call
 
 
 class ConcreteGameManager(GameManager):
@@ -102,15 +103,61 @@ class TestGameManager(unittest.TestCase):
         self.assertTrue(isinstance(token, str))
         self.assertLessEqual(len(token), TOKEN_MAX_LENGTH)
 
-    def test_make_rc_image_policy(self):
-        # _make_rc is not being called as an instance method here so "self" has to explicitly be passed through
-        game_rc = KubernetesGameManager._make_rc(None, {}, 1, True)
-        self.assertEqual(
-            game_rc.spec.template.spec.containers[0].image_pull_policy, "Never"
+    def test_adding_a_game_creates_game_allocation(self):
+        game_manager = KubernetesGameManager("http://test/*")
+        custom_objects_api = MagicMock()
+        game_manager.custom_objects_api = custom_objects_api
+        game_manager.secret_creator = MagicMock()
+        game_manager.api = MagicMock()
+        game_manager.create_game(1, {"worksheet_id": 1})
+
+        custom_objects_api.create_namespaced_custom_object.assert_called_with(
+            group="allocation.agones.dev",
+            version="v1",
+            namespace="default",
+            plural="gameserverallocations",
+            body={
+                "apiVersion": "allocation.agones.dev/v1",
+                "kind": "GameServerAllocation",
+                "metadata": {"generateName": "game-allocation-"},
+                "spec": {
+                    "required": {"matchLabels": {"agones.dev/fleet": "aimmo-game"}},
+                    "scheduling": "Packed",
+                    "metadata": {
+                        "labels": {"game-id": 1, "worksheet_id": 1},
+                        "annotations": {"game-api-url": "http://test/*1/"},
+                    },
+                },
+            },
         )
 
-        game_rc = KubernetesGameManager._make_rc(None, {}, 1, False)
+    def test_delete_game(self):
+        game_manager = KubernetesGameManager("http://test/*")
+        custom_objects_api = MagicMock()
+        custom_objects_api.list_namespaced_custom_object.return_value = {
+            "items": [{"metadata": {"name": "aimmo-game-100-test"}}]
+        }
+        game_manager.custom_objects_api = custom_objects_api
+        game_manager.secret_creator = MagicMock()
+        game_manager.api = MagicMock()
 
-        self.assertEqual(
-            game_rc.spec.template.spec.containers[0].image_pull_policy, "Always"
+        game_manager.delete_game(100)
+
+        custom_objects_api.assert_has_calls(
+            [
+                call.list_namespaced_custom_object(
+                    group="agones.dev",
+                    version="v1",
+                    namespace="default",
+                    plural="gameservers",
+                    label_selector="game-id=100",
+                ),
+                call.delete_namespaced_custom_object(
+                    group="agones.dev",
+                    version="v1",
+                    namespace="default",
+                    plural="gameservers",
+                    name="aimmo-game-100-test",
+                ),
+            ]
         )

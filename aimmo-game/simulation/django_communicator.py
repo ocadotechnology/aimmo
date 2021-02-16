@@ -13,7 +13,6 @@ class DjangoCommunicator(object):
         timeout = aiohttp.ClientTimeout(total=1)
         self.session = aiohttp.ClientSession(timeout=timeout)
         self.django_api_url = django_api_url
-        self.token_url = self.django_api_url + "token/"
 
     async def get_game_metadata(self):
         try:
@@ -27,7 +26,9 @@ class DjangoCommunicator(object):
 
     async def patch_token(self, data):
         response = await self.session.patch(
-            self.token_url, headers={"Game-token": os.environ["TOKEN"]}, json=data
+            f"{self.django_api_url}token/",
+            headers={"Game-token": os.environ["TOKEN"]},
+            json=data,
         )
         return response
 

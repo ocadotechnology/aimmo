@@ -100,23 +100,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
 ]
 
-
-def get_game_url_base_and_path(game):
-    if os.environ.get("AIMMO_MODE", "") == "minikube":
-        return "local.aimmo.codeforlife.education", "/game-%s" % game
-    else:
-        return "localhost", ""
-
-
-def get_game_port(game):
-    if os.environ.get("AIMMO_MODE", "") == "minikube":
-        return 0
-
-    return 6001 + int(game) * 1000
-
-
-AIMMO_GAME_SERVER_URL_FUNCTION = get_game_url_base_and_path
-AIMMO_GAME_SERVER_PORT_FUNCTION = get_game_port
 AIMMO_GAME_SERVER_SSL_FLAG = False
 
 try:

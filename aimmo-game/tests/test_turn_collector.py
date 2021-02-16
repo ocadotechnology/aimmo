@@ -1,13 +1,9 @@
 from typing import TYPE_CHECKING
 
-import pytest
-from aiohttp import web
 from socketio import AsyncClient
-import asyncio
-
-from turn_collector import TurnCollector
-from .test_socketio import TIME_TO_PROCESS_SOME_EVENT_LOOP
 from turn_collector import CollectedTurnActions
+
+from .test_socketio import TIME_TO_PROCESS_SOME_EVENT_LOOP
 
 
 def test_calling_new_turn_gives_new_collected_turn_actions(turn_collector):
@@ -28,8 +24,9 @@ async def test_new_actions_update_collected_turns(
 
     socketio_client = AsyncClient(reconnection=False)
     await socketio_client.connect(
-        f"http://{client.server.host}:{client.server.port}?avatar_id=1&EIO=3&transport=polling&t=MJhoMgb"
+        f"http://{client.server.host}:{client.server.port}?avatar_id=1"
     )
+    await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
 
     wait_action = {"action": {"action_type": "wait"}, "turnCount": 1}
     await socketio_client.emit("action", wait_action)
@@ -40,8 +37,9 @@ async def test_new_actions_update_collected_turns(
 
     socketio_client_2 = AsyncClient(reconnection=False)
     await socketio_client_2.connect(
-        f"http://{client.server.host}:{client.server.port}?avatar_id=2&EIO=3&transport=polling&t=MJhoMgb"
+        f"http://{client.server.host}:{client.server.port}?avatar_id=2"
     )
+    await socketio_server.sleep(TIME_TO_PROCESS_SOME_EVENT_LOOP)
 
     move_action = {
         "action": {"action_type": "move", "options": {"x": 1, "y": 2}},

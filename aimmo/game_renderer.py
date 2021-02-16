@@ -3,9 +3,13 @@ Any helper functions used for the game.
 """
 from __future__ import absolute_import
 
-from django.shortcuts import render, get_object_or_404
+from django.http import Http404
+from django.shortcuts import get_object_or_404, render
+from kubernetes.client.api.custom_objects_api import CustomObjectsApi
+from kubernetes.client.api_client import ApiClient
 
 from aimmo import app_settings, exceptions
+
 from .models import Game
 
 
@@ -21,10 +25,6 @@ def render_game(request, game):
         "static_data": game.static_data or "{}",
     }
 
-    connection_settings = get_environment_connection_settings(game.id)
-
-    context.update(connection_settings)
-
     return render(request, "players/game_ide.html", context)
 
 
@@ -36,27 +36,28 @@ def get_environment_connection_settings(game_id):
     :param game_id: Integer with the ID of the game.
     :return: A dict object with all relevant settings.
     """
-
     return {
-        "game_url_base": _add_game_port_to_game_base(game_id),
-        "game_url_path": app_settings.GAME_SERVER_URL_FUNCTION(game_id)[1],
+        "game_url_base": get_games_url_base(game_id),
         "game_ssl_flag": app_settings.GAME_SERVER_SSL_FLAG,
         "game_id": game_id,
     }
 
 
-def _add_game_port_to_game_base(game_id):
-    game_base = app_settings.GAME_SERVER_URL_FUNCTION(game_id)[0]
-    game_port = app_settings.GAME_SERVER_PORT_FUNCTION(game_id)
-
-    if _connection_on_k8s_mode(game_port):
-        return game_base
-
-    return "{0}:{1}".format(game_base, game_port)
-
-
-def _connection_on_k8s_mode(game_port):
-    return game_port == 0
+def get_games_url_base(game_id: int) -> str:
+    api_client = ApiClient()
+    api_instance = CustomObjectsApi(api_client)
+    result = api_instance.list_namespaced_custom_object(
+        group="agones.dev",
+        version="v1",
+        namespace="default",
+        plural="gameservers",
+        label_selector=f"game-id={game_id}",
+    )
+    try:
+        game_server_status = result["items"][0]["status"]
+        return f"http://{game_server_status['address']}:{game_server_status['ports'][0]['port']}"
+    except (KeyError, IndexError):
+        raise Http404
 
 
 def get_avatar_id_from_user(user, game_id):
@@ -67,6 +68,7 @@ def get_avatar_id_from_user(user, game_id):
     :param game_id: The game ID in which the avatar is being requested from.
     :return: An integer containing the avatar_ID.
     """
+
     game = get_object_or_404(Game, id=game_id)
     if not game.can_user_play(user):
         raise exceptions.UserCannotPlayGameException
