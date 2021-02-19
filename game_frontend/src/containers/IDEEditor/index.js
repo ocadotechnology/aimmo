@@ -7,8 +7,9 @@ import RunCodeButton from 'components/RunCodeButton'
 import { connect } from 'react-redux'
 import { actions as editorActions } from 'features/Editor'
 
-import 'ace-builds/src-noconflict/theme-idle_fingers'
 import 'ace-builds/src-noconflict/mode-python'
+// The monokai theme is modified and overridden, see handlebars_template.html
+import 'ace-builds/src-noconflict/theme-monokai'
 
 export const IDEEditorLayout = styled.div`
   position: relative;
@@ -86,10 +87,10 @@ export class IDEEditor extends PureComponent {
       return (
         <AceEditor
           mode='python'
-          theme='idle_fingers'
+          theme='monokai'
           name='ace_editor'
           onChange={this.codeChanged}
-          fontSize={this.props.theme.additionalVariables.typography.code.fontSize}
+          fontSize='18px'
           showPrintMargin
           showGutter
           highlightActiveLine
