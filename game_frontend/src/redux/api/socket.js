@@ -7,24 +7,29 @@ import { fromEvent, pipe, merge } from 'rxjs'
 var socketIO
 
 const connectToGame = () =>
-  map(action => {
-    const { game_url_base: gameUrlBase, avatar_id: avatarId } = action.payload.parameters
+  map((action) => {
+    const {
+      game_url_base: gameUrlBase,
+      game_url_path: gameUrlPath,
+      avatar_id: avatarId,
+    } = action.payload.parameters
     socketIO = io(gameUrlBase, {
+      path: gameUrlPath,
       query: {
-        avatar_id: avatarId
-      }
+        avatar_id: avatarId,
+      },
     })
     return socketIO
   })
 
 const listenFor = (eventName, socket, action) =>
-  fromEvent(socket, eventName).pipe(map(event => action(event)))
+  fromEvent(socket, eventName).pipe(map((event) => action(event)))
 
-const emitAction = nextAction => socketIO?.emit('action', nextAction)
+const emitAction = (nextAction) => socketIO?.emit('action', nextAction)
 
 const startListeners = () =>
   pipe(
-    mergeMap(socket =>
+    mergeMap((socket) =>
       merge(
         listenFor('game-state', socket, gameActions.socketGameStateReceived),
         listenFor('log', socket, consoleLogActions.socketConsoleLogReceived)

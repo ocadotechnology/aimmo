@@ -37,27 +37,43 @@ def get_environment_connection_settings(game_id):
     :return: A dict object with all relevant settings.
     """
     return {
-        "game_url_base": get_games_url_base(game_id),
+        "game_url_base": _add_game_port_to_game_base(game_id),
+        "game_url_path": app_settings.GAME_SERVER_URL_FUNCTION(game_id)[1],
         "game_ssl_flag": app_settings.GAME_SERVER_SSL_FLAG,
         "game_id": game_id,
     }
 
 
-def get_games_url_base(game_id: int) -> str:
-    api_client = ApiClient()
-    api_instance = CustomObjectsApi(api_client)
-    result = api_instance.list_namespaced_custom_object(
-        group="agones.dev",
-        version="v1",
-        namespace="default",
-        plural="gameservers",
-        label_selector=f"game-id={game_id}",
-    )
-    try:
-        game_server_status = result["items"][0]["status"]
-        return f"http://{game_server_status['address']}:{game_server_status['ports'][0]['port']}"
-    except (KeyError, IndexError):
-        raise Http404
+def _add_game_port_to_game_base(game_id):
+    game_base = app_settings.GAME_SERVER_URL_FUNCTION(game_id)[0]
+    game_port = app_settings.GAME_SERVER_PORT_FUNCTION(game_id)
+
+    if _connection_on_k8s_mode(game_port):
+        return game_base
+
+    return "{0}:{1}".format(game_base, game_port)
+
+
+def _connection_on_k8s_mode(game_port):
+    return game_port == 0
+
+
+# TODO - remove
+# def get_games_url_base(game_id: int) -> str:
+#     api_client = ApiClient()
+#     api_instance = CustomObjectsApi(api_client)
+#     result = api_instance.list_namespaced_custom_object(
+#         group="agones.dev",
+#         version="v1",
+#         namespace="default",
+#         plural="gameservers",
+#         label_selector=f"game-id={game_id}",
+#     )
+#     try:
+#         game_server_status = result["items"][0]["status"]
+#         return f"http://{game_server_status['address']}:{game_server_status['ports'][0]['port']}"
+#     except (KeyError, IndexError):
+#         raise Http404
 
 
 def get_avatar_id_from_user(user, game_id):
