@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.65.0b170 (2021-02-22)
+### Feature
+* Update console theme to modified monokai, then increase font size to 18px (#1468) ([`87e7eac`](https://github.com/ocadotechnology/aimmo/commit/87e7eacf29a9de73acea56e1854a683b4a4879a4))
+
 ## v0.64.0b166 (2021-02-17)
 
 
