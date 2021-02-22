@@ -101,19 +101,19 @@ class GameManager(object):
     def recreate_game(self, game_to_add):
         """Deletes and recreates the given game"""
         game_id, game_data = game_to_add
-        LOGGER.info("Deleting game {}".format(game_data["name"]))
+        LOGGER.info("Deleting game {}".format(game_id))
         try:
             self.delete_game(game_id)
         except Exception as ex:
-            LOGGER.error("Failed to delete game {}".format(game_data["name"]))
+            LOGGER.error("Failed to delete game {}".format(game_id))
             LOGGER.exception(ex)
 
-        LOGGER.info("Recreating game {}".format(game_data["name"]))
+        LOGGER.info("Recreating game {}".format(game_id))
         try:
             game_data["GAME_API_URL"] = "{}{}/".format(self.games_url, game_id)
             self.create_game(game_id, game_data)
         except Exception as ex:
-            LOGGER.error("Failed to create game {}".format(game_data["name"]))
+            LOGGER.error("Failed to create game {}".format(game_id))
             LOGGER.exception(ex)
 
     def update(self):
@@ -154,7 +154,7 @@ class GameManager(object):
         while True:
             self.update()
             LOGGER.info("Sleeping")
-            time.sleep(10)
+            time.sleep(1)
 
     def _parallel_map(self, func, iterable_args):
         with futures.ThreadPoolExecutor() as executor:
@@ -172,6 +172,12 @@ class KubernetesGameManager(GameManager):
         self.custom_objects_api: CustomObjectsApi = CustomObjectsApi(self.api_client)
 
         super(KubernetesGameManager, self).__init__(*args, **kwargs)
+        self._create_ingress_paths_for_existing_games()
+
+    def _create_ingress_paths_for_existing_games(self):
+        games = self._data.get_games()
+        for game_id in games:
+            self._add_path_to_ingress(game_id)
 
     @staticmethod
     def _create_game_name(game_id):
@@ -181,6 +187,88 @@ class KubernetesGameManager(GameManager):
         :return: A string with the game appended with the id.
         """
         return "game-{}".format(game_id)
+
+    def _add_path_to_ingress(self, game_id):
+        game_name = KubernetesGameManager._create_game_name(game_id)
+        backend = kubernetes.client.NetworkingV1beta1IngressBackend(game_name, 80)
+        path = kubernetes.client.NetworkingV1beta1HTTPIngressPath(
+            backend, f"/{game_name}(/|$)(.*)"
+        )
+
+        patch = [{"op": "add", "path": "/spec/rules/0/http/paths/-", "value": path}]
+
+        self.networking_api.patch_namespaced_ingress("aimmo-ingress", "default", patch)
+
+    def _remove_path_from_ingress(self, game_id):
+        game_name = KubernetesGameManager._create_game_name(game_id)
+        backend = kubernetes.client.NetworkingV1beta1IngressBackend(game_name, 80)
+        path = kubernetes.client.NetworkingV1beta1HTTPIngressPath(
+            backend, f"/{game_name}(/|$)(.*)"
+        )
+        ingress = self.networking_api.list_namespaced_ingress("default").items[0]
+        paths = ingress.spec.rules[0].http.paths
+        try:
+            index_to_delete = paths.index(path)
+        except ValueError:
+            return
+
+        patch = [
+            {
+                "op": "remove",
+                "path": "/spec/rules/0/http/paths/{}".format(index_to_delete),
+            }
+        ]
+
+        self.networking_api.patch_namespaced_ingress("aimmo-ingress", "default", patch)
+
+    def _create_game_service(self, game_id):
+        result = self.custom_objects_api.list_namespaced_custom_object(
+            group="agones.dev",
+            version="v1",
+            namespace="default",
+            plural="gameservers",
+            label_selector=f"game-id={game_id}",
+        )
+        game_servers = result["items"]
+
+        if len(game_servers) == 0:
+            raise Exception(f"No game server found for game ID {game_id}.")
+        elif len(game_servers) > 1:
+            raise Exception(f"More than one game server found for game ID {game_id}.")
+
+        game_server = game_servers[0]
+        game_server_name = game_server["metadata"]["name"]
+
+        service_manifest = kubernetes.client.V1ServiceSpec(
+            selector={"agones.dev/gameserver": game_server_name},
+            ports=[
+                kubernetes.client.V1ServicePort(
+                    name="tcp", protocol="TCP", port=80, target_port=5000
+                )
+            ],
+        )
+
+        service_metadata = kubernetes.client.V1ObjectMeta(
+            name=KubernetesGameManager._create_game_name(game_id),
+            labels={"app": "aimmo-game", "game_id": game_id},
+        )
+
+        service = kubernetes.client.V1Service(
+            metadata=service_metadata, spec=service_manifest
+        )
+        self.api.create_namespaced_service(K8S_NAMESPACE, service)
+
+    def _delete_game_service(self, game_id):
+        app_label = "app=aimmo-game"
+        game_label = "game_id={}".format(game_id)
+
+        resources = self.api.list_namespaced_service(
+            namespace=K8S_NAMESPACE, label_selector=",".join([app_label, game_label])
+        )
+
+        for resource in resources.items:
+            LOGGER.info("Removing service: {}".format(resource.metadata.name))
+            self.api.delete_namespaced_service(resource.metadata.name, K8S_NAMESPACE)
 
     def _create_game_secret(self, game_id):
         name = KubernetesGameManager._create_game_name(game_id) + "-token"
@@ -199,7 +287,7 @@ class KubernetesGameManager(GameManager):
         )
 
         for resource in resources.items:
-            LOGGER.info("Removing: {}".format(resource.metadata.name))
+            LOGGER.info("Removing game secret: {}".format(resource.metadata.name))
             self.api.delete_namespaced_secret(resource.metadata.name, K8S_NAMESPACE)
 
     def _create_game_server_allocation(
@@ -257,9 +345,13 @@ class KubernetesGameManager(GameManager):
     def create_game(self, game_id, game_data):
         self._create_game_secret(game_id)
         self._create_game_server_allocation(game_id, game_data["worksheet_id"])
+        self._create_game_service(game_id)
+        self._add_path_to_ingress(game_id)
         LOGGER.info("Game started - {}".format(game_id))
 
     def delete_game(self, game_id):
+        self._remove_path_from_ingress(game_id)
+        self._delete_game_service(game_id)
         self._delete_game_server(game_id)
         self._delete_game_secret(game_id)
 
