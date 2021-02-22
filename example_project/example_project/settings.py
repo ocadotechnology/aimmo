@@ -36,9 +36,11 @@
 # identified as the original program.
 """Django settings for example_project project."""
 import os
-import subprocess
 import mimetypes
 
+from django.http import Http404
+from kubernetes.client.api.custom_objects_api import CustomObjectsApi
+from kubernetes.client.api_client import ApiClient
 
 ALLOWED_HOSTS = ["*"]
 
@@ -100,6 +102,28 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
 ]
 
+
+def get_game_url_base_and_path(game_id: int) -> str:
+    api_client = ApiClient()
+    api_instance = CustomObjectsApi(api_client)
+    result = api_instance.list_namespaced_custom_object(
+        group="agones.dev",
+        version="v1",
+        namespace="default",
+        plural="gameservers",
+        label_selector=f"game-id={game_id}",
+    )
+    try:
+        game_server_status = result["items"][0]["status"]
+        return (
+            f"http://{game_server_status['address']}:{game_server_status['ports'][0]['port']}",
+            "/socket.io",
+        )
+    except (KeyError, IndexError):
+        raise Http404
+
+
+AIMMO_GAME_SERVER_URL_FUNCTION = get_game_url_base_and_path
 AIMMO_GAME_SERVER_SSL_FLAG = False
 
 try:
