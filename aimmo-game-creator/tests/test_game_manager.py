@@ -109,6 +109,8 @@ class TestGameManager(unittest.TestCase):
         game_manager.custom_objects_api = custom_objects_api
         game_manager.secret_creator = MagicMock()
         game_manager.api = MagicMock()
+        game_manager._create_game_service = MagicMock(1)
+        game_manager._add_path_to_ingress = MagicMock(1)
         game_manager.create_game(1, {"worksheet_id": 1})
 
         custom_objects_api.create_namespaced_custom_object.assert_called_with(
@@ -140,6 +142,8 @@ class TestGameManager(unittest.TestCase):
         game_manager.custom_objects_api = custom_objects_api
         game_manager.secret_creator = MagicMock()
         game_manager.api = MagicMock()
+        game_manager._remove_path_from_ingress = MagicMock(1)
+        game_manager._delete_game_service = MagicMock(1)
 
         game_manager.delete_game(100)
 
