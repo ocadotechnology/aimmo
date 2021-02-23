@@ -254,15 +254,11 @@ class TestViews(TestCase):
 
         assert first_response.status_code == 403
 
-    @patch("aimmo.game_renderer.CustomObjectsApi")
-    def test_id_of_connection_parameters_same_as_games_url(self, custom_objects_api):
+    def test_id_of_connection_parameters_same_as_games_url(self):
         """
         Ensures that the id's are consistent throughout the project. Check for ID's received
         by the current_avatar URL as well as the games URL api.
         """
-        custom_objects_api.list_namespaced_custom_object.return_value = {
-            "items": [{"status": {"address": "base", "ports": [{"port": 4321}]}}]
-        }
         user = self.user
         models.Avatar(owner=user, code=self.CODE, game=self.game).save()
         client = self.login()
