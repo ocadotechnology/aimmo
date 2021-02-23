@@ -3,9 +3,6 @@ coverage:
   round: down
   range: "70...100"
 
-fixes:
-  - "aimmo-game-creator/::"
-
 ignore:
   - ".travis.yml"
   - "aimmo_setup.py"
