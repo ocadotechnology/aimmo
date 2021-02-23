@@ -106,11 +106,13 @@ class TestGameManager(unittest.TestCase):
     def test_adding_a_game_creates_game_allocation(self):
         game_manager = KubernetesGameManager("http://test/*")
         custom_objects_api = MagicMock()
+        custom_objects_api.list_namespaced_custom_object = MagicMock(
+            return_value={"items": [{"metadata": {"name": "test"}}]}
+        )
         game_manager.custom_objects_api = custom_objects_api
         game_manager.secret_creator = MagicMock()
         game_manager.api = MagicMock()
-        game_manager._create_game_service = MagicMock(1)
-        game_manager._add_path_to_ingress = MagicMock(1)
+        game_manager.networking_api = MagicMock()
         game_manager.create_game(1, {"worksheet_id": 1})
 
         custom_objects_api.create_namespaced_custom_object.assert_called_with(
@@ -142,8 +144,7 @@ class TestGameManager(unittest.TestCase):
         game_manager.custom_objects_api = custom_objects_api
         game_manager.secret_creator = MagicMock()
         game_manager.api = MagicMock()
-        game_manager._remove_path_from_ingress = MagicMock(1)
-        game_manager._delete_game_service = MagicMock(1)
+        game_manager.networking_api = MagicMock()
 
         game_manager.delete_game(100)
 
