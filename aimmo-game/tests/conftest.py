@@ -1,8 +1,9 @@
 import os
 
 import pytest
+from activity_monitor import ActivityMonitor
 from aioresponses import aioresponses
-
+from mock import MagicMock
 from service import GameAPI, setup_application, setup_socketIO_server
 from simulation.game_runner import GameRunner
 from turn_collector import TurnCollector
@@ -27,12 +28,12 @@ def game_id():
 
 @pytest.fixture
 def app():
-    return setup_application(should_clean_token=False)
+    return setup_application(MockCommunicator(), should_clean_token=False)
 
 
 @pytest.fixture
 def socketio_server(app):
-    return setup_socketIO_server(app, async_handlers=False)
+    return setup_socketIO_server(app)
 
 
 @pytest.fixture
@@ -42,16 +43,20 @@ def turn_collector(socketio_server):
 
 @pytest.fixture
 def game_api(app, turn_collector, socketio_server, game_id):
+    communicator = MockCommunicator()
     game_runner = GameRunner(
         game_state_generator=lambda avatar_manager: MockGameState(
             None, MockAvatarManager()
         ),
-        communicator=MockCommunicator(),
+        communicator=communicator,
         port="0000",
         turn_collector=turn_collector,
     )
     return GameAPI(
-        game_state=game_runner.game_state, application=app, server=socketio_server,
+        game_state=game_runner.game_state,
+        application=app,
+        socketio_server=socketio_server,
+        activity_monitor=MagicMock(),
     )
 
 

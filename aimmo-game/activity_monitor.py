@@ -5,8 +5,6 @@ Module for keeping track of inactivity for a given game.
 import asyncio
 import logging
 from enum import Enum
-
-from requests import codes
 from types import CoroutineType
 from typing import TYPE_CHECKING
 
@@ -70,8 +68,8 @@ class ActivityMonitor:
             {"status": StatusOptions.STOPPED.value}
         )
 
-        if response.status != codes["ok"]:
-            LOGGER.error(f"Game could not be stopped. {response}")
+        if response.status != 200:
+            LOGGER.error(f"Game status could not be changed: {response}")
 
 
 class Timer:

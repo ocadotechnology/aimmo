@@ -16,6 +16,7 @@ from aimmo import app_settings, models
 from aimmo.models import Game, Worksheet
 from aimmo.serializers import GameSerializer
 from aimmo.views import get_avatar_id
+from unittest.mock import patch
 
 app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
     "base %s" % game_id,
@@ -136,9 +137,6 @@ class TestViews(TestCase):
         c = self.login()
         response = c.get(reverse("kurono/play", kwargs={"id": 1}))
         assert response.status_code == 200
-        assert response.context["current_user_player_key"] == self.user.pk
-        assert response.context["game_url_base"] == "base 1"
-        assert response.context["game_url_path"] == "path 1"
 
     def test_play_for_non_existent_game(self):
         c = self.login()

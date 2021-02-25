@@ -20,7 +20,7 @@ def create_docker_client(use_raw_env=False, minikube=None):
     """
     if use_raw_env:
         raw_env_settings = run_command(
-            [minikube, "docker-env", '--shell="bash"'], True
+            [minikube, "--profile", "agones", "docker-env", '--shell="bash"'], True
         ).decode("utf-8")
         matches = re.finditer(r'^export (.+)="(.+)"$', raw_env_settings, re.MULTILINE)
         env_variables = dict([(m.group(1), m.group(2)) for m in matches])
@@ -45,10 +45,10 @@ def build_docker_images(minikube=None, build_target=None):
     else:
         client = create_docker_client(use_raw_env=False, minikube=minikube)
 
-    directories = ("aimmo-game", "aimmo-game-creator", "aimmo-game-worker")
-    for dir in directories:
-        path = os.path.join(BASE_DIR, dir)
-        tag = "ocadotechnology/%s:test" % dir
+    directories = ("aimmo-game", "aimmo-game-creator")
+    for directory in directories:
+        path = os.path.join(BASE_DIR, directory)
+        tag = "ocadotechnology/%s:test" % directory
         print("Building %s..." % tag)
         client.images.build(
             path=path, tag=tag, encoding="gzip", target=build_target, rm=True

@@ -1,63 +1,28 @@
 #!/user/bin/env python
-from __future__ import absolute_import
-from __future__ import print_function
-
+import atexit
 import os
 import platform
-import socket
-import time
-from subprocess import CalledProcessError
 
 import kubernetes
 import yaml
+from kubernetes.client import AppsV1Api
+from kubernetes.config import load_kube_config
 
 from .docker_scripts import build_docker_images
-from .shell_api import BASE_DIR, create_test_bin, run_command
+from .shell_api import BASE_DIR, run_command
 
 MINIKUBE_EXECUTABLE = "minikube"
-TIME_FOR_COMPONENTS_TO_DELETE = 5
 
 
 def get_ip():
-    """
-    Get a single primary IP address. This will not return all IPs in the
-    interface. See http://stackoverflow.com/a/28950776/671626
-    :return: Integer with the IP of the user.
-    """
-    os_name = platform.system()
-    if os_name == "Darwin":
-        return "192.168.64.1"
-
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-    # noinspection PyBroadException
-    try:
-        # doesn't even have to be reachable
-        client_socket.connect(("10.255.255.255", 0))
-        IP = client_socket.getsockname()[0]
-    except:
-        IP = "127.0.0.1"
-    finally:
-        client_socket.close()
-    return IP
-
-
-def enable_ingress_addon(minikube):
-    """
-    Start Ingress. If it's already started, this command still succeeds.
-    :param minikube: Executable minikube installed beforehand.
-    """
-    run_command([minikube, "addons", "enable", "ingress"])
-
-
-def create_ingress_yaml():
-    """
-    Loads a ingress yaml file into a python object.
-    """
-    path = os.path.join(BASE_DIR, "ingress.yaml")
-    with open(path) as yaml_file:
-        content = yaml.safe_load(yaml_file.read())
-    return content
+    internal_ip = str(
+        run_command(
+            "minikube -p agones ssh grep host.minikube.internal /etc/hosts".split(),
+            capture_output=True,
+        ).split()[0],
+        "utf-8",
+    )
+    return internal_ip
 
 
 def create_creator_yaml():
@@ -65,81 +30,41 @@ def create_creator_yaml():
     Loads a replication controller yaml file into a python object.
     """
     orig_path = os.path.join(
-        BASE_DIR, "aimmo-game-creator", "rc-aimmo-game-creator.yaml"
+        BASE_DIR, "aimmo-game-creator", "aimmo-game-creator-deployment.yaml"
     )
     with open(orig_path) as orig_file:
         content = yaml.safe_load(
-            orig_file.read()
-            .replace("latest", "test")
-            .replace("REPLACE_ME", "http://%s:8000/kurono/api/games/" % get_ip())
+            orig_file.read().replace(
+                "REPLACE_ME", f"http://{get_ip()}:8000/kurono/api/games/"
+            )
         )
     return content
 
 
-def start_cluster(minikube):
-    """
-    Starts the cluster unless it has been already started by the user.
-    :param minikube: Executable minikube installed beforehand.
-    """
-    try:
-        run_command([minikube, "status"], True)
-        print("Cluster already running")
-    except CalledProcessError:
-        run_command([minikube, "start", "--memory=2048", "--cpus=2"])
-
-
-def delete_components(api_instance, apps_api_instance, networking_api_instance):
-    for rs in apps_api_instance.list_namespaced_replica_set("default").items:
-        apps_api_instance.delete_namespaced_replica_set(
+def delete_components():
+    apps_api_instance = AppsV1Api()
+    for rs in apps_api_instance.list_namespaced_deployment("default").items:
+        apps_api_instance.delete_namespaced_deployment(
             body=kubernetes.client.V1DeleteOptions(),
             name=rs.metadata.name,
             namespace="default",
             grace_period_seconds=0,
         )
-    for rc in api_instance.list_namespaced_replication_controller("default").items:
-        api_instance.delete_namespaced_replication_controller(
-            body=kubernetes.client.V1DeleteOptions(),
-            name=rc.metadata.name,
-            namespace="default",
-            grace_period_seconds=0,
-        )
-    for pod in api_instance.list_namespaced_pod("default").items:
-        api_instance.delete_namespaced_pod(
-            body=kubernetes.client.V1DeleteOptions(),
-            name=pod.metadata.name,
-            namespace="default",
-            grace_period_seconds=0,
-        )
-    for service in api_instance.list_namespaced_service("default").items:
-        api_instance.delete_namespaced_service(
-            name=service.metadata.name, namespace="default"
-        )
-    for ingress in networking_api_instance.list_namespaced_ingress("default").items:
-        networking_api_instance.delete_namespaced_ingress(
-            name=ingress.metadata.name,
-            namespace="default",
-            body=kubernetes.client.V1DeleteOptions(),
-        )
+    delete_fleet_on_exit()
 
 
-def restart_pods(game_creator_yaml, ingress_yaml):
+def restart_pods(game_creator_yaml):
     """
     Disables all the components running in the cluster and starts them again
     with fresh updated state.
     :param game_creator_yaml: Replication controller yaml settings file.
-    :param ingress_yaml: Ingress yaml settings file.
     """
     print("Restarting pods")
-    kubernetes.config.load_kube_config(context="minikube")
-    api_instance = kubernetes.client.CoreV1Api()
-    apps_api_instance = kubernetes.client.AppsV1Api()
-    networking_api_instance = kubernetes.client.NetworkingV1beta1Api()
 
-    delete_components(api_instance, apps_api_instance, networking_api_instance)
-    time.sleep(TIME_FOR_COMPONENTS_TO_DELETE)
+    run_command(["kubectl", "create", "-f", "agones/fleet.yml"])
 
-    networking_api_instance.create_namespaced_ingress("default", ingress_yaml)
-    apps_api_instance.create_namespaced_replica_set(
+    apps_api_instance = AppsV1Api()
+    apps_api_instance.create_namespaced_deployment(
         body=game_creator_yaml, namespace="default"
     )
 
@@ -152,6 +77,20 @@ def create_roles():
     run_command(["kubectl", "apply", "-Rf", "rbac"])
 
 
+def delete_fleet_on_exit():
+    print("Exiting")
+    print("Deleting aimmo-game fleet")
+    run_command(
+        [
+            "kubectl",
+            "delete",
+            "fleet",
+            "aimmo-game",
+            "--ignore-not-found",
+        ]
+    )
+
+
 def start(build_target=None):
     """
     The entry point to the minikube class. Sends calls appropriately to set
@@ -159,13 +98,14 @@ def start(build_target=None):
     """
     if platform.machine().lower() not in ("amd64", "x86_64"):
         raise ValueError("Requires 64-bit")
-    create_test_bin()
     os.environ["MINIKUBE_PATH"] = MINIKUBE_EXECUTABLE
-    start_cluster(MINIKUBE_EXECUTABLE)
-    enable_ingress_addon(MINIKUBE_EXECUTABLE)
+
+    # We assume the minikube was started with a profile called "agones"
+    load_kube_config(context="agones")
+
     create_roles()
     build_docker_images(MINIKUBE_EXECUTABLE, build_target=build_target)
-    ingress = create_ingress_yaml()
     game_creator = create_creator_yaml()
-    restart_pods(game_creator, ingress)
+    restart_pods(game_creator)
+    atexit.register(delete_components)
     print("Cluster ready")

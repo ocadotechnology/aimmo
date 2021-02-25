@@ -5,8 +5,6 @@ from itertools import tee
 from queue import PriorityQueue
 from typing import Any
 
-from six.moves import range, zip
-
 from simulation.direction import ALL_DIRECTIONS
 from simulation.game_state import GameState
 from simulation.location import Location
@@ -32,8 +30,8 @@ class _BaseGenerator(object):
 
 class Main(_BaseGenerator):
     def get_map(self):
-        height = self.settings["START_HEIGHT"]
-        width = self.settings["START_WIDTH"]
+        height = self.settings.get("START_HEIGHT", 31)
+        width = self.settings.get("START_WIDTH", 31)
         world_map = WorldMap.generate_empty_map(height, width, self.settings)
 
         # We set one non-corner edge cell as empty, to ensure that the map can be expanded
@@ -41,9 +39,8 @@ class Main(_BaseGenerator):
         always_empty_location = Location(always_empty_edge_x, always_empty_edge_y)
 
         for cell in shuffled(world_map.all_cells()):
-            if (
-                cell.location != always_empty_location
-                and random.random() < self.settings["OBSTACLE_RATIO"]
+            if cell.location != always_empty_location and random.random() < self.settings.get(
+                "OBSTACLE_RATIO", 0.1
             ):
                 cell.obstacle = Obstacle.make_obstacle()
                 # So long as all habitable neighbours can still reach each other, then the
