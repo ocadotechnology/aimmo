@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v0.65.1 (2021-02-25)
+
+
 ## v0.65.1b177 (2021-02-23)
 ### Fix
 * Agones fixes (#1469) ([`b9208c0`](https://github.com/ocadotechnology/aimmo/commit/b9208c0f98fa446dd62eaf3b6a90b3cf662b8bad))
