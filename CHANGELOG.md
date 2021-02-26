@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.65.3b204 (2021-02-26)
+### Fix
+* Catch exc when removing path (#1474) ([`40e7e1e`](https://github.com/ocadotechnology/aimmo/commit/40e7e1e2a1575b9824089891c6dcc5094458784d))
+
 ## v0.65.2b199 (2021-02-26)
 ### Fix
 * Get game server name from game allocation (#1471) ([`05d1e95`](https://github.com/ocadotechnology/aimmo/commit/05d1e95d8e462438f46f095cdf462f3e52646a1f))
