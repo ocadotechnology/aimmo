@@ -205,7 +205,11 @@ class KubernetesGameManager(GameManager):
         path = kubernetes.client.NetworkingV1beta1HTTPIngressPath(
             backend, f"/{game_name}(/|$)(.*)"
         )
-        ingress = self.networking_api.list_namespaced_ingress("default").items[0]
+        try:
+            ingress = self.networking_api.list_namespaced_ingress("default").items[0]
+        except IndexError:
+            LOGGER.warning("No ingress found to remove path from.")
+            return
         paths = ingress.spec.rules[0].http.paths
         try:
             index_to_delete = paths.index(path)
@@ -221,24 +225,7 @@ class KubernetesGameManager(GameManager):
 
         self.networking_api.patch_namespaced_ingress("aimmo-ingress", "default", patch)
 
-    def _create_game_service(self, game_id):
-        result = self.custom_objects_api.list_namespaced_custom_object(
-            group="agones.dev",
-            version="v1",
-            namespace="default",
-            plural="gameservers",
-            label_selector=f"game-id={game_id}",
-        )
-        game_servers = result["items"]
-
-        if len(game_servers) == 0:
-            raise Exception(f"No game server found for game ID {game_id}.")
-        elif len(game_servers) > 1:
-            raise Exception(f"More than one game server found for game ID {game_id}.")
-
-        game_server = game_servers[0]
-        game_server_name = game_server["metadata"]["name"]
-
+    def _create_game_service(self, game_id, game_server_name):
         service_manifest = kubernetes.client.V1ServiceSpec(
             selector={"agones.dev/gameserver": game_server_name},
             ports=[
@@ -292,7 +279,7 @@ class KubernetesGameManager(GameManager):
 
     def _create_game_server_allocation(
         self, game_id: int, worksheet_id: int, retry_count: int = 0
-    ):
+    ) -> str:
         result = self.custom_objects_api.create_namespaced_custom_object(
             group="allocation.agones.dev",
             version="v1",
@@ -318,10 +305,15 @@ class KubernetesGameManager(GameManager):
             },
         )
         if result["status"]["state"] == "UnAllocated" and retry_count < 5:
+            LOGGER.warning(
+                f"Failed to create game, retrying... retry_count={retry_count}"
+            )
             time.sleep(5)
-            self._create_game_server_allocation(
+            return self._create_game_server_allocation(
                 game_id, worksheet_id, retry_count=retry_count + 1
             )
+        else:
+            return result["status"]["gameServerName"]
 
     def _delete_game_server(self, game_id):
         result = self.custom_objects_api.list_namespaced_custom_object(
@@ -344,8 +336,10 @@ class KubernetesGameManager(GameManager):
 
     def create_game(self, game_id, game_data):
         self._create_game_secret(game_id)
-        self._create_game_server_allocation(game_id, game_data["worksheet_id"])
-        self._create_game_service(game_id)
+        game_server_name = self._create_game_server_allocation(
+            game_id, game_data["worksheet_id"]
+        )
+        self._create_game_service(game_id, game_server_name)
         self._add_path_to_ingress(game_id)
         LOGGER.info("Game started - {}".format(game_id))
 
