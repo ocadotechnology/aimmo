@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v0.65.3 (2021-02-26)
+
+
 ## v0.65.3b204 (2021-02-26)
 ### Fix
 * Catch exc when removing path (#1474) ([`40e7e1e`](https://github.com/ocadotechnology/aimmo/commit/40e7e1e2a1575b9824089891c6dcc5094458784d))
