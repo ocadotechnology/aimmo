@@ -166,3 +166,7 @@ class TestGameManager(unittest.TestCase):
                 ),
             ]
         )
+
+        # Test again with no ingress
+        game_manager.networking_api.list_namespaced_ingress.return_value.items = []
+        game_manager.delete_game(100)
