@@ -205,7 +205,11 @@ class KubernetesGameManager(GameManager):
         path = kubernetes.client.NetworkingV1beta1HTTPIngressPath(
             backend, f"/{game_name}(/|$)(.*)"
         )
-        ingress = self.networking_api.list_namespaced_ingress("default").items[0]
+        try:
+            ingress = self.networking_api.list_namespaced_ingress("default").items[0]
+        except IndexError:
+            LOGGER.warning("No ingress found to remove path from.")
+            return
         paths = ingress.spec.rules[0].http.paths
         try:
             index_to_delete = paths.index(path)
