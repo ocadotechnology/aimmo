@@ -4,12 +4,14 @@ import os
 
 import google.cloud.logging
 from google.auth.exceptions import DefaultCredentialsError
+from kubernetes.config import load_incluster_config
 
 from game_manager import GAME_MANAGERS
 
 
 def main():
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
+    load_incluster_config()
     try:
         logging_client = google.cloud.logging.Client()
         logging_client.get_default_handler()
@@ -27,11 +29,4 @@ def main():
 
 
 if __name__ == "__main__":
-    # Create a place to store game tokens for local mode.
-    if not os.path.exists("/tokens"):
-        os.makedirs("/tokens")
-
-    with open("/tokens/local_tokens.json", "w+") as f:
-        f.write("{}")
-
     main()

@@ -27,6 +27,7 @@
     "@typescript-eslint/parser": "^2.23.0",
     "babel-eslint": "^10.1.0",
     "babel-plugin-module-resolver": "^3.2.0",
+    "babel-plugin-transform-optional-chaining": "^7.0.0-beta.3",
     "cypress": "^4.7.0",
     "cypress-pipe": "^1.7.0",
     "cypress-terminal-report": "^1.4.2",
@@ -72,7 +73,7 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-observable": "^1.1.0",
     "rxjs": "^6.5.2",
-    "socket.io-client": "^2.1.1",
+    "socket.io-client": "^3.0.4",
     "styled-components": "^5.2.0",
     "threads": "^1.6.3",
     "webfontloader": "^1.6.28"

@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.WARNING)
 
 class TestAimmoGameCreatorYaml(TestCase):
     def setUp(self):
-        with open("rc-aimmo-game-creator.yaml", "r") as stream:
+        with open("aimmo-game-creator-deployment.yaml", "r") as stream:
             try:
                 self.yaml_dict = yaml.load(stream)
             except yaml.YAMLError as exc:

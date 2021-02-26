@@ -4,17 +4,25 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-aimmo-game = {path = ".",editable = true}
+aimmo-game = { path = ".", editable = true }
 docker = "*"
 kubernetes = "*"
 prometheus-client = "*"
 aioresponses = "*"
+grpcio = "*"
+protobuf = "*"
+aiohttp = "*"
+idna-ssl = "*"
+google-api-python-client = "*"
+google-cloud-logging = "*"
+python-socketio = "5.0.3"
+eventlet = "*"
 
 [dev-packages]
 pytest = "*"
 pytest-mock = "*"
 pytest-asyncio = "*"
-black = "==19.10b0"
+black = "==20.8b1"
 httmock = "*"
 asynctest = "*"
 hypothesis = "*"

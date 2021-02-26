@@ -33,6 +33,7 @@
       "@babel/plugin-proposal-class-properties",
       {},
       "class-properties"
-    ]
+    ],
+    "transform-optional-chaining"
   ]
 }

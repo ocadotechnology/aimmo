@@ -29,36 +29,32 @@ class TestAction(unittest.TestCase):
         action.MoveAction(self.avatar, {"x": 0, "y": 1}).process(game_state.world_map)
 
         target_cell = game_state.world_map.get_cell(NORTH_OF_ORIGIN)
-        self.assertEqual(self.avatar.location, NORTH_OF_ORIGIN)
-        self.assertEqual(self.avatar, target_cell.avatar)
+        assert self.avatar.location == NORTH_OF_ORIGIN
+        assert self.avatar == target_cell.avatar
 
-        self.assertEqual(
-            self.avatar.events, [event.MovedEvent(ORIGIN, NORTH_OF_ORIGIN)]
-        )
+        assert self.avatar.events == [event.MovedEvent(ORIGIN, NORTH_OF_ORIGIN)]
 
         # Move east
         self.setUp()
         game_state = GameState(InfiniteMap(), self.avatar_manager)
         action.MoveAction(self.avatar, {"x": 1, "y": 0}).process(game_state.world_map)
 
-        self.assertEqual(self.avatar.location, EAST_OF_ORIGIN)
-        self.assertEqual(self.avatar.events, [event.MovedEvent(ORIGIN, EAST_OF_ORIGIN)])
+        assert self.avatar.location == EAST_OF_ORIGIN
+        assert self.avatar.events == [event.MovedEvent(ORIGIN, EAST_OF_ORIGIN)]
 
     def test_successful_move_east_twice_action(self):
         game_state = GameState(InfiniteMap(), self.avatar_manager)
         action.MoveAction(self.avatar, {"x": 1, "y": 0}).process(game_state.world_map)
         action.MoveAction(self.avatar, {"x": 1, "y": 0}).process(game_state.world_map)
 
-        self.assertEqual(self.avatar.location, Location(2, 0))
+        assert self.avatar.location == Location(2, 0)
 
     def test_failed_move_action(self):
         game_state = GameState(EmptyMap(), self.avatar_manager)
         action.MoveAction(self.avatar, {"x": 0, "y": 1}).process(game_state.world_map)
 
-        self.assertEqual(self.avatar.location, ORIGIN)
-        self.assertEqual(
-            self.avatar.events, [event.FailedMoveEvent(ORIGIN, NORTH_OF_ORIGIN)]
-        )
+        assert self.avatar.location == ORIGIN
+        assert self.avatar.events == [event.FailedMoveEvent(ORIGIN, NORTH_OF_ORIGIN)]
 
     def test_successful_attack_action(self):
         game_state = GameState(AvatarMap(self.other_avatar), self.avatar_manager)
@@ -67,46 +63,35 @@ class TestAction(unittest.TestCase):
         target_location = NORTH_OF_ORIGIN
         damage_dealt = 1
 
-        self.assertEqual(self.avatar.location, ORIGIN)
-        self.assertEqual(self.other_avatar.location, EAST_OF_ORIGIN)
-        self.assertEqual(self.other_avatar.times_died, 0)
-        self.assertEqual(self.other_avatar.health, 4)
+        assert self.avatar.location == ORIGIN
+        assert self.other_avatar.location == EAST_OF_ORIGIN
+        assert self.other_avatar.times_died == 0
+        assert self.other_avatar.health == 4
 
-        self.assertEqual(
-            self.avatar.events,
-            [
-                event.PerformedAttackEvent(
-                    self.other_avatar, target_location, damage_dealt
-                )
-            ],
-        )
-        self.assertEqual(
-            self.other_avatar.events,
-            [event.ReceivedAttackEvent(self.avatar, damage_dealt)],
-        )
+        assert self.avatar.events == [
+            event.PerformedAttackEvent(self.other_avatar, target_location, damage_dealt)
+        ]
+        assert self.other_avatar.events == [
+            event.ReceivedAttackEvent(self.avatar, damage_dealt)
+        ]
 
     def test_successful_multiple_attack_actions(self):
         game_state = GameState(AvatarMap(self.other_avatar), self.avatar_manager)
         action.AttackAction(self.avatar, {"x": 0, "y": 1}).process(game_state.world_map)
 
-        self.assertEqual(
-            self.other_avatar.events, [event.ReceivedAttackEvent(self.avatar, 1)]
-        )
+        assert self.other_avatar.events == [event.ReceivedAttackEvent(self.avatar, 1)]
 
         action.AttackAction(self.avatar, {"x": 0, "y": 1}).process(game_state.world_map)
 
-        self.assertEqual(
-            self.other_avatar.events,
-            [
-                event.ReceivedAttackEvent(self.avatar, 1),
-                event.ReceivedAttackEvent(self.avatar, 1),
-            ],
-        )
+        assert self.other_avatar.events == [
+            event.ReceivedAttackEvent(self.avatar, 1),
+            event.ReceivedAttackEvent(self.avatar, 1),
+        ]
 
-        self.assertEqual(self.avatar.location, ORIGIN)
-        self.assertEqual(self.other_avatar.location, EAST_OF_ORIGIN)
-        self.assertEqual(self.other_avatar.times_died, 0)
-        self.assertEqual(self.other_avatar.health, 3)
+        assert self.avatar.location == ORIGIN
+        assert self.other_avatar.location == EAST_OF_ORIGIN
+        assert self.other_avatar.times_died == 0
+        assert self.other_avatar.health == 3
 
     def test_failed_attack_action(self):
         game_state = GameState(InfiniteMap(), self.avatar_manager)
@@ -114,10 +99,10 @@ class TestAction(unittest.TestCase):
 
         target_location = NORTH_OF_ORIGIN
 
-        self.assertEqual(self.avatar.location, ORIGIN)
-        self.assertEqual(self.other_avatar.location, EAST_OF_ORIGIN)
-        self.assertEqual(self.avatar.events, [event.FailedAttackEvent(target_location)])
-        self.assertEqual(self.other_avatar.events, [])
+        assert self.avatar.location == ORIGIN
+        assert self.other_avatar.location == EAST_OF_ORIGIN
+        assert self.avatar.events == [event.FailedAttackEvent(target_location)]
+        assert self.other_avatar.events == []
 
     def test_avatar_dies(self):
         self.other_avatar.health = 1
@@ -126,50 +111,41 @@ class TestAction(unittest.TestCase):
 
         target_location = NORTH_OF_ORIGIN
         damage_dealt = 1
-        self.assertEqual(
-            self.avatar.events,
-            [
-                event.PerformedAttackEvent(
-                    self.other_avatar, target_location, damage_dealt
-                )
-            ],
-        )
-        self.assertEqual(
-            self.other_avatar.events,
-            [event.ReceivedAttackEvent(self.avatar, damage_dealt)],
-        )
+        assert self.avatar.events == [
+            event.PerformedAttackEvent(self.other_avatar, target_location, damage_dealt)
+        ]
+        assert self.other_avatar.events == [
+            event.ReceivedAttackEvent(self.avatar, damage_dealt)
+        ]
 
-        self.assertEqual(self.avatar.location, ORIGIN)
-        self.assertEqual(self.other_avatar.health, 0)
-        self.assertEqual(self.other_avatar.times_died, 1)
-        self.assertEqual(self.other_avatar.location, Location(10, 10))
+        assert self.avatar.location == ORIGIN
+        assert self.other_avatar.health == 0
+        assert self.other_avatar.times_died == 1
+        assert self.other_avatar.location == Location(10, 10)
 
     def test_no_move_in_wait(self):
         game_state = GameState(InfiniteMap(), self.avatar_manager)
         action.WaitAction(self.avatar).process(game_state.world_map)
-        self.assertEqual(self.avatar.location, ORIGIN)
+        assert self.avatar.location == ORIGIN
 
     def test_successful_pickup_action(self):
         game_state = GameState(PickupMap(Artefact), self.avatar_manager)
         game_state.world_map.setup_cell(self.avatar.location)
         artefact = game_state.world_map.get_cell(self.avatar.location).interactable
 
-        self.assertEquals(artefact.in_backpack, False)
+        assert artefact.in_backpack == False
 
         action.PickupAction(self.avatar).process(game_state.world_map)
 
-        self.assertEqual(
-            self.avatar.events,
-            [event.PickedUpEvent({"type": "artefact"})],
-        )
-        self.assertEquals(artefact.in_backpack, True)
+        assert self.avatar.events == [event.PickedUpEvent({"type": "artefact"})]
+        assert artefact.in_backpack == True
 
     def test_failed_pickup_action(self):
         game_state = GameState(InfiniteMap(), self.avatar_manager)
 
         action.PickupAction(self.avatar).process(game_state.world_map)
 
-        self.assertEqual(self.avatar.events, [event.FailedPickupEvent()])
+        assert self.avatar.events == [event.FailedPickupEvent()]
 
     def test_failed_pickup_action_if_backpack_full(self):
         game_state = GameState(PickupMap(Artefact), self.avatar_manager)
@@ -180,5 +156,5 @@ class TestAction(unittest.TestCase):
 
         action.PickupAction(self.avatar).process(game_state.world_map)
 
-        self.assertEqual(self.avatar.events, [event.FailedPickupEvent()])
-        self.assertEquals(artefact.in_backpack, False)
+        assert self.avatar.events == [event.FailedPickupEvent()]
+        assert artefact.in_backpack == False

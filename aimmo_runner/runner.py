@@ -8,7 +8,6 @@ import time
 import django
 from django.conf import settings
 
-from . import docker_scripts
 from .shell_api import log, run_command, run_command_async
 
 sys.path.append("/home/travis/build/ocadotechnology/aimmo")
@@ -24,7 +23,6 @@ except KeyError:
     ROOT_DIR_LOCATION = os.path.abspath(os.path.dirname((os.path.dirname(__file__))))
 
 _MANAGE_PY = os.path.join(ROOT_DIR_LOCATION, "example_project", "manage.py")
-_SERVICE_PY = os.path.join(ROOT_DIR_LOCATION, "aimmo-game-creator", "service.py")
 _FRONTEND_BUNDLER_JS = os.path.join(
     ROOT_DIR_LOCATION, "game_frontend", "djangoBundler.js"
 )
@@ -45,7 +43,10 @@ def create_superuser_if_missing(username, password):
 
 
 def build_worker_package():
-    run_command([os.path.join(ROOT_DIR_LOCATION, "aimmo_runner", "build_worker_wheel.sh")], capture_output=True)
+    run_command(
+        [os.path.join(ROOT_DIR_LOCATION, "aimmo_runner", "build_worker_wheel.sh")],
+        capture_output=True,
+    )
 
 
 def build_frontend(using_cypress, capture_output):
@@ -58,33 +59,21 @@ def build_frontend(using_cypress, capture_output):
         PROCESSES.append(frontend_bundler)
 
 
-def start_game_servers(use_minikube, build_target, server_args):
-    if use_minikube:
-        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        sys.path.append(os.path.join(parent_dir, "aimmo_runner"))
+def start_game_servers(build_target, server_args):
+    parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.append(os.path.join(parent_dir, "aimmo_runner"))
+    os.chdir(ROOT_DIR_LOCATION)
 
-        os.chdir(ROOT_DIR_LOCATION)
+    # Import minikube here, so we can install the dependencies first
+    from aimmo_runner import minikube
 
-        # Import minikube here, so we can install the dependencies first
-        from aimmo_runner import minikube
+    minikube.start(build_target=build_target)
 
-        minikube.start(build_target=build_target)
-
-        server_args.append("0.0.0.0:8000")
-        os.environ["AIMMO_MODE"] = "minikube"
-    else:
-        time.sleep(2)
-        os.environ["AIMMO_MODE"] = "threads"
-        docker_scripts.delete_containers()
-        if build_target == "tester":
-            run_command(["python", "all_tests.py"])
-        else:
-            docker_scripts.build_docker_images(build_target=build_target)
-            docker_scripts.start_game_creator()
+    server_args.append("0.0.0.0:8000")
+    os.environ["AIMMO_MODE"] = "minikube"
 
 
 def run(
-    use_minikube,
     server_wait=True,
     using_cypress=False,
     capture_output=False,
@@ -105,6 +94,7 @@ def run(
 
     if using_cypress:
         settings.DEBUG = False
+        os.environ["RUNNING_TESTS"] = "True"
     os.environ["NODE_ENV"] = "development" if settings.DEBUG else "production"
 
     build_frontend(using_cypress, capture_output)
@@ -127,11 +117,12 @@ def run(
 
     server_args = []
     if not using_cypress:
-        start_game_servers(use_minikube, build_target, server_args)
+        start_game_servers(build_target, server_args)
 
     os.environ["SERVER_ENV"] = "local"
     server = run_command_async(
-        ["python", _MANAGE_PY, "runserver"] + server_args, capture_output=capture_output
+        ["python", _MANAGE_PY, "runserver"] + server_args,
+        capture_output=capture_output,
     )
     PROCESSES.append(server)
 

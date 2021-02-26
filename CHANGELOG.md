@@ -2,6 +2,27 @@
 
 <!--next-version-placeholder-->
 
+## v0.65.1 (2021-02-25)
+
+
+## v0.65.1b177 (2021-02-23)
+### Fix
+* Agones fixes (#1469) ([`b9208c0`](https://github.com/ocadotechnology/aimmo/commit/b9208c0f98fa446dd62eaf3b6a90b3cf662b8bad))
+
+## v0.65.0b170 (2021-02-22)
+### Feature
+* Update console theme to modified monokai, then increase font size to 18px (#1468) ([`87e7eac`](https://github.com/ocadotechnology/aimmo/commit/87e7eacf29a9de73acea56e1854a683b4a4879a4))
+
+## v0.64.0b166 (2021-02-17)
+
+
+## v0.64.0b162 (2021-02-16)
+### Feature
+* Use Agones to manage gameservers (#1439) ([`edc731d`](https://github.com/ocadotechnology/aimmo/commit/edc731de8a4f5222253c69f0e41c1db96e1b556b))
+
+## v0.63.1b156 (2021-02-10)
+
+
 ## v0.63.1 (2021-02-08)
 
 
