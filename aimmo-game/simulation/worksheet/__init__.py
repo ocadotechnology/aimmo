@@ -1,3 +1,3 @@
-from .worksheet import WorksheetData, WORKSHEET
+from .worksheet import WorksheetData
 
-__all__ = ["WORKSHEET", "WorksheetData"]
+__all__ = ["WorksheetData"]

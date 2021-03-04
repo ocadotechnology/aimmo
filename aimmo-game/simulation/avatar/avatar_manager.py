@@ -1,7 +1,8 @@
 from typing import List
 from simulation.avatar.avatar_wrapper import AvatarWrapper
 from simulation.avatar.avatar_appearance import AvatarAppearance
-from simulation.worksheet import WORKSHEET, WorksheetData
+from simulation.worksheet import WorksheetData
+from simulation.worksheet.worksheet import get_worksheet_data
 
 
 class AvatarManager(object):
@@ -9,7 +10,10 @@ class AvatarManager(object):
     Stores all game avatars.
     """
 
-    def __init__(self, worksheet: WorksheetData = WORKSHEET):
+    def __init__(self, worksheet: WorksheetData = None):
+        if worksheet is None:
+            worksheet = get_worksheet_data()
+
         self.avatars_by_id = {}
         self.worksheet = worksheet
 

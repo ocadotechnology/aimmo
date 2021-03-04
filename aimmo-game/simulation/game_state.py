@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from simulation.interactables import serialize_interactables
-from simulation.worksheet import WORKSHEET
+from simulation.worksheet.worksheet import get_worksheet_data
 
 if TYPE_CHECKING:
     from simulation.world_map import WorldMap
@@ -16,7 +16,10 @@ class GameState:
     Encapsulates the entire game state, including avatars, their code, and the world.
     """
 
-    def __init__(self, world_map, avatar_manager, worksheet: WorksheetData = WORKSHEET):
+    def __init__(self, world_map, avatar_manager, worksheet: WorksheetData = None):
+        if worksheet is None:
+            worksheet = get_worksheet_data()
+
         self.world_map: WorldMap = world_map
         self.avatar_manager: AvatarManager = avatar_manager
         self.turn_count: int = 0

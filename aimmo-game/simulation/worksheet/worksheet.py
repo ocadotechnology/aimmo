@@ -54,6 +54,3 @@ worksheets = {
 def get_worksheet_data() -> WorksheetData:
     worksheet_id = int(os.environ.get("worksheet_id", 1))
     return worksheets.get(worksheet_id, worksheets[1])
-
-
-WORKSHEET = get_worksheet_data()
