@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v0.65.4 (2021-03-05)
+
+
 ## v0.65.4b214 (2021-03-05)
 ### Fix
 * Show pickups on map (#1477) ([`57bdb08`](https://github.com/ocadotechnology/aimmo/commit/57bdb083c023d80c9cab3efcfe9039881a4c3ecf))
