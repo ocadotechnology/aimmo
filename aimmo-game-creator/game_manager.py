@@ -278,7 +278,7 @@ class KubernetesGameManager(GameManager):
             self.api.delete_namespaced_secret(resource.metadata.name, K8S_NAMESPACE)
 
     def _create_game_server_allocation(
-        self, game_id: int, worksheet_id: int, retry_count: int = 0
+        self, game_id: int, game_data: dict, retry_count: int = 0
     ) -> str:
         result = self.custom_objects_api.create_namespaced_custom_object(
             group="allocation.agones.dev",
@@ -295,11 +295,8 @@ class KubernetesGameManager(GameManager):
                     "metadata": {
                         "labels": {
                             "game-id": game_id,
-                            "worksheet_id": worksheet_id,
                         },
-                        "annotations": {
-                            "game-api-url": f"{self.games_url}{game_id}/",
-                        },
+                        "annotations": game_data,
                     },
                 },
             },
@@ -310,7 +307,7 @@ class KubernetesGameManager(GameManager):
             )
             time.sleep(5)
             return self._create_game_server_allocation(
-                game_id, worksheet_id, retry_count=retry_count + 1
+                game_id, game_data, retry_count=retry_count + 1
             )
         else:
             return result["status"]["gameServerName"]
@@ -336,9 +333,7 @@ class KubernetesGameManager(GameManager):
 
     def create_game(self, game_id, game_data):
         self._create_game_secret(game_id)
-        game_server_name = self._create_game_server_allocation(
-            game_id, game_data["worksheet_id"]
-        )
+        game_server_name = self._create_game_server_allocation(game_id, game_data)
         self._create_game_service(game_id, game_server_name)
         self._add_path_to_ingress(game_id)
         LOGGER.info("Game started - {}".format(game_id))

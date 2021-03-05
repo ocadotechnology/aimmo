@@ -128,8 +128,10 @@ class TestGameManager(unittest.TestCase):
                     "required": {"matchLabels": {"agones.dev/fleet": "aimmo-game"}},
                     "scheduling": "Packed",
                     "metadata": {
-                        "labels": {"game-id": 1, "worksheet_id": 1},
-                        "annotations": {"game-api-url": "http://test/*1/"},
+                        "labels": {"game-id": 1},
+                        "annotations": {
+                            "worksheet_id": 1,
+                        },
                     },
                 },
             },
