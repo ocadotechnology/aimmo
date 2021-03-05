@@ -1,8 +1,7 @@
 from typing import List
 from simulation.avatar.avatar_wrapper import AvatarWrapper
 from simulation.avatar.avatar_appearance import AvatarAppearance
-from simulation.worksheet import WorksheetData
-from simulation.worksheet.worksheet import get_worksheet_data
+from simulation.worksheet.worksheet import WorksheetData, get_worksheet_data
 
 
 class AvatarManager(object):

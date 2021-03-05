@@ -8,7 +8,7 @@ from simulation.worksheet.worksheet import get_worksheet_data
 if TYPE_CHECKING:
     from simulation.world_map import WorldMap
     from simulation.avatar.avatar_manager import AvatarManager
-    from simulation.worksheet import WorksheetData
+    from simulation.worksheet.worksheet import WorksheetData
 
 
 class GameState:

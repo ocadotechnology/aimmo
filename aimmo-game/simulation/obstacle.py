@@ -2,8 +2,7 @@ from dataclasses import dataclass
 from random import randint
 
 from simulation.cell import Cell
-from simulation.worksheet import WorksheetData
-from simulation.worksheet.worksheet import get_worksheet_data
+from simulation.worksheet.worksheet import WorksheetData, get_worksheet_data
 
 
 @dataclass
