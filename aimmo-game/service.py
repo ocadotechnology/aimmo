@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import asyncio
+import json
 import logging
 import os
 from dataclasses import dataclass
@@ -173,7 +174,8 @@ class GameAPI(object):
 
 
 def create_runner(port, socketio_server, communicator: DjangoCommunicator):
-    generator = map_generator.Main({})
+    settings = json.loads(os.environ["settings"])
+    generator = getattr(map_generator, settings["GENERATOR"])(settings)
     turn_collector = TurnCollector(socketio_server)
     return GameRunner(
         game_state_generator=generator.get_game_state,
@@ -230,9 +232,10 @@ async def wait_for_allocation(
             labels: Dict[str, Any] = game_server_update.object_meta.labels
             annotations: Dict[str, Any] = game_server_update.object_meta.annotations
             game_id = labels["game-id"]
-            os.environ["worksheet_id"] = labels["worksheet_id"]
-            os.environ["GAME_API_URL"] = annotations["game-api-url"]
-            django_api_url = annotations["game-api-url"]
+            os.environ["worksheet_id"] = annotations["worksheet_id"]
+            os.environ["GAME_API_URL"] = annotations["GAME_API_URL"]
+            os.environ["settings"] = annotations["settings"]
+            django_api_url = annotations["GAME_API_URL"]
             return GameAllocationInfo(game_id, django_api_url)
 
 
