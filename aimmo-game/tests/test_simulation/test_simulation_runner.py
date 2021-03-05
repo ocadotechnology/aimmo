@@ -5,7 +5,7 @@ from unittest.mock import patch, Mock
 
 from simulation.avatar.avatar_appearance import AvatarAppearance
 from simulation.game_logic import PickupUpdater
-from simulation.worksheet import WorksheetData
+from simulation.worksheet.worksheet import WorksheetData
 from simulation.interactables.pickups import Artefact
 from simulation.interactables.score_location import ScoreLocation
 from simulation.location import Location
@@ -56,12 +56,12 @@ def generate_grid(columns=2, rows=2):
 
 class TestSimulationRunner:
     """
-        Key:
-            > : Avatar moving eastward
-            < : Avatar moving westward
-            x : Avatar waiting / blocked
-            o : Avatar successfully moved
-            ! : Dead avatar (that should be waiting)
+    Key:
+        > : Avatar moving eastward
+        < : Avatar moving westward
+        x : Avatar waiting / blocked
+        o : Avatar successfully moved
+        ! : Dead avatar (that should be waiting)
     """
 
     def assertGridSize(self, world_map, expected_columns, expected_rows=None):
