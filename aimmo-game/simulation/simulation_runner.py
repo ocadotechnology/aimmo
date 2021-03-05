@@ -5,9 +5,8 @@ from abc import ABCMeta, abstractmethod
 from typing import TYPE_CHECKING
 
 from simulation.action import PRIORITIES
-from simulation.game_logic import EffectApplier, MapContext, PickupUpdater
-from simulation.worksheet import WorksheetData
-from simulation.worksheet.worksheet import get_worksheet_data
+from simulation.game_logic import EffectApplier, MapContext
+from simulation.worksheet.worksheet import WorksheetData, get_worksheet_data
 
 if TYPE_CHECKING:
     from turn_collector import CollectedTurnActions
