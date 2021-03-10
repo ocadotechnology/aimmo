@@ -72,8 +72,8 @@ class SimulationRunner(object):
 
     def _update_map(self, num_avatars):
         context = MapContext(num_avatars=num_avatars)
-        for MapUpdater in self.worksheet.map_updaters:
-            MapUpdater().update(self.game_state.world_map, context=context)
+        for map_updater in self.worksheet.map_updaters:
+            map_updater.update(self.game_state.world_map, context=context)
 
     def add_avatar(self, player_id, location=None):
         with self._lock:

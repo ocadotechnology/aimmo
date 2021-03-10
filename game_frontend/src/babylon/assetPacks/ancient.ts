@@ -20,6 +20,27 @@ export default class AncientAssetPack extends AssetPack {
     this.obstacleMaterial = this.makeObstacleMaterial()
   }
 
+  async createInteractable (
+    name: string,
+    type: string,
+    location: Vector3,
+    parent: TransformNode
+  ): Promise<AbstractMesh> {
+    const model = `${type}.babylon`
+    const { meshes } = await this.importMeshAsync(
+      "artefact",
+      '/static/babylon/interactables/ancient/',
+      model,
+      this.scene
+    )
+    const interactable = meshes[0]
+    interactable.name = name
+    interactable.parent = parent
+    interactable.position = location
+    interactable.scaling = new Vector3(0.4, 0.4, 0.4)
+    return interactable
+  }
+
   makeObstacleMaterial (): StandardMaterial {
     const material = new StandardMaterial(this.obstacleInfo.materialName, this.scene)
     material.diffuseTexture = new Texture(this.getTextureURL(1), this.scene)
