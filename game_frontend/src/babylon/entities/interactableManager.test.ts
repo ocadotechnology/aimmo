@@ -84,12 +84,14 @@ describe('InteractableManager', () => {
 
     var interactableNodeChildren = interactableManager.interactableNode.getChildMeshes()
     expect(interactableNodeChildren[0].position).toEqual(new Vector3(0, 0, 1))
+    expect(interactableNodeChildren[0].metadata.type).toEqual('score')
 
-    const updatedInteractableItem = interactableDiffItem(1, 'score', { x: 1, y: 0 })
+    const updatedInteractableItem = interactableDiffItem(1, 'damage_boost', { x: 1, y: 0 })
 
-    interactableManager.edit(updatedInteractableItem)
+    await interactableManager.edit(updatedInteractableItem)
 
     interactableNodeChildren = interactableManager.interactableNode.getChildMeshes()
     expect(interactableNodeChildren[0].position).toEqual(new Vector3(1, 0, 0))
+    expect(interactableNodeChildren[0].metadata.type).toEqual('damage_boost')
   })
 })

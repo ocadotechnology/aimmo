@@ -107,6 +107,9 @@ export default class AssetPack {
     interactable.name = name
     interactable.parent = parent
     interactable.position = location
+    interactable.metadata = {
+      type: type
+    }
     return interactable
   }
 

@@ -38,6 +38,9 @@ export default class AncientAssetPack extends AssetPack {
     interactable.parent = parent
     interactable.position = location
     interactable.scaling = new Vector3(0.4, 0.4, 0.4)
+    interactable.metadata = {
+      type: type
+    }
     return interactable
   }
 
