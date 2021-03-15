@@ -1,6 +1,8 @@
+from collections import defaultdict
 from .avatar_state import create_avatar_state
 from .location import Location
 from typing import Dict, List
+from .pathfinding import astar
 
 
 class Cell(object):
@@ -37,6 +39,22 @@ class Cell(object):
 
     def __ne__(self, other):
         return not self == other
+
+
+class Artefact:
+    """
+    A wrapper around a cell containing an artefact
+    """
+
+    def __init__(self, location, path):
+        # the public data that the users can see
+        self.location = location
+
+        # useful semi private data for the Action
+        self._path = path  # best path to the artefact
+
+    def __repr__(self):
+        return "Artefact({})".format(self.location)
 
 
 class WorldMapCreator:
@@ -125,6 +143,49 @@ class WorldMap(object):
         except KeyError:
             return False
         return getattr(cell, "habitable", False) and not getattr(cell, "avatar", False)
+
+    def scan_nearby(self, avatar_location, radius=10) -> List[Artefact]:
+        """
+        From the given location point search the given radius for artefacts
+        """
+        # how many nearby artefacts to return
+        SCAN_LIMIT = 3
+
+        # get artefacts within the radius
+        artefacts = []
+        x = avatar_location.x - radius
+        y = avatar_location.y - radius
+        while x <= (avatar_location.x + radius):
+            while y <= (avatar_location.y + radius):
+                try:
+                    cell = self.get_cell(Location(x, y))
+                except KeyError:
+                    y += 1
+                    continue
+
+                if cell.has_artefact():
+                    artefacts.append(cell)
+                y += 1
+            # next round: increment x and reset y
+            x += 1
+            y = avatar_location.y - radius
+
+        # get the best path to each artefact
+        nearby = defaultdict(list)
+        for artcell in artefacts:
+            path = astar(self, self.cells.get(avatar_location), artcell)
+            if path:
+                nearby[len(path)].append((artcell, path))
+
+        # sort them by distance (the length of path) and take the nearest first
+        nearest = []
+        for distance in sorted(nearby.keys()):
+            for artcell, path in nearby[distance]:
+                nearest.append(Artefact(artcell.location, path))
+            if len(nearest) > SCAN_LIMIT:
+                break
+
+        return nearest[:SCAN_LIMIT]
 
     def __repr__(self):
         return repr(self.cells)
