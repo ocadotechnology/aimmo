@@ -39,6 +39,33 @@ class Node:
         return self.f > other.f
 
 
+def _get_adjacent_cells(current_node, world_map):
+    adj = []
+    # we move only in 4 directions
+    for direction in ((0, -1), (0, 1), (-1, 0), (1, 0)):
+        # make sure the cell is within the grid
+        try:
+            tx = current_node.location.x + direction[0]
+            ty = current_node.location.y + direction[1]
+            cell = world_map.get_cell(Location(tx, ty))
+        except KeyError:
+            cell = None
+        # Make sure walkable cell
+        if cell and cell.habitable:
+            adj.append(cell)
+    return adj
+
+
+def _constructed_path(current_node):
+    # follow backwards from current node all the way to the start
+    path = []
+    current = current_node
+    while current is not None:
+        path.append(current.cell)
+        current = current.parent
+    return path[::-1]  # Return reversed path
+
+
 def astar(world_map, start_cell, end_cell):
     """
     Returns a list of Cell as a path from the given start to the given end in the given world_map.
@@ -60,7 +87,7 @@ def astar(world_map, start_cell, end_cell):
     heapq.heapify(open_list)
     heapq.heappush(open_list, start_node)
 
-    # Loop until you find the end
+    # Loop until you find the goal or exhaust the nodes
     while len(open_list) > 0:
 
         # look for the lowest F cost square on the open list for current node (returned by the heapq)
@@ -69,32 +96,11 @@ def astar(world_map, start_cell, end_cell):
 
         # Found the goal!
         if current_node == end_node:
-            path = []
-            current = current_node
-            while current is not None:
-                path.append(current.cell)
-                current = current.parent
-            return path[::-1]  # Return reversed path
-
-        def _get_adjacent_cells(current_node):
-            adj = []
-            # we move only in 4 directions
-            for direction in ((0, -1), (0, 1), (-1, 0), (1, 0)):
-                # make sure the cell is within the grid
-                try:
-                    tx = current_node.location.x + direction[0]
-                    ty = current_node.location.y + direction[1]
-                    cell = world_map.get_cell(Location(tx, ty))
-                except:
-                    cell = None
-                # Make sure walkable cell
-                if cell and cell.habitable:
-                    adj.append(cell)
-            return adj
+            return _constructed_path(current_node)
 
         # Generate children
         children = []
-        for acell in _get_adjacent_cells(current_node):
+        for acell in _get_adjacent_cells(current_node, world_map):
             new_node = Node(current_node, acell)
             children.append(new_node)
 

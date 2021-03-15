@@ -4,6 +4,9 @@ from .location import Location
 from typing import Dict, List
 from .pathfinding import astar
 
+# how many nearby artefacts to return
+SCAN_LIMIT = 3
+
 
 class Cell(object):
 
@@ -144,19 +147,13 @@ class WorldMap(object):
             return False
         return getattr(cell, "habitable", False) and not getattr(cell, "avatar", False)
 
-    def scan_nearby(self, avatar_location, radius=10) -> List[Artefact]:
-        """
-        From the given location point search the given radius for artefacts
-        """
-        # how many nearby artefacts to return
-        SCAN_LIMIT = 3
-
-        # get artefacts within the radius
+    def _scan_artefacts(self, start_location, radius):
+        # get artefacts from starting location within the radius
         artefacts = []
-        x = avatar_location.x - radius
-        y = avatar_location.y - radius
-        while x <= (avatar_location.x + radius):
-            while y <= (avatar_location.y + radius):
+        x = start_location.x - radius
+        y = start_location.y - radius
+        while x <= (start_location.x + radius):
+            while y <= (start_location.y + radius):
                 try:
                     cell = self.get_cell(Location(x, y))
                 except KeyError:
@@ -168,7 +165,14 @@ class WorldMap(object):
                 y += 1
             # next round: increment x and reset y
             x += 1
-            y = avatar_location.y - radius
+            y = start_location.y - radius
+        return artefacts
+
+    def scan_nearby(self, avatar_location, radius=10) -> List[Artefact]:
+        """
+        From the given location point search the given radius for artefacts
+        """
+        artefacts = self._scan_artefacts(avatar_location, radius)
 
         # get the best path to each artefact
         nearby = defaultdict(list)
