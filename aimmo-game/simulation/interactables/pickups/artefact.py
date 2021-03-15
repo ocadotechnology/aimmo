@@ -16,7 +16,7 @@ class Artefact(_Interactable):
         return [self.cell.avatar]
 
     def __repr__(self):
-        return "Artefact(Location={})".format(self.cell.location)
+        return f"{type(self).__name__}(Location={self.cell.location})"
 
     def serialize(self):
         serialized_artefact = {"type": self._type}

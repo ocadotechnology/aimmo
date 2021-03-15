@@ -65,3 +65,9 @@ async def test_artefact_applies_correctly(game, cell, artefact_class, artefact_t
     assert cell.interactable is None
     assert len(avatar.backpack) == 1
     assert avatar.backpack == [artefact]
+
+
+@pytest.mark.parametrize("artefact_class, artefact_type", testdata)
+def test_artefact_repr(cell, artefact_class, artefact_type):
+    artefact = artefact_class(cell)
+    assert repr(artefact) == f"{type(artefact).__name__}(Location={cell.location})"

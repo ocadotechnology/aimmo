@@ -5,6 +5,3 @@ class KeyArtefact(Artefact):
     def __init__(self, cell):
         super().__init__(cell)
         self._type = "key"
-
-    def __repr__(self):
-        return "KeyArtefact(Location={})".format(self.cell.location)
