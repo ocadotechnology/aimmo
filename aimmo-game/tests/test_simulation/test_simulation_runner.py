@@ -223,13 +223,12 @@ class TestSimulationRunner:
         self.simulation_runner.update(1, self.simulation_runner.game_state)
         assert pickup.applied_to == avatar
 
-    @patch("simulation.interactables.pickups.Artefact", spec=Artefact)
-    def test_pickups_not_added_when_at_target(self, mockPickup):
+    def test_pickups_not_added_when_at_target(self):
         self.construct_simulation_runner([], [])
         settings = SETTINGS.copy()
         settings["TARGET_NUM_PICKUPS_PER_AVATAR"] = 1
         grid = generate_grid()
-        grid[Location(0, 1)].interactable = mockPickup()
+        grid[Location(0, 1)].interactable = Artefact(grid[Location(0, 1)])
         self.simulation_runner.game_state.world_map = WorldMap(grid, settings)
         self.simulation_runner.update(1, self.simulation_runner.game_state)
         assert (
