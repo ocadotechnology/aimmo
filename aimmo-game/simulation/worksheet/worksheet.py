@@ -10,7 +10,11 @@ from typing import TYPE_CHECKING
 
 from simulation.game_logic.map_updaters import PickupUpdater
 from simulation.interactables.interactable import _Interactable
-from simulation.interactables.pickups import Artefact, ChestArtefact, KeyArtefact
+from simulation.interactables.pickups import (
+    YellowOrbArtefact,
+    ChestArtefact,
+    KeyArtefact,
+)
 from .avatar_state_serializers import (
     worksheet1_avatar_state_serializer,
     worksheet2_avatar_state_serializer,
@@ -40,14 +44,14 @@ worksheets = {
     1: WorksheetData(
         worksheet_id=1,
         era="future",
-        map_updaters=[PickupUpdater(pickup_types=[Artefact])],
+        map_updaters=[PickupUpdater(pickup_types=[YellowOrbArtefact])],
         number_of_obstacle_textures=1,
         avatar_state_serializer=worksheet1_avatar_state_serializer,
     ),
     2: WorksheetData(
         worksheet_id=2,
         era="future",
-        map_updaters=[PickupUpdater(pickup_types=[Artefact])],
+        map_updaters=[PickupUpdater(pickup_types=[YellowOrbArtefact])],
         number_of_obstacle_textures=1,
         avatar_state_serializer=worksheet2_avatar_state_serializer,
     ),

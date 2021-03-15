@@ -6,7 +6,7 @@ from unittest.mock import patch, Mock
 from simulation.avatar.avatar_appearance import AvatarAppearance
 from simulation.game_logic import PickupUpdater
 from simulation.worksheet.worksheet import WorksheetData
-from simulation.interactables.pickups import Artefact
+from simulation.interactables.pickups import YellowOrbArtefact
 from simulation.interactables.score_location import ScoreLocation
 from simulation.location import Location
 from simulation.simulation_runner import ConcurrentSimulationRunner
@@ -228,7 +228,7 @@ class TestSimulationRunner:
         settings = SETTINGS.copy()
         settings["TARGET_NUM_PICKUPS_PER_AVATAR"] = 1
         grid = generate_grid()
-        grid[Location(0, 1)].interactable = Artefact(grid[Location(0, 1)])
+        grid[Location(0, 1)].interactable = YellowOrbArtefact(grid[Location(0, 1)])
         self.simulation_runner.game_state.world_map = WorldMap(grid, settings)
         self.simulation_runner.update(1, self.simulation_runner.game_state)
         assert (
@@ -259,7 +259,7 @@ class TestSimulationRunner:
             worksheet_id=1,
             era="test era",
             number_of_obstacle_textures=1,
-            map_updaters=[map_updater(pickup_types=[Artefact])],
+            map_updaters=[map_updater(pickup_types=[YellowOrbArtefact])],
         )
         self.simulation_runner.worksheet = worksheet_with_mock_updater
         self.simulation_runner.update(1, self.simulation_runner.game_state)

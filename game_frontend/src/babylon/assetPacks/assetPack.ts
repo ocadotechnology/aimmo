@@ -57,7 +57,7 @@ export default class AssetPack {
     this.obstacleInfo = this.getObstacleAssetInfo()
     this.terrainInfo = this.getTerrainInfo()
     this.interactableMaterials = {
-      artefact: this.createInteractableMaterial('artefact')
+      yellow_orb: this.createInteractableMaterial('yellow_orb')
     }
   }
 
@@ -97,7 +97,7 @@ export default class AssetPack {
   ): Promise<AbstractMesh> {
     const model = `${type}_model.babylon`
     const { meshes } = await this.importMeshAsync(
-      type,
+      'artefact',
       '/static/babylon/interactables/',
       model,
       this.scene

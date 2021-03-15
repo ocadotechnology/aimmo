@@ -1,4 +1,5 @@
 from simulation.interactables.pickups.artefact import Artefact
+from simulation.interactables.pickups.yellow_orb_artefact import YellowOrbArtefact
 from simulation.interactables.pickups.chest_artefact import ChestArtefact
 from simulation.interactables.pickups.key_artefact import KeyArtefact
 from simulation.interactables.pickups.damage_boost_pickup import DamageBoostPickup
@@ -17,6 +18,7 @@ ALL_PICKUPS = (
     InvulnerabilityPickup,
     HealthPickup,
     Artefact,
+    YellowOrbArtefact,
     ChestArtefact,
     KeyArtefact,
 )

@@ -1,7 +1,7 @@
 from unittest.mock import patch
 
 from simulation.game_logic import PickupUpdater
-from simulation.interactables.pickups import Artefact
+from simulation.interactables.pickups import YellowOrbArtefact
 from simulation.worksheet.avatar_state_serializers import (
     worksheet1_avatar_state_serializer,
     worksheet2_avatar_state_serializer,
@@ -14,7 +14,7 @@ def test_default_worksheet_loaded_when_no_worksheet_id_provided():
     assert worksheet.era == "future"
     assert len(worksheet.map_updaters) == 1
     assert type(worksheet.map_updaters[0]) == PickupUpdater
-    assert worksheet.map_updaters[0].pickup_types == [Artefact]
+    assert worksheet.map_updaters[0].pickup_types == [YellowOrbArtefact]
     assert worksheet.avatar_state_serializer == worksheet1_avatar_state_serializer
 
 
@@ -24,5 +24,5 @@ def test_worksheet_loads_from_environment_variables():
         assert worksheet.era == "future"
         assert len(worksheet.map_updaters) == 1
         assert type(worksheet.map_updaters[0]) == PickupUpdater
-        assert worksheet.map_updaters[0].pickup_types == [Artefact]
+        assert worksheet.map_updaters[0].pickup_types == [YellowOrbArtefact]
         assert worksheet.avatar_state_serializer == worksheet2_avatar_state_serializer

@@ -28,7 +28,7 @@ export default class AncientAssetPack extends AssetPack {
   ): Promise<AbstractMesh> {
     const model = `${type}.babylon`
     const { meshes } = await this.importMeshAsync(
-      "artefact",
+      'artefact',
       '/static/babylon/interactables/ancient/',
       model,
       this.scene
