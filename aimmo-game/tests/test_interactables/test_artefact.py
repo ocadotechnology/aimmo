@@ -1,10 +1,17 @@
 import pytest
 
 from simulation.action import PickupAction
-from simulation.interactables.pickups import Artefact
+from simulation.interactables.pickups import Artefact, KeyArtefact, ChestArtefact
 from simulation.location import Location
 from tests.test_simulation.dummy_avatar import CustomLiveDummy
 from .mock_world import MockWorld
+
+
+testdata = [
+    (Artefact, "artefact"),
+    (KeyArtefact, "key"),
+    (ChestArtefact, "chest"),
+]
 
 
 @pytest.fixture
@@ -19,21 +26,23 @@ def cell(game):
     return game.game_state.world_map.get_cell(Location(1, 0))
 
 
-def test_artefact_serialization(cell):
-    artefact = Artefact(cell)
+@pytest.mark.parametrize("artefact_class, artefact_type", testdata)
+def test_artefact_serialization(cell, artefact_class, artefact_type):
+    artefact = artefact_class(cell)
     assert artefact.serialize() == {
-        "type": "artefact",
+        "type": artefact_type,
         "location": {"x": cell.location.x, "y": cell.location.y},
     }
 
     artefact.in_backpack = True
-    assert artefact.serialize() == {"type": "artefact"}
+    assert artefact.serialize() == {"type": artefact_type}
 
 
 @pytest.mark.asyncio
-async def test_artefact_applies_correctly(game, cell):
+@pytest.mark.parametrize("artefact_class, artefact_type", testdata)
+async def test_artefact_applies_correctly(game, cell, artefact_class, artefact_type):
     avatar: "CustomLiveDummy" = game.avatar_manager.get_avatar(1)
-    artefact = Artefact(cell)
+    artefact = artefact_class(cell)
     cell.interactable = artefact
 
     # Move to the cell with the artefact
