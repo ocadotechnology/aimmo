@@ -47,8 +47,8 @@ export default class InteractableManager implements GameNode, DiffHandling {
         )
       }
       else {
-        toEdit[0].dispose()
         await this.add(interactable)
+        toEdit[0].dispose()
       }
     }
   }
