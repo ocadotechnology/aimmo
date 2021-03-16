@@ -150,22 +150,14 @@ class WorldMap(object):
     def _scan_artefacts(self, start_location, radius):
         # get artefacts from starting location within the radius
         artefacts = []
-        x = start_location.x - radius
-        y = start_location.y - radius
-        while x <= (start_location.x + radius):
-            while y <= (start_location.y + radius):
+        for x in range(start_location.x - radius, start_location.x + radius + 1):
+            for y in range(start_location.y - radius, start_location.y + radius + 1):
                 try:
                     cell = self.get_cell(Location(x, y))
                 except KeyError:
-                    y += 1
                     continue
-
                 if cell.has_artefact():
                     artefacts.append(cell)
-                y += 1
-            # next round: increment x and reset y
-            x += 1
-            y = start_location.y - radius
         return artefacts
 
     def scan_nearby(self, avatar_location, radius=10) -> List[Artefact]:
