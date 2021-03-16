@@ -5,6 +5,7 @@ from warnings import warn
 import heapq
 
 from .location import Location
+from .direction import ALL_DIRECTIONS
 
 
 class Node:
@@ -42,11 +43,11 @@ class Node:
 def _get_adjacent_cells(current_node, world_map):
     adj = []
     # we move only in 4 directions
-    for direction in ((0, -1), (0, 1), (-1, 0), (1, 0)):
+    for direction in ALL_DIRECTIONS:
         # make sure the cell is within the grid
         try:
-            tx = current_node.location.x + direction[0]
-            ty = current_node.location.y + direction[1]
+            tx = current_node.location.x + direction.x
+            ty = current_node.location.y + direction.y
             cell = world_map.get_cell(Location(tx, ty))
         except KeyError:
             cell = None
@@ -75,9 +76,7 @@ def astar(world_map, start_cell, end_cell):
 
     # Create start and end node
     start_node = Node(None, start_cell)
-    start_node.g = start_node.h = start_node.f = 0
     end_node = Node(None, end_cell)
-    end_node.g = end_node.h = end_node.f = 0
 
     # Initialize both open and closed list
     open_list = []
