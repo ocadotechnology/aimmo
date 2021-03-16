@@ -11,7 +11,7 @@ from simulation.event import (
     PickedUpEvent,
     ReceivedAttackEvent,
 )
-from simulation.interactables.pickups import Artefact
+from simulation.interactables.pickups.artefacts import _Artefact
 
 if TYPE_CHECKING:
     from simulation.world_map import WorldMap
@@ -76,7 +76,7 @@ class PickupAction(Action):
 
     def _is_legal(self, world_map):
         current_cell = world_map.get_cell(self.avatar.location)
-        cell_has_artefact = issubclass(type(current_cell.interactable), Artefact)
+        cell_has_artefact = issubclass(type(current_cell.interactable), _Artefact)
         return cell_has_artefact and self.avatar.backpack_has_space()
 
     def _apply(self, world_map):

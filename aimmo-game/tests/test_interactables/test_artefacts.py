@@ -1,16 +1,20 @@
 import pytest
 
 from simulation.action import PickupAction
-from simulation.interactables.pickups import Artefact, KeyArtefact, ChestArtefact
+from simulation.interactables.pickups import (
+    ChestArtefact,
+    KeyArtefact,
+    YellowOrbArtefact,
+)
 from simulation.location import Location
 from tests.test_simulation.dummy_avatar import CustomLiveDummy
 from .mock_world import MockWorld
 
 
 testdata = [
-    (Artefact, "artefact"),
-    (KeyArtefact, "key"),
     (ChestArtefact, "chest"),
+    (KeyArtefact, "key"),
+    (YellowOrbArtefact, "yellow_orb"),
 ]
 
 

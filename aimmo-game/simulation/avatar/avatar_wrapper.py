@@ -7,7 +7,7 @@ from simulation.direction import Direction
 LOGGER = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
-    from simulation.interactables.pickups.artefact import Artefact
+    from simulation.interactables.pickups.artefacts import _Artefact
 
 
 class AvatarWrapper(object):
@@ -23,7 +23,7 @@ class AvatarWrapper(object):
         self.orientation = "north"
         self.health = 5
         self.score = 0
-        self.backpack: "List[Artefact]" = []
+        self.backpack: "List[_Artefact]" = []
         self.BACKPACK_SIZE = 10
         self.events = []
         self.avatar_appearance = avatar_appearance
