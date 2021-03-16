@@ -136,3 +136,12 @@ class TestWorldMap(TestCase):
         cells[1]["avatar"] = self.AVATAR
         map = WorldMapCreator.generate_world_map_from_cells_data(cells)
         self.assertFalse(map.can_move_to(Location(-1, 0)))
+
+    def test_scan_nearby(self):
+        cells = self._generate_cells(5, 5)
+        cells[0]["avatar"] = self.AVATAR
+        cells[2]["obstacle"] = {"location": {"x": 0, "y": 0}}
+        cells[4]["interactable"] = {"type": "artefact"}
+        map = WorldMapCreator.generate_world_map_from_cells_data(cells)
+        artefacts = map.scan_nearby(Location(-1, 0))
+        self.assertEqual(len(artefacts), 1)
