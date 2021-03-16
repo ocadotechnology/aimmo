@@ -1,7 +1,6 @@
 # Inspired by https://medium.com/@nicholas.w.swift/easy-a-star-pathfinding-7e6689c7f7b2
 # and https://gist.github.com/ryancollingwood/32446307e976a11a1185a5394d6657bc
 
-from warnings import warn
 import heapq
 
 from .location import Location
@@ -127,5 +126,5 @@ def astar(world_map, start_cell, end_cell):
             # add the child to the open list
             heapq.heappush(open_list, child)
 
-    warn("Couldn't get a path to destination")
+    print("Couldn't get a path to destination")
     return None

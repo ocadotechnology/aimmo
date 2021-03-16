@@ -6,6 +6,7 @@ from .pathfinding import astar
 
 # how many nearby artefacts to return
 SCAN_LIMIT = 3
+SCAN_RADIUS = 12
 
 
 class Cell(object):
@@ -42,22 +43,6 @@ class Cell(object):
 
     def __ne__(self, other):
         return not self == other
-
-
-class Artefact:
-    """
-    A wrapper around a cell containing an artefact
-    """
-
-    def __init__(self, location, path):
-        # the public data that the users can see
-        self.location = location
-
-        # useful semi private data for the Action
-        self._path = path  # best path to the artefact
-
-    def __repr__(self):
-        return "Artefact({})".format(self.location)
 
 
 class WorldMapCreator:
@@ -160,7 +145,7 @@ class WorldMap(object):
                     artefacts.append(cell)
         return artefacts
 
-    def scan_nearby(self, avatar_location, radius=10) -> List[Artefact]:
+    def scan_nearby(self, avatar_location, radius=SCAN_RADIUS) -> List[Artefact]:
         """
         From the given location point search the given radius for artefacts
         """
@@ -177,7 +162,8 @@ class WorldMap(object):
         nearest = []
         for distance in sorted(nearby.keys()):
             for artcell, path in nearby[distance]:
-                nearest.append(Artefact(artcell.location, path))
+                artcell.interactable["path"] = path
+                nearest.append(artcell.interactable)
             if len(nearest) > SCAN_LIMIT:
                 break
 
