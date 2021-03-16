@@ -145,9 +145,10 @@ class WorldMap(object):
                     artefacts.append(cell)
         return artefacts
 
-    def scan_nearby(self, avatar_location, radius=SCAN_RADIUS) -> List[Artefact]:
+    def scan_nearby(self, avatar_location, radius=SCAN_RADIUS) -> List[dict]:
         """
-        From the given location point search the given radius for artefacts
+        From the given location point search the given radius for artefacts.
+        Returns list of nearest artefacts (artefact/interactable represented as dict).
         """
         artefacts = self._scan_artefacts(avatar_location, radius)
 
