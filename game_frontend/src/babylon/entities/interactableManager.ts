@@ -33,16 +33,23 @@ export default class InteractableManager implements GameNode, DiffHandling {
     }
   }
 
-  edit (interactable: DiffItem): void {
+  async edit (interactable: DiffItem) {
     const toEdit = this.interactableNode.getChildMeshes(true, function (node): boolean {
       return node.name === `interactable: ${interactable.id}`
     })
     if (toEdit.length > 0) {
-      toEdit[0].position = new BABYLON.Vector3(
-        interactable.value.location.x,
-        0,
-        interactable.value.location.y
-      )
+      // if the interactable has the same type then we can change its position, otherwise we need to recreate it
+      if (toEdit[0].metadata.type === interactable.value.type) {
+        toEdit[0].position = new BABYLON.Vector3(
+          interactable.value.location.x,
+          0,
+          interactable.value.location.y
+        )
+      }
+      else {
+        await this.add(interactable)
+        toEdit[0].dispose()
+      }
     }
   }
 

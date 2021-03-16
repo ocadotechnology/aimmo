@@ -3,22 +3,27 @@ from simulation.interactables.effects import ArtefactEffect
 from simulation.interactables.interactable import _Interactable
 
 
-class Artefact(_Interactable):
+class _Artefact(_Interactable):
+    """
+    Base artefact class. self._type should be overridden in __init__.
+    """
+
     def __init__(self, cell):
-        super(Artefact, self).__init__(cell)
+        super().__init__(cell)
         self.delete_after_effects_applied = True
         self.in_backpack = False
         self.conditions = [avatar_on_cell, in_backpack]
         self.effects.append(ArtefactEffect)
+        self._type = "_artefact"
 
     def get_targets(self):
         return [self.cell.avatar]
 
     def __repr__(self):
-        return "Artefact(Location={})".format(self.cell.location)
+        return f"{type(self).__name__}(Location={self.cell.location})"
 
     def serialize(self):
-        serialized_artefact = {"type": "artefact"}
+        serialized_artefact = {"type": self._type}
 
         if not self.in_backpack:
             serialized_artefact["location"] = {
@@ -27,3 +32,21 @@ class Artefact(_Interactable):
             }
 
         return serialized_artefact
+
+
+class ChestArtefact(_Artefact):
+    def __init__(self, cell):
+        super().__init__(cell)
+        self._type = "chest"
+
+
+class KeyArtefact(_Artefact):
+    def __init__(self, cell):
+        super().__init__(cell)
+        self._type = "key"
+
+
+class YellowOrbArtefact(_Artefact):
+    def __init__(self, cell):
+        super().__init__(cell)
+        self._type = "yellow_orb"

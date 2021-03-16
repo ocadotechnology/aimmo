@@ -301,7 +301,7 @@ class KubernetesGameManager(GameManager):
                 },
             },
         )
-        if result["status"]["state"] == "UnAllocated" and retry_count < 5:
+        if result["status"]["state"] == "UnAllocated" and retry_count < 60:
             LOGGER.warning(
                 f"Failed to create game, retrying... retry_count={retry_count}"
             )

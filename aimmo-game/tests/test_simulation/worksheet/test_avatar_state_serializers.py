@@ -26,3 +26,14 @@ def test_worksheet2_avatar_state():
         "backpack": [],
     }
 
+
+def test_worksheet3_avatar_state():
+    worksheet3 = worksheets[3]
+    avatar_wrapper = AvatarWrapper(12, Location(-5, 7), MagicMock())
+    serialized_avatar_state = worksheet3.avatar_state_serializer(avatar_wrapper)
+    assert serialized_avatar_state == {
+        "id": 12,
+        "location": {"x": -5, "y": 7},
+        "orientation": "north",
+        "backpack": [],
+    }

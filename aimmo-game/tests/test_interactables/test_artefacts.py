@@ -1,10 +1,21 @@
 import pytest
 
 from simulation.action import PickupAction
-from simulation.interactables.pickups import Artefact
+from simulation.interactables.pickups import (
+    ChestArtefact,
+    KeyArtefact,
+    YellowOrbArtefact,
+)
 from simulation.location import Location
 from tests.test_simulation.dummy_avatar import CustomLiveDummy
 from .mock_world import MockWorld
+
+
+testdata = [
+    (ChestArtefact, "chest"),
+    (KeyArtefact, "key"),
+    (YellowOrbArtefact, "yellow_orb"),
+]
 
 
 @pytest.fixture
@@ -19,21 +30,23 @@ def cell(game):
     return game.game_state.world_map.get_cell(Location(1, 0))
 
 
-def test_artefact_serialization(cell):
-    artefact = Artefact(cell)
+@pytest.mark.parametrize("artefact_class, artefact_type", testdata)
+def test_artefact_serialization(cell, artefact_class, artefact_type):
+    artefact = artefact_class(cell)
     assert artefact.serialize() == {
-        "type": "artefact",
+        "type": artefact_type,
         "location": {"x": cell.location.x, "y": cell.location.y},
     }
 
     artefact.in_backpack = True
-    assert artefact.serialize() == {"type": "artefact"}
+    assert artefact.serialize() == {"type": artefact_type}
 
 
 @pytest.mark.asyncio
-async def test_artefact_applies_correctly(game, cell):
+@pytest.mark.parametrize("artefact_class, artefact_type", testdata)
+async def test_artefact_applies_correctly(game, cell, artefact_class, artefact_type):
     avatar: "CustomLiveDummy" = game.avatar_manager.get_avatar(1)
-    artefact = Artefact(cell)
+    artefact = artefact_class(cell)
     cell.interactable = artefact
 
     # Move to the cell with the artefact
@@ -56,3 +69,9 @@ async def test_artefact_applies_correctly(game, cell):
     assert cell.interactable is None
     assert len(avatar.backpack) == 1
     assert avatar.backpack == [artefact]
+
+
+@pytest.mark.parametrize("artefact_class, artefact_type", testdata)
+def test_artefact_repr(cell, artefact_class, artefact_type):
+    artefact = artefact_class(cell)
+    assert repr(artefact) == f"{type(artefact).__name__}(Location={cell.location})"
