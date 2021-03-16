@@ -22,7 +22,7 @@ class Cell(object):
         self.actions = []
 
     def __repr__(self):
-        return "Cell({} h={} a={} i={} f{})".format(
+        return "Cell({} h={} a={} i={} f={})".format(
             self.location,
             self.habitable,
             self.avatar,

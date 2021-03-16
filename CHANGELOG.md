@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.66.0b238 (2021-03-16)
+### Feature
+* Two artefacts (#1480) ([`69fbd60`](https://github.com/ocadotechnology/aimmo/commit/69fbd604653eea22b77561b9df2113649f5279e9))
+
 ## v0.65.5b224 (2021-03-09)
 
 

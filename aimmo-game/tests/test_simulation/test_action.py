@@ -7,7 +7,7 @@ from simulation import event
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.direction import EAST
 from simulation.game_state import GameState
-from simulation.interactables.pickups import Artefact
+from simulation.interactables.pickups.artefacts import YellowOrbArtefact
 from simulation.location import Location
 from .dummy_avatar import MoveDummy
 from .maps import InfiniteMap, EmptyMap, AvatarMap, PickupMap
@@ -129,7 +129,7 @@ class TestAction(unittest.TestCase):
         assert self.avatar.location == ORIGIN
 
     def test_successful_pickup_action(self):
-        game_state = GameState(PickupMap(Artefact), self.avatar_manager)
+        game_state = GameState(PickupMap(YellowOrbArtefact), self.avatar_manager)
         game_state.world_map.setup_cell(self.avatar.location)
         artefact = game_state.world_map.get_cell(self.avatar.location).interactable
 
@@ -137,7 +137,7 @@ class TestAction(unittest.TestCase):
 
         action.PickupAction(self.avatar).process(game_state.world_map)
 
-        assert self.avatar.events == [event.PickedUpEvent({"type": "artefact"})]
+        assert self.avatar.events == [event.PickedUpEvent({"type": "yellow_orb"})]
         assert artefact.in_backpack == True
 
     def test_failed_pickup_action(self):
@@ -148,11 +148,13 @@ class TestAction(unittest.TestCase):
         assert self.avatar.events == [event.FailedPickupEvent()]
 
     def test_failed_pickup_action_if_backpack_full(self):
-        game_state = GameState(PickupMap(Artefact), self.avatar_manager)
+        game_state = GameState(PickupMap(YellowOrbArtefact), self.avatar_manager)
         game_state.world_map.setup_cell(self.avatar.location)
         artefact = game_state.world_map.get_cell(self.avatar.location).interactable
 
-        self.avatar.backpack = [Artefact for _ in range(self.avatar.BACKPACK_SIZE)]
+        self.avatar.backpack = [
+            YellowOrbArtefact for _ in range(self.avatar.BACKPACK_SIZE)
+        ]
 
         action.PickupAction(self.avatar).process(game_state.world_map)
 
