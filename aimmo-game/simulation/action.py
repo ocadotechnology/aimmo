@@ -89,7 +89,7 @@ class PickupAction(Action):
         self.avatar.add_event(FailedPickupEvent())
         self.avatar.clear_action()
         self.avatar.logs.append(
-            "Uh oh! Your backpack is full! 🎒 Please drop something."
+            "Uh oh! Your avatar was unable to pick up the artefact. Your backpack is full! 🎒 "
         )
 
 
