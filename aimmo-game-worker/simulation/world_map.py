@@ -7,6 +7,8 @@ from .pathfinding import astar
 # how many nearby artefacts to return
 SCAN_LIMIT = 3
 SCAN_RADIUS = 12
+ARTEFACT_TYPES = ["chest", "key", "yellow_orb"]
+PICKUP_TYPES = ["damage_boost", "invulnerability", "health"] + ARTEFACT_TYPES
 
 
 class Cell(object):
@@ -31,7 +33,10 @@ class Cell(object):
         return not (self.avatar or self.obstacle)
 
     def has_artefact(self):
-        return self.interactable is not None and self.interactable["type"] == "artefact"
+        return (
+            self.interactable is not None
+            and self.interactable["type"] in ARTEFACT_TYPES
+        )
 
     def __repr__(self):
         return "Cell({} a={} i={})".format(
@@ -98,11 +103,10 @@ class WorldMap(object):
         return [cell for cell in self.all_cells() if cell.interactable]
 
     def pickup_cells(self):
-        pickup_types = ("damage_boost", "invulnerability", "health", "artefact")
         return [
             cell
             for cell in self.interactable_cells()
-            if cell.interactable["type"] in pickup_types
+            if cell.interactable["type"] in PICKUP_TYPES
         ]
 
     def score_cells(self):
@@ -150,21 +154,21 @@ class WorldMap(object):
         From the given location point search the given radius for artefacts.
         Returns list of nearest artefacts (artefact/interactable represented as dict).
         """
-        artefacts = self._scan_artefacts(avatar_location, radius)
+        artefact_cells = self._scan_artefacts(avatar_location, radius)
 
         # get the best path to each artefact
         nearby = defaultdict(list)
-        for artcell in artefacts:
-            path = astar(self, self.cells.get(avatar_location), artcell)
+        for art_cell in artefact_cells:
+            path = astar(self, self.cells.get(avatar_location), art_cell)
             if path:
-                nearby[len(path)].append((artcell, path))
+                nearby[len(path)].append((art_cell, path))
 
         # sort them by distance (the length of path) and take the nearest first
         nearest = []
         for distance in sorted(nearby.keys()):
-            for artcell, path in nearby[distance]:
-                artcell.interactable["path"] = path
-                nearest.append(artcell.interactable)
+            for art_cell, path in nearby[distance]:
+                art_cell.interactable["path"] = path
+                nearest.append(art_cell.interactable)
             if len(nearest) > SCAN_LIMIT:
                 break
 
