@@ -3,7 +3,7 @@ from __future__ import absolute_import
 from unittest import TestCase
 
 from simulation.location import Location
-from simulation.world_map import WorldMap, WorldMapCreator
+from simulation.world_map import WorldMap, WorldMapCreator, ARTEFACT_TYPES
 
 
 class TestWorldMap(TestCase):
@@ -70,7 +70,7 @@ class TestWorldMap(TestCase):
 
     def test_artefact_cell(self):
         cells = self._generate_cells()
-        cells[0]["interactable"] = {"type": "artefact"}
+        cells[0]["interactable"] = {"type": ARTEFACT_TYPES[0]}
         map = WorldMapCreator.generate_world_map_from_cells_data(cells)
         self.assertEqual(map.get_cell(Location(-1, -1)).has_artefact(), True)
 
@@ -141,7 +141,7 @@ class TestWorldMap(TestCase):
         cells = self._generate_cells(5, 5)
         cells[0]["avatar"] = self.AVATAR
         cells[2]["obstacle"] = {"location": {"x": 0, "y": 0}}
-        cells[4]["interactable"] = {"type": "artefact"}
+        cells[4]["interactable"] = {"type": ARTEFACT_TYPES[-1]}
         map = WorldMapCreator.generate_world_map_from_cells_data(cells)
         artefacts = map.scan_nearby(Location(-1, 0))
         self.assertEqual(len(artefacts), 1)
