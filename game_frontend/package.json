@@ -63,7 +63,7 @@
     "immer": "^8.0.1",
     "js-cookie": "^2.2.1",
     "lodash.isequal": "^4.5.0",
-    "parcel-bundler": "^1.12.4",
+    "parcel-bundler": "^1.12.5",
     "react": "^16.8.6",
     "react-ace": "^9.0.0",
     "react-dom": "^16.8.6",
