@@ -440,7 +440,8 @@ class TestViews(TestCase):
         avatar = game.avatar_set.get(owner=client.session["_auth_user_id"])
         assert avatar is not None
 
-    def test_update_game_worksheet_updates_avatar_codes(self):
+    @patch("aimmo.serializers.GameManager")
+    def test_update_game_worksheet_updates_avatar_codes(self, mocked_game_manager):
         # Set up the first avatar
         first_user = self.user
         models.Avatar(owner=first_user, code=self.CODE, game=self.game).save()
