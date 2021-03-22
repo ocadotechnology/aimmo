@@ -462,6 +462,7 @@ class TestViews(TestCase):
             content_type="application/json",
         )
 
+        # GameManager is called when a game is edited.
         assert mock_game_manager.called
         assert response.status_code == 200
 
