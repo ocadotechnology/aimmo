@@ -441,7 +441,7 @@ class TestViews(TestCase):
         assert avatar is not None
 
     @patch("aimmo.serializers.GameManager")
-    def test_update_game_worksheet_updates_avatar_codes(self, mocked_game_manager):
+    def test_update_game_worksheet_updates_avatar_codes(self, mock_game_manager):
         # Set up the first avatar
         first_user = self.user
         models.Avatar(owner=first_user, code=self.CODE, game=self.game).save()
@@ -462,6 +462,7 @@ class TestViews(TestCase):
             content_type="application/json",
         )
 
+        assert mock_game_manager.called
         assert response.status_code == 200
 
         game = models.Game.objects.get(id=1)

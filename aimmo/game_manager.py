@@ -11,6 +11,7 @@ from kubernetes.client.api_client import ApiClient
 LOGGER = logging.getLogger(__name__)
 
 K8S_NAMESPACE = "default"
+AGONES_GROUP = "agones.dev"
 
 
 class GameManager:
@@ -83,7 +84,7 @@ class GameManager:
         """
         game_data = {}
         result = self.custom_objects_api.list_namespaced_custom_object(
-            group="agones.dev",
+            group=AGONES_GROUP,
             version="v1",
             namespace=K8S_NAMESPACE,
             plural="gameservers",
@@ -104,7 +105,7 @@ class GameManager:
             name = game_server["metadata"]["name"]
             game_data.update(game_server["metadata"]["annotations"])
             self.custom_objects_api.delete_namespaced_custom_object(
-                group="agones.dev",
+                group=AGONES_GROUP,
                 version="v1",
                 namespace=K8S_NAMESPACE,
                 plural="gameservers",
@@ -113,7 +114,7 @@ class GameManager:
 
         # Remove agones specific annotations from game_data
         game_data = {
-            k: v for k, v in game_data.items() if not k.startswith("agones.dev/")
+            k: v for k, v in game_data.items() if not k.startswith(f"{AGONES_GROUP}/")
         }
         return game_data
 

@@ -115,14 +115,16 @@ def get_game_url_base_and_path(game_id: int) -> str:
     )
     try:
         result_items = result["items"]
-        game_server = result_items[0]
+        game_server = None
 
-        # If there are more game servers, get one which is not marked for deletion
-        if len(result_items) > 1:
-            for item in result_items:
-                if "deletionTimestamp" not in item["metadata"]:
-                    game_server = item
-                    break
+        # Get the first game server not marked for deletion. Raise 404 if there is none.
+        for item in result_items:
+            if "deletionTimestamp" not in item["metadata"]:
+                game_server = item
+                break
+
+        if game_server is None:
+            raise Http404
 
         game_server_status = game_server["status"]
         return (
