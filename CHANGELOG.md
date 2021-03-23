@@ -2,6 +2,28 @@
 
 <!--next-version-placeholder-->
 
+## v0.67.1b259 (2021-03-23)
+
+
+## v0.67.1b256 (2021-03-23)
+### Fix
+* Fix worksheets not changing on game server (#1487) ([`5241faf`](https://github.com/ocadotechnology/aimmo/commit/5241faf086f80e63f6290ce5c337bf8c35af35e4))
+
+## v0.67.0b247 (2021-03-17)
+### Feature
+* Add scan_nearby, MoveTowardsAction and A* pathfinding (#1481) ([`1e37fb3`](https://github.com/ocadotechnology/aimmo/commit/1e37fb3612f3b03c9f8601153a5d7ebc25e19757))
+
+## v0.66.0b238 (2021-03-16)
+### Feature
+* Two artefacts (#1480) ([`69fbd60`](https://github.com/ocadotechnology/aimmo/commit/69fbd604653eea22b77561b9df2113649f5279e9))
+
+## v0.65.5b224 (2021-03-09)
+
+
+## v0.65.5b221 (2021-03-05)
+### Fix
+* Load correct worksheet in aimmo-game (#1476) ([`f9bcb61`](https://github.com/ocadotechnology/aimmo/commit/f9bcb61b10e0d32459523a75f3b60de72d79341c))
+
 ## v0.65.4 (2021-03-05)
 
 

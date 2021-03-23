@@ -77,19 +77,39 @@ describe('InteractableManager', () => {
     expect(interactableNodeDescendants.length).toBe(1)
   })
 
-  it('edits interactable from an Interactable', async () => {
+  it('edits interactable from an Interactable with the same type', async () => {
     const interactableItem = interactableDiffItem(1, 'score', { x: 0, y: 1 })
 
     await interactableManager.add(interactableItem)
 
     var interactableNodeChildren = interactableManager.interactableNode.getChildMeshes()
     expect(interactableNodeChildren[0].position).toEqual(new Vector3(0, 0, 1))
+    expect(interactableNodeChildren[0].metadata.type).toEqual('score')
 
     const updatedInteractableItem = interactableDiffItem(1, 'score', { x: 1, y: 0 })
 
-    interactableManager.edit(updatedInteractableItem)
+    await interactableManager.edit(updatedInteractableItem)
 
     interactableNodeChildren = interactableManager.interactableNode.getChildMeshes()
     expect(interactableNodeChildren[0].position).toEqual(new Vector3(1, 0, 0))
+    expect(interactableNodeChildren[0].metadata.type).toEqual('score')
+  })
+
+  it('edits interactable from an Interactable with a different type', async () => {
+    const interactableItem = interactableDiffItem(1, 'key', { x: 2, y: 3 })
+
+    await interactableManager.add(interactableItem)
+
+    var interactableNodeChildren = interactableManager.interactableNode.getChildMeshes()
+    expect(interactableNodeChildren[0].position).toEqual(new Vector3(2, 0, 3))
+    expect(interactableNodeChildren[0].metadata.type).toEqual('key')
+
+    const updatedInteractableItem = interactableDiffItem(1, 'chest', { x: 4, y: 1 })
+
+    await interactableManager.edit(updatedInteractableItem)
+
+    interactableNodeChildren = interactableManager.interactableNode.getChildMeshes()
+    expect(interactableNodeChildren[0].position).toEqual(new Vector3(4, 0, 1))
+    expect(interactableNodeChildren[0].metadata.type).toEqual('chest')
   })
 })

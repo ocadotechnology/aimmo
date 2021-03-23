@@ -2,11 +2,11 @@
 import { expose } from 'threads/worker'
 import ComputedTurnResult from './computedTurnResult'
 
-function getAvatarStateFromGameState (gameState: any, playerAvatarID: number): object {
+function getAvatarStateFromGameState(gameState: any, playerAvatarID: number): object {
   return gameState.players.find(player => player.id === playerAvatarID)
 }
 
-async function initializePyodide () {
+async function initializePyodide() {
   self.languagePluginUrl = 'https://pyodide-cdn2.iodide.io/v0.15.0/full/'
   importScripts('https://pyodide-cdn2.iodide.io/v0.15.0/full/pyodide.js')
   await languagePluginLoader
@@ -20,7 +20,7 @@ micropip.install("${self.location.origin}/static/worker/aimmo_avatar_api-0.0.0-p
   await pyodide.runPythonAsync(`
 from simulation import direction
 from simulation import location
-from simulation.action import MoveAction, PickupAction, WaitAction
+from simulation.action import MoveAction, PickupAction, WaitAction, MoveTowardsAction
 from simulation.world_map import WorldMapCreator
 from simulation.avatar_state import create_avatar_state
 from io import StringIO
@@ -46,7 +46,7 @@ def capture_output(stdout=None, stderr=None):
 `)
 }
 
-async function computeNextAction (gameState, playerAvatarID): Promise<ComputedTurnResult> {
+async function computeNextAction(gameState, playerAvatarID): Promise<ComputedTurnResult> {
   const avatarState = getAvatarStateFromGameState(gameState, playerAvatarID)
   try {
     return await pyodide.runPythonAsync(`
@@ -72,7 +72,7 @@ logs = stdout.getvalue() + stderr.getvalue()
   }
 }
 
-export function simplifyErrorMessageInLog (log: string): string {
+export function simplifyErrorMessageInLog(log: string): string {
   const regexToFindNextTurnErrors = /.*line (\d+), in next_turn\n((?:.|\n)*)/
   const matches = log.match(regexToFindNextTurnErrors)
   if (matches?.length >= 2) {
@@ -85,7 +85,7 @@ export function simplifyErrorMessageInLog (log: string): string {
     .join('\n')
 }
 
-export async function updateAvatarCode (
+export async function updateAvatarCode(
   userCode: string,
   gameState: any,
   playerAvatarID: number = 0
@@ -115,7 +115,7 @@ export async function updateAvatarCode (
   }
 }
 
-async function setAvatarCodeToWaitActionOnError () {
+async function setAvatarCodeToWaitActionOnError() {
   await pyodide.runPythonAsync(
     `def next_turn(world_map, avatar_state):
     return WaitAction()`

@@ -5,8 +5,8 @@ from unittest.mock import patch, Mock
 
 from simulation.avatar.avatar_appearance import AvatarAppearance
 from simulation.game_logic import PickupUpdater
-from simulation.worksheet import WorksheetData
-from simulation.interactables.pickups import Artefact
+from simulation.worksheet.worksheet import WorksheetData
+from simulation.interactables.pickups import YellowOrbArtefact
 from simulation.interactables.score_location import ScoreLocation
 from simulation.location import Location
 from simulation.simulation_runner import ConcurrentSimulationRunner
@@ -56,12 +56,12 @@ def generate_grid(columns=2, rows=2):
 
 class TestSimulationRunner:
     """
-        Key:
-            > : Avatar moving eastward
-            < : Avatar moving westward
-            x : Avatar waiting / blocked
-            o : Avatar successfully moved
-            ! : Dead avatar (that should be waiting)
+    Key:
+        > : Avatar moving eastward
+        < : Avatar moving westward
+        x : Avatar waiting / blocked
+        o : Avatar successfully moved
+        ! : Dead avatar (that should be waiting)
     """
 
     def assertGridSize(self, world_map, expected_columns, expected_rows=None):
@@ -223,13 +223,12 @@ class TestSimulationRunner:
         self.simulation_runner.update(1, self.simulation_runner.game_state)
         assert pickup.applied_to == avatar
 
-    @patch("simulation.interactables.pickups.Artefact", spec=Artefact)
-    def test_pickups_not_added_when_at_target(self, mockPickup):
+    def test_pickups_not_added_when_at_target(self):
         self.construct_simulation_runner([], [])
         settings = SETTINGS.copy()
         settings["TARGET_NUM_PICKUPS_PER_AVATAR"] = 1
         grid = generate_grid()
-        grid[Location(0, 1)].interactable = mockPickup()
+        grid[Location(0, 1)].interactable = YellowOrbArtefact(grid[Location(0, 1)])
         self.simulation_runner.game_state.world_map = WorldMap(grid, settings)
         self.simulation_runner.update(1, self.simulation_runner.game_state)
         assert (
@@ -260,7 +259,7 @@ class TestSimulationRunner:
             worksheet_id=1,
             era="test era",
             number_of_obstacle_textures=1,
-            map_updaters=[map_updater],
+            map_updaters=[map_updater(pickup_types=[YellowOrbArtefact])],
         )
         self.simulation_runner.worksheet = worksheet_with_mock_updater
         self.simulation_runner.update(1, self.simulation_runner.game_state)
