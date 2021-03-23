@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v0.67.1b259 (2021-03-23)
+
+
 ## v0.67.1b256 (2021-03-23)
 ### Fix
 * Fix worksheets not changing on game server (#1487) ([`5241faf`](https://github.com/ocadotechnology/aimmo/commit/5241faf086f80e63f6290ce5c337bf8c35af35e4))
