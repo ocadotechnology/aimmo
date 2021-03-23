@@ -114,7 +114,19 @@ def get_game_url_base_and_path(game_id: int) -> str:
         label_selector=f"game-id={game_id}",
     )
     try:
-        game_server_status = result["items"][0]["status"]
+        result_items = result["items"]
+        game_server = None
+
+        # Get the first game server not marked for deletion. Raise 404 if there is none.
+        for item in result_items:
+            if "deletionTimestamp" not in item["metadata"]:
+                game_server = item
+                break
+
+        if game_server is None:
+            raise Http404
+
+        game_server_status = game_server["status"]
         return (
             f"http://{game_server_status['address']}:{game_server_status['ports'][0]['port']}",
             "/socket.io",
