@@ -2,6 +2,19 @@
 
 <!--next-version-placeholder-->
 
+## v0.67.2 (2021-03-23)
+
+
+## v0.67.2b267 (2021-03-23)
+### Fix
+* Require kubernetes ([`18a0455`](https://github.com/ocadotechnology/aimmo/commit/18a04556b267167e3e1c06bdd93658b99cff04e7))
+
+## v0.67.1 (2021-03-23)
+
+
+## v0.67.1b259 (2021-03-23)
+
+
 ## v0.67.1b256 (2021-03-23)
 ### Fix
 * Fix worksheets not changing on game server (#1487) ([`5241faf`](https://github.com/ocadotechnology/aimmo/commit/5241faf086f80e63f6290ce5c337bf8c35af35e4))
