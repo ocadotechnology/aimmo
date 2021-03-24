@@ -2,6 +2,7 @@ import json
 from rest_framework import serializers
 
 from aimmo.models import Game, Avatar, Worksheet
+from aimmo.game_manager import GameManager
 
 
 class GameSerializer(serializers.Serializer):
@@ -40,6 +41,8 @@ class GameSerializer(serializers.Serializer):
             "worksheet_id", instance.worksheet_id
         )
 
+        instance.save()
+
         if "worksheet_id" in validated_data:
             avatars = Avatar.objects.filter(game=instance)
             worksheet = Worksheet.objects.get(id=instance.worksheet_id)
@@ -48,7 +51,14 @@ class GameSerializer(serializers.Serializer):
                 avatar.code = worksheet.starter_code
                 avatar.save()
 
-        instance.save()
+            # If the game is running, the game server needs to be restarted
+            if instance.status == Game.RUNNING:
+                game_manager = GameManager()
+                game_manager.recreate_game_server(
+                    game_id=instance.id,
+                    game_data_updates={"worksheet_id": str(instance.worksheet_id)},
+                )
+
         return instance
 
 
