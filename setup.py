@@ -28,6 +28,7 @@ setup(
         "eventlet==0.29.1",
         "requests==2.25.0",
         "hypothesis==5.41.3",
+        "kubernetes==12.0.1",
         "cfl-common",
     ],
     tests_require=["docker >= 3.5, < 3.6", "kubernetes == 5.0.0", "PyYAML == 4.2b1"],
