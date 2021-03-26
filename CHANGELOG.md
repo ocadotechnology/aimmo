@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v0.67.4b287 (2021-03-26)
+
+
 ## v0.67.4b281 (2021-03-24)
 ### Fix
 * [Snyk] Security upgrade parcel-bundler from 1.12.4 to 1.12.5 (#1483) ([`afbf227`](https://github.com/ocadotechnology/aimmo/commit/afbf22722f8bdb279a79cdde04fb7663526b2a52))
