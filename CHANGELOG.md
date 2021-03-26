@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.68.0b292 (2021-03-26)
+### Feature
+* Allow inspection of artefact's type and types via the world map (#1494) ([`abcd6a7`](https://github.com/ocadotechnology/aimmo/commit/abcd6a7a975171950527d0f723d5a8ef90250c0a))
+
 ## v0.67.4b287 (2021-03-26)
 
 
