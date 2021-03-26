@@ -31,7 +31,7 @@ setup(
         "kubernetes==12.0.1",
         "cfl-common",
     ],
-    tests_require=["docker >= 3.5, < 3.6", "kubernetes == 5.0.0", "PyYAML == 4.2b1"],
+    tests_require=["docker >= 3.5, < 3.6", "kubernetes == 5.0.0", "PyYAML == 5.4"],
     version=version,
     zip_safe=False,
 )
