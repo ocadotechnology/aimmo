@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.68.1b299 (2021-03-29)
+### Fix
+* Update unit tests to pytest (#1497) ([`c6f05ca`](https://github.com/ocadotechnology/aimmo/commit/c6f05caf82f002c3ed9d8f6ad347954f4c22475e))
+
 ## v0.68.0b292 (2021-03-26)
 ### Feature
 * Allow inspection of artefact's type and types via the world map (#1494) ([`abcd6a7`](https://github.com/ocadotechnology/aimmo/commit/abcd6a7a975171950527d0f723d5a8ef90250c0a))
