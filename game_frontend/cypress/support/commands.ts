@@ -85,13 +85,8 @@ Cypress.Commands.add('addTestGame', () => {
 Cypress.Commands.add('visitAGame', () => {
   cy.request('/kurono/api/games/').then(response => {
     const games = response.body
-    let testGameId
-    for (const [gameId, gameData] of Object.entries(games)) {
-      if (gameData['class_id'] == class_id && gameData['worksheet_id'] == worksheet_id) {
-        testGameId = gameId
-        break
-      }
-    }
+    // just get the first game it can find
+    let testGameId = Object.keys(games)[0]
     cy.fixture('initialState.json').then(initialState => {
       cy.visit(`/kurono/play/${testGameId}/`, {
         onBeforeLoad: win => {
