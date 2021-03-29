@@ -16,8 +16,9 @@ def get_version():
 
 
 setup(
-    name="aimmo-game-worker",
+    name="aimmo-avatar-api",
     packages=find_packages(),
+    version="0.0.0",
     include_package_data=True,
     tests_require=["pytest", "httmock", "mock"],
     setup_requires=["pytest-runner"],
