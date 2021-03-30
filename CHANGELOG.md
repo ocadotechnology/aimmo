@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.68.2b303 (2021-03-30)
+### Fix
+* Wrap artefact in namedtuple (#1498) ([`c5a1a6c`](https://github.com/ocadotechnology/aimmo/commit/c5a1a6c311ea35f648e30c23953fa7f80ec19e85))
+
 ## v0.68.1b299 (2021-03-29)
 ### Fix
 * Update unit tests to pytest (#1497) ([`c6f05ca`](https://github.com/ocadotechnology/aimmo/commit/c6f05caf82f002c3ed9d8f6ad347954f4c22475e))
