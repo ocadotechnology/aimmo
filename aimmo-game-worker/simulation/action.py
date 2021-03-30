@@ -40,12 +40,12 @@ class MoveTowardsAction(Action):
             print("MoveTowardsAction got an invalid parameter. Is it empty?")
             return
 
-        if len(artefact.get("path", [])) < 2:
+        if len(artefact.path) < 2:
             return  # not a valid path
 
         # the first cell in the path is the starting cell
-        avatar_location = artefact["path"][0].location
-        next_location = artefact["path"][1].location
+        avatar_location = artefact.path[0].location
+        next_location = artefact.path[1].location
 
         # calculate direction
         x = next_location.x - avatar_location.x

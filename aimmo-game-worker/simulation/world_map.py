@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 from enum import Enum
 
 from .avatar_state import create_avatar_state
@@ -23,6 +23,9 @@ class ArtefactType(Enum):
 
     def __str__(self):
         return self.value
+
+
+Artefact = namedtuple("Artefact", ["type", "location", "path"])
 
 
 class Cell(object):
@@ -176,6 +179,7 @@ class WorldMap(object):
         nearby = defaultdict(list)
         for art_cell in artefact_cells:
             path = astar(self, self.cells.get(avatar_location), art_cell)
+            # only add to the list when there's a path
             if path:
                 nearby[len(path)].append((art_cell, path))
 
@@ -183,8 +187,13 @@ class WorldMap(object):
         nearest = []
         for distance in sorted(nearby.keys()):
             for art_cell, path in nearby[distance]:
-                art_cell.interactable["path"] = path
-                nearest.append(art_cell.interactable)
+                # use namedtuple so fields accessible by attribute lookup
+                artefact = Artefact(
+                    type=art_cell.interactable["type"],
+                    location=art_cell.location,
+                    path=path,
+                )
+                nearest.append(artefact)
             if len(nearest) > SCAN_LIMIT:
                 break
 
