@@ -25,6 +25,9 @@ class ArtefactType(Enum):
         return self.value
 
 
+Artefact = namedtuple("Artefact", ["type", "location", "path"])
+
+
 class Cell(object):
 
     """
@@ -185,8 +188,11 @@ class WorldMap(object):
         for distance in sorted(nearby.keys()):
             for art_cell, path in nearby[distance]:
                 # use namedtuple so fields accessible by attribute lookup
-                values = [art_cell.interactable["type"], art_cell.location, path]
-                artefact = namedtuple("Artefact", ["type", "location", "path"])(*values)
+                artefact = Artefact(
+                    type=art_cell.interactable["type"],
+                    location=art_cell.location,
+                    path=path,
+                )
                 nearest.append(artefact)
             if len(nearest) > SCAN_LIMIT:
                 break
