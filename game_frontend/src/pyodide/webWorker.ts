@@ -14,7 +14,7 @@ async function initializePyodide() {
   await pyodide.runPythonAsync(`
 import micropip
 
-micropip.install("${self.location.origin}/static/worker/aimmo_avatar_api-0.0.0-py3-none-any.whl")
+micropip.install("${self.location.origin}/static/worker/aimmo_game_worker-0.0.0-py3-none-any.whl")
   `)
 
   await pyodide.runPythonAsync(`

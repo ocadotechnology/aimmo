@@ -4,6 +4,7 @@ import ObstacleManager from './obstacleManager'
 import dummyImportMeshAsync from '../../testHelpers/dummyImportMeshAsync'
 import AssetPack from '../assetPacks/assetPack'
 import { DiffItem } from '../diff'
+import { Vector3 } from 'babylonjs'
 
 let environment: MockEnvironment
 let obstacles: ObstacleManager
@@ -39,7 +40,7 @@ describe('obstacle', () => {
     const meshes = obstacles.obstacleNode.getChildMeshes()
 
     expect(meshes.length).toBe(1)
-    expect(meshes[0].position).toEqual({ x: 0, y: 0, z: 0 })
+    expect(meshes[0].position).toEqual(new Vector3(0, 0, 0))
   })
 
   it('deletes an obstacle', async () => {
@@ -64,7 +65,7 @@ describe('obstacle', () => {
     let meshes = obstacles.obstacleNode.getChildMeshes()
 
     expect(meshes.length).toBe(1)
-    expect(meshes[0].position).toEqual({ x: 0, y: 0, z: 0 })
+    expect(meshes[0].position).toEqual(new Vector3(0, 0, 0))
 
     const updatedObstacle = obstacleDiffItem(1, { x: 1, y: 1 })
 
@@ -73,6 +74,6 @@ describe('obstacle', () => {
     meshes = obstacles.obstacleNode.getChildMeshes()
 
     expect(meshes.length).toBe(1)
-    expect(meshes[0].position).toEqual({ x: 1, y: 0, z: 1 })
+    expect(meshes[0].position).toEqual(new Vector3(1, 0, 1))
   })
 })

@@ -2,6 +2,29 @@
 
 <!--next-version-placeholder-->
 
+## v0.68.2b303 (2021-03-30)
+### Fix
+* Wrap artefact in namedtuple (#1498) ([`c5a1a6c`](https://github.com/ocadotechnology/aimmo/commit/c5a1a6c311ea35f648e30c23953fa7f80ec19e85))
+
+## v0.68.1b299 (2021-03-29)
+### Fix
+* Update unit tests to pytest (#1497) ([`c6f05ca`](https://github.com/ocadotechnology/aimmo/commit/c6f05caf82f002c3ed9d8f6ad347954f4c22475e))
+
+## v0.68.0b292 (2021-03-26)
+### Feature
+* Allow inspection of artefact's type and types via the world map (#1494) ([`abcd6a7`](https://github.com/ocadotechnology/aimmo/commit/abcd6a7a975171950527d0f723d5a8ef90250c0a))
+
+## v0.67.4b287 (2021-03-26)
+
+
+## v0.67.4b281 (2021-03-24)
+### Fix
+* [Snyk] Security upgrade parcel-bundler from 1.12.4 to 1.12.5 (#1483) ([`afbf227`](https://github.com/ocadotechnology/aimmo/commit/afbf22722f8bdb279a79cdde04fb7663526b2a52))
+
+## v0.67.3b276 (2021-03-24)
+### Fix
+* Bump django from 2.2.17 to 2.2.18 (#1489) ([`805980b`](https://github.com/ocadotechnology/aimmo/commit/805980b94caec14d07beccc9b718033b16732308))
+
 ## v0.67.2 (2021-03-23)
 
 
