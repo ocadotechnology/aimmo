@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v0.68.2 (2021-04-01)
+
+
 ## v0.68.2b303 (2021-03-30)
 ### Fix
 * Wrap artefact in namedtuple (#1498) ([`c5a1a6c`](https://github.com/ocadotechnology/aimmo/commit/c5a1a6c311ea35f648e30c23953fa7f80ec19e85))
