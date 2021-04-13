@@ -19,7 +19,7 @@ const rootReducer = combineReducers({
   game: gameReducer,
   consoleLog: consoleLogReducer,
   action: actionReducer,
-  avatarWorker: avatarWorkerReducer
+  avatarWorker: avatarWorkerReducer,
 })
 
 export { rootEpic, rootReducer }
