@@ -11,6 +11,7 @@ ignore:
   - "docs/**/*"
   - "aimmo/static/pyodide/**/*"
   - "aimmo-game/agones/**/*"
+  - "aimmo_runner/*"
   - "aimmo_runner/**/*"
   - "test_utils/**/*"
 
