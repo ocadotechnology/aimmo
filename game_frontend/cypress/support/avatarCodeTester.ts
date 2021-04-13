@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-export function testAvatarCode (avatarCode, expectedAction, expectedLog) {
+export function testAvatarCode(avatarCode, expectedAction, expectedLog) {
   cy.loadGameWithAvatarCode(avatarCode)
 
   cy.fixture('gameState.json').then(gameState => {
@@ -12,7 +12,8 @@ export function testAvatarCode (avatarCode, expectedAction, expectedLog) {
   checkComputedTurnResult(expectedAction, expectedLog)
 }
 
-export function checkComputedTurnResult (expectedAction, expectedLog) {
+export function checkComputedTurnResult(expectedAction, expectedLog) {
+
   const getComputedTurnResult = win => {
     const state = win.store.getState()
     return state.action.avatarAction
@@ -21,7 +22,7 @@ export function checkComputedTurnResult (expectedAction, expectedLog) {
   cy.window()
     .pipe(getComputedTurnResult)
     .should(computedTurnResult => {
-      expect(computedTurnResult).to.not.be.undefined
+      assert.isObject(computedTurnResult)
 
       const avatarAction = computedTurnResult.action
       const avatarLog = computedTurnResult.log
