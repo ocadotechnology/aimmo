@@ -4,16 +4,20 @@ coverage:
   range: "70...100"
 
 ignore:
-  - ".travis.yml"
   - "aimmo_setup.py"
   - "all_tests.py"
   - "run.py"
+  - "docs/*"
   - "docs/**/*"
-  - "aimmo/static/pyodide/**/*"
+  - "docs/**/**/*"
+  - "aimmo/static/*"
+  - "aimmo/static/**/*"
+  - "aimmo/static/**/**/*"
+  - "aimmo-game/agones/*"
   - "aimmo-game/agones/**/*"
   - "aimmo_runner/*"
   - "aimmo_runner/**/*"
-  - "test_utils/**/*"
+  - "test_utils/*"
 
 comment:
   layout: "reach, diff, flags, files"
