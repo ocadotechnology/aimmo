@@ -112,7 +112,7 @@ Cypress.Commands.add('loadGameWithAvatarCode', avatarCode => {
   }
 
   cy.window()
-    .pipe(isAvatarWorkerInitialized, { timeout: 7000 })
+    .pipe(isAvatarWorkerInitialized, { timeout: 20000 })
     .should('eq', true)
 })
 //
