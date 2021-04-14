@@ -3,21 +3,7 @@
 <!DOCTYPE html>
 
 <head>
-  <!-- OneTrust Cookies Consent Notice start for codeforlife.education -->
-  {{#if_eq environment "default"}}
-  <!-- Production Environment -->
-  <!-- TODO -->
-  {{else}}
-    {{#if_eq nodeEnv "production"}}
-    <!-- Non-production Deployed Environment -->
-    <script type="text/javascript" src="https://cdn-ukwest.onetrust.com/consent/26fc0b44-90c4-44e3-aaa7-335ac3d03d13-test/OtAutoBlock.js" ></script>
-    <script src="https://cdn-ukwest.onetrust.com/scripttemplates/otSDKStub.js"  type="text/javascript" charset="UTF-8" data-domain-script="26fc0b44-90c4-44e3-aaa7-335ac3d03d13-test" ></script>
-    <script type="text/javascript">
-    function OptanonWrapper() { }
-    </script>
-    {{/if_eq}}
-  {{/if_eq}}
-  <!-- OneTrust Cookies Consent Notice end for codeforlife.education -->
+  {% include "common/onetrust_cookies_consent_notice.html" %}
 
   <!-- Google Tag Manager -->
   {{#if_eq environment "default"}}

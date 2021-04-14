@@ -102,6 +102,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
 ]
 
+COOKIE_MANAGEMENT_ENABLED = False
+
 
 def get_game_url_base_and_path(game_id: int) -> str:
     api_client = ApiClient()
