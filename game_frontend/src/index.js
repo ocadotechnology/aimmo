@@ -31,10 +31,12 @@ WebFont.load({
 
 ReactGA.initialize('UA-49883146-1', {
   debug: false,
-  testMode: process.env.NODE_ENV === 'test'
+  testMode: process.env.NODE_ENV !== 'production'
 })
 
-ReactGA.pageview(`/kurono/play/${getGameIDFromURL()}`)
+if (process.env.NODE_ENV === 'production') {
+  ReactGA.pageview(`/kurono/play/${getGameIDFromURL()}`)
+}
 
 const initialState = (window.Cypress && window.initialState) || {
   editor: {
@@ -55,7 +57,7 @@ const initialState = (window.Cypress && window.initialState) || {
   }
 }
 
-function getGameIDFromURL () {
+function getGameIDFromURL() {
   const url = window.location.href
   const gameIDFinder = /\/play\/([0-9]+)/
   return gameIDFinder.exec(url)[1]

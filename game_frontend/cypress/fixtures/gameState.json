@@ -11,7 +11,10 @@
     },
     "players": [
       {
-        "location": { "x": 1, "y": 1 },
+        "location": {
+          "x": 1,
+          "y": 1
+        },
         "health": 10,
         "score": 10,
         "backpack": {},
@@ -21,7 +24,7 @@
     ],
     "interactables": [
       {
-        "type": "artefact",
+        "type": "yellow_orb",
         "location": {
           "x": -8,
           "y": 15
@@ -30,7 +33,10 @@
     ],
     "obstacles": [
       {
-        "location": { "x": 2, "y": 2 },
+        "location": {
+          "x": 2,
+          "y": 2
+        },
         "width": 1,
         "height": 1,
         "type": "wall",
