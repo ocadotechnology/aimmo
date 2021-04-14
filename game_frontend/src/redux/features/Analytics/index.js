@@ -1,5 +1,5 @@
 function hasAnalyticsCookiesConsent() {
-  return window.OnetrustActiveGroups && window.OnetrustActiveGroups.split(',').includes('C0002')
+  return !!window.OnetrustActiveGroups && window.OnetrustActiveGroups.split(',').includes('C0002')
 }
 
 export { hasAnalyticsCookiesConsent }
