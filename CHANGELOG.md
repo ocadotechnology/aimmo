@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.68.3b335 (2021-04-14)
+### Fix
+* Upgrade cypress version to 7.x plus test updates (#1510) ([`d1ee11b`](https://github.com/ocadotechnology/aimmo/commit/d1ee11b23150a679792c61f212ff63ad11c2a62b))
+
 ## v0.68.2b321 (2021-04-07)
 
 
