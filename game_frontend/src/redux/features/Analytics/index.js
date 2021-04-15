@@ -1,4 +1,5 @@
 function hasAnalyticsCookiesConsent() {
+  // C0002 is the Analytics Cookies category in OneTrust
   return !!window.OnetrustActiveGroups && window.OnetrustActiveGroups.split(',').includes('C0002')
 }
 

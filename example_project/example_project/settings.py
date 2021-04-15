@@ -102,6 +102,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
 ]
 
+# This is used in common to enable/disable the OneTrust cookie management script
 COOKIE_MANAGEMENT_ENABLED = False
 
 

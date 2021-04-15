@@ -42,7 +42,6 @@ function generateGameIDEHTML(reactFileName) {
   return template({
     reactUrl: `react/${reactFileName}`,
     environment: process.env.SERVER_ENV,
-    nodeEnv: process.env.NODE_ENV,
   })
 }
 
