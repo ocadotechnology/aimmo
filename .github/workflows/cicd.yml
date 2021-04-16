@@ -55,6 +55,8 @@ jobs:
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Test env vars
+        run: env
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
 
@@ -77,6 +79,8 @@ jobs:
           read CONTAINERID <<< $(docker ps --all -q | head -1)
           docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
           docker cp -a $CONTAINERID:coverage.xml $(pwd)/coverage.xml
+      - name: Test env vars
+        run: env
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
 
@@ -99,6 +103,8 @@ jobs:
           read CONTAINERID <<< $(docker ps --all -q | head -1)
           docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
           docker cp -a $CONTAINERID:coverage.xml $(pwd)/coverage.xml
+      - name: Test env vars
+        run: env
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
 
@@ -121,6 +127,8 @@ jobs:
           read CONTAINERID <<< $(docker ps --all -q | head -1)
           docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
           docker cp -a $CONTAINERID:coverage.xml $(pwd)/coverage.xml
+      - name: Test env vars
+        run: env
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
 
