@@ -69,10 +69,10 @@
         },
         "cfl-common": {
             "hashes": [
-                "sha256:d31d0c76d35696e238124ee8146ddf553672a3d8aa720354c3efbcfc2b0b3776",
-                "sha256:f2a432fe457c064d3a0eda287389316e5757f07c38bca1fe96ab39baf37f1b71"
+                "sha256:2e1918f3019aa93441b386acca5a509951c57bad20f821e810567f453cc10322",
+                "sha256:3b0ed3eb69fde08ec6888f6d8762fa4de8df308a39c3cf031d3b7f6294bba5ec"
             ],
-            "version": "==4.28.0"
+            "version": "==4.28.1"
         },
         "chardet": {
             "hashes": [
@@ -665,10 +665,10 @@
         },
         "cfl-common": {
             "hashes": [
-                "sha256:d31d0c76d35696e238124ee8146ddf553672a3d8aa720354c3efbcfc2b0b3776",
-                "sha256:f2a432fe457c064d3a0eda287389316e5757f07c38bca1fe96ab39baf37f1b71"
+                "sha256:2e1918f3019aa93441b386acca5a509951c57bad20f821e810567f453cc10322",
+                "sha256:3b0ed3eb69fde08ec6888f6d8762fa4de8df308a39c3cf031d3b7f6294bba5ec"
             ],
-            "version": "==4.28.0"
+            "version": "==4.28.1"
         },
         "chardet": {
             "hashes": [
@@ -687,11 +687,11 @@
         },
         "codeforlife-portal": {
             "hashes": [
-                "sha256:0bb1be79b7c9d0294c9d793233b4680f13e621ed3fa8931a6245e81ffef53f65",
-                "sha256:d8ae2004688f8f04d83e54331a02ab61efc7a1b84de4f4b8af51e37aff94932b"
+                "sha256:161b03f1259b32571abb0a74ba091260e62d999640a5c0660389398760d015c1",
+                "sha256:4344eaf00246777d40eaf24275c8f2ba3e7bfd51e2b2537f08707abbcd030899"
             ],
             "index": "pypi",
-            "version": "==4.28.0"
+            "version": "==4.28.1"
         },
         "coverage": {
             "hashes": [
