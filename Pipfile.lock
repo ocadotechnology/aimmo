@@ -69,10 +69,10 @@
         },
         "cfl-common": {
             "hashes": [
-                "sha256:1150cc279811785b0a8685494dafba7cdcd7bc02c8dba563be184cdaa9fd56a3",
-                "sha256:46c2c169952cbf74f43d75bc6dbe2df89f9b527a38b84eae1c3b07219058fcf8"
+                "sha256:d31d0c76d35696e238124ee8146ddf553672a3d8aa720354c3efbcfc2b0b3776",
+                "sha256:f2a432fe457c064d3a0eda287389316e5757f07c38bca1fe96ab39baf37f1b71"
             ],
-            "version": "==4.26.0"
+            "version": "==4.28.0"
         },
         "chardet": {
             "hashes": [
@@ -215,11 +215,11 @@
         },
         "google-auth": {
             "hashes": [
-                "sha256:186fe2564634d67fbbb64f3daf8bc8c9cecbb2a7f535ed1a8a71795e50db8d87",
-                "sha256:70b39558712826e41f65e5f05a8d879361deaf84df8883e5dd0ec3d0da6ab66e"
+                "sha256:010f011c4e27d3d5eb01106fba6aac39d164842dfcd8709955c4638f5b11ccf8",
+                "sha256:f30a672a64d91cc2e3137765d088c5deec26416246f7a9e956eaf69a8d7ed49c"
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'",
-            "version": "==1.28.1"
+            "version": "==1.29.0"
         },
         "greenlet": {
             "hashes": [
@@ -584,10 +584,10 @@
         },
         "xlsxwriter": {
             "hashes": [
-                "sha256:2b7e22b1268c2ed85d73e5629097c9a63357f2429667ada9863cd05ff8ee33aa",
-                "sha256:30ebc19d0f201fafa34a6c622050ed2a268ac8dee24037a61605caa801dc8af5"
+                "sha256:e74dca4f2e946a117a541ca3153c06466190a88bb67fcdbd1cba2c1ea7f1fd76",
+                "sha256:eca2e737d0b8df3cd72520fadcda9f48c3581282639965125a86ea8cd04620cf"
             ],
-            "version": "==1.3.8"
+            "version": "==1.3.9"
         },
         "xlwt": {
             "hashes": [
@@ -665,10 +665,10 @@
         },
         "cfl-common": {
             "hashes": [
-                "sha256:1150cc279811785b0a8685494dafba7cdcd7bc02c8dba563be184cdaa9fd56a3",
-                "sha256:46c2c169952cbf74f43d75bc6dbe2df89f9b527a38b84eae1c3b07219058fcf8"
+                "sha256:d31d0c76d35696e238124ee8146ddf553672a3d8aa720354c3efbcfc2b0b3776",
+                "sha256:f2a432fe457c064d3a0eda287389316e5757f07c38bca1fe96ab39baf37f1b71"
             ],
-            "version": "==4.26.0"
+            "version": "==4.28.0"
         },
         "chardet": {
             "hashes": [
@@ -687,11 +687,11 @@
         },
         "codeforlife-portal": {
             "hashes": [
-                "sha256:902682d3661a6f610d28f0f27e2778393ce308abd4a53aab1010a29c19d526bf",
-                "sha256:dd55d904e7d9877392e0727fb499455cdaa8e02dcb749171a33c7807ce30e778"
+                "sha256:0bb1be79b7c9d0294c9d793233b4680f13e621ed3fa8931a6245e81ffef53f65",
+                "sha256:d8ae2004688f8f04d83e54331a02ab61efc7a1b84de4f4b8af51e37aff94932b"
             ],
             "index": "pypi",
-            "version": "==4.26.0"
+            "version": "==4.28.0"
         },
         "coverage": {
             "hashes": [
@@ -931,11 +931,11 @@
         },
         "google-auth": {
             "hashes": [
-                "sha256:186fe2564634d67fbbb64f3daf8bc8c9cecbb2a7f535ed1a8a71795e50db8d87",
-                "sha256:70b39558712826e41f65e5f05a8d879361deaf84df8883e5dd0ec3d0da6ab66e"
+                "sha256:010f011c4e27d3d5eb01106fba6aac39d164842dfcd8709955c4638f5b11ccf8",
+                "sha256:f30a672a64d91cc2e3137765d088c5deec26416246f7a9e956eaf69a8d7ed49c"
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'",
-            "version": "==1.28.1"
+            "version": "==1.29.0"
         },
         "greenlet": {
             "hashes": [
@@ -1009,6 +1009,14 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==2.10"
+        },
+        "importlib-metadata": {
+            "hashes": [
+                "sha256:2ec0faae539743ae6aaa84b49a169670a465f7f5d64e6add98388cc29fd1f2f6",
+                "sha256:c9356b657de65c53744046fa8f7358afe0714a1af7d570c00c3835c2d724a7c1"
+            ],
+            "markers": "python_version < '3.8'",
+            "version": "==3.10.1"
         },
         "iniconfig": {
             "hashes": [
@@ -1298,10 +1306,10 @@
         },
         "rapid-router": {
             "hashes": [
-                "sha256:13d7d54ddb0cceab406ce86ed697e9a7b51caf0fa7d8673bcb88161a03e18b57",
-                "sha256:7628e9df3da574138be23d8b121bf56ff7fd7065d1c14ea4009983c76aa983e3"
+                "sha256:32667a40ab25a1bc61b52b4f114c52dec4d356eb17439d8a684be7ea9763b23a",
+                "sha256:420e9b772ec0f0bf770d0c972a8a229f2b0beb81cb44dbf4b7c78cef7a74d3a7"
             ],
-            "version": "==2.5.8"
+            "version": "==2.6.0"
         },
         "regex": {
             "hashes": [
@@ -1567,10 +1575,10 @@
         },
         "xlsxwriter": {
             "hashes": [
-                "sha256:2b7e22b1268c2ed85d73e5629097c9a63357f2429667ada9863cd05ff8ee33aa",
-                "sha256:30ebc19d0f201fafa34a6c622050ed2a268ac8dee24037a61605caa801dc8af5"
+                "sha256:e74dca4f2e946a117a541ca3153c06466190a88bb67fcdbd1cba2c1ea7f1fd76",
+                "sha256:eca2e737d0b8df3cd72520fadcda9f48c3581282639965125a86ea8cd04620cf"
             ],
-            "version": "==1.3.8"
+            "version": "==1.3.9"
         },
         "xlwt": {
             "hashes": [
@@ -1578,6 +1586,14 @@
                 "sha256:c59912717a9b28f1a3c2a98fd60741014b06b043936dcecbc113eaaada156c88"
             ],
             "version": "==1.3.0"
+        },
+        "zipp": {
+            "hashes": [
+                "sha256:3607921face881ba3e026887d8150cca609d517579abe052ac81fc5aeffdbd76",
+                "sha256:51cb66cc54621609dd593d1787f286ee42a5c0adbb4b29abea5a63edc3e03098"
+            ],
+            "markers": "python_version >= '3.6'",
+            "version": "==3.4.1"
         }
     }
 }
