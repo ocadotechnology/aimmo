@@ -27,7 +27,6 @@ jobs:
         run: |
           pip install pipenv
           pipenv install --dev --system
-          pip install -U -e "git+https://github.com/ocadotechnology/codeforlife-portal@managed-cookies#egg=cfl-common&subdirectory=cfl_common"  # TODO: remove this after publishing common
           cd game_frontend
           yarn --frozen-lockfile
       - name: Run Javascript tests
