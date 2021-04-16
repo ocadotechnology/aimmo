@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.0b343 (2021-04-16)
+### Feature
+* Block GA if there's no consent (#1511) ([`c5fc6a1`](https://github.com/ocadotechnology/aimmo/commit/c5fc6a198c78c3f34dee8939b05029dcd47413ef))
+
 ## v0.68.3b335 (2021-04-14)
 ### Fix
 * Upgrade cypress version to 7.x plus test updates (#1510) ([`d1ee11b`](https://github.com/ocadotechnology/aimmo/commit/d1ee11b23150a679792c61f212ff63ad11c2a62b))
