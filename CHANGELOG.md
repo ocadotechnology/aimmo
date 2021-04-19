@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.1 (2021-04-19)
+
+
 ## v0.69.1b348 (2021-04-19)
 ### Fix
 * Downgrade pytest-asyncio for tests ([`c751285`](https://github.com/ocadotechnology/aimmo/commit/c751285da31280cd2846e354214764daf7739f0e))
