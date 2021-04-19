@@ -12,6 +12,7 @@ module.exports = {
   globals: {
     pyodide: 'readonly',
     languagePluginLoader: 'readonly',
+    OnetrustActiveGroups: 'readonly',
   },
   rules: {
     'react/jsx-handler-names': 'off',

@@ -98,11 +98,7 @@ Cypress.Commands.add('visitAGame', () => {
 })
 
 Cypress.Commands.add('loadGameWithAvatarCode', avatarCode => {
-  cy.server().route({
-    method: 'GET',
-    url: '/kurono/api/code/*',
-    response: avatarCode
-  })
+  cy.intercept('GET', '/kurono/api/code/*', avatarCode)
 
   cy.visitAGame()
 

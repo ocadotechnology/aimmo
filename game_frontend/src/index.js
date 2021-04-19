@@ -18,44 +18,50 @@ import ReactGA from 'react-ga'
 import GamePage from 'components/GamePage'
 import { RunCodeButtonStatus } from 'components/RunCodeButton'
 
+import { hasAnalyticsCookiesConsent } from 'redux/features/Analytics/index'
+
 enableMapSet()
 
 WebFont.load({
   typekit: {
-    id: 'mrl4ieu'
+    id: 'mrl4ieu',
   },
   google: {
-    families: ['Source Code Pro']
+    families: ['Source Code Pro'],
+  },
+})
+
+if (hasAnalyticsCookiesConsent()) {
+  ReactGA.initialize('UA-49883146-1', {
+    debug: false,
+    testMode: process.env.NODE_ENV !== 'production',
+  })
+
+  if (process.env.NODE_ENV === 'production') {
+    ReactGA.pageview(`/kurono/play/${getGameIDFromURL()}`)
   }
-})
-
-ReactGA.initialize('UA-49883146-1', {
-  debug: false,
-  testMode: process.env.NODE_ENV === 'test'
-})
-
-ReactGA.pageview(`/kurono/play/${getGameIDFromURL()}`)
+}
 
 const initialState = (window.Cypress && window.initialState) || {
   editor: {
     code: {
-      code: ''
+      code: '',
     },
     runCodeButton: {
-      status: RunCodeButtonStatus.normal
-    }
+      status: RunCodeButtonStatus.normal,
+    },
   },
   game: {
     connectionParameters: {
-      game_id: getGameIDFromURL() || 1
+      game_id: getGameIDFromURL() || 1,
     },
     timeoutStatus: false,
     gameLoaded: false,
-    cameraCenteredOnUserAvatar: true
-  }
+    cameraCenteredOnUserAvatar: true,
+  },
 }
 
-function getGameIDFromURL () {
+function getGameIDFromURL() {
   const url = window.location.href
   const gameIDFinder = /\/play\/([0-9]+)/
   return gameIDFinder.exec(url)[1]

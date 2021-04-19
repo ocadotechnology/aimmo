@@ -13,7 +13,7 @@ const options = {
   watch: process.env.NODE_ENV !== 'production',
   minify: process.env.NODE_ENV === 'production',
   target: 'browser',
-  cache: process.env.NODE_ENV === 'production'
+  cache: process.env.NODE_ENV === 'production',
 }
 
 const templateFolder = Path.resolve(Path.join(__dirname, '../aimmo/templates/players'))
@@ -23,7 +23,7 @@ const handlebarsTemplatePath = Path.resolve(
 
 const bundler = new Bundler(file, options)
 
-function getReactURL (entryPointHTML) {
+function getReactURL(entryPointHTML) {
   const regex = /(<script src="\/static\/react\/)(.*\.js)("><\/script>\n?<script src="\/static\/react\/webWorker)/g
   return regex.exec(entryPointHTML)[2]
 }
@@ -36,21 +36,21 @@ Handlebars.registerHelper('if_eq', function (a, b, opts) {
   }
 })
 
-function generateGameIDEHTML (reactFileName) {
+function generateGameIDEHTML(reactFileName) {
   const templateString = fs.readFileSync(handlebarsTemplatePath, 'utf-8')
   const template = Handlebars.compile(templateString)
   return template({
     reactUrl: `react/${reactFileName}`,
-    environment: process.env.SERVER_ENV
+    environment: process.env.SERVER_ENV,
   })
 }
 
-bundler.on('bundled', bundle => {
+bundler.on('bundled', (bundle) => {
   const entryPointHTML = fs.readFileSync(bundle.name, 'utf-8')
   const reactUrl = getReactURL(entryPointHTML)
   const gameIDEHTML = generateGameIDEHTML(reactUrl)
 
-  fs.writeFile(`${templateFolder}/game_ide.html`, gameIDEHTML, error => {
+  fs.writeFile(`${templateFolder}/game_ide.html`, gameIDEHTML, (error) => {
     if (error) {
       return console.log(error)
     }
