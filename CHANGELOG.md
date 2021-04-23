@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.3b365 (2021-04-23)
+### Fix
+* Trigger GA only on production (#1517) ([`961a31b`](https://github.com/ocadotechnology/aimmo/commit/961a31b0d2846d48fafac8ebbc80311171eaf4b1))
+
 ## v0.69.2 (2021-04-20)
 
 

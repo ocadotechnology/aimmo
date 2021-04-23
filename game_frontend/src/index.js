@@ -31,13 +31,16 @@ WebFont.load({
   },
 })
 
+// only triggers GA on production (and with cookie consent)
+const isProduction = (location.hostname.search(/codeforlife.education/i) >= 0)
+
 if (hasAnalyticsCookiesConsent()) {
   ReactGA.initialize('UA-49883146-1', {
     debug: false,
-    testMode: process.env.NODE_ENV !== 'production',
+    testMode: !isProduction
   })
 
-  if (process.env.NODE_ENV === 'production') {
+  if (isProduction) {
     ReactGA.pageview(`/kurono/play/${getGameIDFromURL()}`)
   }
 }
