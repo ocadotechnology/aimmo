@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.4b378 (2021-05-10)
+
+
 ## v0.69.4b375 (2021-05-10)
 ### Fix
 * [Snyk] Security upgrade socket.io-client from 3.1.3 to 4.0.0 (#1519) ([`9499455`](https://github.com/ocadotechnology/aimmo/commit/9499455dc4bbc975c8fa52ee0d626550002966bf))
