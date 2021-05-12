@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.5b381 (2021-05-12)
+### Fix
+* Update tests with new teacher login form (#1522) ([`983da34`](https://github.com/ocadotechnology/aimmo/commit/983da34c5b1bda7c6dd9bc377af805fab9af95b5))
+
 ## v0.69.4b378 (2021-05-10)
 
 
