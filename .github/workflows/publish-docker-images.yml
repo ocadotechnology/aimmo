@@ -58,13 +58,19 @@ jobs:
           echo ${{ steps.game.outputs.digest }}
           echo ${{ steps.game_creator.outputs.digest }}
 
-  notify-semaphore:
-    name: Notify Semaphore
+  trigger-staging-deployment:
+    name: Trigger staging deployment
     needs: [publish-docker-images]
     runs-on: ubuntu-18.04
     steps:
-      - name: Notify Semaphore (Staging)
-        run: curl -d POST https://semaphoreci.com/api/v1/projects/${SEMAPHORE_PROJECT_ID}/master/build?auth_token=${SEMAPHORE_API_AUTH}
-        env:
-          SEMAPHORE_PROJECT_ID: ${{ secrets.SEMAPHORE_PROJECT_ID }}
-          SEMAPHORE_API_AUTH: ${{ secrets.SEMAPHORE_API_AUTH }}
+      - name: Trigger staging deployment
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+          script: |
+            github.actions.createWorkflowDispatch({
+              owner: 'ocadotechnology',
+              repo: 'codeforlife-deploy-appengine',
+              workflow_id: 'deploy_staging.yml',
+              ref: 'master',
+            });
