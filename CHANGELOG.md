@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.6b384 (2021-05-17)
+### Fix
+* Trigger staging deployment using actions (#1523) ([`8baf2c4`](https://github.com/ocadotechnology/aimmo/commit/8baf2c442f75b64dbbe6f05efd31d9025f751209))
+
 ## v0.69.5b381 (2021-05-12)
 ### Fix
 * Update tests with new teacher login form (#1522) ([`983da34`](https://github.com/ocadotechnology/aimmo/commit/983da34c5b1bda7c6dd9bc377af805fab9af95b5))
