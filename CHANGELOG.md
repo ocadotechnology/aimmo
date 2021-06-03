@@ -2,6 +2,22 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.6b410 (2021-06-02)
+
+
+## v0.69.6b406 (2021-06-02)
+
+
+## v0.69.6b401 (2021-06-02)
+
+
+## v0.69.6b395 (2021-06-02)
+
+
+## v0.69.6b388 (2021-05-28)
+### Documentation
+* Docs update on contributing and travis (#1527) ([`0ce530d`](https://github.com/ocadotechnology/aimmo/commit/0ce530db0ecd12c827466fbee56e0a531bcc83d1))
+
 ## v0.69.6b384 (2021-05-17)
 ### Fix
 * Trigger staging deployment using actions (#1523) ([`8baf2c4`](https://github.com/ocadotechnology/aimmo/commit/8baf2c442f75b64dbbe6f05efd31d9025f751209))
