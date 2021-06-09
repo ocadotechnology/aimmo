@@ -2,6 +2,44 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.7b417 (2021-06-08)
+### Fix
+* Bump django from 2.2.20 to 2.2.21 (#1533) ([`200fa4d`](https://github.com/ocadotechnology/aimmo/commit/200fa4ddb0f66bbd5f3097e07d632c65dccffceb))
+
+## v0.69.6b414 (2021-06-04)
+
+
+## v0.69.6b410 (2021-06-02)
+
+
+## v0.69.6b406 (2021-06-02)
+
+
+## v0.69.6b401 (2021-06-02)
+
+
+## v0.69.6b395 (2021-06-02)
+
+
+## v0.69.6b388 (2021-05-28)
+### Documentation
+* Docs update on contributing and travis (#1527) ([`0ce530d`](https://github.com/ocadotechnology/aimmo/commit/0ce530db0ecd12c827466fbee56e0a531bcc83d1))
+
+## v0.69.6b384 (2021-05-17)
+### Fix
+* Trigger staging deployment using actions (#1523) ([`8baf2c4`](https://github.com/ocadotechnology/aimmo/commit/8baf2c442f75b64dbbe6f05efd31d9025f751209))
+
+## v0.69.5b381 (2021-05-12)
+### Fix
+* Update tests with new teacher login form (#1522) ([`983da34`](https://github.com/ocadotechnology/aimmo/commit/983da34c5b1bda7c6dd9bc377af805fab9af95b5))
+
+## v0.69.4b378 (2021-05-10)
+
+
+## v0.69.4b375 (2021-05-10)
+### Fix
+* [Snyk] Security upgrade socket.io-client from 3.1.3 to 4.0.0 (#1519) ([`9499455`](https://github.com/ocadotechnology/aimmo/commit/9499455dc4bbc975c8fa52ee0d626550002966bf))
+
 ## v0.69.3 (2021-04-23)
 
 

@@ -29,10 +29,11 @@ Cypress.Commands.add('login', () => {
       failOnStatusCode: true,
       form: true,
       body: {
-        username,
-        password,
+        'auth-username': username,
+        'auth-password': password,
         csrfmiddlewaretoken: csrfToken.value,
-        'g-recaptcha-response': 'something'
+        'g-recaptcha-response': 'something',
+        'teacher_login_view-current_step': 'auth'
       }
     })
     cy.visit('/')
