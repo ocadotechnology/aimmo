@@ -7,6 +7,7 @@ describe('User', () => {
   before(() => {
     cy.login()
     cy.addTestGame()
+    cy.logout()
   })
 
   beforeEach(() => {

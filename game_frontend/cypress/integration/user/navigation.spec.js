@@ -14,6 +14,7 @@ describe('Teacher user', () => {
   before(() => {
     cy.login()
     cy.addTestGame()
+    cy.logout()
   })
 
   beforeEach(() => {

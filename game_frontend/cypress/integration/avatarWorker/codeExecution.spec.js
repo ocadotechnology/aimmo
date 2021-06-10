@@ -6,6 +6,7 @@ describe('Avatar worker', () => {
   before(() => {
     cy.login()
     cy.addTestGame()
+    cy.logout()
   })
 
   beforeEach(() => {
