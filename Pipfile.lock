@@ -69,10 +69,10 @@
         },
         "cfl-common": {
             "hashes": [
-                "sha256:269f63c33c93f8624f2eede7bbdfb877c2405d15cc0acd9196b4c8b9e8b42fed",
-                "sha256:3ff377885c225879b0d037674d1c83553729b0b690456a132ad1a4d315cf7343"
+                "sha256:a74d9cd919846cdbd18956667b4f51fce6c751ffc345bbe344149cb756cb1bf8",
+                "sha256:b5945c64b2c3fd13eb6560bb5e7cce9243dbda9b04fd4d8b032e0c824ee43fc9"
             ],
-            "version": "==4.30.9"
+            "version": "==4.30.11"
         },
         "chardet": {
             "hashes": [
@@ -83,11 +83,11 @@
         },
         "django": {
             "hashes": [
-                "sha256:db2214db1c99017cbd971e58824e6f424375154fe358afc30e976f5b99fc6060",
-                "sha256:e831105edb153af1324de44d06091ca75520a227456387dda4a47d2f1cc2731a"
+                "sha256:3339ff0e03dee13045aef6ae7b523edff75b6d726adf7a7a48f53d5a501f7db7",
+                "sha256:f2084ceecff86b1e631c2cd4107d435daf4e12f1efcdf11061a73bf0b5e95f92"
             ],
             "markers": "python_version >= '3.5'",
-            "version": "==2.2.22"
+            "version": "==2.2.24"
         },
         "django-autoconfig": {
             "git": "https://github.com/ocadotechnology/django-autoconfig.git",
@@ -653,11 +653,11 @@
         },
         "black": {
             "hashes": [
-                "sha256:1fc0e0a2c8ae7d269dfcf0c60a89afa299664f3e811395d40b1922dff8f854b5",
-                "sha256:e5cf21ebdffc7a9b29d73912b6a6a9a4df4ce70220d523c21647da2eae0751ef"
+                "sha256:dc132348a88d103016726fe360cb9ede02cecf99b76e3660ce6c596be132ce04",
+                "sha256:dfb8c5a069012b2ab1e972e7b908f5fb42b6bbabcba0a788b86dc05067c7d9c7"
             ],
             "index": "pypi",
-            "version": "==21.5b2"
+            "version": "==21.6b0"
         },
         "cachetools": {
             "hashes": [
@@ -676,10 +676,10 @@
         },
         "cfl-common": {
             "hashes": [
-                "sha256:269f63c33c93f8624f2eede7bbdfb877c2405d15cc0acd9196b4c8b9e8b42fed",
-                "sha256:3ff377885c225879b0d037674d1c83553729b0b690456a132ad1a4d315cf7343"
+                "sha256:a74d9cd919846cdbd18956667b4f51fce6c751ffc345bbe344149cb756cb1bf8",
+                "sha256:b5945c64b2c3fd13eb6560bb5e7cce9243dbda9b04fd4d8b032e0c824ee43fc9"
             ],
-            "version": "==4.30.9"
+            "version": "==4.30.11"
         },
         "chardet": {
             "hashes": [
@@ -698,11 +698,11 @@
         },
         "codeforlife-portal": {
             "hashes": [
-                "sha256:304ddc99268233e1ef4b959181fcac15440db969e2dd97fb47e581e00f0a4647",
-                "sha256:f474e83283ed134b93493a26abaafe9749c00a5f25298b4833817550e9a9e305"
+                "sha256:2d341e3c666fe5e41b7a013d23b1629182a0fa74d5c24c5fa0eeec2f50f18bb4",
+                "sha256:c55aa01bc66548f89b563917266012f413e1f5d452445baf4bdf66a60f04c5d8"
             ],
             "index": "pypi",
-            "version": "==4.30.9"
+            "version": "==4.30.11"
         },
         "coverage": {
             "hashes": [
@@ -764,11 +764,11 @@
         },
         "django": {
             "hashes": [
-                "sha256:db2214db1c99017cbd971e58824e6f424375154fe358afc30e976f5b99fc6060",
-                "sha256:e831105edb153af1324de44d06091ca75520a227456387dda4a47d2f1cc2731a"
+                "sha256:3339ff0e03dee13045aef6ae7b523edff75b6d726adf7a7a48f53d5a501f7db7",
+                "sha256:f2084ceecff86b1e631c2cd4107d435daf4e12f1efcdf11061a73bf0b5e95f92"
             ],
             "markers": "python_version >= '3.5'",
-            "version": "==2.2.22"
+            "version": "==2.2.24"
         },
         "django-classy-tags": {
             "hashes": [
@@ -1341,10 +1341,10 @@
         },
         "rapid-router": {
             "hashes": [
-                "sha256:625dd47a843e8f39e67fd3b91599bd07a90f2fcfeab1262c520735d679dcf6e1",
-                "sha256:b54911c20db4a790a6c69ca3ba293f0a66541607f16224e35c6b55b12671d7c8"
+                "sha256:6fc415ae0e0d87de0a3fc8386f86179c034307eb54a831f1f247cc65d84a514f",
+                "sha256:c868e614b5dd91b860249812d828e31dc870646959489b0b904f9d50eb296881"
             ],
-            "version": "==2.7.6"
+            "version": "==2.7.7"
         },
         "regex": {
             "hashes": [
