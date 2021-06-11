@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.11 (2021-06-11)
+
+
 ## v0.69.11b455 (2021-06-11)
 ### Fix
 * Bump django from 2.2.22 to 2.2.24 (#1540) ([`b29143a`](https://github.com/ocadotechnology/aimmo/commit/b29143a480078bd0d2e9dd6e95ea5119126554b2))
