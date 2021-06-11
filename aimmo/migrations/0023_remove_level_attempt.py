@@ -6,23 +6,23 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('aimmo', '0022_allow_games_to_have_no_name'),
+        ("aimmo", "0022_allow_games_to_have_no_name"),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='levelattempt',
+            name="levelattempt",
             unique_together=set(),
         ),
         migrations.RemoveField(
-            model_name='levelattempt',
-            name='game',
+            model_name="levelattempt",
+            name="game",
         ),
         migrations.RemoveField(
-            model_name='levelattempt',
-            name='user',
+            model_name="levelattempt",
+            name="user",
         ),
         migrations.DeleteModel(
-            name='LevelAttempt',
+            name="LevelAttempt",
         ),
     ]
