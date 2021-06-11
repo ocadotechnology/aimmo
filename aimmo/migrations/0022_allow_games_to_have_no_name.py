@@ -8,13 +8,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('aimmo', '0021_add_pdf_names_to_worksheet'),
+        ("aimmo", "0021_add_pdf_names_to_worksheet"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='game',
-            name='name',
+            model_name="game",
+            name="name",
             field=models.CharField(blank=True, max_length=100, null=True),
         ),
     ]
