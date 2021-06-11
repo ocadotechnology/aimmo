@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.10b450 (2021-06-11)
+### Fix
+* Update lockfile - Django 2.2.22 (#1541) ([`fc20241`](https://github.com/ocadotechnology/aimmo/commit/fc2024119cfc4883678c36eef051dd2ccd246ae7))
+
 ## v0.69.9 (2021-06-10)
 
 
