@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.11b465 (2021-06-17)
+### Documentation
+* Add additional terms on Ocado back ([`268092c`](https://github.com/ocadotechnology/aimmo/commit/268092c1c71e35e0b31b39d6af55f418b0698f62))
+
 ## v0.69.11b463 (2021-06-11)
 
 
