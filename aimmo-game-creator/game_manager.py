@@ -98,6 +98,13 @@ class GameManager(object):
 
         raise NotImplementedError
 
+    def delete_games(self, game_ids: set):
+        """
+        Deletes the games with the given IDs
+        :param game_ids: Set of game IDs to delete
+        """
+        self._parallel_map(self.delete_game, game_ids)
+
     def recreate_game(self, game_to_add):
         """Deletes and recreates the given game"""
         game_id, game_data = game_to_add
@@ -143,7 +150,7 @@ class GameManager(object):
             removed_game_ids = self._data.remove_unknown_games(known_games).union(
                 self._data.remove_stopped_games(stopped_games)
             )
-            self._parallel_map(self.delete_game, removed_game_ids)
+            self.delete_games(game_ids=removed_game_ids)
 
     def get_persistent_state(self, player_id):
         """Get the persistent state of a game"""
@@ -343,6 +350,28 @@ class KubernetesGameManager(GameManager):
         self._delete_game_service(game_id)
         self._delete_game_server(game_id)
         self._delete_game_secret(game_id)
+
+    def delete_games(self, game_ids: set):
+        """
+        Overriddes delete_games method to only delete games that are currently running.
+        :param game_ids: Set of game IDs to delete.
+        """
+        gameservers = self.custom_objects_api.list_namespaced_custom_object(
+            group="agones.dev",
+            version="v1",
+            namespace="default",
+            plural="gameservers",
+        )
+        # running games are gameservers that have a game-id label
+        running_game_ids = set(
+            gameserver["metadata"]["labels"]["game-id"]
+            for gameserver in gameservers["items"]
+            if "metadata" in gameserver
+            and "labels" in gameserver["metadata"]
+            and "game-id" in gameserver["metadata"]["labels"]
+        )
+        # delete the intersection of running_game_ids and the received game_ids
+        self._parallel_map(self.delete_game, running_game_ids & game_ids)
 
 
 GAME_MANAGERS = {"kubernetes": KubernetesGameManager}
