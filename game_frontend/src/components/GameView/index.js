@@ -48,6 +48,7 @@ export const PositionedFindMeButton = styled(FindMeButton)`
   right: ${props => props.theme.spacing(3)}px;
 `
 
+const appData = window.appData
 const urlContact = (appData && appData.urlContact) ? appData.urlContact : ''
 
 export default class GameView extends Component {

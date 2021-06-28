@@ -47,7 +47,19 @@ exports[`<GameView /> shows the loading screen when the game is loading 1`] = `
       color="inherit"
       variant="body1"
     >
-      Building game world...
+      We are building your game... ⏱
+    </Styled(WithStyles(ForwardRef(Typography)))>
+    <Styled(WithStyles(ForwardRef(Typography)))
+      color="inherit"
+      variant="body1"
+    >
+      If the game doesn’t load after 60 seconds, please 
+      <a
+        href=""
+      >
+        contact us
+      </a>
+      .
     </Styled(WithStyles(ForwardRef(Typography)))>
   </styled.div>
   <canvas
