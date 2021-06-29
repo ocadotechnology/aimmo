@@ -94,8 +94,7 @@
 
   <script>
     var appData = {
-      urlForAimmoDashboard: "{% url_for_aimmo_dashboard %}",
-      urlContact: "{% url 'help' %}"
+      urlForAimmoDashboard: "{% url_for_aimmo_dashboard %}"
     };
   </script>
 </head>
@@ -129,4 +128,24 @@
   <!-- End Google Tag Manager (noscript) -->
   <div id="root"></div>
   <script src="{% static '{{ reactUrl }}' %}"></script>
+  <!-- Freshdesk widget. Needs to be at the bottom of the file so it can query the contact us link once it's loaded in -->
+  <script>
+    window.fwSettings={
+      'widget_id':77000000397
+    };
+    !function(){if("function"!=typeof window.FreshworksWidget){var n=function(){n.q.push(arguments)};n.q=[],window.FreshworksWidget=n}}()
+  </script>
+  <script type='text/javascript' src='https://euc-widget.freshworks.com/widgets/77000000397.js' async defer></script>
+  <script>
+    FreshworksWidget('hide');
+    document.querySelector('.freshdesk__contact-us').addEventListener('click', function() {
+      FreshworksWidget('open');
+    });
+  </script>
+  <!-- CSS to hide Freshdesk widget button even after the widget has been used -->
+<style>
+  #launcher-frame {
+    display: none;
+  }
+</style>
 </body>

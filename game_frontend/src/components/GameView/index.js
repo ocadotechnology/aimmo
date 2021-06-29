@@ -48,9 +48,6 @@ export const PositionedFindMeButton = styled(FindMeButton)`
   right: ${props => props.theme.spacing(3)}px;
 `
 
-const appData = window.appData
-const urlContact = (appData && appData.urlContact) ? appData.urlContact : ''
-
 export default class GameView extends Component {
   static propTypes = {
     connectToGame: PropTypes.func,
@@ -101,7 +98,7 @@ export default class GameView extends Component {
           We are building your game... ⏱
         </LoadingText>
         <LoadingText variant='body1' color='inherit'>
-          If the game doesn’t load after 60 seconds, please <a href={urlContact}>contact us</a>.
+          If the game doesn’t load after 60 seconds, please <a href="#" className="freshdesk__contact-us">contact us</a>.
         </LoadingText>
       </LoadingBackgroundOverlay>
     )
