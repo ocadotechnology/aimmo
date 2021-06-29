@@ -126,31 +126,29 @@ class GameManager(object):
     def update(self):
         try:
             LOGGER.info("Waking up")
-            games = requests.get(self.games_url).json()
-            LOGGER.debug(f"Received Games: {games}")
+            running_games = requests.get(f"{self.games_url}running/").json()
+            LOGGER.debug(f"Received Running Games: {running_games}")
         except (requests.RequestException, ValueError) as ex:
             LOGGER.error("Failed to obtain game data")
             LOGGER.exception(ex)
         else:
+            # LOGGER.info("games_to_add")
             games_to_add = {
-                id: games[id]
-                for id in self._data.add_new_games(games)
-                if games[id]["status"] != GameStatus.STOPPED.value
+                id: running_games[id] for id in self._data.add_new_games(running_games)
             }
 
             # Add missing games
+            # LOGGER.info("Add missing games")
             self._parallel_map(self.recreate_game, games_to_add.items())
             # Delete extra games
-            known_games = set(games.keys())
-            stopped_games = set(
-                id
-                for id in games.keys()
-                if games[id]["status"] == GameStatus.STOPPED.value
-            )
-            removed_game_ids = self._data.remove_unknown_games(known_games).union(
-                self._data.remove_stopped_games(stopped_games)
-            )
+            # LOGGER.info("running_games_ids")
+            running_games_ids = set(running_games.keys())
+            # LOGGER.info("removed_game_ids")
+            removed_game_ids = self._data.remove_unknown_games(running_games_ids)
+            # LOGGER.info("delete_games")
+            # Idea: maybe pass the running games from _data and remove all unknown games?
             self.delete_games(game_ids=removed_game_ids)
+            # LOGGER.info("delete_games end")
 
     def get_persistent_state(self, player_id):
         """Get the persistent state of a game"""
