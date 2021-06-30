@@ -56,7 +56,7 @@ exports[`<GameView /> shows the loading screen when the game is loading 1`] = `
       If the game doesn’t load after 60 seconds, please 
       <a
         className="freshdesk__contact-us"
-        href="#"
+        href="javascript:"
       >
         contact us
       </a>
