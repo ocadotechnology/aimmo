@@ -69,10 +69,10 @@
         },
         "cfl-common": {
             "hashes": [
-                "sha256:1a6194726b033e0f40b9d823fc89ba6384c697cb30f94f38c99efc26d82b66b0",
-                "sha256:80529f99e1bfeffd73393ee7282a12427f29df20bb859250f7af6ca8060c4220"
+                "sha256:48456bee6bb608c010fec3e6cf577e5ba27086468ad22e9ed3998190bcace657",
+                "sha256:c4d080d51146724c5d3e661938558e038136380182842964f602a2514a52a31e"
             ],
-            "version": "==4.31.2"
+            "version": "==4.31.3"
         },
         "chardet": {
             "hashes": [
@@ -148,11 +148,11 @@
         },
         "django-taggit": {
             "hashes": [
-                "sha256:9f947b7fe330875ac7f05f9616f42ef90df9253b639ca102a9449dd34cec0cab",
-                "sha256:b9ed6e94bad0bed3bf062a6be7ee3db117fda02c6419c680d614197364ea018b"
+                "sha256:9e1b4772af339e4d49921488e401337c04fe8cad8afcc5080f04a38108c464d5",
+                "sha256:e8d4300e2226f6fa7ad55a8449a482486142d619131a5bc2dd744ff65e7f70ab"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==1.4.0"
+            "version": "==1.5.0"
         },
         "django-treebeard": {
             "hashes": [
@@ -676,10 +676,10 @@
         },
         "cfl-common": {
             "hashes": [
-                "sha256:1a6194726b033e0f40b9d823fc89ba6384c697cb30f94f38c99efc26d82b66b0",
-                "sha256:80529f99e1bfeffd73393ee7282a12427f29df20bb859250f7af6ca8060c4220"
+                "sha256:48456bee6bb608c010fec3e6cf577e5ba27086468ad22e9ed3998190bcace657",
+                "sha256:c4d080d51146724c5d3e661938558e038136380182842964f602a2514a52a31e"
             ],
-            "version": "==4.31.2"
+            "version": "==4.31.3"
         },
         "chardet": {
             "hashes": [
@@ -698,11 +698,11 @@
         },
         "codeforlife-portal": {
             "hashes": [
-                "sha256:c7d3d48e6b73ad453902c69356c87ce129a6261a80e01457e7cc416ffc40b66e",
-                "sha256:f099fe7ebd39a9036eca4805d5c03c19d738b80a104715c70c9a4587566d032a"
+                "sha256:04f7b92b175a65ae568b3f6abcbf7de3d6b56ab7cee7f1afb7801a8aa300cdb4",
+                "sha256:0e3adf3af0f72cba9c8f9b79b022ecec29a4639757ff56928ce80689b0f32000"
             ],
             "index": "pypi",
-            "version": "==4.31.2"
+            "version": "==4.31.3"
         },
         "coverage": {
             "hashes": [
@@ -890,11 +890,11 @@
         },
         "django-taggit": {
             "hashes": [
-                "sha256:9f947b7fe330875ac7f05f9616f42ef90df9253b639ca102a9449dd34cec0cab",
-                "sha256:b9ed6e94bad0bed3bf062a6be7ee3db117fda02c6419c680d614197364ea018b"
+                "sha256:9e1b4772af339e4d49921488e401337c04fe8cad8afcc5080f04a38108c464d5",
+                "sha256:e8d4300e2226f6fa7ad55a8449a482486142d619131a5bc2dd744ff65e7f70ab"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==1.4.0"
+            "version": "==1.5.0"
         },
         "django-treebeard": {
             "hashes": [

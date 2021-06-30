@@ -98,7 +98,8 @@ export default class GameView extends Component {
           We are building your game... ⏱
         </LoadingText>
         <LoadingText variant='body1' color='inherit'>
-          If the game doesn’t load after 60 seconds, please <a href="#" className="freshdesk__contact-us">contact us</a>.
+          If the game doesn’t load after 60 seconds, please <a href="javascript:" className="freshdesk__contact-us">
+          contact us</a>.
         </LoadingText>
       </LoadingBackgroundOverlay>
     )
