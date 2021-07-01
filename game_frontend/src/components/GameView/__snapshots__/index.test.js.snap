@@ -63,7 +63,7 @@ exports[`<GameView /> shows the loading screen when the game is loading 1`] = `
           }
         }
       >
-        contact us
+        contact us.
       </a>
       .
     </Styled(WithStyles(ForwardRef(Typography)))>
