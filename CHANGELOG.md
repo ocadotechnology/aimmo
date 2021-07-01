@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.12b472 (2021-06-28)
+### Fix
+* Add more informative game load text (#1545) ([`83f5579`](https://github.com/ocadotechnology/aimmo/commit/83f5579d1cbee58abbaf085f2abe9d2faf837a53))
+
 ## v0.69.11b469 (2021-06-18)
 
 
