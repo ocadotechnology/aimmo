@@ -91,6 +91,7 @@ export default class GameView extends Component {
   }
 
   renderLoadingScreen = () => {
+    const FreshworksWidget = window.FreshworksWidget
     return (
       <LoadingBackgroundOverlay>
         <CircularProgress color='inherit' />
