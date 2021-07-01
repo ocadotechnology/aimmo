@@ -98,12 +98,13 @@ class GameManager(object):
 
         raise NotImplementedError
 
-    def delete_games(self, game_ids: set):
+    @abstractmethod
+    def delete_unknown_games(self):
         """
-        Deletes the games with the given IDs
-        :param game_ids: Set of game IDs to delete
+        Deletes the games not present in _data
         """
-        self._parallel_map(self.delete_game, game_ids)
+
+        raise NotImplementedError
 
     def recreate_game(self, game_to_add):
         """Deletes and recreates the given game"""
@@ -144,11 +145,8 @@ class GameManager(object):
             # LOGGER.info("running_games_ids")
             running_games_ids = set(running_games.keys())
             # LOGGER.info("removed_game_ids")
-            removed_game_ids = self._data.remove_unknown_games(running_games_ids)
-            # LOGGER.info("delete_games")
-            # Idea: maybe pass the running games from _data and remove all unknown games?
-            self.delete_games(game_ids=removed_game_ids)
-            # LOGGER.info("delete_games end")
+            self._data.remove_unknown_games(running_games_ids)
+            self.delete_unknown_games()
 
     def get_persistent_state(self, player_id):
         """Get the persistent state of a game"""
@@ -349,7 +347,7 @@ class KubernetesGameManager(GameManager):
         self._delete_game_server(game_id)
         self._delete_game_secret(game_id)
 
-    def delete_games(self, game_ids: set):
+    def delete_unknown_games(self):
         """
         Overriddes delete_games method to only delete games that are currently running.
         :param game_ids: Set of game IDs to delete.
@@ -368,8 +366,8 @@ class KubernetesGameManager(GameManager):
             and "labels" in gameserver["metadata"]
             and "game-id" in gameserver["metadata"]["labels"]
         )
-        # delete the intersection of running_game_ids and the received game_ids
-        self._parallel_map(self.delete_game, running_game_ids & game_ids)
+        # delete running games that are not known to the game manager
+        self._parallel_map(self.delete_game, running_game_ids - self._data._games)
 
 
 GAME_MANAGERS = {"kubernetes": KubernetesGameManager}
