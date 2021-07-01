@@ -133,18 +133,14 @@ class GameManager(object):
             LOGGER.error("Failed to obtain game data")
             LOGGER.exception(ex)
         else:
-            # LOGGER.info("games_to_add")
             games_to_add = {
                 id: running_games[id] for id in self._data.add_new_games(running_games)
             }
 
             # Add missing games
-            # LOGGER.info("Add missing games")
             self._parallel_map(self.recreate_game, games_to_add.items())
             # Delete extra games
-            # LOGGER.info("running_games_ids")
             running_games_ids = set(running_games.keys())
-            # LOGGER.info("removed_game_ids")
             self._data.remove_unknown_games(running_games_ids)
             self.delete_unknown_games()
 
@@ -348,10 +344,6 @@ class KubernetesGameManager(GameManager):
         self._delete_game_secret(game_id)
 
     def delete_unknown_games(self):
-        """
-        Overriddes delete_games method to only delete games that are currently running.
-        :param game_ids: Set of game IDs to delete.
-        """
         gameservers = self.custom_objects_api.list_namespaced_custom_object(
             group="agones.dev",
             version="v1",

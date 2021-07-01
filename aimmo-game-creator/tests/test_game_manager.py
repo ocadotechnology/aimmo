@@ -29,6 +29,9 @@ class ConcreteGameManager(GameManager):
         except KeyError:
             pass
 
+    def delete_unknown_games(self):
+        pass
+
 
 class RequestMock(object):
     def __init__(self, num_games):
