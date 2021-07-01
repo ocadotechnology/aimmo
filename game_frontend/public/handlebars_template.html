@@ -126,14 +126,14 @@
   </noscript>
   {{/if_eq}}
   <!-- End Google Tag Manager (noscript) -->
-  <div id="root"></div>
-  <script src="{% static '{{ reactUrl }}' %}"></script>
-  <!-- Freshdesk widget. Needs to be at the bottom of the file so it can query the contact us link once it's loaded in -->
+  <!-- Freshdesk widget. Needs to be at before React gets loaded in otherwise the link to open the widget won't work -->
   {% include "common/freshdesk_widget.html" %}
   <!-- CSS to hide Freshdesk widget button even after the widget has been used -->
-<style>
-  #launcher-frame {
-    display: none;
-  }
-</style>
+  <style>
+    #launcher-frame {
+      display: none;
+    }
+  </style>
+  <div id="root"></div>
+  <script src="{% static '{{ reactUrl }}' %}"></script>
 </body>
