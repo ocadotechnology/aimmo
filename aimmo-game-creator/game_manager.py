@@ -51,12 +51,6 @@ class _GameManagerData(object):
                 self._remove_game(u)
             return unknown_games
 
-    def remove_stopped_games(self, stopped_games):
-        with self._lock:
-            for s in stopped_games:
-                self._remove_game(s)
-            return stopped_games
-
     def get_games(self):
         with self._lock:
             for g in self._games:
@@ -98,6 +92,14 @@ class GameManager(object):
 
         raise NotImplementedError
 
+    @abstractmethod
+    def delete_unknown_games(self):
+        """
+        Deletes the games not present in _data
+        """
+
+        raise NotImplementedError
+
     def recreate_game(self, game_to_add):
         """Deletes and recreates the given game"""
         game_id, game_data = game_to_add
@@ -119,31 +121,22 @@ class GameManager(object):
     def update(self):
         try:
             LOGGER.info("Waking up")
-            games = requests.get(self.games_url).json()
-            LOGGER.debug(f"Received Games: {games}")
+            running_games = requests.get(f"{self.games_url}running/").json()
+            LOGGER.debug(f"Received Running Games: {running_games}")
         except (requests.RequestException, ValueError) as ex:
             LOGGER.error("Failed to obtain game data")
             LOGGER.exception(ex)
         else:
             games_to_add = {
-                id: games[id]
-                for id in self._data.add_new_games(games)
-                if games[id]["status"] != GameStatus.STOPPED.value
+                id: running_games[id] for id in self._data.add_new_games(running_games)
             }
 
             # Add missing games
             self._parallel_map(self.recreate_game, games_to_add.items())
             # Delete extra games
-            known_games = set(games.keys())
-            stopped_games = set(
-                id
-                for id in games.keys()
-                if games[id]["status"] == GameStatus.STOPPED.value
-            )
-            removed_game_ids = self._data.remove_unknown_games(known_games).union(
-                self._data.remove_stopped_games(stopped_games)
-            )
-            self._parallel_map(self.delete_game, removed_game_ids)
+            running_games_ids = set(running_games.keys())
+            self._data.remove_unknown_games(running_games_ids)
+            self.delete_unknown_games()
 
     def get_persistent_state(self, player_id):
         """Get the persistent state of a game"""
@@ -343,6 +336,24 @@ class KubernetesGameManager(GameManager):
         self._delete_game_service(game_id)
         self._delete_game_server(game_id)
         self._delete_game_secret(game_id)
+
+    def delete_unknown_games(self):
+        gameservers = self.custom_objects_api.list_namespaced_custom_object(
+            group="agones.dev",
+            version="v1",
+            namespace="default",
+            plural="gameservers",
+        )
+        # running games are gameservers that have a game-id label
+        running_game_ids = set(
+            gameserver["metadata"]["labels"]["game-id"]
+            for gameserver in gameservers["items"]
+            if "metadata" in gameserver
+            and "labels" in gameserver["metadata"]
+            and "game-id" in gameserver["metadata"]["labels"]
+        )
+        # delete running games that are not known to the game manager
+        self._parallel_map(self.delete_game, running_game_ids - self._data._games)
 
 
 GAME_MANAGERS = {"kubernetes": KubernetesGameManager}

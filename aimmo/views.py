@@ -95,8 +95,19 @@ class GameViewSet(
         return Response(response)
 
     @action(
+        methods=["get"],
         detail=False,
+    )
+    def running(self, request):
+        response = {
+            game.pk: GameSerializer(game).data
+            for game in Game.objects.filter(status=Game.RUNNING)
+        }
+        return Response(response)
+
+    @action(
         methods=["post"],
+        detail=False,
         serializer_class=GameIdsSerializer,
         permission_classes=(CanDeleteGame,),
     )
