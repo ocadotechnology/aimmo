@@ -520,3 +520,39 @@ class TestViews(TestCase):
         assert response.status_code == 204
         assert Game.objects.count() == 1
         assert Game.objects.get(pk=new_game.id)
+
+    def test_list_running_games(self):
+        self.game.main_user = self.user
+        self.game.save()
+
+        klass3, _, _ = create_class_directly(self.user.email)
+        klass3.save()
+        klass4, _, _ = create_class_directly(self.user.email)
+        klass4.save()
+
+        game2 = Game(id=2, name="test", game_class=self.klass2, status=Game.STOPPED)
+        game2.save()
+        game3 = Game(id=3, name="test", game_class=klass3, status=Game.RUNNING)
+        game3.save()
+        game4 = Game(id=4, name="test", game_class=klass4, status=Game.STOPPED)
+        game3.save()
+
+        def expected_game_detail(class_id, worksheet_id):
+            return {
+                "era": "1",
+                "name": "test",
+                "status": "r",
+                "settings": '{"GENERATOR": "Main", "OBSTACLE_RATIO": 0.1, "PICKUP_SPAWN_CHANCE": 0.1, "SCORE_DESPAWN_CHANCE": 0.05, "START_HEIGHT": 31, "START_WIDTH": 31, "TARGET_NUM_CELLS_PER_AVATAR": 16.0, "TARGET_NUM_PICKUPS_PER_AVATAR": 1.2, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
+                "class_id": str(class_id),
+                "worksheet_id": str(worksheet_id),
+            }
+
+        expected_game_list = {
+            "1": expected_game_detail(self.klass.id, self.worksheet.id),
+            "3": expected_game_detail(klass3.id, 1),
+        }
+
+        c = Client()
+        response = c.get(reverse("game-running"))
+
+        self.assertJSONEqual(response.content, expected_game_list)
