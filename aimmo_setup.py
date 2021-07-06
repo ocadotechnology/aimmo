@@ -1,16 +1,20 @@
 from __future__ import print_function
+from enum import Enum
 import platform
 import subprocess
 import traceback
 
 from subprocess import PIPE, CalledProcessError
 
+DEFAULT_HOST_TYPE = "MAC"
 
-# First we find and store the OS we are currently on, 0 if we didn't figure out which one
-hostOS = 0
-OStypes = {"mac": 1, "windows": 2, "linux": 3}
 valid = {"yes": True, "y": True, "ye": True, "no": False, "n": False}
 
+
+class OSType(Enum):
+    MAC = 1
+    LINUX = 2
+    WINDOWS = 3
 
 def _cmd(command):
     """
@@ -29,102 +33,99 @@ def _cmd(command):
         raise CalledProcessError
 
 
-def install_yarn(operatingSystem):
+
+def install_yarn(os_type):
     """
     :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is available)
 
     OS dependant, so it must be passed to this function in order to run correctly.
     """
     print("Installing Yarn...")
-    if operatingSystem == OStypes["mac"]:
+    if os_type == OSType.MAC:
         _cmd("brew install yarn")
-    elif operatingSystem == OStypes["linux"]:
+    elif os_type == OSType.LINUX:
         _cmd("sudo apt-get install yarn")
-    elif operatingSystem == OStypes["windows"]:
-        pass
-    else:
-        raise Exception
 
 
-def install_pipenv(operatingSystem):
+def install_pipenv(os_type):
     """
-    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is available)
+    :param os_type: values from the OStypes dict. (Should be updated to enum once python 3 is available)
 
     OS dependant, so it must be passed to this function in order to run correctly.
     """
     print("Installing pipenv...")
-    if operatingSystem == OStypes["mac"]:
+    if os_type == OSType.MAC:
         _cmd("brew install pipenv")
-    elif operatingSystem == OStypes["linux"]:
+    elif os_type == OSType.LINUX:
         _cmd("pip install pipenv")
-    elif operatingSystem == OStypes["windows"]:
+    elif os_type == OSType.WINDOWS:
         pass
     else:
         raise Exception
 
 
-def install_docker(operatingSystem):
+def install_docker(os_type):
     """
-    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is available)
+    :param os_type: values from the OStypes dict. (Should be updated to enum once python 3 is available)
 
     OS dependant, so it must be passed to this function in order to run correctly.
     """
     print("Installing Docker...")
-    if operatingSystem == OStypes["mac"]:
+    if os_type == OSType.MAC:
         _cmd("brew cask install docker")
-    elif operatingSystem == OStypes["linux"]:
+    elif os_type == OSType.LINUX:
         _cmd("sudo apt-get install docker-ce")
-    elif operatingSystem == OStypes["windows"]:
+    elif os_type == OSType.WINDOWS:
         pass
     else:
         raise Exception
 
 
-def install_minikube(operatingSystem):
+def install_minikube(os_type):
     """
-    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is available)
+    :param os_type: values from the OStypes dict. (Should be updated to enum once python 3 is available)
 
     OS dependant, so it must be passed to this function in order to run correctly.
     """
     print(
         "Installing minikube..."
     )  # If minikube version changes this will need updating
-    if operatingSystem == OStypes["mac"]:
+    if os_type == OSType.MAC:
         _cmd(
             "curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-darwin-amd64"
         )
         _cmd("chmod +x minikube")
         _cmd("sudo mv minikube /usr/local/bin/")
-    elif operatingSystem == OStypes["linux"]:
+    elif os_type == OSType.LINUX:
         _cmd(
             "curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-linux-amd64"
         )
         _cmd("chmod +x minikube")
         _cmd("sudo mv minikube /usr/local/bin/")
-    elif operatingSystem == OStypes["windows"]:
+    elif os_type == OSType.WINDOWS:
         pass
     else:
         raise Exception
 
 
-def install_kurbernetes(operatingSystem):
+def install_kurbernetes(os_type):
     """
-    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is available)
+    :param os_type: values from the OStypes dict. (Should be updated to enum once python 3 is available)
 
     OS dependant, so it must be passed to this function in order to run correctly.
     """
     print(
         "Installing Kubernetes..."
     )  # If kubernetes version changes this will need updating
-    if operatingSystem == OStypes["mac"]:
+    if os_type == OSType.MAC:
         _cmd(
             "curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.9.4/bin/darwin/amd64/kubectl"
         )
         _cmd("chmod +x kubectl")
         _cmd("sudo mv kubectl /usr/local/bin/")
-    elif operatingSystem == OStypes["linux"]:
+    elif os_type == OSType.LINUX:
         _cmd("sudo snap install kubectl --classic")
-    elif operatingSystem == OStypes["windows"]:
+    elif os_type == OSType.WINDOWS:
         pass
     else:
         raise Exception
@@ -227,7 +228,7 @@ def configure_yarn_repo():  # Linux only
     )
 
 
-def mac_setup(hostOS):
+def mac_setup(os_type):
     """
     Runs the list of commands, sequentially, needed in order to set up Kurono for a Mac.
     After this has been run the user needs to open Docker to finalise its install,
@@ -235,14 +236,14 @@ def mac_setup(hostOS):
     """
     try:
         check_homebrew()
-        install_yarn(hostOS)
+        install_yarn(os_type)
         add_parcel_bundler()
         set_up_frontend_dependencies()
-        install_pipenv(hostOS)
+        install_pipenv(os_type)
         run_pipenv_install()
-        install_docker(hostOS)
-        install_minikube(hostOS)
-        install_kurbernetes(hostOS)
+        install_docker(os_type)
+        install_minikube(os_type)
+        install_kurbernetes(os_type)
 
     except CalledProcessError as e:
         print("A command has return an exit code != 0, so something has gone wrong.")
@@ -260,24 +261,24 @@ def mac_setup(hostOS):
         traceback.print_exc()
 
 
-def windows_setup(hostOS):
+def windows_setup(os_type):
     pass
 
 
-def linux_setup(hostOS):
+def linux_setup(os_type):
     try:
         update_apt_get()
         get_nodejs()
         install_nodejs()
         check_for_cmdtest()
         configure_yarn_repo()
-        install_yarn(hostOS)
+        install_yarn(os_type)
         add_parcel_bundler()
         install_pip()
-        install_pipenv(hostOS)
+        install_pipenv(os_type)
         set_up_frontend_dependencies()
-        install_kurbernetes(hostOS)
-        install_docker(hostOS)
+        install_kurbernetes(os_type)
+        install_docker(os_type)
         add_aimmo_to_hosts_file()
 
     except CalledProcessError as e:
@@ -313,17 +314,17 @@ print(
 )
 
 if platform.system() == "Darwin":
-    hostOS = OStypes["mac"]
+    os_type = OSType.MAC
     print("MAC found!")
-    mac_setup(hostOS)
+    mac_setup(os_type)
 elif platform.system() == "Windows":
-    hostOS = OStypes["windows"]
+    os_type = OSType.WINDOWS
     print("WINDOWS found!")
-    windows_setup(hostOS)
+    windows_setup(os_type)
 elif platform.system() == "Linux":
-    hostOS = OStypes["linux"]
+    os_type = OSType.LINUX
     print("LINUX found!")
-    linux_setup(hostOS)
+    linux_setup(os_type)
 else:
     print("Could not detect operating system. Maybe you're using")
     print("something other than Windows, Mac, or Linux?")
