@@ -24,6 +24,9 @@ def _cmd(command, comment=None):
     Args:
         command (str): command to be run
     """
+    if not comment:
+        comment = inspect.currentframe().f_back.f_code.co_name
+
     if comment:
         print((comment + " ").ljust(103, "."), end=" ")
 
