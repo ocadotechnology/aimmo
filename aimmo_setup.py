@@ -16,22 +16,27 @@ class OSType(Enum):
     LINUX = 2
     WINDOWS = 3
 
-def _cmd(command):
-    """
-    :param command: command/subprocess to be run, as a string.
 
-    Takes in a command/subprocess, and runs it as if you would
-    inside a terminal. DO NOT USE outside of the aimmo-setup script, and DO NOT INCLUDE
-    in any release build, as this function is able to run bash scripts, and can run commands
-    with sudo if specified.
+def _cmd(command, comment=None):
     """
+    Run command inside a terminal
+
+    Args:
+        command (str): command to be run
+    """
+    if comment:
+        print((comment + " ").ljust(103, "."), end=" ")
 
     p = subprocess.Popen(command, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
-    (_, _) = p.communicate()
+    (stdout, stderr) = p.communicate()
 
     if p.returncode != 0:
-        raise CalledProcessError
+        if comment:
+            print("FAIL")
+        raise CalledProcessError(p.returncode, command, stdout, stderr)
 
+    if comment:
+        print("DONE")
 
 
 def install_yarn(os_type):
