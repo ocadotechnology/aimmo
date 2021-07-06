@@ -297,20 +297,14 @@ def linux_setup(os_type):
         traceback.print_exc()
 
 
+
 print(
-    "---------------------------------------------------------------------------------------------------"
-)
-print(
-    "| Welcome to Kurono! This script should make your life a little easier,                           |"
-)
-print(
-    "| just be kind if it doesn't work.                                                                |"
-)
-print(
-    "| You may be asked to enter your password during this setup.                                      |"
-)
-print(
-    "---------------------------------------------------------------------------------------------------"
+        "+----------------------------------------------------------------------------------------------------------+\n"
+        "| Welcome to Kurono!                                                                                       |\n"
+        "| This script should make your life a little easier,                                                       |\n"
+        "| just be kind if it doesn't work.                                                                         |\n"
+        "| You may be asked to enter your password during this setup.                                               |\n"
+        "+----------------------------------------------------------------------------------------------------------+\n"
 )
 
 if platform.system() == "Darwin":
