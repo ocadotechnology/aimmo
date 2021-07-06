@@ -194,6 +194,20 @@ describe('<GameView />', () => {
     const component = shallow(<GameView {...props} />, { disableLifecycleMethods: true })
     expect(component).toMatchSnapshot()
   })
+
+  it('opens the Freshdesk widget when clicking on the contact us link in the loading screen', () => {
+    const connectToGame = jest.fn()
+    const props = {
+      connectToGame,
+      gameLoaded: false
+    }
+    const component = shallow(<GameView {...props} />, { disableLifecycleMethods: true })
+
+    window.FreshworksWidget = jest.fn()
+
+    component.find('.freshdesk__contact-us').simulate('click')
+    expect(window.FreshworksWidget).toHaveBeenCalled()
+  })
 })
 
 describe('<GameViewLayout />', () => {
