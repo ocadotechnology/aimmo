@@ -239,67 +239,45 @@ def mac_setup(os_type):
     After this has been run the user needs to open Docker to finalise its install,
     and get the unity package for Kurono from aimmo-unity.
     """
-    try:
-        check_homebrew()
-        install_yarn(os_type)
-        add_parcel_bundler()
-        set_up_frontend_dependencies()
-        install_pipenv(os_type)
-        run_pipenv_install()
-        install_docker(os_type)
-        install_minikube(os_type)
-        install_kurbernetes(os_type)
+    tasks = [
+        ensure_homebrew_installed,
+        install_yarn,
+        yarn_add_parcel_bundler,
+        set_up_frontend_dependencies,
+        install_pipenv,
+        run_pipenv_install,
+        install_docker,
+        install_minikube,
+        install_kubectl,
+    ]
 
-    except CalledProcessError as e:
-        print("A command has return an exit code != 0, so something has gone wrong.")
-        traceback.print_exc()
-    except OSError as e:
-        print("Tried to execute a command that didn't exist.")
-        traceback.print_exc()
-    except ValueError as e:
-        print("Tried to execute a command with invalid arguments.")
-        traceback.print_exc()
-    except Exception as e:
-        print(
-            "Something went very wrong, maybe I couldn't read hosts? Otherwise I have no idea what it was D:"
-        )
-        traceback.print_exc()
+    for task in tasks:
+        task(os_type)
 
 
 def windows_setup(os_type):
-    pass
+    raise NotImplementedError
 
 
 def linux_setup(os_type):
-    try:
-        update_apt_get()
-        get_nodejs()
-        install_nodejs()
-        check_for_cmdtest()
-        configure_yarn_repo()
-        install_yarn(os_type)
-        add_parcel_bundler()
-        install_pip()
-        install_pipenv(os_type)
-        set_up_frontend_dependencies()
-        install_kurbernetes(os_type)
-        install_docker(os_type)
-        add_aimmo_to_hosts_file()
+    tasks = [
+        update_apt_packages,
+        get_nodejs,
+        install_nodejs,
+        check_for_cmdtest,
+        configure_yarn_repo,
+        install_yarn,
+        yarn_add_parcel_bundler,
+        install_pip,
+        install_pipenv,
+        set_up_frontend_dependencies,
+        install_kubectl,
+        install_docker,
+        add_aimmo_to_hosts_file,
+    ]
 
-    except CalledProcessError as e:
-        print("Command returned an exit code != 0, so something has gone wrong.")
-        traceback.print_exc()
-    except OSError as e:
-        print("Tried to execute a command that didn't exist.")
-        traceback.print_exc()
-    except ValueError as e:
-        print("Tried to execute a command with invalid arguments")
-        traceback.print_exc()
-    except Exception as e:
-        print(
-            "Something went very wrong, maybe I couldn't read hosts? otherwise I have no idea what it was D:"
-        )
-        traceback.print_exc()
+    for task in tasks:
+        task(os_type)
 
 
 def get_os_type():
