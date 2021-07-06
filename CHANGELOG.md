@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.14b496 (2021-07-06)
+
+
 ## v0.69.14b492 (2021-07-06)
 ### Fix
 * Use Freshdesk widget in load screen (#1546) ([`b2ad721`](https://github.com/ocadotechnology/aimmo/commit/b2ad7218f67f79f2e3a056f3ff88b0ffac8fdac4))
