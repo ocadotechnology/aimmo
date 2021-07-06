@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import React from 'react'
-import GameView, { GameViewLayout, Compass, LoadingBackgroundOverlay, PositionedFindMeButton, OverlayElements } from 'components/GameView'
+import GameView, { GameViewLayout, Compass, LoadingBackgroundOverlay, PositionedFindMeButton, OverlayElements, LoadingText } from 'components/GameView'
 import { shallow } from 'enzyme/build/index'
 import createMountWithTheme from 'testHelpers/createMount'
 import createShallowWithTheme from 'testHelpers/createShallow'
@@ -194,6 +194,20 @@ describe('<GameView />', () => {
     const component = shallow(<GameView {...props} />, { disableLifecycleMethods: true })
     expect(component).toMatchSnapshot()
   })
+
+  it('opens the Freshdesk widget when clicking on the contact us link in the loading screen', () => {
+    const connectToGame = jest.fn()
+    const props = {
+      connectToGame,
+      gameLoaded: false
+    }
+    const component = shallow(<GameView {...props} />, { disableLifecycleMethods: true })
+
+    window.FreshworksWidget = jest.fn()
+
+    component.find('.freshdesk__contact-us').simulate('click')
+    expect(window.FreshworksWidget).toHaveBeenCalled()
+  })
 })
 
 describe('<GameViewLayout />', () => {
@@ -227,6 +241,13 @@ describe('<PositionedFindMeButton/>', () => {
 describe('<LoadingBackgroundOverlay />', () => {
   it('matches snapshot', () => {
     const tree = createShallowWithTheme(<LoadingBackgroundOverlay />)
+    expect(tree).toMatchSnapshot()
+  })
+})
+
+describe('<LoadingText />', () => {
+  it('matches snapshot', () => {
+    const tree = createShallowWithTheme(<LoadingText />)
     expect(tree).toMatchSnapshot()
   })
 })
