@@ -297,6 +297,46 @@ def linux_setup(os_type):
         traceback.print_exc()
 
 
+def get_os_type():
+    """
+    Return the os type if one can be determined
+
+    Returns:
+        OSType: OS type
+    """
+    system = platform.system()
+
+    system_os_type_map = {
+        "Darwin": OSType.MAC,
+        "Linux": OSType.LINUX,
+        "Windows": OSType.WINDOWS,
+    }
+
+    try:
+        return system_os_type_map[system]
+    except KeyError:
+        raise KeyError(str(system))
+
+
+def setup_factory(os_type):
+    """
+    Return the setup function which matches supplied host type
+
+    Args:
+        os_type (OSType): the type of host to setup
+
+    Returns:
+        Callable: setup function
+    """
+    if os_type == OSType.MAC:
+        return mac_setup
+    elif os_type == OSType.LINUX:
+        return linux_setup
+    elif os_type == OSType.WINDOWS:
+        return windows_setup
+
+    raise RuntimeError("could not find setup function for OS type")
+
 
 print(
         "+----------------------------------------------------------------------------------------------------------+\n"
@@ -307,18 +347,30 @@ print(
         "+----------------------------------------------------------------------------------------------------------+\n"
 )
 
-if platform.system() == "Darwin":
-    os_type = OSType.MAC
-    print("MAC found!")
-    mac_setup(os_type)
-elif platform.system() == "Windows":
-    os_type = OSType.WINDOWS
-    print("WINDOWS found!")
-    windows_setup(os_type)
-elif platform.system() == "Linux":
-    os_type = OSType.LINUX
-    print("LINUX found!")
-    linux_setup(os_type)
-else:
-    print("Could not detect operating system. Maybe you're using")
-    print("something other than Windows, Mac, or Linux?")
+try:
+    os_type = get_os_type()
+    setup = setup_factory(os_type)
+    print("%s found!" % os_type.name)
+    try:
+        setup(os_type)
+    except CalledProcessError as e:
+        print("Something has gone wrong.")
+        print("Command '%s' returned exit code '%s'" % (e.command, e.returncode))
+        traceback.print_exc()
+    except OSError as e:
+        print("Tried to execute a command that didn't exist.")
+        traceback.print_exc()
+    except ValueError as e:
+        print("Tried to execute a command with invalid arguments.")
+        traceback.print_exc()
+    except:
+        print("An unexpected error has occured during setup:\n")
+        raise
+except KeyError as e:
+    print(
+        "System %s is not supported. Maybe you're using\n"
+        "something other than Windows, Mac, or Linux?" % e
+    )
+except:
+    print("An unexpected error has occured:\n")
+    raise
