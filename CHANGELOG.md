@@ -2,6 +2,31 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.14b496 (2021-07-06)
+
+
+## v0.69.14b492 (2021-07-06)
+### Fix
+* Use Freshdesk widget in load screen (#1546) ([`b2ad721`](https://github.com/ocadotechnology/aimmo/commit/b2ad7218f67f79f2e3a056f3ff88b0ffac8fdac4))
+
+## v0.69.13b486 (2021-07-02)
+### Fix
+* Improve game load time (#1547) ([`172b097`](https://github.com/ocadotechnology/aimmo/commit/172b09781b5d59d7dcf9083bdd4bfcf564f60dda))
+
+## v0.69.12b472 (2021-06-28)
+### Fix
+* Add more informative game load text (#1545) ([`83f5579`](https://github.com/ocadotechnology/aimmo/commit/83f5579d1cbee58abbaf085f2abe9d2faf837a53))
+
+## v0.69.11b469 (2021-06-18)
+
+
+## v0.69.11b465 (2021-06-17)
+### Documentation
+* Add additional terms on Ocado back ([`268092c`](https://github.com/ocadotechnology/aimmo/commit/268092c1c71e35e0b31b39d6af55f418b0698f62))
+
+## v0.69.11b463 (2021-06-11)
+
+
 ## v0.69.11 (2021-06-11)
 
 

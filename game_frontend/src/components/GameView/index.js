@@ -36,6 +36,7 @@ export const Overlay = styled.div`
 
 export const LoadingText = styled(Typography)`
   padding-top: ${props => props.theme.spacing(2)}px;
+  text-align: center;
 `
 
 export const Compass = styled.img`
@@ -90,12 +91,18 @@ export default class GameView extends Component {
     return <canvas style={{ width: '100%', height: '100%' }} ref={this.onCanvasLoaded} />
   }
 
+  openFreshworksWidget = () => {
+    const FreshworksWidget = window.FreshworksWidget
+    FreshworksWidget('open');
+  }
+
   renderLoadingScreen = () => {
     return (
       <LoadingBackgroundOverlay>
         <CircularProgress color='inherit' />
         <LoadingText variant='body1' color='inherit'>
-          Building game world...
+          We are building your game... ⏱<br />
+          If the game doesn’t load after 60 seconds, please <a className="freshdesk__contact-us" onClick={this.openFreshworksWidget} style={{"cursor": "pointer", "textDecoration": "underline",}}>contact us</a>.
         </LoadingText>
       </LoadingBackgroundOverlay>
     )
