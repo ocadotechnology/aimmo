@@ -116,7 +116,7 @@ class Game(models.Model):
         return not self.completed
 
     def __str__(self):
-        return self.name
+        return str(self.id)
 
     def can_user_play(self, user: User) -> bool:
         """Checks whether the given user has permission to play the game.
