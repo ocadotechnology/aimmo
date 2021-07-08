@@ -40,8 +40,10 @@ jobs:
         run: |
           cd game_frontend
           node djangoBundler.js
+      - name: Run migration
+        run: python example_project/manage.py makemigrations
       - name: Run Python tests
-        run: python all_tests.py -c --no-docker-container-tests
+        run: pytest --cov=. --cov-report=xml
       - name: Run Cypress tests
         uses: cypress-io/github-action@v2
         with:
