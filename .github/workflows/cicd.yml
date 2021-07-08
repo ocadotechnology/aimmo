@@ -25,8 +25,6 @@ jobs:
           node-version: 14.x
       - name: Install dependencies
         run: |
-          pip install codecov
-          pip install pytest-cov
           pip install pipenv
           pipenv install --dev --system
           cd game_frontend
@@ -45,7 +43,7 @@ jobs:
       - name: Run migration
         run: python example_project/manage.py makemigrations
       - name: Run Python tests
-        run: pytest --cov=. --cov-report=xml
+        run: pytest --cov=. --cov-report=xml aimmo
       - name: Run Cypress tests
         uses: cypress-io/github-action@v2
         with:
