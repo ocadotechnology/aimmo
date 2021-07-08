@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.15b511 (2021-07-08)
+
+
 ## v0.69.15b504 (2021-07-07)
 ### Fix
 * Fix empty name bug in Game (#1550) ([`a57db88`](https://github.com/ocadotechnology/aimmo/commit/a57db88c8bdaf2517684a4a6286059c04f208b76))
