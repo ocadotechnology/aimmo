@@ -19,7 +19,10 @@ class GameDataAdmin(admin.ModelAdmin):
         return players
 
     def school(self, obj):
-        return obj.game_class.teacher.school
+        if obj.game_class:
+            return obj.game_class.teacher.school
+        else:
+            return None
 
 
 class AvatarDataAdmin(admin.ModelAdmin):
