@@ -25,6 +25,8 @@ jobs:
           node-version: 14.x
       - name: Install dependencies
         run: |
+          pip install codecov
+          pip install pytest-cov
           pip install pipenv
           pipenv install --dev --system
           cd game_frontend
