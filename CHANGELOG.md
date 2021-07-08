@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.16b514 (2021-07-08)
+### Fix
+* Fix admin pages for old games without classes too (#1555) ([`ba65227`](https://github.com/ocadotechnology/aimmo/commit/ba6522775853aac14096f4f59a9cfb932b73b2d9))
+
 ## v0.69.15b511 (2021-07-08)
 
 
