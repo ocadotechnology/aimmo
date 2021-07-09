@@ -7,6 +7,7 @@ import kubernetes
 from kubernetes.client import CoreV1Api
 from kubernetes.client.api.custom_objects_api import CustomObjectsApi
 from kubernetes.client.api_client import ApiClient
+from kubernetes.client.rest import ApiException
 
 LOGGER = logging.getLogger(__name__)
 
@@ -137,3 +138,26 @@ class GameManager:
             game_id=game_id, game_data=game_data
         )
         self.patch_game_service(game_id=game_id, game_server_name=game_server_name)
+
+    def create_game_secret(self, game_id, token):
+        name = self.create_game_name(game_id) + "-token"
+        try:
+            self.api.read_namespaced_secret(name, K8S_NAMESPACE)
+        except ApiException:
+            body = kubernetes.client.V1Secret(
+                kind="Secret",
+                string_data={"token": token},
+                metadata=kubernetes.client.V1ObjectMeta(
+                    name=name,
+                    namespace=K8S_NAMESPACE,
+                    labels={"game_id": str(game_id), "app": "aimmo-game"},
+                ),
+            )
+
+            try:
+                self.api.create_namespaced_secret(K8S_NAMESPACE, body)
+                test = self.api.read_namespaced_secret(name, K8S_NAMESPACE)
+            except ApiException:
+                LOGGER.debug(
+                    "Either we already have a secret, or something has gone wrong."
+                )

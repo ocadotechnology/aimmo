@@ -325,7 +325,7 @@ class KubernetesGameManager(GameManager):
             )
 
     def create_game(self, game_id, game_data):
-        self._create_game_secret(game_id)
+        # self._create_game_secret(game_id)
         game_server_name = self._create_game_server_allocation(game_id, game_data)
         self._create_game_service(game_id, game_server_name)
         self._add_path_to_ingress(game_id)
@@ -335,7 +335,7 @@ class KubernetesGameManager(GameManager):
         self._remove_path_from_ingress(game_id)
         self._delete_game_service(game_id)
         self._delete_game_server(game_id)
-        self._delete_game_secret(game_id)
+        # self._delete_game_secret(game_id)
 
     def delete_unknown_games(self):
         gameservers = self.custom_objects_api.list_namespaced_custom_object(
