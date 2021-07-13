@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
     logging.basicConfig()
 
-    if os.environ.get("LOAD_KUBE_CONFIG", "1"):
+    if os.environ.get("LOAD_KUBE_CONFIG", "1") == "1":
         load_kube_config(context="agones")
 
     execute_from_command_line(sys.argv)
