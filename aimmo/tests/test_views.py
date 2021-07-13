@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.urls import reverse
 from portal.forms.add_game import AddGameForm
-from portal.game_creator import create_game
+from aimmo.game_creator import create_game
 from rest_framework import status
 
 from aimmo import app_settings, models
@@ -425,7 +425,7 @@ class TestViews(TestCase):
         response = client.get(reverse("game-detail", kwargs={"pk": self.game.id}))
         self.assertEqual(response.status_code, 200)
 
-    @patch("portal.game_creator.GameManager")
+    @patch("aimmo.game_creator.GameManager")
     def test_adding_a_game_creates_an_avatar(self, mock_game_manager):
         client = self.login()
         game: Game = create_game(

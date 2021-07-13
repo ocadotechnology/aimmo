@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 
-from portal.game_creator import generate_game_token
+from aimmo.game_creator import generate_game_token
 from aimmo.game_manager import GameManager
 
 
