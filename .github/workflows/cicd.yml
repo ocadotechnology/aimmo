@@ -41,6 +41,8 @@ jobs:
           cd game_frontend
           node djangoBundler.js
       - name: Run migration
+        env:
+          LOAD_KUBE_CONFIG: 0
         run: python example_project/manage.py makemigrations
       - name: Run Python tests
         run: pytest --cov=. --cov-report=xml aimmo
