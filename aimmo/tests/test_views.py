@@ -425,7 +425,8 @@ class TestViews(TestCase):
         response = client.get(reverse("game-detail", kwargs={"pk": self.game.id}))
         self.assertEqual(response.status_code, 200)
 
-    def test_adding_a_game_creates_an_avatar(self):
+    @patch("portal.game_creator.GameManager")
+    def test_adding_a_game_creates_an_avatar(self, mock_game_manager):
         client = self.login()
         game: Game = create_game(
             self.user,
@@ -436,6 +437,10 @@ class TestViews(TestCase):
                 },
             ),
         )
+
+        # GameManager is called when a game is created.
+        assert mock_game_manager.called
+
         game = models.Game.objects.get(pk=2)
         avatar = game.avatar_set.get(owner=client.session["_auth_user_id"])
         assert avatar is not None
