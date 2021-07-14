@@ -84,6 +84,7 @@ def run(
 
     if using_cypress:
         settings.DEBUG = False
+        os.environ["LOAD_KUBE_CONFIG"] = "0"
 
     os.environ["NODE_ENV"] = "development" if settings.DEBUG else "production"
 
