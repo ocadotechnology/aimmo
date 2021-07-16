@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.17b529 (2021-07-16)
+### Documentation
+* Move docs in repo to gitbook (#1559) ([`2d609fa`](https://github.com/ocadotechnology/aimmo/commit/2d609fa6748706c5d43a9f310d31e159ca787e9c))
+
 ## v0.69.17b526 (2021-07-14)
 ### Fix
 * Fix local run (intro in #1556) (#1558) ([`4a5fb9a`](https://github.com/ocadotechnology/aimmo/commit/4a5fb9a0ca25132f54ff546422a32a831fbfc207))
