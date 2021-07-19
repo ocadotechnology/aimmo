@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.17b529 (2021-07-16)
+### Documentation
+* Move docs in repo to gitbook (#1559) ([`2d609fa`](https://github.com/ocadotechnology/aimmo/commit/2d609fa6748706c5d43a9f310d31e159ca787e9c))
+
+## v0.69.17b526 (2021-07-14)
+### Fix
+* Fix local run (intro in #1556) (#1558) ([`4a5fb9a`](https://github.com/ocadotechnology/aimmo/commit/4a5fb9a0ca25132f54ff546422a32a831fbfc207))
+
+## v0.69.16b520 (2021-07-13)
+
+
 ## v0.69.16b514 (2021-07-08)
 ### Fix
 * Fix admin pages for old games without classes too (#1555) ([`ba65227`](https://github.com/ocadotechnology/aimmo/commit/ba6522775853aac14096f4f59a9cfb932b73b2d9))
