@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.urls import reverse
 from portal.forms.add_game import AddGameForm
-from portal.game_creator import create_game
+from aimmo.game_creator import create_game
 from rest_framework import status
 
 from aimmo import app_settings, models
@@ -425,7 +425,8 @@ class TestViews(TestCase):
         response = client.get(reverse("game-detail", kwargs={"pk": self.game.id}))
         self.assertEqual(response.status_code, 200)
 
-    def test_adding_a_game_creates_an_avatar(self):
+    @patch("aimmo.game_creator.GameManager")
+    def test_adding_a_game_creates_an_avatar(self, mock_game_manager):
         client = self.login()
         game: Game = create_game(
             self.user,
@@ -436,6 +437,10 @@ class TestViews(TestCase):
                 },
             ),
         )
+
+        # GameManager is called when a game is created.
+        assert mock_game_manager.called
+
         game = models.Game.objects.get(pk=2)
         avatar = game.avatar_set.get(owner=client.session["_auth_user_id"])
         assert avatar is not None

@@ -1,14 +1,13 @@
-from __future__ import absolute_import
-from .base_test_migration import MigrationTestCase
+import pytest
 
 
-class TestMigrationAlterGameToken(MigrationTestCase):
+@pytest.mark.django_db
+def test_game_token_field_altered(migrator):
+    migrator.apply_initial_migration(
+        ("aimmo", "0009_add_game_status"),
+    )
+    new_state = migrator.apply_tested_migration(("aimmo", "0010_alter_game_token"))
+    model = new_state.apps.get_model("aimmo", "Game")
+    game = model.objects.create(id=1, name="test", public=True)
 
-    start_migration = "0009_add_game_status"
-    dest_migration = "0010_alter_game_token"
-
-    def test_game_token_field_altered(self):
-        model = self.django_application.get_model(self.app_name, "Game")
-        game = model.objects.create(id=1, name="test", public=True)
-
-        self.assertEquals(game.auth_token, "")
+    assert game.auth_token == ""
