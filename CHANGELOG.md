@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.18b535 (2021-07-20)
+### Fix
+* Games not stopping (#1557) ([`da943f6`](https://github.com/ocadotechnology/aimmo/commit/da943f62e887136a520fd7ad7dd51e7945b08326))
+
 ## v0.69.17b529 (2021-07-16)
 ### Documentation
 * Move docs in repo to gitbook (#1559) ([`2d609fa`](https://github.com/ocadotechnology/aimmo/commit/2d609fa6748706c5d43a9f310d31e159ca787e9c))
