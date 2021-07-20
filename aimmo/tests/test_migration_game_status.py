@@ -1,15 +1,12 @@
-from __future__ import absolute_import
-from .base_test_migration import MigrationTestCase
+import pytest
 
 
-class TestMigrationPreviewUsers(MigrationTestCase):
+@pytest.mark.django_db
+def test_game_status_field_added(migrator):
+    migrator.apply_initial_migration(
+        ("aimmo", "0008_default_public_field"),
+    )
+    new_state = migrator.apply_tested_migration(("aimmo", "0009_add_game_status"))
+    model = new_state.apps.get_model("aimmo", "Game")
 
-    start_migration = "0008_default_public_field"
-    dest_migration = "0009_add_game_status"
-
-    def test_game_status_field_added(self):
-        model = self.django_application.get_model(self.app_name, "Game")
-
-        self.assertEquals(
-            model._meta.get_field("status").get_internal_type(), "CharField"
-        )
+    assert model._meta.get_field("status").get_internal_type() == "CharField"

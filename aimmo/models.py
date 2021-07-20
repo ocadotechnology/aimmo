@@ -63,7 +63,7 @@ class Game(models.Model):
     STATUS_CHOICES = ((RUNNING, "running"), (STOPPED, "stopped"), (PAUSED, "paused"))
 
     name = models.CharField(max_length=100, blank=True, null=True)
-    auth_token = models.CharField(max_length=24, blank=True)
+    auth_token = models.CharField(max_length=48, blank=True)
     owner = models.ForeignKey(
         User,
         blank=True,
@@ -116,7 +116,7 @@ class Game(models.Model):
         return not self.completed
 
     def __str__(self):
-        return self.name
+        return str(self.id)
 
     def can_user_play(self, user: User) -> bool:
         """Checks whether the given user has permission to play the game.

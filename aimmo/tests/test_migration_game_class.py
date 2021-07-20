@@ -1,13 +1,12 @@
-from .base_test_migration import MigrationTestCase
+import pytest
 
 
-class TestMigrationLinkClassToGame(MigrationTestCase):
-    start_migration = "0015_game_worksheet"
-    dest_migration = "0016_game_class"
+@pytest.mark.django_db
+def test_game_has_worksheet_as_foreign_key(migrator):
+    migrator.apply_initial_migration(
+        ("aimmo", "0015_game_worksheet"),
+    )
+    new_state = migrator.apply_tested_migration(("aimmo", "0016_game_class"))
+    Game = new_state.apps.get_model("aimmo", "Game")
 
-    def test_game_has_worksheet_as_foreign_key(self):
-        Game = self.django_application.get_model(self.app_name, "Game")
-
-        self.assertEquals(
-            Game._meta.get_field("game_class").get_internal_type(), "ForeignKey"
-        )
+    assert Game._meta.get_field("game_class").get_internal_type() == "ForeignKey"
