@@ -16,7 +16,7 @@ def test_generate_auth_token_for_games(migrator):
 
     Game = new_state.apps.get_model("aimmo", "Game")
     game = Game.objects.get(id=game_id)
-    assert game.auth_token != "" and len(game.auth_token) > 0
+    assert game.auth_token is not None and game.auth_token != ""
 
 
 @pytest.mark.django_db

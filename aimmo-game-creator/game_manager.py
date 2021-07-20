@@ -250,26 +250,6 @@ class KubernetesGameManager(GameManager):
             LOGGER.info("Removing service: {}".format(resource.metadata.name))
             self.api.delete_namespaced_service(resource.metadata.name, K8S_NAMESPACE)
 
-    def _create_game_secret(self, game_id):
-        name = KubernetesGameManager._create_game_name(game_id) + "-token"
-        try:
-            self.api.read_namespaced_secret(name, K8S_NAMESPACE)
-        except ApiException:
-            data = {"token": self._generate_game_token()}
-            self.secret_creator.create_secret(name, K8S_NAMESPACE, data)
-
-    def _delete_game_secret(self, game_id):
-        app_label = "app=aimmo-game"
-        game_label = "game_id={}".format(game_id)
-
-        resources = self.api.list_namespaced_secret(
-            namespace=K8S_NAMESPACE, label_selector=",".join([app_label, game_label])
-        )
-
-        for resource in resources.items:
-            LOGGER.info("Removing game secret: {}".format(resource.metadata.name))
-            self.api.delete_namespaced_secret(resource.metadata.name, K8S_NAMESPACE)
-
     def _create_game_server_allocation(
         self, game_id: int, game_data: dict, retry_count: int = 0
     ) -> str:
@@ -325,7 +305,6 @@ class KubernetesGameManager(GameManager):
             )
 
     def create_game(self, game_id, game_data):
-        # self._create_game_secret(game_id)
         game_server_name = self._create_game_server_allocation(game_id, game_data)
         self._create_game_service(game_id, game_server_name)
         self._add_path_to_ingress(game_id)
@@ -335,7 +314,6 @@ class KubernetesGameManager(GameManager):
         self._remove_path_from_ingress(game_id)
         self._delete_game_service(game_id)
         self._delete_game_server(game_id)
-        # self._delete_game_secret(game_id)
 
     def delete_unknown_games(self):
         gameservers = self.custom_objects_api.list_namespaced_custom_object(
