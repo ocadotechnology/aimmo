@@ -32,7 +32,6 @@ Cypress.Commands.add('login', () => {
         'auth-username': username,
         'auth-password': password,
         csrfmiddlewaretoken: csrfToken.value,
-        'g-recaptcha-response': 'something',
         'teacher_login_view-current_step': 'auth'
       }
     })
@@ -53,7 +52,6 @@ Cypress.Commands.add('studentLogin', () => {
         password,
         access_code: student_access_code,
         csrfmiddlewaretoken: csrfToken.value,
-        'g-recaptcha-response': 'something'
       }
     })
     cy.visit('/')
