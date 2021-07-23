@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.19b542 (2021-07-23)
+### Fix
+* Remove captcha from tests (#1562) ([`7d2572a`](https://github.com/ocadotechnology/aimmo/commit/7d2572a525dc87b3b6df34d4fc1f025d31b1f2cd))
+
 ## v0.69.18 (2021-07-20)
 
 
