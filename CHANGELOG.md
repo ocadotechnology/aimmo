@@ -2,6 +2,31 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.16b514 (2021-07-08)
+### Fix
+* Fix admin pages for old games without classes too (#1555) ([`ba65227`](https://github.com/ocadotechnology/aimmo/commit/ba6522775853aac14096f4f59a9cfb932b73b2d9))
+
+## v0.69.15b511 (2021-07-08)
+
+
+## v0.69.15b504 (2021-07-07)
+### Fix
+* Fix empty name bug in Game (#1550) ([`a57db88`](https://github.com/ocadotechnology/aimmo/commit/a57db88c8bdaf2517684a4a6286059c04f208b76))
+
+## v0.69.14 (2021-07-07)
+
+
+## v0.69.14b496 (2021-07-06)
+
+
+## v0.69.14b492 (2021-07-06)
+### Fix
+* Use Freshdesk widget in load screen (#1546) ([`b2ad721`](https://github.com/ocadotechnology/aimmo/commit/b2ad7218f67f79f2e3a056f3ff88b0ffac8fdac4))
+
+## v0.69.13b486 (2021-07-02)
+### Fix
+* Improve game load time (#1547) ([`172b097`](https://github.com/ocadotechnology/aimmo/commit/172b09781b5d59d7dcf9083bdd4bfcf564f60dda))
+
 ## v0.69.12b472 (2021-06-28)
 ### Fix
 * Add more informative game load text (#1545) ([`83f5579`](https://github.com/ocadotechnology/aimmo/commit/83f5579d1cbee58abbaf085f2abe9d2faf837a53))
