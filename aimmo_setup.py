@@ -228,7 +228,7 @@ def _cmd(command, comment=None):
     p = subprocess.Popen(command, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
 
     for line in iter(p.stdout.readline, b""):
-        sys.stdout.write("%s\r" % line.decode()[:-1].rstrip())
+        sys.stdout.write("%s\r" % line.decode("utf-8")[:-1].rstrip())
         sys.stdout.flush()
 
     # Delete line
