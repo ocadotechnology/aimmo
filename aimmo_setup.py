@@ -1,14 +1,21 @@
 from __future__ import print_function
 from enum import Enum
+import sys
 import platform
 import subprocess
 import traceback
-
+import inspect
 from subprocess import PIPE, CalledProcessError
 
-DEFAULT_HOST_TYPE = "MAC"
+# python2 support
+try:
+    input = raw_input
+except NameError:
+    pass
 
-valid = {"yes": True, "y": True, "ye": True, "no": False, "n": False}
+
+MINIKUBE_VERSION = "1.21.0"
+KUBECTL_VERSION = "1.21.2"
 
 
 class OSType(Enum):
@@ -17,230 +24,119 @@ class OSType(Enum):
     WINDOWS = 3
 
 
-def _cmd(command, comment=None):
+class ArchType(Enum):
+    AMD64 = 1
+    ARM64 = 2
+
+
+def main():
+    print(
+        "+----------------------------------------------------------------------------------------------------------+\n"
+        "| Welcome to Kurono!                                                                                       |\n"
+        "| This script should make your life a little easier,                                                       |\n"
+        "| just be kind if it doesn't work.                                                                         |\n"
+        "| You may be asked to enter your password during this setup.                                               |\n"
+        "+----------------------------------------------------------------------------------------------------------+\n"
+    )
+
+    try:
+        os_type = get_os_type()
+        arch_type = get_arch_type()
+
+        setup = setup_factory(os_type, arch_type)
+
+        try:
+            print("Starting setup for OS: %s\n" % os_type.name)
+            setup(os_type, arch_type)
+            print("\nFinished setup.")
+        except CalledProcessError as e:
+            print("Something has gone wrong.")
+            print("Command '%s' returned exit code '%s'" % (e.cmd, e.returncode))
+            traceback.print_exc()
+        except OSError as e:
+            print("Tried to execute a command that didn't exist.")
+            traceback.print_exc()
+        except ValueError as e:
+            print("Tried to execute a command with invalid arguments.")
+            traceback.print_exc()
+    except KeyError as e:
+        print("Setup encountered an error: %s" % e.args[0])
+    except:
+        print("An unexpected error has occured:\n")
+        raise
+
+
+def get_os_type():
     """
-    Run command inside a terminal
+    Return the OS type if one can be determined
+
+    Returns:
+        OSType: OS type
+    """
+    system = platform.system()
+
+    system_os_type_map = {
+        "Darwin": OSType.MAC,
+        "Linux": OSType.LINUX,
+        "Windows": OSType.WINDOWS,
+    }
+
+    try:
+        return system_os_type_map[system]
+    except KeyError:
+        raise KeyError("'%s' system is not supported" % system)
+
+
+def get_arch_type():
+    """
+    Return the architecture type
+
+    Returns:
+        ArchType: architecture type
+    """
+    arch = platform.machine()
+
+    arch_type_map = {
+        "amd64": ArchType.AMD64,
+        "x86_64": ArchType.AMD64,
+        "arm64": ArchType.ARM64,
+    }
+
+    try:
+        return arch_type_map[arch]
+    except KeyError:
+        raise KeyError("'%s' architecture is not supported" % arch)
+
+
+def setup_factory(os_type, arch_type):
+    """
+    Return the setup function which matches supplied host type
 
     Args:
-        command (str): command to be run
+        os_type (OSType): the type of host to setup
+
+    Returns:
+        Callable: setup function
     """
-    if not comment:
-        comment = inspect.currentframe().f_back.f_code.co_name
-
-    if comment:
-        print((comment + " ").ljust(103, "."), end=" ")
-
-    p = subprocess.Popen(command, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
-    (stdout, stderr) = p.communicate()
-
-    if p.returncode != 0:
-        if comment:
-            print("FAIL")
-        raise CalledProcessError(p.returncode, command, stdout, stderr)
-
-    if comment:
-        print("DONE")
-
-
-def install_yarn(os_type):
-    """
-    :param operatingSystem: values from the OStypes dict. (Should be updated to enum once python 3 is available)
-
-    OS dependant, so it must be passed to this function in order to run correctly.
-    """
-    print("Installing Yarn...")
     if os_type == OSType.MAC:
-        _cmd("brew install yarn")
+        return mac_setup
+
     elif os_type == OSType.LINUX:
-        _cmd("sudo apt-get install yarn")
+        return linux_setup
 
-
-def install_pipenv(os_type):
-    """
-    :param os_type: values from the OStypes dict. (Should be updated to enum once python 3 is available)
-
-    OS dependant, so it must be passed to this function in order to run correctly.
-    """
-    print("Installing pipenv...")
-    if os_type == OSType.MAC:
-        _cmd("brew install pipenv")
-    elif os_type == OSType.LINUX:
-        _cmd("pip install pipenv")
     elif os_type == OSType.WINDOWS:
-        pass
-    else:
-        raise Exception
+        return windows_setup
+
+    raise RuntimeError("could not find setup function for supplied host type")
 
 
-def install_docker(os_type):
+def mac_setup(os_type, arch_type):
     """
-    :param os_type: values from the OStypes dict. (Should be updated to enum once python 3 is available)
+    Runs the commands needed in order to set up Kurono for MAC
 
-    OS dependant, so it must be passed to this function in order to run correctly.
-    """
-    print("Installing Docker...")
-    if os_type == OSType.MAC:
-        _cmd("brew cask install docker")
-    elif os_type == OSType.LINUX:
-        _cmd("sudo apt-get install docker-ce")
-    elif os_type == OSType.WINDOWS:
-        pass
-    else:
-        raise Exception
-
-
-def install_minikube(os_type):
-    """
-    :param os_type: values from the OStypes dict. (Should be updated to enum once python 3 is available)
-
-    OS dependant, so it must be passed to this function in order to run correctly.
-    """
-    print(
-        "Installing minikube..."
-    )  # If minikube version changes this will need updating
-    if os_type == OSType.MAC:
-        _cmd(
-            "curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-darwin-amd64"
-        )
-        _cmd("chmod +x minikube")
-        _cmd("sudo mv minikube /usr/local/bin/")
-    elif os_type == OSType.LINUX:
-        _cmd(
-            "curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-linux-amd64"
-        )
-        _cmd("chmod +x minikube")
-        _cmd("sudo mv minikube /usr/local/bin/")
-    elif os_type == OSType.WINDOWS:
-        pass
-    else:
-        raise Exception
-
-
-def install_kurbernetes(os_type):
-    """
-    :param os_type: values from the OStypes dict. (Should be updated to enum once python 3 is available)
-
-    OS dependant, so it must be passed to this function in order to run correctly.
-    """
-    print(
-        "Installing Kubernetes..."
-    )  # If kubernetes version changes this will need updating
-    if os_type == OSType.MAC:
-        _cmd(
-            "curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.9.4/bin/darwin/amd64/kubectl"
-        )
-        _cmd("chmod +x kubectl")
-        _cmd("sudo mv kubectl /usr/local/bin/")
-    elif os_type == OSType.LINUX:
-        _cmd("sudo snap install kubectl --classic")
-    elif os_type == OSType.WINDOWS:
-        pass
-    else:
-        raise Exception
-
-
-def install_pip():  # Linux only
-    print("Installing pip...")
-    _cmd("sudo apt-get install python-pip")
-
-
-def install_snap():  # Linux only
-    print("Installing snap...")
-    _cmd("sudo apt install snapd")
-
-
-def install_nodejs():  # Linux only
-    print("Installing Nodejs...")
-    _cmd("sudo apt-get install -y nodejs")
-
-
-def run_pipenv_install():  # OS independent
-    print('Running "pipenv install"...')
-    _cmd("pipenv install --dev")
-
-
-def set_up_frontend_dependencies():  # Mac & Linux only
-    print("Setting up frontend dependencies...")
-    _cmd("cd ./game_frontend | sudo yarn")
-
-
-def check_homebrew():  # Mac only
-    _cmd("brew -v")
-    print("Homebrew Found...")
-
-
-def check_for_cmdtest():  # Linux/Ubuntu only
-    """
-    This function is for use within the Linux setup section of the script. It checks if
-    the cmdtest package is installed, if it is we ask the user if we can remove it, if yes
-    we remove the package, if not the process continues without removing it.
-    """
-    p = subprocess.Popen(
-        "dpkg-query -W -f='${status}' cmdtest", shell=True, stdout=PIPE
-    )
-    (stdout, _) = p.communicate()
-    if "unknown" not in stdout:
-        print(
-            "Looks like cmdtest is installed on your machine, this can cause issues when installing Yarn."
-        )
-
-        answer = False
-        answered = False
-        while not answered:
-            choice = raw_input("Is it okay if I remove cmdtest? [y/n]").lower()
-            if choice in valid:
-                answer = valid[choice]
-                answered = True
-            else:
-                print("Please answer 'yes' or 'no' ('y' or 'n').")
-        if answer:
-            print("Removing cmdtest...")
-            _cmd("apt-get remove cmdtest")
-        else:
-            print("Continuing without removing cmdtest...")
-
-
-def update_apt_get():  # Linux only
-    print("Updating apt-get...")
-    _cmd("sudo apt-get update")
-
-
-def get_nodejs():  # Linux only
-    print("Getting Nodejs...")
-    _cmd("curl python-software-properties | sudo apt-get install")
-    _cmd("curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -")
-
-
-def add_aimmo_to_hosts_file():  # Mac & Linux only
-    with open("/etc/hosts", "r") as hostfile:
-        data = hostfile.read().replace("\n", "")
-    if "192.168.99.100 local.aimmo.codeforlife.education" not in data:
-        print("Adding Kurono to /etc/hosts...")
-        _cmd(
-            "sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'"
-        )
-    else:
-        print("Kurono already present in /etc/hosts...")
-
-
-def add_parcel_bundler():  # Mac & Linux only
-    print("Adding parcel-bundler globally...")
-    _cmd("yarn global add parcel-bundler")
-
-
-def configure_yarn_repo():  # Linux only
-    print("Configuring Yarn repository...")
-    _cmd("curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -")
-    _cmd(
-        'echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list'
-    )
-
-
-def mac_setup(os_type):
-    """
-    Runs the list of commands, sequentially, needed in order to set up Kurono for a Mac.
-    After this has been run the user needs to open Docker to finalise its install,
-    and get the unity package for Kurono from aimmo-unity.
+    Args:
+        os_type (OSType): host OS type
+        arch_type (ArchType): host architecture type
     """
     tasks = [
         ensure_homebrew_installed,
@@ -252,17 +148,30 @@ def mac_setup(os_type):
         install_docker,
         install_minikube,
         install_kubectl,
+        install_helm,
+        helm_add_agones_repo,
+        minikube_start_profile,
+        helm_install_aimmo,
     ]
 
+    _create_sudo_timestamp()
+
     for task in tasks:
-        task(os_type)
+        task(os_type, arch_type)
 
 
-def windows_setup(os_type):
+def windows_setup(os_type, arch_type):
     raise NotImplementedError
 
 
-def linux_setup(os_type):
+def linux_setup(os_type, arch_type):
+    """
+    Runs the commands needed in order to set up Kurono for LINUX
+
+    Args:
+        os_type (OSType): host OS type
+        arch_type (ArchType): host architecture type
+    """
     tasks = [
         update_apt_packages,
         get_nodejs,
@@ -279,84 +188,318 @@ def linux_setup(os_type):
         add_aimmo_to_hosts_file,
     ]
 
+    _create_sudo_timestamp()
+
     for task in tasks:
-        task(os_type)
+        task(os_type, arch_type)
 
 
-def get_os_type():
+def _create_sudo_timestamp():
     """
-    Return the os type if one can be determined
-
-    Returns:
-        OSType: OS type
+    Request sudo access to create timestamp file for duration of setup
     """
-    system = platform.system()
+    print("\033[1mrequesting_sudo_access\033[0m... ")
 
-    system_os_type_map = {
-        "Darwin": OSType.MAC,
-        "Linux": OSType.LINUX,
-        "Windows": OSType.WINDOWS,
-    }
-
-    try:
-        return system_os_type_map[system]
-    except KeyError:
-        raise KeyError(str(system))
+    # Request sudo password before task
+    subprocess.Popen(
+        "sudo true", stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True
+    ).communicate()
+    print("\033[1mrequesting_sudo_access\033[0m... [ \033[92mOK\033[0m ]")
 
 
-def setup_factory(os_type):
+def _cmd(command, comment=None):
     """
-    Return the setup function which matches supplied host type
+    Run command inside a terminal
 
     Args:
-        os_type (OSType): the type of host to setup
+        command (str): command to be run
 
     Returns:
-        Callable: setup function
+        Tuple[int, str]: return code, stdout output
     """
+    if not comment:
+        # Set comment to calling function name
+        comment = inspect.currentframe().f_back.f_code.co_name
+
+    if comment:
+        print(" " * 110, end="\r")
+        print("\033[1m%s\033[0m...\n" % comment, end="\r")
+
+    p = subprocess.Popen(command, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
+
+    for line in iter(p.stdout.readline, b""):
+        sys.stdout.write("%s\r" % line.decode()[:-1].rstrip())
+        sys.stdout.flush()
+
+    # Delete line
+    sys.stdout.write("\x1b[2K")
+    sys.stdout.write("\x1b[1A")
+
+    (stdout, _) = p.communicate()
+
+    if p.returncode != 0:
+        if comment:
+            sys.stdout.write(
+                "\033[1m%s\033[0m... [ \033[93mFAILED\033[0m ]\n" % comment
+            )
+        raise CalledProcessError(p.returncode, command)
+
+    if comment:
+        sys.stdout.write("\033[1m%s\033[0m... [ \033[92mOK\033[0m ]\n" % comment)
+
+    return (p.returncode, stdout.decode())
+
+
+def ensure_homebrew_installed(os_type, arch_type):
     if os_type == OSType.MAC:
-        return mac_setup
+        _cmd("brew -v")
+
+
+def install_yarn(os_type, arch_type):
+    if os_type in [OSType.MAC, OSType.LINUX]:
+        try:
+            if _cmd("yarn --version ", "check_yarn")[0] == 0:
+                return
+        except CalledProcessError:
+            pass
+
+    if os_type == OSType.MAC:
+        _cmd("brew install yarn")
     elif os_type == OSType.LINUX:
-        return linux_setup
+        _cmd("sudo apt-get install yarn")
+
+
+def yarn_add_parcel_bundler(os_type, arch_type):
+    if os_type == OSType.MAC:
+        _cmd("yarn global add parcel-bundler")
+
+
+def set_up_frontend_dependencies(os_type, arch_type):
+    if os_type in [OSType.MAC, OSType.LINUX]:
+        _cmd("cd ./game_frontend && sudo yarn")
+
+
+def install_pipenv(os_type, arch_type):
+    if os_type in [OSType.MAC, OSType.LINUX]:
+        try:
+            if _cmd("pipenv --version", "check_pipenv")[0] == 0:
+                return
+        except CalledProcessError:
+            pass
+
+    if os_type == OSType.MAC:
+        _cmd("brew install pipenv")
+    elif os_type == OSType.LINUX:
+        _cmd("pip install pipenv")
     elif os_type == OSType.WINDOWS:
-        return windows_setup
+        pass
+    else:
+        raise Exception
 
-    raise RuntimeError("could not find setup function for OS type")
+
+def run_pipenv_install(os_type, arch_type):
+    if os_type in [OSType.MAC, OSType.LINUX]:
+        _cmd("pipenv install --dev")
 
 
-print(
-        "+----------------------------------------------------------------------------------------------------------+\n"
-        "| Welcome to Kurono!                                                                                       |\n"
-        "| This script should make your life a little easier,                                                       |\n"
-        "| just be kind if it doesn't work.                                                                         |\n"
-        "| You may be asked to enter your password during this setup.                                               |\n"
-        "+----------------------------------------------------------------------------------------------------------+\n"
-)
+def install_docker(os_type, arch_type):
+    if os_type in [OSType.MAC, OSType.LINUX]:
+        try:
+            if _cmd("docker -v", "check_docker")[0] == 0:
+                return
+        except CalledProcessError:
+            pass
 
-try:
-    os_type = get_os_type()
-    setup = setup_factory(os_type)
-    print("%s found!" % os_type.name)
-    try:
-        setup(os_type)
-    except CalledProcessError as e:
-        print("Something has gone wrong.")
-        print("Command '%s' returned exit code '%s'" % (e.command, e.returncode))
-        traceback.print_exc()
-    except OSError as e:
-        print("Tried to execute a command that didn't exist.")
-        traceback.print_exc()
-    except ValueError as e:
-        print("Tried to execute a command with invalid arguments.")
-        traceback.print_exc()
-    except:
-        print("An unexpected error has occured during setup:\n")
-        raise
-except KeyError as e:
-    print(
-        "System %s is not supported. Maybe you're using\n"
-        "something other than Windows, Mac, or Linux?" % e
+    if os_type == OSType.MAC:
+        _cmd("brew install --cask docker")
+    elif os_type == OSType.LINUX:
+        _cmd("sudo apt-get install docker-ce")
+
+
+def install_minikube(os_type, arch_type, version=MINIKUBE_VERSION):
+    comment = "install_minikube"
+
+    if os_type in [OSType.MAC, OSType.LINUX]:
+        try:
+            res = _cmd("minikube version", "check_minikube")
+            if version in res[1]:
+                return
+        except CalledProcessError:
+            pass
+
+    if os_type == OSType.MAC:
+        _cmd(
+            "curl -Lo minikube https://storage.googleapis.com/minikube/releases/v%s/minikube-darwin-%s"
+            % (version, arch_type.name.lower()),
+            comment + ": download",
+        )
+    elif os_type == OSType.LINUX:
+        _cmd(
+            "curl -Lo minikube https://storage.googleapis.com/minikube/releases/v%s/minikube-linux-%s"
+            % (version, arch_type.name.lower()),
+            comment + ": download",
+        )
+
+    if os_type in [OSType.MAC, OSType.LINUX]:
+        _cmd("chmod +x minikube", comment + ": set permissions")
+        _cmd("sudo mv minikube /usr/local/bin/", comment + ": copy binary")
+
+
+def install_kubectl(os_type, arch_type, version=KUBECTL_VERSION):
+    comment = "install_kubectl"
+
+    if os_type in [OSType.MAC, OSType.LINUX]:
+        try:
+            res = _cmd("kubectl version --client --short", "check_kubectl")
+            if version in res[1]:
+                return
+        except CalledProcessError:
+            pass
+
+    if os_type == OSType.MAC:
+        _cmd(
+            "curl -Lo kubectl https://dl.k8s.io/release/v%s/bin/darwin/%s/kubectl"
+            % (
+                version,
+                (arch_type.name).lower(),
+            ),
+            comment + ": download",
+        )
+        _cmd("chmod +x kubectl", comment + ": set permissions")
+        _cmd("sudo mv kubectl /usr/local/bin/", comment + ": copy binary")
+    elif os_type == OSType.LINUX:
+        _cmd("sudo snap install kubectl --classic", comment)
+    elif os_type == OSType.WINDOWS:
+        pass
+    else:
+        raise Exception
+
+
+def install_helm(os_type, arch_type):
+    if os_type in [OSType.MAC, OSType.LINUX]:
+        try:
+            res = _cmd("helm version", "check_helm")
+            if res[0] == 0:
+                return
+        except CalledProcessError:
+            pass
+
+        _cmd(
+            "curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash"
+        )
+
+
+def helm_add_agones_repo(os_type, arch_type):
+    if os_type in [OSType.MAC, OSType.LINUX]:
+        _cmd(
+            "helm repo add agones https://agones.dev/chart/stable && "
+            "helm repo update"
+        )
+
+
+def minikube_start_profile(os_type, arch_type):
+    if os_type == OSType.MAC:
+        _cmd("minikube start -p agones --driver=hyperkit")
+
+    if os_type == OSType.LINUX:
+        _cmd("minikube start -p agones --driver=docker")
+
+
+def helm_install_aimmo(os_type, arch_type):
+    if os_type in [OSType.MAC, OSType.LINUX]:
+        try:
+            if (
+                _cmd(
+                    "helm status -n agones-system aimmo > /dev/null", "check_helm_aimmo"
+                )[0]
+                == 0
+            ):
+                return
+        except CalledProcessError:
+            pass
+
+        _cmd(
+            "minikube profile agones && "
+            "helm install aimmo --namespace agones-system --create-namespace agones/agones"
+        )
+
+
+def install_pip(os_type, arch_type):
+    if os_type == OSType.LINUX:
+        _cmd("sudo apt-get install python-pip")
+
+
+def install_snap(os_type, arch_type):
+    if os_type == OSType.LINUX:
+        _cmd("sudo apt install snapd")
+
+
+def install_nodejs(os_type, arch_type):
+    if os_type == OSType.LINUX:
+        _cmd("sudo apt-get install -y nodejs")
+
+
+def check_for_cmdtest():
+    """
+    This function is for use within the Linux setup section of the script. It checks if
+    the cmdtest package is installed, if it is we ask the user if we can remove it, if yes
+    we remove the package, if not the process continues without removing it.
+    """
+    p = subprocess.Popen(
+        "dpkg-query -W -f='${status}' cmdtest", shell=True, stdout=PIPE
     )
-except:
-    print("An unexpected error has occured:\n")
-    raise
+    (stdout, _) = p.communicate()
+    if "unknown" not in stdout:
+        print(
+            "Looks like cmdtest is installed on your machine, this can cause issues when installing Yarn."
+        )
+
+        while True:
+            choice = input("Is it okay if I remove cmdtest? [y/n]").lower()
+            if choice in ["y", "yes"]:
+                _cmd("apt-get remove cmdtest", "Remove cmdtest")
+                break
+            if choice in ["n", "no"]:
+                print("Continuing without removing cmdtest...")
+                break
+            ("Please answer 'yes' or 'no' ('y' or 'n').")
+
+
+def update_apt_packages(os_type, arch_type):
+    if os_type == OSType.LINUX:
+        _cmd("sudo apt-get update")
+
+
+def get_nodejs(os_type, arch_type):
+    if os_type == OSType.LINUX:
+        _cmd("curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -")
+
+
+def add_aimmo_to_hosts_file(os_type, arch_type):
+    comment = "add_kurono_to_local_hosts"
+    if os_type in [OSType.MAC, OSType.LINUX]:
+        with open("/etc/hosts", "r") as hostfile:
+            data = hostfile.read().replace("\n", "")
+        if "192.168.99.100 local.aimmo.codeforlife.education" not in data:
+            _cmd(
+                "sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'",
+                comment,
+            )
+        else:
+            _cmd("true")
+
+
+def configure_yarn_repo(os_type, arch_type):
+    comment = "configure_yarn"
+    _cmd(
+        "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -",
+        comment + ": add key",
+    )
+    _cmd(
+        'echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list',
+        comment + ": add repo",
+    )
+
+
+if __name__ == "__main__":
+    main()
