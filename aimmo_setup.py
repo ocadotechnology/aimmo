@@ -174,7 +174,6 @@ def linux_setup(os_type, arch_type):
     """
     tasks = [
         update_apt_packages,
-        get_nodejs,
         install_nodejs,
         check_for_cmdtest,
         configure_yarn_repo,
@@ -182,9 +181,15 @@ def linux_setup(os_type, arch_type):
         yarn_add_parcel_bundler,
         install_pip,
         install_pipenv,
+        run_pipenv_install,
         set_up_frontend_dependencies,
-        install_kubectl,
         install_docker,
+        install_minikube,
+        install_kubectl,
+        install_helm,
+        helm_add_agones_repo,
+        minikube_start_profile,
+        helm_install_aimmo,
         add_aimmo_to_hosts_file,
     ]
 
@@ -378,7 +383,7 @@ def install_kubectl(os_type, arch_type, version=KUBECTL_VERSION):
 def install_helm(os_type, arch_type):
     if os_type in [OSType.MAC, OSType.LINUX]:
         try:
-            res = _cmd("helm version", "check_helm")
+            res = _cmd("helm version > /dev/null", "check_helm")
             if res[0] == 0:
                 return
         except CalledProcessError:
@@ -402,7 +407,7 @@ def minikube_start_profile(os_type, arch_type):
         _cmd("minikube start -p agones --driver=hyperkit")
 
     if os_type == OSType.LINUX:
-        _cmd("minikube start -p agones --driver=docker")
+        _cmd("minikube start -p agones")
 
 
 def helm_install_aimmo(os_type, arch_type):
@@ -435,44 +440,50 @@ def install_snap(os_type, arch_type):
 
 
 def install_nodejs(os_type, arch_type):
+    comment = "install_nodejs"
     if os_type == OSType.LINUX:
-        _cmd("sudo apt-get install -y nodejs")
+        try:
+            if _cmd("nodejs --version", "check_nodejs")[0] == 0:
+                return
+        except CalledProcessError:
+            pass
+
+        _cmd(
+            "curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - 1> /dev/null",
+            comment + ": download",
+        )
+        _cmd("sudo apt-get install -y nodejs", comment + ": install")
 
 
-def check_for_cmdtest():
+def check_for_cmdtest(os_type, arch_type):
     """
     This function is for use within the Linux setup section of the script. It checks if
     the cmdtest package is installed, if it is we ask the user if we can remove it, if yes
     we remove the package, if not the process continues without removing it.
     """
-    p = subprocess.Popen(
-        "dpkg-query -W -f='${status}' cmdtest", shell=True, stdout=PIPE
-    )
-    (stdout, _) = p.communicate()
-    if "unknown" not in stdout:
-        print(
-            "Looks like cmdtest is installed on your machine, this can cause issues when installing Yarn."
-        )
+    if os_type == OSType.LINUX:
+        _, output = _cmd("dpkg-query -W -f='${status}' cmdtest")
 
-        while True:
-            choice = input("Is it okay if I remove cmdtest? [y/n]").lower()
-            if choice in ["y", "yes"]:
-                _cmd("apt-get remove cmdtest", "Remove cmdtest")
-                break
-            if choice in ["n", "no"]:
-                print("Continuing without removing cmdtest...")
-                break
-            ("Please answer 'yes' or 'no' ('y' or 'n').")
+        if "unknown" not in output:
+            print(
+                "Looks like cmdtest is installed on your machine, "
+                "this can cause issues when installing Yarn."
+            )
+
+            while True:
+                choice = input("Is it okay if I remove cmdtest? [y/n]").lower()
+                if choice in ["y", "yes"]:
+                    _cmd("sudo apt-get remove cmdtest", "remove_cmdtest")
+                    break
+                if choice in ["n", "no"]:
+                    print("Continuing without removing cmdtest...")
+                    break
+                print("Please answer 'yes' or 'no' ('y' or 'n').")
 
 
 def update_apt_packages(os_type, arch_type):
     if os_type == OSType.LINUX:
         _cmd("sudo apt-get update")
-
-
-def get_nodejs(os_type, arch_type):
-    if os_type == OSType.LINUX:
-        _cmd("curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -")
 
 
 def add_aimmo_to_hosts_file(os_type, arch_type):
