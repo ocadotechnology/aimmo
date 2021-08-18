@@ -47,9 +47,7 @@ class TestViews(TestCase):
         cls.user.save()
         user_profile: UserProfile = UserProfile(user=cls.user)
         user_profile.save()
-        teacher: Teacher = Teacher.objects.create(
-            user=user_profile, new_user=cls.user, title="Mx"
-        )
+        teacher: Teacher = Teacher.objects.create(user=user_profile, new_user=cls.user)
         teacher.save()
         cls.klass, _, _ = create_class_directly(cls.user.email)
         cls.klass.save()
@@ -490,7 +488,7 @@ class TestViews(TestCase):
         new_user_profile: UserProfile = UserProfile(user=new_user)
         new_user_profile.save()
         new_teacher: Teacher = Teacher.objects.create(
-            user=new_user_profile, new_user=new_user, title="Mx"
+            user=new_user_profile, new_user=new_user
         )
         new_teacher.save()
         new_klass, _, _ = create_class_directly(new_user.email)
