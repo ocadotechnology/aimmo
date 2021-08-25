@@ -219,6 +219,7 @@ def _cmd(command, comment=None):
 
     Args:
         command (str): command to be run
+        comment (str): optional comment
 
     Returns:
         Tuple[int, str]: return code, stdout output
