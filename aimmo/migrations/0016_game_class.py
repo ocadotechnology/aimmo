@@ -10,6 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("common", "0001_initial"),
+        ("portal", "0058_move_to_common_models"),
         ("aimmo", "0015_game_worksheet"),
     ]
 
