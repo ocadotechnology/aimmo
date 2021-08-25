@@ -114,6 +114,7 @@ def setup_factory(os_type, arch_type):
 
     Args:
         os_type (OSType): the type of host to setup
+        arch_type (ArchType): host architecture type
 
     Returns:
         Callable: setup function
