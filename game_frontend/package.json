@@ -60,7 +60,7 @@
     "browserslist": "4.16.6",
     "core-js": "3",
     "handlebars": "^4.7.7",
-    "immer": "^8.0.1",
+    "immer": "^9.0.6",
     "js-cookie": "^2.2.1",
     "lodash.isequal": "^4.5.0",
     "parcel-bundler": "^1.12.5",
