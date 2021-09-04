@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v1.0.0b564 (2021-09-04)
+### Feature
+* Major version bump for rebranding phase 1 (#1570) ([`7b78635`](https://github.com/ocadotechnology/aimmo/commit/7b78635016cac8391c850120e2bf1fb6555f329f))
+
+### Breaking
+* major version bump for rebranding phase 1 (#1570) ([`7b78635`](https://github.com/ocadotechnology/aimmo/commit/7b78635016cac8391c850120e2bf1fb6555f329f))
+
 ## v0.69.19b560 (2021-09-03)
 ### Feature
 * Remove teacher title (#1566) ([`1fae7be`](https://github.com/ocadotechnology/aimmo/commit/1fae7be5312ce8f1b918c4bd1feb0d51acfeca21))
