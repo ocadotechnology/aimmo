@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.69.19b560 (2021-09-03)
+### Feature
+* Remove teacher title (#1566) ([`1fae7be`](https://github.com/ocadotechnology/aimmo/commit/1fae7be5312ce8f1b918c4bd1feb0d51acfeca21))
+
 ## v0.69.19b557 (2021-09-03)
 
 
