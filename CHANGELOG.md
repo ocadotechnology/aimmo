@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v1.0.0 (2021-09-06)
+
+
 ## v1.0.0b564 (2021-09-04)
 ### Feature
 * Major version bump for rebranding phase 1 (#1570) ([`7b78635`](https://github.com/ocadotechnology/aimmo/commit/7b78635016cac8391c850120e2bf1fb6555f329f))
