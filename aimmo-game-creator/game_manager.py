@@ -18,8 +18,6 @@ from kube_components import TokenSecretCreator
 LOGGER = logging.getLogger(__name__)
 
 K8S_NAMESPACE = "default"
-NUM_BYTES_FOR_TOKEN_GENERATOR = 16
-TOKEN_MAX_LENGTH = 24
 
 
 class _GameManagerData(object):
@@ -73,12 +71,6 @@ class GameManager(object):
         self._data = _GameManagerData()
         self.games_url = games_url
         super(GameManager, self).__init__()
-
-    def _generate_game_token(self):
-        token = secrets.token_urlsafe(nbytes=NUM_BYTES_FOR_TOKEN_GENERATOR)
-        # Max length of the auth_token field in the models
-        token = token[:TOKEN_MAX_LENGTH] if len(token) > TOKEN_MAX_LENGTH else token
-        return token
 
     @abstractmethod
     def create_game(self, game_id, game_data):

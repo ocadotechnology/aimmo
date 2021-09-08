@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import unittest
 from json import dumps
 
-from game_manager import TOKEN_MAX_LENGTH, GameManager, KubernetesGameManager
+from game_manager import GameManager, KubernetesGameManager
 from httmock import HTTMock
 from unittest.mock import MagicMock, call
 
@@ -100,11 +100,6 @@ class TestGameManager(unittest.TestCase):
             self.assertEqual(
                 self.game_manager.added_games[str(i)]["name"], "Game {}".format(i)
             )
-
-    def test_token_generation(self):
-        token = self.game_manager._generate_game_token()
-        self.assertTrue(isinstance(token, str))
-        self.assertLessEqual(len(token), TOKEN_MAX_LENGTH)
 
     def test_adding_a_game_creates_game_allocation(self):
         game_manager = KubernetesGameManager("http://test/*")
