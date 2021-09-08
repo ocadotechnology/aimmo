@@ -1,5 +1,6 @@
 # This will probably replace the whole aimmo-game-creator at some point.
 # For now it just duplicates a part of aimmo-game-creator/game_manager.py in order to recreate a game server.
+from .game_service_manager import GameServiceManager
 import logging
 import time
 
@@ -9,17 +10,19 @@ from kubernetes.client.api.custom_objects_api import CustomObjectsApi
 from kubernetes.client.api_client import ApiClient
 from kubernetes.client.rest import ApiException
 
-LOGGER = logging.getLogger(__name__)
+from game_manager import K8S_NAMESPACE, AGONES_GROUP
 
-K8S_NAMESPACE = "default"
-AGONES_GROUP = "agones.dev"
+LOGGER = logging.getLogger(__name__)
 
 
 class GameManager:
-    def __init__(self) -> None:
+    def __init__(
+        self, game_service_manager: GameServiceManager = GameServiceManager()
+    ) -> None:
         self.api: CoreV1Api = CoreV1Api()
         self.api_client: ApiClient = ApiClient()
         self.custom_objects_api: CustomObjectsApi = CustomObjectsApi(self.api_client)
+        self.game_service_manager = game_service_manager
 
     @staticmethod
     def create_game_name(game_id: int) -> str:
@@ -30,16 +33,6 @@ class GameManager:
         :return: A string with the game appended with the id.
         """
         return f"game-{game_id}"
-
-    def patch_game_service(self, game_id, game_server_name):
-        patched_service = kubernetes.client.V1Service(
-            spec=kubernetes.client.V1ServiceSpec(
-                selector={"agones.dev/gameserver": game_server_name}
-            )
-        )
-        self.api.patch_namespaced_service(
-            self.create_game_name(game_id), K8S_NAMESPACE, patched_service
-        )
 
     def create_game_server_allocation(
         self, game_id: int, game_data: dict, retry_count: int = 0
@@ -137,7 +130,12 @@ class GameManager:
         game_server_name = self.create_game_server_allocation(
             game_id=game_id, game_data=game_data
         )
-        self.patch_game_service(game_id=game_id, game_server_name=game_server_name)
+        game_name = self.create_game_name(game_id=game_id)
+        self.game_service_manager.patch_game_service(
+            game_id=game_id,
+            game_name=game_name,
+            game_server_name=game_server_name,
+        )
 
     def create_game_secret(self, game_id, token):
         name = self.create_game_name(game_id) + "-token"
