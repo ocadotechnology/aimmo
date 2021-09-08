@@ -2,8 +2,8 @@ from unittest.mock import MagicMock
 
 import kubernetes
 import pytest
-from game_manager import K8S_NAMESPACE
-from game_manager.game_service_manager import GameServiceManager
+from aimmo.game_manager import K8S_NAMESPACE
+from aimmo.game_manager.game_service_manager import GameServiceManager
 from kubernetes.client import V1ObjectMeta, V1Service, V1ServiceList, V1ServiceSpec
 
 from .test_game_manager import game_id

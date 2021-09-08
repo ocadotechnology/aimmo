@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock
 
 import pytest
-from aimmo.game_manager import K8S_NAMESPACE, GameManager
+from aimmo.game_manager import GameManager
 
 
 @pytest.fixture

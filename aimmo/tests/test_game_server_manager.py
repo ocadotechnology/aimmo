@@ -3,7 +3,7 @@ from unittest.mock import DEFAULT, MagicMock
 
 import pytest
 from aimmo.game_manager import K8S_NAMESPACE
-from game_manager.game_server_manager import GameServerManager
+from aimmo.game_manager.game_server_manager import GameServerManager
 
 from .test_game_manager import game_data, game_id
 
