@@ -3,7 +3,7 @@ from kubernetes.client.api.custom_objects_api import CustomObjectsApi
 from kubernetes.client.api_client import ApiClient
 from kubernetes.client.rest import ApiException
 
-from game_manager import K8S_NAMESPACE
+from .constants import K8S_NAMESPACE
 import logging
 
 LOGGER = logging.getLogger(__name__)

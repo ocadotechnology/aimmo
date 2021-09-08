@@ -4,9 +4,8 @@ import time
 from kubernetes.client import CoreV1Api
 from kubernetes.client.api.custom_objects_api import CustomObjectsApi
 from kubernetes.client.api_client import ApiClient
-from kubernetes.client.rest import ApiException
 
-from game_manager import AGONES_GROUP, K8S_NAMESPACE
+from .constants import AGONES_GROUP, K8S_NAMESPACE
 
 LOGGER = logging.getLogger(__name__)
 

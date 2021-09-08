@@ -5,7 +5,7 @@ from kubernetes.client import CoreV1Api
 from kubernetes.client.api.custom_objects_api import CustomObjectsApi
 from kubernetes.client.api_client import ApiClient
 
-from game_manager import K8S_NAMESPACE
+from .constants import K8S_NAMESPACE
 
 LOGGER = logging.getLogger(__name__)
 

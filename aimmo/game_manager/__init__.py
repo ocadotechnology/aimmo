@@ -1,4 +1,2 @@
-K8S_NAMESPACE = "default"
-AGONES_GROUP = "agones.dev"
-
 from .game_manager import GameManager
+from .constants import K8S_NAMESPACE, AGONES_GROUP
