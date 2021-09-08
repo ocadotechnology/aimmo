@@ -19,7 +19,7 @@ def game_secret_manager() -> GameSecretManager:
     return manager
 
 
-def test_create_game_secret(game_secret_manager, game_id, caplog):
+def test_create_game_secret(game_secret_manager, game_id, caplog: pytest.LogCaptureFixture):
     token = "secret-token"
     secret_name = "game-5-token"
     game_name = "game-5"
@@ -49,7 +49,7 @@ def test_create_game_secret(game_secret_manager, game_id, caplog):
     )
     assert caplog.record_tuples == [
         (
-            "game_manager.game_secret_manager",
+            "aimmo.game_manager.game_secret_manager",
             logging.ERROR,
             "Exception when calling create_namespaced_secret",
         )
@@ -72,7 +72,7 @@ def test_create_game_secret(game_secret_manager, game_id, caplog):
     )
     assert caplog.record_tuples == [
         (
-            "game_manager.game_secret_manager",
+            "aimmo.game_manager.game_secret_manager",
             logging.ERROR,
             "Exception when calling patch_namespaced_secret",
         )
