@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             game.auth_token = generate_game_token()
             game.save()
             game_manager = GameManager()
-            game_manager.create_game_secret(game_id=game.id, token=game.auth_token)
+            game_manager.game_secret_manager.create_game_secret(game_id=game.id, game_name=game.name, token=game.auth_token)
 
     def clear_auth_token_for_games(apps, schema_editor):
         Game = apps.get_model("aimmo", "Game")
@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
             game.auth_token = ""
             game.save()
             game_manager = GameManager()
-            game_manager.delete_game_secret(game_id=game.id)
+            game_manager.game_secret_manager.delete_game_secret(game_id=game.id)
 
     operations = [
         migrations.AlterField(
