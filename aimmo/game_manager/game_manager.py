@@ -6,9 +6,8 @@ from kubernetes.client import CoreV1Api
 from kubernetes.client.api.custom_objects_api import CustomObjectsApi
 from kubernetes.client.api_client import ApiClient
 
-from game_manager.game_secret_manager import GameSecretManager
-from game_manager.game_server_manager import GameServerManager
-
+from .game_secret_manager import GameSecretManager
+from .game_server_manager import GameServerManager
 from .game_service_manager import GameServiceManager
 
 LOGGER = logging.getLogger(__name__)
