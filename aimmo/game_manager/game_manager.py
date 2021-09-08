@@ -1,8 +1,8 @@
 # This will probably replace the whole aimmo-game-creator at some point.
 # For now it just duplicates a part of aimmo-game-creator/game_manager.py in order to recreate a game server.
+from game_manager.game_server_manager import GameServerManager
 from .game_service_manager import GameServiceManager
 import logging
-import time
 
 import kubernetes
 from kubernetes.client import CoreV1Api
@@ -17,12 +17,15 @@ LOGGER = logging.getLogger(__name__)
 
 class GameManager:
     def __init__(
-        self, game_service_manager: GameServiceManager = GameServiceManager()
+        self,
+        game_service_manager: GameServiceManager = GameServiceManager(),
+        game_server_manager: GameServerManager = GameServerManager(),
     ) -> None:
         self.api: CoreV1Api = CoreV1Api()
         self.api_client: ApiClient = ApiClient()
         self.custom_objects_api: CustomObjectsApi = CustomObjectsApi(self.api_client)
         self.game_service_manager = game_service_manager
+        self.game_server_manager = game_server_manager
 
     @staticmethod
     def create_game_name(game_id: int) -> str:
@@ -34,41 +37,6 @@ class GameManager:
         """
         return f"game-{game_id}"
 
-    def create_game_server_allocation(
-        self, game_id: int, game_data: dict, retry_count: int = 0
-    ) -> str:
-        result = self.custom_objects_api.create_namespaced_custom_object(
-            group="allocation.agones.dev",
-            version="v1",
-            namespace=K8S_NAMESPACE,
-            plural="gameserverallocations",
-            body={
-                "apiVersion": "allocation.agones.dev/v1",
-                "kind": "GameServerAllocation",
-                "metadata": {"generateName": "game-allocation-"},
-                "spec": {
-                    "required": {"matchLabels": {"agones.dev/fleet": "aimmo-game"}},
-                    "scheduling": "Packed",
-                    "metadata": {
-                        "labels": {
-                            "game-id": str(game_id),
-                        },
-                        "annotations": game_data,
-                    },
-                },
-            },
-        )
-        if result["status"]["state"] == "UnAllocated" and retry_count < 60:
-            LOGGER.warning(
-                f"Failed to create game, retrying... retry_count={retry_count}"
-            )
-            time.sleep(5)
-            return self.create_game_server_allocation(
-                game_id, game_data, retry_count=retry_count + 1
-            )
-        else:
-            return result["status"]["gameServerName"]
-
     def delete_game_server(self, game_id: int) -> dict:
         """
         Delete the game server with the specified game_id and return its game data.
@@ -76,41 +44,7 @@ class GameManager:
         :param game_id: Integer indicating the ID of the game to delete.
         :returns: A dictionary representing the game data.
         """
-        game_data = {}
-        result = self.custom_objects_api.list_namespaced_custom_object(
-            group=AGONES_GROUP,
-            version="v1",
-            namespace=K8S_NAMESPACE,
-            plural="gameservers",
-            label_selector=f"game-id={game_id}",
-        )
-        game_servers_to_delete = result["items"]
-
-        if len(game_servers_to_delete) == 0:
-            LOGGER.warning(
-                f"delete_game_server - No game server found with ID {game_id}"
-            )
-        elif len(game_servers_to_delete) > 1:
-            LOGGER.warning(
-                f"delete_game_server - Multiple game servers found with ID {game_id}"
-            )
-
-        for game_server in game_servers_to_delete:
-            name = game_server["metadata"]["name"]
-            game_data.update(game_server["metadata"]["annotations"])
-            self.custom_objects_api.delete_namespaced_custom_object(
-                group=AGONES_GROUP,
-                version="v1",
-                namespace=K8S_NAMESPACE,
-                plural="gameservers",
-                name=name,
-            )
-
-        # Remove agones specific annotations from game_data
-        game_data = {
-            k: v for k, v in game_data.items() if not k.startswith(f"{AGONES_GROUP}/")
-        }
-        return game_data
+        return self.game_server_manager.delete_game_server(game_id=game_id)
 
     def recreate_game_server(
         self, game_id: int, game_data_updates: dict = None
@@ -127,8 +61,9 @@ class GameManager:
 
         game_data = self.delete_game_server(game_id=game_id)
         game_data.update(game_data_updates)
-        game_server_name = self.create_game_server_allocation(
-            game_id=game_id, game_data=game_data
+        game_server_name = self.game_server_manager.create_game_server_allocation(
+            game_id=game_id,
+            game_data=game_data,
         )
         game_name = self.create_game_name(game_id=game_id)
         self.game_service_manager.patch_game_service(

@@ -47,7 +47,6 @@ def test_create_game_service(game_service_manager: GameServiceManager, game_id):
 
 
 def test_delete_game_service(game_service_manager: GameServiceManager, game_id):
-    FakeServiceListResult = namedtuple("FakeServiceListResult", ["items"])
     test_resource_name = "test-game-service"
     game_service_manager.api.list_namespaced_service.return_value = V1ServiceList(
         items=[
