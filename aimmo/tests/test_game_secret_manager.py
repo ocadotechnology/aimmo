@@ -2,8 +2,8 @@ import logging
 from unittest.mock import MagicMock, PropertyMock
 
 import pytest
-from game_manager import K8S_NAMESPACE
-from game_manager.game_secret_manager import GameSecretManager
+from aimmo.game_manager import K8S_NAMESPACE
+from aimmo.game_manager.game_secret_manager import GameSecretManager
 from kubernetes.client import V1ObjectMeta, V1Secret
 from kubernetes.client.exceptions import ApiException
 
