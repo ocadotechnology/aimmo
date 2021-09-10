@@ -25,22 +25,6 @@ def get_ip():
     return internal_ip
 
 
-def create_creator_yaml():
-    """
-    Loads a replication controller yaml file into a python object.
-    """
-    orig_path = os.path.join(
-        BASE_DIR, "aimmo-game-creator", "aimmo-game-creator-deployment.yaml"
-    )
-    with open(orig_path) as orig_file:
-        content = yaml.safe_load(
-            orig_file.read().replace(
-                "REPLACE_ME", f"http://{get_ip()}:8000/kurono/api/games/"
-            )
-        )
-    return content
-
-
 def delete_components():
     apps_api_instance = AppsV1Api()
     api = CoreV1Api()
@@ -66,11 +50,6 @@ def restart_pods():
     print("Restarting pods")
 
     run_command(["kubectl", "create", "-f", "agones/fleet.yml"])
-
-    # apps_api_instance = AppsV1Api()
-    # apps_api_instance.create_namespaced_deployment(
-    #     body=game_creator_yaml, namespace="default"
-    # )
 
 
 def create_roles():
@@ -109,7 +88,6 @@ def start(build_target=None):
 
     create_roles()
     build_docker_images(MINIKUBE_EXECUTABLE, build_target=build_target)
-    # game_creator = create_creator_yaml()
     restart_pods()
     atexit.register(delete_components)
     print("Cluster ready")
