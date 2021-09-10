@@ -1,6 +1,7 @@
 import logging
 import time
 
+from aimmo.app_settings import DJANGO_BASE_URL_FOR_GAME_SERVER
 from kubernetes.client import CoreV1Api
 from kubernetes.client.api.custom_objects_api import CustomObjectsApi
 from kubernetes.client.api_client import ApiClient
@@ -19,6 +20,9 @@ class GameServerManager:
     def create_game_server_allocation(
         self, game_id: int, game_data: dict, retry_count: int = 0
     ) -> str:
+        game_data[
+            "GAME_API_URL"
+        ] = f"{DJANGO_BASE_URL_FOR_GAME_SERVER}/kurono/api/games/{game_id}/"
         result = self.custom_objects_api.create_namespaced_custom_object(
             group="allocation.agones.dev",
             version="v1",

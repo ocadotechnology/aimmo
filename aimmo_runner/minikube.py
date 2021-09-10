@@ -5,7 +5,7 @@ import platform
 
 import kubernetes
 import yaml
-from kubernetes.client import AppsV1Api
+from kubernetes.client import AppsV1Api, CoreV1Api
 from kubernetes.config import load_kube_config
 
 from .docker_scripts import build_docker_images
@@ -43,6 +43,7 @@ def create_creator_yaml():
 
 def delete_components():
     apps_api_instance = AppsV1Api()
+    api = CoreV1Api()
     for rs in apps_api_instance.list_namespaced_deployment("default").items:
         apps_api_instance.delete_namespaced_deployment(
             body=kubernetes.client.V1DeleteOptions(),
@@ -50,10 +51,13 @@ def delete_components():
             namespace="default",
             grace_period_seconds=0,
         )
+    for service in api.list_namespaced_service(namespace="default").items:
+        api.delete_namespaced_service(service.metadata.name, "default")
+
     delete_fleet_on_exit()
 
 
-def restart_pods(game_creator_yaml):
+def restart_pods():
     """
     Disables all the components running in the cluster and starts them again
     with fresh updated state.
@@ -63,10 +67,10 @@ def restart_pods(game_creator_yaml):
 
     run_command(["kubectl", "create", "-f", "agones/fleet.yml"])
 
-    apps_api_instance = AppsV1Api()
-    apps_api_instance.create_namespaced_deployment(
-        body=game_creator_yaml, namespace="default"
-    )
+    # apps_api_instance = AppsV1Api()
+    # apps_api_instance.create_namespaced_deployment(
+    #     body=game_creator_yaml, namespace="default"
+    # )
 
 
 def create_roles():
@@ -105,7 +109,7 @@ def start(build_target=None):
 
     create_roles()
     build_docker_images(MINIKUBE_EXECUTABLE, build_target=build_target)
-    game_creator = create_creator_yaml()
-    restart_pods(game_creator)
+    # game_creator = create_creator_yaml()
+    restart_pods()
     atexit.register(delete_components)
     print("Cluster ready")

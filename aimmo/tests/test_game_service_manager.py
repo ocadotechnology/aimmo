@@ -23,7 +23,7 @@ def test_create_game_service(game_service_manager: GameServiceManager, game_id):
     game_server_name = "test-game-server"
     expected_service_spec = V1Service(
         metadata=V1ObjectMeta(
-            name=game_name, labels={"app": "aimmo-game", "game_id": game_id}
+            name=game_name, labels={"app": "aimmo-game", "game_id": str(game_id)}
         ),
         spec=V1ServiceSpec(
             selector={"agones.dev/gameserver": game_server_name},

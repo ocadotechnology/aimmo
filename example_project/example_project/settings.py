@@ -41,6 +41,7 @@ import mimetypes
 from django.http import Http404
 from kubernetes.client.api.custom_objects_api import CustomObjectsApi
 from kubernetes.client.api_client import ApiClient
+from aimmo_runner.minikube import get_ip
 
 ALLOWED_HOSTS = ["*"]
 
@@ -106,6 +107,10 @@ MIDDLEWARE = [
 COOKIE_MANAGEMENT_ENABLED = False
 
 
+def get_base_url_for_game():
+    return f"http://{get_ip()}:8000"
+
+
 def get_game_url_base_and_path(game_id: int) -> str:
     api_client = ApiClient()
     api_instance = CustomObjectsApi(api_client)
@@ -140,6 +145,7 @@ def get_game_url_base_and_path(game_id: int) -> str:
 
 AIMMO_GAME_SERVER_URL_FUNCTION = get_game_url_base_and_path
 AIMMO_GAME_SERVER_SSL_FLAG = False
+AIMMO_DJANGO_BASE_URL = get_base_url_for_game()
 
 try:
     from example_project.local_settings import *  # pylint: disable=E0611

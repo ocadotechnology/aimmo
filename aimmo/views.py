@@ -1,6 +1,7 @@
 import logging
 from typing import Tuple
 
+from common.permissions import CanDeleteGame
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
@@ -10,27 +11,26 @@ from django.views.decorators.http import require_http_methods
 from rest_framework import mixins, status, viewsets
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.decorators import (
+    action,
     api_view,
     authentication_classes,
     permission_classes,
-    action,
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from common.permissions import CanDeleteGame
-
 from . import game_renderer
 from .avatar_creator import create_avatar_for_user
 from .exceptions import UserCannotPlayGameException
+from .game_manager.game_manager import GameManager
 from .models import Avatar, Game
 from .permissions import (
     CanDeleteGameOrReadOnly,
     CsrfExemptSessionAuthentication,
     GameHasToken,
 )
-from .serializers import GameSerializer, GameIdsSerializer
+from .serializers import GameIdsSerializer, GameSerializer
 
 LOGGER = logging.getLogger(__name__)
 
@@ -94,6 +94,12 @@ class GameViewSet(
             response[game.pk] = serializer.data
         return Response(response)
 
+    def destroy(self, request, *args, **kwargs):
+        game_manager = GameManager()
+        game: Game = self.get_object()
+        game_manager.delete_game_server(game_id=game.id)
+        return super().destroy(request, *args, **kwargs)
+
     @action(
         methods=["get"],
         detail=False,
@@ -113,9 +119,17 @@ class GameViewSet(
     )
     def delete_games(self, request):
         game_ids = request.data.getlist("game_ids")
-        Game.objects.filter(
+        games_to_delete = Game.objects.filter(
             pk__in=game_ids, game_class__teacher__new_user=request.user
-        ).delete()
+        )
+        try:
+            game_manager = GameManager()
+            for game in games_to_delete:
+                game_manager.delete_game_server(game_id=game.id)
+        except:
+            pass
+
+        games_to_delete.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -177,8 +191,16 @@ def watch_game(request, id):
     if not game.can_user_play(request.user):
         raise Http404
 
-    game.status = Game.RUNNING
-    game.save()
+    if game.status != Game.RUNNING:
+        # Create a game server for this game
+        game_manager = GameManager()
+        game_manager.create_game_server(
+            game_id=game.id,
+            game_data=GameSerializer(game).data,
+        )
+        game.status = Game.RUNNING
+        game.save()
+
     return game_renderer.render_game(request, game)
 
 

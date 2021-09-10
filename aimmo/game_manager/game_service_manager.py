@@ -28,7 +28,7 @@ class GameServiceManager:
 
         service_metadata = kubernetes.client.V1ObjectMeta(
             name=game_name,
-            labels={"app": "aimmo-game", "game_id": game_id},
+            labels={"app": "aimmo-game", "game_id": f"{game_id}"},
         )
 
         service = kubernetes.client.V1Service(
@@ -54,6 +54,4 @@ class GameServiceManager:
                 selector={"agones.dev/gameserver": game_server_name}
             )
         )
-        self.api.patch_namespaced_service(
-            game_name, K8S_NAMESPACE, patched_service
-        )
+        self.api.patch_namespaced_service(game_name, K8S_NAMESPACE, patched_service)

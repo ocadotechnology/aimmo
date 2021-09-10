@@ -36,8 +36,10 @@
 # identified as the original program.
 
 import secrets
+
 from aimmo.avatar_creator import create_avatar_for_user
 from aimmo.game_manager import GameManager
+from aimmo.serializers import GameSerializer
 
 NUM_BYTES_FOR_TOKEN_GENERATOR = 32
 TOKEN_MAX_LENGTH = 48
@@ -71,4 +73,7 @@ def create_game(main_user, form):
     create_avatar_for_user(main_user, game.id)
     game_manager = GameManager()
     game_manager.create_game_secret(game_id=game.id, token=game.auth_token)
+    game_manager.create_game_server(
+        game_id=game.id, game_data=GameSerializer(game).data
+    )
     return game
