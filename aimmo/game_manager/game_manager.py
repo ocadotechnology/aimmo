@@ -1,5 +1,3 @@
-# This will probably replace the whole aimmo-game-creator at some point.
-# For now it just duplicates a part of aimmo-game-creator/game_manager.py in order to recreate a game server.
 import logging
 
 from kubernetes.client import CoreV1Api

@@ -42,17 +42,6 @@ jobs:
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-      - name: Build and push aimmo-game-creator image
-        id: game_creator
-        uses: docker/build-push-action@v2
-        with:
-          context: aimmo-game-creator
-          file: aimmo-game-creator/Dockerfile
-          tags: ocadotechnology/aimmo-game-creator:${{ steps.docker_tag.outputs.tag }}
-          target: runner
-          push: true
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
       - name: Image digest
         run: |
           echo ${{ steps.game.outputs.digest }}
