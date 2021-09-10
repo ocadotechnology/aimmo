@@ -1,5 +1,4 @@
 import json
-from tests.test_game_manager import game_id
 from rest_framework import serializers
 
 from aimmo.models import Game, Avatar, Worksheet
