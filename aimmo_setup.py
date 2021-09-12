@@ -456,11 +456,6 @@ def install_pip(os_type, arch_type):
         _cmd("sudo apt-get install python-pip")
 
 
-def install_snap(os_type, arch_type):
-    if os_type == OSType.LINUX:
-        _cmd("sudo apt install snapd")
-
-
 def install_nodejs(os_type, arch_type):
     comment = "install_nodejs"
     if os_type == OSType.LINUX:
