@@ -1,5 +1,6 @@
 from __future__ import print_function
 from enum import Enum
+import re
 import sys
 import platform
 import subprocess
@@ -14,8 +15,8 @@ except NameError:
     pass
 
 
-MINIKUBE_VERSION = "1.21.0"
-KUBECTL_VERSION = "1.21.2"
+MINIKUBE_VERSION = "latest"
+KUBECTL_VERSION = "latest"
 
 
 class OSType(Enum):
@@ -329,23 +330,31 @@ def install_docker(os_type, arch_type):
 def install_minikube(os_type, arch_type, version=MINIKUBE_VERSION):
     comment = "install_minikube"
 
+    if version == "latest":
+        rc, lines = _cmd(
+            "curl https://api.github.com/repos/kubernetes/minikube/releases/latest | grep tag_name"
+        )
+        match = re.search(r"(v[0-9\.]+)", lines[0])
+        if rc == 0 and match:
+            version = match.group(1)
+
     if os_type in [OSType.MAC, OSType.LINUX]:
         try:
-            res = _cmd("minikube version", "check_minikube")
-            if version in res[1]:
+            _, lines = _cmd("minikube version", "check_minikube")
+            if version in lines[0]:
                 return
         except CalledProcessError:
             pass
 
     if os_type == OSType.MAC:
         _cmd(
-            "curl -Lo minikube https://storage.googleapis.com/minikube/releases/v%s/minikube-darwin-%s"
+            "curl -Lo minikube https://storage.googleapis.com/minikube/releases/%s/minikube-darwin-%s"
             % (version, arch_type.name.lower()),
             comment + ": download",
         )
     elif os_type == OSType.LINUX:
         _cmd(
-            "curl -Lo minikube https://storage.googleapis.com/minikube/releases/v%s/minikube-linux-%s"
+            "curl -Lo minikube https://storage.googleapis.com/minikube/releases/%s/minikube-linux-%s"
             % (version, arch_type.name.lower()),
             comment + ": download",
         )
@@ -358,31 +367,42 @@ def install_minikube(os_type, arch_type, version=MINIKUBE_VERSION):
 def install_kubectl(os_type, arch_type, version=KUBECTL_VERSION):
     comment = "install_kubectl"
 
+    if version == "latest":
+        rc, lines = _cmd("curl -L -s https://dl.k8s.io/release/stable.txt")
+        if rc == 0:
+            version = lines[0]
+
     if os_type in [OSType.MAC, OSType.LINUX]:
         try:
-            res = _cmd("kubectl version --client --short", "check_kubectl")
-            if version in res[1]:
+            _, lines = _cmd("kubectl version --client --short", "check_kubectl")
+            if version in lines[0]:
                 return
         except CalledProcessError:
             pass
 
     if os_type == OSType.MAC:
         _cmd(
-            "curl -Lo kubectl https://dl.k8s.io/release/v%s/bin/darwin/%s/kubectl"
+            "curl -Lo kubectl https://dl.k8s.io/release/%s/bin/darwin/%s/kubectl"
             % (
                 version,
                 (arch_type.name).lower(),
             ),
             comment + ": download",
         )
+
+    if os_type == OSType.LINUX:
+        _cmd(
+            "curl -Lo kubectl https://dl.k8s.io/release/%s/bin/linux/%s/kubectl"
+            % (
+                version,
+                (arch_type.name).lower(),
+            ),
+            comment + ": download",
+        )
+
+    if os_type in [OSType.MAC, OSType.LINUX]:
         _cmd("chmod +x kubectl", comment + ": set permissions")
         _cmd("sudo mv kubectl /usr/local/bin/", comment + ": copy binary")
-    elif os_type == OSType.LINUX:
-        _cmd("sudo snap install kubectl --classic", comment)
-    elif os_type == OSType.WINDOWS:
-        pass
-    else:
-        raise Exception
 
 
 def install_helm(os_type, arch_type):
