@@ -408,8 +408,8 @@ def install_kubectl(os_type, arch_type, version=KUBECTL_VERSION):
 def install_helm(os_type, arch_type):
     if os_type in [OSType.MAC, OSType.LINUX]:
         try:
-            res = _cmd("helm version > /dev/null", "check_helm")
-            if res[0] == 0:
+            rc, _ = _cmd("helm version > /dev/null", "check_helm")
+            if rc == 0:
                 return
         except CalledProcessError:
             pass
