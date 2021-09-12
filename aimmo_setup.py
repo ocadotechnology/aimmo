@@ -148,7 +148,7 @@ def mac_setup(os_type, arch_type):
         install_yarn,
         set_up_frontend_dependencies,
         install_pipenv,
-        run_pipenv_install,
+        build_pipenv_virtualenv,
         install_docker,
         install_minikube,
         install_kubectl,
@@ -185,7 +185,7 @@ def linux_setup(os_type, arch_type):
         yarn_add_parcel_bundler,
         install_pip,
         install_pipenv,
-        run_pipenv_install,
+        build_pipenv_virtualenv,
         set_up_frontend_dependencies,
         install_docker,
         install_minikube,
@@ -315,7 +315,7 @@ def install_pipenv(os_type, arch_type):
         raise Exception
 
 
-def run_pipenv_install(os_type, arch_type):
+def build_pipenv_virtualenv(os_type, arch_type):
     if os_type in [OSType.MAC, OSType.LINUX]:
         _cmd("pipenv install --dev")
 
