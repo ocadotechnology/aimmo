@@ -239,7 +239,7 @@ def _cmd(command, comment=None):
     p = subprocess.Popen(command, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
 
     for line in iter(p.stdout.readline, b""):
-        stdout_lines.append(line)
+        stdout_lines.append(line.decode("utf-8"))
         sys.stdout.write("%s\r" % line.decode("utf-8")[:-1].rstrip())
         sys.stdout.flush()
 
