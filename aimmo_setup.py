@@ -37,6 +37,8 @@ def main():
         "| This script should make your life a little easier,                                                       |\n"
         "| just be kind if it doesn't work.                                                                         |\n"
         "| You may be asked to enter your password during this setup.                                               |\n"
+        "|                                                                                                          |\n"
+        "| **This setup script is currently for Mac and Linux only.**                                               |\n"
         "+----------------------------------------------------------------------------------------------------------+\n"
     )
 
