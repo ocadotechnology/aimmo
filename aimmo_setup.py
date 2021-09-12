@@ -144,8 +144,8 @@ def mac_setup(os_type, arch_type):
     """
     tasks = [
         ensure_homebrew_installed,
+        install_sqlite3,
         install_yarn,
-        yarn_add_parcel_bundler,
         set_up_frontend_dependencies,
         install_pipenv,
         run_pipenv_install,
@@ -266,6 +266,11 @@ def _cmd(command, comment=None):
 def ensure_homebrew_installed(os_type, arch_type):
     if os_type == OSType.MAC:
         _cmd("brew -v")
+
+
+def install_sqlite3(os_type, arch_type):
+    if os_type == OSType.MAC:
+        _cmd("brew install sqlite3")
 
 
 def install_yarn(os_type, arch_type):
