@@ -182,7 +182,6 @@ def linux_setup(os_type, arch_type):
         check_for_cmdtest,
         configure_yarn_repo,
         install_yarn,
-        yarn_add_parcel_bundler,
         install_pip,
         install_pipenv,
         build_pipenv_virtualenv,
@@ -287,11 +286,6 @@ def install_yarn(os_type, arch_type):
         _cmd("sudo apt-get install yarn")
 
 
-def yarn_add_parcel_bundler(os_type, arch_type):
-    if os_type == OSType.MAC:
-        _cmd("yarn global add parcel-bundler")
-
-
 def set_up_frontend_dependencies(os_type, arch_type):
     if os_type in [OSType.MAC, OSType.LINUX]:
         _cmd("cd ./game_frontend && sudo yarn")
@@ -309,10 +303,6 @@ def install_pipenv(os_type, arch_type):
         _cmd("brew install pipenv")
     elif os_type == OSType.LINUX:
         _cmd("pip install pipenv")
-    elif os_type == OSType.WINDOWS:
-        pass
-    else:
-        raise Exception
 
 
 def build_pipenv_virtualenv(os_type, arch_type):
