@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.urls import reverse
 from portal.forms.add_game import AddGameForm
-from portal.game_creator import create_game
+from aimmo.game_creator import create_game
 from rest_framework import status
 
 from aimmo import app_settings, models
@@ -47,9 +47,7 @@ class TestViews(TestCase):
         cls.user.save()
         user_profile: UserProfile = UserProfile(user=cls.user)
         user_profile.save()
-        teacher: Teacher = Teacher.objects.create(
-            user=user_profile, new_user=cls.user, title="Mx"
-        )
+        teacher: Teacher = Teacher.objects.create(user=user_profile, new_user=cls.user)
         teacher.save()
         cls.klass, _, _ = create_class_directly(cls.user.email)
         cls.klass.save()
@@ -425,7 +423,8 @@ class TestViews(TestCase):
         response = client.get(reverse("game-detail", kwargs={"pk": self.game.id}))
         self.assertEqual(response.status_code, 200)
 
-    def test_adding_a_game_creates_an_avatar(self):
+    @patch("aimmo.game_creator.GameManager")
+    def test_adding_a_game_creates_an_avatar(self, mock_game_manager):
         client = self.login()
         game: Game = create_game(
             self.user,
@@ -436,6 +435,10 @@ class TestViews(TestCase):
                 },
             ),
         )
+
+        # GameManager is called when a game is created.
+        assert mock_game_manager.called
+
         game = models.Game.objects.get(pk=2)
         avatar = game.avatar_set.get(owner=client.session["_auth_user_id"])
         assert avatar is not None
@@ -485,7 +488,7 @@ class TestViews(TestCase):
         new_user_profile: UserProfile = UserProfile(user=new_user)
         new_user_profile.save()
         new_teacher: Teacher = Teacher.objects.create(
-            user=new_user_profile, new_user=new_user, title="Mx"
+            user=new_user_profile, new_user=new_user
         )
         new_teacher.save()
         new_klass, _, _ = create_class_directly(new_user.email)

@@ -2,6 +2,55 @@
 
 <!--next-version-placeholder-->
 
+## v1.0.1b578 (2021-09-10)
+### Fix
+* Update Pipfile.lock ([`d13542d`](https://github.com/ocadotechnology/aimmo/commit/d13542dc1bc4b40abe971c60ec98816b4352b57f))
+
+## v1.0.0 (2021-09-06)
+
+
+## v1.0.0b564 (2021-09-04)
+### Feature
+* Major version bump for rebranding phase 1 (#1570) ([`7b78635`](https://github.com/ocadotechnology/aimmo/commit/7b78635016cac8391c850120e2bf1fb6555f329f))
+
+### Breaking
+* major version bump for rebranding phase 1 (#1570) ([`7b78635`](https://github.com/ocadotechnology/aimmo/commit/7b78635016cac8391c850120e2bf1fb6555f329f))
+
+## v0.69.19b560 (2021-09-03)
+### Feature
+* Remove teacher title (#1566) ([`1fae7be`](https://github.com/ocadotechnology/aimmo/commit/1fae7be5312ce8f1b918c4bd1feb0d51acfeca21))
+
+## v0.69.19b557 (2021-09-03)
+
+
+## v0.69.19b549 (2021-08-11)
+
+
+## v0.69.19 (2021-07-23)
+
+
+## v0.69.19b542 (2021-07-23)
+### Fix
+* Remove captcha from tests (#1562) ([`7d2572a`](https://github.com/ocadotechnology/aimmo/commit/7d2572a525dc87b3b6df34d4fc1f025d31b1f2cd))
+
+## v0.69.18 (2021-07-20)
+
+
+## v0.69.18b535 (2021-07-20)
+### Fix
+* Games not stopping (#1557) ([`da943f6`](https://github.com/ocadotechnology/aimmo/commit/da943f62e887136a520fd7ad7dd51e7945b08326))
+
+## v0.69.17b529 (2021-07-16)
+### Documentation
+* Move docs in repo to gitbook (#1559) ([`2d609fa`](https://github.com/ocadotechnology/aimmo/commit/2d609fa6748706c5d43a9f310d31e159ca787e9c))
+
+## v0.69.17b526 (2021-07-14)
+### Fix
+* Fix local run (intro in #1556) (#1558) ([`4a5fb9a`](https://github.com/ocadotechnology/aimmo/commit/4a5fb9a0ca25132f54ff546422a32a831fbfc207))
+
+## v0.69.16b520 (2021-07-13)
+
+
 ## v0.69.16b514 (2021-07-08)
 ### Fix
 * Fix admin pages for old games without classes too (#1555) ([`ba65227`](https://github.com/ocadotechnology/aimmo/commit/ba6522775853aac14096f4f59a9cfb932b73b2d9))

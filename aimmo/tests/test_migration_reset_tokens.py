@@ -1,19 +1,17 @@
-from django.db.migrations.state import StateApps
-
-from aimmo.tests.base_test_migration import MigrationTestCase
+import pytest
 
 
-class TestMigrationResetGameTokens(MigrationTestCase):
-    start_migration = "0010_alter_game_token"
-    dest_migration = "0011_reset_game_tokens"
+@pytest.mark.django_db
+def test_reset_token(migrator):
+    old_state = migrator.apply_initial_migration(
+        ("aimmo", "0010_alter_game_token"),
+    )
+    Game = old_state.apps.get_model("aimmo", "Game")
+    game = Game.objects.create(id=1, name="test", public=True)
+    game.auth_token = "I'm a token"
+    game.save()
 
-    def setUpDataBeforeMigration(self, django_application: StateApps):
-        Game = django_application.get_model(self.app_name, "Game")
-        game = Game.objects.create(id=1, name="test", public=True)
-        game.auth_token = "I'm a token"
-        game.save()
-
-    def test_reset_token(self):
-        Game = self.django_application.get_model(self.app_name, "Game")
-        game = Game.objects.get(id=1)
-        assert game.auth_token == ""
+    new_state = migrator.apply_tested_migration(("aimmo", "0011_reset_game_tokens"))
+    Game = new_state.apps.get_model("aimmo", "Game")
+    game = Game.objects.get(id=1)
+    assert game.auth_token == ""
