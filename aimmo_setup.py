@@ -219,10 +219,13 @@ def _cmd(command, comment=None):
 
     Args:
         command (str): command to be run
+        comment (str): optional comment
 
     Returns:
-        Tuple[int, str]: return code, stdout output
+        Tuple[int, List[str]]: return code, stdout lines output
     """
+    stdout_lines = []
+
     if not comment:
         # Set comment to calling function name
         comment = inspect.currentframe().f_back.f_code.co_name
@@ -234,6 +237,7 @@ def _cmd(command, comment=None):
     p = subprocess.Popen(command, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
 
     for line in iter(p.stdout.readline, b""):
+        stdout_lines.append(line)
         sys.stdout.write("%s\r" % line.decode("utf-8")[:-1].rstrip())
         sys.stdout.flush()
 
@@ -241,7 +245,7 @@ def _cmd(command, comment=None):
     sys.stdout.write("\x1b[2K")
     sys.stdout.write("\x1b[1A")
 
-    (stdout, _) = p.communicate()
+    p.communicate()
 
     if p.returncode != 0:
         if comment:
@@ -253,7 +257,7 @@ def _cmd(command, comment=None):
     if comment:
         sys.stdout.write("\033[1m%s\033[0m... [ \033[92mOK\033[0m ]\n" % comment)
 
-    return (p.returncode, stdout.decode())
+    return (p.returncode, stdout_lines)
 
 
 def ensure_homebrew_installed(os_type, arch_type):
