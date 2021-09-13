@@ -35,13 +35,14 @@
 # program; modified versions of the program must be marked as such and not
 # identified as the original program.
 """Django settings for example_project project."""
-import os
 import mimetypes
+import os
+from subprocess import CalledProcessError
 
+from aimmo_runner.minikube import get_ip
 from django.http import Http404
 from kubernetes.client.api.custom_objects_api import CustomObjectsApi
 from kubernetes.client.api_client import ApiClient
-from aimmo_runner.minikube import get_ip
 
 ALLOWED_HOSTS = ["*"]
 
@@ -108,7 +109,12 @@ COOKIE_MANAGEMENT_ENABLED = False
 
 
 def get_base_url_for_game():
-    return f"http://{get_ip()}:8000"
+    try:
+        ip_address = get_ip()
+    except CalledProcessError:
+        ip_address = "localhost"
+
+    return f"http://{ip_address}:8000"
 
 
 def get_game_url_base_and_path(game_id: int) -> str:
