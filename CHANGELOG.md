@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v1.0.1b589 (2021-09-21)
+
+
 ## v1.0.1b578 (2021-09-10)
 ### Fix
 * Update Pipfile.lock ([`d13542d`](https://github.com/ocadotechnology/aimmo/commit/d13542dc1bc4b40abe971c60ec98816b4352b57f))
