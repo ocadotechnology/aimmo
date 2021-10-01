@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.0.2b594 (2021-10-01)
+### Fix
+* Update license (#1580) ([`7d3a4a7`](https://github.com/ocadotechnology/aimmo/commit/7d3a4a772dff8865e60653dacf79c2cfd46817af))
+
 ## v1.0.1b589 (2021-09-21)
 
 
