@@ -466,8 +466,7 @@ identified as the original program.
 ---
 
 # CONTRIBUTOR AGREEMENT
-                        
-                        
+
 Thank you for Your interest in contributing to the Code for Life project (the “**Project**”) managed by Ocado Technology
 (“**Ocado**”, “**We**” or “**Us**”). Please read the following terms carefully. By contributing to the Code for Life
 project on this website You are agreeing to the following terms.
