@@ -8,6 +8,7 @@ import logging
 
 LOGGER = logging.getLogger(__name__)
 
+
 class GameSecretManager:
     def __init__(self) -> None:
         self.api: CoreV1Api = CoreV1Api()

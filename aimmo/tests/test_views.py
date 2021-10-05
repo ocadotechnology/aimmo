@@ -166,7 +166,6 @@ class TestViews(TestCase):
         assert response.status_code == 200
         assert not mock_game_manager_cls.called
 
-    # @patch("aimmo.views.GameManager")
     def test_play_for_non_existent_game(self):
         c = self.login()
         response = c.get(reverse("kurono/play", kwargs={"id": 2}))

@@ -127,7 +127,9 @@ class GameViewSet(
             for game in games_to_delete:
                 game_manager.delete_game_server(game_id=game.id)
         except:
-            pass
+            LOGGER.error(
+                f"Could not delete game servers for games: {', '.join(game_ids)}"
+            )
 
         games_to_delete.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
