@@ -1,7 +1,9 @@
 import pytest
 
+from simulation.errors import NoNearbyArtefactsError
 from simulation.location import Location
-from simulation.world_map import WorldMap, WorldMapCreator, ARTEFACT_TYPES
+from simulation.utils import NearbyArtefactsList
+from simulation.world_map import ARTEFACT_TYPES, WorldMapCreator
 
 
 @pytest.fixture
@@ -152,4 +154,12 @@ def test_scan_nearby(avatar_state_json):
     cells[4]["interactable"] = {"type": ARTEFACT_TYPES[-1]}
     map = WorldMapCreator.generate_world_map_from_cells_data(cells)
     artefacts = map.scan_nearby(Location(-1, 0))
+    assert type(artefacts) == NearbyArtefactsList
     assert len(artefacts) == 1
+
+    # Test NoNearbyArtefactsError
+    artefacts = map.scan_nearby(Location(5, 5), radius=1)
+    assert type(artefacts) == NearbyArtefactsList
+    assert len(artefacts) == 0
+    with pytest.raises(NoNearbyArtefactsError):
+        artefacts[0]
