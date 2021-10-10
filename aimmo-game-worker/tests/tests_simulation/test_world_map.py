@@ -156,6 +156,8 @@ def test_scan_nearby(avatar_state_json):
     artefacts = map.scan_nearby(Location(-1, 0))
     assert type(artefacts) == NearbyArtefactsList
     assert len(artefacts) == 1
+    with pytest.raises(IndexError):
+        artefacts[1]
 
     # Test NoNearbyArtefactsError
     artefacts = map.scan_nearby(Location(5, 5), radius=1)
