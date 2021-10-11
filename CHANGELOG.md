@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.1.0b602 (2021-10-11)
+### Feature
+* Add NearbyArtefactsList (#1581) ([`bcab6df`](https://github.com/ocadotechnology/aimmo/commit/bcab6df416495426c107c485fc3767437f68351d))
+
 ## v1.0.2b594 (2021-10-01)
 ### Fix
 * Update license (#1580) ([`7d3a4a7`](https://github.com/ocadotechnology/aimmo/commit/7d3a4a772dff8865e60653dacf79c2cfd46817af))
