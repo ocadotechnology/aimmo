@@ -1,9 +1,9 @@
 from collections import defaultdict, namedtuple
 from enum import Enum
+from typing import Dict, List
 
 from .avatar_state import create_avatar_state
 from .location import Location
-from typing import Dict, List
 from .pathfinding import astar
 from .utils import NearbyArtefactsList
 
