@@ -1,10 +1,11 @@
 from collections import defaultdict, namedtuple
 from enum import Enum
+from typing import Dict, List
 
 from .avatar_state import create_avatar_state
 from .location import Location
-from typing import Dict, List
 from .pathfinding import astar
+from .utils import NearbyArtefactsList
 
 # how many nearby artefacts to return
 SCAN_LIMIT = 3
@@ -168,7 +169,9 @@ class WorldMap(object):
                     artefacts.append(cell)
         return artefacts
 
-    def scan_nearby(self, avatar_location, radius=SCAN_RADIUS) -> List[dict]:
+    def scan_nearby(
+        self, avatar_location, radius=SCAN_RADIUS
+    ) -> NearbyArtefactsList[dict]:
         """
         From the given location point search the given radius for artefacts.
         Returns list of nearest artefacts (artefact/interactable represented as dict).
@@ -197,7 +200,7 @@ class WorldMap(object):
             if len(nearest) > SCAN_LIMIT:
                 break
 
-        return nearest[:SCAN_LIMIT]
+        return NearbyArtefactsList(nearest[:SCAN_LIMIT])
 
     def __repr__(self):
         return repr(self.cells)
