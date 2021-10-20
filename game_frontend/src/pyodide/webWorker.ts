@@ -76,7 +76,9 @@ export function simplifyErrorMessageInLog(log: string): string {
   const regexToFindNextTurnErrors = /.*line (\d+), in next_turn\n((?:.|\n)*)/
   const matches = log.match(regexToFindNextTurnErrors)
   if (matches?.length >= 2) {
-    return `Uh oh! Something isn't correct on line ${matches[1]}. Here's the error we got:\n${matches[2]}`
+    // get only the exception message line, removing potential traceback
+    const simpleError = matches[2].split('\n').slice(-2).join('')
+    return `Uh oh! Something isn't correct on line ${matches[1]}. Here's the error we got:\n${simpleError}`
   }
   // error not in next_turn function
   return log
