@@ -120,19 +120,25 @@ class GameViewSet(
     )
     def delete_games(self, request):
         game_ids = request.data.getlist("game_ids")
-        games_to_delete = Game.objects.filter(
-            pk__in=game_ids, game_class__teacher__new_user=request.user
-        )
-        try:
-            game_manager = GameManager()
-            for game in games_to_delete:
-                game_manager.delete_game_server(game_id=game.id)
-        except:
-            LOGGER.error(
-                f"Could not delete game servers for games: {', '.join(game_ids)}"
-            )
 
-        games_to_delete.delete()
+        with transaction.atomic():
+            games_to_delete = Game.objects.select_for_update().filter(
+                pk__in=game_ids, game_class__teacher__new_user=request.user
+            )
+            try:
+                game_manager = GameManager()
+                for game in games_to_delete:
+                    game_manager.delete_game_server(game_id=game.id)
+            except Exception as exception:
+                LOGGER.error(
+                    f"Could not delete game servers for games: {', '.join(game_ids)}"
+                )
+                # Re-raise exception so that atomic transaction reverts
+                raise exception
+
+            # Delete the games from the database
+            games_to_delete.delete()
+
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
