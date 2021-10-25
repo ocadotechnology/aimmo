@@ -152,6 +152,8 @@ class TestViews(TestCase):
             game_id=self.game.id,
             game_data=expected_game_data,
         )
+        self.game.refresh_from_db()
+        assert self.game.status == Game.RUNNING
 
     @patch("aimmo.views.GameManager")
     def test_play_does_not_create_game_server_if_already_running(

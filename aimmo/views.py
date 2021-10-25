@@ -4,6 +4,7 @@ from typing import Tuple
 from common.permissions import CanDeleteGame
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
@@ -193,15 +194,18 @@ def watch_game(request, id):
     if not game.can_user_play(request.user):
         raise Http404
 
-    if game.status != Game.RUNNING:
-        # Create a game server for this game
-        game_manager = GameManager()
-        game_manager.create_game_server(
-            game_id=game.id,
-            game_data=GameSerializer(game).data,
-        )
-        game.status = Game.RUNNING
-        game.save()
+    with transaction.atomic():
+        game: Game = Game.objects.select_for_update().get(id=game.id)
+
+        if game.status != Game.RUNNING:
+            # Create a game server for this game
+            game_manager = GameManager()
+            game_manager.create_game_server(
+                game_id=game.id,
+                game_data=GameSerializer(game).data,
+            )
+            game.status = Game.RUNNING
+            game.save()
 
     return game_renderer.render_game(request, game)
 
