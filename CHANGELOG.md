@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.1.1b612 (2021-10-25)
+### Fix
+* Fix aimmo setup script for mac and linux (#1568) ([`859f871`](https://github.com/ocadotechnology/aimmo/commit/859f8711be927fff90e38f1c66dafdf68da832ec))
+
 ## v1.1.0 (2021-10-14)
 
 
