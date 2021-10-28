@@ -240,12 +240,12 @@ def _cmd(command, comment=None):
 
     for line in iter(p.stdout.readline, b""):
         stdout_lines.append(line.decode("utf-8"))
-        sys.stdout.write("%s\n" % line.decode("utf-8")[:-1].rstrip())
+        sys.stdout.write("%s\r" % line.decode("utf-8")[:-1].rstrip())
         sys.stdout.flush()
 
     # Delete line
-    #sys.stdout.write("\x1b[2K")
-    #sys.stdout.write("\x1b[1A")
+    sys.stdout.write("\x1b[2K")
+    sys.stdout.write("\x1b[1A")
 
     p.communicate()
 
