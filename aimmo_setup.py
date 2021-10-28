@@ -453,7 +453,7 @@ def helm_install_aimmo(os_type, arch_type):
 
 def install_pip(os_type, arch_type):
     if os_type == OSType.LINUX:
-        _cmd("sudo apt-get install python-pip")
+        _cmd("sudo apt-get install python3-pip")
 
 
 def install_nodejs(os_type, arch_type):
@@ -465,11 +465,7 @@ def install_nodejs(os_type, arch_type):
         except CalledProcessError:
             pass
 
-        _cmd(
-            "curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - 1> /dev/null",
-            comment + ": download",
-        )
-        _cmd("sudo apt-get install -y nodejs", comment + ": install")
+        _cmd("sudo apt-get install nodejs=12.*")
 
 
 def check_for_cmdtest(os_type, arch_type):
