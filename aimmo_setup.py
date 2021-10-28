@@ -240,12 +240,12 @@ def _cmd(command, comment=None):
 
     for line in iter(p.stdout.readline, b""):
         stdout_lines.append(line.decode("utf-8"))
-        sys.stdout.write("%s\r" % line.decode("utf-8")[:-1].rstrip())
+        sys.stdout.write("%s\n" % line.decode("utf-8")[:-1].rstrip())
         sys.stdout.flush()
 
     # Delete line
-    sys.stdout.write("\x1b[2K")
-    sys.stdout.write("\x1b[1A")
+    #sys.stdout.write("\x1b[2K")
+    #sys.stdout.write("\x1b[1A")
 
     p.communicate()
 
@@ -321,7 +321,27 @@ def install_docker(os_type, arch_type):
     if os_type == OSType.MAC:
         _cmd("brew install --cask docker")
     elif os_type == OSType.LINUX:
-        _cmd("sudo apt-get install docker-ce")
+        # First time install needs to setup a repository
+        # Update the package and install them
+        # Add Docker's GPG key
+        # The following command is used to setup the stable repository
+        # Install docker
+        docker_install = """sudo apt-get update 
+                sudo apt-get install -y ca-certificates curl gnupg lsb-release
+                curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+                echo \
+                "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+                $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+                sudo apt-get update
+                sudo apt-get install -y docker-ce
+                sudo apt-get install -y docker-ce-cli
+                sudo apt-get install -y containerd.io
+                """
+        try:
+            _cmd(docker_install)
+        except:
+            print("\nInstalation failed, trying again..\n")
+            _cmd(docker_install)
 
 
 def install_minikube(os_type, arch_type, version=MINIKUBE_VERSION):
@@ -460,7 +480,7 @@ def install_nodejs(os_type, arch_type):
     comment = "install_nodejs"
     if os_type == OSType.LINUX:
         try:
-            if _cmd("nodejs --version", "check_nodejs")[0] == 0:
+            if _cmd("node --version", "check_nodejs")[0] == 0:
                 return
         except CalledProcessError:
             pass
@@ -474,24 +494,27 @@ def check_for_cmdtest(os_type, arch_type):
     the cmdtest package is installed, if it is we ask the user if we can remove it, if yes
     we remove the package, if not the process continues without removing it.
     """
-    if os_type == OSType.LINUX:
-        _, output = _cmd("dpkg-query -W -f='${status}' cmdtest")
+    try:
+        if os_type == OSType.LINUX:
+            _, output = _cmd("dpkg-query -W -f='${status}' cmdtest")
 
-        if "unknown" not in output:
-            print(
-                "Looks like cmdtest is installed on your machine, "
-                "this can cause issues when installing Yarn."
-            )
+            if "unknown" not in output:
+                print(
+                    "Looks like cmdtest is installed on your machine, "
+                    "this can cause issues when installing Yarn."
+                )
 
-            while True:
-                choice = input("Is it okay if I remove cmdtest? [y/n]").lower()
-                if choice in ["y", "yes"]:
-                    _cmd("sudo apt-get remove cmdtest", "remove_cmdtest")
-                    break
-                if choice in ["n", "no"]:
-                    print("Continuing without removing cmdtest...")
-                    break
-                print("Please answer 'yes' or 'no' ('y' or 'n').")
+                while True:
+                    choice = input("Is it okay if I remove cmdtest? [y/n]").lower()
+                    if choice in ["y", "yes"]:
+                        _cmd("sudo apt-get remove cmdtest", "remove_cmdtest")
+                        break
+                    if choice in ["n", "no"]:
+                        print("Continuing without removing cmdtest...")
+                        break
+                    print("Please answer 'yes' or 'no' ('y' or 'n').")
+    except:
+        print("cmdtest not found on this machine")
 
 
 def update_apt_packages(os_type, arch_type):
