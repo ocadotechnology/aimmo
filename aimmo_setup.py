@@ -257,7 +257,6 @@ def _cmd(command, comment=None):
             sys.stdout.write(f"{line}\n")
         raise CalledProcessError(p.returncode, command)
 
-
     if comment:
         sys.stdout.write("\033[1m%s\033[0m... [ \033[92mOK\033[0m ]\n" % comment)
 
@@ -500,15 +499,11 @@ def check_for_cmdtest(os_type, arch_type):
     if os_type == OSType.LINUX:
         _, output = _cmd("dpkg-query -W -f='${status}' cmdtest")
 
-    
     if "unknown" not in output[0]:
-        print(
-            "Looks like cmdtest is installed on your machine, "
-            "this can cause issues when installing Yarn."
-        )
-
         while True:
-            choice = input("Yarn clashes with cmdtest. Is it okay to remove cmdtest? [y/n]").lower()
+            choice = input(
+                "Looks like cmdtest is installed on your machine, yarn clashes with cmdtest. Is it okay to remove cmdtest? [y/n]"
+            ).lower()
             if choice in ["y", "yes"]:
                 _cmd("sudo apt-get remove -y cmdtest", "remove_cmdtest")
                 break
