@@ -193,7 +193,6 @@ def linux_setup(os_type, arch_type):
         helm_add_agones_repo,
         minikube_start_profile,
         helm_install_aimmo,
-        add_aimmo_to_hosts_file,
     ]
 
     _create_sudo_timestamp()
@@ -254,7 +253,10 @@ def _cmd(command, comment=None):
             sys.stdout.write(
                 "\033[1m%s\033[0m... [ \033[93mFAILED\033[0m ]\n" % comment
             )
+        for line in stdout_lines:
+            sys.stdout.write(f"{line}\n")
         raise CalledProcessError(p.returncode, command)
+
 
     if comment:
         sys.stdout.write("\033[1m%s\033[0m... [ \033[92mOK\033[0m ]\n" % comment)
@@ -288,7 +290,7 @@ def install_yarn(os_type, arch_type):
 
 def set_up_frontend_dependencies(os_type, arch_type):
     if os_type in [OSType.MAC, OSType.LINUX]:
-        _cmd("cd ./game_frontend && sudo yarn")
+        _cmd("cd ./game_frontend && yarn")
 
 
 def install_pipenv(os_type, arch_type):
@@ -339,7 +341,7 @@ def install_docker(os_type, arch_type):
                 """
         try:
             _cmd(docker_install)
-        except:
+        except CalledProcessError:
             print("\nInstalation failed, trying again..\n")
             _cmd(docker_install)
 
@@ -494,27 +496,26 @@ def check_for_cmdtest(os_type, arch_type):
     the cmdtest package is installed, if it is we ask the user if we can remove it, if yes
     we remove the package, if not the process continues without removing it.
     """
-    try:
-        if os_type == OSType.LINUX:
-            _, output = _cmd("dpkg-query -W -f='${status}' cmdtest")
 
-            if "unknown" not in output:
-                print(
-                    "Looks like cmdtest is installed on your machine, "
-                    "this can cause issues when installing Yarn."
-                )
+    if os_type == OSType.LINUX:
+        _, output = _cmd("dpkg-query -W -f='${status}' cmdtest")
 
-                while True:
-                    choice = input("Is it okay if I remove cmdtest? [y/n]").lower()
-                    if choice in ["y", "yes"]:
-                        _cmd("sudo apt-get remove cmdtest", "remove_cmdtest")
-                        break
-                    if choice in ["n", "no"]:
-                        print("Continuing without removing cmdtest...")
-                        break
-                    print("Please answer 'yes' or 'no' ('y' or 'n').")
-    except:
-        print("cmdtest not found on this machine")
+    
+    if "unknown" not in output[0]:
+        print(
+            "Looks like cmdtest is installed on your machine, "
+            "this can cause issues when installing Yarn."
+        )
+
+        while True:
+            choice = input("Yarn clashes with cmdtest. Is it okay to remove cmdtest? [y/n]").lower()
+            if choice in ["y", "yes"]:
+                _cmd("sudo apt-get remove -y cmdtest", "remove_cmdtest")
+                break
+            if choice in ["n", "no"]:
+                print("Continuing without removing cmdtest...")
+                break
+            print("Please answer 'yes' or 'no' ('y' or 'n').")
 
 
 def update_apt_packages(os_type, arch_type):
@@ -522,30 +523,17 @@ def update_apt_packages(os_type, arch_type):
         _cmd("sudo apt-get update")
 
 
-def add_aimmo_to_hosts_file(os_type, arch_type):
-    comment = "add_kurono_to_local_hosts"
-    if os_type in [OSType.MAC, OSType.LINUX]:
-        with open("/etc/hosts", "r") as hostfile:
-            data = hostfile.read().replace("\n", "")
-        if "192.168.99.100 local.aimmo.codeforlife.education" not in data:
-            _cmd(
-                "sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'",
-                comment,
-            )
-        else:
-            _cmd("true")
-
-
 def configure_yarn_repo(os_type, arch_type):
     comment = "configure_yarn"
-    _cmd(
-        "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -",
-        comment + ": add key",
-    )
-    _cmd(
-        'echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list',
-        comment + ": add repo",
-    )
+    if os_type == OSType.LINUX:
+        _cmd(
+            "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -",
+            comment + ": add key",
+        )
+        _cmd(
+            'echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list',
+            comment + ": add repo",
+        )
 
 
 if __name__ == "__main__":
