@@ -72,7 +72,6 @@ def main():
 def get_os_type():
     """
     Return the OS type if one can be determined
-
     Returns:
         OSType: OS type
     """
@@ -93,7 +92,6 @@ def get_os_type():
 def get_arch_type():
     """
     Return the architecture type
-
     Returns:
         ArchType: architecture type
     """
@@ -114,11 +112,9 @@ def get_arch_type():
 def setup_factory(os_type, arch_type):
     """
     Return the setup function which matches supplied host type
-
     Args:
         os_type (OSType): the type of host to setup
         arch_type (ArchType): host architecture type
-
     Returns:
         Callable: setup function
     """
@@ -137,7 +133,6 @@ def setup_factory(os_type, arch_type):
 def mac_setup(os_type, arch_type):
     """
     Runs the commands needed in order to set up Kurono for MAC
-
     Args:
         os_type (OSType): host OS type
         arch_type (ArchType): host architecture type
@@ -145,6 +140,7 @@ def mac_setup(os_type, arch_type):
     tasks = [
         ensure_homebrew_installed,
         install_sqlite3,
+        install_nodejs,
         install_yarn,
         set_up_frontend_dependencies,
         install_pipenv,
@@ -171,7 +167,6 @@ def windows_setup(os_type, arch_type):
 def linux_setup(os_type, arch_type):
     """
     Runs the commands needed in order to set up Kurono for LINUX
-
     Args:
         os_type (OSType): host OS type
         arch_type (ArchType): host architecture type
@@ -217,11 +212,9 @@ def _create_sudo_timestamp():
 def _cmd(command, comment=None):
     """
     Run command inside a terminal
-
     Args:
         command (str): command to be run
         comment (str): optional comment
-
     Returns:
         Tuple[int, List[str]]: return code, stdout lines output
     """
@@ -282,14 +275,16 @@ def install_yarn(os_type, arch_type):
             pass
 
     if os_type == OSType.MAC:
-        _cmd("brew install yarn")
+        _cmd("npm install --global yarn", "install yarn")
     elif os_type == OSType.LINUX:
-        _cmd("sudo apt-get install yarn")
+        _cmd("sudo npm install --global yarn", "install yarn")
 
 
 def set_up_frontend_dependencies(os_type, arch_type):
-    if os_type in [OSType.MAC, OSType.LINUX]:
+    if os_type == OSType.MAC:
         _cmd("cd ./game_frontend && yarn")
+    elif os_type == OSType.LINUX:
+        _cmd("cd ./game_frontend && sudo yarn")
 
 
 def install_pipenv(os_type, arch_type):
@@ -478,15 +473,16 @@ def install_pip(os_type, arch_type):
 
 
 def install_nodejs(os_type, arch_type):
-    comment = "install_nodejs"
-    if os_type == OSType.LINUX:
+    if os_type in [OSType.MAC, OSType.LINUX]:
         try:
             if _cmd("node --version", "check_nodejs")[0] == 0:
                 return
         except CalledProcessError:
             pass
-
-        _cmd("sudo apt-get install nodejs=12.*")
+    if os_type == OSType.MAC:
+        _cmd("brew install nodejs")
+    if os_type == OSType.LINUX:
+        _cmd("curl -o- -L https://yarnpkg.com/install.sh | bash")
 
 
 def check_for_cmdtest(os_type, arch_type):
@@ -497,12 +493,17 @@ def check_for_cmdtest(os_type, arch_type):
     """
 
     if os_type == OSType.LINUX:
-        _, output = _cmd("dpkg-query -W -f='${status}' cmdtest")
+        try:
+            _, output = _cmd("dpkg-query -W -f='{status}' cmdtest")
+        except CalledProcessError:
+            print("cmdtest not found")
+            return
 
-    if "unknown" not in output[0]:
         while True:
             choice = input(
-                "Looks like cmdtest is installed on your machine, yarn clashes with cmdtest. Is it okay to remove cmdtest? [y/n]"
+                "Looks like cmdtest is installed on your machine. "
+                "cmdtest clashes with yarn so we recommend to remove it. "
+                "Is it okay to remove cmdtest? [y/n]"
             ).lower()
             if choice in ["y", "yes"]:
                 _cmd("sudo apt-get remove -y cmdtest", "remove_cmdtest")
