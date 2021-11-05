@@ -480,9 +480,12 @@ def install_nodejs(os_type, arch_type):
         except CalledProcessError:
             pass
     if os_type == OSType.MAC:
-        _cmd("brew install nodejs")
+        _cmd("brew install node@14")
     if os_type == OSType.LINUX:
-        _cmd("curl -o- -L https://yarnpkg.com/install.sh | bash")
+        _cmd(
+            "curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -"
+            "sudo apt-get install -y nodejs"
+        )
 
 
 def check_for_cmdtest(os_type, arch_type):
