@@ -497,9 +497,8 @@ def check_for_cmdtest(os_type, arch_type):
 
     if os_type == OSType.LINUX:
         try:
-            _, output = _cmd("dpkg-query -W -f='{status}' cmdtest")
+            _cmd("dpkg-query -W -f='{status}' cmdtest")
         except CalledProcessError:
-            print("cmdtest not found")
             return
 
         while True:
