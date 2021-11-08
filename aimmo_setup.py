@@ -72,7 +72,6 @@ def main():
 def get_os_type():
     """
     Return the OS type if one can be determined
-
     Returns:
         OSType: OS type
     """
@@ -93,7 +92,6 @@ def get_os_type():
 def get_arch_type():
     """
     Return the architecture type
-
     Returns:
         ArchType: architecture type
     """
@@ -114,11 +112,9 @@ def get_arch_type():
 def setup_factory(os_type, arch_type):
     """
     Return the setup function which matches supplied host type
-
     Args:
         os_type (OSType): the type of host to setup
         arch_type (ArchType): host architecture type
-
     Returns:
         Callable: setup function
     """
@@ -137,7 +133,6 @@ def setup_factory(os_type, arch_type):
 def mac_setup(os_type, arch_type):
     """
     Runs the commands needed in order to set up Kurono for MAC
-
     Args:
         os_type (OSType): host OS type
         arch_type (ArchType): host architecture type
@@ -145,6 +140,7 @@ def mac_setup(os_type, arch_type):
     tasks = [
         ensure_homebrew_installed,
         install_sqlite3,
+        install_nodejs,
         install_yarn,
         set_up_frontend_dependencies,
         install_pipenv,
@@ -171,7 +167,6 @@ def windows_setup(os_type, arch_type):
 def linux_setup(os_type, arch_type):
     """
     Runs the commands needed in order to set up Kurono for LINUX
-
     Args:
         os_type (OSType): host OS type
         arch_type (ArchType): host architecture type
@@ -193,7 +188,6 @@ def linux_setup(os_type, arch_type):
         helm_add_agones_repo,
         minikube_start_profile,
         helm_install_aimmo,
-        add_aimmo_to_hosts_file,
     ]
 
     _create_sudo_timestamp()
@@ -218,11 +212,9 @@ def _create_sudo_timestamp():
 def _cmd(command, comment=None):
     """
     Run command inside a terminal
-
     Args:
         command (str): command to be run
         comment (str): optional comment
-
     Returns:
         Tuple[int, List[str]]: return code, stdout lines output
     """
@@ -254,6 +246,8 @@ def _cmd(command, comment=None):
             sys.stdout.write(
                 "\033[1m%s\033[0m... [ \033[93mFAILED\033[0m ]\n" % comment
             )
+        for line in stdout_lines:
+            sys.stdout.write(f"{line}\n")
         raise CalledProcessError(p.returncode, command)
 
     if comment:
@@ -281,13 +275,15 @@ def install_yarn(os_type, arch_type):
             pass
 
     if os_type == OSType.MAC:
-        _cmd("brew install yarn")
+        _cmd("npm install --global yarn", "install yarn")
     elif os_type == OSType.LINUX:
-        _cmd("sudo apt-get install yarn")
+        _cmd("sudo npm install --global yarn", "install yarn")
 
 
 def set_up_frontend_dependencies(os_type, arch_type):
-    if os_type in [OSType.MAC, OSType.LINUX]:
+    if os_type == OSType.MAC:
+        _cmd("cd ./game_frontend && yarn")
+    elif os_type == OSType.LINUX:
         _cmd("cd ./game_frontend && sudo yarn")
 
 
@@ -321,7 +317,27 @@ def install_docker(os_type, arch_type):
     if os_type == OSType.MAC:
         _cmd("brew install --cask docker")
     elif os_type == OSType.LINUX:
-        _cmd("sudo apt-get install docker-ce")
+        # First time install needs to setup a repository
+        # Update the package and install them
+        # Add Docker's GPG key
+        # The following command is used to setup the stable repository
+        # Install docker
+        docker_install = """sudo apt-get update 
+                sudo apt-get install -y ca-certificates curl gnupg lsb-release
+                curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+                echo \
+                "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+                $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+                sudo apt-get update
+                sudo apt-get install -y docker-ce
+                sudo apt-get install -y docker-ce-cli
+                sudo apt-get install -y containerd.io
+                """
+        try:
+            _cmd(docker_install)
+        except CalledProcessError:
+            print("\nInstalation failed, trying again..\n")
+            _cmd(docker_install)
 
 
 def install_minikube(os_type, arch_type, version=MINIKUBE_VERSION):
@@ -453,23 +469,23 @@ def helm_install_aimmo(os_type, arch_type):
 
 def install_pip(os_type, arch_type):
     if os_type == OSType.LINUX:
-        _cmd("sudo apt-get install python-pip")
+        _cmd("sudo apt-get install python3-pip")
 
 
 def install_nodejs(os_type, arch_type):
-    comment = "install_nodejs"
-    if os_type == OSType.LINUX:
+    if os_type in [OSType.MAC, OSType.LINUX]:
         try:
-            if _cmd("nodejs --version", "check_nodejs")[0] == 0:
+            if _cmd("node --version", "check_nodejs")[0] == 0:
                 return
         except CalledProcessError:
             pass
-
+    if os_type == OSType.MAC:
+        _cmd("brew install node@14")
+    if os_type == OSType.LINUX:
         _cmd(
-            "curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - 1> /dev/null",
-            comment + ": download",
+            "curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -"
+            "sudo apt-get install -y nodejs"
         )
-        _cmd("sudo apt-get install -y nodejs", comment + ": install")
 
 
 def check_for_cmdtest(os_type, arch_type):
@@ -478,24 +494,26 @@ def check_for_cmdtest(os_type, arch_type):
     the cmdtest package is installed, if it is we ask the user if we can remove it, if yes
     we remove the package, if not the process continues without removing it.
     """
+
     if os_type == OSType.LINUX:
-        _, output = _cmd("dpkg-query -W -f='${status}' cmdtest")
+        try:
+            _cmd("dpkg-query -W -f='{status}' cmdtest")
+        except CalledProcessError:
+            return
 
-        if "unknown" not in output:
-            print(
-                "Looks like cmdtest is installed on your machine, "
-                "this can cause issues when installing Yarn."
-            )
-
-            while True:
-                choice = input("Is it okay if I remove cmdtest? [y/n]").lower()
-                if choice in ["y", "yes"]:
-                    _cmd("sudo apt-get remove cmdtest", "remove_cmdtest")
-                    break
-                if choice in ["n", "no"]:
-                    print("Continuing without removing cmdtest...")
-                    break
-                print("Please answer 'yes' or 'no' ('y' or 'n').")
+        while True:
+            choice = input(
+                "Looks like cmdtest is installed on your machine. "
+                "cmdtest clashes with yarn so we recommend to remove it. "
+                "Is it okay to remove cmdtest? [y/n]"
+            ).lower()
+            if choice in ["y", "yes"]:
+                _cmd("sudo apt-get remove -y cmdtest", "remove_cmdtest")
+                break
+            if choice in ["n", "no"]:
+                print("Continuing without removing cmdtest...")
+                break
+            print("Please answer 'yes' or 'no' ('y' or 'n').")
 
 
 def update_apt_packages(os_type, arch_type):
@@ -503,30 +521,17 @@ def update_apt_packages(os_type, arch_type):
         _cmd("sudo apt-get update")
 
 
-def add_aimmo_to_hosts_file(os_type, arch_type):
-    comment = "add_kurono_to_local_hosts"
-    if os_type in [OSType.MAC, OSType.LINUX]:
-        with open("/etc/hosts", "r") as hostfile:
-            data = hostfile.read().replace("\n", "")
-        if "192.168.99.100 local.aimmo.codeforlife.education" not in data:
-            _cmd(
-                "sudo sh -c 'echo 192.168.99.100 local.aimmo.codeforlife.education >> /etc/hosts'",
-                comment,
-            )
-        else:
-            _cmd("true")
-
-
 def configure_yarn_repo(os_type, arch_type):
     comment = "configure_yarn"
-    _cmd(
-        "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -",
-        comment + ": add key",
-    )
-    _cmd(
-        'echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list',
-        comment + ": add repo",
-    )
+    if os_type == OSType.LINUX:
+        _cmd(
+            "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -",
+            comment + ": add key",
+        )
+        _cmd(
+            'echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list',
+            comment + ": add repo",
+        )
 
 
 if __name__ == "__main__":
