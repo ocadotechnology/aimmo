@@ -1,4 +1,5 @@
 """aimmo autoconfig"""
+from common.app_settings import domain
 
 DEFAULT_SETTINGS = {"AUTOCONFIG_INDEX_VIEW": "aimmo/home", "STATIC_URL": "/static/"}
 
@@ -26,4 +27,28 @@ SETTINGS = {
         }
     ],
     "USE_TZ": True,
+    # ----------------------------------------------------------------------------------
+    # CSP CONFIG
+    # ----------------------------------------------------------------------------------
+    "CSP_DEFAULT_SRC": ("'self'",),
+    "CSP_IMG_SRC": (
+        f"{domain()}/static/",
+        f"{domain()}/static/images/",
+        f"{domain()}/static/babylon/",
+        "https://p.typekit.net/",
+    ),
+    "CSP_FONT_SRC": (
+        "https://use.typekit.net/",
+    ),
+    "CSP_SCRIPT_SRC": (
+        "https://use.typekit.net/mrl4ieu.js",
+        "https://pyodide-cdn2.iodide.io/v0.15.0/full/"
+    ),
+    "CSP_CONNECT_SRC": (
+        "ws://localhost:41949/",
+        "https://pyodide-cdn2.iodide.io/v0.15.0/full/",
+        "ws://192.168.58.2:7959/socket.io/",
+        "http://192.168.58.2:7959/socket.io/",
+    ),
+    "CSP_REPORT_ONLY": False,
 }
