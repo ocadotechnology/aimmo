@@ -33,8 +33,6 @@ SETTINGS = {
     "CSP_DEFAULT_SRC": ("'self'",),
     "CSP_IMG_SRC": (
         f"{domain()}/static/",
-        f"{domain()}/static/images/",
-        f"{domain()}/static/babylon/",
         "https://p.typekit.net/",
     ),
     "CSP_FONT_SRC": (
