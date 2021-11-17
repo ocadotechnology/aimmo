@@ -264,7 +264,7 @@ def ensure_homebrew_installed(os_type, arch_type):
 def install_sqlite3(os_type, arch_type):
     if os_type == OSType.MAC:
         try:
-            if _cmd("sqlite3 -v", "check_sqlite3")[0] == 0:
+            if _cmd("sqlite3 -version", "check_sqlite3")[0] == 0:
                 return
         except CalledProcessError:
             pass
