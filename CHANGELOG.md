@@ -2,6 +2,19 @@
 
 <!--next-version-placeholder-->
 
+## v1.1.2b623 (2021-11-08)
+### Fix
+* Removed extra variables and print statement from cmdtest ([`8712f40`](https://github.com/ocadotechnology/aimmo/commit/8712f40fc26b9e5eab5262555e973a0089c93658))
+* Set nodejs_install for version 14 for both mac and linux ([`e046b00`](https://github.com/ocadotechnology/aimmo/commit/e046b00ea36afba62c42c64bb4a41223011c944a))
+* Fixed student profile login in CI/CD ([`fc21a2c`](https://github.com/ocadotechnology/aimmo/commit/fc21a2cf7fb25a609b9b10ae9fda40d5cf512e48))
+* Fixed message, include nodejs in mac and fixed the message ([`47d3f5b`](https://github.com/ocadotechnology/aimmo/commit/47d3f5b96d027131755bd18546a9a6375e8a4dbc))
+* Removed whitespace ([`0725065`](https://github.com/ocadotechnology/aimmo/commit/0725065c0d0ea9e728bf977578d93eb79dd50d34))
+* Docker, kubernetes, helm and cmdtest fixed ([`e7d0383`](https://github.com/ocadotechnology/aimmo/commit/e7d0383014e8b33397d138625d2c159fb728b29c))
+* Docker, kubernetes, helm and cmdtest fixed ([`9ee84d0`](https://github.com/ocadotechnology/aimmo/commit/9ee84d07ab770a3d75b44d7bb8942dcbb48c8346))
+* Cmdtest fix, init docker repository and install docker ([`2ccd88f`](https://github.com/ocadotechnology/aimmo/commit/2ccd88f4fd55da04d2b670bdd39b03e9553266f8))
+* Init docker repository, install docker and cmdtest fix ([`66dde70`](https://github.com/ocadotechnology/aimmo/commit/66dde702b2e0610692a4111048d08d6580a32d6e))
+* Fixed nodejs not downloading the correct version ([`973e426`](https://github.com/ocadotechnology/aimmo/commit/973e426e211eb8613c37b3c74db8d1cace2593c2))
+
 ## v1.1.1b612 (2021-10-25)
 ### Fix
 * Fix aimmo setup script for mac and linux (#1568) ([`859f871`](https://github.com/ocadotechnology/aimmo/commit/859f8711be927fff90e38f1c66dafdf68da832ec))
