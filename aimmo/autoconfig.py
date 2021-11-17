@@ -1,5 +1,5 @@
 """aimmo autoconfig"""
-from common.app_settings import domain
+from common.app_settings import domain, MODULE_NAME
 
 DEFAULT_SETTINGS = {"AUTOCONFIG_INDEX_VIEW": "aimmo/home", "STATIC_URL": "/static/"}
 
@@ -47,6 +47,7 @@ SETTINGS = {
         "https://pyodide-cdn2.iodide.io/v0.15.0/full/",
         "ws://192.168.58.2:7959/socket.io/",
         "http://192.168.58.2:7959/socket.io/",
+        f"https://{MODULE_NAME}-aimmo.codeforlife.education/"
     ),
     "CSP_REPORT_ONLY": False,
 }
