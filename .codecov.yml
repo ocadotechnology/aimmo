@@ -19,6 +19,7 @@ ignore:
   - "aimmo_runner/**/*"
   - "test_utils/*"
   - "aimmo/autoconfig.py"
+  - "setup.py"
 
 comment:
   layout: "reach, diff, flags, files"
