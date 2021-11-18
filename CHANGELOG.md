@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.1.3b631 (2021-11-18)
+### Fix
+* Added checks to sqlite3 and pip (#1585) ([`ec08765`](https://github.com/ocadotechnology/aimmo/commit/ec08765d024a71a1ee2fc1d66088ff8bc67a1072))
+
 ## v1.1.2b623 (2021-11-08)
 ### Fix
 * Removed extra variables and print statement from cmdtest ([`8712f40`](https://github.com/ocadotechnology/aimmo/commit/8712f40fc26b9e5eab5262555e973a0089c93658))
