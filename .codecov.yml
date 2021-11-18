@@ -5,11 +5,7 @@ coverage:
 
 ignore:
   - "aimmo_setup.py"
-  - "all_tests.py"
   - "run.py"
-  - "docs/*"
-  - "docs/**/*"
-  - "docs/**/**/*"
   - "aimmo/static/*"
   - "aimmo/static/**/*"
   - "aimmo/static/**/**/*"
