@@ -44,11 +44,10 @@ SETTINGS = {
     ),
     "CSP_CONNECT_SRC": (
         "ws://localhost:41949/",
-        "https://pyodide-cdn2.iodide.io/v0.15.0/full/",
         "ws://192.168.58.2:7959/socket.io/",
         "http://192.168.58.2:7959/socket.io/",
-        f"https://{MODULE_NAME}-aimmo.codeforlife.education/",
+        "https://pyodide-cdn2.iodide.io/v0.15.0/full/",
         f"wss://{MODULE_NAME}-aimmo.codeforlife.education/",
+        f"https://{MODULE_NAME}-aimmo.codeforlife.education/",
     ),
-    "CSP_REPORT_ONLY": False,
 }
