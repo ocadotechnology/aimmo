@@ -29,26 +29,26 @@ WORKSHEETS = {
         name="Present Day I: The Museum",
         era=1,
         starter_code="""
-#-------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 #  Worksheet 1 challenges:
 #    Task 1: Change direction
-#       - The starter code moves your avatar North. Change this code
-#         so that it moves in a different direction
+#       - The starter code moves your avatar North. Change this code so that it
+#         moves in a different direction.
 #
 #    Task 2: Move in all directions
-#       - Write some code that moves your avatar in a random direction.
-#         Don't forget to add `import random` at the top of your code.
+#       - Write some code that moves your avatar in a random direction. Don't
+#         forget to add `import random` at the top of your code.
 #
 #    Task 3: Investigate location
-#       - Investigate what `print(avatar_state.location)` tells you
-#         and then check if you can move to the next location 
+#       - Investigate what `print(avatar_state.location)` tells you and then
+#         check if you can move to the next location 
 #
 #  New commands: 
 #       - MoveAction(DIRECTION)
 #       - avatar_state.location -> LOCATION
 #       - world_state.can_move_to(LOCATION) -> True/False
 #
-#-------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 def next_turn(world_state, avatar_state):
     new_dir = direction.NORTH
     #  Your code goes here
@@ -70,13 +70,12 @@ def next_turn(world_state, avatar_state):
         name="Present Day II",
         era=1,
         starter_code="""
-#-------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 #  Worksheet 2 challenges:
 #    Task 1: Pick up an artefact
-#       - Pick up any artefacts you find on the board. 
-#         If the location you are in contains an artefact, you can pick
-#         it up by returning a PickupAction() instead of a
-#         MoveAction(DIRECTION)
+#       - Pick up any artefacts you find on the board. If the location you are
+#         in contains an artefact, you can pick it up by returning a
+#         PickupAction() instead of a MoveAction(DIRECTION).
 #
 #  New commands: 
 #       - action = PickupAction()
@@ -85,7 +84,7 @@ def next_turn(world_state, avatar_state):
 #       - avatar_state.location -> LOCATION
 #       - MoveAction(DIRECTION)
 #       - world_state.can_move_to(LOCATION) -> True/False
-#-------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 import random
 
 def next_turn(world_state, avatar_state): 
@@ -125,18 +124,20 @@ def next_turn(world_state, avatar_state):
         name="Ancient",
         era=2,
         starter_code="""
-#--------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 #  Worksheet 3 challenges:
 #     Task 1: Direction control
-#       - Return MoveTowardsAction(ARTEFACT) to move towards the
-#         nearest artefact
-#       - You can use world_state.scan_nearby() to get a list of nearby artefacts
-#       - You must check that the list is not empty before reading a value from it
+#       - Return MoveTowardsAction(ARTEFACT) to move towards the nearest
+#         artefact.
+#       - You can use world_state.scan_nearby() to get a list of nearby
+#         artefacts.
+#       - You must check that the list is not empty before reading a value from
+#         it.
 #
 #     Task 2: Pick up five artefacts
-#       - Pick up five artefacts on the board. Check your backpack
-#         to see how many you are holding using `avatar_state.backpack`
-#         Output a message when you have picked up five. 
+#       - Pick up five artefacts on the board. Check your backpack to see how
+#         many you are holding using `avatar_state.backpack`. Output a message
+#         when you have picked up five. 
 #
 #     Task 3: Types of artefacts
 #       - Part 1: Use `artefact.type` where `artefact` is an item of
@@ -156,7 +157,7 @@ def next_turn(world_state, avatar_state):
 #       - MoveAction(DIRECTION)
 #       - world_state.can_move_to(LOCATION) -> True/False
 #       - action = PickupAction()
-#--------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 def next_turn(world_state, avatar_state):
     #  scan_nearby() returns a list of the nearest artefacts
     nearby = world_state.scan_nearby(avatar_state.location)
@@ -164,7 +165,7 @@ def next_turn(world_state, avatar_state):
     #  Head towards the nearest artefact
     nearest = nearby[0]
     action = MoveTowardsAction(nearest)
-    
+
     return action
 """,
         active_image_path="images/worksheets/ancient_active.png",
