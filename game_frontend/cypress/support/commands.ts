@@ -55,7 +55,7 @@ Cypress.Commands.add('studentLogin', () => {
   cy.getCookie('csrftoken').then(csrfToken => {
     cy.request({
       method: 'POST',
-      url: `/login/student/${student_access_code}`,
+      url: `/login/student/${student_access_code}/`,
       failOnStatusCode: true,
       form: true,
       body: {
