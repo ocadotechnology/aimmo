@@ -41,9 +41,9 @@ WORKSHEETS = {
 #
 #    Task 3: Investigate location
 #       - Investigate what `print(avatar_state.location)` tells you and then
-#         check if you can move to the next location 
+#         check if you can move to the next location
 #
-#  New commands: 
+#  New commands:
 #       - MoveAction(DIRECTION)
 #       - avatar_state.location -> LOCATION
 #       - world_state.can_move_to(LOCATION) -> True/False
@@ -77,7 +77,7 @@ def next_turn(world_state, avatar_state):
 #         in contains an artefact, you can pick it up by returning a
 #         PickupAction() instead of a MoveAction(DIRECTION).
 #
-#  New commands: 
+#  New commands:
 #       - action = PickupAction()
 #
 #  Previous commands:
@@ -87,8 +87,8 @@ def next_turn(world_state, avatar_state):
 #-------------------------------------------------------------------------------
 import random
 
-def next_turn(world_state, avatar_state): 
-    #  Choose a random direction to move in 
+def next_turn(world_state, avatar_state):
+    #  Choose a random direction to move in
     number = random.randint(1,4)
     if number == 1:
         new_dir = direction.NORTH
@@ -98,8 +98,7 @@ def next_turn(world_state, avatar_state):
         new_dir = direction.SOUTH
     else:
         new_dir = direction.WEST
-    #  Get details about the location
-    #  you would move onto
+    #  Get details about the location you would move onto
     next_location = avatar_state.location + new_dir
     if world_state.can_move_to(next_location):
         #  This location is free
@@ -110,7 +109,7 @@ def next_turn(world_state, avatar_state):
     return action
 """,
         active_image_path="images/worksheets/future2_active.png",
-        description="Now that you know how to navigate, it’s time to clean up the evidence before leaving this timeline!  Some of the artefacts escaped the vortex and ended up all over the museum - if each of you picks ten of them up, you should be done in time to embark in your journey. But beware! The blue artefacts will need to be separated from the red ones, as they have opposing magnetic fields. Can you tell which one is what type?",
+        description="Now that you know how to navigate, it’s time to clean up the evidence before leaving this timeline! Some of the artefacts escaped the vortex and ended up all over the museum - if each of you picks ten of them up, you should be done in time to embark in your journey. But beware! The blue artefacts will need to be separated from the red ones, as they have opposing magnetic fields. Can you tell which one is what type?",
         image_path="images/worksheets/future.jpg",
         short_description="Now that you know how to navigate, it’s time to clean up the evidence before leaving this timeline!",
         sort_order=200,
@@ -137,7 +136,7 @@ def next_turn(world_state, avatar_state):
 #     Task 2: Pick up five artefacts
 #       - Pick up five artefacts on the board. Check your backpack to see how
 #         many you are holding using `avatar_state.backpack`. Output a message
-#         when you have picked up five. 
+#         when you have picked up five.
 #
 #     Task 3: Types of artefacts
 #       - Part 1: Use `artefact.type` where `artefact` is an item of
@@ -146,7 +145,7 @@ def next_turn(world_state, avatar_state):
 #       - Part 2: Output a summary of your backpack using the same
 #         `artefact.type` as above. e.g. I have 3 keys and 2 chests.
 #
-#  New commands: 
+#  New commands:
 #       - world_state.scan_nearby() -> LIST OF ARTEFACTS
 #       - MoveTowardsAction(ARTEFACT)
 #       - avatar_state.backpack -> LIST OF HELD ARTEFACTS
