@@ -109,7 +109,7 @@ def next_turn(world_state, avatar_state):
     return action
 """,
         active_image_path="images/worksheets/future2_active.png",
-        description="Now that you know how to navigate, it’s time to clean up the evidence before leaving this timeline! Some of the artefacts escaped the vortex and ended up all over the museum - if each of you picks ten of them up, you should be done in time to embark in your journey. But beware! The blue artefacts will need to be separated from the red ones, as they have opposing magnetic fields. Can you tell which one is what type?",
+        description="Now that you know how to navigate, it’s time to clean up the evidence before leaving this timeline!  Some of the artefacts escaped the vortex and ended up all over the museum - if each of you picks one of them up, you should be ready to embark on your journey!",
         image_path="images/worksheets/future.jpg",
         short_description="Now that you know how to navigate, it’s time to clean up the evidence before leaving this timeline!",
         sort_order=200,
@@ -168,7 +168,7 @@ def next_turn(world_state, avatar_state):
     return action
 """,
         active_image_path="images/worksheets/ancient_active.png",
-        description="You are now familiar with your equipment and have managed to unlock the gateway to the first time checkpoint. You find yourself in a strange place, full of familiar structures in the form of ruins. After a few minutes, you hear steps and realise you’re not alone! No time to move around aimlessly now, or you might run into someone! Use your navigating system to scan your surroundings and move only towards the artefacts you want to pick up. Be stealthy!",
+        description="You are now familiar with your equipment and have managed to unlock the gateway to the first time checkpoint. You find yourself in a strange place, full of familiar structures in the form of ruins. You see artefacts of different types scattered around you, where to start? Luckily, your navigator is working... You can use it to scan your surroundings and walk towards the artefacts. If you and your friends pick up five artefacts each, you should be done in no time!",
         image_path="images/worksheets/ancient.jpg",
         short_description="You find yourself in a strange place, full of familiar structures in the form of ruins.",
         sort_order=300,
