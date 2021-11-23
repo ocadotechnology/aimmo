@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v1.2.0 (2021-11-23)
+
+
 ## v1.2.0b645 (2021-11-23)
 ### Feature
 * Remove worksheet model (#1587) ([`424a72c`](https://github.com/ocadotechnology/aimmo/commit/424a72c1f83d52252fcf303c7d5433e8c7b56518))
