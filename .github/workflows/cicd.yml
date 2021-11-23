@@ -27,6 +27,10 @@ jobs:
         run: |
           pip install pipenv
           pipenv install --dev --system
+          # TODO: remove after portal branch is merged
+          pip install -U "git+https://github.com/ocadotechnology/codeforlife-portal@remove-worksheet-model#egg=cfl-common&subdirectory=cfl_common"
+          # TODO: remove after portal branch is merged
+          pip install -U "git+https://github.com/ocadotechnology/codeforlife-portal@remove-worksheet-model#egg=codeforlife-portal"
           cd game_frontend
           yarn --frozen-lockfile
       - name: Run Javascript tests

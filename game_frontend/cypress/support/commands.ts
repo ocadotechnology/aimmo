@@ -48,14 +48,25 @@ Cypress.Commands.add('studentLogin', () => {
       failOnStatusCode: true,
       form: true,
       body: {
-        username: student_username,
-        password,
         access_code: student_access_code,
+        csrfmiddlewaretoken: csrfToken.value,
+      }
+    })
+  cy.getCookie('csrftoken').then(csrfToken => {
+    cy.request({
+      method: 'POST',
+      url: `/login/student/${student_access_code}/`,
+      failOnStatusCode: true,
+      form: true,
+      body: {
+        username: student_username,
+        password: password,
         csrfmiddlewaretoken: csrfToken.value,
       }
     })
     cy.visit('/')
   })
+})
 })
 
 Cypress.Commands.add('logout', () => {
