@@ -1,9 +1,7 @@
-import pytest
 from django.contrib.auth.models import User
-from django.db.models.deletion import ProtectedError
 from django.test import TestCase
 
-from aimmo.models import Game, Worksheet
+from aimmo.models import Game
 
 
 class TestModels(TestCase):
@@ -14,10 +12,7 @@ class TestModels(TestCase):
         Then the game's owner field is set to null.
         """
         user = User.objects.create_user("test", "test@example.com", "password")
-        worksheet = Worksheet.objects.create(
-            name="test worksheet", starter_code="test code"
-        )
-        game = Game(id=1, name="Test Game", worksheet=worksheet)
+        game = Game(id=1, name="Test Game", worksheet_id=1)
         game.owner = user
         game.save()
 
@@ -33,10 +28,7 @@ class TestModels(TestCase):
         Then the game's main_user field is set to null.
         """
         user = User.objects.create_user("test", "test@example.com", "password")
-        worksheet = Worksheet.objects.create(
-            name="test worksheet", starter_code="test code"
-        )
-        game = Game(id=1, name="Test Game", worksheet=worksheet)
+        game = Game(id=1, name="Test Game", worksheet_id=1)
         game.main_user = user
         game.save()
 
@@ -44,20 +36,3 @@ class TestModels(TestCase):
         game = Game.objects.get(id=1)
 
         assert game.main_user is None
-
-    def test_game_worksheet_on_delete(self):
-        """
-        Given a game and its worksheet,
-        When anyone tries to delete the worksheet,
-        Then a ProtectedError is raised and the worksheet isn't deleted.
-        """
-        game = Game(id=1, name="Test Game")
-        worksheet = Worksheet.objects.create(
-            name="test worksheet", starter_code="test code"
-        )
-
-        game.worksheet = worksheet
-        game.save()
-
-        with pytest.raises(ProtectedError):
-            worksheet.delete()

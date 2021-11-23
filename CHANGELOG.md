@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v1.2.1b652 (2021-11-23)
+### Fix
+* Tidy up remove worksheet model (#1589) ([`29ebed2`](https://github.com/ocadotechnology/aimmo/commit/29ebed28b8eef71eeceed39572ac803b28191bd1))
+
+## v1.2.0 (2021-11-23)
+
+
+## v1.2.0b645 (2021-11-23)
+### Feature
+* Remove worksheet model (#1587) ([`424a72c`](https://github.com/ocadotechnology/aimmo/commit/424a72c1f83d52252fcf303c7d5433e8c7b56518))
+
 ## v1.1.3b631 (2021-11-18)
 ### Fix
 * Added checks to sqlite3 and pip (#1585) ([`ec08765`](https://github.com/ocadotechnology/aimmo/commit/ec08765d024a71a1ee2fc1d66088ff8bc67a1072))

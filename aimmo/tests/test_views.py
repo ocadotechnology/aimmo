@@ -13,9 +13,10 @@ from aimmo.game_creator import create_game
 from rest_framework import status
 
 from aimmo import app_settings, models
-from aimmo.models import Game, Worksheet
+from aimmo.models import Game
 from aimmo.serializers import GameSerializer
 from aimmo.views import get_avatar_id
+from aimmo.worksheets import WORKSHEETS, Worksheet
 from unittest.mock import patch
 
 app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
@@ -53,15 +54,9 @@ class TestViews(TestCase):
         cls.klass.save()
         cls.klass2, _, _ = create_class_directly(cls.user.email)
         cls.klass2.save()
-        cls.worksheet: Worksheet = Worksheet.objects.create(
-            name="test worksheet", starter_code="test code 1"
-        )
-        cls.worksheet2: Worksheet = Worksheet.objects.create(
-            name="test worksheet 2", starter_code="test code 2"
-        )
-        cls.game = models.Game(
-            id=1, name="test", game_class=cls.klass, worksheet=cls.worksheet
-        )
+        cls.worksheet: Worksheet = WORKSHEETS.get(1)
+        cls.worksheet2: Worksheet = WORKSHEETS.get(2)
+        cls.game = models.Game(id=1, name="test", game_class=cls.klass, worksheet_id=1)
         cls.game.save()
 
     def setUp(self):
@@ -356,8 +351,7 @@ class TestViews(TestCase):
         Check for 204 when deleting a game
         """
         client = self.login()
-        worksheet = Worksheet.objects.create(name="test", starter_code="test")
-        game2 = models.Game(id=2, name="test", worksheet=worksheet)
+        game2 = models.Game(id=2, name="test", worksheet_id=2)
         game2.save()
 
         response = client.delete(reverse("game-detail", kwargs={"pk": self.game.id}))
@@ -493,15 +487,11 @@ class TestViews(TestCase):
         new_teacher.save()
         new_klass, _, _ = create_class_directly(new_user.email)
         new_user.save()
-        new_game = models.Game(
-            name="test2", game_class=new_klass, worksheet=self.worksheet
-        )
+        new_game = models.Game(name="test2", game_class=new_klass, worksheet_id=1)
         new_game.save()
 
         # Create a game for the second class
-        game2 = models.Game(
-            name="test", game_class=self.klass2, worksheet=self.worksheet
-        )
+        game2 = models.Game(name="test", game_class=self.klass2, worksheet_id=1)
         game2.save()
 
         data = {"game_ids": [self.game.id, game2.id, new_game.id]}
