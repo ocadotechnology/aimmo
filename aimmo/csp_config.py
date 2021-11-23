@@ -8,9 +8,7 @@ CSP_CONFIG = {
         f"{domain()}/static/",
         "https://p.typekit.net/",
     ),
-    "CSP_FONT_SRC": (
-        "https://use.typekit.net/",
-    ),
+    "CSP_FONT_SRC": ("https://use.typekit.net/",),
     "CSP_SCRIPT_SRC": (
         "https://use.typekit.net/mrl4ieu.js",
         "https://pyodide-cdn2.iodide.io/v0.15.0/full/",
