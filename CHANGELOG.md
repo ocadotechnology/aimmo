@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.2.1b652 (2021-11-23)
+### Fix
+* Tidy up remove worksheet model (#1589) ([`29ebed2`](https://github.com/ocadotechnology/aimmo/commit/29ebed28b8eef71eeceed39572ac803b28191bd1))
+
 ## v1.2.0 (2021-11-23)
 
 
