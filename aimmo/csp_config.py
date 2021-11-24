@@ -14,11 +14,13 @@ CSP_CONFIG = {
         "https://pyodide-cdn2.iodide.io/v0.15.0/full/",
     ),
     "CSP_CONNECT_SRC": (
-        "ws://localhost:41949/",
-        "ws://192.168.58.2:7959/socket.io/",
-        "http://192.168.58.2:7959/socket.io/",
         "https://pyodide-cdn2.iodide.io/v0.15.0/full/",
         f"wss://{MODULE_NAME}-aimmo.codeforlife.education/",
         f"https://{MODULE_NAME}-aimmo.codeforlife.education/",
     ),
 }
+
+if MODULE_NAME == "local":
+    CSP_CONFIG["CSP_CONNECT_SRC"] += ("ws://localhost:*/",)
+    CSP_CONFIG["CSP_CONNECT_SRC"] += ("ws://*:*/socket.io/",)
+    CSP_CONFIG["CSP_CONNECT_SRC"] += ("http://*:*/socket.io/",)
