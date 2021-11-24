@@ -21,6 +21,8 @@ CSP_CONFIG = {
 }
 
 if MODULE_NAME == "local":
-    CSP_CONFIG["CSP_CONNECT_SRC"] += ("ws://localhost:*/",)
-    CSP_CONFIG["CSP_CONNECT_SRC"] += ("ws://*:*/socket.io/",)
-    CSP_CONFIG["CSP_CONNECT_SRC"] += ("http://*:*/socket.io/",)
+    CSP_CONFIG["CSP_CONNECT_SRC"] += (
+        "ws://localhost:*/",
+        "ws://*:*/socket.io/",
+        "http://*:*/socket.io/",
+    )
