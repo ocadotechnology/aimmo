@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.3.0b658 (2021-11-24)
+### Feature
+* Implement CSP header (#1586) ([`9253113`](https://github.com/ocadotechnology/aimmo/commit/9253113f356256ed2108a913bcf22b7b19d72d1c))
+
 ## v1.2.1b652 (2021-11-23)
 ### Fix
 * Tidy up remove worksheet model (#1589) ([`29ebed2`](https://github.com/ocadotechnology/aimmo/commit/29ebed28b8eef71eeceed39572ac803b28191bd1))
