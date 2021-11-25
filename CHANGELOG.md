@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v1.3.0 (2021-11-25)
+
+
 ## v1.3.0b658 (2021-11-24)
 ### Feature
 * Implement CSP header (#1586) ([`9253113`](https://github.com/ocadotechnology/aimmo/commit/9253113f356256ed2108a913bcf22b7b19d72d1c))
