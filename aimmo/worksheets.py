@@ -15,8 +15,8 @@ class Worksheet:
     sort_order: int
     thumbnail_image_path: str
     thumbnail_text: str
-    student_pdf_name: str
-    teacher_pdf_name: str
+    student_file_url: str
+    teacher_file_url: str
 
     def __post_init__(self):
         # Remove spaces around starter_code and add a new line
@@ -62,8 +62,8 @@ def next_turn(world_state, avatar_state):
         sort_order=100,
         thumbnail_image_path="images/worksheets/lock.png",
         thumbnail_text="",
-        student_pdf_name="Kurono_challenge_1",
-        teacher_pdf_name="Kurono_teacher_guide_1",
+        student_file_url="Kurono_challenge_1",
+        teacher_file_url="https://code-for-life.gitbook.io/kurono-resources/teacher-guides/teacher-challenge-1-guide",
     ),
     2: Worksheet(
         id=2,
@@ -115,8 +115,8 @@ def next_turn(world_state, avatar_state):
         sort_order=200,
         thumbnail_image_path="images/worksheets/lock.png",
         thumbnail_text="",
-        student_pdf_name="Kurono_challenge_2",
-        teacher_pdf_name="Kurono_teacher_guide_2",
+        student_file_url="Kurono_challenge_1",
+        teacher_file_url="https://code-for-life.gitbook.io/kurono-resources/teacher-guides/teacher-challenge-2-guide",
     ),
     3: Worksheet(
         id=3,
@@ -174,8 +174,8 @@ def next_turn(world_state, avatar_state):
         sort_order=300,
         thumbnail_image_path="images/worksheets/lock.png",
         thumbnail_text="",
-        student_pdf_name="Kurono_challenge_3",
-        teacher_pdf_name="Kurono_teacher_guide_3",
+        student_file_url="Kurono_challenge_1",
+        teacher_file_url="https://code-for-life.gitbook.io/kurono-resources/teacher-guides/teacher-challenge-3-guide",
     ),
     4: Worksheet(
         id=4,
@@ -195,8 +195,8 @@ def next_turn(world_state, avatar_state):
         sort_order=400,
         thumbnail_image_path="",
         thumbnail_text="Coming Soon",
-        student_pdf_name="",
-        teacher_pdf_name="",
+        student_file_url="",
+        teacher_file_url="",
     ),
     5: Worksheet(
         id=5,
@@ -216,8 +216,8 @@ def next_turn(world_state, avatar_state):
         sort_order=500,
         thumbnail_image_path="",
         thumbnail_text="Coming Soon",
-        student_pdf_name="",
-        teacher_pdf_name="",
+        student_file_url="",
+        teacher_file_url="",
     ),
     6: Worksheet(
         id=6,
@@ -237,8 +237,8 @@ def next_turn(world_state, avatar_state):
         sort_order=600,
         thumbnail_image_path="",
         thumbnail_text="Coming Soon",
-        student_pdf_name="",
-        teacher_pdf_name="",
+        student_file_url="",
+        teacher_file_url="",
     ),
 }
 
