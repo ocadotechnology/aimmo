@@ -62,8 +62,8 @@ def next_turn(world_state, avatar_state):
         sort_order=100,
         thumbnail_image_path="images/worksheets/lock.png",
         thumbnail_text="",
-        student_file_url="Kurono_challenge_1",
-        teacher_file_url="https://code-for-life.gitbook.io/kurono-resources/teacher-guides/teacher-challenge-1-guide",
+        student_file_url="https://code-for-life.gitbook.io/learning-resources/student-challenges/student-challenge-1",
+        teacher_file_url="https://code-for-life.gitbook.io/teaching-resources/v/kurono-teaching-resources/teacher-guides/teacher-challenge-1-guide",
     ),
     2: Worksheet(
         id=2,
@@ -115,8 +115,8 @@ def next_turn(world_state, avatar_state):
         sort_order=200,
         thumbnail_image_path="images/worksheets/lock.png",
         thumbnail_text="",
-        student_file_url="Kurono_challenge_1",
-        teacher_file_url="https://code-for-life.gitbook.io/kurono-resources/teacher-guides/teacher-challenge-2-guide",
+        student_file_url="https://code-for-life.gitbook.io/learning-resources/student-challenges/student-challenge-2",
+        teacher_file_url="https://code-for-life.gitbook.io/teaching-resources/v/kurono-teaching-resources/teacher-guides/teacher-challenge-2-guide",
     ),
     3: Worksheet(
         id=3,
@@ -174,8 +174,8 @@ def next_turn(world_state, avatar_state):
         sort_order=300,
         thumbnail_image_path="images/worksheets/lock.png",
         thumbnail_text="",
-        student_file_url="Kurono_challenge_1",
-        teacher_file_url="https://code-for-life.gitbook.io/kurono-resources/teacher-guides/teacher-challenge-3-guide",
+        student_file_url="https://code-for-life.gitbook.io/learning-resources/student-challenges/student-challenge-3",
+        teacher_file_url="https://code-for-life.gitbook.io/teaching-resources/v/kurono-teaching-resources/teacher-guides/teacher-challenge-3-guide",
     ),
     4: Worksheet(
         id=4,
