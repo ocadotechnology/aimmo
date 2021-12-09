@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v1.3.1b671 (2021-12-08)
+### Fix
+* Replace PDF names with Gitbook links (#1592) ([`f85bcdf`](https://github.com/ocadotechnology/aimmo/commit/f85bcdf5b7aec4a96157da7cc8398dc2fbde6334))
+
+## v1.3.0b665 (2021-12-03)
+### Documentation
+* Change play/kurono links in readme (#1591) ([`8c54401`](https://github.com/ocadotechnology/aimmo/commit/8c54401ddbad17fcc5da2e7ed03b31396ba0eeaf))
+
 ## v1.3.0 (2021-11-25)
 
 
