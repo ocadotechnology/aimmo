@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v1.3.1 (2021-12-09)
+
+
 ## v1.3.1b671 (2021-12-08)
 ### Fix
 * Replace PDF names with Gitbook links (#1592) ([`f85bcdf`](https://github.com/ocadotechnology/aimmo/commit/f85bcdf5b7aec4a96157da7cc8398dc2fbde6334))
