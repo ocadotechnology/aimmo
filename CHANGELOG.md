@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v1.3.2 (2021-12-13)
+
+
 ## v1.3.2b678 (2021-12-13)
 ### Fix
 * Upgrade Django to 2.2.25 (#1595) ([`33f4742`](https://github.com/ocadotechnology/aimmo/commit/33f47424e6a96f3309e740a8d046a74ee824141a))
