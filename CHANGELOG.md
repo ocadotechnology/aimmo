@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.3.3b690 (2022-01-12)
+### Fix
+* Update worksheet 2 starter code to contain task 1 (#1599) ([`999f76f`](https://github.com/ocadotechnology/aimmo/commit/999f76fc378cf707209a4e0771524e3096d0b044))
+
 ## v1.3.2b687 (2021-12-13)
 
 
