@@ -70,7 +70,12 @@ def next_turn(world_state, avatar_state):
         starter_code="""
 #-------------------------------------------------------------------------------
 #  Worksheet 2 challenges:
-#    Task 1: Pick up an artefact
+#    Task 1: Avoiding obstacles
+#       - Change the code so that your avatar tries a different direction if
+#         they are unable to move. To avoid repeating code, create a subroutine
+#         called get_random_dir() and use it to return a random direction.
+#
+#    Task 2: Pick up an artefact
 #       - Pick up any artefacts you find on the board. If the location you are
 #         in contains an artefact, you can pick it up by returning a
 #         PickupAction() instead of a MoveAction(DIRECTION).
