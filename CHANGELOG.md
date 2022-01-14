@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v1.3.4b699 (2022-01-14)
+
+
 ## v1.3.4b696 (2022-01-14)
 ### Fix
 * Upgrade Django to 2.2.26 and Django Rest Framework (#1602) ([`2e65fea`](https://github.com/ocadotechnology/aimmo/commit/2e65fead7b8d6c016aa61ca6a679ecd9da464bc5))
