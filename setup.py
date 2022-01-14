@@ -22,7 +22,7 @@ setup(
     package_dir={"aimmo": "aimmo"},
     include_package_data=True,
     install_requires=[
-        "django==2.2.25",
+        "django==2.2.26",
         "django-js-reverse==0.9.1",
         "djangorestframework==3.12.2",
         "eventlet==0.31.0",
