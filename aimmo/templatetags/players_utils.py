@@ -17,7 +17,7 @@ def get_user_playable_games(context, base_url):
         playable_games = user.userprofile.student.class_field.game
     elif logged_in_as_teacher(user):
         playable_games = Game.objects.filter(
-            game_class__teacher=user.userprofile.teacher
+            game_class__teacher=user.userprofile.teacher, is_archived=False
         )
     else:
         playable_games = Game.objects.none()

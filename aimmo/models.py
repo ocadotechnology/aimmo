@@ -4,6 +4,7 @@ from base64 import urlsafe_b64encode
 from common.models import Class
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 
 from aimmo import app_settings
 from aimmo.worksheets import WORKSHEETS
@@ -71,6 +72,8 @@ class Game(models.Model):
     start_width = models.IntegerField(default=31)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=RUNNING)
     worksheet_id = models.IntegerField(default=DEFAULT_WORKSHEET_ID)
+    is_archived = models.BooleanField(default=False)
+    creation_time = models.DateTimeField(default=timezone.now, null=True)
 
     @property
     def is_active(self):
