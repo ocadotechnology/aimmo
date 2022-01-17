@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.0b710 (2022-01-17)
+### Feature
+* Archive game on delete plus data ([`3c40309`](https://github.com/ocadotechnology/aimmo/commit/3c40309a5316f1d5a22e125793c7c1c3b4147c71))
+
 ## v1.3.4b708 (2022-01-15)
 
 
