@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.1b717 (2022-01-17)
+### Fix
+* Aimmo game tidy up + package update ([`226efa3`](https://github.com/ocadotechnology/aimmo/commit/226efa38eab25b6909b7f16fb11068f4e5ef4683))
+
 ## v1.4.0b710 (2022-01-17)
 ### Feature
 * Archive game on delete plus data ([`3c40309`](https://github.com/ocadotechnology/aimmo/commit/3c40309a5316f1d5a22e125793c7c1c3b4147c71))
