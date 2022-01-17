@@ -14,7 +14,7 @@ export const GameViewLayout = styled.div`
 
 export const LoadingBackgroundOverlay = styled.div`
   align-items: center;
-  background-color: ${(props) => props.theme.palette.primary.contrastText};
+  background-color: ${props => props.theme.palette.primary.contrastText};
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -35,18 +35,18 @@ export const Overlay = styled.div`
 `
 
 export const LoadingText = styled(Typography)`
-  padding-top: ${(props) => props.theme.spacing(2)}px;
+  padding-top: ${props => props.theme.spacing(2)}px;
   text-align: center;
 `
 
 export const Compass = styled.img`
-  padding-bottom: ${(props) => props.theme.spacing()}px;
-  padding-left: ${(props) => props.theme.spacing()}px;
+  padding-bottom: ${props => props.theme.spacing()}px;
+  padding-left: ${props => props.theme.spacing()}px;
   position: sticky;
 `
 
 export const PositionedFindMeButton = styled(FindMeButton)`
-  right: ${(props) => props.theme.spacing(3)}px;
+  right: ${props => props.theme.spacing(3)}px;
 `
 
 export default class GameView extends Component {
@@ -56,10 +56,10 @@ export default class GameView extends Component {
     cameraCenteredOnUserAvatar: PropTypes.bool,
     mapPanned: PropTypes.func,
     centerCameraOnUserAvatar: PropTypes.func,
-    environment: PropTypes.object,
+    environment: PropTypes.object
   }
 
-  componentDidMount() {
+  componentDidMount () {
     if (!this.props.gameLoaded) {
       this.props.connectToGame()
     }
@@ -70,17 +70,17 @@ export default class GameView extends Component {
     this.gameEngine = new GameEngine(this.handleMapPanned, environment)
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate (prevProps) {
     this.gameEngine.onUpdate(prevProps, this.props)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     if (this.props.gameLoaded) {
       this.gameEngine.unmount()
     }
   }
 
-  onCanvasLoaded = (canvas) => {
+  onCanvasLoaded = canvas => {
     if (canvas !== null) {
       this.canvas = canvas
     }
@@ -96,24 +96,16 @@ export default class GameView extends Component {
 
   openFreshworksWidget = () => {
     const FreshworksWidget = window.FreshworksWidget
-    FreshworksWidget('open')
+    FreshworksWidget('open');
   }
 
   renderLoadingScreen = () => {
     return (
       <LoadingBackgroundOverlay>
-        <CircularProgress color="inherit" />
-        <LoadingText variant="body1" color="inherit">
+        <CircularProgress color='inherit' />
+        <LoadingText variant='body1' color='inherit'>
           We are building your game... ⏱<br />
-          If the game doesn’t load after 60 seconds, please{' '}
-          <a
-            className="freshdesk__contact-us"
-            onClick={this.openFreshworksWidget}
-            style={{ cursor: 'pointer', textDecoration: 'underline' }}
-          >
-            contact us
-          </a>
-          .
+          If the game doesn’t load after 60 seconds, please <a className="freshdesk__contact-us" onClick={this.openFreshworksWidget} style={{"cursor": "pointer", "textDecoration": "underline",}}>contact us</a>.
         </LoadingText>
       </LoadingBackgroundOverlay>
     )
@@ -123,19 +115,19 @@ export default class GameView extends Component {
     return (
       <Overlay>
         <OverlayElements>
-          <Compass src="/static/images/compass.svg" />
+          <Compass src='/static/images/compass.svg' />
           <PositionedFindMeButton
-            aria-label="Find Me"
+            aria-label='Find Me'
             whenClicked={this.props.centerCameraOnUserAvatar}
             isCameraCenteredOnUserAvatar={this.props.cameraCenteredOnUserAvatar}
-            id="find-me-button"
+            id='find-me-button'
           />
         </OverlayElements>
       </Overlay>
     )
   }
 
-  render() {
+  render () {
     return (
       <GameViewLayout>
         {!this.props.gameLoaded && this.renderLoadingScreen()}
