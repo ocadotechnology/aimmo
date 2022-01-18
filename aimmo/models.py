@@ -38,7 +38,7 @@ class Game(models.Model):
     game_class = models.ForeignKey(
         Class,
         verbose_name="Class",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         blank=True,
         null=True,
     )
