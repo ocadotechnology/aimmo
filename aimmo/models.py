@@ -35,7 +35,7 @@ class Game(models.Model):
         related_name="owned_games",
         on_delete=models.SET_NULL,
     )
-    game_class = models.OneToOneField(
+    game_class = models.ForeignKey(
         Class,
         verbose_name="Class",
         on_delete=models.CASCADE,
