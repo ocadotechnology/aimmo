@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.2 (2022-01-19)
+
+
 ## v1.4.2b730 (2022-01-19)
 ### Fix
 * Temp CI to install latest portal ([`dd78746`](https://github.com/ocadotechnology/aimmo/commit/dd7874613756c701806447ad94eff8759078f0e4))
