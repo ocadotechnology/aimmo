@@ -351,16 +351,38 @@ class TestViews(TestCase):
         Check for 204 when deleting a game
         """
         client = self.login()
-        game2 = models.Game(id=2, name="test", worksheet_id=2)
-        game2.save()
 
-        data = {"game_ids": [self.game.id]}
+        klass, _, _ = create_class_directly("test@example.com", "my class")
+
+        form = AddGameForm(
+            Class.objects.all(),
+            data={"game_class": klass.id},
+        )
+
+        game2 = form.save()
+        assert game2.game_class == klass
+
+        data = {"game_ids": [game2.id]}
         response = client.post(reverse("game-delete-games"), data)
 
         assert response.status_code == 204
         assert models.Game.objects.all().count() == 2
         assert models.Game.objects.filter(is_archived=True).count() == 1
         assert models.Game.objects.filter(is_archived=False).count() == 1
+
+        # then test adding game again for the same class
+        form = AddGameForm(
+            Class.objects.all(),
+            data={"game_class": klass.id},
+        )
+
+        game3 = form.save()
+        assert game3.game_class == klass
+
+        # test only one active game at a time
+        assert (
+            models.Game.objects.filter(game_class=klass, is_archived=False).count() == 1
+        )
 
     def test_delete_non_existent_game(self):
         c = self.login()
