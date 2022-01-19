@@ -351,12 +351,38 @@ class TestViews(TestCase):
         Check for 204 when deleting a game
         """
         client = self.login()
-        game2 = models.Game(id=2, name="test", worksheet_id=2)
-        game2.save()
 
-        response = client.delete(reverse("game-detail", kwargs={"pk": self.game.id}))
-        self.assertEquals(response.status_code, 204)
-        self.assertEquals(len(models.Game.objects.all()), 1)
+        klass, _, _ = create_class_directly("test@example.com", "my class")
+
+        form = AddGameForm(
+            Class.objects.all(),
+            data={"game_class": klass.id},
+        )
+
+        game2 = form.save()
+        assert game2.game_class == klass
+
+        data = {"game_ids": [game2.id]}
+        response = client.post(reverse("game-delete-games"), data)
+
+        assert response.status_code == 204
+        assert models.Game.objects.all().count() == 2
+        assert models.Game.objects.filter(is_archived=True).count() == 1
+        assert models.Game.objects.filter(is_archived=False).count() == 1
+
+        # then test adding game again for the same class
+        form = AddGameForm(
+            Class.objects.all(),
+            data={"game_class": klass.id},
+        )
+
+        game3 = form.save()
+        assert game3.game_class == klass
+
+        # test only one active game at a time
+        assert (
+            models.Game.objects.filter(game_class=klass, is_archived=False).count() == 1
+        )
 
     def test_delete_non_existent_game(self):
         c = self.login()
@@ -505,13 +531,15 @@ class TestViews(TestCase):
         )
         response = client.post(reverse("game-delete-games"), data)
         assert response.status_code == 403
-        assert Game.objects.count() == 3
+        assert Game.objects.filter(is_archived=False).count() == 3
+        assert Game.objects.filter(is_archived=True).count() == 0
 
         # Login as initial teacher and delete games - only his games should be deleted
         client = self.login()
         response = client.post(reverse("game-delete-games"), data)
         assert response.status_code == 204
-        assert Game.objects.count() == 1
+        assert Game.objects.filter(is_archived=False).count() == 1
+        assert Game.objects.filter(is_archived=True).count() == 2
         assert Game.objects.get(pk=new_game.id)
 
     def test_list_running_games(self):

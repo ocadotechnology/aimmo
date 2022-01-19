@@ -89,7 +89,7 @@ class GameViewSet(
 
     def list(self, request):
         response = {}
-        for game in Game.objects.all():
+        for game in Game.objects.filter(is_archived=False):
             serializer = GameSerializer(game)
             response[game.pk] = serializer.data
         return Response(response)
@@ -113,9 +113,14 @@ class GameViewSet(
     )
     def delete_games(self, request):
         game_ids = request.data.getlist("game_ids")
-        Game.objects.filter(
-            pk__in=game_ids, game_class__teacher__new_user=request.user
-        ).delete()
+        games = Game.objects.filter(
+            pk__in=game_ids,
+            game_class__teacher__new_user=request.user,
+            is_archived=False,
+        )
+        for game in games:
+            game.is_archived = True  # mark as deleted/archived
+            game.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

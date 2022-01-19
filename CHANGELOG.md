@@ -2,6 +2,22 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.2b730 (2022-01-19)
+### Fix
+* Temp CI to install latest portal ([`dd78746`](https://github.com/ocadotechnology/aimmo/commit/dd7874613756c701806447ad94eff8759078f0e4))
+* One class can have multiple games ([`610601c`](https://github.com/ocadotechnology/aimmo/commit/610601c0e8cac80cc551cc3c8159113738b6cb66))
+
+## v1.4.1b717 (2022-01-17)
+### Fix
+* Aimmo game tidy up + package update ([`226efa3`](https://github.com/ocadotechnology/aimmo/commit/226efa38eab25b6909b7f16fb11068f4e5ef4683))
+
+## v1.4.0b710 (2022-01-17)
+### Feature
+* Archive game on delete plus data ([`3c40309`](https://github.com/ocadotechnology/aimmo/commit/3c40309a5316f1d5a22e125793c7c1c3b4147c71))
+
+## v1.3.4b708 (2022-01-15)
+
+
 ## v1.3.4 (2022-01-14)
 
 
