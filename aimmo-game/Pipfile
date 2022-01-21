@@ -21,7 +21,6 @@ eventlet = "*"
 [dev-packages]
 pytest = "~=6.2"
 pytest-mock = "*"
-pytest-asyncio = "*"
 black = "==20.8b1"
 httmock = "*"
 asynctest = "*"
