@@ -2,7 +2,6 @@ import asyncio
 import logging
 from typing import TYPE_CHECKING
 
-from metrics import GAME_TURN_TIME
 from simulation.avatar.avatar_manager import AvatarManager
 from simulation.django_communicator import (
     DjangoCommunicator,
@@ -80,11 +79,10 @@ class GameRunner:
         self.game_state.turn_count += 1
 
     async def update(self):
-        with GAME_TURN_TIME():
-            await self.update_avatars()
-            await self.update_simulation(self.turn_collector.collected_turns)
-            self.game_state.avatar_manager.clear_all_avatar_logs()
-            self.turn_collector.new_turn(self.game_state.turn_count)
+        await self.update_avatars()
+        await self.update_simulation(self.turn_collector.collected_turns)
+        self.game_state.avatar_manager.clear_all_avatar_logs()
+        self.turn_collector.new_turn(self.game_state.turn_count)
 
     def _get_task_result_or_stop_loop(self, task):
         try:

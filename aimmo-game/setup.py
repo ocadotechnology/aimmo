@@ -17,7 +17,7 @@ setup(
     tests_require=[
         "pytest",
         "pytest-mock",
-        "pytest-asyncio==0.14.0",  # downgraded because of this issue: https://github.com/pytest-dev/pytest-asyncio/issues/209
+        "pytest-asyncio",
         "httmock",
         "asynctest",
         "hypothesis",
