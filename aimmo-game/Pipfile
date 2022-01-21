@@ -3,28 +3,16 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
-[packages]
-aimmo-game = { path = ".", editable = true }
-docker = "*"
-kubernetes = "*"
-prometheus-client = "*"
-aioresponses = "*"
-grpcio = "*"
-protobuf = "*"
-aiohttp = "*"
-idna-ssl = "*"
-google-api-python-client = "*"
-google-cloud-logging = "*"
-python-socketio = "5.0.3"
-eventlet = "*"
-
 [dev-packages]
 pytest = "~=6.2"
+pytest-pythonpath = "*"
 black = "*"
-httmock = "*"
-asynctest = "*"
-hypothesis = "*"
-aioresponses = "*"
+
+[packages]
+aimmo-game = {editable = true,path = "."}
+docker = "*"
+eventlet = "*"
+kubernetes = "*"
 
 [requires]
 python_version = "3.7"
