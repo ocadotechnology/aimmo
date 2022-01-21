@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
-pytest = "*"
+pytest = "==6"
 pytest-django = "==4.1.0"
 pytest-pythonpath = "*"
 codeforlife-portal = "*"
