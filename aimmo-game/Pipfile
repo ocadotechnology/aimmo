@@ -16,6 +16,7 @@ eventlet = "*"
 google-api-python-client = "*"
 google-cloud-logging = "*"
 kubernetes = "*"
+python-socketio = "5.0.3"
 
 [requires]
 python_version = "3.7"
