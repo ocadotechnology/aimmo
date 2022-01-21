@@ -13,6 +13,8 @@ black = "*"
 aimmo-game = {editable = true,path = "."}
 docker = "*"
 eventlet = "*"
+google-api-python-client = "*"
+google-cloud-logging = "*"
 kubernetes = "*"
 
 [requires]
