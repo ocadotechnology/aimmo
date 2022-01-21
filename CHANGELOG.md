@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.3b760 (2022-01-21)
+### Fix
+* Revert temp CI / portal install ([`02d0374`](https://github.com/ocadotechnology/aimmo/commit/02d0374c5e4542412722106ee37b1210e7ee2105))
+
 ## v1.4.2 (2022-01-19)
 
 
