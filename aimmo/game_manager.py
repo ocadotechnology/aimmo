@@ -37,6 +37,9 @@ class GameManager:
                 selector={"agones.dev/gameserver": game_server_name}
             )
         )
+        LOGGER.warning(f"patch_game_service - game_id {game_id}")
+        LOGGER.warning(f"patch_game_service - game_server_name {game_server_name}")
+        LOGGER.warning(f"patch_game_service - patched_service {patched_service}")
         self.api.patch_namespaced_service(
             self.create_game_name(game_id), K8S_NAMESPACE, patched_service
         )
@@ -132,11 +135,17 @@ class GameManager:
         if game_data_updates is None:
             game_data_updates = {}
 
+        LOGGER.warning(f"recreate_game_server - game_id {game_id}")
+        LOGGER.warning(f"recreate_game_server - game_data_updates {game_data_updates}")
+
         game_data = self.delete_game_server(game_id=game_id)
+        LOGGER.warning(f"recreate_game_server - game_data1 {game_data}")
         game_data.update(game_data_updates)
+        LOGGER.warning(f"recreate_game_server - game_data2 {game_data}")
         game_server_name = self.create_game_server_allocation(
             game_id=game_id, game_data=game_data
         )
+        LOGGER.warning(f"recreate_game_server - game_server_name {game_server_name}")
         self.patch_game_service(game_id=game_id, game_server_name=game_server_name)
 
     def create_game_secret(self, game_id, token):
