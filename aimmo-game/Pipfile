@@ -5,17 +5,18 @@ name = "pypi"
 
 [dev-packages]
 pytest = "~=6.2"
-pytest-asyncio = "==0.17.2"
+pytest-asyncio = "==0.14.0"
 pytest-pythonpath = "*"
-black = "*"
+black = "==20.8b1"
 
 [packages]
 aimmo-game = {editable = true,path = "."}
-docker = "*"
-eventlet = "*"
-google-api-python-client = "*"
-google-cloud-logging = "*"
-kubernetes = "*"
+aiohttp = "==3.7.4"
+docker = "==4.4.4"
+eventlet = "==0.31.0"
+google-api-python-client = "==1.12.8"
+google-cloud-logging = "==2.2.0"
+kubernetes = "==12.0.1"
 python-socketio = "5.0.3"
 
 [requires]

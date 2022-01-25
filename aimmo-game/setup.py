@@ -15,14 +15,14 @@ setup(
         "aiohttp-wsgi",
     ],
     tests_require=[
-        "pytest",
+        "pytest~=6.2",
         "pytest-mock",
-        "pytest-asyncio",
+        "pytest-asyncio==0.14.0",  # downgraded because of this issue: https://github.com/pytest-dev/pytest-asyncio/issues/209
         "httmock",
         "asynctest",
         "hypothesis",
         "mock",
-        "pytest-aiohttp",
+        "pytest-aiohttp==0.3.0",
         "aioresponses",
     ],
     setup_requires=["pytest-runner"],
