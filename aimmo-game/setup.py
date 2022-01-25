@@ -22,7 +22,7 @@ setup(
         "asynctest",
         "hypothesis",
         "mock",
-        "pytest-aiohttp",
+        "pytest-aiohttp==0.3.0",
         "aioresponses",
     ],
     setup_requires=["pytest-runner"],
