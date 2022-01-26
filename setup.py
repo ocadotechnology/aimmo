@@ -28,7 +28,7 @@ setup(
         "eventlet==0.31.0",
         "requests==2.25.0",
         "hypothesis==5.41.3",
-        "kubernetes==20.13.0",
+        "kubernetes==21.7.0",
         "cfl-common",
         "django-csp==3.7",
     ],

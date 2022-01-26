@@ -14,7 +14,7 @@ setup(
         "aiohttp-cors",
         "aiohttp-wsgi",
         "eventlet==0.31.0",
-        "kubernetes==20.13.0",
+        "kubernetes==21.7.0",
         "python-socketio==5.0.3",
         "docker==4.4.4",
         "google-api-python-client==1.12.8",
