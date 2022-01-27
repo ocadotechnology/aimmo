@@ -101,7 +101,7 @@ class GameViewSet(
     def running(self, request):
         response = {
             game.pk: GameSerializer(game).data
-            for game in Game.objects.filter(status=Game.RUNNING)
+            for game in Game.objects.filter(status=Game.RUNNING, is_archived=False)
         }
         return Response(response)
 

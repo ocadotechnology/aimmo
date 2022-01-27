@@ -190,7 +190,13 @@ class KubernetesGameManager(GameManager):
 
         patch = [{"op": "add", "path": "/spec/rules/0/http/paths/-", "value": path}]
 
-        self.networking_api.patch_namespaced_ingress("aimmo-ingress", "default", patch)
+        # This exception is usually triggered locally where there is no ingress.
+        try:
+            self.networking_api.patch_namespaced_ingress(
+                "aimmo-ingress", "default", patch
+            )
+        except ApiException as e:
+            LOGGER.exception(e)
 
     def _remove_path_from_ingress(self, game_id):
         game_name = KubernetesGameManager._create_game_name(game_id)
@@ -200,8 +206,12 @@ class KubernetesGameManager(GameManager):
         )
         try:
             ingress = self.networking_api.list_namespaced_ingress("default").items[0]
+        # These exceptions are usually triggered locally where there is no ingress.
         except IndexError:
             LOGGER.warning("No ingress found to remove path from.")
+            return
+        except ApiException as e:
+            LOGGER.exception(e)
             return
         paths = ingress.spec.rules[0].http.paths
         try:
