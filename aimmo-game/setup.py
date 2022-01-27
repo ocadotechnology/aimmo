@@ -10,9 +10,15 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        "aiohttp",
+        "aiohttp==3.7.4",
         "aiohttp-cors",
         "aiohttp-wsgi",
+        "eventlet==0.31.0",
+        "kubernetes==21.7.0",
+        "python-socketio==5.0.3",
+        "docker==4.4.4",
+        "google-api-python-client==1.12.8",
+        "google-cloud-logging==2.2.0",
     ],
     tests_require=[
         "pytest~=6.2",
