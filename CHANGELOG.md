@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.5 (2022-01-27)
+
+
 ## v1.4.5b768 (2022-01-27)
 ### Fix
 * Changing worksheets (#1612) ([`8123539`](https://github.com/ocadotechnology/aimmo/commit/8123539e6cd17aa7c51faa1e1c147eb32c656a1a))
