@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.4b765 (2022-01-25)
+### Fix
+* Change worksheet (#1610) ([`799dce1`](https://github.com/ocadotechnology/aimmo/commit/799dce1a09bd205ac4695b8ae4521831e29abdaa))
+
 ## v1.4.3b760 (2022-01-21)
 ### Fix
 * Revert temp CI / portal install ([`02d0374`](https://github.com/ocadotechnology/aimmo/commit/02d0374c5e4542412722106ee37b1210e7ee2105))
