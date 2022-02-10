@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.6b782 (2022-02-10)
+
+
+## v1.4.6b776 (2022-02-08)
+### Fix
+* Update starter code for worksheet 3 (#1617) ([`e870b64`](https://github.com/ocadotechnology/aimmo/commit/e870b647561f907ae67f458d2de41de00b7b396e))
+
 ## v1.4.5 (2022-01-27)
 
 
