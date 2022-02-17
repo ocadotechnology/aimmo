@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.7 (2022-02-17)
+
+
 ## v1.4.7b795 (2022-02-14)
 ### Fix
 * Update cookies categories (#1616) ([`fa159e2`](https://github.com/ocadotechnology/aimmo/commit/fa159e27081f012dc4633411ed013b0b5bdf51a7))
