@@ -55,7 +55,7 @@ def test_worksheet_has_new_fields_added(migrator):
 
 
 @pytest.mark.django_db
-def test_worksheet_has_new_fields_added(migrator):
+def test_worksheet_has_new_pdf_name_fields(migrator):
     migrator.apply_initial_migration(
         ("aimmo", "0020_add_info_to_worksheet"),
     )
