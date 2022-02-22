@@ -7,8 +7,6 @@ jobs:
   test:
     name: Run JS/Python/Cypress tests
     runs-on: ubuntu-18.04
-    env:
-      NODE_ENV: production
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -35,6 +33,8 @@ jobs:
           yarn lint
           yarn test --coverage
       - name: Bundle Frontend
+        env:
+          NODE_ENV: production
         run: |
           cd game_frontend
           node djangoBundler.js

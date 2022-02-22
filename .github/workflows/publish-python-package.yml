@@ -10,6 +10,8 @@ jobs:
   publish-pypi-package:
     name: Publish PyPi Package
     runs-on: ubuntu-18.04
+    env:
+      NODE_ENV: production
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -34,8 +36,6 @@ jobs:
       - name: Build worker wheel
         run: ./aimmo_runner/build_worker_wheel.sh
       - name: Bundle Frontend
-        env:
-          NODE_ENV: production
         run: |
           cd game_frontend
           node djangoBundler.js
