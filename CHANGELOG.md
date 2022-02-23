@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.10 (2022-02-23)
+### Fix
+* Remove assertEqual(s) ([#1628](https://github.com/ocadotechnology/aimmo/issues/1628)) ([`3ccbb09`](https://github.com/ocadotechnology/aimmo/commit/3ccbb09db0ec1064e950486fc13d3a07aed95ae5))
+
 ## v1.4.9 (2022-02-23)
 ### Fix
 * Duplicate worksheet fields test ([#1625](https://github.com/ocadotechnology/aimmo/issues/1625)) ([`2d34ed2`](https://github.com/ocadotechnology/aimmo/commit/2d34ed213cc7983eac7aaad895c0d30e10888ad8))
