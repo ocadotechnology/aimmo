@@ -114,10 +114,10 @@ class TestWorldMap(TestCase):
     def test_all_cells(self):
         world_map = WorldMap(generate_grid(), self.settings)
         cell_names = [c.name for c in world_map.all_cells()]
-        self.assertIn("A", cell_names)
-        self.assertIn("B", cell_names)
-        self.assertIn("C", cell_names)
-        self.assertIn("D", cell_names)
+        assert "A" in cell_names
+        assert "B" in cell_names
+        assert "C" in cell_names
+        assert "D" in cell_names
         assert len(cell_names) == 4
 
     def test_score_cells(self):
@@ -131,8 +131,8 @@ class TestWorldMap(TestCase):
         )
         world_map = WorldMap(grid, self.settings)
         cells = list(world_map.score_cells())
-        self.assertIn(score_cell1, cells)
-        self.assertIn(score_cell2, cells)
+        assert score_cell1 in cells
+        assert score_cell2 in cells
         assert len(cells) == 2, "Non-scoring cells present"
 
     def test_potential_spawns(self):
@@ -148,11 +148,11 @@ class TestWorldMap(TestCase):
         world_map = WorldMap(grid, self.settings)
         spawn_location_finder = SpawnLocationFinder(world_map)
         cells = list(spawn_location_finder.potential_spawn_locations())
-        self.assertIn(spawnable1, cells)
-        self.assertIn(spawnable2, cells)
-        self.assertNotIn(score_cell, cells, "Score cells should not be spawns")
-        self.assertNotIn(unhabitable, cells, "Unhabitable cells should not be spawns")
-        self.assertNotIn(filled, cells, "Cells with avatars should not be spawns")
+        assert spawnable1 in cells
+        assert spawnable2 in cells
+        assert score_cell not in cells, "Score cells should not be spawns"
+        assert unhabitable not in cells, "Unhabitable cells should not be spawns"
+        assert filled not in cells, "Cells with avatars should not be spawns"
         assert len(cells) == 2
 
     def test_interactable_cells(self):
@@ -164,8 +164,8 @@ class TestWorldMap(TestCase):
         )
         world_map = WorldMap(grid, self.settings)
         cells = list(world_map.interactable_cells())
-        self.assertIn(pickup_cell1, cells)
-        self.assertIn(pickup_cell2, cells)
+        assert pickup_cell1 in cells
+        assert pickup_cell2 in cells
         assert len(cells) == 2, "Non-pickup cells present"
 
     def test_location_on_map(self):

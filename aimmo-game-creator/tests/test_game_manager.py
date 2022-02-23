@@ -71,7 +71,7 @@ class TestGameManager(unittest.TestCase):
         assert len(self.game_manager.final_games) == 3
         assert len(list(self.game_manager._data.get_games())) == 3
         for i in range(3):
-            self.assertIn(str(i), self.game_manager.final_games)
+            assert str(i) in self.game_manager.final_games
             assert self.game_manager.added_games[str(i)]["settings"] == {
                 "test": i,
                 "test2": "Settings {}".format(i),
@@ -84,7 +84,7 @@ class TestGameManager(unittest.TestCase):
             self.game_manager.update()
             del mocker.value["1"]
             self.game_manager.update()
-        self.assertNotIn(1, self.game_manager.final_games)
+        assert 1 not in self.game_manager.final_games
 
     def test_added_games_given_correct_url(self):
         mocker = RequestMock(3)
