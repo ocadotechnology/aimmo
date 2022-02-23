@@ -75,44 +75,38 @@ class TestViews(TestCase):
     def test_add_new_code(self):
         c = self.login()
         response = c.post(reverse("kurono/code", kwargs={"id": 1}), {"code": self.CODE})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            models.Avatar.objects.get(owner__username="test").code, self.CODE
-        )
+        assert response.status_code == 200
+        assert models.Avatar.objects.get(owner__username="test").code == self.CODE
 
     def test_update_code(self):
         c = self.login()
         models.Avatar(owner=self.user, code="test", game=self.game).save()
         response = c.post(reverse("kurono/code", kwargs={"id": 1}), {"code": self.CODE})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            models.Avatar.objects.get(owner__username="test").code, self.CODE
-        )
+        assert response.status_code == 200
+        assert models.Avatar.objects.get(owner__username="test").code == self.CODE
 
     def test_code_for_non_existent_game(self):
         c = self.login()
         response = c.post(reverse("kurono/code", kwargs={"id": 2}), {"code": self.CODE})
-        self.assertEqual(response.status_code, 404)
+        assert response.status_code == 404
 
     def test_code_for_non_authed_user(self):
         username, password, _ = create_independent_student_directly()
         c = self.login(username=username, password=password)
         response = c.post(reverse("kurono/code", kwargs={"id": 1}), {"code": self.CODE})
-        self.assertEqual(response.status_code, 404)
+        assert response.status_code == 404
 
     def test_worksheet_starter_code(self):
         c = self.login()
         response = c.get(reverse("kurono/code", kwargs={"id": 1}))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            self.worksheet.starter_code, json.loads(response.content)["code"]
-        )
+        assert response.status_code == 200
+        assert self.worksheet.starter_code == json.loads(response.content)["code"]
 
     def test_retrieve_code(self):
         models.Avatar(owner=self.user, code=self.CODE, game=self.game).save()
         c = self.login()
         response = c.get(reverse("kurono/code", kwargs={"id": 1}))
-        self.assertEqual(response.status_code, 200)
+        assert response.status_code == 200
         self.assertJSONEqual(
             response.content,
             {"code": self.CODE, "starterCode": self.game.worksheet.starter_code},
@@ -134,7 +128,7 @@ class TestViews(TestCase):
     def test_play_for_non_existent_game(self):
         c = self.login()
         response = c.get(reverse("kurono/play", kwargs={"id": 2}))
-        self.assertEqual(response.status_code, 404)
+        assert response.status_code == 404
 
     def test_play_for_unauthorised_user(self):
         username, password, _ = create_independent_student_directly()
@@ -150,9 +144,9 @@ class TestViews(TestCase):
         self.game.static_data = '{"test": 1}'
         self.game.save()
         response = c.get(reverse("kurono/play", kwargs={"id": 1}))
-        self.assertEqual(response.status_code, 200)
+        assert response.status_code == 200
         self.assertFalse(response.context["active"])
-        self.assertEqual(response.context["static_data"], '{"test": 1}')
+        assert response.context["static_data"] == '{"test": 1}'
 
     def test_games_api(self):
         self.game.main_user = self.user
@@ -168,7 +162,7 @@ class TestViews(TestCase):
 
     def test_games_api_for_non_existent_game(self):
         response = self._go_to_page("kurono/game_user_details", "id", 5)
-        self.assertEqual(response.status_code, 404)
+        assert response.status_code == 404
 
     def test_stop_game(self):
         game = models.Game.objects.get(id=1)
@@ -183,8 +177,8 @@ class TestViews(TestCase):
             HTTP_GAME_TOKEN=game.auth_token,
         )
         game = models.Game.objects.get(id=1)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(game.status, models.Game.STOPPED)
+        assert response.status_code == 200
+        assert game.status == models.Game.STOPPED
 
     def test_stop_game_no_token(self):
         game = models.Game.objects.get(id=1)
@@ -198,8 +192,8 @@ class TestViews(TestCase):
             content_type="application/json",
         )
         game = models.Game.objects.get(id=1)
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(game.status, models.Game.RUNNING)
+        assert response.status_code == 403
+        assert game.status == models.Game.RUNNING
 
     def test_get_avatar_id_for_non_existent_game(self):
         _, response = get_avatar_id(self.user, 1)
@@ -266,9 +260,9 @@ class TestViews(TestCase):
         current_avatar_id = connection_parameters_response["avatar_id"]
         games_api_users = json.loads(games_api_response.content)["users"]
 
-        self.assertEqual(current_avatar_id, 1)
-        self.assertEqual(len(games_api_users), 1)
-        self.assertEqual(games_api_users[0]["id"], 1)
+        assert current_avatar_id == 1
+        assert len(games_api_users) == 1
+        assert games_api_users[0]["id"] == 1
 
     def test_token_view_get_token_multiple_requests(self):
         """
@@ -278,20 +272,20 @@ class TestViews(TestCase):
         token = models.Game.objects.get(id=1).auth_token
         client = Client()
         response = client.get(reverse("kurono/game_token", kwargs={"id": 1}))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(token, response.json()["token"])
+        assert response.status_code == status.HTTP_200_OK
+        assert token == response.json()["token"]
 
         # Token starts as empty, as long as it is empty, we can make more GET requests
         response = client.get(reverse("kurono/game_token", kwargs={"id": 1}))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(token, response.json()["token"])
+        assert response.status_code == status.HTTP_200_OK
+        assert token == response.json()["token"]
 
     def test_get_token_after_token_set(self):
         token = models.Game.objects.get(id=1).auth_token
         client = Client()
         response = client.get(reverse("kurono/game_token", kwargs={"id": 1}))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(token, response.json()["token"])
+        assert response.status_code == status.HTTP_200_OK
+        assert token == response.json()["token"]
 
         new_token = "aaaaaaaaaaa"
         response = client.patch(
@@ -304,7 +298,7 @@ class TestViews(TestCase):
         response = client.get(
             reverse("kurono/game_token", kwargs={"id": 1}), HTTP_GAME_TOKEN=new_token
         )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        assert response.status_code == status.HTTP_200_OK
 
     def test_patch_token_with_no_token(self):
         """
@@ -313,7 +307,7 @@ class TestViews(TestCase):
         client = Client()
         token = models.Game.objects.get(id=1).auth_token
         response = client.patch(reverse("kurono/game_token", kwargs={"id": 1}))
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_patch_token_with_incorrect_token(self):
         """
@@ -327,7 +321,7 @@ class TestViews(TestCase):
             content_type="application/json",
             HTTP_GAME_TOKEN="INCORRECT TOKEN",
         )
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_patch_token_with_correct_token(self):
         """
@@ -343,8 +337,8 @@ class TestViews(TestCase):
             HTTP_GAME_TOKEN=token,
         )
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(models.Game.objects.get(id=1).auth_token, new_token)
+        assert response.status_code == status.HTTP_200_OK
+        assert models.Game.objects.get(id=1).auth_token == new_token
 
     def test_delete_game(self):
         """
@@ -387,7 +381,7 @@ class TestViews(TestCase):
     def test_delete_non_existent_game(self):
         c = self.login()
         response = c.delete(reverse("game-detail", kwargs={"pk": 2}))
-        self.assertEqual(response.status_code, 404)
+        assert response.status_code == 404
 
     def test_delete_for_unauthorized_user(self):
         """
@@ -396,7 +390,7 @@ class TestViews(TestCase):
         username, password, _ = create_independent_student_directly()
         c = self.login(username=username, password=password)
         response = c.delete(reverse("game-detail", kwargs={"pk": self.game.id}))
-        self.assertEqual(response.status_code, 403)
+        assert response.status_code == 403
 
     def test_game_serializer_settings(self):
         """
@@ -406,9 +400,9 @@ class TestViews(TestCase):
 
         serializer = GameSerializer(self.game)
 
-        self.assertEquals(
-            json.dumps(self.game.settings_as_dict(), sort_keys=True),
-            serializer.data["settings"],
+        assert (
+            json.dumps(self.game.settings_as_dict(), sort_keys=True)
+            == serializer.data["settings"]
         )
 
     def test_list_all_games(self):
@@ -441,7 +435,7 @@ class TestViews(TestCase):
     def test_view_one_game(self):
         client = self.login()
         response = client.get(reverse("game-detail", kwargs={"pk": self.game.id}))
-        self.assertEqual(response.status_code, 200)
+        assert response.status_code == 200
 
     @patch("aimmo.game_creator.GameManager")
     def test_adding_a_game_creates_an_avatar(self, mock_game_manager):

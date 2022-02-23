@@ -19,6 +19,6 @@ class TestKubeComponents(TestCase):
         """
         self.assertIsNotNone(self.secret.metadata)
         self.assertIsNotNone(self.secret.string_data)
-        self.assertEqual(self.secret.metadata.name, "game-1-token")
-        self.assertEqual(self.secret.metadata.namespace, "default")
-        self.assertEqual(self.secret.string_data["token"], "TEST_TOKEN")
+        assert self.secret.metadata.name == "game-1-token"
+        assert self.secret.metadata.namespace == "default"
+        assert self.secret.string_data["token"] == "TEST_TOKEN"

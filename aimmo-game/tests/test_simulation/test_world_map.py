@@ -55,18 +55,16 @@ class TestWorldMap(TestCase):
     def assertGridSize(self, world_map, expected_columns, expected_rows=None):
         if expected_rows is None:
             expected_rows = expected_columns
-        self.assertEqual(world_map.num_rows, expected_rows)
-        self.assertEqual(world_map.num_cols, expected_columns)
-        self.assertEqual(world_map.num_cells, expected_rows * expected_columns)
-        self.assertEqual(
-            len(list(world_map.all_cells())), expected_rows * expected_columns
-        )
+        assert world_map.num_rows == expected_rows
+        assert world_map.num_cols == expected_columns
+        assert world_map.num_cells == expected_rows * expected_columns
+        assert len(list(world_map.all_cells())) == expected_rows * expected_columns
 
     def test_get_all_cells(self):
         world_map = WorldMap(generate_grid(), self.settings)
         cell_list = list(world_map.all_cells())
 
-        self.assertEqual(len(cell_list), 4)
+        assert len(cell_list) == 4
         self.assertTrue(isinstance(cell_list[0], MockCell))
 
     def test_get_all_interactables(self):
@@ -78,7 +76,7 @@ class TestWorldMap(TestCase):
         world_map = WorldMap(grid, self.settings)
         interactable_list = list(world_map.interactable_cells())
 
-        self.assertEqual(len(interactable_list), 1)
+        assert len(interactable_list) == 1
         self.assertTrue(isinstance(interactable_list[0].interactable, _Interactable))
 
     def test_get_all_score_locations(self):
@@ -90,7 +88,7 @@ class TestWorldMap(TestCase):
         world_map = WorldMap(grid, self.settings)
         score_list = list(world_map.score_cells())
 
-        self.assertEqual(len(score_list), 1)
+        assert len(score_list) == 1
         self.assertTrue(isinstance(score_list[0].interactable, ScoreLocation))
 
     def test_get_all_pickup_locations(self):
@@ -102,7 +100,7 @@ class TestWorldMap(TestCase):
         world_map = WorldMap(grid, self.settings)
         pickup_list = list(world_map.pickup_cells())
 
-        self.assertEqual(len(pickup_list), 1)
+        assert len(pickup_list) == 1
         self.assertTrue(isinstance(pickup_list[0].interactable, ALL_PICKUPS))
 
     def test_grid_size(self):
@@ -120,7 +118,7 @@ class TestWorldMap(TestCase):
         self.assertIn("B", cell_names)
         self.assertIn("C", cell_names)
         self.assertIn("D", cell_names)
-        self.assertEqual(len(cell_names), 4)
+        assert len(cell_names) == 4
 
     def test_score_cells(self):
         score_cell1 = MockCell()
@@ -135,7 +133,7 @@ class TestWorldMap(TestCase):
         cells = list(world_map.score_cells())
         self.assertIn(score_cell1, cells)
         self.assertIn(score_cell2, cells)
-        self.assertEqual(len(cells), 2, "Non-scoring cells present")
+        assert len(cells) == 2, "Non-scoring cells present"
 
     def test_potential_spawns(self):
         spawnable1 = MockCell()
@@ -155,7 +153,7 @@ class TestWorldMap(TestCase):
         self.assertNotIn(score_cell, cells, "Score cells should not be spawns")
         self.assertNotIn(unhabitable, cells, "Unhabitable cells should not be spawns")
         self.assertNotIn(filled, cells, "Cells with avatars should not be spawns")
-        self.assertEqual(len(cells), 2)
+        assert len(cells) == 2
 
     def test_interactable_cells(self):
         pickup_cell1 = MockCell(interactable=MockPickup())
@@ -168,7 +166,7 @@ class TestWorldMap(TestCase):
         cells = list(world_map.interactable_cells())
         self.assertIn(pickup_cell1, cells)
         self.assertIn(pickup_cell2, cells)
-        self.assertEqual(len(cells), 2, "Non-pickup cells present")
+        assert len(cells) == 2, "Non-pickup cells present"
 
     def test_location_on_map(self):
         world_map = WorldMap(generate_grid(), self.settings)
@@ -196,7 +194,7 @@ class TestWorldMap(TestCase):
         for x in (0, 1):
             for y in (0, 1):
                 location = Location(x, y)
-                self.assertEqual(world_map.get_cell(location).location, location)
+                assert world_map.get_cell(location).location == location
 
     def test_get_x_off_map(self):
         world_map = WorldMap(generate_grid(), self.settings)
@@ -217,7 +215,7 @@ class TestWorldMap(TestCase):
     def test_random_spawn_location_successful(self):
         cell = MockCell()
         world_map = WorldMap({Location(0, 0): cell}, self.settings)
-        self.assertEqual(world_map.get_random_spawn_location(), cell.location)
+        assert world_map.get_random_spawn_location() == cell.location
 
     def test_random_spawn_location_with_no_candidates(self):
         grid = generate_grid(1, 1)
@@ -272,7 +270,7 @@ class TestWorldMap(TestCase):
             ],
         ]
         world_map = WorldMap(self._grid_from_list(grid), self.settings)
-        self.assertEqual([list(column) for column in world_map], grid)
+        assert [list(column) for column in world_map] == grid
 
     def test_attackable_avatar_returns_none(self):
         world_map = WorldMap(generate_grid(), self.settings)
@@ -284,7 +282,7 @@ class TestWorldMap(TestCase):
         avatar = DummyAvatar()
         world_map = AvatarMap(avatar)
 
-        self.assertEqual(world_map.attackable_avatar(Location(0, 0)), avatar)
+        assert world_map.attackable_avatar(Location(0, 0)) == avatar
 
 
 class TestWorldMapWithOriginCentre(TestWorldMap):
@@ -308,4 +306,4 @@ class TestStaticSpawnDecorator(TestCase):
     def test_spawn_is_static(self):
         decorated_map = WorldMapStaticSpawnDecorator(WorldMap({}, {}), Location(3, 7))
         for _ in range(5):
-            self.assertEqual(decorated_map.get_random_spawn_location(), Location(3, 7))
+            assert decorated_map.get_random_spawn_location() == Location(3, 7)

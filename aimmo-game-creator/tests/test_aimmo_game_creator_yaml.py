@@ -18,9 +18,9 @@ class TestAimmoGameCreatorYaml(TestCase):
         """
         Ensures the yaml template contains the correct string to be replaced.
         """
-        self.assertEqual(
+        assert (
             self.yaml_dict["spec"]["template"]["spec"]["containers"][0]["env"][1][
                 "value"
-            ],
-            "REPLACE_ME",
+            ]
+            == "REPLACE_ME"
         )

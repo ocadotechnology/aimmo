@@ -9,8 +9,8 @@ from simulation.location import Location
 class TestDirection(TestCase):
     def test_good_data(self):
         d = Direction(0, 1)
-        self.assertEqual(d.x, 0)
-        self.assertEqual(d.y, 1)
+        assert d.x == 0
+        assert d.y == 1
 
     def test_high_x(self):
         with self.assertRaises(ValueError):
