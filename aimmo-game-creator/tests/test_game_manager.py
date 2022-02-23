@@ -99,7 +99,7 @@ class TestGameManager(unittest.TestCase):
     def test_token_generation(self):
         token = self.game_manager._generate_game_token()
         assert isinstance(token, str)
-        self.assertLessEqual(len(token), TOKEN_MAX_LENGTH)
+        assert len(token) <= TOKEN_MAX_LENGTH
 
     def test_adding_a_game_creates_game_allocation(self):
         game_manager = KubernetesGameManager("http://test/*")

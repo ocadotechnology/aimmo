@@ -276,7 +276,7 @@ class TestWorldMap(TestCase):
         world_map = WorldMap(generate_grid(), self.settings)
         for x in (0, 1):
             for y in (0, 1):
-                self.assertIsNone(world_map.attackable_avatar(Location(x, y)))
+                assert world_map.attackable_avatar(Location(x, y)) is None
 
     def test_attackable_avatar_returns_avatar(self):
         avatar = DummyAvatar()

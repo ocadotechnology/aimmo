@@ -17,8 +17,8 @@ class TestKubeComponents(TestCase):
         """
         Ensures the secret object is created correctly with the correct data filled in.
         """
-        self.assertIsNotNone(self.secret.metadata)
-        self.assertIsNotNone(self.secret.string_data)
+        assert self.secret.metadata is not None
+        assert self.secret.string_data is not None
         assert self.secret.metadata.name == "game-1-token"
         assert self.secret.metadata.namespace == "default"
         assert self.secret.string_data["token"] == "TEST_TOKEN"
