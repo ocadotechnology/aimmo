@@ -25,12 +25,12 @@ class ConstantRng(object):
 class TestHelperFunctions(unittest.TestCase):
     def test_get_random_edge_index(self):
         map = WorldMap.generate_empty_map(3, 4, {})
-        assert (0, -1) == get_random_edge_index(map, rng=ConstantRng(0)))
-        assert (1, -1) == get_random_edge_index(map, rng=ConstantRng(1)))
-        assert (0, 1) == get_random_edge_index(map, rng=ConstantRng(2)))
-        assert (1, 1) == get_random_edge_index(map, rng=ConstantRng(3)))
-        assert (-1, 0) == get_random_edge_index(map, rng=ConstantRng(4)))
-        assert (2, 0) == get_random_edge_index(map, rng=ConstantRng(5)))
+        assert (0, -1) == get_random_edge_index(map, rng=ConstantRng(0))
+        assert (1, -1) == get_random_edge_index(map, rng=ConstantRng(1))
+        assert (0, 1) == get_random_edge_index(map, rng=ConstantRng(2))
+        assert (1, 1) == get_random_edge_index(map, rng=ConstantRng(3))
+        assert (-1, 0) == get_random_edge_index(map, rng=ConstantRng(4))
+        assert (2, 0) == get_random_edge_index(map, rng=ConstantRng(5))
 
         # Verify no out of bounds
         with self.assertRaisesRegex(ValueError, "Beyond range"):
