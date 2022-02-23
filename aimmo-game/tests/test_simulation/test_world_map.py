@@ -65,7 +65,7 @@ class TestWorldMap(TestCase):
         cell_list = list(world_map.all_cells())
 
         assert len(cell_list) == 4
-        self.assertTrue(isinstance(cell_list[0], MockCell))
+        assert isinstance(cell_list[0], MockCell)
 
     def test_get_all_interactables(self):
         interactable_cell = MockCell()
@@ -77,7 +77,7 @@ class TestWorldMap(TestCase):
         interactable_list = list(world_map.interactable_cells())
 
         assert len(interactable_list) == 1
-        self.assertTrue(isinstance(interactable_list[0].interactable, _Interactable))
+        assert isinstance(interactable_list[0].interactable, _Interactable)
 
     def test_get_all_score_locations(self):
         score_cell = MockCell()
@@ -89,7 +89,7 @@ class TestWorldMap(TestCase):
         score_list = list(world_map.score_cells())
 
         assert len(score_list) == 1
-        self.assertTrue(isinstance(score_list[0].interactable, ScoreLocation))
+        assert isinstance(score_list[0].interactable, ScoreLocation)
 
     def test_get_all_pickup_locations(self):
         pickup_cell = MockCell()
@@ -101,7 +101,7 @@ class TestWorldMap(TestCase):
         pickup_list = list(world_map.pickup_cells())
 
         assert len(pickup_list) == 1
-        self.assertTrue(isinstance(pickup_list[0].interactable, ALL_PICKUPS))
+        assert isinstance(pickup_list[0].interactable, ALL_PICKUPS)
 
     def test_grid_size(self):
         world_map = WorldMap(generate_grid(1, 3), self.settings)
@@ -172,22 +172,22 @@ class TestWorldMap(TestCase):
         world_map = WorldMap(generate_grid(), self.settings)
         for x in (0, 1):
             for y in (0, 1):
-                self.assertTrue(world_map.is_on_map(Location(x, y)))
+                assert world_map.is_on_map(Location(x, y))
 
-        self.assertFalse(world_map.is_on_map(Location(2, 2)))
-        self.assertFalse(world_map.is_on_map(Location(-1, 1)))
+        assert not world_map.is_on_map(Location(2, 2))
+        assert not world_map.is_on_map(Location(-1, 1))
 
     def test_x_off_map(self):
         world_map = WorldMap(generate_grid(), self.settings)
         for y in (0, 1):
-            self.assertFalse(world_map.is_on_map(Location(-1, y)))
-            self.assertFalse(world_map.is_on_map(Location(2, y)))
+            assert not world_map.is_on_map(Location(-1, y))
+            assert not world_map.is_on_map(Location(2, y))
 
     def test_y_off_map(self):
         world_map = WorldMap(generate_grid(), self.settings)
         for x in (0, 1):
-            self.assertFalse(world_map.is_on_map(Location(x, -1)))
-            self.assertFalse(world_map.is_on_map(Location(x, 2)))
+            assert not world_map.is_on_map(Location(x, -1))
+            assert not world_map.is_on_map(Location(x, 2))
 
     def test_get_valid_cell(self):
         world_map = WorldMap(generate_grid(), self.settings)
@@ -227,29 +227,29 @@ class TestWorldMap(TestCase):
     def test_can_move_to(self):
         world_map = WorldMap(generate_grid(), self.settings)
         target = Location(1, 1)
-        self.assertTrue(world_map.can_move_to(target))
+        assert world_map.can_move_to(target)
 
     def test_cannot_move_to_cell_off_grid(self):
         world_map = WorldMap(generate_grid(), self.settings)
         target = Location(4, 1)
-        self.assertFalse(world_map.can_move_to(target))
+        assert not world_map.can_move_to(target)
 
     def test_cannot_move_to_uninhabitable_cell(self):
         target = Location(0, 0)
         cell = MockCell(target, habitable=False)
         world_map = WorldMap({target: cell}, self.settings)
-        self.assertFalse(world_map.can_move_to(target))
+        assert not world_map.can_move_to(target)
 
     def test_cannot_move_to_inhabited_cell(self):
         target = Location(0, 0)
         cell = MockCell(target, avatar=DummyAvatar(target, 0))
         world_map = WorldMap({target: cell}, self.settings)
         target = Location(0, 0)
-        self.assertFalse(world_map.can_move_to(target))
+        assert not world_map.can_move_to(target)
 
     def test_empty_grid(self):
         world_map = WorldMap({}, self.settings)
-        self.assertFalse(world_map.is_on_map(Location(0, 0)))
+        assert not world_map.is_on_map(Location(0, 0))
 
     def test_iter(self):
         grid = [
@@ -299,7 +299,7 @@ class TestWorldMapWithOriginCentre(TestWorldMap):
 
     def test_retrieve_negative(self):
         world_map = WorldMap(generate_grid(3, 3), self.settings)
-        self.assertTrue(world_map.is_on_map(Location(-1, -1)))
+        assert world_map.is_on_map(Location(-1, -1))
 
 
 class TestStaticSpawnDecorator(TestCase):

@@ -21,7 +21,7 @@ class TestCell(TestCase):
     def test_not_equal(self):
         cell1 = Cell(1)
         cell2 = Cell(2)
-        self.assertNotEqual(cell1, cell2)
+        assert cell1 != cell2
 
     def _create_full_cell(self):
         cell = Cell(serializer("location"), False)

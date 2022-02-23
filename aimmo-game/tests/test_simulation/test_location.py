@@ -10,19 +10,16 @@ class TestLocation(TestCase):
         loc_1 = Location(3, 3)
         loc_2 = Location(3, 3)
         assert loc_1 == loc_2
-        self.assertFalse(loc_1 != loc_2)
 
     def test_x_not_equal(self):
         loc_1 = Location(3, 3)
         loc_2 = Location(4, 3)
-        self.assertNotEqual(loc_1, loc_2)
-        self.assertFalse(loc_1 == loc_2)
+        assert loc_1 != loc_2
 
     def test_y_not_equal(self):
         loc_1 = Location(4, 4)
         loc_2 = Location(4, 3)
-        self.assertNotEqual(loc_1, loc_2)
-        self.assertFalse(loc_1 == loc_2)
+        assert loc_1 != loc_2
 
     def test_add(self):
         loc_1 = Location(1, 2)

@@ -33,7 +33,7 @@ class _BaseCases(object):
         def test_effect_expires(self):
             for _ in range(10):
                 self.effect.on_turn()
-            self.assertTrue(self.effect.is_expired)
+            assert self.effect.is_expired
 
 
 class TestInvulnerabilityEffect(_BaseCases.BaseEffectTestCase):

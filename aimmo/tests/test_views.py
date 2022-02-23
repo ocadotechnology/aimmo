@@ -145,7 +145,7 @@ class TestViews(TestCase):
         self.game.save()
         response = c.get(reverse("kurono/play", kwargs={"id": 1}))
         assert response.status_code == 200
-        self.assertFalse(response.context["active"])
+        assert not response.context["active"]
         assert response.context["static_data"] == '{"test": 1}'
 
     def test_games_api(self):

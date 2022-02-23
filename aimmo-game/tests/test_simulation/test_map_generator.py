@@ -76,10 +76,10 @@ class TestMainGenerator(_BaseGeneratorTestCase):
         grid = list(m.all_cells())
         assert len(set(grid)) == len(grid), "Repeats in list"
         for c in grid:
-            self.assertLessEqual(c.location.x, 1)
-            self.assertLessEqual(c.location.y, 2)
-            self.assertGreaterEqual(c.location.x, -1)
-            self.assertGreaterEqual(c.location.y, -1)
+            assert c.location.x <= 1
+            assert c.location.y <= 2
+            assert c.location.x >= -1
+            assert c.location.y >= -1
 
     def test_obstacle_ratio(self):
         m = self.get_map(OBSTACLE_RATIO=0)
@@ -89,7 +89,7 @@ class TestMainGenerator(_BaseGeneratorTestCase):
     def test_map_contains_some_non_habitable_cell(self):
         m = self.get_map()
         obstacle_cells = [cell for cell in m.all_cells() if not cell.habitable]
-        self.assertGreaterEqual(len(obstacle_cells), 1)
+        assert len(obstacle_cells) >= 1
 
     def test_map_contains_some_habitable_cell_on_border(self):
         m = self.get_map(START_WIDTH=4)
@@ -110,7 +110,7 @@ class TestMainGenerator(_BaseGeneratorTestCase):
         edge_cells = (m.get_cell_by_coords(x, y) for (x, y) in edge_coordinates)
         habitable_edge_cells = [cell for cell in edge_cells if cell.habitable]
 
-        self.assertGreaterEqual(len(habitable_edge_cells), 1)
+        assert len(habitable_edge_cells) >= 1
 
     def test_shortest_path(self):
         m = self.get_map(START_WIDTH=4)

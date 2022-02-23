@@ -40,4 +40,4 @@ class TestDirection(TestCase):
     def test_incorrect_equality(self):
         d1 = Direction(0, 1)
         l1 = Location(0, 1)
-        self.assertFalse(d1 == l1)
+        assert d1 != l1
