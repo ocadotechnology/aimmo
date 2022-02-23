@@ -14,9 +14,7 @@ class TestMinikubeRunner(TestCase):
         which we expect to fall back to localhost always.
         """
         created_yaml = create_creator_yaml()
-        self.assertEqual(
-            created_yaml["spec"]["template"]["spec"]["containers"][0]["env"][1][
-                "value"
-            ],
-            "http://127.0.0.1:8000/kurono/api/games/",
+        assert (
+            created_yaml["spec"]["template"]["spec"]["containers"][0]["env"][1]["value"]
+            == "http://127.0.0.1:8000/kurono/api/games/"
         )

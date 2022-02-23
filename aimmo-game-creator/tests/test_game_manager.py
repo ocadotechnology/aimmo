@@ -61,24 +61,22 @@ class TestGameManager(unittest.TestCase):
         mocker = RequestMock(0)
         with HTTMock(mocker):
             self.game_manager.update()
-        self.assertEqual(len(mocker.urls_requested), 1)
+        assert len(mocker.urls_requested) == 1
         self.assertRegex(mocker.urls_requested[0], "http://test/*")
 
     def test_games_added(self):
         mocker = RequestMock(3)
         with HTTMock(mocker):
             self.game_manager.update()
-        self.assertEqual(len(self.game_manager.final_games), 3)
-        self.assertEqual(len(list(self.game_manager._data.get_games())), 3)
+        assert len(self.game_manager.final_games) == 3
+        assert len(list(self.game_manager._data.get_games())) == 3
         for i in range(3):
-            self.assertIn(str(i), self.game_manager.final_games)
-            self.assertEqual(
-                self.game_manager.added_games[str(i)]["settings"],
-                {"test": i, "test2": "Settings {}".format(i)},
-            )
-            self.assertEqual(
-                self.game_manager.added_games[str(i)]["name"], "Game {}".format(i)
-            )
+            assert str(i) in self.game_manager.final_games
+            assert self.game_manager.added_games[str(i)]["settings"] == {
+                "test": i,
+                "test2": "Settings {}".format(i),
+            }
+            assert self.game_manager.added_games[str(i)]["name"] == "Game {}".format(i)
 
     def test_remove_games(self):
         mocker = RequestMock(3)
@@ -86,25 +84,22 @@ class TestGameManager(unittest.TestCase):
             self.game_manager.update()
             del mocker.value["1"]
             self.game_manager.update()
-        self.assertNotIn(1, self.game_manager.final_games)
+        assert 1 not in self.game_manager.final_games
 
     def test_added_games_given_correct_url(self):
         mocker = RequestMock(3)
         with HTTMock(mocker):
             self.game_manager.update()
         for i in range(3):
-            self.assertEqual(
-                self.game_manager.added_games[str(i)]["GAME_API_URL"],
-                "http://test/{}/".format(i),
-            )
-            self.assertEqual(
-                self.game_manager.added_games[str(i)]["name"], "Game {}".format(i)
-            )
+            assert self.game_manager.added_games[str(i)][
+                "GAME_API_URL"
+            ] == "http://test/{}/".format(i)
+            assert self.game_manager.added_games[str(i)]["name"] == "Game {}".format(i)
 
     def test_token_generation(self):
         token = self.game_manager._generate_game_token()
-        self.assertTrue(isinstance(token, str))
-        self.assertLessEqual(len(token), TOKEN_MAX_LENGTH)
+        assert isinstance(token, str)
+        assert len(token) <= TOKEN_MAX_LENGTH
 
     def test_adding_a_game_creates_game_allocation(self):
         game_manager = KubernetesGameManager("http://test/*")
