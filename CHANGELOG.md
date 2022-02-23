@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.8 (2022-02-22)
+### Fix
+* Re-add env setting ([#1627](https://github.com/ocadotechnology/aimmo/issues/1627)) ([`f342bac`](https://github.com/ocadotechnology/aimmo/commit/f342bac2b4ff0ee2721fb8b8e51fb402125ec9d5))
+* Simplify CI flow and use master only ([#1626](https://github.com/ocadotechnology/aimmo/issues/1626)) ([`586fa02`](https://github.com/ocadotechnology/aimmo/commit/586fa02fcc812ba1fd90b808162b2141bd437958))
+
 ## v1.4.7 (2022-02-17)
 
 
