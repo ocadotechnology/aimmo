@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.9 (2022-02-23)
+### Fix
+* Duplicate worksheet fields test ([#1625](https://github.com/ocadotechnology/aimmo/issues/1625)) ([`2d34ed2`](https://github.com/ocadotechnology/aimmo/commit/2d34ed213cc7983eac7aaad895c0d30e10888ad8))
+
 ## v1.4.8 (2022-02-22)
 ### Fix
 * Re-add env setting ([#1627](https://github.com/ocadotechnology/aimmo/issues/1627)) ([`f342bac`](https://github.com/ocadotechnology/aimmo/commit/f342bac2b4ff0ee2721fb8b8e51fb402125ec9d5))
