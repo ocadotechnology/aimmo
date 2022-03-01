@@ -12,8 +12,6 @@ class Worksheet:
     description: str
     image_path: str
     short_description: str
-    sort_order: int
-    thumbnail_image_path: str
     thumbnail_text: str
     student_challenge_url: str
 
@@ -58,8 +56,6 @@ def next_turn(world_state, avatar_state):
         description="While working at the Scriptsonian museum for class credit, you have accidentally activated the mysterious Kurono time machine! The museum’s valuable artefacts are scattered across the shelves, the floor, the whole spacetime continuum. It’s going to take more than just a backpack to collect them all. You need to use the Kurono time machine to get them back – but before jumping in you need to learn how to use its navigation system. This challenge shows you how to move around the map so you don’t run into problems in the future…or past.",
         image_path="images/worksheets/future.jpg",
         short_description="While working at the Scriptsonian museum for class credit, you have accidentally activated the mysterious Kurono time machine!",
-        sort_order=100,
-        thumbnail_image_path="images/worksheets/lock.png",
         thumbnail_text="",
         student_challenge_url="https://code-for-life.gitbook.io/learning-resources/student-challenges/student-challenge-1",
     ),
@@ -115,8 +111,6 @@ def next_turn(world_state, avatar_state):
         description="Now that you know how to navigate, it’s time to clean up the evidence before leaving this timeline!  Some of the artefacts escaped the vortex and ended up all over the museum - if each of you picks one of them up, you should be ready to embark on your journey!",
         image_path="images/worksheets/future.jpg",
         short_description="Now that you know how to navigate, it’s time to clean up the evidence before leaving this timeline!",
-        sort_order=200,
-        thumbnail_image_path="images/worksheets/lock.png",
         thumbnail_text="",
         student_challenge_url="https://code-for-life.gitbook.io/learning-resources/student-challenges/student-challenge-2",
     ),
@@ -169,8 +163,6 @@ def next_turn(world_state, avatar_state):
         description="You are now familiar with your equipment and have managed to unlock the gateway to the first time checkpoint. You find yourself in a strange place, full of familiar structures in the form of ruins. You see artefacts of different types scattered around you, where to start? Luckily, your navigator is working... You can use it to scan your surroundings and walk towards the artefacts. If you and your friends pick up five artefacts each, you should be done in no time!",
         image_path="images/worksheets/ancient.jpg",
         short_description="You find yourself in a strange place, full of familiar structures in the form of ruins.",
-        sort_order=300,
-        thumbnail_image_path="images/worksheets/lock.png",
         thumbnail_text="",
         student_challenge_url="https://code-for-life.gitbook.io/learning-resources/student-challenges/student-challenge-3",
     ),
@@ -189,8 +181,6 @@ def next_turn(world_state, avatar_state):
         description="After successfully collecting all the missing artefacts from the first time checkpoint, you arrive at what looks like the 21st century. You recognise some cars parked here and there, old-fashioned roads and houses like the ones your history teacher told you about. On the bright side, you seem to be alone and safe to walk around... for now. A more recent timeline doesn’t make artefacts easier to find, though. Or at least not the right ones. In this timeline there seems to be an amount of falsified objects that resemble the ones you’re looking for, but aren’t quite genuine. These will have no value in the museum. Your navigation system will be able to tell you whether an object is genuine or not, but it’s up to you to decide which ones to bring back!",
         image_path="images/worksheets/modern.jpg",
         short_description="After successfully collecting all the missing artefacts from the first time checkpoint, you arrive at what looks like the 21st century.",
-        sort_order=400,
-        thumbnail_image_path="",
         thumbnail_text="Coming Soon",
         student_challenge_url="",
     ),
@@ -209,8 +199,6 @@ def next_turn(world_state, avatar_state):
         description="Oh no! Looks like the time machine has taken you even further back in time. You find yourself in a place that looks very… wild. You can hear the occasional distant roaring, added to the buzzing of what sound like  gigantic  insects. Vegetation is so abundant around you that you can barely move. It might be a good idea to use your navigation system to scan all around you before even trying! And don’t forget to keep track of the portal that’ll send you back to your original timeline - just in case something with sharp teeth starts running towards you.",
         image_path="images/worksheets/prehistory.jpg",
         short_description="Oh no! Looks like the time machine has taken you even further back in time. You find yourself in a place that looks very… wild.",
-        sort_order=500,
-        thumbnail_image_path="",
         thumbnail_text="Coming Soon",
         student_challenge_url="",
     ),
@@ -229,8 +217,6 @@ def next_turn(world_state, avatar_state):
         description="You’ve made it! Well, almost. You’re back to your original time, but something seems to be off. The museum is still there, with all the chaos you still need to tidy up, but the environment isn’t quite right. The electronic containers and shelves seem slightly different, and when the AI interlocutor speaks, you don’t recognise the language. It looks like you’ve changed something in the past that affected events in your present! If you manage to extract the metadata from the recovered artefacts, you should be able to find out which timelines they were found in. You can input this text into the Kurono machine to get things back to normal.",
         image_path="images/worksheets/broken_future.jpg",
         short_description="You’ve made it! Well, almost. You’re back to your original time, but something seems to be off.",
-        sort_order=600,
-        thumbnail_image_path="",
         thumbnail_text="Coming Soon",
         student_challenge_url="",
     ),
