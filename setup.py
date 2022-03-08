@@ -32,7 +32,7 @@ setup(
         "cfl-common",
         "django-csp==3.7",
     ],
-    tests_require=["docker >= 3.5, < 3.6", "kubernetes == 5.0.0", "PyYAML == 5.4"],
+    tests_require=["docker >= 3.5, < 3.6", "kubernetes == 21.7.0", "PyYAML == 5.4"],
     version=version,
     zip_safe=False,
 )
