@@ -7,15 +7,14 @@ name = "pypi"
 pytest = "~=6.2"
 pytest-django = "==4.5.2"
 pytest-pythonpath = "*"
-# TODO uncomment after Django upgrade
-# codeforlife-portal = "*"
+codeforlife-portal = "*"
 pytest-cov = "*"
 black = "*"
 django-test-migrations = "==1.2.0"
 
 [packages]
 aimmo = {editable = true,path = "."}
-django-autoconfig = { git = 'https://github.com/ocadotechnology/django-autoconfig.git', ref = 'upgrade-django' }
+django-autoconfig = { git = 'https://github.com/ocadotechnology/django-autoconfig.git', ref = 'master' }
 kubernetes = "*"
 eventlet = "*"
 docker = "*"

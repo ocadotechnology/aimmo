@@ -29,7 +29,7 @@ setup(
         "requests==2.25.0",
         "hypothesis==5.41.3",
         "kubernetes==21.7.0",
-        # "cfl-common",  # TODO uncomment after Django upgrade
+        "cfl-common",
         "django-csp==3.7",
     ],
     tests_require=["docker >= 3.5, < 3.6", "kubernetes == 21.7.0", "PyYAML == 5.4"],
