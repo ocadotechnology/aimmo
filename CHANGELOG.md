@@ -2,6 +2,166 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.1 (2022-03-15)
+### Fix
+* Cleanup ci and update pipfile ([#1632](https://github.com/ocadotechnology/aimmo/issues/1632)) ([`2e7c9cd`](https://github.com/ocadotechnology/aimmo/commit/2e7c9cd8b13a08bbd917a1f6e7adffb527eb2ef1))
+
+## v2.0.0 (2022-03-15)
+### Feature
+* Upgrade from Django 2.2 to 3.2 ([#1631](https://github.com/ocadotechnology/aimmo/issues/1631)) ([`c9faa1c`](https://github.com/ocadotechnology/aimmo/commit/c9faa1c32004225f0da056c9a4bd9c133ece4282))
+
+### Breaking
+* Upgrade from Django 2.2 to 3.2 ([#1631](https://github.com/ocadotechnology/aimmo/issues/1631)) ([`c9faa1c`](https://github.com/ocadotechnology/aimmo/commit/c9faa1c32004225f0da056c9a4bd9c133ece4282))
+
+## v1.4.11 (2022-03-01)
+### Fix
+* Remove unused worksheet fields ([#1630](https://github.com/ocadotechnology/aimmo/issues/1630)) ([`c5c7e76`](https://github.com/ocadotechnology/aimmo/commit/c5c7e763b66e6e1e0243b39b5f48d46c6ba6cb12))
+
+## v1.4.10 (2022-02-23)
+### Fix
+* Remove assertEqual(s) ([#1628](https://github.com/ocadotechnology/aimmo/issues/1628)) ([`3ccbb09`](https://github.com/ocadotechnology/aimmo/commit/3ccbb09db0ec1064e950486fc13d3a07aed95ae5))
+
+## v1.4.9 (2022-02-23)
+### Fix
+* Duplicate worksheet fields test ([#1625](https://github.com/ocadotechnology/aimmo/issues/1625)) ([`2d34ed2`](https://github.com/ocadotechnology/aimmo/commit/2d34ed213cc7983eac7aaad895c0d30e10888ad8))
+
+## v1.4.8 (2022-02-22)
+### Fix
+* Re-add env setting ([#1627](https://github.com/ocadotechnology/aimmo/issues/1627)) ([`f342bac`](https://github.com/ocadotechnology/aimmo/commit/f342bac2b4ff0ee2721fb8b8e51fb402125ec9d5))
+* Simplify CI flow and use master only ([#1626](https://github.com/ocadotechnology/aimmo/issues/1626)) ([`586fa02`](https://github.com/ocadotechnology/aimmo/commit/586fa02fcc812ba1fd90b808162b2141bd437958))
+
+## v1.4.7 (2022-02-17)
+
+
+## v1.4.7b795 (2022-02-14)
+### Fix
+* Update cookies categories (#1616) ([`fa159e2`](https://github.com/ocadotechnology/aimmo/commit/fa159e27081f012dc4633411ed013b0b5bdf51a7))
+
+## v1.4.6b792 (2022-02-11)
+
+
+## v1.4.6 (2022-02-10)
+
+
+## v1.4.6b782 (2022-02-10)
+
+
+## v1.4.6b776 (2022-02-08)
+### Fix
+* Update starter code for worksheet 3 (#1617) ([`e870b64`](https://github.com/ocadotechnology/aimmo/commit/e870b647561f907ae67f458d2de41de00b7b396e))
+
+## v1.4.5 (2022-01-27)
+
+
+## v1.4.5b768 (2022-01-27)
+### Fix
+* Changing worksheets (#1612) ([`8123539`](https://github.com/ocadotechnology/aimmo/commit/8123539e6cd17aa7c51faa1e1c147eb32c656a1a))
+
+## v1.4.4b765 (2022-01-25)
+### Fix
+* Change worksheet (#1610) ([`799dce1`](https://github.com/ocadotechnology/aimmo/commit/799dce1a09bd205ac4695b8ae4521831e29abdaa))
+
+## v1.4.3b760 (2022-01-21)
+### Fix
+* Revert temp CI / portal install ([`02d0374`](https://github.com/ocadotechnology/aimmo/commit/02d0374c5e4542412722106ee37b1210e7ee2105))
+
+## v1.4.2 (2022-01-19)
+
+
+## v1.4.2b730 (2022-01-19)
+### Fix
+* Temp CI to install latest portal ([`dd78746`](https://github.com/ocadotechnology/aimmo/commit/dd7874613756c701806447ad94eff8759078f0e4))
+* One class can have multiple games ([`610601c`](https://github.com/ocadotechnology/aimmo/commit/610601c0e8cac80cc551cc3c8159113738b6cb66))
+
+## v1.4.1b717 (2022-01-17)
+### Fix
+* Aimmo game tidy up + package update ([`226efa3`](https://github.com/ocadotechnology/aimmo/commit/226efa38eab25b6909b7f16fb11068f4e5ef4683))
+
+## v1.4.0b710 (2022-01-17)
+### Feature
+* Archive game on delete plus data ([`3c40309`](https://github.com/ocadotechnology/aimmo/commit/3c40309a5316f1d5a22e125793c7c1c3b4147c71))
+
+## v1.3.4b708 (2022-01-15)
+
+
+## v1.3.4 (2022-01-14)
+
+
+## v1.3.4b699 (2022-01-14)
+
+
+## v1.3.4b696 (2022-01-14)
+### Fix
+* Upgrade Django to 2.2.26 and Django Rest Framework (#1602) ([`2e65fea`](https://github.com/ocadotechnology/aimmo/commit/2e65fead7b8d6c016aa61ca6a679ecd9da464bc5))
+
+
+## v1.3.3 (2022-01-13)
+
+
+## v1.3.3b690 (2022-01-12)
+### Fix
+* Update worksheet 2 starter code to contain task 1 (#1599) ([`999f76f`](https://github.com/ocadotechnology/aimmo/commit/999f76fc378cf707209a4e0771524e3096d0b044))
+
+## v1.3.2b687 (2021-12-13)
+
+
+## v1.3.2 (2021-12-13)
+
+
+## v1.3.2b678 (2021-12-13)
+### Fix
+* Upgrade Django to 2.2.25 (#1595) ([`33f4742`](https://github.com/ocadotechnology/aimmo/commit/33f47424e6a96f3309e740a8d046a74ee824141a))
+
+## v1.3.1 (2021-12-09)
+
+
+## v1.3.1b671 (2021-12-08)
+### Fix
+* Replace PDF names with Gitbook links (#1592) ([`f85bcdf`](https://github.com/ocadotechnology/aimmo/commit/f85bcdf5b7aec4a96157da7cc8398dc2fbde6334))
+
+## v1.3.0b665 (2021-12-03)
+### Documentation
+* Change play/kurono links in readme (#1591) ([`8c54401`](https://github.com/ocadotechnology/aimmo/commit/8c54401ddbad17fcc5da2e7ed03b31396ba0eeaf))
+
+## v1.3.0 (2021-11-25)
+
+
+## v1.3.0b658 (2021-11-24)
+### Feature
+* Implement CSP header (#1586) ([`9253113`](https://github.com/ocadotechnology/aimmo/commit/9253113f356256ed2108a913bcf22b7b19d72d1c))
+
+## v1.2.1b652 (2021-11-23)
+### Fix
+* Tidy up remove worksheet model (#1589) ([`29ebed2`](https://github.com/ocadotechnology/aimmo/commit/29ebed28b8eef71eeceed39572ac803b28191bd1))
+
+## v1.2.0 (2021-11-23)
+
+
+## v1.2.0b645 (2021-11-23)
+### Feature
+* Remove worksheet model (#1587) ([`424a72c`](https://github.com/ocadotechnology/aimmo/commit/424a72c1f83d52252fcf303c7d5433e8c7b56518))
+
+## v1.1.3b631 (2021-11-18)
+### Fix
+* Added checks to sqlite3 and pip (#1585) ([`ec08765`](https://github.com/ocadotechnology/aimmo/commit/ec08765d024a71a1ee2fc1d66088ff8bc67a1072))
+
+## v1.1.2b623 (2021-11-08)
+### Fix
+* Removed extra variables and print statement from cmdtest ([`8712f40`](https://github.com/ocadotechnology/aimmo/commit/8712f40fc26b9e5eab5262555e973a0089c93658))
+* Set nodejs_install for version 14 for both mac and linux ([`e046b00`](https://github.com/ocadotechnology/aimmo/commit/e046b00ea36afba62c42c64bb4a41223011c944a))
+* Fixed student profile login in CI/CD ([`fc21a2c`](https://github.com/ocadotechnology/aimmo/commit/fc21a2cf7fb25a609b9b10ae9fda40d5cf512e48))
+* Fixed message, include nodejs in mac and fixed the message ([`47d3f5b`](https://github.com/ocadotechnology/aimmo/commit/47d3f5b96d027131755bd18546a9a6375e8a4dbc))
+* Removed whitespace ([`0725065`](https://github.com/ocadotechnology/aimmo/commit/0725065c0d0ea9e728bf977578d93eb79dd50d34))
+* Docker, kubernetes, helm and cmdtest fixed ([`e7d0383`](https://github.com/ocadotechnology/aimmo/commit/e7d0383014e8b33397d138625d2c159fb728b29c))
+* Docker, kubernetes, helm and cmdtest fixed ([`9ee84d0`](https://github.com/ocadotechnology/aimmo/commit/9ee84d07ab770a3d75b44d7bb8942dcbb48c8346))
+* Cmdtest fix, init docker repository and install docker ([`2ccd88f`](https://github.com/ocadotechnology/aimmo/commit/2ccd88f4fd55da04d2b670bdd39b03e9553266f8))
+* Init docker repository, install docker and cmdtest fix ([`66dde70`](https://github.com/ocadotechnology/aimmo/commit/66dde702b2e0610692a4111048d08d6580a32d6e))
+* Fixed nodejs not downloading the correct version ([`973e426`](https://github.com/ocadotechnology/aimmo/commit/973e426e211eb8613c37b3c74db8d1cace2593c2))
+
+## v1.1.1b612 (2021-10-25)
+### Fix
+* Fix aimmo setup script for mac and linux (#1568) ([`859f871`](https://github.com/ocadotechnology/aimmo/commit/859f8711be927fff90e38f1c66dafdf68da832ec))
+
 ## v1.1.0 (2021-10-14)
 
 

@@ -6,18 +6,12 @@ from common.permissions import logged_in_as_student, logged_in_as_teacher
 register = template.Library()
 
 
-@register.inclusion_tag("players/dropdown.html", takes_context=True)
-def game_dropdown_list(context, base_url):
-    return get_user_playable_games(context, base_url)
-
-
 def get_user_playable_games(context, base_url):
+    # Only called by teacher to create games table
     user = context.request.user
-    if logged_in_as_student(user):
-        playable_games = user.userprofile.student.class_field.game
-    elif logged_in_as_teacher(user):
+    if logged_in_as_teacher(user):
         playable_games = Game.objects.filter(
-            game_class__teacher=user.userprofile.teacher
+            game_class__teacher=user.userprofile.teacher, is_archived=False
         )
     else:
         playable_games = Game.objects.none()

@@ -5,11 +5,7 @@ coverage:
 
 ignore:
   - "aimmo_setup.py"
-  - "all_tests.py"
   - "run.py"
-  - "docs/*"
-  - "docs/**/*"
-  - "docs/**/**/*"
   - "aimmo/static/*"
   - "aimmo/static/**/*"
   - "aimmo/static/**/**/*"
@@ -18,6 +14,8 @@ ignore:
   - "aimmo_runner/*"
   - "aimmo_runner/**/*"
   - "test_utils/*"
+  - "aimmo/autoconfig.py"
+  - "setup.py"
 
 comment:
   layout: "reach, diff, flags, files"

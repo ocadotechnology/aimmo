@@ -25,12 +25,12 @@ class ConstantRng(object):
 class TestHelperFunctions(unittest.TestCase):
     def test_get_random_edge_index(self):
         map = WorldMap.generate_empty_map(3, 4, {})
-        self.assertEqual((0, -1), get_random_edge_index(map, rng=ConstantRng(0)))
-        self.assertEqual((1, -1), get_random_edge_index(map, rng=ConstantRng(1)))
-        self.assertEqual((0, 1), get_random_edge_index(map, rng=ConstantRng(2)))
-        self.assertEqual((1, 1), get_random_edge_index(map, rng=ConstantRng(3)))
-        self.assertEqual((-1, 0), get_random_edge_index(map, rng=ConstantRng(4)))
-        self.assertEqual((2, 0), get_random_edge_index(map, rng=ConstantRng(5)))
+        assert (0, -1) == get_random_edge_index(map, rng=ConstantRng(0))
+        assert (1, -1) == get_random_edge_index(map, rng=ConstantRng(1))
+        assert (0, 1) == get_random_edge_index(map, rng=ConstantRng(2))
+        assert (1, 1) == get_random_edge_index(map, rng=ConstantRng(3))
+        assert (-1, 0) == get_random_edge_index(map, rng=ConstantRng(4))
+        assert (2, 0) == get_random_edge_index(map, rng=ConstantRng(5))
 
         # Verify no out of bounds
         with self.assertRaisesRegex(ValueError, "Beyond range"):
@@ -46,7 +46,7 @@ class TestHelperFunctions(unittest.TestCase):
         actual = frozenset(
             get_random_edge_index(map, rng=ConstantRng(i)) for i in range(6)
         )
-        self.assertEqual(expected, actual)
+        assert expected == actual
 
     def test_out_of_bounds_random_edge(self):
         map = WorldMap.generate_empty_map(3, 4, {})
@@ -74,22 +74,22 @@ class TestMainGenerator(_BaseGeneratorTestCase):
     def test_map_dimensions(self):
         m = self.get_map()
         grid = list(m.all_cells())
-        self.assertEqual(len(set(grid)), len(grid), "Repeats in list")
+        assert len(set(grid)) == len(grid), "Repeats in list"
         for c in grid:
-            self.assertLessEqual(c.location.x, 1)
-            self.assertLessEqual(c.location.y, 2)
-            self.assertGreaterEqual(c.location.x, -1)
-            self.assertGreaterEqual(c.location.y, -1)
+            assert c.location.x <= 1
+            assert c.location.y <= 2
+            assert c.location.x >= -1
+            assert c.location.y >= -1
 
     def test_obstacle_ratio(self):
         m = self.get_map(OBSTACLE_RATIO=0)
         obstacle_cells = [cell for cell in m.all_cells() if not cell.habitable]
-        self.assertEqual(len(obstacle_cells), 0)
+        assert len(obstacle_cells) == 0
 
     def test_map_contains_some_non_habitable_cell(self):
         m = self.get_map()
         obstacle_cells = [cell for cell in m.all_cells() if not cell.habitable]
-        self.assertGreaterEqual(len(obstacle_cells), 1)
+        assert len(obstacle_cells) >= 1
 
     def test_map_contains_some_habitable_cell_on_border(self):
         m = self.get_map(START_WIDTH=4)
@@ -110,7 +110,7 @@ class TestMainGenerator(_BaseGeneratorTestCase):
         edge_cells = (m.get_cell_by_coords(x, y) for (x, y) in edge_coordinates)
         habitable_edge_cells = [cell for cell in edge_cells if cell.habitable]
 
-        self.assertGreaterEqual(len(habitable_edge_cells), 1)
+        assert len(habitable_edge_cells) >= 1
 
     def test_shortest_path(self):
         m = self.get_map(START_WIDTH=4)

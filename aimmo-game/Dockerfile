@@ -1,11 +1,11 @@
-FROM python:3.7.7-buster as builder
+FROM python:3.7.12-buster as builder
 LABEL Author='codeforlife@ocado.com'
 
 RUN pip install pipenv=="2018.11.26"
 COPY ["Pipfile", "Pipfile.lock", "setup.py", "./"]
 RUN pipenv install --system --deploy
 
-FROM python:3.7.7-buster as base
+FROM python:3.7.12-buster as base
 COPY --from=builder /usr/local/lib/python3.7/site-packages /usr/local/lib/python3.7/site-packages
 COPY . .
 

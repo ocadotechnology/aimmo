@@ -2,7 +2,7 @@ import { hasAnalyticsCookiesConsent } from './index'
 
 describe('hasAnalyticsCookiesConsent', () => {
   it('returns true when OnetrustActiveGroups contains analytics cookies consent', () => {
-    window.OnetrustActiveGroups = 'C0001,C0002'
+    window.OnetrustActiveGroups = 'CL001,CL002'
     expect(hasAnalyticsCookiesConsent()).toBe(true)
   })
 
@@ -10,7 +10,7 @@ describe('hasAnalyticsCookiesConsent', () => {
     window.OnetrustActiveGroups = undefined
     expect(hasAnalyticsCookiesConsent()).toBe(false)
 
-    window.OnetrustActiveGroups = 'C0001,C0003'
+    window.OnetrustActiveGroups = 'CL001,CL003'
     expect(hasAnalyticsCookiesConsent()).toBe(false)
   })
 })

@@ -4,9 +4,10 @@ from base64 import urlsafe_b64encode
 from common.models import Class
 from django.contrib.auth.models import User
 from django.db import models
-from wagtail.snippets.models import register_snippet
+from django.utils import timezone
 
 from aimmo import app_settings
+from aimmo.worksheets import WORKSHEETS
 
 DEFAULT_WORKSHEET_ID = 1
 
@@ -17,43 +18,6 @@ GAME_GENERATORS = [("Main", "Open World")] + [  # Default
 
 def generate_auth_token():
     return urlsafe_b64encode(urandom(16))
-
-
-class WorksheetManager(models.Manager):
-    def sorted(self):
-        return self.get_queryset().order_by("sort_order")
-
-
-@register_snippet
-class Worksheet(models.Model):
-    ERA_CHOICES = [
-        (1, "future"),
-        (2, "ancient"),
-        (3, "modern day"),
-        (4, "prehistoric"),
-        (5, "broken future"),
-    ]
-
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
-    short_description = models.TextField(blank=True)
-    image_path = models.CharField(max_length=255, blank=True)
-    active_image_path = models.CharField(max_length=255, blank=True)
-    era = models.PositiveSmallIntegerField(
-        choices=ERA_CHOICES, default=ERA_CHOICES[0][0]
-    )
-    thumbnail_text = models.CharField(max_length=100, blank=True)
-    thumbnail_image_path = models.CharField(max_length=255, blank=True)
-    teacher_pdf_name = models.CharField(max_length=255, blank=True)
-    student_pdf_name = models.CharField(max_length=255, blank=True)
-    sort_order = models.IntegerField(default=0)
-
-    objects = WorksheetManager()
-
-    starter_code = models.TextField()
-
-    def __str__(self):
-        return f"{self.id}: {self.name}"
 
 
 class Game(models.Model):
@@ -71,10 +35,10 @@ class Game(models.Model):
         related_name="owned_games",
         on_delete=models.SET_NULL,
     )
-    game_class = models.OneToOneField(
+    game_class = models.ForeignKey(
         Class,
         verbose_name="Class",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         blank=True,
         null=True,
     )
@@ -107,13 +71,17 @@ class Game(models.Model):
     start_height = models.IntegerField(default=31)
     start_width = models.IntegerField(default=31)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=RUNNING)
-    worksheet = models.ForeignKey(
-        Worksheet, on_delete=models.PROTECT, default=DEFAULT_WORKSHEET_ID
-    )
+    worksheet_id = models.IntegerField(default=DEFAULT_WORKSHEET_ID)
+    is_archived = models.BooleanField(default=False)
+    creation_time = models.DateTimeField(default=timezone.now, null=True)
 
     @property
     def is_active(self):
         return not self.completed
+
+    @property
+    def worksheet(self):
+        return WORKSHEETS.get(self.worksheet_id)
 
     def __str__(self):
         return str(self.id)

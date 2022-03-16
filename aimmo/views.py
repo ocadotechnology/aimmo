@@ -90,7 +90,7 @@ class GameViewSet(
 
     def list(self, request):
         response = {}
-        for game in Game.objects.all():
+        for game in Game.objects.filter(is_archived=False):
             serializer = GameSerializer(game)
             response[game.pk] = serializer.data
         return Response(response)
@@ -108,7 +108,7 @@ class GameViewSet(
     def running(self, request):
         response = {
             game.pk: GameSerializer(game).data
-            for game in Game.objects.filter(status=Game.RUNNING)
+            for game in Game.objects.filter(status=Game.RUNNING, is_archived=False)
         }
         return Response(response)
 
@@ -123,7 +123,7 @@ class GameViewSet(
 
         with transaction.atomic():
             games_to_delete = Game.objects.select_for_update().filter(
-                pk__in=game_ids, game_class__teacher__new_user=request.user
+                pk__in=game_ids, game_class__teacher__new_user=request.user, is_archived=False,
             )
             try:
                 game_manager = GameManager()
@@ -136,9 +136,10 @@ class GameViewSet(
                 # Re-raise exception so that atomic transaction reverts
                 raise exception
 
-            # Delete the games from the database
-            games_to_delete.delete()
-
+        # Archive the games in the database
+        for game in games:
+            game.is_archived = True  # mark as deleted/archived
+            game.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

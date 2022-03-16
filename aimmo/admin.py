@@ -2,12 +2,12 @@ from __future__ import absolute_import
 
 from django.contrib import admin
 
-from .models import Avatar, Game, Worksheet
+from .models import Avatar, Game
 
 
 class GameDataAdmin(admin.ModelAdmin):
     search_fields = ["id", "owner__username", "owner__email"]
-    list_display = ["id", "owner", "game_class", "school", "worksheet", "status"]
+    list_display = ["id", "owner", "game_class", "school", "worksheet_id", "status"]
     raw_id_fields = ["owner", "main_user", "can_play", "game_class"]
     readonly_fields = ["players", "auth_token"]
 
@@ -38,11 +38,5 @@ class AvatarDataAdmin(admin.ModelAdmin):
         return obj.game
 
 
-class WorksheetDataAdmin(admin.ModelAdmin):
-    search_fields = ["id", "name", "era"]
-    list_display = ["id", "name", "era"]
-
-
 admin.site.register(Game, GameDataAdmin)
 admin.site.register(Avatar, AvatarDataAdmin)
-admin.site.register(Worksheet, WorksheetDataAdmin)
