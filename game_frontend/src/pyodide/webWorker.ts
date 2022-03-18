@@ -99,8 +99,12 @@ export async function updateAvatarCode(
 
   try {
     await pyodide.runPythonAsync(userCode)
+    let userPythonCode = userCode.replace(/\s*#.*/gm, "")
     if (gameState) {
-      return computeNextAction(gameState, playerAvatarID)
+      computeNextAction(gameState, playerAvatarID).then(result => {
+        checkIfBadgeEarned(result, userPythonCode, gameState, playerAvatarID)
+        return result
+      })
     }
     return Promise.resolve({
       action: { action_type: 'wait' },
@@ -115,6 +119,79 @@ export async function updateAvatarCode(
       turnCount: turnCount
     })
   }
+}
+
+function checkIfBadgeEarned(result: any, userPythonCode: string, gameState: any, playerAvatarId: number) {
+  let badges = [
+    {id: 1, trigger: badge1Trigger(result), earned: false},
+    {id: 2, trigger: badge2Trigger(userPythonCode), earned: false},
+    {id: 3, trigger: badge3Trigger(result, userPythonCode, gameState, playerAvatarId), earned: false},
+  ]
+
+  for (let badge of badges) {
+    if (!badge.earned && badge.trigger) {
+      badge.earned = true
+      result.badge = badge
+      console.log("You've earned a new badge!")
+      break
+    }
+    else {
+      result.badge = null
+    }
+  }
+}
+
+function badge1Trigger(result: any): boolean {
+  return result.action.action_type === "move" && JSON.stringify(result.action.options.direction) != JSON.stringify({x: 0, y: 1})
+}
+
+function badge2Trigger(userPythonCode: string): boolean {
+  // Check code contains keywords
+  const substrings = ["import random", "randint(", "direction.NORTH", "direction.EAST", "direction.SOUTH", "direction.WEST", "if ", "elif ", "else:"]
+  return substrings.every(substring =>
+    userPythonCode.includes(substring)
+  )
+}
+
+function badge3Trigger(result: any, userPythonCode: string, gameState: any, playerAvatarId: number): boolean {
+  // Check code contains keywords
+  const substrings = ["world_state.can_move_to(", "print(", "if ", ]
+  let codeContainsKeywords = substrings.every((substring) =>
+    userPythonCode.includes(substring)
+  )
+
+  // Check action is move action
+  let isMoveAction = result.action.action_type === "move"
+
+  // Check next cell is available to move onto
+  let moveDirection = result.action.options.direction
+  let avatarLocation = null
+
+  for (let player of gameState.players) {
+    if (player.id == playerAvatarId) {
+      avatarLocation = player.location
+    }
+  }
+
+  let nextCellLocation = {x: avatarLocation.x + moveDirection.x, y: avatarLocation.y + moveDirection.y}
+  let isNextCellFree = true
+  let isNextCellInMap = nextCellLocation.x <= 15 && nextCellLocation.x >= -15 && nextCellLocation.y <= 15 && nextCellLocation.y >= -15
+
+  if (isNextCellInMap) {
+    let obstacles = gameState.obstacles
+
+    for (let obstacle of obstacles) {
+      let obstacleLocation = obstacle.location
+      if (JSON.stringify(obstacleLocation) == JSON.stringify(nextCellLocation)) {
+        isNextCellFree = false
+      }
+    }
+  }
+  else {
+    isNextCellFree = false
+  }
+
+  return codeContainsKeywords && isMoveAction && isNextCellFree
 }
 
 async function setAvatarCodeToWaitActionOnError() {
