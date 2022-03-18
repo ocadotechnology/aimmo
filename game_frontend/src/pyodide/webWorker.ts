@@ -99,7 +99,7 @@ export async function updateAvatarCode(
 
   try {
     await pyodide.runPythonAsync(userCode)
-    let userPythonCode = userCode.replace(/\s*#.*/gm, "")
+    let userPythonCode = userCode.replace(/\s*#.*/gm, "") // Remove all comment lines from the user's code
     if (gameState) {
       computeNextAction(gameState, playerAvatarID).then(result => {
         checkIfBadgeEarned(result, userPythonCode, gameState, playerAvatarID)
@@ -121,7 +121,9 @@ export async function updateAvatarCode(
   }
 }
 
+//TODO: There is no check at the moment of which worksheet this is for. This will run for all worksheets at the minute.
 function checkIfBadgeEarned(result: any, userPythonCode: string, gameState: any, playerAvatarId: number) {
+  //TODO: The badge data needs to be stored somewhere else, and the check on whether it has been earned needs to be done from the database.
   let badges = [
     {id: 1, trigger: badge1Trigger(result), earned: false},
     {id: 2, trigger: badge2Trigger(userPythonCode), earned: false},
@@ -130,9 +132,9 @@ function checkIfBadgeEarned(result: any, userPythonCode: string, gameState: any,
 
   for (let badge of badges) {
     if (!badge.earned && badge.trigger) {
-      badge.earned = true
-      result.badge = badge
-      console.log("You've earned a new badge!")
+      badge.earned = true //TODO: Needs to be connected to the DB / User object (so probably needs to be done in the game not the frontend)
+      result.badge = badge //TODO: This adds a "badge" property to the turn result, the interface needs to be updated maybe to reflect it
+      console.log("You've earned a new badge!") //TODO: This is where the frontend could show the banner and badge image maybe
       break
     }
     else {
@@ -142,6 +144,7 @@ function checkIfBadgeEarned(result: any, userPythonCode: string, gameState: any,
 }
 
 function badge1Trigger(result: any): boolean {
+  // Check the code returns a move action other than NORTH
   return result.action.action_type === "move" && JSON.stringify(result.action.options.direction) != JSON.stringify({x: 0, y: 1})
 }
 
