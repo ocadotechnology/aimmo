@@ -5,12 +5,12 @@ name = "pypi"
 
 [dev-packages]
 pytest = "~=6.2"
-pytest-django = "==4.1.0"
+pytest-django = "==4.5.2"
 pytest-pythonpath = "*"
 codeforlife-portal = "*"
 pytest-cov = "*"
 black = "*"
-django-test-migrations = "==1.1.0"
+django-test-migrations = "==1.2.0"
 
 [packages]
 aimmo = {editable = true,path = "."}

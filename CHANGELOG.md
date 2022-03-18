@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.1 (2022-03-15)
+### Fix
+* Cleanup ci and update pipfile ([#1632](https://github.com/ocadotechnology/aimmo/issues/1632)) ([`2e7c9cd`](https://github.com/ocadotechnology/aimmo/commit/2e7c9cd8b13a08bbd917a1f6e7adffb527eb2ef1))
+
+## v2.0.0 (2022-03-15)
+### Feature
+* Upgrade from Django 2.2 to 3.2 ([#1631](https://github.com/ocadotechnology/aimmo/issues/1631)) ([`c9faa1c`](https://github.com/ocadotechnology/aimmo/commit/c9faa1c32004225f0da056c9a4bd9c133ece4282))
+
+### Breaking
+* Upgrade from Django 2.2 to 3.2 ([#1631](https://github.com/ocadotechnology/aimmo/issues/1631)) ([`c9faa1c`](https://github.com/ocadotechnology/aimmo/commit/c9faa1c32004225f0da056c9a4bd9c133ece4282))
+
 ## v1.4.11 (2022-03-01)
 ### Fix
 * Remove unused worksheet fields ([#1630](https://github.com/ocadotechnology/aimmo/issues/1630)) ([`c5c7e76`](https://github.com/ocadotechnology/aimmo/commit/c5c7e763b66e6e1e0243b39b5f48d46c6ba6cb12))

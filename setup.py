@@ -22,9 +22,9 @@ setup(
     package_dir={"aimmo": "aimmo"},
     include_package_data=True,
     install_requires=[
-        "django==2.2.27",
+        "django==3.2.12",
         "django-js-reverse==0.9.1",
-        "djangorestframework==3.12.2",
+        "djangorestframework==3.13.1",
         "eventlet==0.31.0",
         "requests==2.25.0",
         "hypothesis==5.41.3",
@@ -32,7 +32,7 @@ setup(
         "cfl-common",
         "django-csp==3.7",
     ],
-    tests_require=["docker >= 3.5, < 3.6", "kubernetes == 5.0.0", "PyYAML == 5.4"],
+    tests_require=["docker >= 3.5, < 3.6", "kubernetes == 21.7.0", "PyYAML == 5.4"],
     version=version,
     zip_safe=False,
 )
