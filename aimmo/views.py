@@ -128,7 +128,12 @@ class GameViewSet(
             try:
                 game_manager = GameManager()
                 for game in games:
+                    # Shutdown the game server
                     game_manager.delete_game_server(game_id=game.id)
+
+                    # Archive the games in the database
+                    game.is_archived = True  # mark as deleted/archived
+                    game.save()
             except Exception as exception:
                 LOGGER.error(
                     f"Could not delete game servers for games: {', '.join(game_ids)}"
@@ -136,10 +141,6 @@ class GameViewSet(
                 # Re-raise exception so that atomic transaction reverts
                 raise exception
 
-        # Archive the games in the database
-        for game in games:
-            game.is_archived = True  # mark as deleted/archived
-            game.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
