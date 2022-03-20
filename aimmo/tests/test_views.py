@@ -387,7 +387,6 @@ class TestViews(TestCase):
         client = self.login()
 
         klass, _, _ = create_class_directly("test@example.com", "my class")
-        
 
         form = AddGameForm(
             Class.objects.all(),
@@ -405,7 +404,7 @@ class TestViews(TestCase):
         assert models.Game.objects.filter(is_archived=True).count() == 1
         assert models.Game.objects.filter(is_archived=False).count() == 1
         mock_game_manager_cls.return_value.delete_game_server.assert_called_once_with(
-            game_id=self.game.id
+            game_id=game2.id
         )
 
         # then test adding game again for the same class

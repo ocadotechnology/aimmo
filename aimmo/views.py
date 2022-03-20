@@ -122,12 +122,12 @@ class GameViewSet(
         game_ids = request.data.getlist("game_ids")
 
         with transaction.atomic():
-            games_to_delete = Game.objects.select_for_update().filter(
+            games = Game.objects.select_for_update().filter(
                 pk__in=game_ids, game_class__teacher__new_user=request.user, is_archived=False,
             )
             try:
                 game_manager = GameManager()
-                for game in games_to_delete:
+                for game in games:
                     game_manager.delete_game_server(game_id=game.id)
             except Exception as exception:
                 LOGGER.error(
