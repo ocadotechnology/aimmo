@@ -48,6 +48,14 @@ class GameManager:
         )
 
     def create_game_server(self, game_id: int, game_data: dict):
+        """
+        Creates a game server allocation, a game service and an ingress path.
+
+
+        Args:
+            game_id (int): The GAME_ID of the game.
+            game_data (dict): Game data configuration to be passed onto the game server.
+        """
         game_name = self.game_name(game_id=game_id)
         game_server_name = self.game_server_manager.create_game_server_allocation(
             game_id=game_id,
