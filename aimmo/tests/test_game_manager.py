@@ -29,13 +29,13 @@ def game_data() -> dict:
     }
 
 
-def test_create_game_name(game_manager, game_id):
-    assert game_manager.create_game_name(game_id) == f"game-{game_id}"
+def test_game_name(game_manager, game_id):
+    assert game_manager.game_name(game_id) == f"game-{game_id}"
 
 
 def test_create_game_server(game_manager: GameManager, game_id, game_data):
     game_server_name = "test_game_server"
-    game_name = game_manager.create_game_name(game_id=game_id)
+    game_name = game_manager.game_name(game_id=game_id)
     game_manager.game_server_manager.create_game_server_allocation.return_value = (
         game_server_name
     )
@@ -61,6 +61,8 @@ def test_create_game_server(game_manager: GameManager, game_id, game_data):
 
 def test_delete_game_server(game_manager: GameManager, game_id):
     game_manager.delete_game_server(game_id=game_id)
+    game_manager.game_ingress_manager.remove_game_path_from_ingress.assert_called_with(game_name=f"game-{game_id}")
+    game_manager.game_service_manager.delete_game_service.assert_called_with(game_id=game_id)
     game_manager.game_server_manager.delete_game_server.assert_called_with(
         game_id=game_id
     )
@@ -69,7 +71,7 @@ def test_delete_game_server(game_manager: GameManager, game_id):
 def test_recreate_game_server(game_manager: GameManager, game_id):
     mock_game_data = MagicMock()
     mock_game_server_name = MagicMock()
-    game_name = game_manager.create_game_name(game_id=game_id)
+    game_name = game_manager.game_name(game_id=game_id)
     game_manager.delete_game_server = MagicMock(return_value=mock_game_data)
     game_manager.game_server_manager.create_game_server_allocation = MagicMock(
         return_value=mock_game_server_name

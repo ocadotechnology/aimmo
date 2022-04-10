@@ -30,7 +30,7 @@ class GameManager:
         self.game_ingress_manager = game_ingress_manager
 
     @staticmethod
-    def create_game_name(game_id: int) -> str:
+    def game_name(game_id: int) -> str:
         """
         Creates a name that will be used as the pod name as well as in other places.
 
@@ -40,7 +40,7 @@ class GameManager:
         return f"game-{game_id}"
 
     def create_game_secret(self, game_id: int, token: str):
-        game_name = self.create_game_name(game_id=game_id)
+        game_name = self.game_name(game_id=game_id)
         self.game_secret_manager.create_game_secret(
             game_id=game_id,
             game_name=game_name,
@@ -48,7 +48,7 @@ class GameManager:
         )
 
     def create_game_server(self, game_id: int, game_data: dict):
-        game_name = self.create_game_name(game_id=game_id)
+        game_name = self.game_name(game_id=game_id)
         game_server_name = self.game_server_manager.create_game_server_allocation(
             game_id=game_id,
             game_data=game_data,
@@ -70,6 +70,12 @@ class GameManager:
         :param game_id: Integer indicating the ID of the game to delete.
         :returns: A dictionary representing the game data.
         """
+        game_name = self.game_name(game_id=game_id)
+        try:
+            self.game_ingress_manager.remove_game_path_from_ingress(game_name=game_name)
+        except ApiException as e:
+            LOGGER.exception(e)
+        self.game_service_manager.delete_game_service(game_id=game_id)
         return self.game_server_manager.delete_game_server(game_id=game_id)
 
     def recreate_game_server(
@@ -90,7 +96,7 @@ class GameManager:
 
         game_data.update(game_data_updates)
 
-        game_name = self.create_game_name(game_id=game_id)
+        game_name = self.game_name(game_id=game_id)
         game_server_name = self.game_server_manager.create_game_server_allocation(
             game_id=game_id,
             game_data=game_data,
