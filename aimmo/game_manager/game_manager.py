@@ -4,7 +4,6 @@ from kubernetes.client import CoreV1Api
 from kubernetes.client.api.custom_objects_api import CustomObjectsApi
 from kubernetes.client.api_client import ApiClient
 from kubernetes.client.exceptions import ApiException
-import os
 
 from .game_ingress_manager import GameIngressManager
 from .game_secret_manager import GameSecretManager
@@ -30,9 +29,6 @@ class GameManager:
         self.game_secret_manager = game_secret_manager
         self.game_ingress_manager = game_ingress_manager
 
-    def _is_k8s_running(self):
-        return os.environ.get("LOAD_KUBE_CONFIG", "1") == "1"
-
     @staticmethod
     def game_name(game_id: int) -> str:
         """
@@ -44,8 +40,6 @@ class GameManager:
         return f"game-{game_id}"
 
     def create_game_secret(self, game_id: int, token: str):
-        if not self._is_k8s_running():
-            return
         game_name = self.game_name(game_id=game_id)
         self.game_secret_manager.create_game_secret(
             game_id=game_id,
@@ -62,8 +56,6 @@ class GameManager:
             game_id (int): The GAME_ID of the game.
             game_data (dict): Game data configuration to be passed onto the game server.
         """
-        if not self._is_k8s_running():
-            return
         game_name = self.game_name(game_id=game_id)
         game_server_name = self.game_server_manager.create_game_server_allocation(
             game_id=game_id,
@@ -86,8 +78,6 @@ class GameManager:
         :param game_id: Integer indicating the ID of the game to delete.
         :returns: A dictionary representing the game data.
         """
-        if not self._is_k8s_running():
-            return
         game_name = self.game_name(game_id=game_id)
         try:
             self.game_ingress_manager.remove_game_path_from_ingress(game_name=game_name)
@@ -107,8 +97,6 @@ class GameManager:
         :param game_data_updates: Optional, a dictionary with game data updates.
         :returns: None
         """
-        if not self._is_k8s_running():
-            return
         if game_data_updates is None:
             game_data_updates = {}
 
