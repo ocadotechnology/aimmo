@@ -1,4 +1,4 @@
-import { switchMap, mapTo, zip, take, tap, map } from 'rxjs/operators'
+import {switchMap, mapTo, zip, take, tap, map, mergeMap, catchError} from 'rxjs/operators'
 
 import actions from './actions'
 import types from './types'
@@ -6,7 +6,7 @@ import { timeoutIfWorkerTakesTooLong } from './operators'
 import { ofType } from 'redux-observable'
 import { gameTypes } from '../Game'
 import { editorTypes } from '../Editor'
-import { from, Scheduler } from 'rxjs'
+import {from, of, Scheduler} from 'rxjs'
 
 const backgroundScheduler = Scheduler.async
 
@@ -83,9 +83,61 @@ const computeNextActionEpic = (
     )
   )
 
+const getBadgesEpic = (action$, state$, { api }) =>
+  action$.pipe(
+    ofType(types.GET_BADGES_REQUEST),
+    mergeMap((action) =>
+      api.get(`badges/${state$.value.game.connectionParameters.game_id}/`).pipe(
+        map((response) => actions.getBadgesReceived(response.badges)),
+        catchError((error) =>
+          of({
+            type: types.GET_BADGES_FAILURE,
+            payload: error.xhr.response,
+            error: true,
+          })
+        )
+      )
+    )
+  )
+
+const postBadgesEpic = (action$, state$, { api }) =>
+  action$.pipe(
+    ofType(types.BADGES_CHECKED),
+    api.post(`/kurono/api/badges/${state$.value.game.connectionParameters.game_id}/`, (action) => {
+      return {badges: action.payload.badges}
+    }),
+    map(() => actions.postBadgesReceived()),
+    catchError((error) =>
+      of({
+        type: types.POST_BADGES_FAILURE,
+        payload: error.xhr.response,
+        error: true,
+      })
+    )
+  )
+
+const checkBadgesEarnedEpic = (action$, state$, { pyodideRunner: { checkIfBadgeEarned, resetWorker } }, scheduler = backgroundScheduler) =>
+  action$.pipe(
+    ofType(types.AVATAR_CODE_UPDATED),
+    switchMap(({ payload: computedTurnResult }) =>
+      from(
+        checkIfBadgeEarned(
+          computedTurnResult,
+          state$.value.editor.code.codeOnServer,
+          state$,
+          state$.value.game.connectionParameters.currentAvatarID
+        )
+      )
+    ),
+    map(actions.badgesChecked)
+  )
+
 export default {
   initializePyodideEpic,
   initialUpdateAvatarCodeEpic,
   updateAvatarCodeEpic,
-  computeNextActionEpic
+  computeNextActionEpic,
+  getBadgesEpic,
+  postBadgesEpic,
+  checkBadgesEarnedEpic,
 }

@@ -1,5 +1,6 @@
 /* eslint-env worker */
 import { expose } from 'threads/worker'
+import { checkIfBadgeEarned } from "./badges";
 import ComputedTurnResult from './computedTurnResult'
 
 function getAvatarStateFromGameState(gameState: any, playerAvatarID: number): object {
@@ -99,12 +100,8 @@ export async function updateAvatarCode(
 
   try {
     await pyodide.runPythonAsync(userCode)
-    let userPythonCode = userCode.replace(/\s*#.*/gm, "") // Remove all comment lines from the user's code
     if (gameState) {
-      computeNextAction(gameState, playerAvatarID).then(result => {
-        checkIfBadgeEarned(result, userPythonCode, gameState, playerAvatarID)
-        return result
-      })
+      return computeNextAction(gameState, playerAvatarID)
     }
     return Promise.resolve({
       action: { action_type: 'wait' },
@@ -121,82 +118,6 @@ export async function updateAvatarCode(
   }
 }
 
-//TODO: There is no check at the moment of which worksheet this is for. This will run for all worksheets at the minute.
-function checkIfBadgeEarned(result: any, userPythonCode: string, gameState: any, playerAvatarId: number) {
-  //TODO: The badge data needs to be stored somewhere else, and the check on whether it has been earned needs to be done from the database.
-  let badges = [
-    {id: 1, trigger: badge1Trigger(result), earned: false},
-    {id: 2, trigger: badge2Trigger(userPythonCode), earned: false},
-    {id: 3, trigger: badge3Trigger(result, userPythonCode, gameState, playerAvatarId), earned: false},
-  ]
-
-  for (let badge of badges) {
-    if (!badge.earned && badge.trigger) {
-      badge.earned = true //TODO: Needs to be connected to the DB / User object (so probably needs to be done in the game not the frontend)
-      result.badge = badge //TODO: This adds a "badge" property to the turn result, the interface needs to be updated maybe to reflect it
-      console.log("You've earned a new badge!") //TODO: This is where the frontend could show the banner and badge image maybe
-      break
-    }
-    else {
-      result.badge = null
-    }
-  }
-}
-
-function badge1Trigger(result: any): boolean {
-  // Check the code returns a move action other than NORTH
-  return result.action.action_type === "move" && JSON.stringify(result.action.options.direction) != JSON.stringify({x: 0, y: 1})
-}
-
-function badge2Trigger(userPythonCode: string): boolean {
-  // Check code contains keywords
-  const substrings = ["import random", "randint(", "direction.NORTH", "direction.EAST", "direction.SOUTH", "direction.WEST", "if ", "elif ", "else:"]
-  return substrings.every(substring =>
-    userPythonCode.includes(substring)
-  )
-}
-
-function badge3Trigger(result: any, userPythonCode: string, gameState: any, playerAvatarId: number): boolean {
-  // Check code contains keywords
-  const substrings = ["world_state.can_move_to(", "print(", "if ", ]
-  let codeContainsKeywords = substrings.every((substring) =>
-    userPythonCode.includes(substring)
-  )
-
-  // Check action is move action
-  let isMoveAction = result.action.action_type === "move"
-
-  // Check next cell is available to move onto
-  let moveDirection = result.action.options.direction
-  let avatarLocation = null
-
-  for (let player of gameState.players) {
-    if (player.id == playerAvatarId) {
-      avatarLocation = player.location
-    }
-  }
-
-  let nextCellLocation = {x: avatarLocation.x + moveDirection.x, y: avatarLocation.y + moveDirection.y}
-  let isNextCellFree = true
-  let isNextCellInMap = nextCellLocation.x <= 15 && nextCellLocation.x >= -15 && nextCellLocation.y <= 15 && nextCellLocation.y >= -15
-
-  if (isNextCellInMap) {
-    let obstacles = gameState.obstacles
-
-    for (let obstacle of obstacles) {
-      let obstacleLocation = obstacle.location
-      if (JSON.stringify(obstacleLocation) == JSON.stringify(nextCellLocation)) {
-        isNextCellFree = false
-      }
-    }
-  }
-  else {
-    isNextCellFree = false
-  }
-
-  return codeContainsKeywords && isMoveAction && isNextCellFree
-}
-
 async function setAvatarCodeToWaitActionOnError() {
   await pyodide.runPythonAsync(
     `def next_turn(world_map, avatar_state):
@@ -207,7 +128,8 @@ async function setAvatarCodeToWaitActionOnError() {
 const pyodideWorker = {
   initializePyodide,
   computeNextAction,
-  updateAvatarCode
+  updateAvatarCode,
+  checkIfBadgeEarned
 }
 
 export type PyodideWorker = typeof pyodideWorker

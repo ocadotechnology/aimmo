@@ -1,12 +1,13 @@
 import logging
 from typing import Tuple
 
+from common.models import UserProfile
+from common.permissions import CanDeleteGame
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404
-from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import mixins, status, viewsets
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.decorators import (
@@ -18,8 +19,6 @@ from rest_framework.decorators import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from common.permissions import CanDeleteGame
 
 from . import game_renderer
 from .avatar_creator import create_avatar_for_user
@@ -56,6 +55,30 @@ def code(request, id):
         return JsonResponse(
             {"code": avatar.code, "starterCode": game.worksheet.starter_code}
         )
+
+
+@login_required
+def badges(request, id):
+    if not request.user:
+        print("no user")
+        return HttpResponseForbidden()
+    game = get_object_or_404(Game, id=id)
+    if not game.can_user_play(request.user):
+        print("user can't play")
+        raise Http404
+    try:
+        avatar = game.avatar_set.get(owner=request.user)
+    except Avatar.DoesNotExist:
+        avatar = create_avatar_for_user(request.user, id)
+    avatar_user_profile = UserProfile.objects.get(user=avatar.owner)
+    if request.method == "POST":
+        print("UPDATING BADGES")
+        print(request.POST["badges"])
+        avatar_user_profile.kurono_badges = request.POST["badges"]
+        avatar_user_profile.save()
+        return HttpResponse(status=200)
+    else:
+        return JsonResponse({"badges": avatar_user_profile.kurono_badges})
 
 
 class GameUsersView(APIView):
