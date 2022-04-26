@@ -7,8 +7,8 @@ function getAvatarStateFromGameState(gameState: any, playerAvatarID: number): ob
 }
 
 async function initializePyodide() {
-  self.languagePluginUrl = 'https://pyodide-cdn2.iodide.io/v0.15.0/full/'
-  importScripts('https://pyodide-cdn2.iodide.io/v0.15.0/full/pyodide.js')
+  self.languagePluginUrl = 'https://cdn.jsdelivr.net/pyodide/v0.20.0/full/'
+  importScripts('https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js')
   await languagePluginLoader
   await pyodide.loadPackage(['micropip'])
   await pyodide.runPythonAsync(`
