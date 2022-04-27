@@ -1,6 +1,6 @@
 declare var pyodide: Pyodide
-declare var languagePluginLoader: Promise<void>
 declare var OnetrustActiveGroups: string
+declare function loadPyodide(any: any): Promise<any>
 
 interface Pyodide {
   loadPackage(packages: string[]): Promise<void>

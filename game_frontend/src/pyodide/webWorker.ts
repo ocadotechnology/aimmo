@@ -2,13 +2,17 @@
 import { expose } from 'threads/worker'
 import ComputedTurnResult from './computedTurnResult'
 
+let pyodide: any
+
 function getAvatarStateFromGameState(gameState: any, playerAvatarID: number): object {
   return gameState.players.find(player => player.id === playerAvatarID)
 }
 
 async function initializePyodide() {
   importScripts('https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js')
-  const pyodide = await loadPyodide()
+  pyodide = await loadPyodide({
+    indexURL: "https://cdn.jsdelivr.net/pyodide/v0.20.0/full/"
+  });
   await pyodide.loadPackage(['micropip'])
   await pyodide.runPythonAsync(`
 import micropip
@@ -23,6 +27,7 @@ from simulation.action import MoveAction, PickupAction, WaitAction, MoveTowardsA
 from simulation.world_map import WorldMapCreator
 from simulation.avatar_state import create_avatar_state
 from io import StringIO
+import sys
 import contextlib
 
 
