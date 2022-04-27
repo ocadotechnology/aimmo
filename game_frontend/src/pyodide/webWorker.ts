@@ -2,7 +2,7 @@
 import { expose } from 'threads/worker'
 import ComputedTurnResult from './computedTurnResult'
 
-let pyodide: any
+let pyodide: Pyodide
 
 function getAvatarStateFromGameState(gameState: any, playerAvatarID: number): object {
   return gameState.players.find(player => player.id === playerAvatarID)
@@ -10,9 +10,7 @@ function getAvatarStateFromGameState(gameState: any, playerAvatarID: number): ob
 
 async function initializePyodide() {
   importScripts('https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js')
-  pyodide = await loadPyodide({
-    indexURL: "https://cdn.jsdelivr.net/pyodide/v0.20.0/full/"
-  });
+  pyodide = await loadPyodide()
   await pyodide.loadPackage(['micropip'])
   await pyodide.runPythonAsync(`
 import micropip
@@ -21,16 +19,17 @@ micropip.install("${self.location.origin}/static/worker/aimmo_game_worker-0.0.0-
   `)
 
   await pyodide.runPythonAsync(`
-from simulation import direction
-from simulation import location
-from simulation.action import MoveAction, PickupAction, WaitAction, MoveTowardsAction
-from simulation.world_map import WorldMapCreator
-from simulation.avatar_state import create_avatar_state
-from io import StringIO
-from js import Object
-from pyodide import to_js
-import sys
 import contextlib
+import sys
+
+from js import Object
+from io import StringIO
+from pyodide import to_js
+
+from simulation import direction, location
+from simulation.action import MoveAction, PickupAction, WaitAction, MoveTowardsAction
+from simulation.avatar_state import create_avatar_state
+from simulation.world_map import WorldMapCreator
 
 
 @contextlib.contextmanager
