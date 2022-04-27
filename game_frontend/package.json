@@ -75,7 +75,7 @@
     "rxjs": "^6.5.2",
     "socket.io-client": "^4.0.0",
     "styled-components": "^5.2.0",
-    "threads": "^1.6.3",
+    "threads": "^1.7.0",
     "webfontloader": "^1.6.28"
   },
   "esLintConfig": {
