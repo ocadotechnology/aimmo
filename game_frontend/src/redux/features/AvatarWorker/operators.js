@@ -1,7 +1,7 @@
 import { of } from 'rxjs'
 import { timeout, catchError } from 'rxjs/operators'
 
-const PYODIDE_WORKER_PROCESSING_TIME = 10000
+const PYODIDE_WORKER_PROCESSING_TIME = 1000
 
 /**
  * An operator that resets the pyodideWorker if it is taking too long to respond.
@@ -22,7 +22,6 @@ export const timeoutIfWorkerTakesTooLong = (
         state$.value.editor.code.codeOnServer,
         state$.value.game.connectionParameters.currentAvatarID
       )
-      console.log(e)
       return of({
         action: { action_type: 'wait' },
         log:
