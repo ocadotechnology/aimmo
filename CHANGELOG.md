@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.4 (2022-04-27)
+### Fix
+* Upgrade semantic-release version in action ([#1646](https://github.com/ocadotechnology/aimmo/issues/1646)) ([`1af25b9`](https://github.com/ocadotechnology/aimmo/commit/1af25b99a361aca8c290537a09dd6505abc9095e))
+
 ## v2.0.3 (2022-04-27)
 ### Fix
 * Fix indentation in readme code ([#1645](https://github.com/ocadotechnology/aimmo/issues/1645)) ([`d826915`](https://github.com/ocadotechnology/aimmo/commit/d8269155d240f13b688586cba4f31fae759884d6))
