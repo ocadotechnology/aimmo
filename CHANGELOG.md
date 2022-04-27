@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.2 (2022-04-27)
+### Fix
+* Try updating Pyodide ([#1642](https://github.com/ocadotechnology/aimmo/issues/1642)) ([`4931148`](https://github.com/ocadotechnology/aimmo/commit/49311488e1c1b3d7b90357b0fe2c651cfa91f87c))
+
 ## v2.0.1 (2022-03-15)
 ### Fix
 * Cleanup ci and update pipfile ([#1632](https://github.com/ocadotechnology/aimmo/issues/1632)) ([`2e7c9cd`](https://github.com/ocadotechnology/aimmo/commit/2e7c9cd8b13a08bbd917a1f6e7adffb527eb2ef1))
