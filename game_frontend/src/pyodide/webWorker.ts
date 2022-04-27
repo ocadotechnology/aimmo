@@ -27,6 +27,8 @@ from simulation.action import MoveAction, PickupAction, WaitAction, MoveTowardsA
 from simulation.world_map import WorldMapCreator
 from simulation.avatar_state import create_avatar_state
 from io import StringIO
+from js import Object
+from pyodide import to_js
 import sys
 import contextlib
 
@@ -65,7 +67,7 @@ with capture_output() as output:
     serialized_action = action.serialise()
 stdout, stderr = output
 logs = stdout.getvalue() + stderr.getvalue()
-{"action": serialized_action, "log": logs, "turnCount": game_state["turnCount"] + 1}
+to_js({"action": serialized_action, "log": logs, "turnCount": game_state["turnCount"] + 1}, dict_converter=Object.fromEntries)
     `)
   } catch (error) {
     return Promise.resolve({
