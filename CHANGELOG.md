@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.3 (2022-04-27)
+### Fix
+* Fix indentation in readme code ([#1645](https://github.com/ocadotechnology/aimmo/issues/1645)) ([`d826915`](https://github.com/ocadotechnology/aimmo/commit/d8269155d240f13b688586cba4f31fae759884d6))
+* Dummy commit to bump up version ([#1644](https://github.com/ocadotechnology/aimmo/issues/1644)) ([`26421ba`](https://github.com/ocadotechnology/aimmo/commit/26421ba77de8c75a3d5a64a7baac30ff59a08d8e))
+* Dummy commit to bump up version ([`c265152`](https://github.com/ocadotechnology/aimmo/commit/c2651521862fec6b51383c7c7ce5878be7f023d4))
+
 ## v2.0.2 (2022-04-27)
 ### Fix
 * Try updating Pyodide ([#1642](https://github.com/ocadotechnology/aimmo/issues/1642)) ([`4931148`](https://github.com/ocadotechnology/aimmo/commit/49311488e1c1b3d7b90357b0fe2c651cfa91f87c))
