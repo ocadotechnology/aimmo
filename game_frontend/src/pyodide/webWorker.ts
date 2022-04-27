@@ -2,14 +2,15 @@
 import { expose } from 'threads/worker'
 import ComputedTurnResult from './computedTurnResult'
 
+let pyodide: Pyodide
+
 function getAvatarStateFromGameState(gameState: any, playerAvatarID: number): object {
   return gameState.players.find(player => player.id === playerAvatarID)
 }
 
 async function initializePyodide() {
-  self.languagePluginUrl = 'https://pyodide-cdn2.iodide.io/v0.15.0/full/'
-  importScripts('https://pyodide-cdn2.iodide.io/v0.15.0/full/pyodide.js')
-  await languagePluginLoader
+  importScripts('https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js')
+  pyodide = await loadPyodide()
   await pyodide.loadPackage(['micropip'])
   await pyodide.runPythonAsync(`
 import micropip
@@ -18,13 +19,17 @@ micropip.install("${self.location.origin}/static/worker/aimmo_game_worker-0.0.0-
   `)
 
   await pyodide.runPythonAsync(`
-from simulation import direction
-from simulation import location
-from simulation.action import MoveAction, PickupAction, WaitAction, MoveTowardsAction
-from simulation.world_map import WorldMapCreator
-from simulation.avatar_state import create_avatar_state
-from io import StringIO
 import contextlib
+import sys
+
+from js import Object
+from io import StringIO
+from pyodide import to_js
+
+from simulation import direction, location
+from simulation.action import MoveAction, PickupAction, WaitAction, MoveTowardsAction
+from simulation.avatar_state import create_avatar_state
+from simulation.world_map import WorldMapCreator
 
 
 @contextlib.contextmanager
@@ -61,7 +66,7 @@ with capture_output() as output:
     serialized_action = action.serialise()
 stdout, stderr = output
 logs = stdout.getvalue() + stderr.getvalue()
-{"action": serialized_action, "log": logs, "turnCount": game_state["turnCount"] + 1}
+to_js({"action": serialized_action, "log": logs, "turnCount": game_state["turnCount"] + 1}, dict_converter=Object.fromEntries)
     `)
   } catch (error) {
     return Promise.resolve({
