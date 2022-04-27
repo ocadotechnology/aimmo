@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://www.codeforlife.education/play/" target="_blank">
-      <img src="images/kurono_game.png" height="400px" alt="Kurono Game" />
+    <img src="images/kurono_game.png" height="400px" alt="Kurono Game" />
   </a>
 </p>
 
