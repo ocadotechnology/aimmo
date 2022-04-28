@@ -66,7 +66,7 @@ return MoveAction(direction.NORTH)`
       .its('consoleLog.logs')
       .then(logs => {
         const log = logs.entries().next().value[1]
-        expect(log).to.deep.equal('IndentationError: expected an indented block\n')
+        expect(log).to.deep.equal('IndentationError: expected an indented block after function definition on line 1\n')
       })
   })
 
