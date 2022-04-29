@@ -2,7 +2,7 @@ import { defer } from 'rxjs'
 import { spawn, Worker, ModuleThread, Thread } from 'threads'
 import ComputedTurnResult from './computedTurnResult'
 import { PyodideWorker } from './webWorker'
-import BadgeResult from "./badgeResult";
+import BadgeResult from "./badgeResult"
 
 let worker: ModuleThread<PyodideWorker>
 let workerReady = false
@@ -24,9 +24,8 @@ export async function checkIfBadgeEarned (
   playerAvatarId: number
 ): Promise<BadgeResult> {
   console.log("CHECKING BADGES")
-  return runBadgeCheck(
-    () => worker.checkIfBadgeEarned(result, userCode, gameState, playerAvatarId)
-  )
+  console.log(result)
+  return runBadgeCheck(() => worker.checkIfBadgeEarned('result', userCode, gameState, playerAvatarId))
 }
 
 export async function updateAvatarCode (

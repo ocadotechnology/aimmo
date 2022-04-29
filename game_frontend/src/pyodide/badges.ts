@@ -1,8 +1,9 @@
 /* eslint-env worker */
 // TODO: There is no check at the moment of which worksheet this is for. This will run for all worksheets at the minute.
 import BadgeResult from "./badgeResult";
+import ComputedTurnResult from "./computedTurnResult";
 
-export async function checkIfBadgeEarned(result: any, userCode: string, gameState: any, playerAvatarId: number): Promise<BadgeResult> {
+export function checkIfBadgeEarned(result: ComputedTurnResult, userCode: string, gameState: any, playerAvatarId: number): BadgeResult {
   // TODO: The badge data needs to be stored somewhere else, and the check on whether it has been earned needs to be done from the database.
   console.log("Starting badge check now")
   const userPythonCode = userCode.replace(/\s*#.*/gm, "") // Remove all comment lines from the user's code
@@ -22,10 +23,10 @@ export async function checkIfBadgeEarned(result: any, userCode: string, gameStat
     if (!badge.earned && badge.trigger) {
       badge.earned = true // TODO: Needs to be connected to the DB / User object (so probably needs to be done in the game not the frontend)
       console.log("You've earned a new badge!") // TODO: This is where the frontend could show the banner and badge image maybe
-      return Promise.resolve({badge: `${gameState.worksheetID},${badge.id}`})
+      return {badge: `${gameState.worksheetID},${badge.id}`}
     }
   }
-  return Promise.resolve({badge: null})
+  return {badge: null}
 }
 
 function badge1Trigger(result: any): boolean {

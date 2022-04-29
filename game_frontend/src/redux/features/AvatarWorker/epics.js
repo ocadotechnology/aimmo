@@ -118,18 +118,24 @@ const postBadgesEpic = (action$, state$, { api }) =>
 
 const checkBadgesEarnedEpic = (action$, state$, { pyodideRunner: { checkIfBadgeEarned, resetWorker } }, scheduler = backgroundScheduler) =>
   action$.pipe(
-    ofType(types.AVATAR_CODE_UPDATED),
-    switchMap(({ payload: computedTurnResult }) =>
-      from(
-        checkIfBadgeEarned(
-          computedTurnResult,
-          state$.value.editor.code.codeOnServer,
-          state$,
-          state$.value.game.connectionParameters.currentAvatarID
-        )
+    ofType(types.PYODIDE_INITIALIZED),
+    switchMap(() =>
+      action$.pipe(
+        ofType(types.AVATAR_CODE_UPDATED),
+        switchMap(({ payload: computedTurnResult }) =>
+          from(
+            checkIfBadgeEarned(
+              computedTurnResult,
+              state$.value.editor.code.codeOnServer,
+              state$,
+              state$.value.game.connectionParameters.currentAvatarID
+            )
+          )
+        // .pipe(timeoutIfWorkerTakesTooLong(state$, resetWorker, scheduler))
+        ),
+        map(actions.badgesChecked)
       )
     ),
-    map(actions.badgesChecked)
   )
 
 export default {
