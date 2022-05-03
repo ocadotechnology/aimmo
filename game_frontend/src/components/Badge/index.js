@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import PropTypes from 'prop-types'
 
 import Box from '@material-ui/core/Box'
 import Modal from '@material-ui/core/Modal'
@@ -36,8 +37,8 @@ export default class BadgeModal extends Component {
 
     return (
       <Modal
-        open={true}
-        hideBackdrop={true}
+        open
+        hideBackdrop
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -46,11 +47,16 @@ export default class BadgeModal extends Component {
             <Typography variant="h6">{info.title}</Typography>
             <Typography variant="subtitle1">{info.message}</Typography>
           </Box>
-          <BadgeModalImg component="img" alt={info.name} src={info.img}></BadgeModalImg>
+          <BadgeModalImg component="img" alt={info.name} src={info.img} />
         </BadgeModalBox>
       </Modal>
     )
   }
+}
+
+BadgeModal.propTypes = {
+  modalOpen: PropTypes.bool,
+  taskId: PropTypes.number,
 }
 
 export function getBadges(tasks) {
@@ -62,6 +68,6 @@ export function getBadges(tasks) {
       title={badgeInfo[task].name}
       src={badgeInfo[task].img}
       key={task}
-    ></Box>
+    />
   ))
 }

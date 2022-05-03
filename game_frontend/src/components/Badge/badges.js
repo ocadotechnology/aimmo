@@ -1,5 +1,3 @@
-import React from 'react'
-
 import ChangeDirectionBadge from 'img/1_change_direction.svg'
 import AllDirectionsBadge from 'img/1_all_directions.svg'
 import InvestigateBadge from 'img/1_investigate.svg'
