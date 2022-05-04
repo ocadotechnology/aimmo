@@ -12,10 +12,52 @@ exports[`<NavigationBar /> renders correctly 1`] = `
         color="inherit"
         href=""
       >
-        <KuronoLogo
-          fontSize="large"
-        />
+        <Styled(KuronoLogo) />
       </WithStyles(ForwardRef(IconButton))>
+      <Styled(MuiBox)
+        alt="Change direction"
+        component="img"
+        key="0"
+        src={[Function]}
+        style={
+          Object {
+            "height": 45,
+            "marginRight": 15,
+          }
+        }
+        title="Change direction"
+      />
+      <Styled(MuiBox)
+        alt="All directions"
+        component="img"
+        key="1"
+        src={[Function]}
+        style={
+          Object {
+            "height": 45,
+            "marginRight": 15,
+          }
+        }
+        title="All directions"
+      />
+      <Styled(MuiBox)
+        alt="Investigate location"
+        component="img"
+        key="2"
+        src={[Function]}
+        style={
+          Object {
+            "height": 45,
+            "marginRight": 15,
+          }
+        }
+        title="Investigate location"
+      />
+      <WithStyles(ForwardRef(Button))
+        onClick={[Function]}
+      >
+        Open modal
+      </WithStyles(ForwardRef(Button))>
     </Styled(WithStyles(ForwardRef(Toolbar)))>
     <WithStyles(ForwardRef(Toolbar))>
       <WithStyles(ForwardRef(Button))
@@ -26,6 +68,10 @@ exports[`<NavigationBar /> renders correctly 1`] = `
       </WithStyles(ForwardRef(Button))>
     </WithStyles(ForwardRef(Toolbar))>
   </Styled(WithStyles(ForwardRef(AppBar)))>
+  <BadgeModal
+    modalOpen={false}
+    taskId={0}
+  />
 </styled.nav>
 `;
 
