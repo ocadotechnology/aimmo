@@ -178,20 +178,18 @@ def next_turn(world_state, avatar_state):
 #       - Print the first item from your backpack and the item type.
 #
 #    Task 2: Examine all artefacts
-#       - Write some code that prints the position of your backpack and
-#         the item that is in that position.
+#       - Write some code that outputs the position and description of each
+#         of the artefact in your backpack.
 #
 #    Task 3: Count your loot
-#       - Count how many of each artifacts do you have
+#       - Count how many you have of each artefact.
 #
 #    Task 4: Drop artefacts by type
-#       - Drop artefacts that you do not need
+#       - Drop artefacts that you do not need.
 #
 #  New commands:
-#       - avatar_state.backpack
-#       - avatar_state.location
-#       - world_state.get_cell(avatar_location)
 #       - DropAction(index)
+#       - backpack.find(ARTEFACT)
 #-------------------------------------------------------------------------------
 
 def next_turn(world_state, avatar_state):
