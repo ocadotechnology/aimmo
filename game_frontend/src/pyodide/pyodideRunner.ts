@@ -2,7 +2,6 @@ import { defer } from 'rxjs'
 import { spawn, Worker, ModuleThread, Thread } from 'threads'
 import ComputedTurnResult from './computedTurnResult'
 import { PyodideWorker } from './webWorker'
-import BadgeResult from "./badgeResult"
 
 let worker: ModuleThread<PyodideWorker>
 let workerReady = false
@@ -18,14 +17,14 @@ async function initializePyodideWorker () {
 }
 
 export async function checkIfBadgeEarned (
+  badges: string,
   result: ComputedTurnResult,
   userCode: string,
   gameState: any,
   playerAvatarId: number
-): Promise<BadgeResult> {
+): Promise<string> {
   console.log("CHECKING BADGES")
-  console.log(result)
-  return runBadgeCheck(() => worker.checkIfBadgeEarned('result', userCode, gameState, playerAvatarId))
+  return runBadgeCheck(() => worker.checkIfBadgeEarned(badges, result, userCode, gameState, playerAvatarId))
 }
 
 export async function updateAvatarCode (
@@ -42,7 +41,6 @@ export async function updateAvatarCode (
 
 export async function resetWorker (userCode: string, playerAvatarID: number) {
   workerReady = false
-  console.log("RESETTING WORKER")
   await Thread.terminate(worker)
   await initializePyodideWorker()
   await worker.updateAvatarCode(userCode, null, playerAvatarID)
@@ -65,17 +63,12 @@ async function runIfWorkerReady (
 }
 
 async function runBadgeCheck (
-  func: () => Promise<BadgeResult>
-): Promise<BadgeResult> {
-  console.log("Running badge check")
+  func: () => Promise<string>
+): Promise<string> {
   if (workerReady) {
-    console.log("Worker ready")
     return func()
   } else {
-    console.log("Worker not ready")
-    return Promise.resolve({
-      badge: null
-    })
+    return Promise.resolve("error")
   }
 }
 

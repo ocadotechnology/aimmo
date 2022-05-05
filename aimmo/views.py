@@ -73,11 +73,16 @@ def badges(request, id):
     avatar_user_profile = UserProfile.objects.get(user=avatar.owner)
     if request.method == "POST":
         print("UPDATING BADGES")
+        print(request.POST)
         print(request.POST["badges"])
+        print(type(request.POST["badges"]))
         avatar_user_profile.kurono_badges = request.POST["badges"]
         avatar_user_profile.save()
         return HttpResponse(status=200)
     else:
+        print("GETTING BADGES")
+        print(avatar_user_profile.kurono_badges)
+        print(type(avatar_user_profile.kurono_badges))
         return JsonResponse({"badges": avatar_user_profile.kurono_badges})
 
 

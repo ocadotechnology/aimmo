@@ -85,7 +85,7 @@ const computeNextActionEpic = (
 
 const getBadgesEpic = (action$, state$, { api }) =>
   action$.pipe(
-    ofType(types.GET_BADGES_REQUEST),
+    ofType(types.AVATAR_CODE_UPDATED),
     mergeMap((action) =>
       api.get(`badges/${state$.value.game.connectionParameters.game_id}/`).pipe(
         map((response) => actions.getBadgesReceived(response.badges)),
@@ -104,7 +104,7 @@ const postBadgesEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.BADGES_CHECKED),
     api.post(`/kurono/api/badges/${state$.value.game.connectionParameters.game_id}/`, (action) => {
-      return {badges: action.payload.badges}
+      return {badges: action.payload}
     }),
     map(() => actions.postBadgesReceived()),
     catchError((error) =>
@@ -118,20 +118,20 @@ const postBadgesEpic = (action$, state$, { api }) =>
 
 const checkBadgesEarnedEpic = (action$, state$, { pyodideRunner: { checkIfBadgeEarned, resetWorker } }, scheduler = backgroundScheduler) =>
   action$.pipe(
-    ofType(types.PYODIDE_INITIALIZED),
-    switchMap(() =>
+    ofType(types.GET_BADGES_SUCCESS),
+    switchMap(({ payload: badges }) =>
       action$.pipe(
         ofType(types.AVATAR_CODE_UPDATED),
         switchMap(({ payload: computedTurnResult }) =>
           from(
             checkIfBadgeEarned(
+              badges,
               computedTurnResult,
               state$.value.editor.code.codeOnServer,
-              state$,
+              state$.value.game.gameState,
               state$.value.game.connectionParameters.currentAvatarID
             )
-          )
-        // .pipe(timeoutIfWorkerTakesTooLong(state$, resetWorker, scheduler))
+          ).pipe(timeoutIfWorkerTakesTooLong(state$, resetWorker, scheduler))
         ),
         map(actions.badgesChecked)
       )

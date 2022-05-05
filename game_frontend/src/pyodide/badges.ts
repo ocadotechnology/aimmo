@@ -1,32 +1,24 @@
 /* eslint-env worker */
-// TODO: There is no check at the moment of which worksheet this is for. This will run for all worksheets at the minute.
-import BadgeResult from "./badgeResult";
 import ComputedTurnResult from "./computedTurnResult";
 
-export function checkIfBadgeEarned(result: ComputedTurnResult, userCode: string, gameState: any, playerAvatarId: number): BadgeResult {
-  // TODO: The badge data needs to be stored somewhere else, and the check on whether it has been earned needs to be done from the database.
+export function checkIfBadgeEarned(badges: string, result: ComputedTurnResult, userCode: string, gameState: any, playerAvatarId: number): string {
   console.log("Starting badge check now")
+  console.log(badges)
+  console.log(typeof badges)
   const userPythonCode = userCode.replace(/\s*#.*/gm, "") // Remove all comment lines from the user's code
   const badgesPerWorksheet = [
-    [
-      {id: 1, trigger: badge1Trigger(result), earned: false},
-      {id: 2, trigger: badge2Trigger(userPythonCode), earned: false},
-      {id: 3, trigger: badge3Trigger(result, userPythonCode, gameState, playerAvatarId), earned: false},
-    ],
-    [],
-    [],
+    {id: 1, worksheetID: 1, trigger: badge1Trigger(result)},
+    {id: 2, worksheetID: 1, trigger: badge2Trigger(userPythonCode)},
+    {id: 3, worksheetID: 1, trigger: badge3Trigger(result, userPythonCode, gameState, playerAvatarId)},
   ]
 
-  const worksheetBadges = badgesPerWorksheet[gameState.worksheetID-1]
-
-  for (const badge of worksheetBadges) {
-    if (!badge.earned && badge.trigger) {
-      badge.earned = true // TODO: Needs to be connected to the DB / User object (so probably needs to be done in the game not the frontend)
+  for (const badge of badgesPerWorksheet) {
+    if (!badges.includes(badge.id.toString()) && badge.worksheetID === gameState.worksheetID && badge.trigger) {
       console.log("You've earned a new badge!") // TODO: This is where the frontend could show the banner and badge image maybe
-      return {badge: `${gameState.worksheetID},${badge.id}`}
+      badges += `${badge.id},`
     }
   }
-  return {badge: null}
+  return badges
 }
 
 function badge1Trigger(result: any): boolean {
@@ -49,8 +41,12 @@ function badge3Trigger(result: any, userPythonCode: string, gameState: any, play
     userPythonCode.includes(substring)
   )
 
+  if (!codeContainsKeywords) return false
+
   // Check action is move action
   const isMoveAction = result.action.action_type === "move"
+
+  if (!isMoveAction) return false
 
   // Check next cell is available to move onto
   const moveDirection = result.action.options.direction
@@ -63,7 +59,6 @@ function badge3Trigger(result: any, userPythonCode: string, gameState: any, play
   }
 
   const nextCellLocation = {x: avatarLocation.x + moveDirection.x, y: avatarLocation.y + moveDirection.y}
-  let isNextCellFree = true
   const isNextCellInMap = nextCellLocation.x <= 15 && nextCellLocation.x >= -15 && nextCellLocation.y <= 15 && nextCellLocation.y >= -15
 
   if (isNextCellInMap) {
@@ -72,13 +67,11 @@ function badge3Trigger(result: any, userPythonCode: string, gameState: any, play
     for (const obstacle of obstacles) {
       const obstacleLocation = obstacle.location
       if (JSON.stringify(obstacleLocation) === JSON.stringify(nextCellLocation)) {
-        isNextCellFree = false
+        return true
       }
     }
   }
   else {
-    isNextCellFree = false
+    return false
   }
-
-  return codeContainsKeywords && isMoveAction && isNextCellFree
 }

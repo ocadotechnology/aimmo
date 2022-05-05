@@ -22,29 +22,23 @@ const avatarsNextActionComputed = computedTurnResult => ({
   }
 })
 
-const badgesChecked = badge => ({
+const badgesChecked = badges => ({
   type: types.BADGES_CHECKED,
-  payload: {
-    ...badge,
-  }
+  payload: badges,
 })
 
 const getBadgesRequest = () => ({
   type: types.GET_BADGES_REQUEST,
 })
 
-const getBadgesReceived = badge => ({
+const getBadgesReceived = badges => ({
   type: types.GET_BADGES_SUCCESS,
-  payload: {
-    ...badge,
-  },
+  payload: badges,
 })
 
-const postBadgesRequest = badge => ({
+const postBadgesRequest = badges => ({
   type: types.POST_BADGES_REQUEST,
-  payload: {
-    ...badge,
-  },
+  payload: badges,
 })
 
 const postBadgesReceived = () => ({
