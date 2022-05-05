@@ -19,6 +19,7 @@ from .avatar_state_serializers import (
     worksheet1_avatar_state_serializer,
     worksheet2_avatar_state_serializer,
     worksheet3_avatar_state_serializer,
+    worksheet4_avatar_state_serializer,
 )
 
 if TYPE_CHECKING:
@@ -61,6 +62,13 @@ worksheets = {
         map_updaters=[PickupUpdater(pickup_types=[ChestArtefact, KeyArtefact])],
         number_of_obstacle_textures=1,
         avatar_state_serializer=worksheet3_avatar_state_serializer,
+    ),
+    4: WorksheetData(
+        worksheet_id=4,
+        era="modern",
+        map_updaters=[PickupUpdater(pickup_types=[ChestArtefact, KeyArtefact])],
+        number_of_obstacle_textures=1,
+        avatar_state_serializer=worksheet4_avatar_state_serializer,
     ),
 }
 

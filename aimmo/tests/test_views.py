@@ -550,7 +550,7 @@ class TestViews(TestCase):
         game3 = Game(id=3, name="test", game_class=klass3, status=Game.RUNNING)
         game3.save()
         game4 = Game(id=4, name="test", game_class=klass4, status=Game.STOPPED)
-        game3.save()
+        game4.save()
 
         def expected_game_detail(class_id, worksheet_id):
             return {
