@@ -23,7 +23,6 @@ export async function checkIfBadgeEarned (
   gameState: any,
   playerAvatarId: number
 ): Promise<string> {
-  console.log("CHECKING BADGES")
   return runBadgeCheck(() => worker.checkIfBadgeEarned(badges, result, userCode, gameState, playerAvatarId))
 }
 

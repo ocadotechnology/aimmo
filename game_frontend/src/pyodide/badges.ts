@@ -2,9 +2,6 @@
 import ComputedTurnResult from "./computedTurnResult";
 
 export function checkIfBadgeEarned(badges: string, result: ComputedTurnResult, userCode: string, gameState: any, playerAvatarId: number): string {
-  console.log("Starting badge check now")
-  console.log(badges)
-  console.log(typeof badges)
   const userPythonCode = userCode.replace(/\s*#.*/gm, "") // Remove all comment lines from the user's code
   const badgesPerWorksheet = [
     {id: 1, worksheetID: 1, trigger: badge1Trigger(result)},
