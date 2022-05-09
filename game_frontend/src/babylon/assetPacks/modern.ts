@@ -34,9 +34,7 @@ export default class ModernAssetPack extends AssetPack {
       '/static/babylon/interactables/modern/',
       model,
       this.scene
-    ).catch((err) => {
-      console.log('ERROR LOADING: ' + name + type)
-    })
+    )
     const interactable = meshes[0]
     interactable.name = name
     interactable.parent = parent
