@@ -10,7 +10,7 @@ from .utils import NearbyArtefactsList
 # how many nearby artefacts to return
 SCAN_LIMIT = 3
 SCAN_RADIUS = 12
-ARTEFACT_TYPES = ["chest", "key", "yellow_orb"]
+ARTEFACT_TYPES = ["chest", "key", "yellow_orb", "phone", "keyboard"]
 PICKUP_TYPES = ["damage_boost", "invulnerability", "health"] + ARTEFACT_TYPES
 
 
@@ -18,6 +18,9 @@ class ArtefactType(Enum):
     CHEST = "chest"
     KEY = "key"
     YELLOW_ORB = "yellow_orb"
+    PHONE = "phone"
+    KEYBOARD = "keyboard"
+    COINS = "coins"
 
     def __eq__(self, other):
         return self.value == other
@@ -51,15 +54,10 @@ class Cell(object):
         return not (self.avatar or self.obstacle)
 
     def has_artefact(self):
-        return (
-            self.interactable is not None
-            and self.interactable["type"] in ARTEFACT_TYPES
-        )
+        return self.interactable is not None and self.interactable["type"] in ARTEFACT_TYPES
 
     def __repr__(self):
-        return "Cell({} a={} i={})".format(
-            self.location, self.avatar, self.interactable
-        )
+        return "Cell({} a={} i={})".format(self.location, self.avatar, self.interactable)
 
     def __eq__(self, other):
         return self.location == other.location
@@ -78,9 +76,7 @@ class WorldMapCreator:
 
     def generate_world_map_from_game_state(game_state) -> "WorldMap":
         cells: Dict[Location, Cell] = {}
-        for x in range(
-            game_state["southWestCorner"]["x"], game_state["northEastCorner"]["x"] + 1
-        ):
+        for x in range(game_state["southWestCorner"]["x"], game_state["northEastCorner"]["x"] + 1):
             for y in range(
                 game_state["southWestCorner"]["y"],
                 game_state["northEastCorner"]["y"] + 1,
@@ -89,9 +85,7 @@ class WorldMapCreator:
                 cells[Location(x, y)] = cell
 
         for interactable in game_state["interactables"]:
-            location = Location(
-                interactable["location"]["x"], interactable["location"]["y"]
-            )
+            location = Location(interactable["location"]["x"], interactable["location"]["y"])
             cells[location].interactable = interactable
 
         for obstacle in game_state["obstacles"]:
@@ -123,18 +117,10 @@ class WorldMap(object):
         return [cell for cell in self.all_cells() if cell.interactable]
 
     def pickup_cells(self):
-        return [
-            cell
-            for cell in self.interactable_cells()
-            if cell.interactable["type"] in PICKUP_TYPES
-        ]
+        return [cell for cell in self.interactable_cells() if cell.interactable["type"] in PICKUP_TYPES]
 
     def score_cells(self):
-        return [
-            cell
-            for cell in self.interactable_cells()
-            if "score" == cell.interactable["type"]
-        ]
+        return [cell for cell in self.interactable_cells() if "score" == cell.interactable["type"]]
 
     def partially_fogged_cells(self):
         return [cell for cell in self.all_cells() if cell.partially_fogged]
@@ -144,9 +130,7 @@ class WorldMap(object):
 
     def get_cell(self, location):
         cell = self.cells[location]
-        assert (
-            cell.location == location
-        ), "location lookup mismatch: arg={}, found={}".format(location, cell.location)
+        assert cell.location == location, "location lookup mismatch: arg={}, found={}".format(location, cell.location)
         return cell
 
     def can_move_to(self, target_location):
@@ -169,9 +153,7 @@ class WorldMap(object):
                     artefacts.append(cell)
         return artefacts
 
-    def scan_nearby(
-        self, avatar_location, radius=SCAN_RADIUS
-    ) -> NearbyArtefactsList[dict]:
+    def scan_nearby(self, avatar_location, radius=SCAN_RADIUS) -> NearbyArtefactsList[dict]:
         """
         From the given location point search the given radius for artefacts.
         Returns list of nearest artefacts (artefact/interactable represented as dict).

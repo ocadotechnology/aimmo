@@ -9,7 +9,7 @@ import {
   Space,
   AbstractMesh,
   Scene,
-  Color4
+  Color4,
 } from 'babylonjs'
 
 export default class ModernAssetPack extends AssetPack {
@@ -17,13 +17,38 @@ export default class ModernAssetPack extends AssetPack {
 
   backgroundColor = new Color4(0.525, 0.729, 0.851)
 
-  constructor (era: string, scene: Scene) {
+  constructor(era: string, scene: Scene) {
     super(era, scene)
     this.obstacleMaterials = this.makeObstacleMaterials()
   }
 
-  makeObstacleMaterials (): StandardMaterial[] {
-    return [1, 2].map(textureChoice => {
+  async createInteractable(
+    name: string,
+    type: string,
+    location: Vector3,
+    parent: TransformNode
+  ): Promise<AbstractMesh> {
+    const model = `${type}.babylon`
+    const { meshes } = await this.importMeshAsync(
+      'artefact',
+      '/static/babylon/interactables/modern/',
+      model,
+      this.scene
+    )
+    const interactable = meshes[0]
+    interactable.name = name
+    interactable.parent = parent
+    interactable.position = location
+    interactable.scaling = new Vector3(0.6, 0.6, 0.6)
+    interactable.rotation = new Vector3(0, Math.PI, 0)
+    interactable.metadata = {
+      type: type,
+    }
+    return interactable
+  }
+
+  makeObstacleMaterials(): StandardMaterial[] {
+    return [1, 2].map((textureChoice) => {
       const material = new StandardMaterial(
         `${this.obstacleInfo.materialName}_${textureChoice}`,
         this.scene
@@ -35,7 +60,7 @@ export default class ModernAssetPack extends AssetPack {
     })
   }
 
-  async createObstacle (
+  async createObstacle(
     name: string,
     location: Vector3,
     textureChoice: number,
@@ -53,7 +78,7 @@ export default class ModernAssetPack extends AssetPack {
    * @return {number} a random angle in radians, in increments of a quarter
    *
    */
-  createRandomRotation (): number {
+  createRandomRotation(): number {
     return Math.PI / (Math.floor(Math.random() * Math.floor(4)) + 1)
   }
 }

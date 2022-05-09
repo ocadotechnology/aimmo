@@ -50,3 +50,21 @@ class YellowOrbArtefact(_Artefact):
     def __init__(self, cell):
         super().__init__(cell)
         self._type = "yellow_orb"
+
+
+class PhoneArtefact(_Artefact):
+    def __init__(self, cell):
+        super().__init__(cell)
+        self._type = "phone"
+
+
+class KeyboardArtefact(_Artefact):
+    def __init__(self, cell):
+        super().__init__(cell)
+        self._type = "keyboard"
+
+
+class CoinsArtefact(_Artefact):
+    def __init__(self, cell):
+        super().__init__(cell)
+        self._type = "coins"
