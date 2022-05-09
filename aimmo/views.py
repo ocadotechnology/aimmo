@@ -67,7 +67,7 @@ def badges(request, id):
         print("user can't play")
         raise Http404
     try:
-        avatar = game.avatar_set.get_object_or_404(owner=request.user)
+        avatar = game.avatar_set.get(owner=request.user)
     except Avatar.DoesNotExist:
         raise Http404
     avatar_user_profile = UserProfile.objects.get(user=avatar.owner)
