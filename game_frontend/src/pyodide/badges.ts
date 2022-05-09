@@ -64,9 +64,10 @@ function badge3Trigger(result: any, userPythonCode: string, gameState: any, play
     for (const obstacle of obstacles) {
       const obstacleLocation = obstacle.location
       if (JSON.stringify(obstacleLocation) === JSON.stringify(nextCellLocation)) {
-        return true
+        return false
       }
     }
+    return true
   }
   else {
     return false

@@ -66,10 +66,7 @@ def badges(request, id):
     if not game.can_user_play(request.user):
         print("user can't play")
         raise Http404
-    try:
-        avatar = game.avatar_set.get(owner=request.user)
-    except Avatar.DoesNotExist:
-        avatar = create_avatar_for_user(request.user, id)
+    avatar = game.avatar_set.get_object_or_404(owner=request.user)
     avatar_user_profile = UserProfile.objects.get(user=avatar.owner)
     if request.method == "POST":
         avatar_user_profile.aimmo_badges = request.POST["badges"]
