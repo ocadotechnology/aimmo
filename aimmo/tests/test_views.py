@@ -46,9 +46,9 @@ class TestViews(TestCase):
         )
         cls.user.is_staff = True
         cls.user.save()
-        user_profile: UserProfile = UserProfile(user=cls.user)
-        user_profile.save()
-        teacher: Teacher = Teacher.objects.create(user=user_profile, new_user=cls.user)
+        cls.user_profile: UserProfile = UserProfile(user=cls.user)
+        cls.user_profile.save()
+        teacher: Teacher = Teacher.objects.create(user=cls.user_profile, new_user=cls.user)
         teacher.save()
         cls.klass, _, _ = create_class_directly(cls.user.email)
         cls.klass.save()
@@ -574,13 +574,14 @@ class TestViews(TestCase):
         c = self.login()
         response = c.get(reverse("kurono/badges", kwargs={"id": 1}))
         assert response.status_code == 200
-        self.assertJSONEqual(response.content, {"badges": models.Avatar.objects.get(owner__username="test").aimmo_badges})
+        self.assertJSONEqual(response.content, {"badges": self.user_profile.aimmo_badges})
 
     def test_update_badges(self):
         c = self.login()
         response = c.post(reverse("kurono/badges", kwargs={"id": 1}), {"badges": "1,"})
         assert response.status_code == 200
-        assert models.Avatar.objects.get(owner__username="test").aimmo_badges == "1,"
+        user_profile = UserProfile.objects.get(user=self.user)
+        assert user_profile.aimmo_badges == "1,"
 
     def test_badges_for_non_existent_game(self):
         c = self.login()
