@@ -69,7 +69,7 @@ def badges(request, id):
     try:
         avatar = game.avatar_set.get(owner=request.user)
     except Avatar.DoesNotExist:
-        raise Http404
+        avatar = create_avatar_for_user(request.user, id)
     avatar_user_profile = UserProfile.objects.get(user=avatar.owner)
     if request.method == "POST":
         avatar_user_profile.aimmo_badges = request.POST["badges"]
