@@ -1,10 +1,13 @@
 import pytest
 
-from simulation.action import PickupAction
+from simulation.action import PickupAction, DropAction
 from simulation.interactables.pickups import (
     ChestArtefact,
     KeyArtefact,
     YellowOrbArtefact,
+    PhoneArtefact,
+    KeyboardArtefact,
+    CoinsArtefact,
 )
 from simulation.location import Location
 from tests.test_simulation.dummy_avatar import CustomLiveDummy
@@ -15,6 +18,9 @@ testdata = [
     (ChestArtefact, "chest"),
     (KeyArtefact, "key"),
     (YellowOrbArtefact, "yellow_orb"),
+    (PhoneArtefact, "phone"),
+    (KeyboardArtefact, "keyboard"),
+    (CoinsArtefact, "coins"),
 ]
 
 
@@ -50,20 +56,12 @@ async def test_artefact_applies_correctly(game, cell, artefact_class, artefact_t
     cell.interactable = artefact
 
     # Move to the cell with the artefact
-
-    await game.simulation_runner.run_single_turn(
-        game.turn_collector.collected_turn_actions
-    )
-
+    await game.simulation_runner.run_single_turn(game.turn_collector.collected_turn_actions)
     assert cell.interactable is not None
 
     # Pickup the artefact
-
     avatar.set_next_action(PickupAction(avatar))
-
-    await game.simulation_runner.run_single_turn(
-        game.turn_collector.collected_turn_actions
-    )
+    await game.simulation_runner.run_single_turn(game.turn_collector.collected_turn_actions)
 
     assert cell.avatar == avatar
     assert cell.interactable is None
@@ -75,3 +73,16 @@ async def test_artefact_applies_correctly(game, cell, artefact_class, artefact_t
 def test_artefact_repr(cell, artefact_class, artefact_type):
     artefact = artefact_class(cell)
     assert repr(artefact) == f"{type(artefact).__name__}(Location={cell.location})"
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("artefact_class, artefact_type", testdata)
+async def test_drop_artefact(game, cell, artefact_class, artefact_type):
+    avatar: "CustomLiveDummy" = game.avatar_manager.get_avatar(1)
+    artefact = artefact_class(cell)
+    avatar.backpack = [artefact]
+
+    # Drop the artefact
+    avatar.set_next_action(DropAction(avatar, 0))
+    await game.simulation_runner.run_single_turn(game.turn_collector.collected_turn_actions)
+    assert len(avatar.backpack) == 0
