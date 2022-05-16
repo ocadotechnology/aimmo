@@ -37,16 +37,19 @@ LOGGER = logging.getLogger(__name__)
 @login_required
 def code(request, id):
     if not request.user:
-        print("no user")
+        print("This request doesn't have a user attached to it.")
         return HttpResponseForbidden()
     game = get_object_or_404(Game, id=id)
+
     if not game.can_user_play(request.user):
-        print("user can't play")
+        print("The user doesn't have access to the requested game.")
         raise Http404
+
     try:
         avatar = game.avatar_set.get(owner=request.user)
     except Avatar.DoesNotExist:
         avatar = create_avatar_for_user(request.user, id)
+
     if request.method == "POST":
         avatar.code = request.POST["code"]
         avatar.save()
@@ -60,17 +63,20 @@ def code(request, id):
 @login_required
 def badges(request, id):
     if not request.user:
-        print("no user")
+        print("This request doesn't have a user attached to it.")
         return HttpResponseForbidden()
     game = get_object_or_404(Game, id=id)
+
     if not game.can_user_play(request.user):
-        print("user can't play")
+        print("The user doesn't have access to the requested game.")
         raise Http404
+
     try:
         avatar = game.avatar_set.get(owner=request.user)
     except Avatar.DoesNotExist:
         avatar = create_avatar_for_user(request.user, id)
     avatar_user_profile = UserProfile.objects.get(user=avatar.owner)
+
     if request.method == "POST":
         avatar_user_profile.aimmo_badges = request.POST["badges"]
         avatar_user_profile.save()
@@ -115,10 +121,7 @@ class GameViewSet(
             response[game.pk] = serializer.data
         return Response(response)
 
-    @action(
-        methods=["get"],
-        detail=False,
-    )
+    @action(methods=["get"], detail=False)
     def running(self, request):
         response = {
             game.pk: GameSerializer(game).data

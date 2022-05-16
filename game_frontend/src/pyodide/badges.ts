@@ -12,7 +12,7 @@ export function checkIfBadgeEarned(badges: string, result: ComputedTurnResult, u
   for (const badge of badgesPerWorksheet) {
     if (!badges.includes(badge.id.toString()) && badge.worksheetID === gameState.worksheetID && badge.trigger) {
       // console.log("You've earned a new badge!") // TODO: This is where the frontend could show the banner and badge image maybe
-      badges += `${badge.id},`
+      badges += `${badge.worksheetID}:${badge.id},`
     }
   }
   return badges
@@ -32,6 +32,9 @@ function badge2Trigger(userPythonCode: string): boolean {
 }
 
 function badge3Trigger(result: any, userPythonCode: string, gameState: any, playerAvatarId: number): boolean {
+  // Check the code contains certain keywords, that the action is a move action and that the user does move on an
+  // available cell.
+
   // Check code contains keywords
   const substrings = ["world_state.can_move_to(", "print(", "if ", ]
   const codeContainsKeywords = substrings.every((substring) =>

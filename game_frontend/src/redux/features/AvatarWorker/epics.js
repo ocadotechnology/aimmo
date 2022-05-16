@@ -83,6 +83,10 @@ const computeNextActionEpic = (
     )
   )
 
+/**
+ * Whenever the avatar's code is updated, get the user's badges information.
+ * @returns a redux action that contains a string storing the user's earned badges information.
+ */
 const getBadgesEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.AVATAR_CODE_UPDATED),
@@ -100,6 +104,11 @@ const getBadgesEpic = (action$, state$, { api }) =>
     )
   )
 
+/**
+ * Once the badge check has been run on the user's new code to see if they've earned any new badges, send a POST request
+ * with the updated information.
+ * @returns a redux action that confirms the success or failure of the POST request.
+ */
 const postBadgesEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.BADGES_CHECKED),
@@ -116,6 +125,11 @@ const postBadgesEpic = (action$, state$, { api }) =>
     )
   )
 
+/**
+ * Every time the avatar's code's been updated and the user's current badges have been read from Django, run a badge
+ * check that evaluates if any new badges have been earned.
+ * @returns a redux action that holds the result of the badge check.
+ */
 const checkBadgesEarnedEpic = (action$, state$, { pyodideRunner: { checkIfBadgeEarned, resetWorker } }, scheduler = backgroundScheduler) =>
   action$.pipe(
     ofType(types.GET_BADGES_SUCCESS),

@@ -21,7 +21,7 @@ describe('Badges check', () => {
 
     const result = checkIfBadgeEarned(badges, turnResult, userCode, gameState, playerAvatarId)
 
-    const expected = "1,"
+    const expected = "1:1,"
 
     expect(result).toBe(expected)
   })
@@ -61,7 +61,7 @@ def next_turn(world_state, avatar_state):
 
     const result = checkIfBadgeEarned(badges, turnResult, userCode, gameState, playerAvatarId)
 
-    const expected = "1,2,"
+    const expected = "1:1,1:2,"
 
     expect(result).toBe(expected)
   })
@@ -117,7 +117,7 @@ def next_turn(world_state, avatar_state):
 
     const result = checkIfBadgeEarned(badges, turnResult, userCode, gameState, playerAvatarId)
 
-    const expected = "1,2,3,"
+    const expected = "1:1,1:2,1:3,"
 
     expect(result).toBe(expected)
   })
