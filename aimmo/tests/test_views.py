@@ -572,16 +572,18 @@ class TestViews(TestCase):
 
     def test_get_badges(self):
         c = self.login()
+        self.user_profile.aimmo_badges = "1:1,1:2,"
+        self.user_profile.save()
         response = c.get(reverse("kurono/badges", kwargs={"id": 1}))
         assert response.status_code == 200
         self.assertJSONEqual(response.content, {"badges": self.user_profile.aimmo_badges})
 
     def test_update_badges(self):
         c = self.login()
-        response = c.post(reverse("kurono/badges", kwargs={"id": 1}), {"badges": "1,"})
+        response = c.post(reverse("kurono/badges", kwargs={"id": 1}), {"badges": "1:1,"})
         assert response.status_code == 200
         user_profile = UserProfile.objects.get(user=self.user)
-        assert user_profile.aimmo_badges == "1,"
+        assert user_profile.aimmo_badges == "1:1,"
 
     def test_badges_for_non_existent_game(self):
         c = self.login()
