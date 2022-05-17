@@ -19,6 +19,9 @@ class _Artefact(_Interactable):
     def get_targets(self):
         return [self.cell.avatar]
 
+    def __str__(self):
+        return self._type
+
     def __repr__(self):
         return f"{type(self).__name__}(Location={self.cell.location})"
 
