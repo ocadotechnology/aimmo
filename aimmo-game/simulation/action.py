@@ -96,14 +96,16 @@ class DropAction(Action):
         return self.index < len(self.avatar.backpack)
 
     def _apply(self, world_map):
+        artefact_type = str(self.avatar.backpack[self.index])
         del self.avatar.backpack[self.index]
         self.avatar.add_event(DroppedEvent(self.index))
         self.avatar.clear_action()
+        self.avatar.logs.append(f"{artefact_type.capitalize()} dropped!")
 
     def _reject(self):
         self.avatar.add_event(FailedDropEvent())
         self.avatar.clear_action()
-        self.avatar.logs.append("Uh oh! Your avatar was unable to drop the artefact on that position!")
+        self.avatar.logs.append("Uh oh! Your avatar was unable to drop the artefact at that position!")
 
 
 class MoveAction(Action):
