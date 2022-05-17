@@ -10,9 +10,10 @@ export function checkIfBadgeEarned(badges: string, result: ComputedTurnResult, u
   ]
 
   for (const badge of badgesPerWorksheet) {
-    if (!badges.includes(badge.id.toString()) && badge.worksheetID === gameState.worksheetID && badge.trigger) {
+    const badgeWorksheetPair = `${badge.worksheetID}:${badge.id}`
+    if (!badges.includes(badgeWorksheetPair) && badge.worksheetID === gameState.worksheetID && badge.trigger) {
       // console.log("You've earned a new badge!") // TODO: This is where the frontend could show the banner and badge image maybe
-      badges += `${badge.worksheetID}:${badge.id},`
+      badges += `${badgeWorksheetPair},`
     }
   }
   return badges

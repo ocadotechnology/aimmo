@@ -130,7 +130,7 @@ const postBadgesEpic = (action$, state$, { api }) =>
  * check that evaluates if any new badges have been earned.
  * @returns a redux action that holds the result of the badge check.
  */
-const checkBadgesEarnedEpic = (action$, state$, { pyodideRunner: { checkIfBadgeEarned, resetWorker } }, scheduler = backgroundScheduler) =>
+const checkBadgesEarnedEpic = (action$, state$, { pyodideRunner: { checkIfBadgeEarned } }) =>
   action$.pipe(
     ofType(types.GET_BADGES_SUCCESS),
     switchMap(({ payload: badges }) =>
@@ -145,9 +145,16 @@ const checkBadgesEarnedEpic = (action$, state$, { pyodideRunner: { checkIfBadgeE
               state$.value.game.gameState,
               state$.value.game.connectionParameters.currentAvatarID
             )
-          ).pipe(timeoutIfWorkerTakesTooLong(state$, resetWorker, scheduler))
+          )
         ),
-        map(actions.badgesChecked)
+        map(actions.badgesChecked),
+        catchError((error) =>
+          of({
+            type: types.BADGES_CHECKED_FAILURE,
+            payload: error,
+            error: true,
+          })
+        )
       )
     ),
   )

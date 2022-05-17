@@ -67,7 +67,7 @@ async function runBadgeCheck (
   if (workerReady) {
     return func()
   } else {
-    return Promise.resolve("error")
+    return Promise.reject(new Error("Error running badge check"))
   }
 }
 
