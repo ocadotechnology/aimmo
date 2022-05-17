@@ -23,7 +23,7 @@ export async function checkIfBadgeEarned (
   gameState: any,
   playerAvatarId: number
 ): Promise<string> {
-  return runBadgeCheck(() => worker.checkIfBadgeEarned(badges, result, userCode, gameState, playerAvatarId))
+  return worker.checkIfBadgeEarned(badges, result, userCode, gameState, playerAvatarId)
 }
 
 export async function updateAvatarCode (
@@ -58,16 +58,6 @@ async function runIfWorkerReady (
       log: '',
       turnCount: turnCount + 1
     })
-  }
-}
-
-async function runBadgeCheck (
-  func: () => Promise<string>
-): Promise<string> {
-  if (workerReady) {
-    return func()
-  } else {
-    return Promise.reject(new Error("Error running badge check"))
   }
 }
 

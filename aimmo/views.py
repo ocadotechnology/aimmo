@@ -82,7 +82,13 @@ def badges(request, id):
         avatar_user_profile.save()
         return HttpResponse(status=200)
     else:
-        return JsonResponse({"badges": avatar_user_profile.aimmo_badges})
+        aimmo_badges = avatar_user_profile.aimmo_badges
+
+        # Making the badges an empty string if the user doesn't have any badges yet
+        if aimmo_badges is None:
+            aimmo_badges = ""
+
+        return JsonResponse({"badges": aimmo_badges})
 
 
 class GameUsersView(APIView):
