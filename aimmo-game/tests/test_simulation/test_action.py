@@ -68,12 +68,8 @@ class TestAction(unittest.TestCase):
         assert self.other_avatar.times_died == 0
         assert self.other_avatar.health == 4
 
-        assert self.avatar.events == [
-            event.PerformedAttackEvent(self.other_avatar, target_location, damage_dealt)
-        ]
-        assert self.other_avatar.events == [
-            event.ReceivedAttackEvent(self.avatar, damage_dealt)
-        ]
+        assert self.avatar.events == [event.PerformedAttackEvent(self.other_avatar, target_location, damage_dealt)]
+        assert self.other_avatar.events == [event.ReceivedAttackEvent(self.avatar, damage_dealt)]
 
     def test_successful_multiple_attack_actions(self):
         game_state = GameState(AvatarMap(self.other_avatar), self.avatar_manager)
@@ -111,12 +107,8 @@ class TestAction(unittest.TestCase):
 
         target_location = NORTH_OF_ORIGIN
         damage_dealt = 1
-        assert self.avatar.events == [
-            event.PerformedAttackEvent(self.other_avatar, target_location, damage_dealt)
-        ]
-        assert self.other_avatar.events == [
-            event.ReceivedAttackEvent(self.avatar, damage_dealt)
-        ]
+        assert self.avatar.events == [event.PerformedAttackEvent(self.other_avatar, target_location, damage_dealt)]
+        assert self.other_avatar.events == [event.ReceivedAttackEvent(self.avatar, damage_dealt)]
 
         assert self.avatar.location == ORIGIN
         assert self.other_avatar.health == 0
@@ -152,11 +144,23 @@ class TestAction(unittest.TestCase):
         game_state.world_map.setup_cell(self.avatar.location)
         artefact = game_state.world_map.get_cell(self.avatar.location).interactable
 
-        self.avatar.backpack = [
-            YellowOrbArtefact for _ in range(self.avatar.BACKPACK_SIZE)
-        ]
+        self.avatar.backpack = [YellowOrbArtefact for _ in range(self.avatar.BACKPACK_SIZE)]
 
         action.PickupAction(self.avatar).process(game_state.world_map)
 
         assert self.avatar.events == [event.FailedPickupEvent()]
         assert artefact.in_backpack == False
+
+    def test_successful_drop_action(self):
+        game_state = GameState(PickupMap(YellowOrbArtefact), self.avatar_manager)
+        game_state.world_map.setup_cell(self.avatar.location)
+        artefact = game_state.world_map.get_cell(self.avatar.location).interactable
+        self.avatar.backpack = [artefact]
+
+        action.DropAction(self.avatar, 0).process(game_state.world_map)
+        assert self.avatar.events == [event.DroppedEvent(index=0)]
+
+    def test_failed_drop_action(self):
+        game_state = GameState(InfiniteMap(), self.avatar_manager)
+        action.DropAction(self.avatar, 0).process(game_state.world_map)
+        assert self.avatar.events == [event.FailedDropEvent()]

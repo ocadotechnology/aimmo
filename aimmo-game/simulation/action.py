@@ -3,7 +3,9 @@ from typing import TYPE_CHECKING
 
 from simulation.direction import Direction
 from simulation.event import (
+    DroppedEvent,
     FailedAttackEvent,
+    FailedDropEvent,
     FailedMoveEvent,
     FailedPickupEvent,
     MovedEvent,
@@ -60,9 +62,6 @@ class Action(object):
 
 
 class WaitAction(Action):
-    def __init__(self, avatar):
-        super(WaitAction, self).__init__(avatar)
-
     def _is_legal(self, world_map):
         return True
 
@@ -71,9 +70,6 @@ class WaitAction(Action):
 
 
 class PickupAction(Action):
-    def __init__(self, avatar):
-        super(PickupAction, self).__init__(avatar)
-
     def _is_legal(self, world_map):
         current_cell = world_map.get_cell(self.avatar.location)
         cell_has_artefact = issubclass(type(current_cell.interactable), _Artefact)
@@ -88,9 +84,28 @@ class PickupAction(Action):
     def _reject(self):
         self.avatar.add_event(FailedPickupEvent())
         self.avatar.clear_action()
-        self.avatar.logs.append(
-            "Uh oh! Your avatar was unable to pick up the artefact. Your backpack is full! 🎒 "
-        )
+        self.avatar.logs.append("Uh oh! Your avatar was unable to pick up the artefact. Your backpack is full! 🎒 ")
+
+
+class DropAction(Action):
+    def __init__(self, avatar, index):
+        super(DropAction, self).__init__(avatar)
+        self.index = index
+
+    def _is_legal(self, world_map):
+        return self.index < len(self.avatar.backpack)
+
+    def _apply(self, world_map):
+        artefact_type = str(self.avatar.backpack[self.index])
+        del self.avatar.backpack[self.index]
+        self.avatar.add_event(DroppedEvent(self.index))
+        self.avatar.clear_action()
+        self.avatar.logs.append(f"{artefact_type.capitalize()} dropped!")
+
+    def _reject(self):
+        self.avatar.add_event(FailedDropEvent())
+        self.avatar.clear_action()
+        self.avatar.logs.append("Uh oh! Your avatar was unable to drop the artefact at that position!")
 
 
 class MoveAction(Action):
@@ -151,9 +166,7 @@ class AttackAction(Action):
     def _apply(self, world_map):
         attacked_avatar = world_map.attackable_avatar(self.target_location)
         damage_dealt = 1
-        self.avatar.add_event(
-            PerformedAttackEvent(attacked_avatar, self.target_location, damage_dealt)
-        )
+        self.avatar.add_event(PerformedAttackEvent(attacked_avatar, self.target_location, damage_dealt))
         attacked_avatar.add_event(ReceivedAttackEvent(self.avatar, damage_dealt))
         attacked_avatar.damage(damage_dealt)
 
@@ -171,11 +184,6 @@ class AttackAction(Action):
         self.avatar.clear_action()
 
 
-ACTIONS = {
-    "attack": AttackAction,
-    "move": MoveAction,
-    "wait": WaitAction,
-    "pickup": PickupAction,
-}
+ACTIONS = {"attack": AttackAction, "move": MoveAction, "wait": WaitAction, "pickup": PickupAction, "drop": DropAction}
 
-PRIORITIES = {WaitAction: 0, PickupAction: 0, AttackAction: 1, MoveAction: 2}
+PRIORITIES = {WaitAction: 0, PickupAction: 0, DropAction: 0, AttackAction: 1, MoveAction: 2}
