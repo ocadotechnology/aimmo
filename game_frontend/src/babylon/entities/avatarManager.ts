@@ -8,7 +8,7 @@ import {
   Vector3,
   ShaderMaterial,
   Scene,
-  Color3,
+  Color3
 } from 'babylonjs'
 import { Environment } from '../environment/environment'
 import { DiffItem } from '../diff'
@@ -28,7 +28,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
   importMesh: Function
   shaderMaterial: ShaderMaterial
 
-  constructor(environment: Environment, importMesh: Function = SceneLoader.ImportMeshAsync) {
+  constructor (environment: Environment, importMesh: Function = SceneLoader.ImportMeshAsync) {
     this.importMesh = importMesh
     this.gameStateProcessor = new DiffProcessor(this)
 
@@ -41,7 +41,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
     this.setupShaderMaterial()
   }
 
-  setupMarkerMaterial(): void {
+  setupMarkerMaterial (): void {
     this.markerMaterial = new StandardMaterial('avatar marker', this.scene)
     this.markerMaterial.diffuseTexture = new Texture(
       '/static/babylon/models/avatar_marker_texture.png',
@@ -50,14 +50,14 @@ export default class AvatarManager implements GameNode, DiffHandling {
     this.markerMaterial.specularColor = new Color3(0, 0, 0)
   }
 
-  setupShaderMaterial(): void {
+  setupShaderMaterial (): void {
     this.shaderMaterial = new ShaderMaterial(
       'Avatar shader',
       this.scene,
       '/static/babylon/models/toonshader',
       {
         attributes: ['position', 'normal', 'uv'],
-        uniforms: ['world', 'worldView', 'worldViewProjection', 'view', 'projection'],
+        uniforms: ['world', 'worldView', 'worldViewProjection', 'view', 'projection']
       }
     )
     this.shaderMaterial.setTexture(
@@ -66,14 +66,14 @@ export default class AvatarManager implements GameNode, DiffHandling {
     )
   }
 
-  remove(avatar: DiffItem): void {
+  remove (avatar: DiffItem): void {
     const toDelete = this.avatarNode.getChildMeshes(true, function (node): boolean {
       return node.name === `avatar: ${avatar.value.id}`
     })
     toDelete[0].dispose()
   }
 
-  async add(avatar: DiffItem) {
+  async add (avatar: DiffItem) {
     const { meshes } = await this.importMesh(
       'avatar',
       '/static/babylon/models/',
@@ -95,7 +95,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
     }
   }
 
-  edit(avatar: DiffItem): void {
+  edit (avatar: DiffItem): void {
     const avatarToAnimate = this.avatarNode.getChildMeshes(true, function (node): boolean {
       return node.name === `avatar: ${avatar.value.id}`
     })[0]
@@ -117,7 +117,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
     setOrientation(walkingAvatar, avatar.value.orientation)
   }
 
-  async attachMarker(avatarMesh: any) {
+  async attachMarker (avatarMesh: any) {
     const { meshes } = await this.importMesh(
       'avatar_marker',
       '/static/babylon/models/',
@@ -133,7 +133,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
     marker.position = new Vector3(0, MARKER_HEIGHT, 0)
   }
 
-  setCurrentAvatarID(avatarID: number) {
+  setCurrentAvatarID (avatarID: number) {
     this.currentAvatarID = avatarID
   }
 }
