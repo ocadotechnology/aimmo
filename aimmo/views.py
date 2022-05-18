@@ -80,9 +80,8 @@ def badges(request, id):
 
     if request.method == "POST":
         earned_badges = request.POST["badges"]
-        pattern = re.compile("^([1-9]:\d+,)*$")
 
-        if re.match(pattern, earned_badges):
+        if re.match("^([1-9]:\d+,)*$", earned_badges):
             avatar_user_profile.aimmo_badges = earned_badges
             avatar_user_profile.save()
             return HttpResponse()
