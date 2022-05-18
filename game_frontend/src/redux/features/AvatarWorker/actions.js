@@ -22,9 +22,37 @@ const avatarsNextActionComputed = computedTurnResult => ({
   }
 })
 
+const badgesChecked = badges => ({
+  type: types.BADGES_CHECKED,
+  payload: badges,
+})
+
+const getBadgesRequest = () => ({
+  type: types.GET_BADGES_REQUEST,
+})
+
+const getBadgesReceived = badges => ({
+  type: types.GET_BADGES_SUCCESS,
+  payload: badges,
+})
+
+const postBadgesRequest = badges => ({
+  type: types.POST_BADGES_REQUEST,
+  payload: badges,
+})
+
+const postBadgesReceived = () => ({
+  type: types.POST_BADGES_SUCCESS,
+})
+
 export default {
   initializePyodide,
   pyodideInitialized,
   avatarCodeUpdated,
-  avatarsNextActionComputed
+  avatarsNextActionComputed,
+  badgesChecked,
+  getBadgesRequest,
+  getBadgesReceived,
+  postBadgesRequest,
+  postBadgesReceived,
 }
