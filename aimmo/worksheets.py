@@ -189,14 +189,7 @@ def next_turn(world_state, avatar_state):
 #
 #  New commands:
 #       - DropAction(index)
-#       - backpack.find(ARTEFACT_TYPE)
-#
-#  Previous commands:
-#       - world_state.scan_nearby() -> LIST OF ARTEFACTS
-#       - MoveTowardsAction(ARTEFACT)
-#       - avatar_state.backpack -> LIST OF HELD ARTEFACTS
-#       - artefact.type -> TYPE (e.g. artefact_types.KEY or artefact_types.CHEST)
-
+#       - backpack.find(ARTEFACT)
 #-------------------------------------------------------------------------------
 
 def next_turn(world_state, avatar_state):
@@ -268,11 +261,19 @@ def next_turn(world_state, avatar_state):
 
 
 def get_complete_worksheets() -> List[Worksheet]:
-    return [worksheet for worksheet in WORKSHEETS.values() if worksheet.thumbnail_text != "Coming Soon"]
+    return [
+        worksheet
+        for worksheet in WORKSHEETS.values()
+        if worksheet.thumbnail_text != "Coming Soon"
+    ]
 
 
 def get_incomplete_worksheets() -> List[Worksheet]:
-    return [worksheet for worksheet in WORKSHEETS.values() if worksheet.thumbnail_text == "Coming Soon"]
+    return [
+        worksheet
+        for worksheet in WORKSHEETS.values()
+        if worksheet.thumbnail_text == "Coming Soon"
+    ]
 
 
 def get_worksheets_excluding_id(id: int) -> List[Worksheet]:
