@@ -195,6 +195,7 @@ def next_turn(world_state, avatar_state):
 #       - world_state.scan_nearby() -> LIST OF ARTEFACTS
 #       - MoveTowardsAction(ARTEFACT)
 #       - avatar_state.backpack -> LIST OF HELD ARTEFACTS
+#       - artefact.type -> TYPE
 #-------------------------------------------------------------------------------
 
 def next_turn(world_state, avatar_state):
