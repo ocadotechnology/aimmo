@@ -46,9 +46,9 @@ class TestViews(TestCase):
         )
         cls.user.is_staff = True
         cls.user.save()
-        user_profile: UserProfile = UserProfile(user=cls.user)
-        user_profile.save()
-        teacher: Teacher = Teacher.objects.create(user=user_profile, new_user=cls.user)
+        cls.user_profile: UserProfile = UserProfile(user=cls.user)
+        cls.user_profile.save()
+        teacher: Teacher = Teacher.objects.create(user=cls.user_profile, new_user=cls.user)
         teacher.save()
         cls.klass, _, _ = create_class_directly(cls.user.email)
         cls.klass.save()
@@ -288,7 +288,7 @@ class TestViews(TestCase):
         assert token == response.json()["token"]
 
         new_token = "aaaaaaaaaaa"
-        response = client.patch(
+        client.patch(
             reverse("kurono/game_token", kwargs={"id": 1}),
             json.dumps({"token": new_token}),
             content_type="application/json",
@@ -305,7 +305,6 @@ class TestViews(TestCase):
         Check for 401 when attempting to change game token.
         """
         client = Client()
-        token = models.Game.objects.get(id=1).auth_token
         response = client.patch(reverse("kurono/game_token", kwargs={"id": 1}))
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
@@ -314,7 +313,6 @@ class TestViews(TestCase):
         Check for 403 when attempting to change game token (incorrect token provided).
         """
         client = Client()
-        token = models.Game.objects.get(id=1).auth_token
         response = client.patch(
             reverse("kurono/game_token", kwargs={"id": 1}),
             {},
@@ -396,7 +394,7 @@ class TestViews(TestCase):
         """
         Check that the serializer gets the correct settings data from the game
         """
-        client = self.login()
+        self.login()
 
         serializer = GameSerializer(self.game)
 
@@ -440,7 +438,7 @@ class TestViews(TestCase):
     @patch("aimmo.game_creator.GameManager")
     def test_adding_a_game_creates_an_avatar(self, mock_game_manager):
         client = self.login()
-        game: Game = create_game(
+        create_game(
             self.user,
             AddGameForm(
                 Class.objects.all(),
@@ -550,7 +548,7 @@ class TestViews(TestCase):
         game3 = Game(id=3, name="test", game_class=klass3, status=Game.RUNNING)
         game3.save()
         game4 = Game(id=4, name="test", game_class=klass4, status=Game.STOPPED)
-        game3.save()
+        game4.save()
 
         def expected_game_detail(class_id, worksheet_id):
             return {
@@ -571,3 +569,38 @@ class TestViews(TestCase):
         response = c.get(reverse("game-running"))
 
         self.assertJSONEqual(response.content, expected_game_list)
+
+    def test_get_badges(self):
+        c = self.login()
+        self.user_profile.aimmo_badges = "1:1,1:2,"
+        self.user_profile.save()
+        response = c.get(reverse("kurono/badges", kwargs={"id": 1}))
+        assert response.status_code == 200
+        self.assertJSONEqual(response.content, {"badges": self.user_profile.aimmo_badges})
+
+    def test_update_badges(self):
+        c = self.login()
+        response = c.post(reverse("kurono/badges", kwargs={"id": 1}), {"badges": "1:1,"})
+        assert response.status_code == 200
+        user_profile = UserProfile.objects.get(user=self.user)
+        assert user_profile.aimmo_badges == "1:1,"
+
+    def test_update_badges_wrong_format(self):
+        c = self.login()
+        self.user_profile.aimmo_badges = "1:1,"
+        self.user_profile.save()
+        response = c.post(reverse("kurono/badges", kwargs={"id": 1}), {"badges": "wrong format!"})
+        assert response.status_code == 400
+        user_profile = UserProfile.objects.get(user=self.user)
+        assert user_profile.aimmo_badges == "1:1,"
+
+    def test_badges_for_non_existent_game(self):
+        c = self.login()
+        response = c.get(reverse("kurono/badges", kwargs={"id": 2}))
+        assert response.status_code == 404
+
+    def test_badges_for_non_authed_user(self):
+        username, password, _ = create_independent_student_directly()
+        c = self.login(username=username, password=password)
+        response = c.get(reverse("kurono/badges", kwargs={"id": 1}))
+        assert response.status_code == 404

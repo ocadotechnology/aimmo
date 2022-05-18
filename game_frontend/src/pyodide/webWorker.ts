@@ -1,5 +1,6 @@
 /* eslint-env worker */
 import { expose } from 'threads/worker'
+import { checkIfBadgeEarned } from "./badges";
 import ComputedTurnResult from './computedTurnResult'
 
 let pyodide: Pyodide
@@ -132,7 +133,8 @@ async function setAvatarCodeToWaitActionOnError() {
 const pyodideWorker = {
   initializePyodide,
   computeNextAction,
-  updateAvatarCode
+  updateAvatarCode,
+  checkIfBadgeEarned
 }
 
 export type PyodideWorker = typeof pyodideWorker

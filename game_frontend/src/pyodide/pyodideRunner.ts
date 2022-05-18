@@ -16,6 +16,16 @@ async function initializePyodideWorker () {
   await worker.initializePyodide()
 }
 
+export async function checkIfBadgeEarned (
+  badges: string,
+  result: ComputedTurnResult,
+  userCode: string,
+  gameState: any,
+  playerAvatarId: number
+): Promise<string> {
+  return worker.checkIfBadgeEarned(badges, result, userCode, gameState, playerAvatarId)
+}
+
 export async function updateAvatarCode (
   userCode: string,
   gameState: any,

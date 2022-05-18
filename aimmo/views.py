@@ -1,12 +1,14 @@
 import logging
+import re
 from typing import Tuple
 
+from common.models import UserProfile
+from common.permissions import CanDeleteGame
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
+from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
-from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import mixins, status, viewsets
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.decorators import (
@@ -18,8 +20,6 @@ from rest_framework.decorators import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from common.permissions import CanDeleteGame
 
 from . import game_renderer
 from .avatar_creator import create_avatar_for_user
@@ -38,24 +38,60 @@ LOGGER = logging.getLogger(__name__)
 @login_required
 def code(request, id):
     if not request.user:
-        print("no user")
+        LOGGER.info("This request doesn't have a user attached to it.")
         return HttpResponseForbidden()
     game = get_object_or_404(Game, id=id)
+
     if not game.can_user_play(request.user):
-        print("user can't play")
+        LOGGER.info("The user doesn't have access to the requested game.")
         raise Http404
+
     try:
         avatar = game.avatar_set.get(owner=request.user)
     except Avatar.DoesNotExist:
         avatar = create_avatar_for_user(request.user, id)
+
     if request.method == "POST":
         avatar.code = request.POST["code"]
         avatar.save()
-        return HttpResponse(status=200)
+        return HttpResponse()
     else:
         return JsonResponse(
             {"code": avatar.code, "starterCode": game.worksheet.starter_code}
         )
+
+
+@login_required
+def badges(request, id):
+    if not request.user:
+        LOGGER.info("This request doesn't have a user attached to it.")
+        return HttpResponseForbidden()
+    game = get_object_or_404(Game, id=id)
+
+    if not game.can_user_play(request.user):
+        LOGGER.info("The user doesn't have access to the requested game.")
+        raise Http404
+
+    try:
+        avatar = game.avatar_set.get(owner=request.user)
+    except Avatar.DoesNotExist:
+        avatar = create_avatar_for_user(request.user, id)
+    avatar_user_profile = UserProfile.objects.get(user=avatar.owner)
+
+    if request.method == "POST":
+        earned_badges = request.POST["badges"]
+
+        if re.match("^([1-9]:\d+,)*$", earned_badges):
+            avatar_user_profile.aimmo_badges = earned_badges
+            avatar_user_profile.save()
+            return HttpResponse()
+        else:
+            LOGGER.info(f"Badges information {earned_badges} doesn't match the required format.")
+            return HttpResponseBadRequest()
+
+    else:
+        # Making the badges an empty string if the user doesn't have any badges yet
+        return JsonResponse({"badges": avatar_user_profile.aimmo_badges or ""})
 
 
 class GameUsersView(APIView):
@@ -94,10 +130,7 @@ class GameViewSet(
             response[game.pk] = serializer.data
         return Response(response)
 
-    @action(
-        methods=["get"],
-        detail=False,
-    )
+    @action(methods=["get"], detail=False)
     def running(self, request):
         response = {
             game.pk: GameSerializer(game).data
