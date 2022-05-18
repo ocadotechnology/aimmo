@@ -68,7 +68,7 @@ export default class ModernAssetPack extends AssetPack {
   ): Promise<AbstractMesh> {
     const obstacle = await super.createObstacle(name, location, textureChoice, parent)
     obstacle.material = this.obstacleMaterials[textureChoice - 1]
-    obstacle.rotate(Axis.Y, this.createRandomRotation(obstacle), Space.WORLD)
+    obstacle.rotate(Axis.Y, this.createRandomRotation(), Space.WORLD)
     obstacle.scaling = new Vector3(0.75, 1.3, 0.48)
     return obstacle
   }
@@ -80,17 +80,7 @@ export default class ModernAssetPack extends AssetPack {
    *
    */
 
-  createRandomRotation(obstacle: any): number {
-    const angles = {
-      0: 0, // 0 degrees
-      1: Math.PI / 2, // 90 degrees
-      2: Math.PI, // 180 degrees
-      3: (3 * Math.PI) / 2, // 270 degrees
-    }
-
-    const getRandomInt = (max) => {
-      return Math.floor(Math.random() * max)
-    }
-    return angles[getRandomInt(4)]
+  createRandomRotation(): number {
+    return (Math.PI * Math.floor(Math.random() * 4)) / 2
   }
 }
