@@ -1,11 +1,12 @@
 import logging
+import re
 from typing import Tuple
 
 from common.models import UserProfile
 from common.permissions import CanDeleteGame
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
+from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import mixins, status, viewsets
@@ -37,12 +38,12 @@ LOGGER = logging.getLogger(__name__)
 @login_required
 def code(request, id):
     if not request.user:
-        print("This request doesn't have a user attached to it.")
+        LOGGER.info("This request doesn't have a user attached to it.")
         return HttpResponseForbidden()
     game = get_object_or_404(Game, id=id)
 
     if not game.can_user_play(request.user):
-        print("The user doesn't have access to the requested game.")
+        LOGGER.info("The user doesn't have access to the requested game.")
         raise Http404
 
     try:
@@ -53,7 +54,7 @@ def code(request, id):
     if request.method == "POST":
         avatar.code = request.POST["code"]
         avatar.save()
-        return HttpResponse(status=200)
+        return HttpResponse()
     else:
         return JsonResponse(
             {"code": avatar.code, "starterCode": game.worksheet.starter_code}
@@ -63,12 +64,12 @@ def code(request, id):
 @login_required
 def badges(request, id):
     if not request.user:
-        print("This request doesn't have a user attached to it.")
+        LOGGER.info("This request doesn't have a user attached to it.")
         return HttpResponseForbidden()
     game = get_object_or_404(Game, id=id)
 
     if not game.can_user_play(request.user):
-        print("The user doesn't have access to the requested game.")
+        LOGGER.info("The user doesn't have access to the requested game.")
         raise Http404
 
     try:
@@ -78,9 +79,17 @@ def badges(request, id):
     avatar_user_profile = UserProfile.objects.get(user=avatar.owner)
 
     if request.method == "POST":
-        avatar_user_profile.aimmo_badges = request.POST["badges"]
-        avatar_user_profile.save()
-        return HttpResponse(status=200)
+        earned_badges = request.POST["badges"]
+        pattern = re.compile("^([1-9]:\d+,)*$")
+
+        if re.match(pattern, earned_badges):
+            avatar_user_profile.aimmo_badges = earned_badges
+            avatar_user_profile.save()
+            return HttpResponse()
+        else:
+            LOGGER.info(f"Badges information {earned_badges} doesn't match the required format.")
+            return HttpResponseBadRequest()
+
     else:
         # Making the badges an empty string if the user doesn't have any badges yet
         return JsonResponse({"badges": avatar_user_profile.aimmo_badges or ""})
