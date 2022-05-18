@@ -10,7 +10,7 @@ from .utils import NearbyArtefactsList
 # how many nearby artefacts to return
 SCAN_LIMIT = 3
 SCAN_RADIUS = 12
-ARTEFACT_TYPES = ["chest", "key", "yellow_orb", "phone", "keyboard"]
+ARTEFACT_TYPES = ["chest", "key", "yellow_orb", "phone", "keyboard", "coins"]
 PICKUP_TYPES = ["damage_boost", "invulnerability", "health"] + ARTEFACT_TYPES
 
 
