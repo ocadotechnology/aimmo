@@ -196,7 +196,7 @@ def next_turn(world_state, avatar_state):
 #       - MoveTowardsAction(ARTEFACT)
 #       - avatar_state.backpack -> LIST OF HELD ARTEFACTS
 #       - artefact.type -> TYPE (e.g. artefact_types.KEY or artefact_types.CHEST)
-
+#
 #-------------------------------------------------------------------------------
 
 def next_turn(world_state, avatar_state):
