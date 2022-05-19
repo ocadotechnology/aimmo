@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.1.1 (2022-05-19)
+### Fix
+* Re-lock pipfile in aimmo-game ([#1662](https://github.com/ocadotechnology/aimmo/issues/1662)) ([`c89ab47`](https://github.com/ocadotechnology/aimmo/commit/c89ab47da42e3a65cbc9aba72a9b605cdc23fb60))
+
 ## v2.1.0 (2022-05-19)
 ### Feature
 * Add DropAction ([#1656](https://github.com/ocadotechnology/aimmo/issues/1656)) ([`ede244b`](https://github.com/ocadotechnology/aimmo/commit/ede244b83d896a6877f814666594efc0801bc215))
