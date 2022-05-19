@@ -6,7 +6,7 @@ import {
   TransformNode,
   AbstractMesh,
   Scene,
-  Color4
+  Color4,
 } from 'babylonjs'
 import AssetPack from './assetPack'
 
@@ -15,12 +15,12 @@ export default class AncientAssetPack extends AssetPack {
 
   backgroundColor = new Color4(0.93, 0.89, 0.82)
 
-  constructor (era: string, scene: Scene) {
+  constructor(era: string, scene: Scene) {
     super(era, scene)
     this.obstacleMaterial = this.makeObstacleMaterial()
   }
 
-  async createInteractable (
+  async createInteractable(
     name: string,
     type: string,
     location: Vector3,
@@ -39,12 +39,12 @@ export default class AncientAssetPack extends AssetPack {
     interactable.position = location
     interactable.scaling = new Vector3(0.4, 0.4, 0.4)
     interactable.metadata = {
-      type: type
+      type: type,
     }
     return interactable
   }
 
-  makeObstacleMaterial (): StandardMaterial {
+  makeObstacleMaterial(): StandardMaterial {
     const material = new StandardMaterial(this.obstacleInfo.materialName, this.scene)
     material.diffuseTexture = new Texture(this.getTextureURL(1), this.scene)
     material.specularColor = new Color3(0, 0, 0)
@@ -52,7 +52,7 @@ export default class AncientAssetPack extends AssetPack {
     return material
   }
 
-  async createObstacle (
+  async createObstacle(
     name: string,
     location: Vector3,
     textureChoice: number,

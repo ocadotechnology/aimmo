@@ -171,17 +171,60 @@ def next_turn(world_state, avatar_state):
         name="21st Century",
         era=3,
         starter_code="""
+#-------------------------------------------------------------------------------
+#  Worksheet 4 challenges:
+#    Task 1: Examine your backpack
+#       - Change the code so that you can print how many items are in your backpack.
+#       - Print the first item from your backpack and the item type.
+#
+#    Task 2: Examine all artefacts
+#       - Write some code that outputs the position and description of each
+#         of the artefact in your backpack.
+#
+#    Task 3: Count your loot
+#       - Count how many you have of each artefact.
+#
+#    Task 4: Drop artefacts by type
+#       - Drop artefacts that you do not need.
+#
+#  New commands:
+#       - DropAction(index)
+#       - backpack.find(ARTEFACT_TYPE)
+#
+#  Previous commands:
+#       - world_state.scan_nearby() -> LIST OF ARTEFACTS
+#       - MoveTowardsAction(ARTEFACT)
+#       - avatar_state.backpack -> LIST OF HELD ARTEFACTS
+#       - artefact.type -> TYPE
+#-------------------------------------------------------------------------------
+
 def next_turn(world_state, avatar_state):
-    new_dir = direction.NORTH
-    # Your code goes here
-    action = MoveAction(new_dir)
+    # Find out where your avatar is
+    avatar_location = avatar_state.location
+    current_cell = world_state.get_cell(avatar_location)
+
+    # Check if the current cell holds an artefact
+    if current_cell.has_artefact():
+        # It does! Pick it up.
+        action = PickupAction()
+    else:
+        # The cell does not contain an artefact
+        # Find the location of all artefacts nearby
+        nearby = world_state.scan_nearby(avatar_location)
+
+        # Get the nearest one
+        nearest = nearby[0]
+
+        # Move towards the nearest arteface
+        action = MoveTowardsAction(nearest)
+
     return action
 """,
         active_image_path="images/worksheets/modern_active.png",
         description="After successfully collecting all the missing artefacts from the first time checkpoint, you arrive at what looks like the 21st century. You recognise some cars parked here and there, old-fashioned roads and houses like the ones your history teacher told you about. On the bright side, you seem to be alone and safe to walk around... for now. A more recent timeline doesn’t make artefacts easier to find, though. Or at least not the right ones. In this timeline there seems to be an amount of falsified objects that resemble the ones you’re looking for, but aren’t quite genuine. These will have no value in the museum. Your navigation system will be able to tell you whether an object is genuine or not, but it’s up to you to decide which ones to bring back!",
         image_path="images/worksheets/modern.jpg",
         short_description="After successfully collecting all the missing artefacts from the first time checkpoint, you arrive at what looks like the 21st century.",
-        thumbnail_text="Coming Soon",
+        thumbnail_text="",
         student_challenge_url="",
     ),
     5: Worksheet(
@@ -224,19 +267,11 @@ def next_turn(world_state, avatar_state):
 
 
 def get_complete_worksheets() -> List[Worksheet]:
-    return [
-        worksheet
-        for worksheet in WORKSHEETS.values()
-        if worksheet.thumbnail_text != "Coming Soon"
-    ]
+    return [worksheet for worksheet in WORKSHEETS.values() if worksheet.thumbnail_text != "Coming Soon"]
 
 
 def get_incomplete_worksheets() -> List[Worksheet]:
-    return [
-        worksheet
-        for worksheet in WORKSHEETS.values()
-        if worksheet.thumbnail_text == "Coming Soon"
-    ]
+    return [worksheet for worksheet in WORKSHEETS.values() if worksheet.thumbnail_text == "Coming Soon"]
 
 
 def get_worksheets_excluding_id(id: int) -> List[Worksheet]:
