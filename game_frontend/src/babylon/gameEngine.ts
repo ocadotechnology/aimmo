@@ -15,12 +15,12 @@ export default class GameEngine {
 
   panHandler: Function
 
-  constructor (handleMapPanned: Function, environment: Environment) {
+  constructor(handleMapPanned: Function, environment: Environment) {
     this.environment = environment
     this.panHandler = handleMapPanned
   }
 
-  onUpdate (previousProps: any, currentProps: any) {
+  onUpdate(previousProps: any, currentProps: any) {
     if (currentProps.gameState) {
       if (this.environment.era === '') {
         this.environment.era = currentProps.gameState.era
@@ -33,7 +33,7 @@ export default class GameEngine {
     }
   }
 
-  populateMap (): void {
+  populateMap(): void {
     this.assetPack = getAssetPackForEra(this.environment.era, this.environment.scene)
     this.sceneRenderer = new SceneRenderer(this.environment)
     this.environmentManager = new EnvironmentManager(this.environment, this.assetPack)
@@ -43,11 +43,11 @@ export default class GameEngine {
     this.addPanListener(this.environment.scene)
   }
 
-  setCurrentAvatarID (props: any) {
+  setCurrentAvatarID(props: any) {
     this.entities.setCurrentAvatarID(props)
   }
 
-  centerOn (props: any) {
+  centerOn(props: any) {
     if (props.cameraCenteredOnUserAvatar) {
       if (this.entities.avatars.currentAvatarMesh) {
         this.environmentManager.centerOn(this.entities.avatars.currentAvatarMesh)
@@ -59,15 +59,15 @@ export default class GameEngine {
     }
   }
 
-  onUpdateGameState (previousGameState: any, currentGameState: any) {
+  onUpdateGameState(previousGameState: any, currentGameState: any) {
     this.entities.onGameStateUpdate(previousGameState, currentGameState)
   }
 
-  unmount () {
+  unmount() {
     window.removeEventListener('resize', this.environmentManager.resizeBabylonWindow)
   }
 
-  addPanListener (scene: BABYLON.Scene) {
+  addPanListener(scene: BABYLON.Scene) {
     scene.onPrePointerObservable.add(
       () => {
         this.panHandler()
@@ -78,7 +78,7 @@ export default class GameEngine {
     )
   }
 
-  getAvatarLocation (playerID: number, players: any): BABYLON.Vector3 {
+  getAvatarLocation(playerID: number, players: any): BABYLON.Vector3 {
     for (const player in players) {
       if (players[player].id === playerID) {
         const location = players[player].location

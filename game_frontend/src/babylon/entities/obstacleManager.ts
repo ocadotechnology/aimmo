@@ -12,7 +12,7 @@ export default class ObstacleManager implements GameNode, DiffHandling {
   materials: Array<BABYLON.StandardMaterial>
   assetPack: AssetPack
 
-  constructor (environment: Environment, assetPack: AssetPack) {
+  constructor(environment: Environment, assetPack: AssetPack) {
     this.assetPack = assetPack
     this.gameStateProcessor = new DiffProcessor(this)
     this.obstacleNode = new BABYLON.TransformNode('Obstacles', environment.scene)
@@ -20,7 +20,7 @@ export default class ObstacleManager implements GameNode, DiffHandling {
     this.obstacleNode.parent = environment.onTerrainNode
   }
 
-  remove (obstacle: DiffItem): void {
+  remove(obstacle: DiffItem): void {
     const index = obstacle.id
     const toDelete = this.obstacleNode.getChildMeshes(true, function (node): boolean {
       return node.name === `obstacle: ${index}`
@@ -30,7 +30,7 @@ export default class ObstacleManager implements GameNode, DiffHandling {
     }
   }
 
-  edit (obstacle: DiffItem): void {
+  edit(obstacle: DiffItem): void {
     const toEdit = this.obstacleNode.getChildMeshes(true, function (node): boolean {
       return node.name === `obstacle: ${obstacle.id}`
     })
@@ -43,7 +43,7 @@ export default class ObstacleManager implements GameNode, DiffHandling {
     }
   }
 
-  async add (obstacle: DiffItem) {
+  async add(obstacle: DiffItem) {
     await this.assetPack.createObstacle(
       `obstacle: ${obstacle.id}`,
       new BABYLON.Vector3(obstacle.value.location.x, 0, obstacle.value.location.y),

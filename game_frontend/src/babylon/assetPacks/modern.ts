@@ -69,16 +69,18 @@ export default class ModernAssetPack extends AssetPack {
     const obstacle = await super.createObstacle(name, location, textureChoice, parent)
     obstacle.material = this.obstacleMaterials[textureChoice - 1]
     obstacle.rotate(Axis.Y, this.createRandomRotation(), Space.WORLD)
+    obstacle.scaling = new Vector3(0.75, 1.3, 0.48)
     return obstacle
   }
 
   /**
    * This function returns a random angle in radians
    *
-   * @return {number} a random angle in radians, in increments of a quarter
+   * @return {number} a random angle in radians, in increments of half pi
    *
    */
+
   createRandomRotation(): number {
-    return Math.PI / (Math.floor(Math.random() * Math.floor(4)) + 1)
+    return (Math.PI * Math.floor(Math.random() * 4)) / 2
   }
 }
