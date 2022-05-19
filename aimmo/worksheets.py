@@ -221,7 +221,7 @@ def next_turn(world_state, avatar_state):
     return action
 """,
         active_image_path="images/worksheets/modern_active.png",
-        description="After successfully collecting all the missing artefacts from the first time checkpoint, you arrive at what looks like the 21st century. You recognise some cars parked here and there, old-fashioned roads and houses like the ones your history teacher told you about. On the bright side, you seem to be alone and safe to walk around... for now. A more recent timeline doesn’t make artefacts easier to find, though. Or at least not the right ones. In this timeline there seems to be an amount of falsified objects that resemble the ones you’re looking for, but aren’t quite genuine. These will have no value in the museum. Your navigation system will be able to tell you whether an object is genuine or not, but it’s up to you to decide which ones to bring back!",
+        description="After successfully collecting all the missing artefacts from the first time checkpoint, you arrive at what looks like the 21st century. You recognise some cars parked here and there, just like the ones your history teacher told you about. In this timeline, there seems to be some object which will have no value in the museum.",
         image_path="images/worksheets/modern.jpg",
         short_description="After successfully collecting all the missing artefacts from the first time checkpoint, you arrive at what looks like the 21st century.",
         thumbnail_text="",
