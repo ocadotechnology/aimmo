@@ -225,7 +225,7 @@ def next_turn(world_state, avatar_state):
         image_path="images/worksheets/modern.jpg",
         short_description="After successfully collecting all the missing artefacts from the first time checkpoint, you arrive at what looks like the 21st century.",
         thumbnail_text="",
-        student_challenge_url="",
+        student_challenge_url="https://code-for-life.gitbook.io/learning-resources/student-challenges/student-challenge-4",
     ),
     5: Worksheet(
         id=5,
