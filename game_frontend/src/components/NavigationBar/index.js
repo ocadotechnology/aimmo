@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import { connect } from 'react-redux'
 
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -31,20 +32,8 @@ const urlForAimmoDashboard =
 
 const BADGE_MODAL_TIME = 5000
 
-export default class NavigationBar extends Component {
-  state = { modalOpen: false, completedTask: 0 }
-
-  handleOpen = () => {
-    this.setState(
-      {
-        modalOpen: true,
-        completedTask: 1,
-      },
-      () => {
-        setTimeout(this.handleClose, BADGE_MODAL_TIME)
-      }
-    )
-  }
+class NavigationBar extends Component {
+  state = { modalOpen: false, completedTasks: [], lastTask: '' }
 
   handleClose = () => {
     this.setState({
@@ -52,20 +41,40 @@ export default class NavigationBar extends Component {
     })
   }
 
-  getFinishedTasks = () => {
-    return [0, 1, 2]
+  static getDerivedStateFromProps(props, state) {
+    // Any time completedTasks change, pass the new info as state
+    if (props.completedTasks !== undefined) {
+      // convert to string for comparison
+      const stateTasksString = state.completedTasks.join() + ','
+
+      if (props.completedTasks !== stateTasksString) {
+        let newTasks = props.completedTasks.split(',')
+        newTasks = newTasks.filter((s) => s) // remove empty element
+        const lastTask = newTasks[newTasks.length - 1] // assume the last element is the last task
+
+        return {
+          modalOpen: props.modalOpen,
+          completedTasks: newTasks,
+          lastTask: lastTask,
+        }
+      }
+    }
+    return null // no change
+  }
+
+  static getDerivedStateFromError(error) {
+    // Update state so the next render will show the fallback UI.
+    return { hasError: true }
   }
 
   renderLogoToolbar = () => {
-    const finishedTasks = this.getFinishedTasks()
-    const badges = getBadges(finishedTasks)
+    const badges = getBadges(this.state.completedTasks)
     return (
       <LogoToolbar>
         <IconButton href={urlForAimmoDashboard} aria-label="Kurono dashboard" color="inherit">
           <KuronoLogoStyled />
         </IconButton>
         {badges}
-        <Button onClick={this.handleOpen}>Open modal</Button>
       </LogoToolbar>
     )
   }
@@ -81,14 +90,25 @@ export default class NavigationBar extends Component {
   }
 
   render() {
+    if (this.state.modalOpen) {
+      setTimeout(this.handleClose, BADGE_MODAL_TIME)
+    }
+
     return (
       <NavigationBarLayout>
         <KuronoAppBar color="secondary" position="sticky">
           {this.renderLogoToolbar()}
           {this.renderButtonToolbar()}
         </KuronoAppBar>
-        <BadgeModal taskId={this.state.completedTask} modalOpen={this.state.modalOpen} />
+        <BadgeModal taskId={this.state.lastTask} modalOpen={this.state.modalOpen} />
       </NavigationBarLayout>
     )
   }
 }
+
+const mapStateToProps = (state) => ({
+  completedTasks: state.avatarWorker.completedTasks,
+  modalOpen: state.avatarWorker.modalOpen,
+})
+
+export default connect(mapStateToProps)(NavigationBar)

@@ -56,7 +56,7 @@ export default class BadgeModal extends Component {
 
 BadgeModal.propTypes = {
   modalOpen: PropTypes.bool,
-  taskId: PropTypes.number,
+  taskId: PropTypes.string,
 }
 
 export function getBadges(tasks) {
