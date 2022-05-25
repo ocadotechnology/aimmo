@@ -27,6 +27,11 @@ const BadgeModalImg = styled(Box)`
 `
 
 export default class BadgeModal extends Component {
+  static propTypes = {
+    modalOpen: PropTypes.bool,
+    taskId: PropTypes.string,
+  }
+
   render() {
     if (!this.props.modalOpen) {
       return null
@@ -52,11 +57,6 @@ export default class BadgeModal extends Component {
       </Modal>
     )
   }
-}
-
-BadgeModal.propTypes = {
-  modalOpen: PropTypes.bool,
-  taskId: PropTypes.string,
 }
 
 export function getBadges(tasks) {

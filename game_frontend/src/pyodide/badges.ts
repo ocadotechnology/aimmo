@@ -26,7 +26,7 @@ export function checkIfBadgeEarned(
       badge.worksheetID === gameState.worksheetID &&
       badge.trigger
     ) {
-      console.log("Yes! You've earned a new badge: " + badgeWorksheetPair)
+      // console.log("Yes! You've earned a new badge: " + badgeWorksheetPair)
       // TODO on worksshet 2: This might have to order the badges, in case user does not do the worksheet in order
       badges += `${badgeWorksheetPair},`
     }

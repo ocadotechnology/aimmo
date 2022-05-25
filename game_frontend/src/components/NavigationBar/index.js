@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -33,6 +34,12 @@ const urlForAimmoDashboard =
 const BADGE_MODAL_TIME = 5000
 
 class NavigationBar extends Component {
+  static propTypes = {
+    // the props received from redux state or reducers
+    modalOpen: PropTypes.bool,
+    completedTasks: PropTypes.string,
+  }
+
   state = { modalOpen: false, completedTasks: [], lastTask: '' }
 
   handleClose = () => {
@@ -62,11 +69,6 @@ class NavigationBar extends Component {
     return null // no change
   }
 
-  static getDerivedStateFromError(error) {
-    // Update state so the next render will show the fallback UI.
-    return { hasError: true }
-  }
-
   renderLogoToolbar = () => {
     const badges = getBadges(this.state.completedTasks)
     return (
@@ -90,6 +92,7 @@ class NavigationBar extends Component {
   }
 
   render() {
+    // when modalOpen changes to true, start the timer
     if (this.state.modalOpen) {
       setTimeout(this.handleClose, BADGE_MODAL_TIME)
     }
