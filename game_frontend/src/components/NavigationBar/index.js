@@ -33,7 +33,7 @@ const urlForAimmoDashboard =
 
 const BADGE_MODAL_TIME = 5000
 
-class NavigationBar extends Component {
+export class NavigationBar extends Component {
   static propTypes = {
     // the props received from redux state or reducers
     modalOpen: PropTypes.bool,
