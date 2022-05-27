@@ -77,14 +77,3 @@ exports[`<IDEEditorLayout /> renders correctly 1`] = `
   className="c0"
 />
 `;
-
-exports[`<IDEEditorLayout /> renders correctly 2`] = `
-<styled.div>
-  <Styled(RunCodeButton)
-    aria-label="Run Code"
-    id="post-code-button"
-    isCodeOnServerDifferent={true}
-    whenClicked={[Function]}
-  />
-</styled.div>
-`;
