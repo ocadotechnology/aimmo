@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.2.0 (2022-05-27)
+### Feature
+* Worksheet 1 badges ([`282e9f2`](https://github.com/ocadotechnology/aimmo/commit/282e9f27d5c7294183a46d384cfe6838b2dfd696))
+
 ## v2.1.2 (2022-05-19)
 ### Fix
 * Add worksheet 4 student challenge url ([#1663](https://github.com/ocadotechnology/aimmo/issues/1663)) ([`7dd5b30`](https://github.com/ocadotechnology/aimmo/commit/7dd5b30dc0bdca772e68076b04a96b47cb4407fd))
