@@ -5,7 +5,11 @@ module.exports = {
   modulePathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/cypress/'],
   globals: {
     'babel-jest': {
-      useBabelrc: true
-    }
-  }
+      useBabelrc: true,
+    },
+  },
+  transform: {
+    '\\.[jt]sx?$': 'babel-jest',
+    '^.+\\.svg$': 'jest-svg-transformer',
+  },
 }

@@ -218,18 +218,6 @@ exports[`<MarginedBugIcon /> matches snapshot 1`] = `
           "fontWeight": 500,
           "lineHeight": 1.66,
         },
-        "display1": Object {
-          "fontWeight": 700,
-        },
-        "display2": Object {
-          "fontWeight": 700,
-        },
-        "display3": Object {
-          "fontWeight": 900,
-        },
-        "display4": Object {
-          "fontWeight": 900,
-        },
         "fontFamily": "museo-sans,Source Code Pro",
         "fontSize": 14,
         "fontWeightBold": 700,
@@ -526,18 +514,6 @@ exports[`<MarginedCheckCircle /> matches snapshot 1`] = `
           "fontStyle": "italic",
           "fontWeight": 500,
           "lineHeight": 1.66,
-        },
-        "display1": Object {
-          "fontWeight": 700,
-        },
-        "display2": Object {
-          "fontWeight": 700,
-        },
-        "display3": Object {
-          "fontWeight": 900,
-        },
-        "display4": Object {
-          "fontWeight": 900,
         },
         "fontFamily": "museo-sans,Source Code Pro",
         "fontSize": 14,
@@ -836,18 +812,6 @@ exports[`<MarginedCircularProgress /> matches snapshot 1`] = `
           "fontWeight": 500,
           "lineHeight": 1.66,
         },
-        "display1": Object {
-          "fontWeight": 700,
-        },
-        "display2": Object {
-          "fontWeight": 700,
-        },
-        "display3": Object {
-          "fontWeight": 900,
-        },
-        "display4": Object {
-          "fontWeight": 900,
-        },
         "fontFamily": "museo-sans,Source Code Pro",
         "fontSize": 14,
         "fontWeightBold": 700,
@@ -1144,18 +1108,6 @@ exports[`<MarginedPlayIcon /> matches snapshot 1`] = `
           "fontStyle": "italic",
           "fontWeight": 500,
           "lineHeight": 1.66,
-        },
-        "display1": Object {
-          "fontWeight": 700,
-        },
-        "display2": Object {
-          "fontWeight": 700,
-        },
-        "display3": Object {
-          "fontWeight": 900,
-        },
-        "display4": Object {
-          "fontWeight": 900,
         },
         "fontFamily": "museo-sans,Source Code Pro",
         "fontSize": 14,

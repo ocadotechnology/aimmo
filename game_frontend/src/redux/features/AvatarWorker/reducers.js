@@ -12,6 +12,12 @@ const actionReducer = (state = { initialized: false }, action) => {
         ...state,
         initialized: true
       }
+    case types.BADGES_CHECKED:
+      return {
+        ...state,
+        completedTasks: action.payload,
+        modalOpen: true
+      }
     default:
       return state
   }
