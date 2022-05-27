@@ -1,5 +1,5 @@
 import ChangeDirectionBadge from 'img/1_change_direction.svg'
-import AllDirectionsBadge from 'img/1_all_directions.svg'
+import RandomDirectionsBadge from 'img/1_random_directions.svg'
 import InvestigateBadge from 'img/1_investigate.svg'
 
 export const badgeInfo = {
@@ -11,9 +11,9 @@ export const badgeInfo = {
   },
   '1:2': {
     title: 'Well done!',
-    message: 'You just earned the second badge by going to all directions!',
-    img: AllDirectionsBadge,
-    name: 'All directions',
+    message: 'You just earned the second badge by going in random directions!',
+    img: RandomDirectionsBadge,
+    name: 'Random directions',
   },
   '1:3': {
     title: 'Congratulations!',

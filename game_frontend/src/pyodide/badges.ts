@@ -26,7 +26,7 @@ export function checkIfBadgeEarned(
       badge.worksheetID === gameState.worksheetID &&
       badge.trigger
     ) {
-      // console.log("Yes! You've earned a new badge: " + badgeWorksheetPair)
+      // Here is when a new badge is earned
       // TODO on worksshet 2: This might have to order the badges, in case user does not do the worksheet in order
       badges += `${badgeWorksheetPair},`
     }
@@ -43,7 +43,7 @@ function badge1Trigger(result: any): boolean {
 }
 
 function badge2Trigger(userPythonCode: string): boolean {
-  // Check code contains keywords
+  // Check code contains keywords to move in random directions
   const substrings = [
     'import random',
     'randint(',
@@ -64,10 +64,7 @@ function badge3Trigger(
   gameState: any,
   playerAvatarId: number
 ): boolean {
-  // Check the code contains certain keywords, that the action is a move action and that the user does move on an
-  // available cell.
-
-  // Check code contains keywords
+  // Check the code contains certain keywords about moving to a cell
   const substrings = ['world_state.can_move_to(', 'print(', 'if ']
   const codeContainsKeywords = substrings.every((substring) => userPythonCode.includes(substring))
 
