@@ -2,6 +2,25 @@
 
 <!--next-version-placeholder-->
 
+## v2.1.2 (2022-05-19)
+### Fix
+* Add worksheet 4 student challenge url ([#1663](https://github.com/ocadotechnology/aimmo/issues/1663)) ([`7dd5b30`](https://github.com/ocadotechnology/aimmo/commit/7dd5b30dc0bdca772e68076b04a96b47cb4407fd))
+
+## v2.1.1 (2022-05-19)
+### Fix
+* Re-lock pipfile in aimmo-game ([#1662](https://github.com/ocadotechnology/aimmo/issues/1662)) ([`c89ab47`](https://github.com/ocadotechnology/aimmo/commit/c89ab47da42e3a65cbc9aba72a9b605cdc23fb60))
+
+## v2.1.0 (2022-05-19)
+### Feature
+* Add DropAction ([#1656](https://github.com/ocadotechnology/aimmo/issues/1656)) ([`ede244b`](https://github.com/ocadotechnology/aimmo/commit/ede244b83d896a6877f814666594efc0801bc215))
+* Add backpack with find method ([#1657](https://github.com/ocadotechnology/aimmo/issues/1657)) ([`d79a354`](https://github.com/ocadotechnology/aimmo/commit/d79a354a966d3062624e1ad756aa51106131e25a))
+* Modern era artefacts ([#1654](https://github.com/ocadotechnology/aimmo/issues/1654)) ([`1e59903`](https://github.com/ocadotechnology/aimmo/commit/1e59903f9b0bccd3521faa61e8001fd22ed53133))
+* Add worksheet 4 ([#1651](https://github.com/ocadotechnology/aimmo/issues/1651)) ([`deb36f1`](https://github.com/ocadotechnology/aimmo/commit/deb36f11a80649d83184dc1a4e240bf920e0b09f))
+
+### Fix
+* Scale cars ([#1661](https://github.com/ocadotechnology/aimmo/issues/1661)) ([`901f3bd`](https://github.com/ocadotechnology/aimmo/commit/901f3bdbab12cae5e98a37ef26503dca6431550c))
+* Pin grpcio in aimmo-game ([#1659](https://github.com/ocadotechnology/aimmo/issues/1659)) ([`8b51df8`](https://github.com/ocadotechnology/aimmo/commit/8b51df85c7a1d9c07638351f99b724bb2c26a306))
+
 ## v2.0.4 (2022-04-27)
 ### Fix
 * Upgrade semantic-release version in action ([#1646](https://github.com/ocadotechnology/aimmo/issues/1646)) ([`1af25b9`](https://github.com/ocadotechnology/aimmo/commit/1af25b99a361aca8c290537a09dd6505abc9095e))

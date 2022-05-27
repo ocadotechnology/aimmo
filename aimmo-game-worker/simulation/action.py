@@ -21,6 +21,14 @@ class PickupAction(Action):
         return {"action_type": "pickup"}
 
 
+class DropAction(Action):
+    def __init__(self, index):
+        self.index = index
+
+    def serialise(self):
+        return {"action_type": "drop", "options": {"index": self.index}}
+
+
 class MoveAction(Action):
     def __init__(self, direction):
         self.direction = direction

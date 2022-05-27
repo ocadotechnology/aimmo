@@ -14,11 +14,15 @@ from simulation.interactables.pickups import (
     YellowOrbArtefact,
     ChestArtefact,
     KeyArtefact,
+    PhoneArtefact,
+    KeyboardArtefact,
+    CoinsArtefact,
 )
 from .avatar_state_serializers import (
     worksheet1_avatar_state_serializer,
     worksheet2_avatar_state_serializer,
     worksheet3_avatar_state_serializer,
+    worksheet4_avatar_state_serializer,
 )
 
 if TYPE_CHECKING:
@@ -26,9 +30,7 @@ if TYPE_CHECKING:
     from simulation.avatar.avatar_wrapper import AvatarWrapper
     from simulation.game_logic.map_updaters import _MapUpdater
 
-    AvatarStateSerializer = NewType(
-        "AvatarStateSerializer", Callable[[AvatarWrapper], Dict]
-    )
+    AvatarStateSerializer = NewType("AvatarStateSerializer", Callable[[AvatarWrapper], Dict])
 
 
 @dataclass
@@ -61,6 +63,13 @@ worksheets = {
         map_updaters=[PickupUpdater(pickup_types=[ChestArtefact, KeyArtefact])],
         number_of_obstacle_textures=1,
         avatar_state_serializer=worksheet3_avatar_state_serializer,
+    ),
+    4: WorksheetData(
+        worksheet_id=4,
+        era="modern",
+        map_updaters=[PickupUpdater(pickup_types=[PhoneArtefact, KeyboardArtefact, CoinsArtefact])],
+        number_of_obstacle_textures=1,
+        avatar_state_serializer=worksheet4_avatar_state_serializer,
     ),
 }
 

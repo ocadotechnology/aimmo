@@ -6,7 +6,7 @@ import ComputedTurnResult from './computedTurnResult'
 let pyodide: Pyodide
 
 function getAvatarStateFromGameState(gameState: any, playerAvatarID: number): object {
-  return gameState.players.find(player => player.id === playerAvatarID)
+  return gameState.players.find((player) => player.id === playerAvatarID)
 }
 
 async function initializePyodide() {
@@ -28,7 +28,7 @@ from io import StringIO
 from pyodide import to_js
 
 from simulation import direction, location
-from simulation.action import MoveAction, PickupAction, WaitAction, MoveTowardsAction
+from simulation.action import MoveAction, PickupAction, WaitAction, MoveTowardsAction, DropAction
 from simulation.avatar_state import create_avatar_state
 from simulation.world_map import WorldMapCreator
 
@@ -73,7 +73,7 @@ to_js({"action": serialized_action, "log": logs, "turnCount": game_state["turnCo
     return Promise.resolve({
       action: { action_type: 'wait' },
       log: simplifyErrorMessageInLog(error.toString()),
-      turnCount: gameState.turnCount + 1
+      turnCount: gameState.turnCount + 1,
     })
   }
 }
@@ -87,10 +87,7 @@ export function simplifyErrorMessageInLog(log: string): string {
     return `Uh oh! Something isn't correct on line ${matches[1]}. Here's the error we got:\n${simpleError}`
   }
   // error not in next_turn function
-  return log
-    .split('\n')
-    .slice(-2)
-    .join('\n')
+  return log.split('\n').slice(-2).join('\n')
 }
 
 export async function updateAvatarCode(
@@ -111,14 +108,14 @@ export async function updateAvatarCode(
     return Promise.resolve({
       action: { action_type: 'wait' },
       log: '',
-      turnCount: turnCount
+      turnCount: turnCount,
     })
   } catch (error) {
     await setAvatarCodeToWaitActionOnError()
     return Promise.resolve({
       action: { action_type: 'wait' },
       log: simplifyErrorMessageInLog(error.toString()),
-      turnCount: turnCount
+      turnCount: turnCount,
     })
   }
 }
