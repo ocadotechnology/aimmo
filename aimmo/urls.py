@@ -23,6 +23,7 @@ urlpatterns = [
         name="kurono/statistics",
     ),
     url(r"^api/code/(?P<id>[0-9]+)/$", views.code, name="kurono/code"),
+    url(r"^api/badges/(?P<id>[0-9]+)/$", views.badges, name="kurono/badges"),
     url(
         r"^api/games/(?P<id>[0-9]+)/users/$",
         views.GameUsersView.as_view(),
