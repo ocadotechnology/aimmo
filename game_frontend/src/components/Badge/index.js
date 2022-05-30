@@ -40,7 +40,7 @@ export default class BadgeModal extends Component {
     const taskId = this.props.taskId
     const info = badgeInfo[taskId]
     if (info === undefined) {
-      return <></>
+      return null
     }
 
     return (
