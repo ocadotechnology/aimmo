@@ -155,6 +155,14 @@ class MoveAction(Action):
         return False
 
 
+class MoveTowardsAction(MoveAction):
+    REJECT_MESSAGE = "Uh oh! Your avatar is blocked by another avatar! Try to move around it first."
+
+    def _reject(self):
+        self.avatar.logs.append(self.REJECT_MESSAGE)
+        return super()._reject()
+
+
 class AttackAction(Action):
     def __init__(self, avatar, direction):
         self.direction = Direction(**direction)
@@ -184,6 +192,13 @@ class AttackAction(Action):
         self.avatar.clear_action()
 
 
-ACTIONS = {"attack": AttackAction, "move": MoveAction, "wait": WaitAction, "pickup": PickupAction, "drop": DropAction}
+ACTIONS = {
+    "attack": AttackAction,
+    "move": MoveAction,
+    "wait": WaitAction,
+    "pickup": PickupAction,
+    "drop": DropAction,
+    "move_towards": MoveTowardsAction,
+}
 
-PRIORITIES = {WaitAction: 0, PickupAction: 0, DropAction: 0, AttackAction: 1, MoveAction: 2}
+PRIORITIES = {WaitAction: 0, PickupAction: 0, DropAction: 0, AttackAction: 1, MoveAction: 2, MoveTowardsAction: 2}
