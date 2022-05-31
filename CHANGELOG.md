@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.3.0 (2022-05-31)
+### Feature
+* Add message when move towards is rejected ([#1669](https://github.com/ocadotechnology/aimmo/issues/1669)) ([`4682692`](https://github.com/ocadotechnology/aimmo/commit/468269285352dbc5731dfed87a49fe40699bd2a4))
+
 ## v2.2.1 (2022-05-30)
 ### Fix
 * Add error checking ([#1668](https://github.com/ocadotechnology/aimmo/issues/1668)) ([`5036c66`](https://github.com/ocadotechnology/aimmo/commit/5036c66d72aa50ab11956a50533fe6a4b2c4c581))

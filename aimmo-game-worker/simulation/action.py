@@ -64,7 +64,7 @@ class MoveTowardsAction(Action):
         if not self.direction:
             return {}
         return {
-            "action_type": "move",
+            "action_type": "move_towards",
             "options": {"direction": self.direction.serialise()},
         }
 
