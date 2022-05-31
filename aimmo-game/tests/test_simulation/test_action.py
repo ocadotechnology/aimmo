@@ -56,6 +56,14 @@ class TestAction(unittest.TestCase):
         assert self.avatar.location == ORIGIN
         assert self.avatar.events == [event.FailedMoveEvent(ORIGIN, NORTH_OF_ORIGIN)]
 
+    def test_failed_move_towards_action(self):
+        game_state = GameState(EmptyMap(), self.avatar_manager)
+        action.MoveTowardsAction(self.avatar, {"x": 0, "y": 1}).process(game_state.world_map)
+
+        assert self.avatar.location == ORIGIN
+        assert self.avatar.events == [event.FailedMoveEvent(ORIGIN, NORTH_OF_ORIGIN)]
+        assert self.avatar.logs[-1] == action.MoveTowardsAction.REJECT_MESSAGE
+
     def test_successful_attack_action(self):
         game_state = GameState(AvatarMap(self.other_avatar), self.avatar_manager)
         action.AttackAction(self.avatar, {"x": 0, "y": 1}).process(game_state.world_map)
