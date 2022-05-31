@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.2.1 (2022-05-30)
+### Fix
+* Add error checking ([#1668](https://github.com/ocadotechnology/aimmo/issues/1668)) ([`5036c66`](https://github.com/ocadotechnology/aimmo/commit/5036c66d72aa50ab11956a50533fe6a4b2c4c581))
+
 ## v2.2.0 (2022-05-27)
 ### Feature
 * Worksheet 1 badges ([`282e9f2`](https://github.com/ocadotechnology/aimmo/commit/282e9f27d5c7294183a46d384cfe6838b2dfd696))
