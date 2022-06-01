@@ -9,11 +9,11 @@ about: A template for a new task
 
 
 ## Acceptance Criteria
+- [ ] ...
+- [ ] ...
 
+### Analytics Requirements
+- [ ] ...
 
-
-## Copywrite Requirements
-
-
-
-## Analytics Requirements
+### Copywrite Requirements
+- [ ] ...
