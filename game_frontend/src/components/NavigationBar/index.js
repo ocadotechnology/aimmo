@@ -9,6 +9,7 @@ import { IconButton, Button } from '@material-ui/core'
 
 import KuronoLogo from 'components/icons/KuronoLogo'
 import BadgeModal, { getBadges } from 'components/Badge'
+import { avatarWorkerActions } from 'features/AvatarWorker'
 
 export const NavigationBarLayout = styled.nav`
   grid-area: navigation-bar;
@@ -38,9 +39,14 @@ export class NavigationBar extends Component {
     // the props received from redux state or reducers
     modalOpen: PropTypes.bool,
     completedTasks: PropTypes.string,
+    badgesInit: PropTypes.func,
   }
 
   state = { modalOpen: false, completedTasks: [], lastTask: '' }
+
+  componentDidMount() {
+    this.props.badgesInit()
+  }
 
   handleClose = () => {
     this.setState({
@@ -114,4 +120,8 @@ const mapStateToProps = (state) => ({
   modalOpen: state.avatarWorker.modalOpen,
 })
 
-export default connect(mapStateToProps)(NavigationBar)
+const mapDispatchToProps = {
+  badgesInit: avatarWorkerActions.getBadgesRequest,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(NavigationBar)

@@ -5,18 +5,24 @@ const actionReducer = (state = { initialized: false }, action) => {
     case types.AVATARS_NEXT_ACTION_COMPUTED:
       return {
         ...state,
-        avatarAction: action.payload
+        avatarAction: action.payload,
       }
     case types.PYODIDE_INITIALIZED:
       return {
         ...state,
-        initialized: true
+        initialized: true,
       }
-    case types.BADGES_CHECKED:
+    case types.GET_BADGES_SUCCESS:
       return {
         ...state,
         completedTasks: action.payload,
-        modalOpen: true
+        modalOpen: false,
+      }
+    case types.BADGES_EARNED:
+      return {
+        ...state,
+        completedTasks: action.payload,
+        modalOpen: true,
       }
     default:
       return state

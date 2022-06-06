@@ -1,4 +1,4 @@
-import {switchMap, mapTo, zip, take, tap, map, mergeMap, catchError} from 'rxjs/operators'
+import { switchMap, mapTo, zip, take, tap, map, mergeMap, catchError } from 'rxjs/operators'
 
 import actions from './actions'
 import types from './types'
@@ -6,7 +6,7 @@ import { timeoutIfWorkerTakesTooLong } from './operators'
 import { ofType } from 'redux-observable'
 import { gameTypes } from '../Game'
 import { editorTypes } from '../Editor'
-import {from, of, Scheduler} from 'rxjs'
+import { from, of, Scheduler } from 'rxjs'
 
 const backgroundScheduler = Scheduler.async
 
@@ -84,12 +84,12 @@ const computeNextActionEpic = (
   )
 
 /**
- * Whenever the avatar's code is updated, get the user's badges information.
+ * Get the user's badges information.
  * @returns a redux action that contains a string storing the user's earned badges information.
  */
 const getBadgesEpic = (action$, state$, { api }) =>
   action$.pipe(
-    ofType(types.AVATAR_CODE_UPDATED),
+    ofType(types.GET_BADGES_REQUEST),
     mergeMap((action) =>
       api.get(`badges/${state$.value.game.connectionParameters.game_id}/`).pipe(
         map((response) => actions.getBadgesReceived(response.badges)),
@@ -105,23 +105,23 @@ const getBadgesEpic = (action$, state$, { api }) =>
   )
 
 /**
- * Once the badge check has been run on the user's new code to see if they've earned any new badges, send a POST request
- * with the updated information.
- * @returns a redux action that confirms the success or failure of the POST request.
+ * Whenever the avatar's code is updated, get the user's badges information.
+ * @returns a redux action that contains a string storing the user's earned badges information.
  */
-const postBadgesEpic = (action$, state$, { api }) =>
+const checkBadgesEpic = (action$, state$, { api }) =>
   action$.pipe(
-    ofType(types.BADGES_CHECKED),
-    api.post(`/kurono/api/badges/${state$.value.game.connectionParameters.game_id}/`, (action) => {
-      return {badges: action.payload}
-    }),
-    map(() => actions.postBadgesReceived()),
-    catchError((error) =>
-      of({
-        type: types.POST_BADGES_FAILURE,
-        payload: error.xhr.response,
-        error: true,
-      })
+    ofType(types.AVATAR_CODE_UPDATED),
+    mergeMap((action) =>
+      api.get(`badges/${state$.value.game.connectionParameters.game_id}/`).pipe(
+        map((response) => actions.checkBadgesReceived(response.badges)),
+        catchError((error) =>
+          of({
+            type: types.GET_BADGES_FAILURE,
+            payload: error.xhr.response,
+            error: true,
+          })
+        )
+      )
     )
   )
 
@@ -132,7 +132,7 @@ const postBadgesEpic = (action$, state$, { api }) =>
  */
 const checkBadgesEarnedEpic = (action$, state$, { pyodideRunner: { checkIfBadgeEarned } }) =>
   action$.pipe(
-    ofType(types.GET_BADGES_SUCCESS),
+    ofType(types.BADGES_CHECKED_SUCCESS),
     switchMap(({ payload: badges }) =>
       action$.pipe(
         ofType(types.AVATAR_CODE_UPDATED),
@@ -147,7 +147,7 @@ const checkBadgesEarnedEpic = (action$, state$, { pyodideRunner: { checkIfBadgeE
             )
           )
         ),
-        map(actions.badgesChecked),
+        map(actions.badgesEarned),
         catchError((error) =>
           of({
             type: types.BADGES_CHECKED_FAILURE,
@@ -156,7 +156,28 @@ const checkBadgesEarnedEpic = (action$, state$, { pyodideRunner: { checkIfBadgeE
           })
         )
       )
-    ),
+    )
+  )
+
+/**
+ * Once the badge check has been run on the user's new code to see if they've earned any new badges, send a POST request
+ * with the updated information.
+ * @returns a redux action that confirms the success or failure of the POST request.
+ */
+const postBadgesEpic = (action$, state$, { api }) =>
+  action$.pipe(
+    ofType(types.BADGES_EARNED),
+    api.post(`/kurono/api/badges/${state$.value.game.connectionParameters.game_id}/`, (action) => {
+      return { badges: action.payload }
+    }),
+    map(() => actions.postBadgesReceived()),
+    catchError((error) =>
+      of({
+        type: types.POST_BADGES_FAILURE,
+        payload: error.xhr.response,
+        error: true,
+      })
+    )
   )
 
 export default {
@@ -165,6 +186,7 @@ export default {
   updateAvatarCodeEpic,
   computeNextActionEpic,
   getBadgesEpic,
+  checkBadgesEpic,
   postBadgesEpic,
   checkBadgesEarnedEpic,
 }
