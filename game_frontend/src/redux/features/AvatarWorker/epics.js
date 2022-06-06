@@ -132,18 +132,17 @@ const checkBadgesEpic = (action$, state$, { api }) =>
  */
 const checkBadgesEarnedEpic = (action$, state$, { pyodideRunner: { checkIfBadgeEarned } }) =>
   action$.pipe(
-    ofType(types.BADGES_CHECKED_SUCCESS),
-    switchMap(({ payload: badges }) =>
+    ofType(types.AVATAR_CODE_UPDATED),
+    switchMap(({ payload: computedTurnResult }) =>
       action$.pipe(
-        ofType(types.AVATAR_CODE_UPDATED),
-        switchMap(({ payload: computedTurnResult }) =>
+        ofType(types.BADGES_CHECKED_SUCCESS),
+        switchMap(({ payload: badges }) =>
           from(
             checkIfBadgeEarned(
               badges,
               computedTurnResult,
               state$.value.editor.code.codeOnServer,
-              state$.value.game.gameState,
-              state$.value.game.connectionParameters.currentAvatarID
+              state$.value.game.gameState
             )
           )
         ),

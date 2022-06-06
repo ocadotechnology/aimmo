@@ -5,8 +5,7 @@ export function checkIfBadgeEarned(
   badges: string,
   result: ComputedTurnResult,
   userCode: string,
-  gameState: any,
-  playerAvatarId: number
+  gameState: any
 ): string {
   const userPythonCode = userCode.replace(/\s*#.*/gm, '') // Remove all comment lines from the user's code
   const badgesPerWorksheet = [
@@ -15,7 +14,7 @@ export function checkIfBadgeEarned(
     {
       id: 3,
       worksheetID: 1,
-      trigger: badge3Trigger(result, userPythonCode, gameState, playerAvatarId),
+      trigger: badge3Trigger(result, userPythonCode),
     },
   ]
 
@@ -27,7 +26,7 @@ export function checkIfBadgeEarned(
       badge.trigger
     ) {
       // Here is when a new badge is earned
-      // TODO on worksshet 2: This might have to order the badges, in case user does not do the worksheet in order
+      // TODO on worksheet 2: This might have to order the badges, in case user does not do the worksheet in order
       badges += `${badgeWorksheetPair},`
     }
   }
@@ -58,21 +57,11 @@ function badge2Trigger(userPythonCode: string): boolean {
   return substrings.every((substring) => userPythonCode.includes(substring))
 }
 
-function badge3Trigger(
-  result: any,
-  userPythonCode: string,
-  gameState: any,
-  playerAvatarId: number
-): boolean {
+function badge3Trigger(result: any, userPythonCode: string): boolean {
   // Check the code contains certain keywords about moving to a cell
   const substrings = ['world_state.can_move_to(', 'print(', 'if ']
   const codeContainsKeywords = substrings.every((substring) => userPythonCode.includes(substring))
 
-  if (!codeContainsKeywords) return false
-
-  // Check action is move action
-  const isMoveAction = result.action.action_type === 'move'
-  if (!isMoveAction) return false
-
-  return true
+  // And check it returns a move action
+  return codeContainsKeywords && result.action.action_type === 'move';
 }
