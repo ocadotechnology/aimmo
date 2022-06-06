@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.3.1 (2022-06-06)
+### Fix
+* Badge initialisation when starting game ([#1670](https://github.com/ocadotechnology/aimmo/issues/1670)) ([`0672c65`](https://github.com/ocadotechnology/aimmo/commit/0672c654570f3d802d612ae3a70b526edeaee54b))
+
+### Documentation
+* Refine templates ([#1667](https://github.com/ocadotechnology/aimmo/issues/1667)) ([`51ece24`](https://github.com/ocadotechnology/aimmo/commit/51ece24c19ea486df383537e50dfbf22c1d419bf))
+
 ## v2.3.0 (2022-05-31)
 ### Feature
 * Add message when move towards is rejected ([#1669](https://github.com/ocadotechnology/aimmo/issues/1669)) ([`4682692`](https://github.com/ocadotechnology/aimmo/commit/468269285352dbc5731dfed87a49fe40699bd2a4))
