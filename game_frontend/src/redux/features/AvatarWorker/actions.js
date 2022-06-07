@@ -26,6 +26,11 @@ const getBadgesRequest = () => ({
   type: types.GET_BADGES_REQUEST,
 })
 
+const filterBadges = (badges) => ({
+  type: types.FILTER_BADGES,
+  payload: badges,
+})
+
 const getBadgesReceived = (badges) => ({
   type: types.GET_BADGES_SUCCESS,
   payload: badges,
@@ -56,6 +61,7 @@ export default {
   avatarCodeUpdated,
   avatarsNextActionComputed,
   badgesEarned,
+  filterBadges,
   getBadgesRequest,
   getBadgesReceived,
   checkBadgesReceived,

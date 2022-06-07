@@ -1,6 +1,6 @@
 /* eslint-env worker */
 import { expose } from 'threads/worker'
-import { checkIfBadgeEarned } from "./badges";
+import { checkIfBadgeEarned, filterByWorksheet } from './badges'
 import ComputedTurnResult from './computedTurnResult'
 
 let pyodide: Pyodide
@@ -131,7 +131,8 @@ const pyodideWorker = {
   initializePyodide,
   computeNextAction,
   updateAvatarCode,
-  checkIfBadgeEarned
+  checkIfBadgeEarned,
+  filterByWorksheet,
 }
 
 export type PyodideWorker = typeof pyodideWorker
