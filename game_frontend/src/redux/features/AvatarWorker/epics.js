@@ -90,15 +90,20 @@ const computeNextActionEpic = (
 const getBadgesEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.GET_BADGES_REQUEST),
-    mergeMap((action) =>
-      api.get(`badges/${state$.value.game.connectionParameters.game_id}/`).pipe(
-        map((response) => actions.filterBadges(response.badges)),
-        catchError((error) =>
-          of({
-            type: types.GET_BADGES_FAILURE,
-            payload: error.xhr.response,
-            error: true,
-          })
+    switchMap(() =>
+      action$.pipe(
+        ofType(types.PYODIDE_INITIALIZED),
+        mergeMap((action) =>
+          api.get(`badges/${state$.value.game.connectionParameters.game_id}/`).pipe(
+            map((response) => actions.filterBadges(response.badges)),
+            catchError((error) =>
+              of({
+                type: types.GET_BADGES_FAILURE,
+                payload: error.xhr.response,
+                error: true,
+              })
+            )
+          )
         )
       )
     )
@@ -108,7 +113,9 @@ const filterBadgesEpic = (action$, state$, { pyodideRunner: { filterByWorksheet 
   action$.pipe(
     ofType(types.FILTER_BADGES),
     switchMap(({ payload: badges }) =>
-      from(filterByWorksheet(badges, state$.value.game.gameState))
+      from(
+        filterByWorksheet(badges, state$.value.game.gameState)
+      )
     ),
     map((badges) => actions.getBadgesReceived(badges)),
     catchError((error) =>
@@ -205,4 +212,5 @@ export default {
   checkBadgesEpic,
   postBadgesEpic,
   checkBadgesEarnedEpic,
+  filterBadgesEpic,
 }

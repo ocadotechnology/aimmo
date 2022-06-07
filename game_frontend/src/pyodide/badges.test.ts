@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { checkIfBadgeEarned } from './badges'
+import { checkIfBadgeEarned, filterByWorksheet } from './badges'
 jest.mock('threads/worker')
 
 describe('Badges check', () => {
@@ -118,6 +118,34 @@ def next_turn(world_state, avatar_state):
     const result = checkIfBadgeEarned(badges, turnResult, userCode, gameState, playerAvatarId)
 
     const expected = "1:1,1:2,1:3,"
+
+    expect(result).toBe(expected)
+  })
+
+  it('filters badges', () => {
+    const badges = '1:1,1:2,1:3,2:1,2:2,3:1'
+
+    let gameState = {worksheetID: 1}
+
+    let result = filterByWorksheet(badges, gameState)
+
+    let expected = "1:1,1:2,1:3,"
+
+    expect(result).toBe(expected)
+
+    gameState = {worksheetID: 2}
+
+    result = filterByWorksheet(badges, gameState)
+
+    expected = "2:1,2:2,"
+
+    expect(result).toBe(expected)
+
+    gameState = {worksheetID: 3}
+
+    result = filterByWorksheet(badges, gameState)
+
+    expected = "3:1,"
 
     expect(result).toBe(expected)
   })

@@ -2,23 +2,15 @@
 import ComputedTurnResult from './computedTurnResult'
 
 export function filterByWorksheet(badges: any, gameState: any): string {
-  console.log('****** filterByWorksheet ')
-  console.log('badges=' + badges)
-  console.log('gameState=' + gameState)
-  if (gameState === undefined) {
-    console.log('*** return badges=' + badges)
-    return badges
-  }
-
   const worksheetID = gameState.worksheetID
-  console.log('WorksheetID=' + worksheetID)
   let badgesArr = badges.split(',')
+
   badgesArr = badgesArr.filter((s) => s) // remove empty element
-  badgesArr.filter((b) => {
+  // remove any badge that's not relevant to the current worksheet
+  badgesArr = badgesArr.filter((b) => {
     return b.startsWith(worksheetID + ':')
   })
 
-  console.log('** return badgesArr=' + badgesArr.join(','))
   return badgesArr.join(',')
 }
 
