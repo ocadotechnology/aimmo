@@ -129,7 +129,7 @@ def next_turn(world_state, avatar_state):
 
     let result = filterByWorksheet(badges, gameState)
 
-    let expected = "1:1,1:2,1:3,"
+    let expected = "1:1,1:2,1:3"
 
     expect(result).toBe(expected)
 
@@ -137,7 +137,7 @@ def next_turn(world_state, avatar_state):
 
     result = filterByWorksheet(badges, gameState)
 
-    expected = "2:1,2:2,"
+    expected = "2:1,2:2"
 
     expect(result).toBe(expected)
 
@@ -145,7 +145,7 @@ def next_turn(world_state, avatar_state):
 
     result = filterByWorksheet(badges, gameState)
 
-    expected = "3:1,"
+    expected = "3:1"
 
     expect(result).toBe(expected)
   })
