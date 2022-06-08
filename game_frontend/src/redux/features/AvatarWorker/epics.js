@@ -109,13 +109,15 @@ const getBadgesEpic = (action$, state$, { api }) =>
     )
   )
 
+/**
+ * Filter the badges to return those that are from the game's worksheet.
+ * @returns a redux action that contains a string storing the user's earned badges of that worksheet.
+ */
 const filterBadgesEpic = (action$, state$, { pyodideRunner: { filterByWorksheet } }) =>
   action$.pipe(
     ofType(types.FILTER_BADGES),
     switchMap(({ payload: badges }) =>
-      from(
-        filterByWorksheet(badges, state$.value.game.gameState)
-      )
+      from(filterByWorksheet(badges, state$.value.game.gameState))
     ),
     map((badges) => actions.getBadgesReceived(badges)),
     catchError((error) =>
