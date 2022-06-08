@@ -6,17 +6,21 @@ import { PyodideWorker } from './webWorker'
 let worker: ModuleThread<PyodideWorker>
 let workerReady = false
 
-export async function initializePyodide () {
+export async function initializePyodide() {
   await initializePyodideWorker()
   workerReady = true
 }
 
-async function initializePyodideWorker () {
+async function initializePyodideWorker() {
   worker = await spawn<PyodideWorker>(new Worker('./webWorker.ts'))
   await worker.initializePyodide()
 }
 
-export async function checkIfBadgeEarned (
+export async function filterByWorksheet(badges: string, gameState: any): Promise<string> {
+  return worker.filterByWorksheet(badges, gameState)
+}
+
+export async function checkIfBadgeEarned(
   badges: string,
   result: ComputedTurnResult,
   userCode: string,
@@ -26,7 +30,7 @@ export async function checkIfBadgeEarned (
   return worker.checkIfBadgeEarned(badges, result, userCode, gameState, playerAvatarId)
 }
 
-export async function updateAvatarCode (
+export async function updateAvatarCode(
   userCode: string,
   gameState: any,
   playerAvatarID: number = 0
@@ -38,7 +42,7 @@ export async function updateAvatarCode (
   )
 }
 
-export async function resetWorker (userCode: string, playerAvatarID: number) {
+export async function resetWorker(userCode: string, playerAvatarID: number) {
   workerReady = false
   await Thread.terminate(worker)
   await initializePyodideWorker()
@@ -46,7 +50,7 @@ export async function resetWorker (userCode: string, playerAvatarID: number) {
   workerReady = true
 }
 
-async function runIfWorkerReady (
+async function runIfWorkerReady(
   func: () => Promise<ComputedTurnResult>,
   turnCount: number
 ): Promise<ComputedTurnResult> {
@@ -56,7 +60,7 @@ async function runIfWorkerReady (
     return Promise.resolve({
       action: { action: { action_type: 'wait' } },
       log: '',
-      turnCount: turnCount + 1
+      turnCount: turnCount + 1,
     })
   }
 }

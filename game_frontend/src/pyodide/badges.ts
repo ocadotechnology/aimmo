@@ -1,6 +1,19 @@
 /* eslint-env worker */
 import ComputedTurnResult from './computedTurnResult'
 
+export function filterByWorksheet(badges: any, gameState: any): string {
+  const worksheetID = gameState.worksheetID
+  let badgesArr = badges.split(',')
+
+  badgesArr = badgesArr.filter((s) => s) // remove empty element
+  // remove any badge that's not relevant to the current worksheet
+  badgesArr = badgesArr.filter((b) => {
+    return b.startsWith(worksheetID + ':')
+  })
+
+  return badgesArr.join(',')
+}
+
 export function checkIfBadgeEarned(
   badges: string,
   result: ComputedTurnResult,
