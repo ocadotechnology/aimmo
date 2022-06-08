@@ -8,6 +8,13 @@ const pyodideInitialized = () => ({
   type: types.PYODIDE_INITIALIZED,
 })
 
+const initialAvatarCodeUpdated = (computedTurnResult) => ({
+  type: types.INIT_AVATAR_CODE_UPDATED,
+  payload: {
+    ...computedTurnResult,
+  },
+})
+
 const avatarCodeUpdated = (computedTurnResult) => ({
   type: types.AVATAR_CODE_UPDATED,
   payload: {
@@ -59,6 +66,7 @@ export default {
   initializePyodide,
   pyodideInitialized,
   avatarCodeUpdated,
+  initialAvatarCodeUpdated,
   avatarsNextActionComputed,
   badgesEarned,
   filterBadges,

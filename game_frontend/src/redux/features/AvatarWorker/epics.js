@@ -27,7 +27,7 @@ const initialUpdateAvatarCodeEpic = (action$, state$, { pyodideRunner: { updateA
       action$.pipe(ofType(editorTypes.GET_CODE_SUCCESS), take(1))
     ),
     switchMap(() => updateAvatarCode(state$.value.editor.code.codeOnServer)),
-    map(actions.avatarCodeUpdated)
+    map(actions.initialAvatarCodeUpdated)
   )
 
 const updateAvatarCodeEpic = (
