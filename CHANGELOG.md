@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.3.2 (2022-06-08)
+### Fix
+* Filter badges by worksheet ([#1673](https://github.com/ocadotechnology/aimmo/issues/1673)) ([`c4820ba`](https://github.com/ocadotechnology/aimmo/commit/c4820bacd7e824c853918244e90e5c2de1ced765))
+
 ## v2.3.1 (2022-06-06)
 ### Fix
 * Badge initialisation when starting game ([#1670](https://github.com/ocadotechnology/aimmo/issues/1670)) ([`0672c65`](https://github.com/ocadotechnology/aimmo/commit/0672c654570f3d802d612ae3a70b526edeaee54b))
