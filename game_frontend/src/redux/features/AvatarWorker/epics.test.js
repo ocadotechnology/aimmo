@@ -71,11 +71,11 @@ describe('avatarWorkerEpic', () => {
       const output$2 = epics.initialUpdateAvatarCodeEpic(action$2, state$, dependencies)
 
       expectObservable(output$1).toBe('-----(u|)', {
-        u: actions.avatarCodeUpdated()
+        u: actions.initialAvatarCodeUpdated()
       })
 
       expectObservable(output$2).toBe('-----(u|)', {
-        u: actions.avatarCodeUpdated()
+        u: actions.initialAvatarCodeUpdated()
       })
     })
   })
