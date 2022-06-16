@@ -5,7 +5,7 @@ export function checkIfBadgeEarned(
   badges: string,
   result: ComputedTurnResult,
   userCode: string,
-  gameState: any
+  gameState: any,
 ): string {
   const userPythonCode = userCode.replace(/\s*#.*/gm, '') // Remove all comment lines from the user's code
   const badgesPerWorksheet = [

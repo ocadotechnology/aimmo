@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { checkIfBadgeEarned, filterByWorksheet } from './badges'
+import { checkIfBadgeEarned } from './badges'
 jest.mock('threads/worker')
 
 describe('Badges check', () => {
