@@ -78,7 +78,7 @@ export class NavigationBar extends Component {
           lastBadge: lastBadge,
         }
       }
-      // return current badges
+      // return current badges on game initialisation (when the props and the state are the same)
       return {
         modalOpen: false,
         completedBadges: badges,
