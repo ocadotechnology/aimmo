@@ -27,7 +27,7 @@ const initialUpdateAvatarCodeEpic = (action$, state$, { pyodideRunner: { updateA
       action$.pipe(ofType(editorTypes.GET_CODE_SUCCESS), take(1))
     ),
     switchMap(() => updateAvatarCode(state$.value.editor.code.codeOnServer)),
-    map(actions.initialAvatarCodeUpdated)
+    map(actions.avatarCodeUpdated)
   )
 
 const updateAvatarCodeEpic = (
@@ -95,7 +95,7 @@ const getBadgesEpic = (action$, state$, { api }) =>
         ofType(types.PYODIDE_INITIALIZED),
         mergeMap((action) =>
           api.get(`badges/${state$.value.game.connectionParameters.game_id}/`).pipe(
-            map((response) => actions.filterBadges(response.badges)),
+            map((response) => actions.getBadgesReceived(response.badges)),
             catchError((error) =>
               of({
                 type: types.GET_BADGES_FAILURE,
@@ -106,26 +106,6 @@ const getBadgesEpic = (action$, state$, { api }) =>
           )
         )
       )
-    )
-  )
-
-/**
- * Filter the badges to return those that are from the game's worksheet.
- * @returns a redux action that contains a string storing the user's earned badges of that worksheet.
- */
-const filterBadgesEpic = (action$, state$, { pyodideRunner: { filterByWorksheet } }) =>
-  action$.pipe(
-    ofType(types.FILTER_BADGES),
-    switchMap(({ payload: badges }) =>
-      from(filterByWorksheet(badges, state$.value.game.gameState))
-    ),
-    map((badges) => actions.getBadgesReceived(badges)),
-    catchError((error) =>
-      of({
-        type: types.BADGES_CHECKED_FAILURE,
-        payload: error,
-        error: true,
-      })
     )
   )
 
@@ -213,5 +193,4 @@ export default {
   checkBadgesEpic,
   postBadgesEpic,
   checkBadgesEarnedEpic,
-  filterBadgesEpic,
 }

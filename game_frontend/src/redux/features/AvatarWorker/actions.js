@@ -8,13 +8,6 @@ const pyodideInitialized = () => ({
   type: types.PYODIDE_INITIALIZED,
 })
 
-const initialAvatarCodeUpdated = (computedTurnResult) => ({
-  type: types.INIT_AVATAR_CODE_UPDATED,
-  payload: {
-    ...computedTurnResult,
-  },
-})
-
 const avatarCodeUpdated = (computedTurnResult) => ({
   type: types.AVATAR_CODE_UPDATED,
   payload: {
@@ -31,11 +24,6 @@ const avatarsNextActionComputed = (computedTurnResult) => ({
 
 const getBadgesRequest = () => ({
   type: types.GET_BADGES_REQUEST,
-})
-
-const filterBadges = (badges) => ({
-  type: types.FILTER_BADGES,
-  payload: badges,
 })
 
 const getBadgesReceived = (badges) => ({
@@ -66,10 +54,8 @@ export default {
   initializePyodide,
   pyodideInitialized,
   avatarCodeUpdated,
-  initialAvatarCodeUpdated,
   avatarsNextActionComputed,
   badgesEarned,
-  filterBadges,
   getBadgesRequest,
   getBadgesReceived,
   checkBadgesReceived,

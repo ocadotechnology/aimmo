@@ -38,11 +38,12 @@ export class NavigationBar extends Component {
   static propTypes = {
     // the props received from redux state or reducers
     modalOpen: PropTypes.bool,
-    completedTasks: PropTypes.string,
+    completedBadges: PropTypes.string,
     badgesInit: PropTypes.func,
+    gameState: PropTypes.any,
   }
 
-  state = { modalOpen: false, completedTasks: [], lastTask: '' }
+  state = { modalOpen: false, completedBadges: [], lastBadge: '' }
 
   componentDidMount() {
     this.props.badgesInit()
@@ -56,27 +57,38 @@ export class NavigationBar extends Component {
 
   static getDerivedStateFromProps(props, state) {
     // Any time completedTasks change, pass the new info as state
-    if (props.completedTasks !== undefined) {
+    if (props.completedBadges !== undefined) {
+      const worksheetID = props.gameState.worksheetID
+      let badges = props.completedBadges.split(',')
+      badges = badges.filter((s) => s) // remove empty element
+      // remove any badge that's not relevant to the current worksheet
+      badges = badges.filter((b) => {
+        return b.startsWith(worksheetID + ':')
+      })
+
       // convert to string for comparison
-      const stateTasksString = state.completedTasks.join() + ','
+      const stateBadgesString = state.completedBadges.join() + ','
 
-      if (props.completedTasks !== stateTasksString) {
-        let newTasks = props.completedTasks.split(',')
-        newTasks = newTasks.filter((s) => s) // remove empty element
-        const lastTask = newTasks[newTasks.length - 1] // assume the last element is the last task
-
+      if (props.completedBadges !== stateBadgesString) {
+        const lastBadge = badges[badges.length - 1] // assume the last element is the last badge
+        // return popup with new badge
         return {
           modalOpen: props.modalOpen,
-          completedTasks: newTasks,
-          lastTask: lastTask,
+          completedBadges: badges,
+          lastBadge: lastBadge,
         }
+      }
+      // return current badges
+      return {
+        modalOpen: false,
+        completedBadges: badges,
       }
     }
     return null // no change
   }
 
   renderLogoToolbar = () => {
-    const badges = getBadges(this.state.completedTasks)
+    const badges = getBadges(this.state.completedBadges)
     return (
       <LogoToolbar>
         <IconButton href={urlForAimmoDashboard} aria-label="Kurono dashboard" color="inherit">
@@ -109,15 +121,16 @@ export class NavigationBar extends Component {
           {this.renderLogoToolbar()}
           {this.renderButtonToolbar()}
         </KuronoAppBar>
-        <BadgeModal taskId={this.state.lastTask} modalOpen={this.state.modalOpen} />
+        <BadgeModal badgeId={this.state.lastBadge} modalOpen={this.state.modalOpen} />
       </NavigationBarLayout>
     )
   }
 }
 
 const mapStateToProps = (state) => ({
-  completedTasks: state.avatarWorker.completedTasks,
+  completedBadges: state.avatarWorker.completedBadges,
   modalOpen: state.avatarWorker.modalOpen,
+  gameState: state.game.gameState,
 })
 
 const mapDispatchToProps = {

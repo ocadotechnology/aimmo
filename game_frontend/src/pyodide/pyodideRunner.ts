@@ -16,10 +16,6 @@ async function initializePyodideWorker() {
   await worker.initializePyodide()
 }
 
-export async function filterByWorksheet(badges: string, gameState: any): Promise<string> {
-  return worker.filterByWorksheet(badges, gameState)
-}
-
 export async function checkIfBadgeEarned(
   badges: string,
   result: ComputedTurnResult,

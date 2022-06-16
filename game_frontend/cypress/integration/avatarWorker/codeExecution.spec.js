@@ -43,7 +43,7 @@ describe('Avatar worker', () => {
       .invoke('getState')
       .its('consoleLog.logs')
       .then(logs => {
-        const log = logs.entries().next().value[0]
+        const log = logs.entries().next().value[1]
         expect(log).to.deep.equal('SyntaxError: invalid syntax\n')
       })
   })
@@ -65,7 +65,7 @@ return MoveAction(direction.NORTH)`
       .invoke('getState')
       .its('consoleLog.logs')
       .then(logs => {
-        const log = logs.entries().next().value[0]
+        const log = logs.entries().next().value[1]
         expect(log).to.deep.equal('IndentationError: expected an indented block after function definition on line 1\n')
       })
   })
