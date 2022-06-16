@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.3.3 (2022-06-16)
+### Fix
+* Fix badges disappearing randomly ([#1671](https://github.com/ocadotechnology/aimmo/issues/1671)) ([`10cabe7`](https://github.com/ocadotechnology/aimmo/commit/10cabe75367a41f8c764ee3c29b6284b926e1638))
+
 ## v2.3.2 (2022-06-08)
 ### Fix
 * Filter badges by worksheet ([#1673](https://github.com/ocadotechnology/aimmo/issues/1673)) ([`c4820ba`](https://github.com/ocadotechnology/aimmo/commit/c4820bacd7e824c853918244e90e5c2de1ced765))
