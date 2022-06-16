@@ -71,17 +71,12 @@ export class NavigationBar extends Component {
 
       if (props.completedBadges !== stateBadgesString) {
         const lastBadge = badges[badges.length - 1] // assume the last element is the last badge
-        // return popup with new badge
+        // return badge info with popup if there is a new badge earned
         return {
           modalOpen: props.modalOpen,
           completedBadges: badges,
           lastBadge: lastBadge,
         }
-      }
-      // return current badges on game initialisation (when the props and the state are the same)
-      return {
-        modalOpen: false,
-        completedBadges: badges,
       }
     }
     return null // no change
