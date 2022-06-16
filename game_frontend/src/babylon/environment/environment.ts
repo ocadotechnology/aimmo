@@ -15,7 +15,7 @@ export class StandardEnvironment implements Environment {
   onTerrainNode: TransformNode
   era: string
 
-  constructor (canvas: HTMLCanvasElement) {
+  constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas
     this.engine = new Engine(this.canvas, true, {}, true)
     this.engine.enableOfflineSupport = true

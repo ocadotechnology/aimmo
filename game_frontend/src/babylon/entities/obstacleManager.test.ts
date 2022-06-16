@@ -15,13 +15,13 @@ beforeEach(() => {
   obstacles = new ObstacleManager(environment, assetPack)
 })
 
-function obstacleDiffItem (index: number, location: {x: number; y: number}) {
+function obstacleDiffItem(index: number, location: { x: number; y: number }) {
   return new DiffItem(index, {
     location: { x: location.x, y: location.y },
     width: 1,
     height: 1,
     type: 'wall',
-    orientation: 'north'
+    orientation: 'north',
   })
 }
 

@@ -1,6 +1,12 @@
 /* eslint-env jest */
 import React from 'react'
-import RunCodeButton, { MarginedCheckCircle, MarginedCircularProgress, MarginedPlayIcon, RunCodeButtonStatus, MarginedBugIcon } from 'components/RunCodeButton'
+import RunCodeButton, {
+  MarginedCheckCircle,
+  MarginedCircularProgress,
+  MarginedPlayIcon,
+  RunCodeButtonStatus,
+  MarginedBugIcon,
+} from 'components/RunCodeButton'
 import createShallowWithTheme from 'testHelpers/createShallow'
 
 describe('<RunCodeButton />', () => {
@@ -8,8 +14,8 @@ describe('<RunCodeButton />', () => {
     const props = {
       whenClicked: jest.fn(),
       runCodeButtonStatus: {
-        status: RunCodeButtonStatus.normal
-      }
+        status: RunCodeButtonStatus.normal,
+      },
     }
 
     const component = createShallowWithTheme(<RunCodeButton {...props} />, 'dark')
@@ -21,8 +27,8 @@ describe('<RunCodeButton />', () => {
     const props = {
       whenClicked: jest.fn(),
       runCodeButtonStatus: {
-        status: RunCodeButtonStatus.updating
-      }
+        status: RunCodeButtonStatus.updating,
+      },
     }
 
     const component = createShallowWithTheme(<RunCodeButton {...props} />, 'dark')
@@ -34,8 +40,8 @@ describe('<RunCodeButton />', () => {
     const props = {
       whenClicked: jest.fn(),
       runCodeButtonStatus: {
-        status: RunCodeButtonStatus.done
-      }
+        status: RunCodeButtonStatus.done,
+      },
     }
 
     const component = createShallowWithTheme(<RunCodeButton {...props} />, 'dark')
@@ -47,9 +53,9 @@ describe('<RunCodeButton />', () => {
     const props = {
       whenClicked: jest.fn(),
       runCodeButtonStatus: {
-        status: RunCodeButtonStatus.normal
+        status: RunCodeButtonStatus.normal,
       },
-      isCodeOnServerDifferent: true
+      isCodeOnServerDifferent: true,
     }
 
     const component = createShallowWithTheme(<RunCodeButton {...props} />, 'dark')
@@ -61,9 +67,9 @@ describe('<RunCodeButton />', () => {
     const props = {
       whenClicked: jest.fn(),
       runCodeButtonStatus: {
-        status: RunCodeButtonStatus.normal
+        status: RunCodeButtonStatus.normal,
       },
-      isCodeOnServerDifferent: false
+      isCodeOnServerDifferent: false,
     }
 
     const component = createShallowWithTheme(<RunCodeButton {...props} />, 'dark')
@@ -75,8 +81,8 @@ describe('<RunCodeButton />', () => {
     const props = {
       whenClicked: jest.fn(),
       runCodeButtonStatus: {
-        status: RunCodeButtonStatus.error
-      }
+        status: RunCodeButtonStatus.error,
+      },
     }
 
     const component = createShallowWithTheme(<RunCodeButton {...props} />, 'dark')

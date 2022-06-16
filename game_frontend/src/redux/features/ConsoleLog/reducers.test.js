@@ -12,7 +12,7 @@ describe('consoleLogReducer', () => {
   it('should handle GAME_STATE_RECEIVED', () => {
     const expectedStateLog = {
       turnCount: 1,
-      playerLog: 'Hello, good morning, I got here in my code'
+      playerLog: 'Hello, good morning, I got here in my code',
     }
 
     const action = gameActions.socketGameStateReceived(expectedStateLog)
@@ -28,11 +28,11 @@ Game says: that's cool
 `.trim()
     const gameLogAction = gameActions.socketGameStateReceived({
       turnCount: 1,
-      playerLog: "Game says: that's cool"
+      playerLog: "Game says: that's cool",
     })
     const nextActionComputedAction = avatarWorkerActions.avatarsNextActionComputed({
       log: 'I got here in my code',
-      turnCount: 1
+      turnCount: 1,
     })
 
     let state = { logs: new Map(), workerLogs: {} }
@@ -44,7 +44,7 @@ Game says: that's cool
   it('should handle CLEAR_CONSOLE_LOG', () => {
     const initialLog = {
       turnCount: 1,
-      log: 'Hello, good morning, I got here in my code'
+      log: 'Hello, good morning, I got here in my code',
     }
 
     const action = avatarWorkerActions.avatarsNextActionComputed(initialLog)

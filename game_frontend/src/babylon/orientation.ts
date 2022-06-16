@@ -5,7 +5,7 @@ const eastOrientation = new BABYLON.Vector3(0, 3 * (Math.PI / 2), 0)
 const southOrientation = new BABYLON.Vector3(0, 0, 0)
 const westOrientation = new BABYLON.Vector3(0, Math.PI / 2, 0)
 
-export default function setOrientation (mesh: BABYLON.AbstractMesh, orientation: string): void {
+export default function setOrientation(mesh: BABYLON.AbstractMesh, orientation: string): void {
   switch (orientation) {
     case 'north':
       if (mesh.rotation !== northOrientation) {

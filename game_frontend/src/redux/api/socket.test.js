@@ -6,7 +6,7 @@ import socket from './socket'
 import EventEmitter from 'events'
 
 jest.mock('../features/Game/actions', () => ({
-  socketGameStateReceived: jest.fn()
+  socketGameStateReceived: jest.fn(),
 }))
 
 describe('socket listens correctly', () => {
@@ -14,10 +14,12 @@ describe('socket listens correctly', () => {
     const gameState = JSON.stringify({ hello: 'world' })
     const emitter = new EventEmitter()
 
-    of(emitter).pipe(
-      socket.startListeners(),
-      tap(() => expect(actions.socketGameStateReceived).toHaveBeenCalledWith(gameState))
-    ).subscribe(done)
+    of(emitter)
+      .pipe(
+        socket.startListeners(),
+        tap(() => expect(actions.socketGameStateReceived).toHaveBeenCalledWith(gameState))
+      )
+      .subscribe(done)
 
     emitter.emit('game-state', gameState)
   })

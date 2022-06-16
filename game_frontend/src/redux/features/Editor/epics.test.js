@@ -22,7 +22,7 @@ describe('getCodeEpic', () => {
     const marbles2 = '-b-'
     const values = {
       a: actions.getCodeRequest(),
-      b: actions.getCodeReceived(code)
+      b: actions.getCodeReceived(code),
     }
 
     const testScheduler = createTestScheduler()
@@ -36,9 +36,9 @@ describe('getCodeEpic', () => {
     const initialState = {
       game: {
         connectionParameters: {
-          id: 1
-        }
-      }
+          id: 1,
+        },
+      },
     }
     const state$ = new StateObservable(new Subject(), initialState)
 
@@ -57,24 +57,24 @@ describe('postCodeEpic', () => {
     const marbles2 = '-b-'
     const values = {
       a: actions.postCodeRequest(),
-      b: actions.postCodeReceived()
+      b: actions.postCodeReceived(),
     }
 
     const testScheduler = createTestScheduler()
     const source$ = ActionsObservable.from(testScheduler.createColdObservable(marbles1, values))
 
-    const mockPost = (url, body) => action$ => action$.pipe(mapTo({}))
+    const mockPost = (url, body) => (action$) => action$.pipe(mapTo({}))
     const mockAPI = { api: { post: mockPost } }
 
     const initialState = {
       game: {
         connectionParameters: {
-          id: 1
-        }
+          id: 1,
+        },
       },
       editor: {
-        code: { code }
-      }
+        code: { code },
+      },
     }
 
     const state$ = new StateObservable(new Subject(), initialState)
@@ -95,26 +95,26 @@ describe('postCodeEpic', () => {
       b: {
         type: types.POST_CODE_FAILURE,
         payload: 'oh no!',
-        error: true
-      }
+        error: true,
+      },
     }
 
     const testScheduler = createTestScheduler()
     const source$ = ActionsObservable.from(testScheduler.createColdObservable(marbles1, values))
 
     const error = { xhr: { response: 'oh no!' } }
-    const mockPost = (url, body) => action$ => action$.pipe(mergeMapTo(throwError(error)))
+    const mockPost = (url, body) => (action$) => action$.pipe(mergeMapTo(throwError(error)))
     const mockAPI = { api: { post: mockPost } }
 
     const initialState = {
       game: {
         connectionParameters: {
-          id: 1
-        }
+          id: 1,
+        },
       },
       editor: {
-        code: code
-      }
+        code: code,
+      },
     }
     const state$ = new StateObservable(new Subject(), initialState)
 

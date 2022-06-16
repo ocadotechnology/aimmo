@@ -24,7 +24,8 @@ const handlebarsTemplatePath = Path.resolve(
 const bundler = new Bundler(file, options)
 
 function getReactURL(entryPointHTML) {
-  const regex = /(<script src="\/static\/react\/)(.*\.js)("><\/script>\n?<script src="\/static\/react\/webWorker)/g
+  const regex =
+    /(<script src="\/static\/react\/)(.*\.js)("><\/script>\n?<script src="\/static\/react\/webWorker)/g
   return regex.exec(entryPointHTML)[2]
 }
 

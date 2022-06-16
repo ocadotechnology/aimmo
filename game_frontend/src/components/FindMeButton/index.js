@@ -5,30 +5,28 @@ import { Fab } from '@material-ui/core'
 import FindMeIcon from 'components/icons/FindMe'
 
 export const MarginedLocationIcon = styled(FindMeIcon)`
-    margin-right: ${props => props.theme.spacing()}px;
+  margin-right: ${(props) => props.theme.spacing()}px;
 `
 
 export default class FindMeButton extends Component {
   static propTypes = {
     whenClicked: PropTypes.func,
     isCameraCenteredOnUserAvatar: PropTypes.bool,
-    className: PropTypes.string
+    className: PropTypes.string,
   }
 
-  render () {
+  render() {
     return (
       <Fab
-        color='primary'
+        color="primary"
         className={this.props.className}
         disabled={this.props.isCameraCenteredOnUserAvatar}
-        aria-label='Find Me'
-        id='find-me-button'
-        variant='extended'
+        aria-label="Find Me"
+        id="find-me-button"
+        variant="extended"
         onClick={this.props.whenClicked}
       >
-        <MarginedLocationIcon
-          color='inherit'
-        />
+        <MarginedLocationIcon color="inherit" />
         Find Me
       </Fab>
     )

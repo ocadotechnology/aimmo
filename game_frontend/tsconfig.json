@@ -1,35 +1,21 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "downlevelIteration": true,
-        "target": "es5",
-        "sourceMap": true,
-        "allowJs": true,
-        "jsx": "preserve",
-        "lib": [
-            "es2017",
-            "dom",
-            "WebWorker.ImportScripts"
-        ],
-        "outDir": "./dist/",
-        "baseUrl": "./src",
-        "typeRoots": [
-            "node_modules/@types"
-        ],
-        "noUnusedLocals": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true,
-        "types": [
-            "cypress"
-        ]
-    },
-    "include": [
-        "src/**/*",
-        "cypress/**/*"
-    ],
-    "exclude": [
-        ".git",
-        "node_modules/**/*"
-    ]
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "downlevelIteration": true,
+    "target": "es5",
+    "sourceMap": true,
+    "allowJs": true,
+    "jsx": "preserve",
+    "lib": ["es2017", "dom", "WebWorker.ImportScripts"],
+    "outDir": "./dist/",
+    "baseUrl": "./src",
+    "typeRoots": ["node_modules/@types"],
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "types": ["cypress"]
+  },
+  "include": ["src/**/*", "cypress/**/*"],
+  "exclude": [".git", "node_modules/**/*"]
 }

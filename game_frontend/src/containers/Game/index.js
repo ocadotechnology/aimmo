@@ -12,10 +12,10 @@ export class Game extends Component {
     gameLoaded: PropTypes.bool,
     centerCameraOnUserAvatar: PropTypes.func,
     cameraCenteredOnUserAvatar: PropTypes.bool,
-    mapPanned: PropTypes.func
+    mapPanned: PropTypes.func,
   }
 
-  render () {
+  render() {
     return (
       <>
         <GameView
@@ -35,14 +35,14 @@ export class Game extends Component {
 const mapDispatchToProps = {
   connectToGame: actions.socketConnectToGameRequest,
   mapPanned: actions.mapPanned,
-  centerCameraOnUserAvatar: actions.centerCameraOnUserAvatar
+  centerCameraOnUserAvatar: actions.centerCameraOnUserAvatar,
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   gameState: state.game.gameState,
   currentAvatarID: state.game.connectionParameters.currentAvatarID,
   gameLoaded: state.game.gameLoaded,
-  cameraCenteredOnUserAvatar: state.game.cameraCenteredOnUserAvatar
+  cameraCenteredOnUserAvatar: state.game.cameraCenteredOnUserAvatar,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game)

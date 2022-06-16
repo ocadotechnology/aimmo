@@ -16,5 +16,5 @@ export default {
   POST_CODE_SUCCESS,
   POST_CODE_FAILURE,
   RESET_CODE,
-  CODE_RESET
+  CODE_RESET,
 }

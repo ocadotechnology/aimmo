@@ -9,7 +9,7 @@ import {
   Space,
   AbstractMesh,
   Scene,
-  Color4
+  Color4,
 } from 'babylonjs'
 
 export default class PreHistoryAssetPack extends AssetPack {
@@ -17,13 +17,13 @@ export default class PreHistoryAssetPack extends AssetPack {
 
   backgroundColor = new Color4(0.2, 0.35, 0.2)
 
-  constructor (era: string, scene: Scene) {
+  constructor(era: string, scene: Scene) {
     super(era, scene)
     this.obstacleMaterials = this.makeObstacleMaterials()
   }
 
-  makeObstacleMaterials (): StandardMaterial[] {
-    return [1, 2].map(textureChoice => {
+  makeObstacleMaterials(): StandardMaterial[] {
+    return [1, 2].map((textureChoice) => {
       const material = new StandardMaterial(
         `${this.obstacleInfo.materialName}_${textureChoice}`,
         this.scene
@@ -35,7 +35,7 @@ export default class PreHistoryAssetPack extends AssetPack {
     })
   }
 
-  async createObstacle (
+  async createObstacle(
     name: string,
     location: Vector3,
     textureChoice: number,
@@ -53,7 +53,7 @@ export default class PreHistoryAssetPack extends AssetPack {
    * @return {number} a random angle in radians, in increments of a quarter
    *
    */
-  createRandomRotation (): number {
+  createRandomRotation(): number {
     return Math.PI / (Math.floor(Math.random() * Math.floor(4)) + 1)
   }
 }

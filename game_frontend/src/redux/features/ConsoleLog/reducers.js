@@ -5,7 +5,7 @@ import produce from 'immer'
 
 export const MAX_NUMBER_OF_STORED_LOGS = 600
 
-function createNewLogMessage (workerLog, gameLog) {
+function createNewLogMessage(workerLog, gameLog) {
   if (gameLog && workerLog) {
     return [workerLog, gameLog].join('\n')
   }
@@ -22,7 +22,7 @@ const consoleLogReducer = (state = { logs: new Map(), gameLog: '' }, action) => 
     case gameTypes.SOCKET_GAME_STATE_RECEIVED: {
       return {
         ...state,
-        gameLog: action.payload.gameState.playerLog
+        gameLog: action.payload.gameState.playerLog,
       }
     }
     case avatarWorkerTypes.AVATAR_CODE_UPDATED:
@@ -33,7 +33,7 @@ const consoleLogReducer = (state = { logs: new Map(), gameLog: '' }, action) => 
       if (!newLogMessage) {
         return state
       }
-      const nextState = produce(state, draftState => {
+      const nextState = produce(state, (draftState) => {
         const logs = draftState.logs
         logs.set(turnCount, newLogMessage)
         if (logs.size > MAX_NUMBER_OF_STORED_LOGS) {
@@ -45,7 +45,7 @@ const consoleLogReducer = (state = { logs: new Map(), gameLog: '' }, action) => 
     case types.CLEAR_CONSOLE_LOGS:
       return {
         ...state,
-        logs: new Map()
+        logs: new Map(),
       }
     default:
       return state

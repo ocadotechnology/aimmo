@@ -23,20 +23,20 @@ describe('connectToGameEpic', () => {
         id: 1,
         location: {
           x: 10,
-          y: 10
-        }
-      }
+          y: 10,
+        },
+      },
     }
 
     const parameters = {
-      avatar_id: 1
+      avatar_id: 1,
     }
 
     const marbles1 = '-a---'
     const marbles2 = '--b--'
     const values = {
       a: actions.connectionParametersReceived(parameters),
-      b: actions.socketGameStateReceived(gameState)
+      b: actions.socketGameStateReceived(gameState),
     }
 
     const testScheduler = createTestScheduler()
@@ -51,9 +51,9 @@ describe('connectToGameEpic', () => {
       api: {
         socket: {
           connectToGame: mockConnectToGame,
-          startListeners: mockStartListeners
-        }
-      }
+          startListeners: mockStartListeners,
+        },
+      },
     }
 
     const state$ = new StateObservable(new Subject(), {})
@@ -67,14 +67,14 @@ describe('connectToGameEpic', () => {
 describe('getConnectionParametersEpic', () => {
   it('gets all the connection parameters', () => {
     const parameters = {
-      avatar_id: 1
+      avatar_id: 1,
     }
 
     const marbles1 = '-a--'
     const marbles2 = '-b--'
     const values = {
       a: actions.socketConnectToGameRequest(),
-      b: actions.connectionParametersReceived(parameters)
+      b: actions.connectionParametersReceived(parameters),
     }
 
     const testScheduler = createTestScheduler()
@@ -84,15 +84,15 @@ describe('getConnectionParametersEpic', () => {
 
     const mockAPI = {
       api: {
-        get: mockGetJSON
-      }
+        get: mockGetJSON,
+      },
     }
     const initialState = {
       game: {
         connectionParameters: {
-          game_id: 1
-        }
-      }
+          game_id: 1,
+        },
+      },
     }
     const state$ = new StateObservable(new Subject(), initialState)
     const actual = epics.getConnectionParametersEpic(source$, state$, mockAPI)
@@ -109,13 +109,13 @@ describe('gameLoadedEpic', () => {
     testScheduler.run(({ hot, cold, expectObservable }) => {
       const action$ = hot('--a--b--b', {
         a: actions.socketConnectToGameRequest(),
-        b: actions.socketGameStateReceived({})
+        b: actions.socketGameStateReceived({}),
       })
 
       const output$ = epics.gameLoadedEpic(action$)
 
       expectObservable(output$).toBe('-----c---', {
-        c: actions.gameLoaded()
+        c: actions.gameLoaded(),
       })
     })
   })
@@ -127,14 +127,14 @@ describe('gameLoadedIntervalEpic', () => {
 
     testScheduler.run(({ hot, cold, expectObservable }) => {
       const action$ = hot('-------a-', {
-        a: actions.gameLoaded()
+        a: actions.gameLoaded(),
       })
 
       const state$ = null
       const output$ = epics.gameLoadedIntervalEpic(action$, state$, {}, testScheduler)
 
       expectObservable(output$).toBe('-------b-', {
-        b: analyticActions.sendAnalyticsTimingEvent('Kurono', 'Load', 'Game', 7)
+        b: analyticActions.sendAnalyticsTimingEvent('Kurono', 'Load', 'Game', 7),
       })
     })
   })
@@ -147,7 +147,7 @@ describe('codeUpdatingIntervalEpic', () => {
     testScheduler.run(({ hot, cold, expectObservable }) => {
       const action$ = hot('--a-b--a--b-', {
         a: editorActions.postCodeRequest(),
-        b: avatarWorkerActions.avatarCodeUpdated()
+        b: avatarWorkerActions.avatarCodeUpdated(),
       })
 
       const state$ = null
@@ -155,7 +155,7 @@ describe('codeUpdatingIntervalEpic', () => {
 
       expectObservable(output$).toBe('----c-----d-', {
         c: analyticActions.sendAnalyticsTimingEvent('Kurono', 'Update', 'User code', 2, true),
-        d: analyticActions.sendAnalyticsTimingEvent('Kurono', 'Update', 'User code', 3, true)
+        d: analyticActions.sendAnalyticsTimingEvent('Kurono', 'Update', 'User code', 3, true),
       })
     })
   })

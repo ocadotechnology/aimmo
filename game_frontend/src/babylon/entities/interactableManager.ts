@@ -12,10 +12,7 @@ export default class InteractableManager implements GameNode, DiffHandling {
   materials: any
   gameStateProcessor: DiffProcessor
 
-  constructor (
-    environment: Environment,
-    assetPack: AssetPack
-  ) {
+  constructor(environment: Environment, assetPack: AssetPack) {
     this.gameStateProcessor = new DiffProcessor(this)
     this.assetPack = assetPack
     this.interactableNode = new BABYLON.TransformNode('Interactables', environment.scene)
@@ -23,7 +20,7 @@ export default class InteractableManager implements GameNode, DiffHandling {
     this.interactableNode.parent = environment.onTerrainNode
   }
 
-  remove (interactable: DiffItem): void {
+  remove(interactable: DiffItem): void {
     const index = interactable.id
     const toDelete = this.interactableNode.getChildMeshes(true, function (node): boolean {
       return node.name === `interactable: ${index}`
@@ -33,7 +30,7 @@ export default class InteractableManager implements GameNode, DiffHandling {
     }
   }
 
-  async edit (interactable: DiffItem) {
+  async edit(interactable: DiffItem) {
     const toEdit = this.interactableNode.getChildMeshes(true, function (node): boolean {
       return node.name === `interactable: ${interactable.id}`
     })
@@ -45,15 +42,14 @@ export default class InteractableManager implements GameNode, DiffHandling {
           0,
           interactable.value.location.y
         )
-      }
-      else {
+      } else {
         await this.add(interactable)
         toEdit[0].dispose()
       }
     }
   }
 
-  async add (interactable: DiffItem) {
+  async add(interactable: DiffItem) {
     await this.assetPack.createInteractable(
       `interactable: ${interactable.id}`,
       interactable.value.type,

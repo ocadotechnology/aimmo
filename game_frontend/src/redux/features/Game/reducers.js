@@ -6,25 +6,25 @@ const gameReducer = (state = {}, action) => {
       return {
         ...state,
         gameState: action.payload.gameState,
-        gameLoaded: true
+        gameLoaded: true,
       }
     case types.CONNECTION_PARAMETERS_RECEIVED:
       return {
         ...state,
         connectionParameters: {
           ...state.connectionParameters,
-          currentAvatarID: action.payload.parameters.avatar_id
-        }
+          currentAvatarID: action.payload.parameters.avatar_id,
+        },
       }
     case types.MAP_PANNED:
       return {
         ...state,
-        cameraCenteredOnUserAvatar: false
+        cameraCenteredOnUserAvatar: false,
       }
     case types.CENTER_CAMERA_ON_USER_AVATAR:
       return {
         ...state,
-        cameraCenteredOnUserAvatar: true
+        cameraCenteredOnUserAvatar: true,
       }
     default:
       return state

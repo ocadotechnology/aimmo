@@ -11,14 +11,14 @@ export default class EntityManager {
   interactables: InteractableManager
   avatars: AvatarManager
 
-  constructor (environment: Environment, assetPack: AssetPack) {
+  constructor(environment: Environment, assetPack: AssetPack) {
     this.assetPack = assetPack
     this.obstacles = new ObstacleManager(environment, this.assetPack)
     this.interactables = new InteractableManager(environment, this.assetPack)
     this.avatars = new AvatarManager(environment)
   }
 
-  onGameStateUpdate (previousGameState: any, currentGameState: any): void {
+  onGameStateUpdate(previousGameState: any, currentGameState: any): void {
     var previousObstacleList = []
     var previousInteractableList = []
     var previousAvatarList = []
@@ -38,7 +38,7 @@ export default class EntityManager {
     this.avatars.gameStateProcessor.handleDifferences(avatarDiff)
   }
 
-  setCurrentAvatarID (avatarID: number): void {
+  setCurrentAvatarID(avatarID: number): void {
     this.avatars.setCurrentAvatarID(avatarID)
   }
 }

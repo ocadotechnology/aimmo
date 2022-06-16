@@ -3,7 +3,7 @@ import { Environment } from './environment'
 export default class SceneRenderer {
   environment: Environment
 
-  constructor (environment: Environment) {
+  constructor(environment: Environment) {
     this.environment = environment
 
     this.environment.engine.runRenderLoop(() => {
@@ -12,13 +12,13 @@ export default class SceneRenderer {
     // this.showDebugLayer()
   }
 
-  showDebugLayer (): void {
+  showDebugLayer(): void {
     setTimeout(() => {
       this.environment.scene.debugLayer.show({
         overlay: true,
         showExplorer: true,
         showInspector: true,
-        globalRoot: document.getElementById('root')
+        globalRoot: document.getElementById('root'),
       })
     }, 2000)
     setTimeout(() => {

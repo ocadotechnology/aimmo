@@ -6,7 +6,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components'
 
 export default class IDE extends Component {
-  render () {
+  render() {
     return (
       <StyledComponentsThemeProvider theme={darkTheme}>
         <MuiThemeProvider theme={darkTheme}>
