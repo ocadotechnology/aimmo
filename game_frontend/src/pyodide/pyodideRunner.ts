@@ -16,18 +16,13 @@ async function initializePyodideWorker() {
   await worker.initializePyodide()
 }
 
-export async function filterByWorksheet(badges: string, gameState: any): Promise<string> {
-  return worker.filterByWorksheet(badges, gameState)
-}
-
 export async function checkIfBadgeEarned(
   badges: string,
   result: ComputedTurnResult,
   userCode: string,
-  gameState: any,
-  playerAvatarId: number
+  gameState: any
 ): Promise<string> {
-  return worker.checkIfBadgeEarned(badges, result, userCode, gameState, playerAvatarId)
+  return worker.checkIfBadgeEarned(badges, result, userCode, gameState)
 }
 
 export async function updateAvatarCode(
