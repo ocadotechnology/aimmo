@@ -15,13 +15,13 @@ const actionReducer = (state = { initialized: false }, action) => {
     case types.GET_BADGES_SUCCESS:
       return {
         ...state,
-        completedTasks: action.payload,
+        completedBadges: action.payload,
         modalOpen: false,
       }
     case types.BADGES_EARNED:
       return {
         ...state,
-        completedTasks: action.payload,
+        completedBadges: action.payload,
         modalOpen: true,
       }
     default:

@@ -29,7 +29,7 @@ const BadgeModalImg = styled(Box)`
 export default class BadgeModal extends Component {
   static propTypes = {
     modalOpen: PropTypes.bool,
-    taskId: PropTypes.string,
+    badgeId: PropTypes.string,
   }
 
   render() {
@@ -37,8 +37,8 @@ export default class BadgeModal extends Component {
       return null
     }
 
-    const taskId = this.props.taskId
-    const info = badgeInfo[taskId]
+    const badgeId = this.props.badgeId
+    const info = badgeInfo[badgeId]
     if (info === undefined) {
       return null
     }
@@ -62,15 +62,15 @@ export default class BadgeModal extends Component {
   }
 }
 
-export function getBadges(tasks) {
-  return tasks.map((task) => (
+export function getBadges(badges) {
+  return badges.map((badge) => (
     <Box
       component="img"
       style={{ height: 45, marginRight: 15 }}
-      alt={badgeInfo[task].name}
-      title={badgeInfo[task].name}
-      src={badgeInfo[task].img}
-      key={task}
+      alt={badgeInfo[badge].name}
+      title={badgeInfo[badge].name}
+      src={badgeInfo[badge].img}
+      key={badge}
     />
   ))
 }

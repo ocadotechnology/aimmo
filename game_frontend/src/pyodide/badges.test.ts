@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { checkIfBadgeEarned, filterByWorksheet } from './badges'
+import { checkIfBadgeEarned } from './badges'
 jest.mock('threads/worker')
 
 describe('Badges check', () => {
@@ -7,21 +7,21 @@ describe('Badges check', () => {
     const badges = ''
     const turnResult = {
       action: {
-        action_type: "move",
+        action_type: 'move',
         options: {
-          direction: {x: 0, y: -1}
-        }
+          direction: { x: 0, y: -1 },
+        },
       },
-      log: "",
+      log: '',
       turnCount: 1,
     }
     const userCode = ''
-    const gameState = {worksheetID: 1}
+    const gameState = { worksheetID: 1 }
     const playerAvatarId = 1
 
     const result = checkIfBadgeEarned(badges, turnResult, userCode, gameState, playerAvatarId)
 
-    const expected = "1:1,"
+    const expected = '1:1,'
 
     expect(result).toBe(expected)
   })
@@ -30,12 +30,12 @@ describe('Badges check', () => {
     const badges = ''
     const turnResult = {
       action: {
-        action_type: "move",
+        action_type: 'move',
         options: {
-          direction: {x: 0, y: -1}
-        }
+          direction: { x: 0, y: -1 },
+        },
       },
-      log: "",
+      log: '',
       turnCount: 1,
     }
     const userCode = `
@@ -56,12 +56,12 @@ def next_turn(world_state, avatar_state):
     
     return action
 `
-    const gameState = {worksheetID: 1}
+    const gameState = { worksheetID: 1 }
     const playerAvatarId = 1
 
     const result = checkIfBadgeEarned(badges, turnResult, userCode, gameState, playerAvatarId)
 
-    const expected = "1:1,1:2,"
+    const expected = '1:1,1:2,'
 
     expect(result).toBe(expected)
   })
@@ -70,12 +70,12 @@ def next_turn(world_state, avatar_state):
     const badges = ''
     const turnResult = {
       action: {
-        action_type: "move",
+        action_type: 'move',
         options: {
-          direction: {x: 0, y: -1}
-        }
+          direction: { x: 0, y: -1 },
+        },
       },
-      log: "",
+      log: '',
       turnCount: 1,
     }
     const userCode = `
@@ -108,8 +108,8 @@ def next_turn(world_state, avatar_state):
       players: [
         {
           id: 1,
-          location: {x: 10, y: 10}
-        }
+          location: { x: 10, y: 10 },
+        },
       ],
       obstacles: [],
     }
@@ -117,35 +117,7 @@ def next_turn(world_state, avatar_state):
 
     const result = checkIfBadgeEarned(badges, turnResult, userCode, gameState, playerAvatarId)
 
-    const expected = "1:1,1:2,1:3,"
-
-    expect(result).toBe(expected)
-  })
-
-  it('filters badges', () => {
-    const badges = '1:1,1:2,1:3,2:1,2:2,3:1'
-
-    let gameState = {worksheetID: 1}
-
-    let result = filterByWorksheet(badges, gameState)
-
-    let expected = "1:1,1:2,1:3"
-
-    expect(result).toBe(expected)
-
-    gameState = {worksheetID: 2}
-
-    result = filterByWorksheet(badges, gameState)
-
-    expected = "2:1,2:2"
-
-    expect(result).toBe(expected)
-
-    gameState = {worksheetID: 3}
-
-    result = filterByWorksheet(badges, gameState)
-
-    expected = "3:1"
+    const expected = '1:1,1:2,1:3,'
 
     expect(result).toBe(expected)
   })
