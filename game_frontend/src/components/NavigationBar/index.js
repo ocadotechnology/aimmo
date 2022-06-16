@@ -57,7 +57,7 @@ export class NavigationBar extends Component {
 
   static getDerivedStateFromProps(props, state) {
     // Any time completedTasks change, pass the new info as state
-    if (props.completedBadges !== undefined) {
+    if (props.completedBadges !== undefined && props.gameState !== undefined) {
       const worksheetID = props.gameState.worksheetID
       let badges = props.completedBadges.split(',')
       badges = badges.filter((s) => s) // remove empty element
