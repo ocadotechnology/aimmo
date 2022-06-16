@@ -5,7 +5,7 @@ export function checkIfBadgeEarned(
   badges: string,
   result: ComputedTurnResult,
   userCode: string,
-  gameState: any,
+  gameState: any
 ): string {
   const userPythonCode = userCode.replace(/\s*#.*/gm, '') // Remove all comment lines from the user's code
   const badgesPerWorksheet = [
@@ -63,5 +63,5 @@ function badge3Trigger(result: any, userPythonCode: string): boolean {
   const codeContainsKeywords = substrings.every((substring) => userPythonCode.includes(substring))
 
   // And check it returns a move action
-  return codeContainsKeywords && result.action.action_type === 'move';
+  return codeContainsKeywords && result.action.action_type === 'move'
 }
