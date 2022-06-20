@@ -1,5 +1,4 @@
 import asyncio
-import logging
 import threading
 from abc import ABCMeta, abstractmethod
 from typing import TYPE_CHECKING
@@ -10,8 +9,6 @@ from simulation.worksheet.worksheet import WorksheetData, get_worksheet_data
 
 if TYPE_CHECKING:
     from turn_collector import CollectedTurnActions
-
-LOGGER = logging.getLogger(__name__)
 
 TURN_INTERVAL = 2
 

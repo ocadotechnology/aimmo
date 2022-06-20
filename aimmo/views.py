@@ -1,22 +1,18 @@
 import logging
+import re
 from typing import Tuple
 
+from common.models import UserProfile
 from common.permissions import CanDeleteGame
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db import transaction
-from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
+from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404
-from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import mixins, status, viewsets
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
-from rest_framework.decorators import (
-    action,
-    api_view,
-    authentication_classes,
-    permission_classes,
-)
+from rest_framework.decorators import action, api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -26,11 +22,7 @@ from .avatar_creator import create_avatar_for_user
 from .exceptions import UserCannotPlayGameException
 from .game_manager.game_manager import GameManager
 from .models import Avatar, Game
-from .permissions import (
-    CanDeleteGameOrReadOnly,
-    CsrfExemptSessionAuthentication,
-    GameHasToken,
-)
+from .permissions import CanDeleteGameOrReadOnly, CsrfExemptSessionAuthentication, GameHasToken
 from .serializers import GameIdsSerializer, GameSerializer
 
 LOGGER = logging.getLogger(__name__)
@@ -39,24 +31,58 @@ LOGGER = logging.getLogger(__name__)
 @login_required
 def code(request, id):
     if not request.user:
-        print("no user")
+        LOGGER.info("This request doesn't have a user attached to it.")
         return HttpResponseForbidden()
     game = get_object_or_404(Game, id=id)
+
     if not game.can_user_play(request.user):
-        print("user can't play")
+        LOGGER.info("The user doesn't have access to the requested game.")
         raise Http404
+
     try:
         avatar = game.avatar_set.get(owner=request.user)
     except Avatar.DoesNotExist:
         avatar = create_avatar_for_user(request.user, id)
+
     if request.method == "POST":
         avatar.code = request.POST["code"]
         avatar.save()
-        return HttpResponse(status=200)
+        return HttpResponse()
     else:
-        return JsonResponse(
-            {"code": avatar.code, "starterCode": game.worksheet.starter_code}
-        )
+        return JsonResponse({"code": avatar.code, "starterCode": game.worksheet.starter_code})
+
+
+@login_required
+def badges(request, id):
+    if not request.user:
+        LOGGER.info("This request doesn't have a user attached to it.")
+        return HttpResponseForbidden()
+    game = get_object_or_404(Game, id=id)
+
+    if not game.can_user_play(request.user):
+        LOGGER.info("The user doesn't have access to the requested game.")
+        raise Http404
+
+    try:
+        avatar = game.avatar_set.get(owner=request.user)
+    except Avatar.DoesNotExist:
+        avatar = create_avatar_for_user(request.user, id)
+    avatar_user_profile = UserProfile.objects.get(user=avatar.owner)
+
+    if request.method == "POST":
+        earned_badges = request.POST["badges"]
+
+        if re.match("^([1-9]:\d+,)*$", earned_badges):
+            avatar_user_profile.aimmo_badges = earned_badges
+            avatar_user_profile.save()
+            return HttpResponse()
+        else:
+            LOGGER.info(f"Badges information {earned_badges} doesn't match the required format.")
+            return HttpResponseBadRequest()
+
+    else:
+        # Making the badges an empty string if the user doesn't have any badges yet
+        return JsonResponse({"badges": avatar_user_profile.aimmo_badges or ""})
 
 
 class GameUsersView(APIView):
@@ -107,8 +133,7 @@ class GameViewSet(
     )
     def running(self, request):
         response = {
-            game.pk: GameSerializer(game).data
-            for game in Game.objects.filter(status=Game.RUNNING, is_archived=False)
+            game.pk: GameSerializer(game).data for game in Game.objects.filter(status=Game.RUNNING, is_archived=False)
         }
         return Response(response)
 
@@ -123,7 +148,9 @@ class GameViewSet(
 
         with transaction.atomic():
             games = Game.objects.select_for_update().filter(
-                pk__in=game_ids, game_class__teacher__new_user=request.user, is_archived=False,
+                pk__in=game_ids,
+                game_class__teacher__new_user=request.user,
+                is_archived=False,
             )
             try:
                 game_manager = GameManager()
@@ -135,9 +162,7 @@ class GameViewSet(
                     game.is_archived = True  # mark as deleted/archived
                     game.save()
             except Exception as exception:
-                LOGGER.error(
-                    f"Could not delete game servers for games: {', '.join(game_ids)}"
-                )
+                LOGGER.error(f"Could not delete game servers for games: {', '.join(game_ids)}")
                 # Re-raise exception so that atomic transaction reverts
                 raise exception
 
@@ -225,21 +250,15 @@ def get_avatar_id(user: User, game_id) -> Tuple[int, HttpResponse]:
     try:
         avatar_id = game_renderer.get_avatar_id_from_user(user=user, game_id=game_id)
     except UserCannotPlayGameException:
-        LOGGER.warning(
-            "HTTP 401 returned. User {} unauthorised to play.".format(user.id)
-        )
+        LOGGER.warning("HTTP 401 returned. User {} unauthorised to play.".format(user.id))
         response = HttpResponse("User unauthorized to play", status=401)
     except Avatar.DoesNotExist:
-        LOGGER.warning(
-            "Avatar does not exist for user {} in game {}".format(user.id, game_id)
-        )
+        LOGGER.warning("Avatar does not exist for user {} in game {}".format(user.id, game_id))
         response = HttpResponse("Avatar does not exist for this user", status=404)
     except Http404 as e:
         response = HttpResponse("Game does not exist", status=404)
     except Exception as e:
         LOGGER.error(f"Unknown error occurred while getting connection parameters: {e}")
-        response = HttpResponse(
-            "Unknown error occurred when getting the current avatar", status=500
-        )
+        response = HttpResponse("Unknown error occurred when getting the current avatar", status=500)
 
     return avatar_id, response

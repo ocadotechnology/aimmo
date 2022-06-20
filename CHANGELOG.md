@@ -2,6 +2,70 @@
 
 <!--next-version-placeholder-->
 
+## v2.3.4 (2022-06-16)
+### Fix
+* Check if move action on badge 2 ([#1684](https://github.com/ocadotechnology/aimmo/issues/1684)) ([`31f5a8c`](https://github.com/ocadotechnology/aimmo/commit/31f5a8caa20183d125030e657161bd3765654a4d))
+
+## v2.3.3 (2022-06-16)
+### Fix
+* Fix badges disappearing randomly ([#1671](https://github.com/ocadotechnology/aimmo/issues/1671)) ([`10cabe7`](https://github.com/ocadotechnology/aimmo/commit/10cabe75367a41f8c764ee3c29b6284b926e1638))
+
+## v2.3.2 (2022-06-08)
+### Fix
+* Filter badges by worksheet ([#1673](https://github.com/ocadotechnology/aimmo/issues/1673)) ([`c4820ba`](https://github.com/ocadotechnology/aimmo/commit/c4820bacd7e824c853918244e90e5c2de1ced765))
+
+## v2.3.1 (2022-06-06)
+### Fix
+* Badge initialisation when starting game ([#1670](https://github.com/ocadotechnology/aimmo/issues/1670)) ([`0672c65`](https://github.com/ocadotechnology/aimmo/commit/0672c654570f3d802d612ae3a70b526edeaee54b))
+
+### Documentation
+* Refine templates ([#1667](https://github.com/ocadotechnology/aimmo/issues/1667)) ([`51ece24`](https://github.com/ocadotechnology/aimmo/commit/51ece24c19ea486df383537e50dfbf22c1d419bf))
+
+## v2.3.0 (2022-05-31)
+### Feature
+* Add message when move towards is rejected ([#1669](https://github.com/ocadotechnology/aimmo/issues/1669)) ([`4682692`](https://github.com/ocadotechnology/aimmo/commit/468269285352dbc5731dfed87a49fe40699bd2a4))
+
+## v2.2.1 (2022-05-30)
+### Fix
+* Add error checking ([#1668](https://github.com/ocadotechnology/aimmo/issues/1668)) ([`5036c66`](https://github.com/ocadotechnology/aimmo/commit/5036c66d72aa50ab11956a50533fe6a4b2c4c581))
+
+## v2.2.0 (2022-05-27)
+### Feature
+* Worksheet 1 badges ([`282e9f2`](https://github.com/ocadotechnology/aimmo/commit/282e9f27d5c7294183a46d384cfe6838b2dfd696))
+
+## v2.1.2 (2022-05-19)
+### Fix
+* Add worksheet 4 student challenge url ([#1663](https://github.com/ocadotechnology/aimmo/issues/1663)) ([`7dd5b30`](https://github.com/ocadotechnology/aimmo/commit/7dd5b30dc0bdca772e68076b04a96b47cb4407fd))
+
+## v2.1.1 (2022-05-19)
+### Fix
+* Re-lock pipfile in aimmo-game ([#1662](https://github.com/ocadotechnology/aimmo/issues/1662)) ([`c89ab47`](https://github.com/ocadotechnology/aimmo/commit/c89ab47da42e3a65cbc9aba72a9b605cdc23fb60))
+
+## v2.1.0 (2022-05-19)
+### Feature
+* Add DropAction ([#1656](https://github.com/ocadotechnology/aimmo/issues/1656)) ([`ede244b`](https://github.com/ocadotechnology/aimmo/commit/ede244b83d896a6877f814666594efc0801bc215))
+* Add backpack with find method ([#1657](https://github.com/ocadotechnology/aimmo/issues/1657)) ([`d79a354`](https://github.com/ocadotechnology/aimmo/commit/d79a354a966d3062624e1ad756aa51106131e25a))
+* Modern era artefacts ([#1654](https://github.com/ocadotechnology/aimmo/issues/1654)) ([`1e59903`](https://github.com/ocadotechnology/aimmo/commit/1e59903f9b0bccd3521faa61e8001fd22ed53133))
+* Add worksheet 4 ([#1651](https://github.com/ocadotechnology/aimmo/issues/1651)) ([`deb36f1`](https://github.com/ocadotechnology/aimmo/commit/deb36f11a80649d83184dc1a4e240bf920e0b09f))
+
+### Fix
+* Scale cars ([#1661](https://github.com/ocadotechnology/aimmo/issues/1661)) ([`901f3bd`](https://github.com/ocadotechnology/aimmo/commit/901f3bdbab12cae5e98a37ef26503dca6431550c))
+* Pin grpcio in aimmo-game ([#1659](https://github.com/ocadotechnology/aimmo/issues/1659)) ([`8b51df8`](https://github.com/ocadotechnology/aimmo/commit/8b51df85c7a1d9c07638351f99b724bb2c26a306))
+
+## v2.0.4 (2022-04-27)
+### Fix
+* Upgrade semantic-release version in action ([#1646](https://github.com/ocadotechnology/aimmo/issues/1646)) ([`1af25b9`](https://github.com/ocadotechnology/aimmo/commit/1af25b99a361aca8c290537a09dd6505abc9095e))
+
+## v2.0.3 (2022-04-27)
+### Fix
+* Fix indentation in readme code ([#1645](https://github.com/ocadotechnology/aimmo/issues/1645)) ([`d826915`](https://github.com/ocadotechnology/aimmo/commit/d8269155d240f13b688586cba4f31fae759884d6))
+* Dummy commit to bump up version ([#1644](https://github.com/ocadotechnology/aimmo/issues/1644)) ([`26421ba`](https://github.com/ocadotechnology/aimmo/commit/26421ba77de8c75a3d5a64a7baac30ff59a08d8e))
+* Dummy commit to bump up version ([`c265152`](https://github.com/ocadotechnology/aimmo/commit/c2651521862fec6b51383c7c7ce5878be7f023d4))
+
+## v2.0.2 (2022-04-27)
+### Fix
+* Try updating Pyodide ([#1642](https://github.com/ocadotechnology/aimmo/issues/1642)) ([`4931148`](https://github.com/ocadotechnology/aimmo/commit/49311488e1c1b3d7b90357b0fe2c651cfa91f87c))
+
 ## v2.0.1 (2022-03-15)
 ### Fix
 * Cleanup ci and update pipfile ([#1632](https://github.com/ocadotechnology/aimmo/issues/1632)) ([`2e7c9cd`](https://github.com/ocadotechnology/aimmo/commit/2e7c9cd8b13a08bbd917a1f6e7adffb527eb2ef1))

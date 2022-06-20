@@ -10,8 +10,7 @@ module.exports = {
     'cypress/globals': true,
   },
   globals: {
-    pyodide: 'readonly',
-    languagePluginLoader: 'readonly',
+    loadPyodide: 'readonly',
     OnetrustActiveGroups: 'readonly',
   },
   rules: {

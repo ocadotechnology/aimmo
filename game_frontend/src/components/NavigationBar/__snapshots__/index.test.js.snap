@@ -1,34 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<NavigationBar /> renders correctly 1`] = `
-<styled.nav>
-  <Styled(WithStyles(ForwardRef(AppBar)))
-    color="secondary"
-    position="sticky"
-  >
-    <Styled(WithStyles(ForwardRef(Toolbar)))>
-      <WithStyles(ForwardRef(IconButton))
-        aria-label="Kurono dashboard"
-        color="inherit"
-        href=""
-      >
-        <KuronoLogo
-          fontSize="large"
-        />
-      </WithStyles(ForwardRef(IconButton))>
-    </Styled(WithStyles(ForwardRef(Toolbar)))>
-    <WithStyles(ForwardRef(Toolbar))>
-      <WithStyles(ForwardRef(Button))
-        href=""
-        variant="outlined"
-      >
-        Exit game
-      </WithStyles(ForwardRef(Button))>
-    </WithStyles(ForwardRef(Toolbar))>
-  </Styled(WithStyles(ForwardRef(AppBar)))>
-</styled.nav>
-`;
-
 exports[`<NavigationBarLayout /> renders correctly 1`] = `
 .c0 {
   grid-area: navigation-bar;

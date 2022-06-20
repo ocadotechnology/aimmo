@@ -2,6 +2,10 @@ coverage:
   precision: 2
   round: down
   range: "70...100"
+  status:
+    patch:
+      default:
+        target: 90%
 
 ignore:
   - "aimmo_setup.py"
@@ -25,4 +29,3 @@ comment:
   require_head: yes
   branches:
     - "!master"
-    - "!development"

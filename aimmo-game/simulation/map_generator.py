@@ -39,8 +39,9 @@ class Main(_BaseGenerator):
         always_empty_location = Location(always_empty_edge_x, always_empty_edge_y)
 
         for cell in shuffled(world_map.all_cells()):
-            if cell.location != always_empty_location and random.random() < self.settings.get(
-                "OBSTACLE_RATIO", 0.1
+            if (
+                cell.location != always_empty_location
+                and random.random() < self.settings.get("OBSTACLE_RATIO", 0.1)
             ):
                 cell.obstacle = Obstacle.make_obstacle()
                 # So long as all habitable neighbours can still reach each other, then the

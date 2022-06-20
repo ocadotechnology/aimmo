@@ -17,7 +17,7 @@ export const timeoutIfWorkerTakesTooLong = (
 ) => computedTurnResult$ =>
   computedTurnResult$.pipe(
     timeout(PYODIDE_WORKER_PROCESSING_TIME, scheduler),
-    catchError(() => {
+    catchError((e) => {
       resetWorker(
         state$.value.editor.code.codeOnServer,
         state$.value.game.connectionParameters.currentAvatarID

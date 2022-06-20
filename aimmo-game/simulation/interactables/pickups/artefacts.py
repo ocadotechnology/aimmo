@@ -19,6 +19,9 @@ class _Artefact(_Interactable):
     def get_targets(self):
         return [self.cell.avatar]
 
+    def __str__(self):
+        return self._type
+
     def __repr__(self):
         return f"{type(self).__name__}(Location={self.cell.location})"
 
@@ -50,3 +53,21 @@ class YellowOrbArtefact(_Artefact):
     def __init__(self, cell):
         super().__init__(cell)
         self._type = "yellow_orb"
+
+
+class PhoneArtefact(_Artefact):
+    def __init__(self, cell):
+        super().__init__(cell)
+        self._type = "phone"
+
+
+class KeyboardArtefact(_Artefact):
+    def __init__(self, cell):
+        super().__init__(cell)
+        self._type = "keyboard"
+
+
+class CoinsArtefact(_Artefact):
+    def __init__(self, cell):
+        super().__init__(cell)
+        self._type = "coins"
