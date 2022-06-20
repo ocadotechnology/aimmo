@@ -5,7 +5,7 @@ import LogEntries, {
   LogData,
   LogTurn,
   BottomSnapper,
-  StyledTable
+  StyledTable,
 } from 'components/LogEntries'
 import createShallowWithTheme from 'testHelpers/createShallow'
 import createMountWithTheme from 'testHelpers/createMount'
@@ -14,7 +14,7 @@ describe('<LogEntries />', () => {
   it('renders correctly with logs', () => {
     const logs = new Map([
       [0, 'hello'],
-      [1, 'bye']
+      [1, 'bye'],
     ])
     const tree = createShallowWithTheme(<LogEntries logs={logs} />, 'dark')
     expect(tree).toMatchSnapshot()

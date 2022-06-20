@@ -8,7 +8,7 @@ describe('<IDEConsole />', () => {
   it('renders correctly', () => {
     const logs = new Map([
       [0, 'hello'],
-      [1, 'bye']
+      [1, 'bye'],
     ])
     const tree = createShallowWithTheme(<IDEConsole logs={logs} />, 'dark')
     expect(tree).toMatchSnapshot()

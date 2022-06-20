@@ -1,6 +1,10 @@
 /* eslint-env jest */
 import React from 'react'
-import ConsoleBar, { StyledConsoleBar, StyledConsoleIcon, StyledConsoleTitle } from 'components/ConsoleBar'
+import ConsoleBar, {
+  StyledConsoleBar,
+  StyledConsoleIcon,
+  StyledConsoleTitle,
+} from 'components/ConsoleBar'
 import createShallowWithTheme from 'testHelpers/createShallow'
 
 describe('<ConsoleBar />', () => {

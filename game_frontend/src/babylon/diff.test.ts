@@ -25,7 +25,16 @@ describe('diff', () => {
 
     var difference = diff(previous, current)
 
-    expect(difference).toEqual(new DiffResult([{ id: 0, value: { 1: 'a' } }, { id: 1, value: { 2: 'b' } }], [], []))
+    expect(difference).toEqual(
+      new DiffResult(
+        [
+          { id: 0, value: { 1: 'a' } },
+          { id: 1, value: { 2: 'b' } },
+        ],
+        [],
+        []
+      )
+    )
   })
 
   it('returns delete changes if elements have been removed', () => {

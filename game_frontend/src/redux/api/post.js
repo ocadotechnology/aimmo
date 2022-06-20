@@ -3,19 +3,19 @@ import { pipe } from 'rxjs'
 import { mergeMap, map } from 'rxjs/operators'
 import Cookies from 'js-cookie'
 
-const getCSRFToken = action$ =>
+const getCSRFToken = (action$) =>
   action$.pipe(
-    map(action => {
+    map((action) => {
       return { csrfToken: Cookies.get('csrftoken'), action }
     })
   )
 
-const postOperator = (url, body) => actionWithCsrfToken$ =>
+const postOperator = (url, body) => (actionWithCsrfToken$) =>
   actionWithCsrfToken$.pipe(
     mergeMap(({ csrfToken, action }) =>
       ajax.post(url, body(action), {
         withCredentials: true,
-        'X-CSRFToken': csrfToken
+        'X-CSRFToken': csrfToken,
       })
     )
   )

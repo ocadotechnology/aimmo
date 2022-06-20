@@ -8,26 +8,26 @@ import { CircularProgress } from '@material-ui/core'
 import CheckCircle from 'components/icons/CheckCircle'
 
 export const MarginedPlayIcon = styled(PlayIcon)`
-  margin-right: ${props => props.theme.spacing()}px;
+  margin-right: ${(props) => props.theme.spacing()}px;
 `
 
 export const MarginedCircularProgress = styled(CircularProgress)`
-  margin-right: ${props => props.theme.spacing()}px;
+  margin-right: ${(props) => props.theme.spacing()}px;
 `
 
 export const MarginedCheckCircle = styled(CheckCircle)`
-  margin-right: ${props => props.theme.spacing()}px;
+  margin-right: ${(props) => props.theme.spacing()}px;
 `
 
 export const MarginedBugIcon = styled(BugIcon)`
-  margin-right: ${props => props.theme.spacing()}px;
+  margin-right: ${(props) => props.theme.spacing()}px;
 `
 
 export const RunCodeButtonStatus = Object.freeze({
   normal: 'normal',
   updating: 'updating',
   error: 'error',
-  done: 'done'
+  done: 'done',
 })
 
 export default class RunCodeButton extends Component {
@@ -38,11 +38,11 @@ export default class RunCodeButton extends Component {
         RunCodeButtonStatus.normal,
         RunCodeButtonStatus.updating,
         RunCodeButtonStatus.error,
-        RunCodeButtonStatus.done]
-      )
+        RunCodeButtonStatus.done,
+      ]),
     }),
     isCodeOnServerDifferent: PropTypes.bool,
-    className: PropTypes.string
+    className: PropTypes.string,
   }
 
   shouldButtonBeDisabled = () => {
@@ -51,59 +51,64 @@ export default class RunCodeButton extends Component {
       case RunCodeButtonStatus.done:
         return false
       default:
-        return !this.props.isCodeOnServerDifferent ||
+        return (
+          !this.props.isCodeOnServerDifferent ||
           this.props.runCodeButtonStatus.status === RunCodeButtonStatus.updating
+        )
     }
   }
 
-  shouldButtonBeClickable () {
-    return !this.shouldButtonBeDisabled() ||
+  shouldButtonBeClickable() {
+    return (
+      !this.shouldButtonBeDisabled() ||
       this.props.runCodeButtonStatus.status !== RunCodeButtonStatus.done ||
       this.props.runCodeButtonStatus.status !== RunCodeButtonStatus.error
+    )
   }
 
-  renderContent (status) {
+  renderContent(status) {
     switch (status) {
       case RunCodeButtonStatus.normal:
         return (
           <>
-            <MarginedPlayIcon />Run Code
+            <MarginedPlayIcon />
+            Run Code
           </>
         )
       case RunCodeButtonStatus.updating:
         return (
           <>
-            <MarginedCircularProgress
-              color='inherit'
-              size='24px'
-            />Updating
+            <MarginedCircularProgress color="inherit" size="24px" />
+            Updating
           </>
         )
       case RunCodeButtonStatus.error:
         return (
           <>
-            <MarginedBugIcon />Error!
+            <MarginedBugIcon />
+            Error!
           </>
         )
       case RunCodeButtonStatus.done:
         return (
           <>
-            <MarginedCheckCircle />Done
+            <MarginedCheckCircle />
+            Done
           </>
         )
     }
   }
 
-  render () {
+  render() {
     return (
       <Fab
-        color='primary'
+        color="primary"
         className={this.props.className}
         disabled={this.shouldButtonBeDisabled()}
-        aria-label='Run Code'
-        variant='extended'
-        id='post-code-button'
-        onClick={this.shouldButtonBeClickable() ? this.props.whenClicked : () => { }}
+        aria-label="Run Code"
+        variant="extended"
+        id="post-code-button"
+        onClick={this.shouldButtonBeClickable() ? this.props.whenClicked : () => {}}
       >
         {this.renderContent(this.props.runCodeButtonStatus.status)}
       </Fab>

@@ -32,12 +32,12 @@ WebFont.load({
 })
 
 // only triggers GA on production (and with cookie consent)
-const isProduction = (location.hostname.search(/codeforlife.education/i) >= 0)
+const isProduction = location.hostname.search(/codeforlife.education/i) >= 0
 
 if (hasAnalyticsCookiesConsent()) {
   ReactGA.initialize('UA-49883146-1', {
     debug: false,
-    testMode: !isProduction
+    testMode: !isProduction,
   })
 
   if (isProduction) {

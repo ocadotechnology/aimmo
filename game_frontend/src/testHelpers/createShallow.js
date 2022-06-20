@@ -16,7 +16,7 @@ import themeVariants from 'theme'
  *
  * @returns {ShallowWrapper} An enzyme ShallowWrapper of the component with the theme context
  */
-export default function createShallowWithTheme (component, themeVariant = 'light', dive = false) {
+export default function createShallowWithTheme(component, themeVariant = 'light', dive = false) {
   return createShallow({ dive })(
     React.cloneElement(component, { theme: themeVariants[themeVariant] })
   )

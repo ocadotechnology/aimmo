@@ -49,7 +49,8 @@ exports[`<GameView /> shows the loading screen when the game is loading 1`] = `
     >
       We are building your game... ⏱
       <br />
-      If the game doesn’t load after 60 seconds, please 
+      If the game doesn’t load after 60 seconds, please
+       
       <a
         className="freshdesk__contact-us"
         onClick={[Function]}

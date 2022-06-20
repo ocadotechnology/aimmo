@@ -5,5 +5,5 @@ import socket from './socket'
 export default {
   get,
   post,
-  socket
+  socket,
 }

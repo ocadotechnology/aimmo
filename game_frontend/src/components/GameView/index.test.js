@@ -1,6 +1,13 @@
 /* eslint-env jest */
 import React from 'react'
-import GameView, { GameViewLayout, Compass, LoadingBackgroundOverlay, PositionedFindMeButton, OverlayElements, LoadingText } from 'components/GameView'
+import GameView, {
+  GameViewLayout,
+  Compass,
+  LoadingBackgroundOverlay,
+  PositionedFindMeButton,
+  OverlayElements,
+  LoadingText,
+} from 'components/GameView'
 import { shallow } from 'enzyme/build/index'
 import createMountWithTheme from 'testHelpers/createMount'
 import createShallowWithTheme from 'testHelpers/createShallow'
@@ -12,7 +19,7 @@ describe('<GameView />', () => {
     const connectToGame = jest.fn()
     const props = {
       connectToGame,
-      gameLoaded: true
+      gameLoaded: true,
     }
     const component = shallow(<GameView {...props} />, { disableLifecycleMethods: true })
     expect(component).toMatchSnapshot()
@@ -22,7 +29,7 @@ describe('<GameView />', () => {
     const props = {
       connectToGame: jest.fn(),
       environment: new MockEnvironment(true),
-      gameLoaded: true
+      gameLoaded: true,
     }
     const component = createMountWithTheme(<GameView {...props} />).instance()
 
@@ -34,7 +41,7 @@ describe('<GameView />', () => {
       connectToGame: jest.fn(),
       gameLoaded: true,
       environment: new MockEnvironment(true),
-      currentAvatarID: 2
+      currentAvatarID: 2,
     }
     const component = createMountWithTheme(<GameView {...props} />)
     const componentInstance = component.instance()
@@ -44,8 +51,8 @@ describe('<GameView />', () => {
       ...props,
       currentAvatarID: 1,
       gameState: {
-        id: 1
-      }
+        id: 1,
+      },
     }
     component.setProps(newProps)
 
@@ -56,7 +63,7 @@ describe('<GameView />', () => {
     const props = {
       connectToGame: jest.fn(),
       gameLoaded: true,
-      environment: new MockEnvironment(true)
+      environment: new MockEnvironment(true),
     }
 
     const component = createMountWithTheme(<GameView {...props} />)
@@ -71,8 +78,8 @@ describe('<GameView />', () => {
       currentAvatarID: 1,
       gameState: {
         era: 'future',
-        id: 1
-      }
+        id: 1,
+      },
     }
 
     component.setProps(newProps)
@@ -86,7 +93,7 @@ describe('<GameView />', () => {
     const props = {
       connectToGame: jest.fn(),
       gameLoaded: true,
-      environment: new MockEnvironment(true, 'future')
+      environment: new MockEnvironment(true, 'future'),
     }
 
     const component = createMountWithTheme(<GameView {...props} />)
@@ -102,8 +109,8 @@ describe('<GameView />', () => {
       currentAvatarID: 1,
       gameState: {
         era: 'future',
-        id: 1
-      }
+        id: 1,
+      },
     }
 
     component.setProps(newProps)
@@ -115,7 +122,7 @@ describe('<GameView />', () => {
     const props = {
       connectToGame: jest.fn(),
       environment: new MockEnvironment(true),
-      gameLoaded: true
+      gameLoaded: true,
     }
     const component = createMountWithTheme(<GameView {...props} />)
     const componentInstance = component.instance()
@@ -124,16 +131,18 @@ describe('<GameView />', () => {
     componentInstance.gameEngine.onUpdateGameState = jest.fn()
     componentInstance.gameEngine.setCurrentAvatarID = jest.fn()
 
-    componentInstance.gameEngine.entities = new EntityManager(componentInstance.gameEngine.environment)
+    componentInstance.gameEngine.entities = new EntityManager(
+      componentInstance.gameEngine.environment
+    )
     componentInstance.gameEngine.entities.avatars.currentAvatarMesh = true
 
     const newProps = {
       ...props,
       cameraCenteredOnUserAvatar: true,
       gameState: {
-        id: 1
+        id: 1,
       },
-      gameLoaded: true
+      gameLoaded: true,
     }
     component.setProps(newProps)
 
@@ -145,7 +154,7 @@ describe('<GameView />', () => {
       connectToGame: jest.fn(),
       environment: new MockEnvironment(true),
       mapPanned: jest.fn(),
-      gameLoaded: true
+      gameLoaded: true,
     }
     const component = createMountWithTheme(<GameView {...props} />)
     const componentInstance = component.instance()
@@ -161,7 +170,7 @@ describe('<GameView />', () => {
       environment: new MockEnvironment(true),
       cameraCenteredOnUserAvatar: false,
       centerCameraOnUserAvatar: jest.fn(),
-      gameLoaded: true
+      gameLoaded: true,
     }
 
     const component = createMountWithTheme(<GameView {...props} />)
@@ -176,7 +185,7 @@ describe('<GameView />', () => {
       environment: new MockEnvironment(true),
       cameraCenteredOnUserAvatar: true,
       centerCameraOnUserAvatar: jest.fn(),
-      gameLoaded: true
+      gameLoaded: true,
     }
 
     const component = createMountWithTheme(<GameView {...props} />)
@@ -189,7 +198,7 @@ describe('<GameView />', () => {
     const connectToGame = jest.fn()
     const props = {
       connectToGame,
-      gameLoaded: false
+      gameLoaded: false,
     }
     const component = shallow(<GameView {...props} />, { disableLifecycleMethods: true })
     expect(component).toMatchSnapshot()
@@ -199,7 +208,7 @@ describe('<GameView />', () => {
     const connectToGame = jest.fn()
     const props = {
       connectToGame,
-      gameLoaded: false
+      gameLoaded: false,
     }
     const component = shallow(<GameView {...props} />, { disableLifecycleMethods: true })
 

@@ -18,9 +18,7 @@
       "module-resolver",
       {
         "cwd": "babelrc",
-        "root": [
-          "./src"
-        ],
+        "root": ["./src"],
         "alias": {
           "features": "./src/redux/features",
           "theme": "./src/theme",
@@ -29,11 +27,7 @@
         }
       }
     ],
-    [
-      "@babel/plugin-proposal-class-properties",
-      {},
-      "class-properties"
-    ],
+    ["@babel/plugin-proposal-class-properties", {}, "class-properties"],
     "transform-optional-chaining"
   ]
 }

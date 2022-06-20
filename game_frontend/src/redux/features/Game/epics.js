@@ -12,7 +12,7 @@ import {
   mapTo,
   timeInterval,
   retryWhen,
-  delay
+  delay,
 } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 import { actions as analyticActions } from 'redux/features/Analytics'
@@ -22,15 +22,15 @@ const backgroundScheduler = Scheduler.async
 const getConnectionParametersEpic = (action$, state$, { api: { get } }) =>
   action$.pipe(
     ofType(types.SOCKET_CONNECT_TO_GAME_REQUEST),
-    mergeMap(action =>
+    mergeMap((action) =>
       get(`games/${state$.value.game.connectionParameters.game_id}/connection_parameters/`).pipe(
-        map(response => actions.connectionParametersReceived(response)),
-        retryWhen(errors => errors.pipe(delay(1000)))
+        map((response) => actions.connectionParametersReceived(response)),
+        retryWhen((errors) => errors.pipe(delay(1000)))
       )
     )
   )
 
-const gameLoadedEpic = action$ =>
+const gameLoadedEpic = (action$) =>
   action$.pipe(
     ofType(types.SOCKET_CONNECT_TO_GAME_REQUEST),
     switchMap(() =>
@@ -42,7 +42,7 @@ const gameLoadedIntervalEpic = (action$, state$, dependencies, scheduler = backg
   action$.pipe(
     ofType(types.GAME_LOADED),
     timeInterval(scheduler),
-    map(timeInterval =>
+    map((timeInterval) =>
       analyticActions.sendAnalyticsTimingEvent('Kurono', 'Load', 'Game', timeInterval.interval)
     )
   )
@@ -52,11 +52,11 @@ const connectToGameEpic = (action$, state$, { api: { socket } }) =>
     ofType(types.CONNECTION_PARAMETERS_RECEIVED),
     socket.connectToGame(),
     socket.startListeners(),
-    catchError(error =>
+    catchError((error) =>
       of({
         type: types.SOCKET_CONNECT_TO_GAME_FAIL,
         payload: error,
-        error: true
+        error: true,
       })
     )
   )
@@ -68,7 +68,7 @@ const codeUpdatingIntervalEpic = (action$, state$, dependencies, scheduler = bac
       action$.pipe(
         ofType(avatarWorkerTypes.AVATAR_CODE_UPDATED),
         timeInterval(scheduler),
-        map(timeInterval =>
+        map((timeInterval) =>
           analyticActions.sendAnalyticsTimingEvent(
             'Kurono',
             'Update',
@@ -85,5 +85,5 @@ export default {
   connectToGameEpic,
   gameLoadedEpic,
   gameLoadedIntervalEpic,
-  codeUpdatingIntervalEpic
+  codeUpdatingIntervalEpic,
 }

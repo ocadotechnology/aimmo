@@ -22,7 +22,7 @@ const student_access_code = 'AB123'
 
 Cypress.Commands.add('login', () => {
   cy.request('/login/teacher/')
-  cy.getCookie('csrftoken').then(csrfToken => {
+  cy.getCookie('csrftoken').then((csrfToken) => {
     cy.request({
       method: 'POST',
       url: '/login/teacher/',
@@ -32,8 +32,8 @@ Cypress.Commands.add('login', () => {
         'auth-username': username,
         'auth-password': password,
         csrfmiddlewaretoken: csrfToken.value,
-        'teacher_login_view-current_step': 'auth'
-      }
+        'teacher_login_view-current_step': 'auth',
+      },
     })
     cy.visit('/')
   })
@@ -41,7 +41,7 @@ Cypress.Commands.add('login', () => {
 
 Cypress.Commands.add('studentLogin', () => {
   cy.request('/login/student/')
-  cy.getCookie('csrftoken').then(csrfToken => {
+  cy.getCookie('csrftoken').then((csrfToken) => {
     cy.request({
       method: 'POST',
       url: '/login/student/',
@@ -50,23 +50,23 @@ Cypress.Commands.add('studentLogin', () => {
       body: {
         access_code: student_access_code,
         csrfmiddlewaretoken: csrfToken.value,
-      }
+      },
     })
-  cy.getCookie('csrftoken').then(csrfToken => {
-    cy.request({
-      method: 'POST',
-      url: `/login/student/${student_access_code}/`,
-      failOnStatusCode: true,
-      form: true,
-      body: {
-        username: student_username,
-        password: password,
-        csrfmiddlewaretoken: csrfToken.value,
-      }
+    cy.getCookie('csrftoken').then((csrfToken) => {
+      cy.request({
+        method: 'POST',
+        url: `/login/student/${student_access_code}/`,
+        failOnStatusCode: true,
+        form: true,
+        body: {
+          username: student_username,
+          password: password,
+          csrfmiddlewaretoken: csrfToken.value,
+        },
+      })
+      cy.visit('/')
     })
-    cy.visit('/')
   })
-})
 })
 
 Cypress.Commands.add('logout', () => {
@@ -76,7 +76,7 @@ Cypress.Commands.add('logout', () => {
 
 Cypress.Commands.add('addTestGame', () => {
   cy.request('/teach/kurono/dashboard/')
-  cy.getCookie('csrftoken').then(csrfToken => {
+  cy.getCookie('csrftoken').then((csrfToken) => {
     cy.request({
       method: 'POST',
       url: '/teach/kurono/dashboard/',
@@ -86,44 +86,40 @@ Cypress.Commands.add('addTestGame', () => {
         name: game_name,
         game_class: class_id,
         worksheet: worksheet_id,
-        csrfmiddlewaretoken: csrfToken.value
-      }
+        csrfmiddlewaretoken: csrfToken.value,
+      },
     })
   })
 })
 
 Cypress.Commands.add('visitAGame', () => {
-  cy.request('/kurono/api/games/').then(response => {
+  cy.request('/kurono/api/games/').then((response) => {
     const games = response.body
     // just get the first game it can find
     let testGameId = Object.keys(games)[0]
-    cy.fixture('initialState.json').then(initialState => {
+    cy.fixture('initialState.json').then((initialState) => {
       cy.visit(`/kurono/play/${testGameId}/`, {
-        onBeforeLoad: win => {
+        onBeforeLoad: (win) => {
           win.initialState = initialState
-        }
+        },
       })
     })
   })
 })
 
-Cypress.Commands.add('loadGameWithAvatarCode', avatarCode => {
+Cypress.Commands.add('loadGameWithAvatarCode', (avatarCode) => {
   cy.intercept('GET', '/kurono/api/code/*', avatarCode)
 
   cy.visitAGame()
 
-  cy.window()
-    .its('store')
-    .invoke('dispatch', { type: 'features/AvatarWorker/INITIALIZE_PYODIDE' })
+  cy.window().its('store').invoke('dispatch', { type: 'features/AvatarWorker/INITIALIZE_PYODIDE' })
 
-  const isAvatarWorkerInitialized = win => {
+  const isAvatarWorkerInitialized = (win) => {
     const state = win.store.getState()
     return state.avatarWorker.initialized
   }
 
-  cy.window()
-    .pipe(isAvatarWorkerInitialized, { timeout: 20000 })
-    .should('eq', true)
+  cy.window().pipe(isAvatarWorkerInitialized, { timeout: 20000 }).should('eq', true)
 })
 //
 //

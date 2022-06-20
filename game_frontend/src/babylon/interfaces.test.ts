@@ -4,20 +4,20 @@ import { DiffItem, diff } from './diff'
 import isEqual from 'lodash.isequal'
 
 class DummyHandler implements DiffHandling {
-  items: Array<any>;
-  constructor (arr: Array<any>) {
+  items: Array<any>
+  constructor(arr: Array<any>) {
     this.items = arr
   }
 
-  add (item: DiffItem): void {
+  add(item: DiffItem): void {
     this.items.push(item.value)
   }
 
-  edit (item: DiffItem): void {
+  edit(item: DiffItem): void {
     this.items[item.id] = item.value
   }
 
-  remove (item: DiffItem): void {
+  remove(item: DiffItem): void {
     this.items.splice(item.id)
   }
 }
@@ -33,9 +33,11 @@ describe('Diff processor', () => {
 
     diffProcessor.handleDifferences(diffArray)
     expect(handler.items.length).toBe(4)
-    expect(handler.items.find(function (element) {
-      return isEqual(element, 5)
-    })).toBeUndefined()
+    expect(
+      handler.items.find(function (element) {
+        return isEqual(element, 5)
+      })
+    ).toBeUndefined()
   })
 
   it('changes an element marked for an update', () => {
@@ -87,8 +89,10 @@ describe('Diff processor', () => {
     diffProcessor.handleDifferences(diffArray)
     expect(handler.items.length).toBe(4)
     expect(handler.items[2]).toBe(100)
-    expect(handler.items.find(function (element) {
-      return isEqual(element, 5)
-    })).toBeUndefined()
+    expect(
+      handler.items.find(function (element) {
+        return isEqual(element, 5)
+      })
+    ).toBeUndefined()
   })
 })

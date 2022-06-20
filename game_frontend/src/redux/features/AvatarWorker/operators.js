@@ -10,23 +10,19 @@ const PYODIDE_WORKER_PROCESSING_TIME = 1000
  * @param {*} state$ The state observable that's passed to epics
  * @param {*} resetWorker The function that resets the pyodide worker
  */
-export const timeoutIfWorkerTakesTooLong = (
-  state$,
-  resetWorker,
-  scheduler
-) => computedTurnResult$ =>
-  computedTurnResult$.pipe(
-    timeout(PYODIDE_WORKER_PROCESSING_TIME, scheduler),
-    catchError((e) => {
-      resetWorker(
-        state$.value.editor.code.codeOnServer,
-        state$.value.game.connectionParameters.currentAvatarID
-      )
-      return of({
-        action: { action_type: 'wait' },
-        log:
-          "Hmm, we haven't had an action back from your avatar this turn. Is there a 🐞 in your code?",
-        turnCount: state$.value.game.gameState.turnCount + 1
+export const timeoutIfWorkerTakesTooLong =
+  (state$, resetWorker, scheduler) => (computedTurnResult$) =>
+    computedTurnResult$.pipe(
+      timeout(PYODIDE_WORKER_PROCESSING_TIME, scheduler),
+      catchError((e) => {
+        resetWorker(
+          state$.value.editor.code.codeOnServer,
+          state$.value.game.connectionParameters.currentAvatarID
+        )
+        return of({
+          action: { action_type: 'wait' },
+          log: "Hmm, we haven't had an action back from your avatar this turn. Is there a 🐞 in your code?",
+          turnCount: state$.value.game.gameState.turnCount + 1,
+        })
       })
-    })
-  )
+    )

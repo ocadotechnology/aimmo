@@ -21,20 +21,20 @@ describe('avatarWorkerEpic', () => {
 
     const dependencies = {
       pyodideRunner: {
-        initializePyodide: () => of(1)
-      }
+        initializePyodide: () => of(1),
+      },
     }
 
     testScheduler.run(({ hot, cold, expectObservable }) => {
       const action$ = hot('--s-', {
-        s: gameActions.socketConnectToGameRequest()
+        s: gameActions.socketConnectToGameRequest(),
       })
 
       const state$ = null
       const output$ = epics.initializePyodideEpic(action$, state$, dependencies)
 
       expectObservable(output$).toBe('--u-', {
-        u: actions.pyodideInitialized()
+        u: actions.pyodideInitialized(),
       })
     })
   })
@@ -44,24 +44,24 @@ describe('avatarWorkerEpic', () => {
 
     const dependencies = {
       pyodideRunner: {
-        updateAvatarCode: () => of(1)
-      }
+        updateAvatarCode: () => of(1),
+      },
     }
 
     const state$ = {
       value: {
         editor: {
           code: {
-            codeOnServer: 'some python code'
-          }
-        }
-      }
+            codeOnServer: 'some python code',
+          },
+        },
+      },
     }
 
     testScheduler.run(({ hot, cold, expectObservable }) => {
       const inputActions = {
         p: actions.pyodideInitialized(),
-        c: editorActions.getCodeReceived('some python code')
+        c: editorActions.getCodeReceived('some python code'),
       }
 
       const action$1 = hot('--p--c--', inputActions)
@@ -71,11 +71,11 @@ describe('avatarWorkerEpic', () => {
       const output$2 = epics.initialUpdateAvatarCodeEpic(action$2, state$, dependencies)
 
       expectObservable(output$1).toBe('-----(u|)', {
-        u: actions.avatarCodeUpdated()
+        u: actions.avatarCodeUpdated(),
       })
 
       expectObservable(output$2).toBe('-----(u|)', {
-        u: actions.avatarCodeUpdated()
+        u: actions.avatarCodeUpdated(),
       })
     })
   })
@@ -85,32 +85,32 @@ describe('avatarWorkerEpic', () => {
 
     const dependencies = {
       pyodideRunner: {
-        computeNextAction$: () => of({ action_type: 'wait' })
+        computeNextAction$: () => of({ action_type: 'wait' }),
       },
       api: {
         socket: {
-          emitAction: jest.fn()
-        }
-      }
+          emitAction: jest.fn(),
+        },
+      },
     }
 
     const state$ = {
       value: {
         game: { connectionParameters: { currentAvatarID: 1 } },
-        avatarWorker: { pyodideInitialized: true }
-      }
+        avatarWorker: { pyodideInitialized: true },
+      },
     }
 
     testScheduler.run(({ hot, cold, expectObservable }) => {
       const action$ = hot('-p--g--g-g-', {
         g: gameActions.socketGameStateReceived({ players: [{ id: 1 }] }),
-        p: actions.pyodideInitialized()
+        p: actions.pyodideInitialized(),
       })
 
       const output$ = epics.computeNextActionEpic(action$, state$, dependencies)
 
       expectObservable(output$).toBe('----a--a-a-', {
-        a: actions.avatarsNextActionComputed({ action_type: 'wait' })
+        a: actions.avatarsNextActionComputed({ action_type: 'wait' }),
       })
     })
     expect(dependencies.api.socket.emitAction).toBeCalled()
@@ -122,13 +122,13 @@ describe('avatarWorkerEpic', () => {
     const dependencies = {
       pyodideRunner: {
         computeNextAction$: () => of({ action_type: 'move' }).pipe(delay(2000)),
-        resetWorker: jest.fn()
+        resetWorker: jest.fn(),
       },
       api: {
         socket: {
-          emitAction: jest.fn()
-        }
-      }
+          emitAction: jest.fn(),
+        },
+      },
     }
 
     const state$ = {
@@ -137,16 +137,16 @@ describe('avatarWorkerEpic', () => {
         avatarWorker: { pyodideInitialized: true },
         editor: {
           code: {
-            codeOnServer: 'some python code'
-          }
-        }
-      }
+            codeOnServer: 'some python code',
+          },
+        },
+      },
     }
 
     testScheduler.run(({ hot, cold, expectObservable }) => {
       const action$ = hot('-p--g----', {
         g: gameActions.socketGameStateReceived({ players: [{ id: 1 }] }),
-        p: actions.pyodideInitialized()
+        p: actions.pyodideInitialized(),
       })
 
       const output$ = epics.computeNextActionEpic(action$, state$, dependencies)
@@ -154,10 +154,9 @@ describe('avatarWorkerEpic', () => {
       expectObservable(output$).toBe('---- 1s a----', {
         a: actions.avatarsNextActionComputed({
           action: { action_type: 'wait' },
-          log:
-            "Hmm, we haven't had an action back from your avatar this turn. Is there a 🐞 in your code?",
-          turnCount: 2
-        })
+          log: "Hmm, we haven't had an action back from your avatar this turn. Is there a 🐞 in your code?",
+          turnCount: 2,
+        }),
       })
     })
     expect(dependencies.api.socket.emitAction).toBeCalled()
