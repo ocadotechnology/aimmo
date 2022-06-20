@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.3.5 (2022-06-20)
+### Fix
+* Prettify everything ([#1683](https://github.com/ocadotechnology/aimmo/issues/1683)) ([`86afc51`](https://github.com/ocadotechnology/aimmo/commit/86afc51011d65ac608a798b92af00863e0be140d))
+
 ## v2.3.4 (2022-06-16)
 ### Fix
 * Check if move action on badge 2 ([#1684](https://github.com/ocadotechnology/aimmo/issues/1684)) ([`31f5a8c`](https://github.com/ocadotechnology/aimmo/commit/31f5a8caa20183d125030e657161bd3765654a4d))
