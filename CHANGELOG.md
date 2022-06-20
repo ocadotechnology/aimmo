@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.3.4 (2022-06-16)
+### Fix
+* Check if move action on badge 2 ([#1684](https://github.com/ocadotechnology/aimmo/issues/1684)) ([`31f5a8c`](https://github.com/ocadotechnology/aimmo/commit/31f5a8caa20183d125030e657161bd3765654a4d))
+
 ## v2.3.3 (2022-06-16)
 ### Fix
 * Fix badges disappearing randomly ([#1671](https://github.com/ocadotechnology/aimmo/issues/1671)) ([`10cabe7`](https://github.com/ocadotechnology/aimmo/commit/10cabe75367a41f8c764ee3c29b6284b926e1638))

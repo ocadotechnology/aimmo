@@ -10,7 +10,7 @@ export function checkIfBadgeEarned(
   const userPythonCode = userCode.replace(/\s*#.*/gm, '') // Remove all comment lines from the user's code
   const badgesPerWorksheet = [
     { id: 1, worksheetID: 1, trigger: badge1Trigger(result) },
-    { id: 2, worksheetID: 1, trigger: badge2Trigger(userPythonCode) },
+    { id: 2, worksheetID: 1, trigger: badge2Trigger(result, userPythonCode) },
     {
       id: 3,
       worksheetID: 1,
@@ -41,7 +41,7 @@ function badge1Trigger(result: any): boolean {
   )
 }
 
-function badge2Trigger(userPythonCode: string): boolean {
+function badge2Trigger(result: any, userPythonCode: string): boolean {
   // Check code contains keywords to move in random directions
   const substrings = [
     'import random',
@@ -54,7 +54,11 @@ function badge2Trigger(userPythonCode: string): boolean {
     'elif ',
     'else:',
   ]
-  return substrings.every((substring) => userPythonCode.includes(substring))
+  // Check the code contains certain keywords about moving in a random direction
+  const codeContainsKeywords = substrings.every((substring) => userPythonCode.includes(substring))
+
+  // And check it returns a move action
+  return result.action.action_type === 'move' && codeContainsKeywords
 }
 
 function badge3Trigger(result: any, userPythonCode: string): boolean {
@@ -63,5 +67,5 @@ function badge3Trigger(result: any, userPythonCode: string): boolean {
   const codeContainsKeywords = substrings.every((substring) => userPythonCode.includes(substring))
 
   // And check it returns a move action
-  return codeContainsKeywords && result.action.action_type === 'move'
+  return result.action.action_type === 'move' && codeContainsKeywords
 }
