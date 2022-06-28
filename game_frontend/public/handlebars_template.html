@@ -159,6 +159,7 @@
   <script>
     var appData = {
       urlForAimmoDashboard: '{% url_for_aimmo_dashboard %}',
+      {% if request.session.screentime_warning_timeout %}screentimeWarningTimeout: \{{ request.session.screentime_warning_timeout }},{% endif %}
     }
   </script>
 </head>
