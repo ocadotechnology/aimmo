@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
+import { ajax } from 'rxjs/ajax'
 
-import { withStyles } from '@material-ui/core/styles'
 import Box from '@material-ui/core/Box'
 import Modal from '@material-ui/core/Modal'
+import Backdrop from '@material-ui/core/Backdrop'
+import Fade from '@material-ui/core/Fade'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 
 import BrainSVG from 'img/brain.svg'
-import { SettingsPowerRounded } from '@material-ui/icons'
+
+const DEFAULT_SCREENTIME_WARNING_TIMEOUT = 60 * 60 * 1000 // One hour
 
 const boxStyle = {
   display: 'flex',
@@ -40,16 +43,34 @@ const ContinueButton = styled(Button)({
 })
 
 const ScreentimeWarning = () => {
-  const [open, setOpen] = React.useState(false) // false
+  const [open, setOpen] = React.useState(false)
+  const [timer, setTimer] = React.useState()
 
   const handleContinueButton = () => {
     setOpen(false)
+    resetTimer()
+
+    // Reset the warning timeout on the user session
+    ajax('/user/reset_screentime_warning/').subscribe()
+  }
+
+  const resetTimer = (timeout = DEFAULT_SCREENTIME_WARNING_TIMEOUT) => {
+    clearTimeout(timer)
+    setTimer(
+      setTimeout(() => {
+        setOpen(true)
+      }, timeout)
+    )
   }
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setOpen(true)
-    }, 1000)
+    // Set the timer to the one coming from the user session initially
+    const appData = window.appData
+    const timeout =
+      appData && appData.screentimeWarningTimeout
+        ? appData.screentimeWarningTimeout
+        : DEFAULT_SCREENTIME_WARNING_TIMEOUT
+    resetTimer(timeout)
     return () => clearTimeout(timer)
   }, [])
 
@@ -58,24 +79,31 @@ const ScreentimeWarning = () => {
       open={open}
       aria-labelledby="screentime-warning-modal-title"
       aria-describedby="screentime-warning-modal-description"
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        timeout: 500,
+      }}
     >
-      <Box css={boxStyle}>
-        <Box component="img" css={brainStyle} alt="brain" src={BrainSVG} />
-        <Box css={{ my: 2 }}>
-          <Typography id="screentime-warning-modal-title" variant="h6" component="h2">
-            Time for a break?
+      <Fade in={open}>
+        <Box css={boxStyle}>
+          <Box component="img" css={brainStyle} alt="brain" src={BrainSVG} />
+          <Box css={{ my: 2 }}>
+            <Typography id="screentime-warning-modal-title" variant="h6" component="h2">
+              Time for a break?
+            </Typography>
+          </Box>
+          <Typography id="screentime-warning-modal-description">
+            You have been using the Code for Life website for a while. Remember to take regular
+            screen breaks to recharge those brain cells!
           </Typography>
+          <Box css={{ mt: 2 }}>
+            <ContinueButton variant="contained" onClick={handleContinueButton}>
+              Continue
+            </ContinueButton>
+          </Box>
         </Box>
-        <Typography id="screentime-warning-modal-description">
-          You have been using the Code for Life website for a while. Remember to take regular screen
-          breaks to recharge those brain cells!
-        </Typography>
-        <Box css={{ mt: 2 }}>
-          <ContinueButton variant="contained" onClick={handleContinueButton}>
-            Continue
-          </ContinueButton>
-        </Box>
-      </Box>
+      </Fade>
     </Modal>
   )
 }
