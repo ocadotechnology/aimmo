@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { ajax } from 'rxjs/ajax'
 
@@ -43,8 +43,8 @@ const ContinueButton = styled(Button)({
 })
 
 const ScreentimeWarning = () => {
-  const [open, setOpen] = React.useState(false)
-  const [timer, setTimer] = React.useState()
+  const [open, setOpen] = useState(false)
+  const [timer, setTimer] = useState()
 
   const handleContinueButton = () => {
     setOpen(false)
@@ -67,7 +67,7 @@ const ScreentimeWarning = () => {
     // Set the timer to the one coming from the user session initially
     const appData = window.appData
     const timeout =
-      appData && appData.screentimeWarningTimeout
+      appData && appData.screentimeWarningTimeout !== undefined
         ? appData.screentimeWarningTimeout
         : DEFAULT_SCREENTIME_WARNING_TIMEOUT
     resetTimer(timeout)
