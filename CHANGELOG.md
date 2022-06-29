@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.4.0 (2022-06-29)
+### Feature
+* Screentime warning ([#1686](https://github.com/ocadotechnology/aimmo/issues/1686)) ([`ffd15b6`](https://github.com/ocadotechnology/aimmo/commit/ffd15b6aff986684905e2021b7b65c9987697546))
+
 ## v2.3.5 (2022-06-20)
 ### Fix
 * Prettify everything ([#1683](https://github.com/ocadotechnology/aimmo/issues/1683)) ([`86afc51`](https://github.com/ocadotechnology/aimmo/commit/86afc51011d65ac608a798b92af00863e0be140d))
