@@ -16,6 +16,7 @@ import { enableMapSet } from 'immer'
 import ReactGA from 'react-ga'
 
 import GamePage from 'components/GamePage'
+import ScreentimeWarning from 'components/ScreentimeWarning'
 import { RunCodeButtonStatus } from 'components/RunCodeButton'
 
 import { hasAnalyticsCookiesConsent } from 'redux/features/Analytics/index'
@@ -78,6 +79,7 @@ const RootJSX = () => (
       <StyledComponentsThemeProvider theme={darkTheme}>
         <Provider store={reduxStore}>
           <GamePage />
+          <ScreentimeWarning />
         </Provider>
       </StyledComponentsThemeProvider>
     </MuiThemeProvider>
