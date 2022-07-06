@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.4.1 (2022-07-06)
+### Fix
+* Bump django from 3.2.13 to 3.2.14 ([#1689](https://github.com/ocadotechnology/aimmo/issues/1689)) ([`da4830c`](https://github.com/ocadotechnology/aimmo/commit/da4830c4252ebf1a6703b9fd59ddc72144648dcd))
+
 ## v2.4.0 (2022-06-29)
 ### Feature
 * Screentime warning ([#1686](https://github.com/ocadotechnology/aimmo/issues/1686)) ([`ffd15b6`](https://github.com/ocadotechnology/aimmo/commit/ffd15b6aff986684905e2021b7b65c9987697546))
