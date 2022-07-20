@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.4.2 (2022-07-20)
+### Fix
+* Update pipfile.lock ([#1691](https://github.com/ocadotechnology/aimmo/issues/1691)) ([`c95cca5`](https://github.com/ocadotechnology/aimmo/commit/c95cca5e1d1e30f56635a87556b16a779c9bef53))
+
 ## v2.4.1 (2022-07-06)
 ### Fix
 * Bump django from 3.2.13 to 3.2.14 ([#1689](https://github.com/ocadotechnology/aimmo/issues/1689)) ([`da4830c`](https://github.com/ocadotechnology/aimmo/commit/da4830c4252ebf1a6703b9fd59ddc72144648dcd))
