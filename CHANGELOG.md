@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.4.3 (2022-07-20)
+### Fix
+* Use our fork of sematic release ([#1692](https://github.com/ocadotechnology/aimmo/issues/1692)) ([`1360e83`](https://github.com/ocadotechnology/aimmo/commit/1360e830a6437f094cdc95044228b19a4a0d626a))
+
 ## v2.4.2 (2022-07-20)
 ### Fix
 * Update pipfile.lock ([#1691](https://github.com/ocadotechnology/aimmo/issues/1691)) ([`c95cca5`](https://github.com/ocadotechnology/aimmo/commit/c95cca5e1d1e30f56635a87556b16a779c9bef53))
