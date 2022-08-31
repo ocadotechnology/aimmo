@@ -16,7 +16,24 @@ TEMPLATES = [
     }
 ]
 
-INSTALLED_APPS = ["portal"]
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "aimmo",
+    "game",
+    "portal",
+    "common",
+    "django_js_reverse",
+    "rest_framework",
+    "django_otp",
+    "django_otp.plugins.otp_static",
+    "django_otp.plugins.otp_totp",
+    "sekizai",  # for javascript and css management
+]
+
 PIPELINE_ENABLED = False
 ROOT_URLCONF = "example_project.example_project.urls"
 STATIC_ROOT = "example_project/example_project/static"
