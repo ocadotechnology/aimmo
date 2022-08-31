@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 PIPELINE_ENABLED = False
 ROOT_URLCONF = "example_project.example_project.urls"
 STATIC_ROOT = "example_project/example_project/static"
+STATIC_URL = "/static/"
 SECRET_KEY = "bad_test_secret"
 
 GAME_SERVER_URL_FUNCTION = lambda game_id: ("base %s" % game_id, "path %s" % game_id)
