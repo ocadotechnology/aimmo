@@ -100,16 +100,14 @@ MIDDLEWARE = [
 # This is used in common to enable/disable the OneTrust cookie management script
 COOKIE_MANAGEMENT_ENABLED = False
 
+SITE_ID = 1
+
 
 def get_game_url_base_and_path(game_id: int) -> str:
     api_client = ApiClient()
     api_instance = CustomObjectsApi(api_client)
     result = api_instance.list_namespaced_custom_object(
-        group="agones.dev",
-        version="v1",
-        namespace="default",
-        plural="gameservers",
-        label_selector=f"game-id={game_id}",
+        group="agones.dev", version="v1", namespace="default", plural="gameservers", label_selector=f"game-id={game_id}"
     )
     try:
         result_items = result["items"]
@@ -125,10 +123,7 @@ def get_game_url_base_and_path(game_id: int) -> str:
             raise Http404
 
         game_server_status = game_server["status"]
-        return (
-            f"http://{game_server_status['address']}:{game_server_status['ports'][0]['port']}",
-            "/socket.io",
-        )
+        return (f"http://{game_server_status['address']}:{game_server_status['ports'][0]['port']}", "/socket.io")
     except (KeyError, IndexError):
         raise Http404
 
