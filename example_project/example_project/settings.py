@@ -39,17 +39,23 @@ ROOT_URLCONF = "example_project.urls"
 
 WSGI_APPLICATION = "example_project.wsgi.application"
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "aimmo",
+    "game",
     "portal",
     "common",
     "django_js_reverse",
     "rest_framework",
-)
+    "django_otp",
+    "django_otp.plugins.otp_static",
+    "django_otp.plugins.otp_totp",
+    "sekizai",  # for javascript and css management
+]
 
 TEMPLATES = [
     {
@@ -61,10 +67,11 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "sekizai.context_processors.sekizai",
             ]
         },
     }
-],
+]
 
 LOGGING = {
     "version": 1,
