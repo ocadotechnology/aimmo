@@ -58,4 +58,5 @@ GAME_SERVER_URL_FUNCTION = lambda game_id: ("base %s" % game_id, "path %s" % gam
 GAME_SERVER_PORT_FUNCTION = lambda game_id: 8001
 GAME_SERVER_SSL_FLAG = False
 
+CLOUD_STORAGE_PREFIX = "https://storage.googleapis.com/codeforlife-assets/"
 SITE_ID = 1

@@ -100,6 +100,7 @@ MIDDLEWARE = [
 # This is used in common to enable/disable the OneTrust cookie management script
 COOKIE_MANAGEMENT_ENABLED = False
 
+CLOUD_STORAGE_PREFIX = "https://storage.googleapis.com/codeforlife-assets/"
 SITE_ID = 1
 
 
