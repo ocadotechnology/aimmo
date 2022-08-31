@@ -6,6 +6,8 @@ from django.http import Http404
 from kubernetes.client.api.custom_objects_api import CustomObjectsApi
 from kubernetes.client.api_client import ApiClient
 
+from aimmo.csp_config import *  # Still keeping the config file, seems cleaner?
+
 ALLOWED_HOSTS = ["*"]
 
 DEBUG = True
@@ -23,14 +25,13 @@ DATABASES = {
 
 USE_I18N = True
 USE_L10N = True
+USE_TZ = True
 
 TIME_ZONE = "Europe/London"
 LANGUAGE_CODE = "en-gb"
 STATIC_ROOT = os.path.join(os.path.dirname(__file__), "static")
 STATIC_URL = "/static/"
 SECRET_KEY = "not-a-secret"
-
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 mimetypes.add_type("application/wasm", ".wasm", True)
 
@@ -42,8 +43,28 @@ INSTALLED_APPS = (
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
     "portal",
+    "common",
+    "django_js_reverse",
+    "rest_framework",
 )
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ]
+        },
+    }
+],
 
 LOGGING = {
     "version": 1,
@@ -109,8 +130,3 @@ try:
     from example_project.local_settings import *  # pylint: disable=E0611
 except ImportError:
     pass
-
-
-from django_autoconfig import autoconfig
-
-autoconfig.configure_settings(globals())

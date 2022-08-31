@@ -14,10 +14,9 @@ django-test-migrations = "==1.2.0"
 
 [packages]
 aimmo = {editable = true,path = "."}
-django-autoconfig = { git = 'https://github.com/ocadotechnology/django-autoconfig.git', ref = 'master' }
 kubernetes = "*"
 eventlet = "*"
-docker = "*"
+docker = "<6"
 wheel = "*"
 
 [requires]
