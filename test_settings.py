@@ -43,6 +43,17 @@ STATIC_ROOT = "example_project/example_project/static"
 STATIC_URL = "/static/"
 SECRET_KEY = "bad_test_secret"
 
+WSGI_APPLICATION = "example_project.wsgi.application"
+
+MIDDLEWARE = [
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+]
+
 GAME_SERVER_URL_FUNCTION = lambda game_id: ("base %s" % game_id, "path %s" % game_id)
 GAME_SERVER_PORT_FUNCTION = lambda game_id: 8001
 GAME_SERVER_SSL_FLAG = False
