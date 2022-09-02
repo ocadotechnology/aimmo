@@ -2,8 +2,6 @@
 
 from common.app_settings import domain, MODULE_NAME
 
-# CSP_CONFIG
-
 CSP_DEFAULT_SRC = ("'self'",)
 CSP_IMG_SRC = (f"{domain()}/static/", "https://p.typekit.net/")
 CSP_FONT_SRC = (("https://use.typekit.net/",),)
