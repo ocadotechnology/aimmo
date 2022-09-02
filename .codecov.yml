@@ -19,6 +19,7 @@ ignore:
   - "aimmo_runner/**/*"
   - "test_utils/*"
   - "setup.py"
+  - "aimmo/csp_config.py"
 
 comment:
   layout: "reach, diff, flags, files"

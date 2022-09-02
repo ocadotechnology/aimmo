@@ -39,6 +39,8 @@ ROOT_URLCONF = "example_project.urls"
 
 WSGI_APPLICATION = "example_project.wsgi.application"
 
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.admindocs",
