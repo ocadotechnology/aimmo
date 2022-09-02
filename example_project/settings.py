@@ -1,12 +1,12 @@
 """Django settings for example_project project."""
-import os
 import mimetypes
+import os
 
 from django.http import Http404
 from kubernetes.client.api.custom_objects_api import CustomObjectsApi
 from kubernetes.client.api_client import ApiClient
 
-from aimmo.csp_config import *  # Still keeping the config file, seems cleaner?
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 ALLOWED_HOSTS = ["*"]
 
@@ -29,36 +29,37 @@ USE_TZ = True
 
 TIME_ZONE = "Europe/London"
 LANGUAGE_CODE = "en-gb"
-STATIC_ROOT = os.path.join(os.path.dirname(__file__), "static")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = "/static/"
-SECRET_KEY = "not-a-secret"
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "aimmo/static")]
 
 mimetypes.add_type("application/wasm", ".wasm", True)
 
-ROOT_URLCONF = "example_project.urls"
+SECRET_KEY = "not-a-secret"
+ROOT_URLCONF = "urls"
 
 WSGI_APPLICATION = "example_project.wsgi.application"
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 INSTALLED_APPS = [
+    "game",
+    "pipeline",
+    "portal",
+    "aimmo",
+    "common",
     "django.contrib.admin",
     "django.contrib.admindocs",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "django.contrib.sites",
     "django.contrib.staticfiles",
-    "aimmo",
-    "game",
-    "portal",
-    "common",
     "django_js_reverse",
-    "rest_framework",
     "django_otp",
     "django_otp.plugins.otp_static",
     "django_otp.plugins.otp_totp",
+    "rest_framework",
     "sekizai",  # for javascript and css management
 ]
 
@@ -99,6 +100,37 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
 ]
 
+PIPELINE = {
+    "SASS_ARGUMENTS": "--quiet",
+    "COMPILERS": ("game.pipeline_compilers.LibSassCompiler",),
+    "STYLESHEETS": {
+        "css": {
+            "source_filenames": (
+                os.path.join(BASE_DIR, "static/portal/sass/bootstrap.scss"),
+                os.path.join(BASE_DIR, "static/portal/sass/colorbox.scss"),
+                os.path.join(BASE_DIR, "static/portal/sass/styles.scss"),
+            ),
+            "output_filename": "portal.css",
+        },
+        "popup": {
+            "source_filenames": (os.path.join(BASE_DIR, "static/portal/sass/partials/_popup.scss"),),
+            "output_filename": "popup.css",
+        },
+        "game-scss": {
+            "source_filenames": (os.path.join(BASE_DIR, "static/game/sass/game.scss"),),
+            "output_filename": "game.css",
+        },
+    },
+    "CSS_COMPRESSOR": None,
+}
+
+STATICFILES_FINDERS = [
+    "pipeline.finders.PipelineFinder",
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+]
+STATICFILES_STORAGE = "pipeline.storage.PipelineStorage"
+
 # This is used in common to enable/disable the OneTrust cookie management script
 COOKIE_MANAGEMENT_ENABLED = False
 
@@ -138,3 +170,5 @@ try:
     from example_project.local_settings import *  # pylint: disable=E0611
 except ImportError:
     pass
+
+from common.csp_config import *
