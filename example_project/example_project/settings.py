@@ -6,6 +6,8 @@ from django.http import Http404
 from kubernetes.client.api.custom_objects_api import CustomObjectsApi
 from kubernetes.client.api_client import ApiClient
 
+from aimmo.csp_config import *  # Still keeping the config file, seems cleaner?
+
 ALLOWED_HOSTS = ["*"]
 
 DEBUG = True
@@ -23,6 +25,7 @@ DATABASES = {
 
 USE_I18N = True
 USE_L10N = True
+USE_TZ = True
 
 TIME_ZONE = "Europe/London"
 LANGUAGE_CODE = "en-gb"
@@ -30,20 +33,50 @@ STATIC_ROOT = os.path.join(os.path.dirname(__file__), "static")
 STATIC_URL = "/static/"
 SECRET_KEY = "not-a-secret"
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
 mimetypes.add_type("application/wasm", ".wasm", True)
 
 ROOT_URLCONF = "example_project.urls"
 
 WSGI_APPLICATION = "example_project.wsgi.application"
 
-INSTALLED_APPS = (
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+INSTALLED_APPS = [
     "django.contrib.admin",
+    "django.contrib.admindocs",
     "django.contrib.auth",
     "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.sites",
+    "django.contrib.staticfiles",
+    "aimmo",
+    "game",
     "portal",
-)
+    "common",
+    "django_js_reverse",
+    "rest_framework",
+    "django_otp",
+    "django_otp.plugins.otp_static",
+    "django_otp.plugins.otp_totp",
+    "sekizai",  # for javascript and css management
+]
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+                "sekizai.context_processors.sekizai",
+            ]
+        },
+    }
+]
 
 LOGGING = {
     "version": 1,
@@ -69,16 +102,15 @@ MIDDLEWARE = [
 # This is used in common to enable/disable the OneTrust cookie management script
 COOKIE_MANAGEMENT_ENABLED = False
 
+CLOUD_STORAGE_PREFIX = "https://storage.googleapis.com/codeforlife-assets/"
+SITE_ID = 1
+
 
 def get_game_url_base_and_path(game_id: int) -> str:
     api_client = ApiClient()
     api_instance = CustomObjectsApi(api_client)
     result = api_instance.list_namespaced_custom_object(
-        group="agones.dev",
-        version="v1",
-        namespace="default",
-        plural="gameservers",
-        label_selector=f"game-id={game_id}",
+        group="agones.dev", version="v1", namespace="default", plural="gameservers", label_selector=f"game-id={game_id}"
     )
     try:
         result_items = result["items"]
@@ -94,10 +126,7 @@ def get_game_url_base_and_path(game_id: int) -> str:
             raise Http404
 
         game_server_status = game_server["status"]
-        return (
-            f"http://{game_server_status['address']}:{game_server_status['ports'][0]['port']}",
-            "/socket.io",
-        )
+        return (f"http://{game_server_status['address']}:{game_server_status['ports'][0]['port']}", "/socket.io")
     except (KeyError, IndexError):
         raise Http404
 
@@ -109,8 +138,3 @@ try:
     from example_project.local_settings import *  # pylint: disable=E0611
 except ImportError:
     pass
-
-
-from django_autoconfig import autoconfig
-
-autoconfig.configure_settings(globals())

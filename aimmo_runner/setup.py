@@ -7,7 +7,6 @@ setup(
     include_package_data=True,
     install_requires=[
         "django==3.2.15",
-        "django-autoconfig >= 0.3.6, < 1.0.0",
         "django-forms-bootstrap",
         "django-js-reverse",
         "eventlet",
