@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.4.5 (2022-09-02)
+### Fix
+* Remove autoconfig ([#1697](https://github.com/ocadotechnology/aimmo/issues/1697)) ([`1e1c864`](https://github.com/ocadotechnology/aimmo/commit/1e1c864f1ecc9e82b435edea23df0cc457ca4939))
+
 ## v2.4.4 (2022-08-12)
 ### Fix
 * **deps:** Bump django from 3.2.14 to 3.2.15 ([#1694](https://github.com/ocadotechnology/aimmo/issues/1694)) ([`7ba3ed8`](https://github.com/ocadotechnology/aimmo/commit/7ba3ed8ed1e866d94d629aed4a77354c0d521336))
