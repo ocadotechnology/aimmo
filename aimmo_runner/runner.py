@@ -100,7 +100,7 @@ def run(
             capture_output=capture_output,
         )
         run_command(
-            ["python", _MANAGE_PY, "collectstatic", "--noinput"],
+            ["python", _MANAGE_PY, "collectstatic", "--noinput",  "--clear"],
             capture_output=capture_output,
         )
 
