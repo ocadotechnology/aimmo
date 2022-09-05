@@ -15,7 +15,7 @@ framework.
 """
 import os
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 
 from django.core.wsgi import get_wsgi_application
 

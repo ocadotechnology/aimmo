@@ -71,7 +71,7 @@ db.sqlite3
 *.iml
 
 # static folder
-example_project/example_project/static/
+static/
 
 # Created during minikube testing
 test-bin/
