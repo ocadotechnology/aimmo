@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.4.6 (2022-09-05)
+### Fix
+* Clean autoconfig ([#1698](https://github.com/ocadotechnology/aimmo/issues/1698)) ([`dac77fe`](https://github.com/ocadotechnology/aimmo/commit/dac77feaf9d0e2fdcfe570d3f20b53383bc0252f))
+
 ## v2.4.5 (2022-09-02)
 ### Fix
 * Remove autoconfig ([#1697](https://github.com/ocadotechnology/aimmo/issues/1697)) ([`1e1c864`](https://github.com/ocadotechnology/aimmo/commit/1e1c864f1ecc9e82b435edea23df0cc457ca4939))
