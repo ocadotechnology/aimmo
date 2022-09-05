@@ -104,7 +104,7 @@ def run(
             capture_output=capture_output,
         )
 
-    create_superuser_if_missing(username="admin", password="admin")
+    # create_superuser_if_missing(username="admin", password="admin")
 
     server_args = []
     if not using_cypress:
