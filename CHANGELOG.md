@@ -2,6 +2,38 @@
 
 <!--next-version-placeholder-->
 
+## v2.4.6 (2022-09-05)
+### Fix
+* Clean autoconfig ([#1698](https://github.com/ocadotechnology/aimmo/issues/1698)) ([`dac77fe`](https://github.com/ocadotechnology/aimmo/commit/dac77feaf9d0e2fdcfe570d3f20b53383bc0252f))
+
+## v2.4.5 (2022-09-02)
+### Fix
+* Remove autoconfig ([#1697](https://github.com/ocadotechnology/aimmo/issues/1697)) ([`1e1c864`](https://github.com/ocadotechnology/aimmo/commit/1e1c864f1ecc9e82b435edea23df0cc457ca4939))
+
+## v2.4.4 (2022-08-12)
+### Fix
+* **deps:** Bump django from 3.2.14 to 3.2.15 ([#1694](https://github.com/ocadotechnology/aimmo/issues/1694)) ([`7ba3ed8`](https://github.com/ocadotechnology/aimmo/commit/7ba3ed8ed1e866d94d629aed4a77354c0d521336))
+
+## v2.4.3 (2022-07-20)
+### Fix
+* Use our fork of sematic release ([#1692](https://github.com/ocadotechnology/aimmo/issues/1692)) ([`1360e83`](https://github.com/ocadotechnology/aimmo/commit/1360e830a6437f094cdc95044228b19a4a0d626a))
+
+## v2.4.2 (2022-07-20)
+### Fix
+* Update pipfile.lock ([#1691](https://github.com/ocadotechnology/aimmo/issues/1691)) ([`c95cca5`](https://github.com/ocadotechnology/aimmo/commit/c95cca5e1d1e30f56635a87556b16a779c9bef53))
+
+## v2.4.1 (2022-07-06)
+### Fix
+* Bump django from 3.2.13 to 3.2.14 ([#1689](https://github.com/ocadotechnology/aimmo/issues/1689)) ([`da4830c`](https://github.com/ocadotechnology/aimmo/commit/da4830c4252ebf1a6703b9fd59ddc72144648dcd))
+
+## v2.4.0 (2022-06-29)
+### Feature
+* Screentime warning ([#1686](https://github.com/ocadotechnology/aimmo/issues/1686)) ([`ffd15b6`](https://github.com/ocadotechnology/aimmo/commit/ffd15b6aff986684905e2021b7b65c9987697546))
+
+## v2.3.5 (2022-06-20)
+### Fix
+* Prettify everything ([#1683](https://github.com/ocadotechnology/aimmo/issues/1683)) ([`86afc51`](https://github.com/ocadotechnology/aimmo/commit/86afc51011d65ac608a798b92af00863e0be140d))
+
 ## v2.3.4 (2022-06-16)
 ### Fix
 * Check if move action on badge 2 ([#1684](https://github.com/ocadotechnology/aimmo/issues/1684)) ([`31f5a8c`](https://github.com/ocadotechnology/aimmo/commit/31f5a8caa20183d125030e657161bd3765654a4d))

@@ -8,7 +8,7 @@ describe('<IDEEditor />', () => {
     const props = {
       code: 'class Avatar',
       getCode: jest.fn(),
-      postCode: jest.fn()
+      postCode: jest.fn(),
     }
 
     const component = createShallowWithTheme(<IDEEditor {...props} />, 'dark')
@@ -20,7 +20,7 @@ describe('<IDEEditor />', () => {
       code: 'class Avatar',
       getCode: jest.fn(),
       postCode: jest.fn(),
-      codeOnServer: 'def next_turn(...): pass'
+      codeOnServer: 'def next_turn(...): pass',
     }
 
     const component = createShallowWithTheme(<IDEEditor {...props} />, 'dark')
@@ -32,7 +32,7 @@ describe('<IDEEditor />', () => {
     const postCode = jest.fn()
     const props = {
       postCode,
-      getCode: jest.fn()
+      getCode: jest.fn(),
     }
 
     const component = createShallowWithTheme(<IDEEditor {...props} />, 'dark')

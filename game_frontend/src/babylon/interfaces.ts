@@ -23,11 +23,11 @@ export interface DiffHandling {
 export class DiffProcessor {
   handler: DiffHandling
 
-  constructor (handler: DiffHandling) {
+  constructor(handler: DiffHandling) {
     this.handler = handler
   }
 
-  handleDifferences (differences: DiffResult): void {
+  handleDifferences(differences: DiffResult): void {
     for (const entity of differences.deleteList) {
       this.handler.remove(entity)
     }

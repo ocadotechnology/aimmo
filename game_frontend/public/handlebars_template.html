@@ -1,5 +1,4 @@
-{% load static %}
-{% load app_tags %}
+{% load static %} {% load app_tags %}
 <!DOCTYPE html>
 
 <head>
@@ -9,43 +8,39 @@
   {{#if_eq environment "default"}}
   <!-- Production Environment -->
   <script>
-    (function(w, d, s, l, i) {
-      w[l] = w[l] || [];
-      w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+    ;(function (w, d, s, l, i) {
+      w[l] = w[l] || []
+      w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' })
       var f = d.getElementsByTagName(s)[0],
         j = d.createElement(s),
-        dl = l != "dataLayer" ? "&l=" + l : "";
-      j.async = true;
-      j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-      f.parentNode.insertBefore(j, f);
-    })(window, document, "script", "dataLayer", "GTM-M32M5N5");
+        dl = l != 'dataLayer' ? '&l=' + l : ''
+      j.async = true
+      j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl
+      f.parentNode.insertBefore(j, f)
+    })(window, document, 'script', 'dataLayer', 'GTM-M32M5N5')
   </script>
   {{/if_eq}} {{#if_eq environment "staging"}}
   <!-- Staging environment -->
   <script>
-    (function(w, d, s, l, i) {
-      w[l] = w[l] || [];
-      w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+    ;(function (w, d, s, l, i) {
+      w[l] = w[l] || []
+      w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' })
       var f = d.getElementsByTagName(s)[0],
         j = d.createElement(s),
-        dl = l != "dataLayer" ? "&l=" + l : "";
-      j.async = true;
+        dl = l != 'dataLayer' ? '&l=' + l : ''
+      j.async = true
       j.src =
-        "https://www.googletagmanager.com/gtm.js?id=" +
+        'https://www.googletagmanager.com/gtm.js?id=' +
         i +
         dl +
-        "&gtm_auth=ZZqc7ZNE1mTX6vrV43Q_7g&gtm_preview=env-6&gtm_cookies_win=x";
-      f.parentNode.insertBefore(j, f);
-    })(window, document, "script", "dataLayer", "GTM-M32M5N5");
+        '&gtm_auth=ZZqc7ZNE1mTX6vrV43Q_7g&gtm_preview=env-6&gtm_cookies_win=x'
+      f.parentNode.insertBefore(j, f)
+    })(window, document, 'script', 'dataLayer', 'GTM-M32M5N5')
   </script>
   {{/if_eq}}
   <!-- End Google Tag Manager -->
   <title>Kurono</title>
-  <link
-    rel="shortcut icon"
-    href="{% static 'favicon.ico' %}"
-    type="image/x-icon"
-  />
+  <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon" />
   <style type="text/css">
     body {
       margin: 0;
@@ -60,42 +55,112 @@
     https://webaim.org/resources/contrastchecker/
   -->
   <style id="ace-monokai">
-    .ace-monokai .ace_gutter {background: #2F3129;color: #8F908A}
-    .ace-monokai .ace_print-margin {width: 1px;background: #555651}
-    .ace-monokai {background-color: #272822;color: #F8F8F2}
-    .ace-monokai .ace_cursor {color: #F8F8F0}
-    .ace-monokai .ace_marker-layer .ace_selection {background: #49483E}
-    .ace-monokai.ace_multiselect .ace_selection.ace_start {box-shadow: 0 0 3px 0px #272822;}
-    .ace-monokai .ace_marker-layer .ace_step {background: rgb(102, 82, 0)}
-    .ace-monokai .ace_marker-layer .ace_bracket {margin: -1px 0 0 -1px;border: 1px solid #49483E}
-    .ace-monokai .ace_marker-layer .ace_active-line {background: #202020}
-    .ace-monokai .ace_gutter-active-line {background-color: #272727}
-    .ace-monokai .ace_marker-layer .ace_selected-word {border: 1px solid #49483E}
-    .ace-monokai .ace_invisible {color: #52524d}
-    .ace-monokai .ace_entity.ace_name.ace_tag,.ace-monokai .ace_keyword,.ace-monokai 
-    .ace_meta.ace_tag,.ace-monokai .ace_storage {color: #FCA6C6}
-    .ace-monokai .ace_punctuation,.ace-monokai .ace_punctuation.ace_tag {color: #fff}
-    .ace-monokai .ace_constant.ace_character,.ace-monokai .ace_constant.ace_language,
-    .ace-monokai .ace_constant.ace_numeric,.ace-monokai .ace_constant.ace_other {color: #CDB3FF}
-    .ace-monokai .ace_invalid {color: #F8F8F0;background-color: #F92672}
-    .ace-monokai .ace_invalid.ace_deprecated {color: #F8F8F0;background-color: #CDB3FF}
-    .ace-monokai .ace_support.ace_constant,.ace-monokai .ace_support.ace_function {color: #66D9EF}
-    .ace-monokai .ace_fold {background-color: #A6E22E;border-color: #F8F8F2}
-    .ace-monokai .ace_storage.ace_type,.ace-monokai .ace_support.ace_class,
-    .ace-monokai .ace_support.ace_type {font-style: italic;color: #66D9EF}
-    .ace-monokai .ace_entity.ace_name.ace_function,.ace-monokai .ace_entity.ace_other,
-    .ace-monokai .ace_entity.ace_other.ace_attribute-name,.ace-monokai .ace_variable {color: #A6E22E}
-    .ace-monokai .ace_variable.ace_parameter {font-style: italic;color: #FD971F}
-    .ace-monokai .ace_string {color: #E6DB74}
-    .ace-monokai .ace_comment {color: #C3C0B7}
-    .ace-monokai .ace_indent-guide {background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWPQ0FD0ZXBzd/wPAAjVAoxeSgNeAAAAAElFTkSuQmCC) right repeat-y}
+    .ace-monokai .ace_gutter {
+      background: #2f3129;
+      color: #8f908a;
+    }
+    .ace-monokai .ace_print-margin {
+      width: 1px;
+      background: #555651;
+    }
+    .ace-monokai {
+      background-color: #272822;
+      color: #f8f8f2;
+    }
+    .ace-monokai .ace_cursor {
+      color: #f8f8f0;
+    }
+    .ace-monokai .ace_marker-layer .ace_selection {
+      background: #49483e;
+    }
+    .ace-monokai.ace_multiselect .ace_selection.ace_start {
+      box-shadow: 0 0 3px 0px #272822;
+    }
+    .ace-monokai .ace_marker-layer .ace_step {
+      background: rgb(102, 82, 0);
+    }
+    .ace-monokai .ace_marker-layer .ace_bracket {
+      margin: -1px 0 0 -1px;
+      border: 1px solid #49483e;
+    }
+    .ace-monokai .ace_marker-layer .ace_active-line {
+      background: #202020;
+    }
+    .ace-monokai .ace_gutter-active-line {
+      background-color: #272727;
+    }
+    .ace-monokai .ace_marker-layer .ace_selected-word {
+      border: 1px solid #49483e;
+    }
+    .ace-monokai .ace_invisible {
+      color: #52524d;
+    }
+    .ace-monokai .ace_entity.ace_name.ace_tag,
+    .ace-monokai .ace_keyword,
+    .ace-monokai .ace_meta.ace_tag,
+    .ace-monokai .ace_storage {
+      color: #fca6c6;
+    }
+    .ace-monokai .ace_punctuation,
+    .ace-monokai .ace_punctuation.ace_tag {
+      color: #fff;
+    }
+    .ace-monokai .ace_constant.ace_character,
+    .ace-monokai .ace_constant.ace_language,
+    .ace-monokai .ace_constant.ace_numeric,
+    .ace-monokai .ace_constant.ace_other {
+      color: #cdb3ff;
+    }
+    .ace-monokai .ace_invalid {
+      color: #f8f8f0;
+      background-color: #f92672;
+    }
+    .ace-monokai .ace_invalid.ace_deprecated {
+      color: #f8f8f0;
+      background-color: #cdb3ff;
+    }
+    .ace-monokai .ace_support.ace_constant,
+    .ace-monokai .ace_support.ace_function {
+      color: #66d9ef;
+    }
+    .ace-monokai .ace_fold {
+      background-color: #a6e22e;
+      border-color: #f8f8f2;
+    }
+    .ace-monokai .ace_storage.ace_type,
+    .ace-monokai .ace_support.ace_class,
+    .ace-monokai .ace_support.ace_type {
+      font-style: italic;
+      color: #66d9ef;
+    }
+    .ace-monokai .ace_entity.ace_name.ace_function,
+    .ace-monokai .ace_entity.ace_other,
+    .ace-monokai .ace_entity.ace_other.ace_attribute-name,
+    .ace-monokai .ace_variable {
+      color: #a6e22e;
+    }
+    .ace-monokai .ace_variable.ace_parameter {
+      font-style: italic;
+      color: #fd971f;
+    }
+    .ace-monokai .ace_string {
+      color: #e6db74;
+    }
+    .ace-monokai .ace_comment {
+      color: #c3c0b7;
+    }
+    .ace-monokai .ace_indent-guide {
+      background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWPQ0FD0ZXBzd/wPAAjVAoxeSgNeAAAAAElFTkSuQmCC)
+        right repeat-y;
+    }
     /*# sourceURL=ace/css/ace-monokai */
   </style>
 
   <script>
     var appData = {
-      urlForAimmoDashboard: "{% url_for_aimmo_dashboard %}"
-    };
+      urlForAimmoDashboard: '{% url_for_aimmo_dashboard %}',
+      {% if request.session.screentime_warning_timeout %}screentimeWarningTimeout: \{{ request.session.screentime_warning_timeout }},{% endif %}
+    }
   </script>
 </head>
 
@@ -108,21 +173,19 @@
       src="https://www.googletagmanager.com/ns.html?id=GTM-M32M5N5"
       height="0"
       width="0"
-      style="display:none;visibility:hidden"
+      style="display: none; visibility: hidden"
     >
     </iframe>
   </noscript>
   {{/if_eq}} {{#if_eq environment "staging"}}
   <!-- Staging environment -->
-  <noscript
-  >
+  <noscript>
     <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-M32M5N5&gtm_auth=ZZqc7ZNE1mTX6vrV43Q_7g&gtm_preview=env-6&gtm_cookies_win=x"
-            height="0"
-            width="0"
-            style="display:none;visibility:hidden"
-    ></iframe
-    >
+      src="https://www.googletagmanager.com/ns.html?id=GTM-M32M5N5&gtm_auth=ZZqc7ZNE1mTX6vrV43Q_7g&gtm_preview=env-6&gtm_cookies_win=x"
+      height="0"
+      width="0"
+      style="display: none; visibility: hidden"
+    ></iframe>
   </noscript>
   {{/if_eq}}
   <!-- End Google Tag Manager (noscript) -->

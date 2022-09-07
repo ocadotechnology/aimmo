@@ -5,12 +5,12 @@ import api from 'api'
 import * as pyodideRunner from '../pyodide/pyodideRunner'
 import { composeWithDevTools } from 'redux-devtools-extension/logOnlyInProduction'
 
-export default function configureStore (initialState) {
+export default function configureStore(initialState) {
   const epicMiddleware = createEpicMiddleware({
     dependencies: {
       api,
-      pyodideRunner
-    }
+      pyodideRunner,
+    },
   })
   const store = createStore(
     rootReducer,

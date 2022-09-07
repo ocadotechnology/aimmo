@@ -20,11 +20,11 @@ describe('Avatar worker in a web worker', () => {
       while True:
           pass
       return MoveAction(direction.NORTH)
-  `
+  `,
     }
 
     const expectedAction = {
-      action_type: 'wait'
+      action_type: 'wait',
     }
 
     const expectedLog =

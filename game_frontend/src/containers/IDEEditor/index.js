@@ -19,8 +19,8 @@ export const IDEEditorLayout = styled.div`
 export const PositionedRunCodeButton = styled(RunCodeButton)`
   && {
     position: absolute;
-    right: ${props => props.theme.spacing(3)}px;
-    bottom: ${props => props.theme.spacing(3)}px;
+    right: ${(props) => props.theme.spacing(3)}px;
+    bottom: ${(props) => props.theme.spacing(3)}px;
     z-index: 5;
   }
 `
@@ -33,28 +33,28 @@ export class IDEEditor extends PureComponent {
     codeReset: PropTypes.func,
     theme: PropTypes.object,
     postCode: PropTypes.func,
-    runCodeButtonStatus: PropTypes.object
+    runCodeButtonStatus: PropTypes.object,
   }
 
   state = {
     code: '',
-    codeLoaded: false
+    codeLoaded: false,
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.getCode()
   }
 
-  static getDerivedStateFromProps (props, state) {
+  static getDerivedStateFromProps(props, state) {
     if (!state.codeLoaded && props.codeOnServer) {
       return {
         code: props.codeOnServer,
-        codeLoaded: true
+        codeLoaded: true,
       }
     } else if (props.resetCodeTo) {
       const derivedState = {
         ...state,
-        code: props.resetCodeTo
+        code: props.resetCodeTo,
       }
       props.codeReset()
       return derivedState
@@ -66,11 +66,11 @@ export class IDEEditor extends PureComponent {
     return this.state.code !== this.props.codeOnServer
   }
 
-  options () {
+  options() {
     return {
       showLineNumbers: true,
       tabSize: 4,
-      fontFamily: this.props.theme.additionalVariables.typography.code.fontFamily
+      fontFamily: this.props.theme.additionalVariables.typography.code.fontFamily,
     }
   }
 
@@ -78,40 +78,40 @@ export class IDEEditor extends PureComponent {
     this.props.postCode(this.state.code)
   }
 
-  codeChanged = code => {
+  codeChanged = (code) => {
     this.setState({ code })
   }
 
-  renderEditor () {
+  renderEditor() {
     if (this.state.codeLoaded) {
       return (
         <AceEditor
-          mode='python'
-          theme='monokai'
-          name='ace_editor'
+          mode="python"
+          theme="monokai"
+          name="ace_editor"
           onChange={this.codeChanged}
-          fontSize='18px'
+          fontSize="18px"
           showPrintMargin
           showGutter
           highlightActiveLine
           value={this.state.code}
-          width='100%'
-          height='100%'
+          width="100%"
+          height="100%"
           setOptions={this.options()}
         />
       )
     }
   }
 
-  render () {
+  render() {
     return (
       <IDEEditorLayout>
         {this.renderEditor()}
         <PositionedRunCodeButton
           runCodeButtonStatus={this.props.runCodeButtonStatus}
           isCodeOnServerDifferent={this.isCodeOnServerDifferent()}
-          aria-label='Run Code'
-          id='post-code-button'
+          aria-label="Run Code"
+          id="post-code-button"
           whenClicked={this.postCode}
         />
       </IDEEditorLayout>
@@ -119,16 +119,16 @@ export class IDEEditor extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   codeOnServer: state.editor.code.codeOnServer,
   resetCodeTo: state.editor.code.resetCodeTo,
-  runCodeButtonStatus: state.editor.runCodeButton
+  runCodeButtonStatus: state.editor.runCodeButton,
 })
 
 const mapDispatchToProps = {
   getCode: editorActions.getCodeRequest,
   codeReset: editorActions.codeReset,
-  postCode: editorActions.postCodeRequest
+  postCode: editorActions.postCodeRequest,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme(IDEEditor))

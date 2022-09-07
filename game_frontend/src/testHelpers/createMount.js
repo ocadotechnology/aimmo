@@ -10,7 +10,7 @@ const ThemeProviderWrapper = ({ children, theme }) => (
 
 ThemeProviderWrapper.propTypes = {
   children: PropTypes.component,
-  theme: PropTypes.object
+  theme: PropTypes.object,
 }
 
 /**
@@ -20,9 +20,9 @@ ThemeProviderWrapper.propTypes = {
  * @param {string} themeVariant
  * @param {boolean} dive
  */
-export default function createMountWithTheme (component, themeVariant = 'light', dive = false) {
+export default function createMountWithTheme(component, themeVariant = 'light', dive = false) {
   return createMount({ dive })(component, {
     wrappingComponent: ThemeProviderWrapper,
-    wrappingComponentProps: { theme: themeVariants[themeVariant] }
+    wrappingComponentProps: { theme: themeVariants[themeVariant] },
   })
 }

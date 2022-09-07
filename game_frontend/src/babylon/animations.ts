@@ -12,7 +12,7 @@ export const MAX_KEYFRAMES_PER_SECOND = 24
  *
  *     rotationAnimation(5, 'interactable')
  */
-export function rotationAnimation (objectType: string): BABYLON.Animation {
+export function rotationAnimation(objectType: string): BABYLON.Animation {
   const rotation = new BABYLON.Animation(
     `${objectType} rotation`,
     'rotation.y',
@@ -24,15 +24,15 @@ export function rotationAnimation (objectType: string): BABYLON.Animation {
 
   keyFrames.push({
     frame: 0,
-    value: 0
+    value: 0,
   })
   keyFrames.push({
     frame: 1,
-    value: Math.PI
+    value: Math.PI,
   })
   keyFrames.push({
     frame: 2,
-    value: 2 * Math.PI
+    value: 2 * Math.PI,
   })
 
   rotation.setKeys(keyFrames)
@@ -49,7 +49,7 @@ export function rotationAnimation (objectType: string): BABYLON.Animation {
  *
  *     bobbingAnimation(5, 'interactable')
  */
-export function bobbingAnimation (objectType: string): BABYLON.Animation {
+export function bobbingAnimation(objectType: string): BABYLON.Animation {
   const bobbing = new BABYLON.Animation(
     `${objectType} bobbing`,
     'position.y',
@@ -60,16 +60,16 @@ export function bobbingAnimation (objectType: string): BABYLON.Animation {
   const keyFrames = [
     {
       frame: 0,
-      value: 0
+      value: 0,
     },
     {
       frame: 1,
-      value: 0.3
+      value: 0.3,
     },
     {
       frame: 2,
-      value: 0
-    }
+      value: 0,
+    },
   ]
 
   bobbing.setKeys(keyFrames)
@@ -78,7 +78,7 @@ export function bobbingAnimation (objectType: string): BABYLON.Animation {
   return bobbing
 }
 
-export function createMoveAnimation (
+export function createMoveAnimation(
   fromPosition: BABYLON.Vector3,
   toPosition: BABYLON.Vector3
 ): BABYLON.Animation {
@@ -92,12 +92,12 @@ export function createMoveAnimation (
   const keyFrames = [
     {
       frame: 0,
-      value: fromPosition
+      value: fromPosition,
     },
     {
       frame: 1,
-      value: toPosition
-    }
+      value: toPosition,
+    },
   ]
 
   move.setKeys(keyFrames)
@@ -113,7 +113,7 @@ export function createMoveAnimation (
  * @param mesh
  * @param scene
  */
-export function createWalkAnimation (mesh: BABYLON.AbstractMesh, scene: BABYLON.Scene) {
+export function createWalkAnimation(mesh: BABYLON.AbstractMesh, scene: BABYLON.Scene) {
   // Load animation
   const runningRange = mesh.skeleton.getAnimationRange('runAnimation')
   if (runningRange) {

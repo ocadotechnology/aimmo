@@ -8,7 +8,7 @@ import {
   Vector3,
   TransformNode,
   AbstractMesh,
-  Color4
+  Color4,
 } from 'babylonjs'
 
 const tileSizes = {
@@ -16,7 +16,7 @@ const tileSizes = {
   prehistory: { w: 1, h: 1 },
   ancient: { w: 1, h: 1 },
   modern: { w: 31, h: 31 },
-  grid: { w: 31, h: 31 }
+  grid: { w: 31, h: 31 },
 }
 
 export interface StandardAsset {
@@ -42,7 +42,7 @@ export default class AssetPack {
     name: 'grid',
     tileSize: tileSizes.grid,
     materialName: 'grid_material',
-    textureURL: '/static/babylon/terrain/grid.png'
+    textureURL: '/static/babylon/terrain/grid.png',
   }
 
   interactableMaterials: Record<string, StandardMaterial>
@@ -50,18 +50,18 @@ export default class AssetPack {
 
   backgroundColor: Color4 = Color4.FromColor3(Color3.White())
 
-  constructor (era: string, scene: Scene, importMeshAsync: Function = SceneLoader.ImportMeshAsync) {
+  constructor(era: string, scene: Scene, importMeshAsync: Function = SceneLoader.ImportMeshAsync) {
     this.era = era
     this.scene = scene
     this.importMeshAsync = importMeshAsync
     this.obstacleInfo = this.getObstacleAssetInfo()
     this.terrainInfo = this.getTerrainInfo()
     this.interactableMaterials = {
-      yellow_orb: this.createInteractableMaterial('yellow_orb')
+      yellow_orb: this.createInteractableMaterial('yellow_orb'),
     }
   }
 
-  createInteractableMaterial (interactableType: string): StandardMaterial {
+  createInteractableMaterial(interactableType: string): StandardMaterial {
     const texture = `/static/babylon/interactables/${interactableType}_texture.png`
     const material = new StandardMaterial(interactableType, this.scene)
     material.specularColor = new Color3(0, 0, 0)
@@ -70,7 +70,7 @@ export default class AssetPack {
     return material
   }
 
-  async createObstacle (
+  async createObstacle(
     name: string,
     location: Vector3,
     textureChoice: number,
@@ -89,7 +89,7 @@ export default class AssetPack {
     return obstacle
   }
 
-  async createInteractable (
+  async createInteractable(
     name: string,
     type: string,
     location: Vector3,
@@ -108,12 +108,12 @@ export default class AssetPack {
     interactable.parent = parent
     interactable.position = location
     interactable.metadata = {
-      type: type
+      type: type,
     }
     return interactable
   }
 
-  createGridOverlay (parent: TransformNode): AbstractMesh {
+  createGridOverlay(parent: TransformNode): AbstractMesh {
     const gridOverlay = Mesh.CreateTiledGround(
       this.gridInfo.name,
       -15,
@@ -134,7 +134,7 @@ export default class AssetPack {
     return gridOverlay
   }
 
-  createTerrain (parent: TransformNode): AbstractMesh {
+  createTerrain(parent: TransformNode): AbstractMesh {
     const terrain = Mesh.CreateTiledGround(
       this.terrainInfo.name,
       -15,
@@ -157,25 +157,25 @@ export default class AssetPack {
     return terrain
   }
 
-  protected getTerrainInfo (): PlaneAsset {
+  protected getTerrainInfo(): PlaneAsset {
     return {
       name: 'terrain',
       tileSize: tileSizes[this.era],
       materialName: `terrain_material_${this.era}`,
-      textureURL: `/static/babylon/terrain/terrain_${this.era}.jpg`
+      textureURL: `/static/babylon/terrain/terrain_${this.era}.jpg`,
     }
   }
 
-  protected getObstacleAssetInfo (): StandardAsset {
+  protected getObstacleAssetInfo(): StandardAsset {
     return {
       name: 'obstacle',
       modelURL: '/static/babylon/obstacles/',
       modelName: `obstacle_model_${this.era}.babylon`,
-      materialName: `obstacle_material_${this.era}`
+      materialName: `obstacle_material_${this.era}`,
     }
   }
 
-  protected getTextureURL (choice: number) {
+  protected getTextureURL(choice: number) {
     return `/static/babylon/obstacles/obstacle_${this.era}_${choice}.jpg`
   }
 }

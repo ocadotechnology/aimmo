@@ -15,13 +15,13 @@ beforeEach(() => {
   interactableManager = new InteractableManager(environment, assetPack)
 })
 
-function interactableDiffItem (index: number, type: string, location: { x: number; y: number }) {
+function interactableDiffItem(index: number, type: string, location: { x: number; y: number }) {
   return new DiffItem(index, {
     type: type,
     location: {
       x: location.x,
-      y: location.y
-    }
+      y: location.y,
+    },
   })
 }
 
@@ -36,7 +36,7 @@ describe('InteractableManager', () => {
     jest.spyOn(interactableManager.assetPack, 'createInteractable')
     const interactableList = [
       interactableDiffItem(1, 'score', { x: 0, y: 1 }),
-      interactableDiffItem(2, 'damage_boost', { x: 1, y: 0 })
+      interactableDiffItem(2, 'damage_boost', { x: 1, y: 0 }),
     ]
 
     await interactableManager.add(interactableList[0])
@@ -64,7 +64,7 @@ describe('InteractableManager', () => {
   it('removes interactables from an Interactable', async () => {
     const interactableList = [
       interactableDiffItem(1, 'score', { x: 0, y: 1 }),
-      interactableDiffItem(2, 'damage_boost', { x: 1, y: 0 })
+      interactableDiffItem(2, 'damage_boost', { x: 1, y: 0 }),
     ]
 
     await interactableManager.add(interactableList[0])

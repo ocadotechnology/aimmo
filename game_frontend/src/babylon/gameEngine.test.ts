@@ -17,36 +17,41 @@ beforeEach(() => {
     health: 5,
     location: {
       x: 0,
-      y: 0
+      y: 0,
     },
     score: 0,
     id: 1,
-    orientation: 'east'
+    orientation: 'east',
   })
   examplePlayer1 = {
     id: 1,
     location: {
       x: 1,
-      y: 1
-    }
+      y: 1,
+    },
   }
   examplePlayer2 = {
     id: 2,
     location: {
       x: 2,
-      y: 2
-    }
+      y: 2,
+    },
   }
 })
 
-function generateProps (cameraCenteredOnUserAvatar: Boolean, gameLoaded: Boolean, players: any, currentAvatarID: Number) {
+function generateProps(
+  cameraCenteredOnUserAvatar: Boolean,
+  gameLoaded: Boolean,
+  players: any,
+  currentAvatarID: Number
+) {
   return {
     cameraCenteredOnUserAvatar: cameraCenteredOnUserAvatar,
     gameLoaded: gameLoaded,
     gameState: {
-      players: players
+      players: players,
     },
-    currentAvatarID: currentAvatarID
+    currentAvatarID: currentAvatarID,
   }
 }
 

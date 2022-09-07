@@ -9,6 +9,18 @@ declare namespace Cypress {
     login(): Chainable<Element>
 
     /**
+     * Custom command to login with the default student account that's created on the test server.
+     * @example cy.studentLogin()
+     */
+    studentLogin(): Chainable<Element>
+
+    /**
+     * Custom command to logout.
+     * @example cy.logout()
+     */
+    logout(): Chainable<Element>
+
+    /**
      * Custom command to add a game named 'test'.
      * Requires you to be logged in.
      * @example cy.addTestGame()

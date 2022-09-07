@@ -16,6 +16,7 @@ import { enableMapSet } from 'immer'
 import ReactGA from 'react-ga'
 
 import GamePage from 'components/GamePage'
+import ScreentimeWarning from 'components/ScreentimeWarning'
 import { RunCodeButtonStatus } from 'components/RunCodeButton'
 
 import { hasAnalyticsCookiesConsent } from 'redux/features/Analytics/index'
@@ -32,12 +33,12 @@ WebFont.load({
 })
 
 // only triggers GA on production (and with cookie consent)
-const isProduction = (location.hostname.search(/codeforlife.education/i) >= 0)
+const isProduction = location.hostname.search(/codeforlife.education/i) >= 0
 
 if (hasAnalyticsCookiesConsent()) {
   ReactGA.initialize('UA-49883146-1', {
     debug: false,
-    testMode: !isProduction
+    testMode: !isProduction,
   })
 
   if (isProduction) {
@@ -78,6 +79,7 @@ const RootJSX = () => (
       <StyledComponentsThemeProvider theme={darkTheme}>
         <Provider store={reduxStore}>
           <GamePage />
+          <ScreentimeWarning />
         </Provider>
       </StyledComponentsThemeProvider>
     </MuiThemeProvider>

@@ -6,7 +6,7 @@ export default class Terrain implements GameNode {
   object: any
   assetPack: AssetPack
 
-  constructor (assetPack: AssetPack) {
+  constructor(assetPack: AssetPack) {
     this.assetPack = assetPack
 
     this.object = new TransformNode('Terrain', this.assetPack.scene)

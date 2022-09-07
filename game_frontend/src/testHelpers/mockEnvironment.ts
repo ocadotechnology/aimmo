@@ -7,13 +7,13 @@ import { Environment } from '../babylon/environment/environment'
  * Babylon without needing a canvas.
  */
 export class MockEnvironment implements Environment {
-  scene: BABYLON.Scene;
-  engine: BABYLON.Engine;
-  canvas: HTMLCanvasElement;
-  onTerrainNode: BABYLON.TransformNode;
+  scene: BABYLON.Scene
+  engine: BABYLON.Engine
+  canvas: HTMLCanvasElement
+  onTerrainNode: BABYLON.TransformNode
   era: string
 
-  constructor (useCanvas: boolean = false, era: string = '') {
+  constructor(useCanvas: boolean = false, era: string = '') {
     this.engine = new BABYLON.NullEngine()
     this.scene = new BABYLON.Scene(this.engine)
     this.era = era

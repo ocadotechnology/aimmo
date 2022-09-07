@@ -13,16 +13,16 @@ beforeEach(() => {
   avatars = new AvatarManager(environment, dummyImportMesh)
 })
 
-function avatarDiffItem (index: number, orientation: string, location: {x: number; y: number}) {
+function avatarDiffItem(index: number, orientation: string, location: { x: number; y: number }) {
   return new DiffItem(index, {
     health: 5,
     location: {
       x: location.x,
-      y: location.y
+      y: location.y,
     },
     score: 0,
     id: index,
-    orientation: orientation
+    orientation: orientation,
   })
 }
 

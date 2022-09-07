@@ -6,7 +6,7 @@ import ModernAssetPack from './modern'
 import WrongFutureAssetPack from './wrongFuture'
 import { Scene } from 'babylonjs'
 
-export default function getAssetPackForEra (era: string, scene: Scene): AssetPack {
+export default function getAssetPackForEra(era: string, scene: Scene): AssetPack {
   switch (era) {
     case 'future':
       return new FutureAssetPack(era, scene)

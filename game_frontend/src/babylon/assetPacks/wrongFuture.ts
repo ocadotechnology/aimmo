@@ -6,7 +6,7 @@ import {
   TransformNode,
   AbstractMesh,
   Scene,
-  Color4
+  Color4,
 } from 'babylonjs'
 import AssetPack from './assetPack'
 
@@ -15,12 +15,12 @@ export default class WrongFutureAssetPack extends AssetPack {
 
   backgroundColor = new Color4(0.086, 0.003, 0.007)
 
-  constructor (era: string, scene: Scene) {
+  constructor(era: string, scene: Scene) {
     super(era, scene)
     this.obstacleMaterial = this.makeObstacleMaterial()
   }
 
-  makeObstacleMaterial (): StandardMaterial {
+  makeObstacleMaterial(): StandardMaterial {
     const material = new StandardMaterial(this.obstacleInfo.materialName, this.scene)
     material.diffuseTexture = new Texture(this.getTextureURL(1), this.scene)
     material.specularColor = new Color3(0, 0, 0)
@@ -28,7 +28,7 @@ export default class WrongFutureAssetPack extends AssetPack {
     return material
   }
 
-  async createObstacle (
+  async createObstacle(
     name: string,
     location: Vector3,
     textureChoice: number,

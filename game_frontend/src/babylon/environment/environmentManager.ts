@@ -11,7 +11,7 @@ export default class EnvironmentManager {
   environment: Environment
   assetPack: AssetPack
 
-  constructor (environment: Environment, assetPack: AssetPack) {
+  constructor(environment: Environment, assetPack: AssetPack) {
     this.environment = environment
     this.assetPack = assetPack
 
@@ -22,7 +22,7 @@ export default class EnvironmentManager {
     this.setSceneBackground()
   }
 
-  private setSceneBackground () {
+  private setSceneBackground() {
     this.environment.scene.clearColor = this.assetPack.backgroundColor
   }
 
@@ -31,11 +31,11 @@ export default class EnvironmentManager {
     this.camera.computeCameraView(this.environment.canvas)
   }
 
-  centerOn (mesh: any): void {
+  centerOn(mesh: any): void {
     this.camera.centerOn(mesh)
   }
 
-  unCenter (mesh: any): void {
+  unCenter(mesh: any): void {
     this.camera.unCenter(mesh)
   }
 }

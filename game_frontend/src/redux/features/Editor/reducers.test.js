@@ -9,7 +9,7 @@ describe('editorReducer', () => {
   it('should return the initial state', () => {
     const initialState = {
       code: {},
-      runCodeButton: {}
+      runCodeButton: {},
     }
     expect(editorReducer(undefined, {})).toEqual(initialState)
   })
@@ -17,9 +17,9 @@ describe('editorReducer', () => {
   it('should handle GET_CODE_SUCCESS', () => {
     const expectedState = {
       code: {
-        codeOnServer: 'class Avatar'
+        codeOnServer: 'class Avatar',
       },
-      runCodeButton: {}
+      runCodeButton: {},
     }
     const action = actions.getCodeReceived('class Avatar')
     expect(editorReducer({}, action)).toEqual(expectedState)
@@ -31,8 +31,8 @@ describe('runCodeButtonReducer', () => {
     const expectedState = {
       code: {},
       runCodeButton: {
-        status: RunCodeButtonStatus.updating
-      }
+        status: RunCodeButtonStatus.updating,
+      },
     }
 
     const action = actions.postCodeRequest()
@@ -43,8 +43,8 @@ describe('runCodeButtonReducer', () => {
     const expectedState = {
       code: {},
       runCodeButton: {
-        status: RunCodeButtonStatus.done
-      }
+        status: RunCodeButtonStatus.done,
+      },
     }
 
     const action = avatarWorkerActions.avatarCodeUpdated()
@@ -55,8 +55,8 @@ describe('runCodeButtonReducer', () => {
     const expectedState = {
       code: {},
       runCodeButton: {
-        status: RunCodeButtonStatus.normal
-      }
+        status: RunCodeButtonStatus.normal,
+      },
     }
 
     const action = gameActions.socketGameStateReceived({})
@@ -71,16 +71,16 @@ describe('resetCodeReducer', () => {
 `
     const initialState = {
       code: {
-        starterCode: starterCode
+        starterCode: starterCode,
       },
-      runCodeButton: {}
+      runCodeButton: {},
     }
     const expectedState = {
       code: {
         starterCode: starterCode,
-        resetCodeTo: starterCode
+        resetCodeTo: starterCode,
       },
-      runCodeButton: {}
+      runCodeButton: {},
     }
     const action = actions.resetCode()
     expect(editorReducer(initialState, action)).toEqual(expectedState)
