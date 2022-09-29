@@ -14,7 +14,7 @@ django-test-migrations = "==1.2.0"
 
 [packages]
 aimmo = {editable = true,path = "."}
-kubernetes = "*"
+kubernetes = "==21.7.0"
 eventlet = "*"
 docker = "<6"
 wheel = "*"
