@@ -10,7 +10,7 @@ restrictedpython = "==4.0.b7"
 aiohttp = "*"
 aiohttp-cors = "*"
 idna-ssl = "*"
-oauthlib = "==3.2.1"
+oauthlib = "==3.2.0"
 
 [requires]
 python_version = "3.7"
