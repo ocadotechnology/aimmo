@@ -1,13 +1,15 @@
 from os import urandom
 
 from base64 import urlsafe_b64encode
-from common.models import Class
+from common.models import Class, Teacher
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 
 from aimmo import app_settings
 from aimmo.worksheets import WORKSHEETS
+
+from common.models import School
 
 DEFAULT_WORKSHEET_ID = 1
 
@@ -56,12 +58,21 @@ class Game(models.Model):
         related_name="games_for_user",
         on_delete=models.SET_NULL,
     )
+
+    def get_owner():
+        pass
+
+    created_by = models.ForeignKey(
+        Teacher,
+        blank=True,
+        null=True,
+        related_name="game_created_by_teacher",
+        on_delete=models.SET_NULL,
+    )
     static_data = models.TextField(blank=True, null=True)
 
     # Game config
-    generator = models.CharField(
-        max_length=20, choices=GAME_GENERATORS, default=GAME_GENERATORS[0][0]
-    )
+    generator = models.CharField(max_length=20, choices=GAME_GENERATORS, default=GAME_GENERATORS[0][0])
     target_num_cells_per_avatar = models.FloatField(default=16)
     target_num_score_locations_per_avatar = models.FloatField(default=0.5)
     score_despawn_chance = models.FloatField(default=0.05)
@@ -89,19 +100,28 @@ class Game(models.Model):
     def can_user_play(self, user: User) -> bool:
         """Checks whether the given user has permission to play the game.
 
-        A user can play the game if they are part of the game's class or
-        the teacher of that class.
-
+        A user can play the game if they are part of the game's class,
+        the teacher of that class or a teacher is admin of the school
         Args:
             user: A standard django User object
 
         Returns:
             bool: True if user can play the game, False otherwise
         """
+
+        current_session_teacher = user.userprofile.teacher
+        current_session_teacher_school = School.objects.get(id=current_session_teacher.school_id)
+
+        current_teacher = self.game_class.teacher
+        current_teacher_school = School.objects.get(id=current_teacher.school_id)
+        is_current_teacher_inside_school = current_teacher_school == current_session_teacher_school
+
         try:
             return (
                 self.game_class.students.filter(new_user=user).exists()
-                or user == self.game_class.teacher.new_user
+                or current_session_teacher == current_teacher
+                or is_current_teacher_inside_school
+                and current_session_teacher.is_admin
             )
         except AttributeError:
             return False

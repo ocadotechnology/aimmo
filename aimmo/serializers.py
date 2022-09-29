@@ -38,9 +38,10 @@ class GameSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         instance.name = validated_data.get("name", instance.name)
         instance.status = validated_data.get("status", instance.status)
-        instance.worksheet_id = validated_data.get(
-            "worksheet_id", instance.worksheet_id
-        )
+        instance.worksheet_id = validated_data.get("worksheet_id", instance.worksheet_id)
+        print(instance)
+        print(validated_data)
+        print("----\n" * 40)
 
         instance.save()
 
@@ -55,6 +56,7 @@ class GameSerializer(serializers.Serializer):
             # If the game is running, the game server needs to be restarted
             if instance.status == Game.RUNNING:
                 game_manager = GameManager()
+                print("left")
                 game_manager.recreate_game_server(
                     game_id=instance.id,
                     game_data_updates={"worksheet_id": str(instance.worksheet_id)},

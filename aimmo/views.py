@@ -1,4 +1,5 @@
 import logging
+from multiprocessing import current_process
 import re
 from typing import Tuple
 
@@ -32,6 +33,8 @@ from .permissions import (
 )
 from .serializers import GameSerializer, GameIdsSerializer
 
+from common.models import School, Teacher
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -56,9 +59,7 @@ def code(request, id):
         avatar.save()
         return HttpResponse()
     else:
-        return JsonResponse(
-            {"code": avatar.code, "starterCode": game.worksheet.starter_code}
-        )
+        return JsonResponse({"code": avatar.code, "starterCode": game.worksheet.starter_code})
 
 
 @login_required
@@ -133,8 +134,7 @@ class GameViewSet(
     @action(methods=["get"], detail=False)
     def running(self, request):
         response = {
-            game.pk: GameSerializer(game).data
-            for game in Game.objects.filter(status=Game.RUNNING, is_archived=False)
+            game.pk: GameSerializer(game).data for game in Game.objects.filter(status=Game.RUNNING, is_archived=False)
         }
         return Response(response)
 
@@ -146,9 +146,11 @@ class GameViewSet(
     )
     def delete_games(self, request):
         game_ids = request.data.getlist("game_ids")
+        teacher = request.user.userprofile.teacher
+        current_school_teachers = Teacher.objects.filter(school=School.objects.get(id=teacher.school_id))
         games = Game.objects.filter(
             pk__in=game_ids,
-            game_class__teacher__new_user=request.user,
+            game_class__teacher__in=current_school_teachers,
             is_archived=False,
         )
         for game in games:
@@ -227,21 +229,15 @@ def get_avatar_id(user: User, game_id) -> Tuple[int, HttpResponse]:
     try:
         avatar_id = game_renderer.get_avatar_id_from_user(user=user, game_id=game_id)
     except UserCannotPlayGameException:
-        LOGGER.warning(
-            "HTTP 401 returned. User {} unauthorised to play.".format(user.id)
-        )
+        LOGGER.warning("HTTP 401 returned. User {} unauthorised to play.".format(user.id))
         response = HttpResponse("User unauthorized to play", status=401)
     except Avatar.DoesNotExist:
-        LOGGER.warning(
-            "Avatar does not exist for user {} in game {}".format(user.id, game_id)
-        )
+        LOGGER.warning("Avatar does not exist for user {} in game {}".format(user.id, game_id))
         response = HttpResponse("Avatar does not exist for this user", status=404)
     except Http404 as e:
         response = HttpResponse("Game does not exist", status=404)
     except Exception as e:
         LOGGER.error(f"Unknown error occurred while getting connection parameters: {e}")
-        response = HttpResponse(
-            "Unknown error occurred when getting the current avatar", status=500
-        )
+        response = HttpResponse("Unknown error occurred when getting the current avatar", status=500)
 
     return avatar_id, response

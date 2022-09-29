@@ -33,17 +33,11 @@ class GameManager:
 
     def patch_game_service(self, game_id, game_server_name):
         patched_service = kubernetes.client.V1Service(
-            spec=kubernetes.client.V1ServiceSpec(
-                selector={"agones.dev/gameserver": game_server_name}
-            )
+            spec=kubernetes.client.V1ServiceSpec(selector={"agones.dev/gameserver": game_server_name})
         )
-        self.api.patch_namespaced_service(
-            self.create_game_name(game_id), K8S_NAMESPACE, patched_service
-        )
+        self.api.patch_namespaced_service(self.create_game_name(game_id), K8S_NAMESPACE, patched_service)
 
-    def create_game_server_allocation(
-        self, game_id: int, game_data: dict, retry_count: int = 0
-    ) -> str:
+    def create_game_server_allocation(self, game_id: int, game_data: dict, retry_count: int = 0) -> str:
         result = self.custom_objects_api.create_namespaced_custom_object(
             group="allocation.agones.dev",
             version="v1",
@@ -66,13 +60,9 @@ class GameManager:
             },
         )
         if result["status"]["state"] == "UnAllocated" and retry_count < 60:
-            LOGGER.warning(
-                f"Failed to create game, retrying... retry_count={retry_count}"
-            )
+            LOGGER.warning(f"Failed to create game, retrying... retry_count={retry_count}")
             time.sleep(5)
-            return self.create_game_server_allocation(
-                game_id, game_data, retry_count=retry_count + 1
-            )
+            return self.create_game_server_allocation(game_id, game_data, retry_count=retry_count + 1)
         else:
             return result["status"]["gameServerName"]
 
@@ -84,24 +74,26 @@ class GameManager:
         :returns: A dictionary representing the game data.
         """
         game_data = {}
-        result = self.custom_objects_api.list_namespaced_custom_object(
-            group=AGONES_GROUP,
-            version="v1",
-            namespace=K8S_NAMESPACE,
-            plural="gameservers",
-            label_selector=f"game-id={game_id}",
-        )
+        print("top")
+        print(self.custom_objects_api)
+        try:
+            result = self.custom_objects_api.list_namespaced_custom_object(
+                group=AGONES_GROUP,
+                version="v1",
+                namespace=K8S_NAMESPACE,
+                plural="gameservers",
+                label_selector=f"game-id={game_id}",
+            )
+        except Exception as e:
+            print("LOL")
+            raise e
+        print(result)
         game_servers_to_delete = result["items"]
 
         if len(game_servers_to_delete) == 0:
-            LOGGER.warning(
-                f"delete_game_server - No game server found with ID {game_id}"
-            )
+            LOGGER.warning(f"delete_game_server - No game server found with ID {game_id}")
         elif len(game_servers_to_delete) > 1:
-            LOGGER.warning(
-                f"delete_game_server - Multiple game servers found with ID {game_id}"
-            )
-
+            LOGGER.warning(f"delete_game_server - Multiple game servers found with ID {game_id}")
         for game_server in game_servers_to_delete:
             name = game_server["metadata"]["name"]
             game_data.update(game_server["metadata"]["annotations"])
@@ -114,14 +106,11 @@ class GameManager:
             )
 
         # Remove agones specific annotations from game_data
-        game_data = {
-            k: v for k, v in game_data.items() if not k.startswith(f"{AGONES_GROUP}/")
-        }
+        game_data = {k: v for k, v in game_data.items() if not k.startswith(f"{AGONES_GROUP}/")}
+        print("bottom")
         return game_data
 
-    def recreate_game_server(
-        self, game_id: int, game_data_updates: dict = None
-    ) -> None:
+    def recreate_game_server(self, game_id: int, game_data_updates: dict = None) -> None:
         """
         Recreate a game server with the specified game_id and optionally update its game data.
 
@@ -132,11 +121,10 @@ class GameManager:
         if game_data_updates is None:
             game_data_updates = {}
 
+        print("right")
         game_data = self.delete_game_server(game_id=game_id)
         game_data.update(game_data_updates)
-        game_server_name = self.create_game_server_allocation(
-            game_id=game_id, game_data=game_data
-        )
+        game_server_name = self.create_game_server_allocation(game_id=game_id, game_data=game_data)
         self.patch_game_service(game_id=game_id, game_server_name=game_server_name)
 
     def create_game_secret(self, game_id, token):
@@ -159,9 +147,7 @@ class GameManager:
                 LOGGER.exception("Exception when calling create_namespaced_secret")
         else:
             try:
-                self.api.patch_namespaced_secret(
-                    name=name, namespace=K8S_NAMESPACE, body=body
-                )
+                self.api.patch_namespaced_secret(name=name, namespace=K8S_NAMESPACE, body=body)
             except ApiException:
                 LOGGER.exception("Exception when calling patch_namespaced_secret")
 
@@ -175,6 +161,4 @@ class GameManager:
 
         for resource in resources.items:
             LOGGER.info("Removing game secret: {}".format(resource.metadata.name))
-            self.api.delete_namespaced_secret(
-                name=resource.metadata.name, namespace=K8S_NAMESPACE
-            )
+            self.api.delete_namespaced_secret(name=resource.metadata.name, namespace=K8S_NAMESPACE)
