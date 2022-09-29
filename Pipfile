@@ -18,6 +18,7 @@ kubernetes = "*"
 eventlet = "*"
 docker = "<6"
 wheel = "*"
+oauthlib = "==3.2.1"
 
 [requires]
 python_version = "3.7"
