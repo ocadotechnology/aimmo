@@ -8,6 +8,7 @@ kubernetes = "*"
 aimmo-game-creator = { editable = true, path = "." }
 docker = "*"
 google-cloud-logging = "*"
+oauthlib = "==3.2.1"
 
 [requires]
 python_version = "3.7"

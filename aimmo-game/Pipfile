@@ -11,6 +11,7 @@ black = "*"
 
 [packages]
 aimmo-game = {editable = true,path = "."}
+oauthlib = "==3.2.1"
 
 [requires]
 python_version = "3.7"
