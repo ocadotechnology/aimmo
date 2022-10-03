@@ -147,7 +147,7 @@ class GameViewSet(
     def delete_games(self, request):
         game_ids = request.data.getlist("game_ids")
         teacher = request.user.userprofile.teacher
-        current_school_teachers = Teacher.objects.filter(school=School.objects.get(id=teacher.school_id))
+        current_school_teachers = Teacher.objects.filter(school=teacher.school)
         games = (
             Game.objects.filter(
                 pk__in=game_ids,

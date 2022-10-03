@@ -109,19 +109,12 @@ class Game(models.Model):
             bool: True if user can play the game, False otherwise
         """
 
-        current_session_teacher = user.userprofile.teacher
-        current_session_teacher_school = current_session_teacher.school
-
-        current_teacher = self.game_class.teacher
-        current_teacher_school = current_teacher.school
-        is_current_teacher_inside_school = current_teacher_school == current_session_teacher_school
-
         try:
             return (
                 self.game_class.students.filter(new_user=user).exists()
-                or current_session_teacher == current_teacher
-                or is_current_teacher_inside_school
-                and current_session_teacher.is_admin
+                or user == self.game_class.teacher.new_user
+                or user == self.game_class.teacher.new_user
+                and self.game_class.teacher.is_admin
             )
         except AttributeError:
             return False
