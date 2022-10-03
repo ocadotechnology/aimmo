@@ -110,10 +110,10 @@ class Game(models.Model):
         """
 
         current_session_teacher = user.userprofile.teacher
-        current_session_teacher_school = School.objects.get(id=current_session_teacher.school_id)
+        current_session_teacher_school = current_session_teacher.school
 
         current_teacher = self.game_class.teacher
-        current_teacher_school = School.objects.get(id=current_teacher.school_id)
+        current_teacher_school = current_teacher.school
         is_current_teacher_inside_school = current_teacher_school == current_session_teacher_school
 
         try:
