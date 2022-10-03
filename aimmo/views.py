@@ -148,11 +148,16 @@ class GameViewSet(
         game_ids = request.data.getlist("game_ids")
         teacher = request.user.userprofile.teacher
         current_school_teachers = Teacher.objects.filter(school=School.objects.get(id=teacher.school_id))
-        games = Game.objects.filter(
-            pk__in=game_ids,
-            game_class__teacher__in=current_school_teachers,
-            is_archived=False,
+        games = (
+            Game.objects.filter(
+                pk__in=game_ids,
+                game_class__teacher__in=current_school_teachers,
+                is_archived=False,
+            )
+            if teacher.is_admin
+            else Game.objects.filter(game_class__teacher=teacher)
         )
+
         for game in games:
             game.is_archived = True  # mark as deleted/archived
             game.save()
