@@ -95,7 +95,7 @@ class Game(models.Model):
         return WORKSHEETS.get(self.worksheet_id)
 
     def __str__(self):
-        return str(self.id)
+        return f"{self.id}"
 
     def can_user_play(self, user: User) -> bool:
         """Checks whether the given user has permission to play the game.
@@ -111,8 +111,8 @@ class Game(models.Model):
 
         try:
             return (
-                self.game_class.students.filter(new_user=user).exists()
-                or user == self.game_class.teacher.new_user
+                # self.game_class.students.filter(new_user=user).exists()
+                user == self.game_class.teacher.new_user
                 or user == self.game_class.teacher.new_user
                 and self.game_class.teacher.is_admin
             )
@@ -142,6 +142,9 @@ class Avatar(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     code = models.TextField()
     auth_token = models.CharField(max_length=24, default=generate_auth_token)
+
+    def __str__(self):
+        return f"{self.owner} {self.game} {self.code} {self.auth_token}"
 
     class Meta:
         unique_together = ("owner", "game")

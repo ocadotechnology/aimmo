@@ -11,7 +11,6 @@ def populate_created_by(apps, schema_editor):
         game_owners_games = Game.objects.filter(owner=game_owner)
         if not game_owners_games[0].created_by:
             game_owners_games.update(created_by=game_owner)
-            game_owners_games.save()
 
 
 class Migration(migrations.Migration):

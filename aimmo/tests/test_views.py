@@ -1,3 +1,5 @@
+from distutils.sysconfig import EXEC_PREFIX
+import re
 import json
 from common.models import Class, Teacher, UserProfile
 from common.tests.utils.classes import create_class_directly
@@ -205,6 +207,7 @@ class TestViews(TestCase):
     def test_get_avatar_id_for_two_users(self):
         # Set up the first avatar
         first_user = self.user
+
         models.Avatar(owner=first_user, code=self.CODE, game=self.game).save()
         client_one = self.login()
 
@@ -213,13 +216,20 @@ class TestViews(TestCase):
         models.Avatar(owner=second_user.new_user, code=self.CODE, game=self.game).save()
         client_two = Client()
         client_two.login(username="test2", password="password2")
+        [print(avatar) for avatar in models.Avatar.objects.all()]
 
         first_avatar_id, first_response = get_avatar_id(first_user, 1)
         second_avatar_id, second_response = get_avatar_id(second_user.new_user, 1)
 
         # Status code starts with 2, success response can be different than 200.
-        assert str(first_response.status_code)[0] == "2"
-        assert str(second_response.status_code)[0] == "2"
+        print(first_response.status_code, second_response.status_code)
+        try:
+            assert re.search("2\d\d", first_response.status_code).string
+            assert re.search("2\d\d", first_response.status_code).string
+        except TypeError:
+            raise Exception(
+                f"All status codes should be successful: first_response: {first_response.status_code}, second_response: {second_response.status_code}"
+            )
 
         assert first_avatar_id == 1
         assert second_avatar_id == 2
@@ -336,7 +346,8 @@ class TestViews(TestCase):
         """
         client = self.login()
 
-        klass, _, _ = create_class_directly("test@example.com", "my class")
+        class_name = "my class"
+        klass, class_name, _ = create_class_directly("test@example.com", class_name)
 
         form = AddGameForm(
             Class.objects.all(),
@@ -347,12 +358,17 @@ class TestViews(TestCase):
         assert game2.game_class == klass
 
         data = {"game_ids": [game2.id]}
+        client = self.login()
         response = client.post(reverse("game-delete-games"), data)
+        user = self.user
+        [print(method) for method in dir(user.new_teacher)]
 
+        games = models.Game.objects.all()
+        [print(game) for game in games]
         assert response.status_code == 204
         assert models.Game.objects.all().count() == 2
-        assert models.Game.objects.filter(is_archived=True).count() == 1
-        assert models.Game.objects.filter(is_archived=False).count() == 1
+        assert models.Game.objects.filter(owner=user, is_archived=True).count() == 1
+        assert models.Game.objects.filter(owner=user, is_archived=False).count() == 1
 
         # then test adding game again for the same class
         form = AddGameForm(
@@ -497,12 +513,22 @@ class TestViews(TestCase):
 
         data = {"game_ids": [self.game.id, game2.id, new_game.id]}
 
+        assert (
+            Game.objects.filter(owner=new_user, is_archived=False).count()
+            == Game.objects.filter(owner=new_user, is_archived=True).count()
+            == 0
+        )
         # Try to login as a student and delete games - they shouldn't have access
+
         _, student_password, student = create_school_student_directly(self.klass.access_code)
         client = self.login(username=student.new_user.username, password=student_password)
         response = client.post(reverse("game-delete-games"), data)
         assert response.status_code == 403
-        assert Game.objects.filter(is_archived=False).count() == Game.objects.filter(is_archived=True).count() == 0
+        assert (
+            Game.objects.filter(owner=new_user, is_archived=False).count()
+            == Game.objects.filter(owner=new_user, is_archived=True).count()
+            == 0
+        )
 
         # Login as initial teacher and delete games - only his games should be deleted
         client = self.login()
