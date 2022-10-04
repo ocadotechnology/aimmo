@@ -345,42 +345,41 @@ class TestViews(TestCase):
         Check for 204 when deleting a game
         """
         client = self.login()
+        new_user: User = User.objects.create_user("test2", "test2@example.com", "password")
+        new_user.is_staff = True
+        new_user.save()
+        new_user_profile: UserProfile = UserProfile(user=new_user)
+        new_user_profile.save()
+        new_teacher: Teacher = Teacher.objects.create(user=new_user_profile, new_user=new_user)
+        new_teacher.save()
+        new_user.save()
 
-        class_name = "my class"
-        klass, class_name, _ = create_class_directly("test@example.com", class_name)
+        new_klass, _, _ = create_class_directly(new_user.email)
 
-        form = AddGameForm(
-            Class.objects.all(),
-            data={"game_class": klass.id},
-        )
+        form = AddGameForm(Class.objects.all(), data={"game_class": new_klass.id, "owner": new_user})
+        print(form)
+        print(form.is_valid())
 
         game2 = form.save()
-        assert game2.game_class == klass
+        assert game2.game_class == new_klass
 
         data = {"game_ids": [game2.id]}
         client = self.login()
         response = client.post(reverse("game-delete-games"), data)
-        user = self.user
-        [print(method) for method in dir(user.new_teacher)]
 
-        games = models.Game.objects.all()
-        [print(game) for game in games]
         assert response.status_code == 204
         assert models.Game.objects.all().count() == 2
-        assert models.Game.objects.filter(owner=user, is_archived=True).count() == 1
-        assert models.Game.objects.filter(owner=user, is_archived=False).count() == 1
+        assert models.Game.objects.filter(is_archived=True).count() == 1
+        assert models.Game.objects.filter(is_archived=False).count() == 1
 
         # then test adding game again for the same class
-        form = AddGameForm(
-            Class.objects.all(),
-            data={"game_class": klass.id},
-        )
+        form = AddGameForm(Class.objects.all(), data={"game_class": new_klass.id, "owner": new_user})
 
         game3 = form.save()
-        assert game3.game_class == klass
+        assert game3.game_class == new_klass
 
         # test only one active game at a time
-        assert models.Game.objects.filter(game_class=klass, is_archived=False).count() == 1
+        assert models.Game.objects.filter(game_class=new_klass, is_archived=False).count() == 1
 
     def test_delete_non_existent_game(self):
         c = self.login()
