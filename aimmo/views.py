@@ -1,5 +1,4 @@
 import logging
-from multiprocessing import current_process
 import re
 from typing import Tuple
 
@@ -179,7 +178,6 @@ def connection_parameters(request, game_id):
     env_connection_settings = game_renderer.get_environment_connection_settings(game_id)
 
     avatar_id, response = get_avatar_id(request.user, game_id)
-
     if avatar_id:
         env_connection_settings.update({"avatar_id": avatar_id})
         return JsonResponse(env_connection_settings)

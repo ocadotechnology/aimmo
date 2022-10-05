@@ -76,18 +76,13 @@ class GameManager:
         game_data = {}
         print("top")
         print(self.custom_objects_api)
-        try:
-            result = self.custom_objects_api.list_namespaced_custom_object(
-                group=AGONES_GROUP,
-                version="v1",
-                namespace=K8S_NAMESPACE,
-                plural="gameservers",
-                label_selector=f"game-id={game_id}",
-            )
-        except Exception as e:
-            print("LOL")
-            raise e
-        print(result)
+        result = self.custom_objects_api.list_namespaced_custom_object(
+            group=AGONES_GROUP,
+            version="v1",
+            namespace=K8S_NAMESPACE,
+            plural="gameservers",
+            label_selector=f"game-id={game_id}",
+        )
         game_servers_to_delete = result["items"]
 
         if len(game_servers_to_delete) == 0:
@@ -107,7 +102,6 @@ class GameManager:
 
         # Remove agones specific annotations from game_data
         game_data = {k: v for k, v in game_data.items() if not k.startswith(f"{AGONES_GROUP}/")}
-        print("bottom")
         return game_data
 
     def recreate_game_server(self, game_id: int, game_data_updates: dict = None) -> None:
