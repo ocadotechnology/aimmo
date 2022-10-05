@@ -8,6 +8,7 @@ from django.utils import timezone
 
 from aimmo import app_settings
 from aimmo.worksheets import WORKSHEETS
+from common.models import Teacher
 
 DEFAULT_WORKSHEET_ID = 1
 
@@ -57,11 +58,16 @@ class Game(models.Model):
         on_delete=models.SET_NULL,
     )
     static_data = models.TextField(blank=True, null=True)
+    created_by = models.ForeignKey(
+        Teacher,
+        blank=True,
+        null=True,
+        related_name="game_created_by_teacher",
+        on_delete=models.SET_NULL,
+    )
 
     # Game config
-    generator = models.CharField(
-        max_length=20, choices=GAME_GENERATORS, default=GAME_GENERATORS[0][0]
-    )
+    generator = models.CharField(max_length=20, choices=GAME_GENERATORS, default=GAME_GENERATORS[0][0])
     target_num_cells_per_avatar = models.FloatField(default=16)
     target_num_score_locations_per_avatar = models.FloatField(default=0.5)
     score_despawn_chance = models.FloatField(default=0.05)
@@ -102,6 +108,8 @@ class Game(models.Model):
             return (
                 self.game_class.students.filter(new_user=user).exists()
                 or user == self.game_class.teacher.new_user
+                or user.userprofile.teacher.school == self.game_class.teacher.school
+                and user.userprofile.teacher.is_admin
             )
         except AttributeError:
             return False

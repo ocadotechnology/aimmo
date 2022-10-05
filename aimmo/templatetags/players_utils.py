@@ -11,11 +11,12 @@ def get_user_playable_games(context, base_url):
     user = context.request.user
     if logged_in_as_teacher(user):
         playable_games = Game.objects.filter(
-            game_class__teacher=user.userprofile.teacher, is_archived=False
+            game_class__teacher__school=user.userprofile.teacher.school, is_archived=False
         )
     else:
         playable_games = Game.objects.none()
     return {
+        "user": user,
         "base_url": base_url,
         "open_play_games": playable_games if user.is_authenticated else None,
     }
