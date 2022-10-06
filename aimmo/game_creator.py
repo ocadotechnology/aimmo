@@ -27,7 +27,7 @@ def create_game(main_user, form):
     game.auth_token = generate_game_token()
     game.generator = "Main"
     game.owner = game.game_class.teacher.new_user
-    game.main_user = main_user
+    game.main_user = game.game_class.teacher.new_user
     game.created_by = main_user.userprofile.teacher
     game.save()
     create_avatar_for_user(main_user, game.id)

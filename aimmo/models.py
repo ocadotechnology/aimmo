@@ -104,10 +104,13 @@ class Game(models.Model):
         Returns:
             bool: True if user can play the game, False otherwise
         """
+        is_student_in_class = self.game_class.students.filter(new_user=user).exists()
+        is_teacher_class_owner = user == self.game_class.teacher.new_user
         try:
             return (
-                self.game_class.students.filter(new_user=user).exists()
-                or user == self.game_class.teacher.new_user
+                is_student_in_class
+                or is_teacher_class_owner
+                # this last statement is a pain so leaving it like this :(
                 or user.userprofile.teacher.school == self.game_class.teacher.school
                 and user.userprofile.teacher.is_admin
             )
