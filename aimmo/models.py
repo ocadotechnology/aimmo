@@ -106,13 +106,13 @@ class Game(models.Model):
         """
         is_student_in_class = self.game_class.students.filter(new_user=user).exists()
         is_teacher_class_owner = user == self.game_class.teacher.new_user
+        is_teacher_admin = (
+            hasattr(user.userprofile, "teacher")
+            and user.userprofile.teacher.school == self.game_class.teacher.school
+            and user.userprofile.teacher.is_admin
+        )
         try:
-            return (
-                is_student_in_class
-                or is_teacher_class_owner
-                or user.userprofile.teacher.school == self.game_class.teacher.school
-                and user.userprofile.teacher.is_admin
-            )
+            return is_student_in_class or is_teacher_class_owner or is_teacher_admin
         except AttributeError:
             return False
 
