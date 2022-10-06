@@ -11,6 +11,9 @@ black = "*"
 
 [packages]
 aimmo-game = {editable = true,path = "."}
+oauthlib = "==3.2.0"
+kubernetes = "==21.7.0"
+docker = "<6"
 
 [requires]
 python_version = "3.7"
