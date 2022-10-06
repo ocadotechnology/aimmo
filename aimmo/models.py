@@ -110,7 +110,6 @@ class Game(models.Model):
             return (
                 is_student_in_class
                 or is_teacher_class_owner
-                # this last statement is a pain so leaving it like this :(
                 or user.userprofile.teacher.school == self.game_class.teacher.school
                 and user.userprofile.teacher.is_admin
             )

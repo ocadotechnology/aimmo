@@ -10,8 +10,8 @@ def get_user_playable_games(context, base_url):
     # Only called by teacher to create games table
     user = context.request.user
     if logged_in_as_teacher(user):
-        playable_games = Game.objects.filter(
-            game_class__teacher__school=user.userprofile.teacher.school, is_archived=False
+        playable_games = Game.objects.filter(owner=user, is_archived=False).union(
+            Game.objects.filter(game_class__teacher__school=user.userprofile.teacher.school, is_archived=False),
         )
     else:
         playable_games = Game.objects.none()
