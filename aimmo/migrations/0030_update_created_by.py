@@ -4,10 +4,9 @@ import django.db.models.deletion
 
 def populate_created_by(apps, schema_editor):
     Game = apps.get_model("aimmo", "Game")
-    Teacher = apps.get_model("common", "Teacher")
     db_alias = schema_editor.connection.alias
-    games = Game.objects.using(db_alias).filter(created_by=None)
-    [Game.objects.using(db_alias).filter(id=game.id).update(created_by=game.owner) for game in games]
+    games = Game.objects.using(db_alias).filter(created_by=None).exclude(owner=None)
+    [Game.objects.using(db_alias).filter(id=game.id).update(created_by=game.owner.new_teacher) for game in games]
 
 
 class Migration(migrations.Migration):
