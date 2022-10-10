@@ -8,7 +8,7 @@ def populate_created_by(apps, schema_editor):
     games = Game.objects.using(db_alias).all()
     for game in games:
         if not game.created_by:
-            game.created_by = game.owner
+            game.created_by = game.owner.new_teacher
 
 
 class Migration(migrations.Migration):
