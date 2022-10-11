@@ -1,4 +1,3 @@
-
 import secrets
 
 from aimmo.avatar_creator import create_avatar_for_user
@@ -10,9 +9,7 @@ TOKEN_MAX_LENGTH = 48
 
 
 def generate_game_token():
-    return secrets.token_urlsafe(nbytes=NUM_BYTES_FOR_TOKEN_GENERATOR)[
-        :TOKEN_MAX_LENGTH
-    ]
+    return secrets.token_urlsafe(nbytes=NUM_BYTES_FOR_TOKEN_GENERATOR)[:TOKEN_MAX_LENGTH]
 
 
 def create_game(main_user, form):
@@ -31,8 +28,9 @@ def create_game(main_user, form):
     game = form.save(commit=False)
     game.auth_token = generate_game_token()
     game.generator = "Main"
-    game.owner = main_user
-    game.main_user = main_user
+    game.owner = game.game_class.teacher.new_user
+    game.main_user = game.game_class.teacher.new_user
+    game.created_by = main_user.userprofile.teacher
     game.save()
     create_avatar_for_user(main_user, game.id)
     game_manager = GameManager()

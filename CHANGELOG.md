@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.1 (2022-10-10)
+### Fix
+* Migrations created_by ([#1712](https://github.com/ocadotechnology/aimmo/issues/1712)) ([`d45ba57`](https://github.com/ocadotechnology/aimmo/commit/d45ba57a1d99712701f4c8a8ca3dee07cfa47e35))
+
+## v2.5.0 (2022-10-10)
+### Feature
+* No feature ([#1711](https://github.com/ocadotechnology/aimmo/issues/1711)) ([`83b2642`](https://github.com/ocadotechnology/aimmo/commit/83b2642f71f20e2a8da3edfb4e2a3cacbed7f175))
+
 ## v2.4.6 (2022-09-05)
 ### Fix
 * Clean autoconfig ([#1698](https://github.com/ocadotechnology/aimmo/issues/1698)) ([`dac77fe`](https://github.com/ocadotechnology/aimmo/commit/dac77feaf9d0e2fdcfe570d3f20b53383bc0252f))

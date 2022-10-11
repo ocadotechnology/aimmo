@@ -23,7 +23,7 @@ jobs:
           node-version: 14.x
       - name: Install dependencies
         run: |
-          pip install pipenv
+          pip install pipenv==2022.10.4
           pipenv install --dev --system
           cd game_frontend
           yarn --frozen-lockfile

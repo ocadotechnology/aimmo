@@ -8,6 +8,7 @@ from django.utils import timezone
 
 from aimmo import app_settings
 from aimmo.worksheets import WORKSHEETS
+from common.models import Teacher
 
 DEFAULT_WORKSHEET_ID = 1
 
@@ -57,11 +58,16 @@ class Game(models.Model):
         on_delete=models.SET_NULL,
     )
     static_data = models.TextField(blank=True, null=True)
+    created_by = models.ForeignKey(
+        Teacher,
+        blank=True,
+        null=True,
+        related_name="game_created_by_teacher",
+        on_delete=models.SET_NULL,
+    )
 
     # Game config
-    generator = models.CharField(
-        max_length=20, choices=GAME_GENERATORS, default=GAME_GENERATORS[0][0]
-    )
+    generator = models.CharField(max_length=20, choices=GAME_GENERATORS, default=GAME_GENERATORS[0][0])
     target_num_cells_per_avatar = models.FloatField(default=16)
     target_num_score_locations_per_avatar = models.FloatField(default=0.5)
     score_despawn_chance = models.FloatField(default=0.05)
@@ -98,11 +104,15 @@ class Game(models.Model):
         Returns:
             bool: True if user can play the game, False otherwise
         """
+        is_student_in_class = self.game_class.students.filter(new_user=user).exists()
+        is_teacher_class_owner = user == self.game_class.teacher.new_user
+        is_teacher_admin = (
+            hasattr(user.userprofile, "teacher")
+            and user.userprofile.teacher.school == self.game_class.teacher.school
+            and user.userprofile.teacher.is_admin
+        )
         try:
-            return (
-                self.game_class.students.filter(new_user=user).exists()
-                or user == self.game_class.teacher.new_user
-            )
+            return is_student_in_class or is_teacher_class_owner or is_teacher_admin
         except AttributeError:
             return False
 

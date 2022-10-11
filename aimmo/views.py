@@ -147,11 +147,14 @@ class GameViewSet(
         game_ids = request.data.getlist("game_ids")
 
         with transaction.atomic():
-            games = Game.objects.select_for_update().filter(
-                pk__in=game_ids,
-                game_class__teacher__new_user=request.user,
-                is_archived=False,
-            )
+            games = (
+                Game.objects.filter(
+                    pk__in=game_ids,
+                    game_class__teacher__school=request.user.userprofile.teacher.school,
+                    is_archived=False,
+                )
+                if request.user.userprofile.teacher.is_admin
+                else Game.objects.filter(pk__in=game_ids, game_class__teacher__new_user=request.user, is_archived=False)
             try:
                 game_manager = GameManager()
                 for game in games:

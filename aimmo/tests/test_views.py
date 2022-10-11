@@ -41,9 +41,7 @@ class TestViews(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.user: User = User.objects.create_user(
-            "test", "test@example.com", "password"
-        )
+        cls.user: User = User.objects.create_user("test", "test@example.com", "password")
         cls.user.is_staff = True
         cls.user.save()
         cls.user_profile: UserProfile = UserProfile(user=cls.user)
@@ -273,9 +271,7 @@ class TestViews(TestCase):
         self.game.can_play.set([user])
         self.game.save()
 
-        first_response = client_one.get(
-            reverse("kurono/connection_parameters", kwargs={"game_id": 1})
-        )
+        first_response = client_one.get(reverse("kurono/connection_parameters", kwargs={"game_id": 1}))
 
         assert first_response.status_code == 403
 
@@ -291,9 +287,7 @@ class TestViews(TestCase):
         connection_parameters_response = client.get(
             reverse("kurono/connection_parameters", kwargs={"game_id": 1})
         ).json()
-        games_api_response = client.get(
-            reverse("kurono/game_user_details", kwargs={"id": 1})
-        )
+        games_api_response = client.get(reverse("kurono/game_user_details", kwargs={"id": 1}))
 
         current_avatar_id = connection_parameters_response["avatar_id"]
         games_api_users = json.loads(games_api_response.content)["users"]
@@ -333,9 +327,7 @@ class TestViews(TestCase):
         )
 
         # Token starts as empty, as long as it is empty, we can make more GET requests
-        response = client.get(
-            reverse("kurono/game_token", kwargs={"id": 1}), HTTP_GAME_TOKEN=new_token
-        )
+        response = client.get(reverse("kurono/game_token", kwargs={"id": 1}), HTTP_GAME_TOKEN=new_token)
         assert response.status_code == status.HTTP_200_OK
 
     def test_patch_token_with_no_token(self):
@@ -415,9 +407,7 @@ class TestViews(TestCase):
         assert game3.game_class == klass
 
         # test only one active game at a time
-        assert (
-            models.Game.objects.filter(game_class=klass, is_archived=False).count() == 1
-        )
+        assert models.Game.objects.filter(game_class=klass, is_archived=False).count() == 1
 
     def test_delete_non_existent_game(self):
         c = self.login()
@@ -441,10 +431,7 @@ class TestViews(TestCase):
 
         serializer = GameSerializer(self.game)
 
-        assert (
-            json.dumps(self.game.settings_as_dict(), sort_keys=True)
-            == serializer.data["settings"]
-        )
+        assert json.dumps(self.game.settings_as_dict(), sort_keys=True) == serializer.data["settings"]
 
     def test_list_all_games(self):
         self.game.main_user = self.user
@@ -537,16 +524,12 @@ class TestViews(TestCase):
     @patch("aimmo.views.GameManager")
     def test_delete_games(self, mock_game_manager_cls):
         # Create a new teacher with a game to make sure it's not affected
-        new_user: User = User.objects.create_user(
-            "test2", "test2@example.com", "password"
-        )
+        new_user: User = User.objects.create_user("test2", "test2@example.com", "password")
         new_user.is_staff = True
         new_user.save()
         new_user_profile: UserProfile = UserProfile(user=new_user)
         new_user_profile.save()
-        new_teacher: Teacher = Teacher.objects.create(
-            user=new_user_profile, new_user=new_user
-        )
+        new_teacher: Teacher = Teacher.objects.create(user=new_user_profile, new_user=new_user)
         new_teacher.save()
         new_klass, _, _ = create_class_directly(new_user.email)
         new_user.save()
@@ -560,12 +543,8 @@ class TestViews(TestCase):
         data = {"game_ids": [self.game.id, game2.id, new_game.id]}
 
         # Try to login as a student and delete games - they shouldn't have access
-        _, student_password, student = create_school_student_directly(
-            self.klass.access_code
-        )
-        client = self.login(
-            username=student.new_user.username, password=student_password
-        )
+        _, student_password, student = create_school_student_directly(self.klass.access_code)
+        client = self.login(username=student.new_user.username, password=student_password)
         response = client.post(reverse("game-delete-games"), data)
         assert response.status_code == 403
         assert Game.objects.filter(is_archived=False).count() == 3
