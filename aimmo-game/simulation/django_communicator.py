@@ -1,6 +1,9 @@
 import aiohttp
 import os
+import logging
 from asyncio import TimeoutError
+
+LOGGER = logging.getLogger(__name__)
 
 
 class DjangoCommunicator(object):
@@ -25,6 +28,9 @@ class DjangoCommunicator(object):
             raise GameMetadataFetchFailedError
 
     async def patch_token(self, data):
+        LOGGER.info(f"{self.django_api_url}token/")
+        LOGGER.info("Trying to patch")
+
         response = await self.session.patch(
             f"{self.django_api_url}token/",
             headers={"Game-token": os.environ["TOKEN"]},
