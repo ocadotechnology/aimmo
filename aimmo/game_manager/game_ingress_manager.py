@@ -1,8 +1,8 @@
 from kubernetes.client import (
     NetworkingV1Api,
-    NetworkingV1beta1IngressBackend,
-    NetworkingV1beta1HTTPIngressPath,
-    NetworkingV1beta1Ingress,
+    V1IngressBackend,
+    V1HTTPIngressPath,
+    V1Ingress
 )
 
 import logging
@@ -25,7 +25,7 @@ class GameIngressManager:
         path = self._get_path_for_game_name(game_name)
 
         try:
-            ingress: NetworkingV1beta1Ingress = (
+            ingress: V1Ingress = (
                 self.networking_api.list_namespaced_ingress("default").items[0]
             )
         except IndexError:
@@ -50,6 +50,6 @@ class GameIngressManager:
 
     def _get_path_for_game_name(
         self, game_name: str
-    ) -> NetworkingV1beta1HTTPIngressPath:
-        backend = NetworkingV1beta1IngressBackend(game_name, 80)
-        return NetworkingV1beta1HTTPIngressPath(backend, f"/{game_name}(/|$)(.*)")
+    ) -> V1HTTPIngressPath:
+        backend = V1IngressBackend(game_name, 80)
+        return V1HTTPIngressPath(backend, f"/{game_name}(/|$)(.*)")
