@@ -52,4 +52,4 @@ class GameIngressManager:
         self, game_name: str
     ) -> V1HTTPIngressPath:
         backend = V1IngressBackend(game_name, 80)
-        return V1HTTPIngressPath(backend, f"/{game_name}(/|$)(.*)")
+        return V1HTTPIngressPath(backend, f"/{game_name}(/|$)(.*)", path_type="exact")

@@ -25,7 +25,7 @@ def game_ingress_manager():
 def test_add_game_path_to_ingress(game_ingress_manager: GameIngressManager):
     game_name = "game-123-test"
     backend = V1IngressBackend(game_name, 80)
-    path = V1HTTPIngressPath(backend, f"/{game_name}(/|$)(.*)")
+    path = V1HTTPIngressPath(backend, f"/{game_name}(/|$)(.*)", path_type="exact")
     expected_patch = [
         {"op": "add", "path": "/spec/rules/0/http/paths/-", "value": path}
     ]
@@ -46,7 +46,7 @@ def test_remove_game_path_from_ingress(game_ingress_manager: GameIngressManager)
             items=[
                 V1Ingress(
                     spec=V1IngressSpec(
-                        backend=path.backend,
+                        default_backend=path.backend,
                         rules=[
                             V1IngressRule(
                                 http=V1HTTPIngressRuleValue(paths=[path])
