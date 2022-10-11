@@ -155,6 +155,7 @@ class GameViewSet(
                 )
                 if request.user.userprofile.teacher.is_admin
                 else Game.objects.filter(pk__in=game_ids, game_class__teacher__new_user=request.user, is_archived=False)
+            )
             try:
                 game_manager = GameManager()
                 for game in games:
