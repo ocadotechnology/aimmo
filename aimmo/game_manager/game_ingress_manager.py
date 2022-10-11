@@ -1,5 +1,5 @@
 from kubernetes.client import (
-    NetworkingV1beta1Api,
+    NetworkingV1Api,
     NetworkingV1beta1IngressBackend,
     NetworkingV1beta1HTTPIngressPath,
     NetworkingV1beta1Ingress,
@@ -12,7 +12,7 @@ LOGGER = logging.getLogger(__file__)
 
 class GameIngressManager:
     def __init__(self) -> None:
-        self.networking_api = NetworkingV1beta1Api()
+        self.networking_api = NetworkingV1Api()
 
     def add_game_path_to_ingress(self, game_name: str):
         path = self._get_path_for_game_name(game_name)
