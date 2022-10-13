@@ -172,7 +172,7 @@ def linux_setup(os_type, arch_type):
         arch_type (ArchType): host architecture type
     """
     tasks = [
-        update_apt_packages,
+        # update_apt_packages,
         install_nodejs,
         check_for_cmdtest,
         configure_yarn_repo,
