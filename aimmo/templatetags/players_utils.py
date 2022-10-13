@@ -1,7 +1,7 @@
 from aimmo.models import Game
 from django import template
 
-from common.permissions import logged_in_as_student, logged_in_as_teacher
+from common.permissions import logged_in_as_teacher
 
 register = template.Library()
 
@@ -9,16 +9,15 @@ register = template.Library()
 def get_user_playable_games(context, base_url):
     # Only called by teacher to create games table
     user = context.request.user
-    # if logged_in_as_teacher(user):
-    if user.userprofile.teacher.is_admin:
-        playable_games = list(
-            Game.objects.filter(game_class__teacher__school=user.userprofile.teacher.school, is_archived=False).exclude(
-                game_class__teacher=user.userprofile.teacher
+    teacher = user.new_teacher
+    if logged_in_as_teacher(user):
+        playable_games = Game.objects.filter(game_class__teacher=teacher, is_archived=False)
+    if teacher.is_admin:
+        playable_games += list(
+            Game.objects.filter(game_class__teacher__school=teacher.school, is_archived=False).exclude(
+                game_class__teacher=teacher
             )
         )
-        playable_games = list(Game.objects.filter(game_class__teacher=user.userprofile.teacher)) + playable_games
-    elif logged_in_as_teacher(user):
-        playable_games = Game.objects.filter(game_class__teacher=user.userprofile.teacher, is_archived=False)
     else:
         playable_games = Game.objects.none()
     return {
