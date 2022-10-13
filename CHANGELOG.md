@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.2 (2022-10-13)
+### Fix
+* Fix created_by migration field ([#1713](https://github.com/ocadotechnology/aimmo/issues/1713)) ([`3ceedb0`](https://github.com/ocadotechnology/aimmo/commit/3ceedb05e4410f849875f372be46e353ceaa8d49))
+
 ## v2.5.1 (2022-10-10)
 ### Fix
 * Migrations created_by ([#1712](https://github.com/ocadotechnology/aimmo/issues/1712)) ([`d45ba57`](https://github.com/ocadotechnology/aimmo/commit/d45ba57a1d99712701f4c8a8ca3dee07cfa47e35))
