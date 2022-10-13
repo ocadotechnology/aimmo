@@ -12,12 +12,12 @@ def get_user_playable_games(context, base_url):
     teacher = user.new_teacher
     if logged_in_as_teacher(user):
         playable_games = Game.objects.filter(game_class__teacher=teacher, is_archived=False)
-    if teacher.is_admin:
-        playable_games += list(
-            Game.objects.filter(game_class__teacher__school=teacher.school, is_archived=False).exclude(
-                game_class__teacher=teacher
+        if teacher.is_admin:
+            playable_games += list(
+                Game.objects.filter(game_class__teacher__school=teacher.school, is_archived=False).exclude(
+                    game_class__teacher=teacher
+                )
             )
-        )
     else:
         playable_games = Game.objects.none()
     return {
