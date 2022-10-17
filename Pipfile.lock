@@ -50,10 +50,10 @@
         },
         "cfl-common": {
             "hashes": [
-                "sha256:315a4ee833a45af4acd1b9ebbfe66ca01733c8dbbbb0c4fbf89efc22a6af5d7b",
-                "sha256:519493fb7b17dcf72d8343549b5050f448f246cff4bf25cf6f87271fea81d175"
+                "sha256:153dbaea264bc98899ce946191c66a7865988342712c0418b74cf8758403b010",
+                "sha256:289e3ee7c08d81f87c8eba80f65ff9eb7b70796d83c860d0df8cf86a7932dffe"
             ],
-            "version": "==6.21.0"
+            "version": "==6.22.1"
         },
         "chardet": {
             "hashes": [
@@ -474,10 +474,10 @@
         },
         "cfl-common": {
             "hashes": [
-                "sha256:315a4ee833a45af4acd1b9ebbfe66ca01733c8dbbbb0c4fbf89efc22a6af5d7b",
-                "sha256:519493fb7b17dcf72d8343549b5050f448f246cff4bf25cf6f87271fea81d175"
+                "sha256:153dbaea264bc98899ce946191c66a7865988342712c0418b74cf8758403b010",
+                "sha256:289e3ee7c08d81f87c8eba80f65ff9eb7b70796d83c860d0df8cf86a7932dffe"
             ],
-            "version": "==6.21.0"
+            "version": "==6.22.1"
         },
         "chardet": {
             "hashes": [
@@ -495,11 +495,11 @@
         },
         "codeforlife-portal": {
             "hashes": [
-                "sha256:df977edcbbdd376860f2d725d53707a385222c05c225477548554997f60b04aa",
-                "sha256:ff478cd03d48f2b44e6dc3feabf1b65fb97c931a4df7b1adf09bdd02c9007b7e"
+                "sha256:63bd64c180c3142ed64197a748d8f1cf2ec73b8eeb6c38936ad9e0bc5849430b",
+                "sha256:e6779e25113afd8263ce6e4dce438b6789c168785cdad81ff9b8727c8f423aff"
             ],
             "index": "pypi",
-            "version": "==6.21.0"
+            "version": "==6.22.1"
         },
         "coverage": {
             "hashes": [
@@ -1154,6 +1154,7 @@
                 "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc",
                 "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"
             ],
+            "markers": "python_full_version < '3.11.0a7'",
             "version": "==2.0.1"
         },
         "typed-ast": {
