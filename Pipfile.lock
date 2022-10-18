@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "6be37ed8015b62e8e3986bb81d755be00d2d590e04cd64924194488dfc4d657d"
+            "sha256": "f888c202c6a8367429ebb81d1c252546dac49940396d6f090bc0a8b1887ed6c3"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -228,6 +228,14 @@
             ],
             "version": "==2.10"
         },
+        "importlib-metadata": {
+            "hashes": [
+                "sha256:8a8a81bcf996e74fee46f0d16bd3eaa382a7eb20fd82445c3ad11f4090334116",
+                "sha256:dd0173e8f150d6815e098fd354f6414b0f079af4644ddfe90c71e2fc6174346d"
+            ],
+            "index": "pypi",
+            "version": "==4.13.0"
+        },
         "kubernetes": {
             "hashes": [
                 "sha256:9900f12ae92007533247167d14cdee949cd8c7721f88b4a7da5f5351da3834cd",
@@ -371,6 +379,7 @@
                 "sha256:1511434bb92bf8dd198c12b1cc812e800d4181cfcb867674e0f8279cc93087aa",
                 "sha256:16fa4864408f655d35ec496218b85f79b3437c829e93320c7c9215ccfd92489e"
             ],
+            "markers": "python_version < '3.8'",
             "version": "==4.4.0"
         },
         "urllib3": {
@@ -394,6 +403,13 @@
             ],
             "index": "pypi",
             "version": "==0.37.1"
+        },
+        "zipp": {
+            "hashes": [
+                "sha256:3a7af91c3db40ec72dd9d154ae18e008c69efe8ca88dde4f9a731bb82fe2f9eb",
+                "sha256:972cfa31bc2fedd3fa838a51e9bc7e64b7fb725a8c00e7431554311f180e9980"
+            ],
+            "version": "==3.9.0"
         }
     },
     "develop": {
@@ -760,11 +776,11 @@
         },
         "importlib-metadata": {
             "hashes": [
-                "sha256:da31db32b304314d044d3c12c79bd59e307889b287ad12ff387b3500835fc2ab",
-                "sha256:ddb0e35065e8938f867ed4928d0ae5bf2a53b7773871bfe6bcc7e4fcdc7dea43"
+                "sha256:8a8a81bcf996e74fee46f0d16bd3eaa382a7eb20fd82445c3ad11f4090334116",
+                "sha256:dd0173e8f150d6815e098fd354f6414b0f079af4644ddfe90c71e2fc6174346d"
             ],
-            "markers": "python_version < '3.8'",
-            "version": "==5.0.0"
+            "index": "pypi",
+            "version": "==4.13.0"
         },
         "iniconfig": {
             "hashes": [
@@ -1175,6 +1191,7 @@
                 "sha256:1511434bb92bf8dd198c12b1cc812e800d4181cfcb867674e0f8279cc93087aa",
                 "sha256:16fa4864408f655d35ec496218b85f79b3437c829e93320c7c9215ccfd92489e"
             ],
+            "markers": "python_version < '3.8'",
             "version": "==4.4.0"
         },
         "urllib3": {
