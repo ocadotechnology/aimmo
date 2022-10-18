@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.3 (2022-10-18)
+### Fix
+* Update Kubernetes ([#1714](https://github.com/ocadotechnology/aimmo/issues/1714)) ([`9748c02`](https://github.com/ocadotechnology/aimmo/commit/9748c02002011bff3ec92b22097bab319340f261))
+
 ## v2.5.2 (2022-10-13)
 ### Fix
 * Fix created_by migration field ([#1713](https://github.com/ocadotechnology/aimmo/issues/1713)) ([`3ceedb0`](https://github.com/ocadotechnology/aimmo/commit/3ceedb05e4410f849875f372be46e353ceaa8d49))
