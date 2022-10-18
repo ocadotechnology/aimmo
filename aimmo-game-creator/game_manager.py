@@ -127,9 +127,7 @@ class GameManager(object):
             LOGGER.error("Failed to obtain game data")
             LOGGER.exception(ex)
         else:
-            games_to_add = {
-                id: running_games[id] for id in self._data.add_new_games(running_games)
-            }
+            games_to_add = {id: running_games[id] for id in self._data.add_new_games(running_games)}
 
             # Add missing games
             self._parallel_map(self.recreate_game, games_to_add.items())
@@ -158,7 +156,7 @@ class KubernetesGameManager(GameManager):
     """Manages games running on Kubernetes cluster"""
 
     def __init__(self, *args, **kwargs):
-        self.networking_api = kubernetes.client.NetworkingV1beta1Api()
+        self.networking_api = kubernetes.client.NetworkingV1Api()
         self.api: CoreV1Api = kubernetes.client.CoreV1Api()
         self.secret_creator = TokenSecretCreator()
         self.api_client: ApiClient = ApiClient()
@@ -183,27 +181,21 @@ class KubernetesGameManager(GameManager):
 
     def _add_path_to_ingress(self, game_id):
         game_name = KubernetesGameManager._create_game_name(game_id)
-        backend = kubernetes.client.NetworkingV1beta1IngressBackend(game_name, 80)
-        path = kubernetes.client.NetworkingV1beta1HTTPIngressPath(
-            backend, f"/{game_name}(/|$)(.*)"
-        )
+        backend = kubernetes.client.V1IngressBackend(game_name, 80)
+        path = kubernetes.client.V1HTTPIngressPath(backend, f"/{game_name}(/|$)(.*)")
 
         patch = [{"op": "add", "path": "/spec/rules/0/http/paths/-", "value": path}]
 
         # This exception is usually triggered locally where there is no ingress.
         try:
-            self.networking_api.patch_namespaced_ingress(
-                "aimmo-ingress", "default", patch
-            )
+            self.networking_api.patch_namespaced_ingress("aimmo-ingress", "default", patch)
         except ApiException as e:
             LOGGER.exception(e)
 
     def _remove_path_from_ingress(self, game_id):
         game_name = KubernetesGameManager._create_game_name(game_id)
-        backend = kubernetes.client.NetworkingV1beta1IngressBackend(game_name, 80)
-        path = kubernetes.client.NetworkingV1beta1HTTPIngressPath(
-            backend, f"/{game_name}(/|$)(.*)"
-        )
+        backend = kubernetes.client.V1IngressBackend(game_name, 80)
+        path = kubernetes.client.V1HTTPIngressPath(backend, f"/{game_name}(/|$)(.*)")
         try:
             ingress = self.networking_api.list_namespaced_ingress("default").items[0]
         # These exceptions are usually triggered locally where there is no ingress.
@@ -219,33 +211,21 @@ class KubernetesGameManager(GameManager):
         except ValueError:
             return
 
-        patch = [
-            {
-                "op": "remove",
-                "path": "/spec/rules/0/http/paths/{}".format(index_to_delete),
-            }
-        ]
+        patch = [{"op": "remove", "path": "/spec/rules/0/http/paths/{}".format(index_to_delete)}]
 
         self.networking_api.patch_namespaced_ingress("aimmo-ingress", "default", patch)
 
     def _create_game_service(self, game_id, game_server_name):
         service_manifest = kubernetes.client.V1ServiceSpec(
             selector={"agones.dev/gameserver": game_server_name},
-            ports=[
-                kubernetes.client.V1ServicePort(
-                    name="tcp", protocol="TCP", port=80, target_port=5000
-                )
-            ],
+            ports=[kubernetes.client.V1ServicePort(name="tcp", protocol="TCP", port=80, target_port=5000)],
         )
 
         service_metadata = kubernetes.client.V1ObjectMeta(
-            name=KubernetesGameManager._create_game_name(game_id),
-            labels={"app": "aimmo-game", "game_id": game_id},
+            name=KubernetesGameManager._create_game_name(game_id), labels={"app": "aimmo-game", "game_id": game_id}
         )
 
-        service = kubernetes.client.V1Service(
-            metadata=service_metadata, spec=service_manifest
-        )
+        service = kubernetes.client.V1Service(metadata=service_metadata, spec=service_manifest)
         self.api.create_namespaced_service(K8S_NAMESPACE, service)
 
     def _delete_game_service(self, game_id):
@@ -260,9 +240,7 @@ class KubernetesGameManager(GameManager):
             LOGGER.info("Removing service: {}".format(resource.metadata.name))
             self.api.delete_namespaced_service(resource.metadata.name, K8S_NAMESPACE)
 
-    def _create_game_server_allocation(
-        self, game_id: int, game_data: dict, retry_count: int = 0
-    ) -> str:
+    def _create_game_server_allocation(self, game_id: int, game_data: dict, retry_count: int = 0) -> str:
         result = self.custom_objects_api.create_namespaced_custom_object(
             group="allocation.agones.dev",
             version="v1",
@@ -275,23 +253,14 @@ class KubernetesGameManager(GameManager):
                 "spec": {
                     "required": {"matchLabels": {"agones.dev/fleet": "aimmo-game"}},
                     "scheduling": "Packed",
-                    "metadata": {
-                        "labels": {
-                            "game-id": game_id,
-                        },
-                        "annotations": game_data,
-                    },
+                    "metadata": {"labels": {"game-id": game_id}, "annotations": game_data},
                 },
             },
         )
         if result["status"]["state"] == "UnAllocated" and retry_count < 60:
-            LOGGER.warning(
-                f"Failed to create game, retrying... retry_count={retry_count}"
-            )
+            LOGGER.warning(f"Failed to create game, retrying... retry_count={retry_count}")
             time.sleep(5)
-            return self._create_game_server_allocation(
-                game_id, game_data, retry_count=retry_count + 1
-            )
+            return self._create_game_server_allocation(game_id, game_data, retry_count=retry_count + 1)
         else:
             return result["status"]["gameServerName"]
 
@@ -307,11 +276,7 @@ class KubernetesGameManager(GameManager):
         for game_server in game_servers_to_delete:
             name = game_server["metadata"]["name"]
             self.custom_objects_api.delete_namespaced_custom_object(
-                group="agones.dev",
-                version="v1",
-                namespace="default",
-                plural="gameservers",
-                name=name,
+                group="agones.dev", version="v1", namespace="default", plural="gameservers", name=name
             )
 
     def create_game(self, game_id, game_data):
@@ -327,10 +292,7 @@ class KubernetesGameManager(GameManager):
 
     def delete_unknown_games(self):
         gameservers = self.custom_objects_api.list_namespaced_custom_object(
-            group="agones.dev",
-            version="v1",
-            namespace="default",
-            plural="gameservers",
+            group="agones.dev", version="v1", namespace="default", plural="gameservers"
         )
         # running games are gameservers that have a game-id label
         running_game_ids = set(
