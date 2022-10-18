@@ -6,7 +6,7 @@ on:
 jobs:
   test:
     name: Run JS/Python/Cypress tests
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -62,7 +62,7 @@ jobs:
 
   test-aimmo-game:
     name: Test aimmo-game
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -84,7 +84,7 @@ jobs:
 
   test-aimmo-game-creator:
     name: Test aimmo-game-creator
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -106,7 +106,7 @@ jobs:
 
   test-aimmo-game-worker:
     name: Test aimmo-game-worker
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
