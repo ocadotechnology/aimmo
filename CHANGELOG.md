@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.4 (2022-10-20)
+### Fix
+* Update k8s api ([#1715](https://github.com/ocadotechnology/aimmo/issues/1715)) ([`3ec86ac`](https://github.com/ocadotechnology/aimmo/commit/3ec86ac4e8c585688f1494cd3970a86dd2ac45aa))
+
 ## v2.5.3 (2022-10-18)
 ### Fix
 * Update Kubernetes ([#1714](https://github.com/ocadotechnology/aimmo/issues/1714)) ([`9748c02`](https://github.com/ocadotechnology/aimmo/commit/9748c02002011bff3ec92b22097bab319340f261))
