@@ -1,7 +1,7 @@
 FROM python:3.7.12-buster as builder
 LABEL Author='codeforlife@ocado.com'
 
-RUN pip install pipenv=="2018.10.13"
+RUN pip install pipenv=="2022.10.4"
 COPY ["Pipfile", "Pipfile.lock", "setup.py", "./"]
 RUN pipenv install --system --deploy
 
