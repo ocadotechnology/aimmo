@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.5 (2022-10-24)
+### Fix
+* Use Kubernetes 23 and update Ingress API ([`ce0d346`](https://github.com/ocadotechnology/aimmo/commit/ce0d346ae47c5ce033d31d34a88a98cefc748db7))
+
 ## v2.5.4 (2022-10-20)
 ### Fix
 * Update k8s api ([#1715](https://github.com/ocadotechnology/aimmo/issues/1715)) ([`3ec86ac`](https://github.com/ocadotechnology/aimmo/commit/3ec86ac4e8c585688f1494cd3970a86dd2ac45aa))
