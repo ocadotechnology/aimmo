@@ -59,9 +59,7 @@ def setup_socketIO_server(application, async_handlers=True):
         ],
     )
 
-    socket_server.attach(
-        application, socketio_path=os.environ.get("SOCKETIO_RESOURCE", "socket.io")
-    )
+    socket_server.attach(application, socketio_path=os.environ.get("SOCKETIO_RESOURCE", "socket.io"))
 
     return socket_server
 
@@ -94,9 +92,7 @@ class GameAPI(object):
 
     def open_connections_number(self):
         try:
-            return len(
-                [x for x in self.socketio_server.manager.get_participants("/", None)]
-            )
+            return len([x for x in self.socketio_server.manager.get_participants("/", None)])
         except KeyError:
             return 0
 
@@ -136,10 +132,7 @@ class GameAPI(object):
 
     async def send_updates_to_all(self):
         try:
-            socket_ids = [
-                sid
-                for (sid, _) in self.socketio_server.manager.get_participants("/", None)
-            ]
+            socket_ids = [sid for (sid, _) in self.socketio_server.manager.get_participants("/", None)]
             LOGGER.info(f"socket_ids: f{socket_ids}")
             await self.async_map(self.send_updates, socket_ids)
         except KeyError as e:
@@ -167,9 +160,7 @@ class GameAPI(object):
     async def _send_game_state(self, sid):
         session_data = await self.socketio_server.get_session(sid)
         serialized_game_state = self.game_state.serialize()
-        serialized_game_state["playerLog"] = self.log_collector.collect_logs(
-            session_data["id"]
-        )
+        serialized_game_state["playerLog"] = self.log_collector.collect_logs(session_data["id"])
         await self.socketio_server.emit("game-state", serialized_game_state, room=sid)
 
 
@@ -271,9 +262,7 @@ def setup_logging():
         logging_client.get_default_handler()
         logging_client.setup_logging()
     except DefaultCredentialsError:
-        logging.info(
-            "No google credentials provided, not connecting google logging client"
-        )
+        logging.info("No google credentials provided, not connecting google logging client")
 
 
 if __name__ == "__main__":
@@ -287,9 +276,7 @@ if __name__ == "__main__":
     setup_logging()
     setup_healthcheck(agones_stub)
     send_ready_state(agones_stub)
-    game_metadata: GameAllocationInfo = event_loop.run_until_complete(
-        wait_for_allocation(agones_stub)
-    )
-
+    game_metadata: GameAllocationInfo = event_loop.run_until_complete(wait_for_allocation(agones_stub))
+    logging.info(f"game_metadata.django_api_url: {game_metadata.django_api_url}")
     run_game(game_metadata.port, game_metadata.game_id, game_metadata.django_api_url)
     web.run_app(get_app(), port=game_metadata.port)
