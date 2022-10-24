@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.6 (2022-10-24)
+### Fix
+* Also use ServiceBackendPort ([`71d117d`](https://github.com/ocadotechnology/aimmo/commit/71d117d094c14b5d212f73db9dfd88bbcfd83d90))
+
 ## v2.5.5 (2022-10-24)
 ### Fix
 * Use Kubernetes 23 and update Ingress API ([`ce0d346`](https://github.com/ocadotechnology/aimmo/commit/ce0d346ae47c5ce033d31d34a88a98cefc748db7))
