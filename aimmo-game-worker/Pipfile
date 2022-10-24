@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-kubernetes = "==21.7.0"
+kubernetes = "==23.6.0"
 docker = "<6"
 aimmo-game-worker = {editable = true, path = "."}
 restrictedpython = "==4.0.b7"

@@ -9,7 +9,7 @@ on:
 jobs:
   publish-pypi-package:
     name: Publish PyPi Package
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
       NODE_ENV: production
     steps:

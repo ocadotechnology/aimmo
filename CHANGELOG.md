@@ -2,6 +2,22 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.6 (2022-10-24)
+### Fix
+* Also use ServiceBackendPort ([`71d117d`](https://github.com/ocadotechnology/aimmo/commit/71d117d094c14b5d212f73db9dfd88bbcfd83d90))
+
+## v2.5.5 (2022-10-24)
+### Fix
+* Use Kubernetes 23 and update Ingress API ([`ce0d346`](https://github.com/ocadotechnology/aimmo/commit/ce0d346ae47c5ce033d31d34a88a98cefc748db7))
+
+## v2.5.4 (2022-10-20)
+### Fix
+* Update k8s api ([#1715](https://github.com/ocadotechnology/aimmo/issues/1715)) ([`3ec86ac`](https://github.com/ocadotechnology/aimmo/commit/3ec86ac4e8c585688f1494cd3970a86dd2ac45aa))
+
+## v2.5.3 (2022-10-18)
+### Fix
+* Update Kubernetes ([#1714](https://github.com/ocadotechnology/aimmo/issues/1714)) ([`9748c02`](https://github.com/ocadotechnology/aimmo/commit/9748c02002011bff3ec92b22097bab319340f261))
+
 ## v2.5.2 (2022-10-13)
 ### Fix
 * Fix created_by migration field ([#1713](https://github.com/ocadotechnology/aimmo/issues/1713)) ([`3ceedb0`](https://github.com/ocadotechnology/aimmo/commit/3ceedb05e4410f849875f372be46e353ceaa8d49))
