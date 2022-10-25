@@ -1,11 +1,13 @@
+import logging
+
 from kubernetes.client import (
     NetworkingV1Api,
     V1IngressBackend,
     V1HTTPIngressPath,
-    V1Ingress
+    V1Ingress,
+    V1IngressServiceBackend,
+    V1ServiceBackendPort,
 )
-
-import logging
 
 LOGGER = logging.getLogger(__file__)
 
@@ -25,9 +27,7 @@ class GameIngressManager:
         path = self._get_path_for_game_name(game_name)
 
         try:
-            ingress: V1Ingress = (
-                self.networking_api.list_namespaced_ingress("default").items[0]
-            )
+            ingress: V1Ingress = (self.networking_api.list_namespaced_ingress("default").items[0])
         except IndexError:
             LOGGER.warning("No ingress found to remove path from.")
             return
@@ -39,17 +39,13 @@ class GameIngressManager:
         except ValueError:
             return
 
-        patch = [
-            {
-                "op": "remove",
-                "path": "/spec/rules/0/http/paths/{}".format(index_to_delete),
-            }
-        ]
+        patch = [{"op": "remove", "path": "/spec/rules/0/http/paths/{}".format(index_to_delete)}]
 
         self.networking_api.patch_namespaced_ingress("aimmo-ingress", "default", patch)
 
-    def _get_path_for_game_name(
-        self, game_name: str
-    ) -> V1HTTPIngressPath:
-        backend = V1IngressBackend(game_name, 80)
-        return V1HTTPIngressPath(backend, f"/{game_name}(/|$)(.*)", path_type="exact")
+    def _get_path_for_game_name(self, game_name: str) -> V1HTTPIngressPath:
+        game_port = V1ServiceBackendPort(number=80)
+        game_service = V1IngressServiceBackend(game_name, game_port)
+        backend = V1IngressBackend(service=game_service)
+
+        return V1HTTPIngressPath(backend, f"/{game_name}(/|$)(.*)", path_type="Prefix")
