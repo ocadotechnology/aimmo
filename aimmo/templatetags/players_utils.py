@@ -9,14 +9,15 @@ register = template.Library()
 def get_user_playable_games(context, base_url):
     # Only called by teacher to create games table
     user = context.request.user
+    print(user.new_teacher)
     teacher = user.new_teacher
     if logged_in_as_teacher(user):
         playable_games = list(Game.objects.filter(owner=user, is_archived=False).exclude(game_class=None))
         if teacher.is_admin:
             playable_games += list(
-                Game.objects.filter(game_class__teacher__school=teacher.school, is_archived=False).exclude(
-                    owner=user, game_class=None
-                )
+                Game.objects.filter(game_class__teacher__school=teacher.school, is_archived=False)
+                # passing multiple args does not seem to work
+                .exclude(owner=user).exclude(game_class=None)
             )
     else:
         playable_games = Game.objects.none()
