@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.7 (2022-10-27)
+### Fix
+* Game class show fix ([#1719](https://github.com/ocadotechnology/aimmo/issues/1719)) ([`521ffc1`](https://github.com/ocadotechnology/aimmo/commit/521ffc13f70ed8517fb8cf9646c379ed67c47e7a))
+
 ## v2.5.6 (2022-10-24)
 ### Fix
 * Also use ServiceBackendPort ([`71d117d`](https://github.com/ocadotechnology/aimmo/commit/71d117d094c14b5d212f73db9dfd88bbcfd83d90))
