@@ -9,7 +9,6 @@ register = template.Library()
 def get_user_playable_games(context, base_url):
     # Only called by teacher to create games table
     user = context.request.user
-    print(user.new_teacher)
     teacher = user.new_teacher
     if logged_in_as_teacher(user):
         playable_games = list(Game.objects.filter(owner=user, is_archived=False).exclude(game_class=None))
