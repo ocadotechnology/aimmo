@@ -11,13 +11,16 @@ def get_user_playable_games(context, base_url):
     user = context.request.user
     teacher = user.new_teacher
     if logged_in_as_teacher(user):
-        playable_games = list(Game.objects.filter(owner=user, is_archived=False))
+        playable_games = list(Game.objects.filter(owner=user, is_archived=False).exclude(game_class=None))
         if teacher.is_admin:
             playable_games += list(
-                Game.objects.filter(game_class__teacher__school=teacher.school, is_archived=False).exclude(owner=user)
+                Game.objects.filter(game_class__teacher__school=teacher.school, is_archived=False).exclude(
+                    owner=user, game_class=None
+                )
             )
     else:
         playable_games = Game.objects.none()
+
     return {
         "user": user,
         "base_url": base_url,
