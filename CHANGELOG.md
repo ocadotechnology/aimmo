@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.8 (2022-11-04)
+### Fix
+* Add kubernetes to setup.py ([#1721](https://github.com/ocadotechnology/aimmo/issues/1721)) ([`9323fd7`](https://github.com/ocadotechnology/aimmo/commit/9323fd77226f567d9f81298ea55517e48e3c26c5))
+
 ## v2.5.7 (2022-10-27)
 ### Fix
 * Game class show fix ([#1719](https://github.com/ocadotechnology/aimmo/issues/1719)) ([`521ffc1`](https://github.com/ocadotechnology/aimmo/commit/521ffc13f70ed8517fb8cf9646c379ed67c47e7a))
