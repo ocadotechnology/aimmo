@@ -2,6 +2,22 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.8 (2022-11-04)
+### Fix
+* Add kubernetes to setup.py ([#1721](https://github.com/ocadotechnology/aimmo/issues/1721)) ([`9323fd7`](https://github.com/ocadotechnology/aimmo/commit/9323fd77226f567d9f81298ea55517e48e3c26c5))
+
+## v2.5.7 (2022-10-27)
+### Fix
+* Game class show fix ([#1719](https://github.com/ocadotechnology/aimmo/issues/1719)) ([`521ffc1`](https://github.com/ocadotechnology/aimmo/commit/521ffc13f70ed8517fb8cf9646c379ed67c47e7a))
+
+## v2.5.6 (2022-10-24)
+### Fix
+* Also use ServiceBackendPort ([`71d117d`](https://github.com/ocadotechnology/aimmo/commit/71d117d094c14b5d212f73db9dfd88bbcfd83d90))
+
+## v2.5.5 (2022-10-24)
+### Fix
+* Use Kubernetes 23 and update Ingress API ([`ce0d346`](https://github.com/ocadotechnology/aimmo/commit/ce0d346ae47c5ce033d31d34a88a98cefc748db7))
+
 ## v2.5.4 (2022-10-20)
 ### Fix
 * Update k8s api ([#1715](https://github.com/ocadotechnology/aimmo/issues/1715)) ([`3ec86ac`](https://github.com/ocadotechnology/aimmo/commit/3ec86ac4e8c585688f1494cd3970a86dd2ac45aa))

@@ -181,7 +181,8 @@ class KubernetesGameManager(GameManager):
 
     def _add_path_to_ingress(self, game_id):
         game_name = KubernetesGameManager._create_game_name(game_id)
-        game_service = kubernetes.client.V1IngressServiceBackend(game_name, 80)
+        game_port = kubernetes.client.V1ServiceBackendPort(number=80)
+        game_service = kubernetes.client.V1IngressServiceBackend(game_name, game_port)
         backend = kubernetes.client.V1IngressBackend(service=game_service)
         path = kubernetes.client.V1HTTPIngressPath(backend, f"/{game_name}(/|$)(.*)", path_type="Prefix")
 
@@ -195,7 +196,8 @@ class KubernetesGameManager(GameManager):
 
     def _remove_path_from_ingress(self, game_id):
         game_name = KubernetesGameManager._create_game_name(game_id)
-        game_service = kubernetes.client.V1IngressServiceBackend(game_name, 80)
+        game_port = kubernetes.client.V1ServiceBackendPort(number=80)
+        game_service = kubernetes.client.V1IngressServiceBackend(game_name, game_port)
         backend = kubernetes.client.V1IngressBackend(service=game_service)
         path = kubernetes.client.V1HTTPIngressPath(backend, f"/{game_name}(/|$)(.*)", path_type="Prefix")
         try:
