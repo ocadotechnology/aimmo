@@ -2,6 +2,46 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.9 (2022-11-07)
+### Fix
+* **deps:** Bump django from 3.2.15 to 3.2.16 ([#1717](https://github.com/ocadotechnology/aimmo/issues/1717)) ([`e9a16bc`](https://github.com/ocadotechnology/aimmo/commit/e9a16bc260f48c77e03409913b790fa1424ab919))
+
+## v2.5.8 (2022-11-04)
+### Fix
+* Add kubernetes to setup.py ([#1721](https://github.com/ocadotechnology/aimmo/issues/1721)) ([`9323fd7`](https://github.com/ocadotechnology/aimmo/commit/9323fd77226f567d9f81298ea55517e48e3c26c5))
+
+## v2.5.7 (2022-10-27)
+### Fix
+* Game class show fix ([#1719](https://github.com/ocadotechnology/aimmo/issues/1719)) ([`521ffc1`](https://github.com/ocadotechnology/aimmo/commit/521ffc13f70ed8517fb8cf9646c379ed67c47e7a))
+
+## v2.5.6 (2022-10-24)
+### Fix
+* Also use ServiceBackendPort ([`71d117d`](https://github.com/ocadotechnology/aimmo/commit/71d117d094c14b5d212f73db9dfd88bbcfd83d90))
+
+## v2.5.5 (2022-10-24)
+### Fix
+* Use Kubernetes 23 and update Ingress API ([`ce0d346`](https://github.com/ocadotechnology/aimmo/commit/ce0d346ae47c5ce033d31d34a88a98cefc748db7))
+
+## v2.5.4 (2022-10-20)
+### Fix
+* Update k8s api ([#1715](https://github.com/ocadotechnology/aimmo/issues/1715)) ([`3ec86ac`](https://github.com/ocadotechnology/aimmo/commit/3ec86ac4e8c585688f1494cd3970a86dd2ac45aa))
+
+## v2.5.3 (2022-10-18)
+### Fix
+* Update Kubernetes ([#1714](https://github.com/ocadotechnology/aimmo/issues/1714)) ([`9748c02`](https://github.com/ocadotechnology/aimmo/commit/9748c02002011bff3ec92b22097bab319340f261))
+
+## v2.5.2 (2022-10-13)
+### Fix
+* Fix created_by migration field ([#1713](https://github.com/ocadotechnology/aimmo/issues/1713)) ([`3ceedb0`](https://github.com/ocadotechnology/aimmo/commit/3ceedb05e4410f849875f372be46e353ceaa8d49))
+
+## v2.5.1 (2022-10-10)
+### Fix
+* Migrations created_by ([#1712](https://github.com/ocadotechnology/aimmo/issues/1712)) ([`d45ba57`](https://github.com/ocadotechnology/aimmo/commit/d45ba57a1d99712701f4c8a8ca3dee07cfa47e35))
+
+## v2.5.0 (2022-10-10)
+### Feature
+* No feature ([#1711](https://github.com/ocadotechnology/aimmo/issues/1711)) ([`83b2642`](https://github.com/ocadotechnology/aimmo/commit/83b2642f71f20e2a8da3edfb4e2a3cacbed7f175))
+
 ## v2.4.6 (2022-09-05)
 ### Fix
 * Clean autoconfig ([#1698](https://github.com/ocadotechnology/aimmo/issues/1698)) ([`dac77fe`](https://github.com/ocadotechnology/aimmo/commit/dac77feaf9d0e2fdcfe570d3f20b53383bc0252f))

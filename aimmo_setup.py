@@ -203,9 +203,7 @@ def _create_sudo_timestamp():
     print("\033[1mrequesting_sudo_access\033[0m... ")
 
     # Request sudo password before task
-    subprocess.Popen(
-        "sudo true", stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True
-    ).communicate()
+    subprocess.Popen("sudo true", stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True).communicate()
     print("\033[1mrequesting_sudo_access\033[0m... [ \033[92mOK\033[0m ]")
 
 
@@ -243,9 +241,7 @@ def _cmd(command, comment=None):
 
     if p.returncode != 0:
         if comment:
-            sys.stdout.write(
-                "\033[1m%s\033[0m... [ \033[93mFAILED\033[0m ]\n" % comment
-            )
+            sys.stdout.write("\033[1m%s\033[0m... [ \033[93mFAILED\033[0m ]\n" % comment)
         for line in stdout_lines:
             sys.stdout.write(f"{line}\n")
         raise CalledProcessError(p.returncode, command)
@@ -350,9 +346,7 @@ def install_minikube(os_type, arch_type, version=MINIKUBE_VERSION):
     comment = "install_minikube"
 
     if version == "latest":
-        rc, lines = _cmd(
-            "curl https://api.github.com/repos/kubernetes/minikube/releases/latest | grep tag_name"
-        )
+        rc, lines = _cmd("curl https://api.github.com/repos/kubernetes/minikube/releases/latest | grep tag_name")
         match = re.search(r"(v[0-9\.]+)", lines[0])
         if rc == 0 and match:
             version = match.group(1)
@@ -433,17 +427,12 @@ def install_helm(os_type, arch_type):
         except CalledProcessError:
             pass
 
-        _cmd(
-            "curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash"
-        )
+        _cmd("curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash")
 
 
 def helm_add_agones_repo(os_type, arch_type):
     if os_type in [OSType.MAC, OSType.LINUX]:
-        _cmd(
-            "helm repo add agones https://agones.dev/chart/stable && "
-            "helm repo update"
-        )
+        _cmd("helm repo add agones https://agones.dev/chart/stable && " "helm repo update")
 
 
 def minikube_start_profile(os_type, arch_type):
@@ -457,12 +446,7 @@ def minikube_start_profile(os_type, arch_type):
 def helm_install_aimmo(os_type, arch_type):
     if os_type in [OSType.MAC, OSType.LINUX]:
         try:
-            if (
-                _cmd(
-                    "helm status -n agones-system aimmo > /dev/null", "check_helm_aimmo"
-                )[0]
-                == 0
-            ):
+            if _cmd("helm status -n agones-system aimmo > /dev/null", "check_helm_aimmo")[0] == 0:
                 return
         except CalledProcessError:
             pass
@@ -493,10 +477,7 @@ def install_nodejs(os_type, arch_type):
     if os_type == OSType.MAC:
         _cmd("brew install node@14")
     if os_type == OSType.LINUX:
-        _cmd(
-            "curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -"
-            "sudo apt-get install -y nodejs"
-        )
+        _cmd("curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -" "sudo apt-get install -y nodejs")
 
 
 def check_for_cmdtest(os_type, arch_type):

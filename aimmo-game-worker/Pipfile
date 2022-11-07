@@ -4,12 +4,14 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-kubernetes = "*"
+kubernetes = "==23.6.0"
+docker = "<6"
 aimmo-game-worker = {editable = true, path = "."}
 restrictedpython = "==4.0.b7"
 aiohttp = "*"
 aiohttp-cors = "*"
 idna-ssl = "*"
+oauthlib = "==3.2.0"
 
 [requires]
 python_version = "3.7"
