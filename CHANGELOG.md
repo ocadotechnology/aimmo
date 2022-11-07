@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.9 (2022-11-07)
+### Fix
+* **deps:** Bump django from 3.2.15 to 3.2.16 ([#1717](https://github.com/ocadotechnology/aimmo/issues/1717)) ([`e9a16bc`](https://github.com/ocadotechnology/aimmo/commit/e9a16bc260f48c77e03409913b790fa1424ab919))
+
 ## v2.5.8 (2022-11-04)
 ### Fix
 * Add kubernetes to setup.py ([#1721](https://github.com/ocadotechnology/aimmo/issues/1721)) ([`9323fd7`](https://github.com/ocadotechnology/aimmo/commit/9323fd77226f567d9f81298ea55517e48e3c26c5))
