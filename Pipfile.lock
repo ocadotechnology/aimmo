@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "6ba22191b98329537fe306edd174a4a50da9cfc301e14fdc762e2ef4df15f19b"
+            "sha256": "0a67eb9ff7522df8b3c3f022733c06463bc7bbc9535937f8b791ef2b141a6fe5"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -159,11 +159,10 @@
         },
         "google-auth": {
             "hashes": [
-                "sha256:1ad5b0e6eba5f69645971abb3d2c197537d5914070a8c6d30299dfdb07c5c700",
-                "sha256:cf24817855d874ede2efd071aa22125445f555de1685b739a9782fcf408c2a3d"
+                "sha256:f5d8701633bebc12e0deea4df8abd8aff31c28b355360597f7f2ee60f2e4d016"
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'",
-            "version": "==2.14.0"
+            "version": "==2.14.1"
         },
         "greenlet": {
             "hashes": [
@@ -262,11 +261,11 @@
         },
         "oauthlib": {
             "hashes": [
-                "sha256:23a8208d75b902797ea29fd31fa80a15ed9dc2c6c16fe73f5d346f83f6fa27a2",
-                "sha256:6db33440354787f9b7f3a6dbd4febf5d0f93758354060e802f6c06cb493022fe"
+                "sha256:8139f29aac13e25d502680e9e19963e83f16838d48a0d71c287fe40e7067fbca",
+                "sha256:9859c40929662bec5d64f34d01c99e093149682a3f38915dc0655d5a633dd918"
             ],
-            "index": "pypi",
-            "version": "==3.2.0"
+            "markers": "python_version >= '3.6'",
+            "version": "==3.2.2"
         },
         "pyasn1": {
             "hashes": [
@@ -749,11 +748,10 @@
         },
         "google-auth": {
             "hashes": [
-                "sha256:1ad5b0e6eba5f69645971abb3d2c197537d5914070a8c6d30299dfdb07c5c700",
-                "sha256:cf24817855d874ede2efd071aa22125445f555de1685b739a9782fcf408c2a3d"
+                "sha256:f5d8701633bebc12e0deea4df8abd8aff31c28b355360597f7f2ee60f2e4d016"
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'",
-            "version": "==2.14.0"
+            "version": "==2.14.1"
         },
         "greenlet": {
             "hashes": [
@@ -889,11 +887,11 @@
         },
         "oauthlib": {
             "hashes": [
-                "sha256:23a8208d75b902797ea29fd31fa80a15ed9dc2c6c16fe73f5d346f83f6fa27a2",
-                "sha256:6db33440354787f9b7f3a6dbd4febf5d0f93758354060e802f6c06cb493022fe"
+                "sha256:8139f29aac13e25d502680e9e19963e83f16838d48a0d71c287fe40e7067fbca",
+                "sha256:9859c40929662bec5d64f34d01c99e093149682a3f38915dc0655d5a633dd918"
             ],
-            "index": "pypi",
-            "version": "==3.2.0"
+            "markers": "python_version >= '3.6'",
+            "version": "==3.2.2"
         },
         "packaging": {
             "hashes": [
