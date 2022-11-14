@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.10 (2022-11-14)
+### Fix
+* Install django-import-export ([#1725](https://github.com/ocadotechnology/aimmo/issues/1725)) ([`6ae2570`](https://github.com/ocadotechnology/aimmo/commit/6ae2570d5c37ae88a52c37f920892a607f3b1f1b))
+
 ## v2.5.9 (2022-11-07)
 ### Fix
 * **deps:** Bump django from 3.2.15 to 3.2.16 ([#1717](https://github.com/ocadotechnology/aimmo/issues/1717)) ([`e9a16bc`](https://github.com/ocadotechnology/aimmo/commit/e9a16bc260f48c77e03409913b790fa1424ab919))
