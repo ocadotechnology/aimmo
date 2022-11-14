@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "django_otp.plugins.otp_static",
     "django_otp.plugins.otp_totp",
     "rest_framework",
+    "import_export",
     "sekizai",  # for javascript and css management
 ]
 
