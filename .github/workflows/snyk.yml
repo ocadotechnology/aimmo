@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: 16.x
       - name: Install Node dependencies
-        run: npm install --prefix portal_frontend
+        run: npm install --prefix game_frontend
       - name: Run Snyk to check for vulnerabilities in Node.js
         uses: snyk/actions/node@master
         env:
@@ -36,7 +36,7 @@ jobs:
           pip install pipenv
           pipenv install --dev --system
       - name: Generate requirements
-        run: pip freeze > requirements.txt
+        run: pip list --format=freeze > requirements.txt
       - name: Run Snyk to check for vulnerabilities in Python
         uses: snyk/actions/python-3.7@master
         env:
