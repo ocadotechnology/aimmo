@@ -36,7 +36,7 @@ jobs:
           pip install pipenv
           pipenv install --dev --system
       - name: Generate requirements
-        run: pip list --format=freeze > requirements.txt
+        run: pip freeze --all > requirements.txt
       - name: Run Snyk to check for vulnerabilities in Python
         uses: snyk/actions/python-3.7@master
         env:
