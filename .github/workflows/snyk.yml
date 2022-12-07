@@ -25,7 +25,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          command: monitor --file=aimmo_frontend/package.json --package-manager=npm --project-name="aimmo_frontend"
+          command: monitor --file=game_frontend/package.json --package-manager=npm --project-name="aimmo_frontend"
       - name: Setup python-version
         uses: actions/setup-python@v2
         with:
