@@ -18,6 +18,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
+      - name: Install Node dependencies
+        run: npm install --prefix game_frontend
       - name: Run Snyk to check for vulnerabilities in Node.js
         uses: snyk/actions/node@master
         env:
