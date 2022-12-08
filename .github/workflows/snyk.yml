@@ -41,3 +41,4 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: monitor --file=requirements.txt --package-manager=pip --project-name="aimmo"
+
