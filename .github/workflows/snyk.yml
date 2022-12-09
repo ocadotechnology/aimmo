@@ -1,0 +1,45 @@
+name: Snyk
+on:
+  release:
+    types: [published]
+  pull_request:
+jobs:
+  security:
+    name: Run Snyk
+    runs-on: ubuntu-20.04
+    env:
+      LANG: C.UTF-8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: Install Node dependencies
+        run: npm install --prefix game_frontend
+      - name: Run Snyk to check for vulnerabilities in Node.js
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: monitor --file=game_frontend/package.json --package-manager=npm --project-name="aimmo_frontend"
+      - name: Setup python-version
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.7"
+          architecture: "x64"
+      - name: Install Python dependencies
+        run: |
+          pip install pipenv
+          pipenv install --dev --system
+      - name: Generate requirements
+        run: pip freeze --all > requirements.txt
+      - name: Run Snyk to check for vulnerabilities in Python
+        uses: snyk/actions/python-3.7@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: monitor --file=requirements.txt --package-manager=pip --project-name="aimmo"
