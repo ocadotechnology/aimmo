@@ -19,7 +19,10 @@ jobs:
         with:
           node-version: 16.x
       - name: Install Node dependencies
-        run: npm install --prefix game_frontend
+        run: |
+          cd game_frontend
+          yarn --frozen-lockfile
+          yarn build
       - name: Run Snyk to check for vulnerabilities in Node.js
         uses: snyk/actions/node@master
         env:
