@@ -68,7 +68,7 @@ jobs:
         with:
           github-token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
           script: |
-            github.actions.createWorkflowDispatch({
+            github.rest.actions.createWorkflowDispatch({
               owner: 'ocadotechnology',
               repo: 'codeforlife-deploy-appengine',
               workflow_id: 'deploy_staging.yml',
