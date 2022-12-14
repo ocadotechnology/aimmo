@@ -22,7 +22,6 @@ jobs:
         run: |
           cd game_frontend
           yarn --frozen-lockfile
-          yarn build
       - name: Run Snyk to check for vulnerabilities in Node.js
         uses: snyk/actions/node@master
         env:
