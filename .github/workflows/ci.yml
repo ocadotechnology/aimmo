@@ -9,18 +9,18 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "3.7"
           architecture: "x64"
       - name: Use Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
-          node-version: 14.x
+          node-version: 16.x
       - name: Install dependencies
         run: |
           pip install pipenv==2022.10.4
@@ -45,7 +45,7 @@ jobs:
       - name: Run Python tests
         run: pytest --cov=. --cov-report=xml aimmo
       - name: Run Cypress tests
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v5
         with:
           browser: chrome
           install: false
@@ -58,14 +58,14 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
 
   test-aimmo-game:
     name: Test aimmo-game
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Build docker image
@@ -80,14 +80,14 @@ jobs:
           docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
           docker cp -a $CONTAINERID:coverage.xml $(pwd)/coverage.xml
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
 
   test-aimmo-game-creator:
     name: Test aimmo-game-creator
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Build docker image
@@ -102,14 +102,14 @@ jobs:
           docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
           docker cp -a $CONTAINERID:coverage.xml $(pwd)/coverage.xml
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
 
   test-aimmo-game-worker:
     name: Test aimmo-game-worker
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Build docker image
@@ -124,4 +124,4 @@ jobs:
           docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
           docker cp -a $CONTAINERID:coverage.xml $(pwd)/coverage.xml
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
