@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
 from .direction import Direction
+from .world_map import ArtefactType
 
 
 class Action:
@@ -45,8 +46,10 @@ class MoveTowardsAction(Action):
         self.direction = None
 
         if not artefact:
-            print("MoveTowardsAction got an invalid parameter. Is it empty?")
+            print("This message should not exist")
             return
+        if hasattr(ArtefactType, artefact.value.upper()):
+            print("MoveTowardsAction got an invalid parameter.")
 
         if len(artefact.path) < 2:
             return  # not a valid path
