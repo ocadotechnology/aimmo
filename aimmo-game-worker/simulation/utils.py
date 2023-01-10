@@ -21,7 +21,7 @@ class NearbyArtefactsList(List[T]):
                 warnings.warn(
                     "There aren't any nearby artefacts, you need to move closer!",
                     NoNearbyArtefactsWarning,
-                    stacklevel=2,
+                    stacklevel=20,
                 )
             else:
                 raise
