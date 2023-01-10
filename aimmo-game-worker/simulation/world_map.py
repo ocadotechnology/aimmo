@@ -181,8 +181,10 @@ class WorldMap(object):
                 nearest.append(artefact)
             if len(nearest) > SCAN_LIMIT:
                 break
-
-        return nearest[:SCAN_LIMIT]
+        try:
+            return nearest[:SCAN_LIMIT]
+        except IndexError:
+            print("There aren't any nearby artefacts, you need to move closer!")
 
     def __repr__(self):
         return repr(self.cells)
