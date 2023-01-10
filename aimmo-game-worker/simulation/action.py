@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-
+from .world_map import ArtefactType
 from .direction import Direction
 
 
@@ -45,7 +45,11 @@ class MoveTowardsAction(Action):
         self.direction = None
 
         if not artefact:
-            print("MoveTowardsAction got an invalid parameter. Is it empty?")
+            print("There aren't any nearby artefacts, you need to move closer!")
+            return
+
+        if hasattr(ArtefactType, artefact):
+            print("MoveTowardsAction got an invalid parameter.")
             return
 
         if len(artefact.path) < 2:

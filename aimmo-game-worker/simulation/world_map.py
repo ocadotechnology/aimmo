@@ -182,7 +182,7 @@ class WorldMap(object):
             if len(nearest) > SCAN_LIMIT:
                 break
 
-        return NearbyArtefactsList(nearest[:SCAN_LIMIT])
+        return nearest[:SCAN_LIMIT]
 
     def __repr__(self):
         return repr(self.cells)
