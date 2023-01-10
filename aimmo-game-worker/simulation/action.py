@@ -48,7 +48,7 @@ class MoveTowardsAction(Action):
             print("There aren't any nearby artefacts, you need to move closer!")
             return
 
-        if hasattr(ArtefactType, artefact):
+        if hasattr(ArtefactType, artefact.value.upper()):
             print("MoveTowardsAction got an invalid parameter.")
             return
 
