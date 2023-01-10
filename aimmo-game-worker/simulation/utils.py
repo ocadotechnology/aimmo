@@ -17,7 +17,7 @@ class NearbyArtefactsList(List[T]):
         except IndexError:
             if len(self) == 0:
                 raise NoNearbyArtefactsError(
-                    "There aren't any nearby artefacts, you need to move closer!"
+                    "The code cannot execute while there aren't any artefacts near. You need to move closer!"
                 ) from None
             else:
                 raise
