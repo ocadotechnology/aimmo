@@ -48,7 +48,7 @@ class MoveTowardsAction(Action):
             hasattr(ArtefactType, artefact.type)
         except AttributeError:
             print("MoveTowardsAction got an invalid parameter.")
-        return
+            return
 
         if len(artefact.path) < 2:
             return  # not a valid path
