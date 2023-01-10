@@ -51,17 +51,17 @@ class MoveTowardsAction(Action):
                 print("MoveTowardsAction got an invalid parameter.")
                 return
 
-        if len(artefact.path) < 2:
-            return  # not a valid path
+            if len(artefact.path) < 2:
+                return  # not a valid path
 
-        # the first cell in the path is the starting cell
-        avatar_location = artefact.path[0].location
-        next_location = artefact.path[1].location
+            # the first cell in the path is the starting cell
+            avatar_location = artefact.path[0].location
+            next_location = artefact.path[1].location
 
-        # calculate direction
-        x = next_location.x - avatar_location.x
-        y = next_location.y - avatar_location.y
-        self.direction = Direction(x, y)
+            # calculate direction
+            x = next_location.x - avatar_location.x
+            y = next_location.y - avatar_location.y
+            self.direction = Direction(x, y)
 
     def serialise(self):
         if not self.direction:
