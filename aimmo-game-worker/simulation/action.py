@@ -48,7 +48,7 @@ class MoveTowardsAction(Action):
         if not artefact:
             print("This message should not exist")
             return
-        if hasattr(ArtefactType, artefact.value.upper()):
+        if hasattr(ArtefactType, artefact.type):
             print("MoveTowardsAction got an invalid parameter.")
 
         if len(artefact.path) < 2:
