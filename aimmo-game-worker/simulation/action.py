@@ -44,12 +44,11 @@ class MoveAction(Action):
 class MoveTowardsAction(Action):
     def __init__(self, artefact):
         self.direction = None
-
-        if not artefact:
-            print("This message should not exist")
-            return
-        if hasattr(ArtefactType, artefact.type):
+        try:
+            hasattr(ArtefactType, artefact.type)
+        except AttributeError:
             print("MoveTowardsAction got an invalid parameter.")
+        return
 
         if len(artefact.path) < 2:
             return  # not a valid path
