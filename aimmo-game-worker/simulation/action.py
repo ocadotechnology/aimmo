@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
 from .direction import Direction
+from .world_map import ArtefactType
 
 
 class Action:
@@ -43,22 +44,24 @@ class MoveAction(Action):
 class MoveTowardsAction(Action):
     def __init__(self, artefact):
         self.direction = None
+        if artefact:
+            try:
+                hasattr(ArtefactType, artefact.type)
+            except AttributeError:
+                print("MoveTowardsAction got an invalid parameter.")
+                return
 
-        if not artefact:
-            print("MoveTowardsAction got an invalid parameter. Is it empty?")
-            return
+            if len(artefact.path) < 2:
+                return  # not a valid path
 
-        if len(artefact.path) < 2:
-            return  # not a valid path
+            # the first cell in the path is the starting cell
+            avatar_location = artefact.path[0].location
+            next_location = artefact.path[1].location
 
-        # the first cell in the path is the starting cell
-        avatar_location = artefact.path[0].location
-        next_location = artefact.path[1].location
-
-        # calculate direction
-        x = next_location.x - avatar_location.x
-        y = next_location.y - avatar_location.y
-        self.direction = Direction(x, y)
+            # calculate direction
+            x = next_location.x - avatar_location.x
+            y = next_location.y - avatar_location.y
+            self.direction = Direction(x, y)
 
     def serialise(self):
         if not self.direction:
