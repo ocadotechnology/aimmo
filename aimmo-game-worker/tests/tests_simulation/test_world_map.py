@@ -147,7 +147,7 @@ def test_cannot_move_to_inhabited_cell(avatar_state_json):
     assert map.can_move_to(Location(-1, 0)) == False
 
 
-def test_scan_nearby(avatar_state_json):
+def test_scan_nearby(avatar_state_json, capsys):
     cells = _generate_cells(5, 5)
     cells[0]["avatar"] = avatar_state_json
     cells[2]["obstacle"] = {"location": {"x": 0, "y": 0}}
@@ -163,5 +163,7 @@ def test_scan_nearby(avatar_state_json):
     artefacts = map.scan_nearby(Location(5, 5), radius=1)
     assert type(artefacts) == NearbyArtefactsList
     assert len(artefacts) == 0
-    with pytest.raises(NoNearbyArtefactsError):
-        artefacts[0]
+    artefacts[0]
+    captured = capsys.readouterr()
+    # check the print statement matches
+    assert captured.out == "There aren't any nearby artefacts, you need to move closer!\n"
