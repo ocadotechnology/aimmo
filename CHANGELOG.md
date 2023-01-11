@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.11 (2023-01-11)
+### Fix
+* Fix code not running when not near artefacts ([#1736](https://github.com/ocadotechnology/aimmo/issues/1736)) ([`504238b`](https://github.com/ocadotechnology/aimmo/commit/504238bcb3e56dbbcd8e8fe341de63718cf473be))
+
 ## v2.5.10 (2022-11-14)
 ### Fix
 * Install django-import-export ([#1725](https://github.com/ocadotechnology/aimmo/issues/1725)) ([`6ae2570`](https://github.com/ocadotechnology/aimmo/commit/6ae2570d5c37ae88a52c37f920892a607f3b1f1b))
