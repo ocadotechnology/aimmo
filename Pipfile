@@ -11,6 +11,7 @@ codeforlife-portal = "*"
 pytest-cov = "*"
 black = "*"
 django-test-migrations = "==1.2.0"
+django-import-export = "*"
 
 [packages]
 aimmo = {editable = true, path = "."}
@@ -18,7 +19,6 @@ kubernetes = "==23.6.0"
 eventlet = "*"
 docker = "<6"
 wheel = "*"
-oauthlib = "==3.2.0"
 importlib-metadata = "<5" # Using version 5 causes an issue when trying to run pytest. Not sure why, linked to: https://stackoverflow.com/questions/73929564/entrypoints-object-has-no-attribute-get-digital-ocean
 
 [requires]

@@ -2,6 +2,26 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.11 (2023-01-11)
+### Fix
+* Fix code not running when not near artefacts ([#1736](https://github.com/ocadotechnology/aimmo/issues/1736)) ([`504238b`](https://github.com/ocadotechnology/aimmo/commit/504238bcb3e56dbbcd8e8fe341de63718cf473be))
+
+## v2.5.10 (2022-11-14)
+### Fix
+* Install django-import-export ([#1725](https://github.com/ocadotechnology/aimmo/issues/1725)) ([`6ae2570`](https://github.com/ocadotechnology/aimmo/commit/6ae2570d5c37ae88a52c37f920892a607f3b1f1b))
+
+## v2.5.9 (2022-11-07)
+### Fix
+* **deps:** Bump django from 3.2.15 to 3.2.16 ([#1717](https://github.com/ocadotechnology/aimmo/issues/1717)) ([`e9a16bc`](https://github.com/ocadotechnology/aimmo/commit/e9a16bc260f48c77e03409913b790fa1424ab919))
+
+## v2.5.8 (2022-11-04)
+### Fix
+* Add kubernetes to setup.py ([#1721](https://github.com/ocadotechnology/aimmo/issues/1721)) ([`9323fd7`](https://github.com/ocadotechnology/aimmo/commit/9323fd77226f567d9f81298ea55517e48e3c26c5))
+
+## v2.5.7 (2022-10-27)
+### Fix
+* Game class show fix ([#1719](https://github.com/ocadotechnology/aimmo/issues/1719)) ([`521ffc1`](https://github.com/ocadotechnology/aimmo/commit/521ffc13f70ed8517fb8cf9646c379ed67c47e7a))
+
 ## v2.5.6 (2022-10-24)
 ### Fix
 * Also use ServiceBackendPort ([`71d117d`](https://github.com/ocadotechnology/aimmo/commit/71d117d094c14b5d212f73db9dfd88bbcfd83d90))
