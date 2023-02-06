@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.12 (2023-02-06)
+### Fix
+* **deps:** Bump django from 3.2.16 to 3.2.17 ([#1738](https://github.com/ocadotechnology/aimmo/issues/1738)) ([`6a5f5d8`](https://github.com/ocadotechnology/aimmo/commit/6a5f5d85b33fea39f8bbe56db73a4191fee853ca))
+
 ## v2.5.11 (2023-01-11)
 ### Fix
 * Fix code not running when not near artefacts ([#1736](https://github.com/ocadotechnology/aimmo/issues/1736)) ([`504238b`](https://github.com/ocadotechnology/aimmo/commit/504238bcb3e56dbbcd8e8fe341de63718cf473be))
