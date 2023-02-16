@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.14 (2023-02-16)
+### Fix
+* Point to correct settings file locally ([#1741](https://github.com/ocadotechnology/aimmo/issues/1741)) ([`48370bf`](https://github.com/ocadotechnology/aimmo/commit/48370bf421b6bf4097f28eec51ebac70a39980d5))
+
 ## v2.5.13 (2023-02-16)
 ### Fix
 * **deps:** Bump django from 3.2.16 to 3.2.18 ([#1739](https://github.com/ocadotechnology/aimmo/issues/1739)) ([`d4d9053`](https://github.com/ocadotechnology/aimmo/commit/d4d9053a6b80b94ecc15d42a41554491d7c7c5de))
