@@ -10,8 +10,6 @@ jobs:
     env:
       LANG: C.UTF-8
     steps:
-      - name: Expose git commit data
-        uses: rlespinasse/git-commit-data-action@v1
       - name: Checkout
         uses: actions/checkout@v3
         with:
