@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.15 (2023-02-17)
+### Fix
+* Debug commit author in github action ([#1742](https://github.com/ocadotechnology/aimmo/issues/1742)) ([`f7eeb98`](https://github.com/ocadotechnology/aimmo/commit/f7eeb9881a8f88a49053ef9dc3e30d3041b295b3))
+
 ## v2.5.14 (2023-02-16)
 ### Fix
 * Point to correct settings file locally ([#1741](https://github.com/ocadotechnology/aimmo/issues/1741)) ([`48370bf`](https://github.com/ocadotechnology/aimmo/commit/48370bf421b6bf4097f28eec51ebac70a39980d5))
