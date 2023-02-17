@@ -11,9 +11,9 @@ jobs:
     steps:
       - name: Debug
         run: |
-          echo ${{github.event.head_commit}}
-          echo ${{github.event.head_commit.author}}
-          echo ${{github.event.head_commit.author.email}}
+          echo ${{ github.event.head_commit }}
+          echo ${{ github.event.head_commit.author }}
+          echo ${{ github.event.head_commit.author.email }}
       - name: Checkout
         uses: actions/checkout@v3
       - name: Set up QEMU
