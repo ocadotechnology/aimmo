@@ -35,9 +35,11 @@ export default class ConsoleBar extends Component {
             Console Log
           </Typography>
         </StyledConsoleTitle>
+
         <Button variant="outlined" onClick={this.props.handleResetCodeClicked}>
           Reset code
         </Button>
+
         <IconButton size="small" onClick={this.props.clearConsoleClicked}>
           <ClearIcon />
         </IconButton>
