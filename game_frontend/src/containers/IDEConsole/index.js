@@ -39,7 +39,6 @@ export const StyledConsole = styled.div`
 export class IDEConsole extends Component {
   static propTypes = {
     logs: PropTypes.instanceOf(Map),
-    resetCode: PropTypes.func,
     clearConsoleLogs: PropTypes.func,
   }
 
@@ -83,9 +82,7 @@ export class IDEConsole extends Component {
   render() {
     return (
       <IDEConsoleSection>
-        <ConsoleBar
-          clearConsoleClicked={this.clearConsole}
-        />
+        <ConsoleBar clearConsoleClicked={this.clearConsole} />
         <StyledConsole
           ref={(ref) => {
             this.consoleRef = ref
@@ -107,7 +104,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   clearConsoleLogs: actions.clearConsoleLogs,
-  resetCode: editorActions.resetCode,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(IDEConsole)
