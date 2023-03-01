@@ -27,6 +27,7 @@ const consoleLogReducer = (state = { logs: new Map(), gameLog: '' }, action) => 
     }
     case avatarWorkerTypes.AVATAR_CODE_UPDATED:
     case avatarWorkerTypes.AVATARS_NEXT_ACTION_COMPUTED: {
+      console.log(state)
       const gameLog = state.gameLog
       const turnCount = action.payload.turnCount
       const newLogMessage = createNewLogMessage(action.payload.log, gameLog)

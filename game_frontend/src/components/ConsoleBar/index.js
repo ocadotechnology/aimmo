@@ -37,7 +37,11 @@ export default class ConsoleBar extends Component {
         </StyledConsoleTitle>
 
         <Button variant="outlined" onClick={this.props.handleResetCodeClicked}>
-          Reset code
+          Reset codeaa
+        </Button>
+
+        <Button variant="outlined" onClick={this.props.handlePauseGameClicked}>
+          {this.props.gamePaused ? 'Resume' : 'Pause'}
         </Button>
 
         <IconButton size="small" onClick={this.props.clearConsoleClicked}>

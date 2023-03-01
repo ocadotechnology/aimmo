@@ -33,6 +33,10 @@ const gameLoaded = () => ({
   type: types.GAME_LOADED,
 })
 
+const togglePauseGame = () => ({
+  type: types.TOGGLE_PAUSE_GAME,
+})
+
 const setTimeout = () => ({
   type: types.SET_TIMEOUT,
 })
@@ -55,4 +59,5 @@ export default {
   setTimeout,
   mapPanned,
   centerCameraOnUserAvatar,
+  togglePauseGame,
 }

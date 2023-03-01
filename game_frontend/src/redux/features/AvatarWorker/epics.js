@@ -48,7 +48,7 @@ const updateAvatarCodeEpic = (
               state$.value.game.gameState,
               state$.value.game.connectionParameters.currentAvatarID
             )
-          ).pipe(timeoutIfWorkerTakesTooLong(state$, resetWorker, scheduler))
+          ).pipe(timeoutIfWorkerTakesTooLong(state$, resetWorker, scheduler).pipe())
         ),
         tap(socket.emitAction),
         map(actions.avatarCodeUpdated)

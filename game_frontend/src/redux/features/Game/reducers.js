@@ -26,6 +26,11 @@ const gameReducer = (state = {}, action) => {
         ...state,
         cameraCenteredOnUserAvatar: true,
       }
+    case types.TOGGLE_PAUSE_GAME:
+      return {
+        ...state,
+        gamePaused: !state.gamePaused,
+      }
     default:
       return state
   }

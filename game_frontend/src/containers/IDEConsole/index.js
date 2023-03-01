@@ -6,6 +6,7 @@ import ConsoleBar from 'components/ConsoleBar'
 import { connect } from 'react-redux'
 import { actions } from 'redux/features/ConsoleLog'
 import { actions as editorActions } from 'redux/features/Editor'
+import { actions as gameActions } from 'redux/features/Game'
 
 export const IDEConsoleSection = styled.section`
   grid-area: ide-console;
@@ -41,6 +42,8 @@ export class IDEConsole extends Component {
     logs: PropTypes.instanceOf(Map),
     resetCode: PropTypes.func,
     clearConsoleLogs: PropTypes.func,
+    togglePauseGame: PropTypes.func,
+    gamePaused: PropTypes.bool,
   }
 
   // see https://blog.eqrion.net/pin-to-bottom/
@@ -86,12 +89,18 @@ export class IDEConsole extends Component {
     }
   }
 
+  togglePauseGame = () => {
+    this.props.togglePauseGame()
+  }
+
   render() {
     return (
       <IDEConsoleSection>
         <ConsoleBar
+          gamePaused={this.props.gamePaused}
           clearConsoleClicked={this.clearConsole}
           handleResetCodeClicked={this.resetCode}
+          handlePauseGameClicked={this.togglePauseGame}
         />
         <StyledConsole
           ref={(ref) => {
@@ -110,11 +119,13 @@ export class IDEConsole extends Component {
 
 const mapStateToProps = (state) => ({
   logs: state.consoleLog.logs,
+  gamePaused: state.game.gamePaused,
 })
 
 const mapDispatchToProps = {
   clearConsoleLogs: actions.clearConsoleLogs,
   resetCode: editorActions.resetCode,
+  togglePauseGame: gameActions.togglePauseGame,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(IDEConsole)
