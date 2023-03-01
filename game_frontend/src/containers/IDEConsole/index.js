@@ -5,7 +5,6 @@ import LogEntries from 'components/LogEntries'
 import ConsoleBar from 'components/ConsoleBar'
 import { connect } from 'react-redux'
 import { actions } from 'redux/features/ConsoleLog'
-import { actions as editorActions } from 'redux/features/Editor'
 
 export const IDEConsoleSection = styled.section`
   grid-area: ide-console;
