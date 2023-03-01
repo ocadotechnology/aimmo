@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import Toolbar from '@material-ui/core/Toolbar/Toolbar'
-import { Typography, IconButton, Button } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import ConsoleIcon from 'components/icons/Console'
 import ClearIcon from 'components/icons/Clear'
 import React, { Component } from 'react'

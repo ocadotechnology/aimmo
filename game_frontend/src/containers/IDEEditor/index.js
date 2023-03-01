@@ -6,8 +6,6 @@ import { withTheme } from '@material-ui/core/styles'
 import RunCodeButton from 'components/RunCodeButton'
 import { connect } from 'react-redux'
 import { actions as editorActions } from 'features/Editor'
-import Box from '@material-ui/core'
-
 import { PauseCircleFilled, SettingsBackupRestore } from '@material-ui/icons'
 
 import 'ace-builds/src-noconflict/mode-python'

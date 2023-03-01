@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import IDEEditor from 'containers/IDEEditor'
 import IDEConsole from 'containers/IDEConsole'
 import { darkTheme } from 'theme'
@@ -16,4 +16,4 @@ const IDE = () => {
   )
 }
 
-export default IDE;
+export default IDE
