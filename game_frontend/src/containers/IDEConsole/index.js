@@ -80,18 +80,11 @@ export class IDEConsole extends Component {
     this.setState({ ...this.state, activatedScrollToBottom: false })
   }
 
-  resetCode = () => {
-    if (confirm('Are you sure you want to reset to the starter code?')) {
-      this.props.resetCode()
-    }
-  }
-
   render() {
     return (
       <IDEConsoleSection>
         <ConsoleBar
           clearConsoleClicked={this.clearConsole}
-          handleResetCodeClicked={this.resetCode}
         />
         <StyledConsole
           ref={(ref) => {

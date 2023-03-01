@@ -23,7 +23,6 @@ export const StyledConsoleIcon = styled(ConsoleIcon)`
 export default class ConsoleBar extends Component {
   static propTypes = {
     clearConsoleClicked: PropTypes.func,
-    handleResetCodeClicked: PropTypes.func,
   }
 
   render() {
@@ -35,9 +34,6 @@ export default class ConsoleBar extends Component {
             Console Log
           </Typography>
         </StyledConsoleTitle>
-        <Button variant="outlined" onClick={this.props.handleResetCodeClicked}>
-          Reset code
-        </Button>
         <IconButton size="small" onClick={this.props.clearConsoleClicked}>
           <ClearIcon />
         </IconButton>

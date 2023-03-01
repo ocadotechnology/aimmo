@@ -10,6 +10,7 @@ import { actions as editorActions } from 'features/Editor'
 import 'ace-builds/src-noconflict/mode-python'
 // The monokai theme is modified and overridden, see handlebars_template.html
 import 'ace-builds/src-noconflict/theme-monokai'
+import { Button } from '@material-ui/core'
 
 export const IDEEditorLayout = styled.div`
   position: relative;
@@ -29,6 +30,7 @@ export class IDEEditor extends PureComponent {
   static propTypes = {
     codeOnServer: PropTypes.string,
     getCode: PropTypes.func,
+    resetCode: PropTypes.func,
     resetCodeTo: PropTypes.string,
     codeReset: PropTypes.func,
     theme: PropTypes.object,
@@ -103,10 +105,19 @@ export class IDEEditor extends PureComponent {
     }
   }
 
+  onResetCodeClicked = () => {
+    if (confirm('Are you sure you want to reset to the starter code?')) {
+      this.props.resetCode()
+    }
+  }
+
   render() {
     return (
       <IDEEditorLayout>
         {this.renderEditor()}
+        <Button variant="outlined" onClick={this.onResetCodeClicked} style={{ zIndex: "10" }}>
+          Reset code
+        </Button>
         <PositionedRunCodeButton
           runCodeButtonStatus={this.props.runCodeButtonStatus}
           isCodeOnServerDifferent={this.isCodeOnServerDifferent()}
@@ -129,6 +140,7 @@ const mapDispatchToProps = {
   getCode: editorActions.getCodeRequest,
   codeReset: editorActions.codeReset,
   postCode: editorActions.postCodeRequest,
+  resetCode: editorActions.resetCode,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme(IDEEditor))
