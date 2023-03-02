@@ -65,11 +65,10 @@ exports[`<IDEEditor /> matches snapshot when code is loaded 1`] = `
          <RunCodeButton
            aria-label="Run Code"
            id="post-code-button"
-           isCodeOnServerDifferent={true}
+           isCodeOnServerDifferent={false}
            whenClicked={[Function]}
          />
        </styled.div>
-</styled.div>
 `;
 
 
