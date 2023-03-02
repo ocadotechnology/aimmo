@@ -4,7 +4,6 @@ exports[`<IDEConsole /> renders correctly 1`] = `
 <styled.section>
   <ConsoleBar
     clearConsoleClicked={[Function]}
-    handleResetCodeClicked={[Function]}
   />
   <styled.div>
     <LogEntries
