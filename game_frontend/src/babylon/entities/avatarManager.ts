@@ -15,7 +15,7 @@ import { DiffItem } from '../diff'
 import setOrientation from '../orientation'
 import { createMoveAnimation, createWalkAnimation, MAX_KEYFRAMES_PER_SECOND } from '../animations'
 
-const MARKER_HEIGHT = 15.5
+const MARKER_HEIGHT = 17
 
 export default class AvatarManager implements GameNode, DiffHandling {
   object: any
@@ -129,7 +129,8 @@ export default class AvatarManager implements GameNode, DiffHandling {
     marker.material = this.markerMaterial
 
     marker.parent = avatarMesh
-    const markerScale = 100
+    const markerScale = 300
+    console.log('markerScale: ', markerScale);
     marker.scaling = new Vector3(markerScale, markerScale, markerScale)
     marker.position = new Vector3(0, MARKER_HEIGHT, 0)
   }
