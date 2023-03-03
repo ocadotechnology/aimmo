@@ -15,7 +15,7 @@ import { DiffItem } from '../diff'
 import setOrientation from '../orientation'
 import { createMoveAnimation, createWalkAnimation, MAX_KEYFRAMES_PER_SECOND } from '../animations'
 
-const MARKER_HEIGHT = 12
+const MARKER_HEIGHT = 15.5
 
 export default class AvatarManager implements GameNode, DiffHandling {
   object: any
@@ -121,7 +121,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
     const { meshes } = await this.importMesh(
       'avatar_marker',
       '/static/babylon/models/',
-      'avatar_marker_model.babylon',
+      'avatar_marker_model_new.babylon',
       this.scene
     )
     const marker = meshes[0]
@@ -129,7 +129,8 @@ export default class AvatarManager implements GameNode, DiffHandling {
     marker.material = this.markerMaterial
 
     marker.parent = avatarMesh
-    marker.scaling = new Vector3(1.25, 1.25, 1.25)
+    const markerScale = 100
+    marker.scaling = new Vector3(markerScale, markerScale, markerScale)
     marker.position = new Vector3(0, MARKER_HEIGHT, 0)
   }
 
