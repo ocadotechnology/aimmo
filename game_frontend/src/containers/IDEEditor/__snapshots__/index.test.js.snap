@@ -10,7 +10,7 @@ exports[`<IDEEditor /> matches snapshot when code is loaded 1`] = `
     enableSnippets={false}
     focus={false}
     fontSize="18px"
-    height="100%"
+    height="56vh"
     highlightActiveLine={true}
     maxLines={null}
     minLines={null}
@@ -47,28 +47,29 @@ exports[`<IDEEditor /> matches snapshot when code is loaded 1`] = `
     width="100%"
     wrapEnabled={false}
   />
-       <styled.div>
-         <Styled(WithStyles(ForwardRef(Button)))
-           onClick={[Function]}
-           startIcon={<UNDEFINED />}
-           variant="outlined"
-         >
-           Reset code
-         </Styled(WithStyles(ForwardRef(Button)))>
-         <Styled(WithStyles(ForwardRef(Button)))
-           onClick={[Function]}
-           startIcon={<UNDEFINED />}
-           variant="outlined"
-         >
-           Pause
-         </Styled(WithStyles(ForwardRef(Button)))>
-         <RunCodeButton
-           aria-label="Run Code"
-           id="post-code-button"
-           isCodeOnServerDifferent={false}
-           whenClicked={[Function]}
-         />
-       </styled.div>
+  <styled.div>
+    <Styled(WithStyles(ForwardRef(Button)))
+      onClick={[Function]}
+      startIcon={<UNDEFINED />}
+      variant="outlined"
+    >
+      Reset code
+    </Styled(WithStyles(ForwardRef(Button)))>
+    <Styled(WithStyles(ForwardRef(Button)))
+      onClick={[Function]}
+      startIcon={<UNDEFINED />}
+      variant="outlined"
+    >
+      Pause
+    </Styled(WithStyles(ForwardRef(Button)))>
+    <RunCodeButton
+      aria-label="Run Code"
+      id="post-code-button"
+      isCodeOnServerDifferent={false}
+      whenClicked={[Function]}
+    />
+  </styled.div>
+</styled.div>
 `;
 
 
@@ -79,26 +80,28 @@ exports[`<IDEEditor /> matches snapshot when code is loaded 1`] = `
 
 exports[`<IDEEditor /> matches snapshot when code isn't loaded 1`] = `
 <styled.div>
-  <Styled(WithStyles(ForwardRef(Button)))
-    onClick={[Function]}
-    startIcon={<UNDEFINED />}
-    variant="outlined"
-  >
-    Reset code
-  </Styled(WithStyles(ForwardRef(Button)))>
-  <Styled(WithStyles(ForwardRef(Button)))
-    onClick={[Function]}
-    startIcon={<UNDEFINED />}
-    variant="outlined"
-  >
-    Pause
-  </Styled(WithStyles(ForwardRef(Button)))>
-  <RunCodeButton
-    aria-label="Run Code"
-    id="post-code-button"
-    isCodeOnServerDifferent={true}
-    whenClicked={[Function]}
-  />
+  <styled.div>
+    <Styled(WithStyles(ForwardRef(Button)))
+      onClick={[Function]}
+      startIcon={<UNDEFINED />}
+      variant="outlined"
+    >
+      Reset code
+    </Styled(WithStyles(ForwardRef(Button)))>
+    <Styled(WithStyles(ForwardRef(Button)))
+      onClick={[Function]}
+      startIcon={<UNDEFINED />}
+      variant="outlined"
+    >
+      Pause
+    </Styled(WithStyles(ForwardRef(Button)))>
+    <RunCodeButton
+      aria-label="Run Code"
+      id="post-code-button"
+      isCodeOnServerDifferent={true}
+      whenClicked={[Function]}
+    />
+  </styled.div>
 </styled.div>
 `;
 

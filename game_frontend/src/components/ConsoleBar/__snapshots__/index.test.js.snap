@@ -15,11 +15,12 @@ exports[`<ConsoleBar /> renders correctly 1`] = `
       Console Log
     </WithStyles(ForwardRef(Typography))>
   </styled.div>
-  <WithStyles(ForwardRef(Button))
-    size="small"
+  <Styled(Styled(WithStyles(ForwardRef(Button))))
+    startIcon={<ClearIcon />}
+    variant="outlined"
   >
-  Clear console
-  </WithStyles(ForwardRef(IconButton))>
+    Clear console
+  </Styled(Styled(WithStyles(ForwardRef(Button))))>
 </Styled(WithStyles(ForwardRef(Toolbar)))>
 `;
 
