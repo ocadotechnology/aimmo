@@ -67,7 +67,7 @@ def restart_pods(game_creator_yaml):
     except subprocess.CalledProcessError:
         run_command("kubectl delete fleet aimmo-game --ignore-not-found".split(" "))
         run_command("kubectl delete --all deployment -n default".split(" "))
-        run_command(["kubectl", "replace", "-f", "agones/fleet.yml"])
+        run_command(["kubectl", "create", "-f", "agones/fleet.yml"])
 
     apps_api_instance = AppsV1Api()
     apps_api_instance.create_namespaced_deployment(
