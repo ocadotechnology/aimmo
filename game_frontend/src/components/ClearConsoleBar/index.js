@@ -36,7 +36,7 @@ const ClearConsoleBar = (props) => {
 }
 
 ClearConsoleBar.propTypes = {
-  clearConsoleLogs: PropTypes.func,
+  clearConsoleClicked: PropTypes.func,
 }
 
 export default ClearConsoleBar;
