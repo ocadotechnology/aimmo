@@ -2,6 +2,7 @@ import { Button, Toolbar } from '@material-ui/core';
 import ClearIcon from 'components/icons/Clear';
 import React from 'react';
 import styled from 'styled-components'
+import PropTypes from 'prop-types'
 
 export const StyledClearConsoleBar = styled(Toolbar)`
   background-color: ${(props) => props.theme.palette.grey.A700};
@@ -32,6 +33,10 @@ const ClearConsoleBar = (props) => {
       </StyledConsoleTitle>
     </StyledClearConsoleBar>
   )
+}
+
+ClearConsoleBar.propTypes = {
+  clearConsoleLogs: PropTypes.func,
 }
 
 export default ClearConsoleBar;
