@@ -24,7 +24,7 @@ export const LogTurn = styled(TableCell)`
 
 export const BottomSnapper = styled.tr`
   overflow-anchor: auto;
-  height: 1px;
+  height: 0px;
 `
 
 export const StyledTable = styled(Table)`

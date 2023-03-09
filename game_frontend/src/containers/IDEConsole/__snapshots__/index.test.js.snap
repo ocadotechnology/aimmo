@@ -2,9 +2,7 @@
 
 exports[`<IDEConsole /> renders correctly 1`] = `
 <styled.section>
-  <ConsoleBar
-    clearConsoleClicked={[Function]}
-  />
+  <ConsoleBar />
   <styled.div>
     <LogEntries
       logs={
@@ -16,6 +14,9 @@ exports[`<IDEConsole /> renders correctly 1`] = `
       shouldActivateSnapToBottom={false}
     />
   </styled.div>
+  <ClearConsoleBar
+    clearConsoleClicked={[Function]}
+  />
 </styled.section>
 `;
 
