@@ -26,10 +26,12 @@ export const MenuBar = styled.div`
   z-index: 10;
   padding: 0.5rem 1.5rem 0.5rem 0rem;
   gap: 1rem;
+  height: 12%;
 `
 
 export const MenuButton = styled(Button)`
   border: none;
+  height: 48px;
 `
 
 export class IDEEditor extends PureComponent {
@@ -104,7 +106,7 @@ export class IDEEditor extends PureComponent {
           highlightActiveLine
           value={this.state.code}
           width="100%"
-          height="56vh"
+          height="88%"
           setOptions={this.options()}
         />
       )
