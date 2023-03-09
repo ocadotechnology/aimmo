@@ -6,6 +6,7 @@ import { withTheme } from '@material-ui/core/styles'
 import RunCodeButton from 'components/RunCodeButton'
 import { connect } from 'react-redux'
 import { actions as editorActions } from 'features/Editor'
+import { actions as gameActions } from 'features/Game'
 import { PauseCircleFilled, SettingsBackupRestore } from '@material-ui/icons'
 
 import 'ace-builds/src-noconflict/mode-python'
@@ -44,6 +45,8 @@ export class IDEEditor extends PureComponent {
     theme: PropTypes.object,
     postCode: PropTypes.func,
     runCodeButtonStatus: PropTypes.object,
+    togglePauseGame: PropTypes.func,
+    gamePaused: PropTypes.bool,
   }
 
   state = {
@@ -119,6 +122,10 @@ export class IDEEditor extends PureComponent {
     }
   }
 
+  onPauseClicked = () => {
+    this.props.togglePauseGame()
+  }
+
   render() {
     return (
       <IDEEditorLayout>
@@ -133,10 +140,10 @@ export class IDEEditor extends PureComponent {
           </MenuButton>
           <MenuButton
             variant="outlined"
-            onClick={() => alert('Paused')}
+            onClick={this.onPauseClicked}
             startIcon={<PauseCircleFilled />}
           >
-            Pause
+            {this.props.gamePaused ? "Resume" : "Pause "}
           </MenuButton>
           <RunCodeButton
             runCodeButtonStatus={this.props.runCodeButtonStatus}
@@ -155,6 +162,7 @@ const mapStateToProps = (state) => ({
   codeOnServer: state.editor.code.codeOnServer,
   resetCodeTo: state.editor.code.resetCodeTo,
   runCodeButtonStatus: state.editor.runCodeButton,
+  gamePaused: state.game.gamePaused,
 })
 
 const mapDispatchToProps = {
@@ -162,6 +170,7 @@ const mapDispatchToProps = {
   codeReset: editorActions.codeReset,
   postCode: editorActions.postCodeRequest,
   resetCode: editorActions.resetCode,
+  togglePauseGame: gameActions.togglePauseGame,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme(IDEEditor))

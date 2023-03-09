@@ -40,8 +40,6 @@ export class IDEConsole extends Component {
   static propTypes = {
     logs: PropTypes.instanceOf(Map),
     clearConsoleLogs: PropTypes.func,
-    togglePauseGame: PropTypes.func,
-    gamePaused: PropTypes.bool,
   }
 
   // see https://blog.eqrion.net/pin-to-bottom/
@@ -103,7 +101,6 @@ export class IDEConsole extends Component {
 
 const mapStateToProps = (state) => ({
   logs: state.consoleLog.logs,
-  gamePaused: state.game.gamePaused,
 })
 
 const mapDispatchToProps = {
