@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ClearConsoleBar /> renders correctly 1`] = `
+<Styled(WithStyles(ForwardRef(Toolbar)))
+  variant="dense"
+>
+  <styled.div>
+    <Styled(WithStyles(ForwardRef(Button)))
+      startIcon={<ClearIcon />}
+      variant="outlined"
+    >
+      Clear console
+    </Styled(WithStyles(ForwardRef(Button)))>
+  </styled.div>
+</Styled(WithStyles(ForwardRef(Toolbar)))>
+`;

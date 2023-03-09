@@ -15,16 +15,6 @@ exports[`<ConsoleBar /> renders correctly 1`] = `
       Console Log
     </WithStyles(ForwardRef(Typography))>
   </styled.div>
-  <WithStyles(ForwardRef(Button))
-    variant="outlined"
-  >
-    Reset code
-  </WithStyles(ForwardRef(Button))>
-  <WithStyles(ForwardRef(IconButton))
-    size="small"
-  >
-    <ClearIcon />
-  </WithStyles(ForwardRef(IconButton))>
 </Styled(WithStyles(ForwardRef(Toolbar)))>
 `;
 
@@ -244,7 +234,7 @@ exports[`<StyledConsoleBar /> renders correctly 1`] = `
           "fontSize": "0.875rem",
           "fontWeight": 500,
           "lineHeight": 1.75,
-          "textTransform": "capitalize",
+          "textTransform": "none",
         },
         "caption": Object {
           "fontFamily": "museo-sans,Source Code Pro",
@@ -540,7 +530,7 @@ exports[`<StyledConsoleIcon /> renders correctly 1`] = `
           "fontSize": "0.875rem",
           "fontWeight": 500,
           "lineHeight": 1.75,
-          "textTransform": "capitalize",
+          "textTransform": "none",
         },
         "caption": Object {
           "fontFamily": "museo-sans,Source Code Pro",

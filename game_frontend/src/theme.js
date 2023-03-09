@@ -36,7 +36,7 @@ const theme = {
     },
     button: {
       fontWeight: 500,
-      textTransform: 'capitalize',
+      textTransform: 'none',
     },
     caption: {
       fontWeight: 500,

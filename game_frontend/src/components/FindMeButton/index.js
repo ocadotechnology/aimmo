@@ -27,7 +27,7 @@ export default class FindMeButton extends Component {
         onClick={this.props.whenClicked}
       >
         <MarginedLocationIcon color="inherit" />
-        Find Me
+        Find me
       </Fab>
     )
   }

@@ -3,7 +3,7 @@
 exports[`<BottomSnapper /> renders correctly 1`] = `
 .c0 {
   overflow-anchor: auto;
-  height: 1px;
+  height: 0px;
 }
 
 <tr
@@ -220,7 +220,7 @@ exports[`<LogData /> renders correctly 1`] = `
           "fontSize": "0.875rem",
           "fontWeight": 500,
           "lineHeight": 1.75,
-          "textTransform": "capitalize",
+          "textTransform": "none",
         },
         "caption": Object {
           "fontFamily": "museo-sans,Source Code Pro",
@@ -322,7 +322,7 @@ Object {
   "instances": Array [
     .c0 {
   overflow-anchor: auto;
-  height: 1px;
+  height: 0px;
 }
 
 <tr
@@ -602,7 +602,7 @@ exports[`<LogEntry /> renders correctly 1`] = `
           "fontSize": "0.875rem",
           "fontWeight": 500,
           "lineHeight": 1.75,
-          "textTransform": "capitalize",
+          "textTransform": "none",
         },
         "caption": Object {
           "fontFamily": "museo-sans,Source Code Pro",
@@ -903,7 +903,7 @@ exports[`<LogTurn /> renders correctly 1`] = `
           "fontSize": "0.875rem",
           "fontWeight": 500,
           "lineHeight": 1.75,
-          "textTransform": "capitalize",
+          "textTransform": "none",
         },
         "caption": Object {
           "fontFamily": "museo-sans,Source Code Pro",
@@ -1202,7 +1202,7 @@ exports[`<StyledTable /> renders correctly 1`] = `
           "fontSize": "0.875rem",
           "fontWeight": 500,
           "lineHeight": 1.75,
-          "textTransform": "capitalize",
+          "textTransform": "none",
         },
         "caption": Object {
           "fontFamily": "museo-sans,Source Code Pro",

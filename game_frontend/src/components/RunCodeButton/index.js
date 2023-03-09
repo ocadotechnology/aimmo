@@ -72,7 +72,7 @@ export default class RunCodeButton extends Component {
         return (
           <>
             <MarginedPlayIcon />
-            Run Code
+            Run code
           </>
         )
       case RunCodeButtonStatus.updating:
