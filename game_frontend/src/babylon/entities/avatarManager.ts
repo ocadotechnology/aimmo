@@ -14,6 +14,7 @@ import { Environment } from '../environment/environment'
 import { DiffItem } from '../diff'
 import setOrientation from '../orientation'
 import { createMoveAnimation, createWalkAnimation, MAX_KEYFRAMES_PER_SECOND } from '../animations'
+import * as BABYLON from 'babylonjs'
 
 const MARKER_HEIGHT = 17
 
@@ -134,23 +135,29 @@ export default class AvatarManager implements GameNode, DiffHandling {
     marker.position = new Vector3(0, MARKER_HEIGHT, 0)
 
     const frameRate = 10
-    const ySlide = new BABYLON.Animation("ySlide", "position.y", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-    const keyFrames = [];
+    const ySlide = new BABYLON.Animation(
+      'ySlide',
+      'position.y',
+      frameRate,
+      BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+      BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE
+    )
+    const keyFrames = []
     keyFrames.push({
       frame: 0,
       value: 17,
-    });
+    })
     keyFrames.push({
       frame: frameRate,
       value: 18.5,
-    });
+    })
     keyFrames.push({
       frame: 2 * frameRate,
       value: 17,
-    });
-    ySlide.setKeys(keyFrames);
-    marker.animations.push(ySlide);
-    this.scene.beginAnimation(marker, 0, 2 * frameRate, true, 1.25);
+    })
+    ySlide.setKeys(keyFrames)
+    marker.animations.push(ySlide)
+    this.scene.beginAnimation(marker, 0, 2 * frameRate, true, 1.25)
   }
 
   setCurrentAvatarID(avatarID: number) {
