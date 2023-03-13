@@ -154,9 +154,13 @@ def next_turn(world_state, avatar_state):
 #       - action = PickupAction()
 #-------------------------------------------------------------------------------
 def next_turn(world_state, avatar_state):
-    new_dir = direction.NORTH
-    #  Your code goes here
-    action = MoveAction(new_dir)
+    #  scan_nearby() returns a list of the nearest artefacts
+    nearby = world_state.scan_nearby(avatar_state.location)
+
+    #  Head towards the nearest artefact
+    nearest = nearby[0]
+    action = MoveTowardsAction(nearest)
+    
     return action
 """,
         active_image_path="images/worksheets/ancient_active.png",
