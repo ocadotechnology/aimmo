@@ -1,5 +1,6 @@
 import { GameNode, DiffHandling, DiffProcessor } from '../interfaces'
 import {
+  Animation,
   AbstractMesh,
   SceneLoader,
   TransformNode,
@@ -15,7 +16,7 @@ import { DiffItem } from '../diff'
 import setOrientation from '../orientation'
 import { createMoveAnimation, createWalkAnimation, MAX_KEYFRAMES_PER_SECOND } from '../animations'
 
-const MARKER_HEIGHT = 12
+const MARKER_HEIGHT = 17
 
 export default class AvatarManager implements GameNode, DiffHandling {
   object: any
@@ -129,8 +130,35 @@ export default class AvatarManager implements GameNode, DiffHandling {
     marker.material = this.markerMaterial
 
     marker.parent = avatarMesh
-    marker.scaling = new Vector3(1.25, 1.25, 1.25)
+    const markerScale = 300
+    marker.scaling = new Vector3(markerScale, markerScale, markerScale)
     marker.position = new Vector3(0, MARKER_HEIGHT, 0)
+
+    const frameRate = 10
+    const ySlide = new Animation(
+      'ySlide',
+      'position.y',
+      frameRate,
+      Animation.ANIMATIONTYPE_FLOAT,
+      Animation.ANIMATIONLOOPMODE_CYCLE
+    )
+    const keyFrames = []
+    keyFrames.push({
+      frame: 0,
+      value: MARKER_HEIGHT,
+    })
+    keyFrames.push({
+      frame: frameRate,
+      value: MARKER_HEIGHT + 1.5,
+    })
+    keyFrames.push({
+      frame: 2 * frameRate,
+      value: MARKER_HEIGHT,
+    })
+    ySlide.setKeys(keyFrames)
+
+    marker.animations.push(ySlide)
+    this.scene.beginAnimation(marker, 0, 2 * frameRate, true, 1.25)
   }
 
   setCurrentAvatarID(avatarID: number) {
