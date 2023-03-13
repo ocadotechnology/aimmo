@@ -1,5 +1,6 @@
 import { GameNode, DiffHandling, DiffProcessor } from '../interfaces'
 import {
+  Animation,
   AbstractMesh,
   SceneLoader,
   TransformNode,
@@ -14,7 +15,6 @@ import { Environment } from '../environment/environment'
 import { DiffItem } from '../diff'
 import setOrientation from '../orientation'
 import { createMoveAnimation, createWalkAnimation, MAX_KEYFRAMES_PER_SECOND } from '../animations'
-import * as BABYLON from 'babylonjs'
 
 const MARKER_HEIGHT = 17
 
@@ -122,7 +122,7 @@ export default class AvatarManager implements GameNode, DiffHandling {
     const { meshes } = await this.importMesh(
       'avatar_marker',
       '/static/babylon/models/',
-      'avatar_marker_model_new.babylon',
+      'avatar_marker_model.babylon',
       this.scene
     )
     const marker = meshes[0]
@@ -135,27 +135,28 @@ export default class AvatarManager implements GameNode, DiffHandling {
     marker.position = new Vector3(0, MARKER_HEIGHT, 0)
 
     const frameRate = 10
-    const ySlide = new BABYLON.Animation(
+    const ySlide = new Animation(
       'ySlide',
       'position.y',
       frameRate,
-      BABYLON.Animation.ANIMATIONTYPE_FLOAT,
-      BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE
+      Animation.ANIMATIONTYPE_FLOAT,
+      Animation.ANIMATIONLOOPMODE_CYCLE
     )
     const keyFrames = []
     keyFrames.push({
       frame: 0,
-      value: 17,
+      value: MARKER_HEIGHT,
     })
     keyFrames.push({
       frame: frameRate,
-      value: 18.5,
+      value: MARKER_HEIGHT + 1.5,
     })
     keyFrames.push({
       frame: 2 * frameRate,
-      value: 17,
+      value: MARKER_HEIGHT,
     })
     ySlide.setKeys(keyFrames)
+
     marker.animations.push(ySlide)
     this.scene.beginAnimation(marker, 0, 2 * frameRate, true, 1.25)
   }
