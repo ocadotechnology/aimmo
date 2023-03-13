@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.16 (2023-03-13)
+### Fix
+* Update kurono avatar ([#1749](https://github.com/ocadotechnology/aimmo/issues/1749)) ([`8595805`](https://github.com/ocadotechnology/aimmo/commit/859580592287b7984f7e5ca7f464091ba0d14023))
+
 ## v2.5.15 (2023-02-17)
 ### Fix
 * Debug commit author in github action ([#1742](https://github.com/ocadotechnology/aimmo/issues/1742)) ([`f7eeb98`](https://github.com/ocadotechnology/aimmo/commit/f7eeb9881a8f88a49053ef9dc3e30d3041b295b3))
