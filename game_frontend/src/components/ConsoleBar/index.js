@@ -3,7 +3,6 @@ import Toolbar from '@material-ui/core/Toolbar/Toolbar'
 import { Typography } from '@material-ui/core'
 import ConsoleIcon from 'components/icons/Console'
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 
 export const StyledConsoleBar = styled(Toolbar)`
   background-color: ${(props) => props.theme.palette.grey.A700};
@@ -20,10 +19,6 @@ export const StyledConsoleIcon = styled(ConsoleIcon)`
 `
 
 export default class ConsoleBar extends Component {
-  static propTypes = {
-    clearConsoleClicked: PropTypes.func,
-  }
-
   render() {
     return (
       <StyledConsoleBar variant="dense">

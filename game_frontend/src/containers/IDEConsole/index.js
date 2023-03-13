@@ -5,6 +5,7 @@ import LogEntries from 'components/LogEntries'
 import ConsoleBar from 'components/ConsoleBar'
 import { connect } from 'react-redux'
 import { actions } from 'redux/features/ConsoleLog'
+import ClearConsoleBar from 'components/ClearConsoleBar'
 
 export const IDEConsoleSection = styled.section`
   grid-area: ide-console;
@@ -81,7 +82,7 @@ export class IDEConsole extends Component {
   render() {
     return (
       <IDEConsoleSection>
-        <ConsoleBar clearConsoleClicked={this.clearConsole} />
+        <ConsoleBar />
         <StyledConsole
           ref={(ref) => {
             this.consoleRef = ref
@@ -92,6 +93,7 @@ export class IDEConsole extends Component {
             logs={this.props.logs}
           />
         </StyledConsole>
+        <ClearConsoleBar clearConsoleClicked={this.clearConsole} />
       </IDEConsoleSection>
     )
   }

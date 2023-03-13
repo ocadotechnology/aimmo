@@ -10,7 +10,7 @@ exports[`<IDEEditor /> matches snapshot when code is loaded 1`] = `
     enableSnippets={false}
     focus={false}
     fontSize="18px"
-    height="56vh"
+    height="88%"
     highlightActiveLine={true}
     maxLines={null}
     minLines={null}
@@ -71,12 +71,6 @@ exports[`<IDEEditor /> matches snapshot when code is loaded 1`] = `
   </styled.div>
 </styled.div>
 `;
-
-
-
-
-
-
 
 exports[`<IDEEditor /> matches snapshot when code isn't loaded 1`] = `
 <styled.div>
