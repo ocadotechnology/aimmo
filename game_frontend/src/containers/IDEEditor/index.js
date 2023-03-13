@@ -131,11 +131,7 @@ export class IDEEditor extends PureComponent {
           >
             Reset code
           </MenuButton>
-          <MenuButton
-            variant="outlined"
-            onClick={() => alert('Paused')}
-            startIcon={<PauseCircleFilled />}
-          >
+          <MenuButton variant="outlined" startIcon={<PauseCircleFilled />}>
             Pause
           </MenuButton>
           <RunCodeButton
