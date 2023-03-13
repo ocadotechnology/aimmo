@@ -11,8 +11,6 @@ const PYODIDE_WORKER_PROCESSING_TIME = 1000
  * @param {*} resetWorker The function that resets the pyodide worker
  */
 
-export const pauseWorkerToggle = (state$) => {}
-
 export const timeoutIfWorkerTakesTooLong =
   (state$, resetWorker, scheduler) => (computedTurnResult$) =>
     computedTurnResult$.pipe(
