@@ -82,7 +82,6 @@ exports[`<IDEEditor /> matches snapshot when code isn't loaded 1`] = `
       Reset code
     </Styled(WithStyles(ForwardRef(Button)))>
     <Styled(WithStyles(ForwardRef(Button)))
-      onClick={[Function]}
       startIcon={<UNDEFINED />}
       variant="outlined"
     >
