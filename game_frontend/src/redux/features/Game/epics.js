@@ -1,6 +1,6 @@
 import actions from './actions'
 import types from './types'
-import { avatarWorkerTypes } from 'features/AvatarWorker'
+import { avatarWorkerTypes, avatarWorkerActions } from 'redux/features/AvatarWorker'
 import { editorTypes } from 'features/Editor'
 import { Scheduler, of } from 'rxjs'
 import {
@@ -17,8 +17,6 @@ import {
 } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 import { actions as analyticActions } from 'redux/features/Analytics'
-import { consoleLogTypes } from 'redux/features/ConsoleLog'
-import { actions as consoleLogActions } from 'redux/features/ConsoleLog'
 
 const backgroundScheduler = Scheduler.async
 
@@ -88,7 +86,7 @@ const gamePausedEpic = (action$, state$) =>
     ofType(types.TOGGLE_PAUSE_GAME),
     filter(() => state$.value.game.gamePaused === true),
     map(() =>
-      consoleLogActions.appendPauseMessage(state$.value.game.gameState.turnCount)
+      avatarWorkerActions.avatarsNextActionComputed({ turnCount: state$.value.game.gameState.turnCount + 1, log: "You have paused the game" })
     )
   );
 
