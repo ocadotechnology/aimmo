@@ -47,6 +47,12 @@ const consoleLogReducer = (state = { logs: new Map(), gameLog: '' }, action) => 
         ...state,
         logs: new Map(),
       }
+    case types.APPEND_PAUSE_MESSAGE: {
+      console.log('APPEND_PAUSE_MESSAGE', action.payload.turnCount);
+      return {
+        ...state,
+      }
+    }
     default:
       return state
   }

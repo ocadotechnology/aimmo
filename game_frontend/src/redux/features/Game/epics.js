@@ -13,9 +13,12 @@ import {
   timeInterval,
   retryWhen,
   delay,
+  filter,
 } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 import { actions as analyticActions } from 'redux/features/Analytics'
+import { consoleLogTypes } from 'redux/features/ConsoleLog'
+import { actions as consoleLogActions } from 'redux/features/ConsoleLog'
 
 const backgroundScheduler = Scheduler.async
 
@@ -80,10 +83,20 @@ const codeUpdatingIntervalEpic = (action$, state$, dependencies, scheduler = bac
     )
   )
 
+const gamePausedEpic = (action$, state$) =>
+  action$.pipe(
+    ofType(types.TOGGLE_PAUSE_GAME),
+    filter(() => state$.value.game.gamePaused === true),
+    map(() =>
+      consoleLogActions.appendPauseMessage(state$.value.game.gameState.turnCount)
+    )
+  );
+
 export default {
   getConnectionParametersEpic,
   connectToGameEpic,
   gameLoadedEpic,
   gameLoadedIntervalEpic,
   codeUpdatingIntervalEpic,
+  gamePausedEpic,
 }
