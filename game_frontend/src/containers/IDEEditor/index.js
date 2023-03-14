@@ -47,6 +47,7 @@ export class IDEEditor extends PureComponent {
     runCodeButtonStatus: PropTypes.object,
     togglePauseGame: PropTypes.func,
     gamePaused: PropTypes.bool,
+    gameResume: PropTypes.func,
   }
 
   state = {
@@ -89,6 +90,7 @@ export class IDEEditor extends PureComponent {
 
   postCode = () => {
     this.props.postCode(this.state.code)
+    this.props.gameResume()
   }
 
   codeChanged = (code) => {
@@ -171,6 +173,7 @@ const mapDispatchToProps = {
   postCode: editorActions.postCodeRequest,
   resetCode: editorActions.resetCode,
   togglePauseGame: gameActions.togglePauseGame,
+  gameResume: gameActions.gameResume,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme(IDEEditor))

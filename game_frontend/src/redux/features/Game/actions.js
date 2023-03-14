@@ -37,6 +37,10 @@ const togglePauseGame = () => ({
   type: types.TOGGLE_PAUSE_GAME,
 })
 
+const gameResume = () => ({
+  type: types.GAME_RESUME,
+})
+
 const setTimeout = () => ({
   type: types.SET_TIMEOUT,
 })
@@ -60,4 +64,5 @@ export default {
   mapPanned,
   centerCameraOnUserAvatar,
   togglePauseGame,
+  gameResume,
 }
