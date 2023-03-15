@@ -90,6 +90,13 @@ const gamePausedEpic = (action$, state$) =>
     )
   );
 
+const gamePausedAnalyticsEpic = (action$, state$) =>
+  action$.pipe(
+    ofType(types.TOGGLE_PAUSE_GAME),
+    filter(() => state$.value.game.gamePaused === true),
+    mapTo(analyticActions.sendAnalyticsEvent('Kurono', 'Click', 'Pause'))
+  );
+
 export default {
   getConnectionParametersEpic,
   connectToGameEpic,
@@ -97,4 +104,5 @@ export default {
   gameLoadedIntervalEpic,
   codeUpdatingIntervalEpic,
   gamePausedEpic,
+  gamePausedAnalyticsEpic,
 }
