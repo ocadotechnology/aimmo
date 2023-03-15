@@ -145,7 +145,7 @@ export class IDEEditor extends PureComponent {
             onClick={this.onPauseClicked}
             startIcon={<PauseCircleFilled />}
           >
-            {this.props.gamePaused ? "Resume" : "Pause "}
+            {this.props.gamePaused ? "Resume" : "Pause"}
           </MenuButton>
           <RunCodeButton
             runCodeButtonStatus={this.props.runCodeButtonStatus}

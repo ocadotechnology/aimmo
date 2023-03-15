@@ -7,7 +7,6 @@ exports[`<ClearConsoleBar /> renders correctly 1`] = `
   <styled.div>
     <Styled(WithStyles(ForwardRef(Button)))
       startIcon={<ClearIcon />}
-      variant="outlined"
     >
       Clear console
     </Styled(WithStyles(ForwardRef(Button)))>

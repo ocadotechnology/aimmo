@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
 export const StyledClearConsoleBar = styled(Toolbar)`
-  background-color: ${(props) => props.theme.palette.grey.A700};
+  background: #2f3129;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -24,7 +24,6 @@ const ClearConsoleBar = (props) => {
     <StyledClearConsoleBar variant="dense">
       <StyledConsoleTitle>
         <ClearButton
-          variant="outlined"
           onClick={props.clearConsoleClicked}
           startIcon={<ClearIcon />}
         >
