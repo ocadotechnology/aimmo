@@ -10,6 +10,7 @@ import { IconButton, Button } from '@material-ui/core'
 import KuronoLogo from 'components/icons/KuronoLogo'
 import BadgeModal, { getBadges } from 'components/Badge'
 import { avatarWorkerActions } from 'features/AvatarWorker'
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 export const NavigationBarLayout = styled.nav`
   grid-area: navigation-bar;
@@ -97,7 +98,7 @@ export class NavigationBar extends Component {
   renderButtonToolbar = () => {
     return (
       <Toolbar>
-        <Button href={urlForAimmoDashboard} variant="outlined">
+        <Button href={urlForAimmoDashboard} startIcon={<ExitToAppIcon />}>
           Exit game
         </Button>
       </Toolbar>

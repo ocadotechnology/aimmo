@@ -24,7 +24,6 @@ const ClearConsoleBar = (props) => {
     <StyledClearConsoleBar variant="dense">
       <StyledConsoleTitle>
         <ClearButton
-          variant="outlined"
           onClick={props.clearConsoleClicked}
           startIcon={<ClearIcon />}
         >

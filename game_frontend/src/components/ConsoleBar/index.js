@@ -25,7 +25,7 @@ export default class ConsoleBar extends Component {
         <StyledConsoleTitle>
           <StyledConsoleIcon color="disabled" />
           <Typography variant="body1" color="textSecondary">
-            Console Log
+            Console log
           </Typography>
         </StyledConsoleTitle>
       </StyledConsoleBar>
