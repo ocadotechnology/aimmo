@@ -12,7 +12,7 @@ exports[`<ConsoleBar /> renders correctly 1`] = `
       color="textSecondary"
       variant="body1"
     >
-      Console Log
+      Console log
     </WithStyles(ForwardRef(Typography))>
   </styled.div>
 </Styled(WithStyles(ForwardRef(Toolbar)))>
