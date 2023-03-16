@@ -50,4 +50,22 @@ describe('gameReducer', () => {
     const action = actions.centerCameraOnUserAvatar()
     expect(gameReducer({ initialState: 'someValue' }, action)).toEqual(expectedState)
   })
+
+  it('should set gamePaused to opposite on TOGGLE_PAUSE_GAME', () => {
+    const expectedState = {
+      gamePaused: true,
+    }
+
+    const action = actions.togglePauseGame()
+    expect(gameReducer({ gamePaused: false }, action)).toEqual(expectedState)
+  })
+
+  it('should set gamePaused to false on GAME_RESUME', () => {
+    const expectedState = {
+      gamePaused: false,
+    }
+
+    const action = actions.gameResume()
+    expect(gameReducer({ gamePaused: true }, action)).toEqual(expectedState)
+  })
 })
