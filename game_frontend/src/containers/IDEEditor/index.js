@@ -135,7 +135,8 @@ export class IDEEditor extends PureComponent {
           <MenuButton
             id="game-pause-button"
             variant="outlined"
-            startIcon={<PauseCircleFilled />}>
+            startIcon={<PauseCircleFilled />}
+          >
             Pause
           </MenuButton>
           <RunCodeButton
