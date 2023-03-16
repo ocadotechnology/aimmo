@@ -5,7 +5,7 @@ import LogEntries from 'components/LogEntries'
 import ConsoleBar from 'components/ConsoleBar'
 import { connect } from 'react-redux'
 import { actions } from 'redux/features/ConsoleLog'
-import { actions as editorActions } from 'redux/features/Editor'
+import ClearConsoleBar from 'components/ClearConsoleBar'
 
 export const IDEConsoleSection = styled.section`
   grid-area: ide-console;
@@ -39,7 +39,6 @@ export const StyledConsole = styled.div`
 export class IDEConsole extends Component {
   static propTypes = {
     logs: PropTypes.instanceOf(Map),
-    resetCode: PropTypes.func,
     clearConsoleLogs: PropTypes.func,
   }
 
@@ -80,19 +79,10 @@ export class IDEConsole extends Component {
     this.setState({ ...this.state, activatedScrollToBottom: false })
   }
 
-  resetCode = () => {
-    if (confirm('Are you sure you want to reset to the starter code?')) {
-      this.props.resetCode()
-    }
-  }
-
   render() {
     return (
       <IDEConsoleSection>
-        <ConsoleBar
-          clearConsoleClicked={this.clearConsole}
-          handleResetCodeClicked={this.resetCode}
-        />
+        <ConsoleBar />
         <StyledConsole
           ref={(ref) => {
             this.consoleRef = ref
@@ -103,6 +93,7 @@ export class IDEConsole extends Component {
             logs={this.props.logs}
           />
         </StyledConsole>
+        <ClearConsoleBar clearConsoleClicked={this.clearConsole} />
       </IDEConsoleSection>
     )
   }
@@ -114,7 +105,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   clearConsoleLogs: actions.clearConsoleLogs,
-  resetCode: editorActions.resetCode,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(IDEConsole)

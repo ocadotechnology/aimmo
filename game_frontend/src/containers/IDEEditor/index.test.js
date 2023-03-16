@@ -40,6 +40,19 @@ describe('<IDEEditor />', () => {
     component.find('#post-code-button').simulate('click')
     expect(postCode).not.toBeCalled()
   })
+
+  it('resetCode called after clicking reset code', () => {
+    const props = {
+      resetCode: jest.fn(),
+      getCode: jest.fn(),
+    }
+    window.confirm = jest.fn(() => true)
+
+    const component = createShallowWithTheme(<IDEEditor {...props} />, 'dark')
+
+    component.find('#reset-code-button').simulate('click')
+    expect(props.resetCode).toBeCalled()
+  })
 })
 
 describe('<IDEEditorLayout />', () => {

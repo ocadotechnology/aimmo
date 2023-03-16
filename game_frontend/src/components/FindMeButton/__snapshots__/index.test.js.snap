@@ -10,7 +10,7 @@ exports[`<FindMeButton /> matches snapshot 1`] = `
   <Styled(FindMeIcon)
     color="inherit"
   />
-  Find Me
+  Find me
 </WithStyles(ForwardRef(Fab))>
 `;
 
@@ -223,7 +223,7 @@ exports[`<MarginedLocationIcon /> matches snapshot 1`] = `
           "fontSize": "0.875rem",
           "fontWeight": 500,
           "lineHeight": 1.75,
-          "textTransform": "capitalize",
+          "textTransform": "none",
         },
         "caption": Object {
           "fontFamily": "museo-sans,Source Code Pro",

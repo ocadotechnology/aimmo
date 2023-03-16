@@ -209,7 +209,7 @@ exports[`<MarginedBugIcon /> matches snapshot 1`] = `
           "fontSize": "0.875rem",
           "fontWeight": 500,
           "lineHeight": 1.75,
-          "textTransform": "capitalize",
+          "textTransform": "none",
         },
         "caption": Object {
           "fontFamily": "museo-sans,Source Code Pro",
@@ -506,7 +506,7 @@ exports[`<MarginedCheckCircle /> matches snapshot 1`] = `
           "fontSize": "0.875rem",
           "fontWeight": 500,
           "lineHeight": 1.75,
-          "textTransform": "capitalize",
+          "textTransform": "none",
         },
         "caption": Object {
           "fontFamily": "museo-sans,Source Code Pro",
@@ -803,7 +803,7 @@ exports[`<MarginedCircularProgress /> matches snapshot 1`] = `
           "fontSize": "0.875rem",
           "fontWeight": 500,
           "lineHeight": 1.75,
-          "textTransform": "capitalize",
+          "textTransform": "none",
         },
         "caption": Object {
           "fontFamily": "museo-sans,Source Code Pro",
@@ -1100,7 +1100,7 @@ exports[`<MarginedPlayIcon /> matches snapshot 1`] = `
           "fontSize": "0.875rem",
           "fontWeight": 500,
           "lineHeight": 1.75,
-          "textTransform": "capitalize",
+          "textTransform": "none",
         },
         "caption": Object {
           "fontFamily": "museo-sans,Source Code Pro",
@@ -1198,7 +1198,7 @@ exports[`<RunCodeButton /> becomes disabled when code is the same as the server 
   variant="extended"
 >
   <Styled(PlayIcon) />
-  Run Code
+  Run code
 </WithStyles(ForwardRef(Fab))>
 `;
 
@@ -1212,7 +1212,7 @@ exports[`<RunCodeButton /> becomes enabled when code is different from the serve
   variant="extended"
 >
   <Styled(PlayIcon) />
-  Run Code
+  Run code
 </WithStyles(ForwardRef(Fab))>
 `;
 
@@ -1240,7 +1240,7 @@ exports[`<RunCodeButton /> renders with a normal status 1`] = `
   variant="extended"
 >
   <Styled(PlayIcon) />
-  Run Code
+  Run code
 </WithStyles(ForwardRef(Fab))>
 `;
 
