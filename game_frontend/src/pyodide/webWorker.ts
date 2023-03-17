@@ -52,7 +52,7 @@ def capture_output(stdout=None, stderr=None):
 `)
 }
 
-async function computeNextAction(gameState, playerAvatarID, gamePaused): Promise<ComputedTurnResult> {
+export async function computeNextAction(gameState, playerAvatarID, gamePaused): Promise<ComputedTurnResult> {
   const avatarState = getAvatarStateFromGameState(gameState, playerAvatarID)
   if (gamePaused) {
     return Promise.resolve({

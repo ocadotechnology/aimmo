@@ -1,6 +1,5 @@
 /* eslint-env jest */
-import { computeNextAction$ } from './pyodideRunner'
-import { simplifyErrorMessageInLog } from './webWorker'
+import { computeNextAction, simplifyErrorMessageInLog } from './webWorker'
 jest.mock('threads/worker')
 
 describe('Error formatting', () => {
@@ -23,7 +22,8 @@ AttributeError: module 'simulation.direction' has no attribute 'NRTH'
 })
 
 describe('pyodide webWorker', () => {
-  it('returns wait action if game is paused', (done) => {
+  it('returns wait action if game is paused', async () => {
+    expect.assertions(1);
     const isGamePaused = true
     const playerAvatarID = 1
     const turnCount = 5
@@ -49,9 +49,14 @@ describe('pyodide webWorker', () => {
       "turnCount": turnCount,
     }
 
-    computeNextAction$(gameState, playerAvatarID, isGamePaused).subscribe(data => {
-      expect(data.action.action.action_type).toEqual('wait')
-      done();
-    })
+    const expected = {
+      action: {
+        action_type: "wait",
+      },
+      log: '',
+      turnCount: turnCount + 1,
+    }
+
+    return expect(computeNextAction(gameState, playerAvatarID, isGamePaused)).resolves.toEqual(expected);
   })
 })
