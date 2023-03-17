@@ -170,7 +170,8 @@ describe('gamePausedEpic', () => {
         a: actions.togglePauseGame(),
       })
 
-      const turnCount = 5, logMessage = "You have paused the game"
+      const turnCount = 5
+      const logMessage = "You have paused the game"
       const state$ = {
         value: {
           game: {
