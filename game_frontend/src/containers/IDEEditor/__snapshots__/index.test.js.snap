@@ -49,6 +49,7 @@ exports[`<IDEEditor /> matches snapshot when code is loaded 1`] = `
   />
   <styled.div>
     <Styled(WithStyles(ForwardRef(Button)))
+      id="reset-code-button"
       onClick={[Function]}
       startIcon={<UNDEFINED />}
       variant="outlined"
@@ -56,6 +57,7 @@ exports[`<IDEEditor /> matches snapshot when code is loaded 1`] = `
       Reset code
     </Styled(WithStyles(ForwardRef(Button)))>
     <Styled(WithStyles(ForwardRef(Button)))
+      id="game-pause-button"
       onClick={[Function]}
       startIcon={<UNDEFINED />}
       variant="outlined"
@@ -76,6 +78,7 @@ exports[`<IDEEditor /> matches snapshot when code isn't loaded 1`] = `
 <styled.div>
   <styled.div>
     <Styled(WithStyles(ForwardRef(Button)))
+      id="reset-code-button"
       onClick={[Function]}
       startIcon={<UNDEFINED />}
       variant="outlined"
@@ -83,6 +86,7 @@ exports[`<IDEEditor /> matches snapshot when code isn't loaded 1`] = `
       Reset code
     </Styled(WithStyles(ForwardRef(Button)))>
     <Styled(WithStyles(ForwardRef(Button)))
+      id="game-pause-button"
       onClick={[Function]}
       startIcon={<UNDEFINED />}
       variant="outlined"

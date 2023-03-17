@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.17 (2023-03-16)
+### Fix
+* Kurono ui update ([#1745](https://github.com/ocadotechnology/aimmo/issues/1745)) ([`536e78e`](https://github.com/ocadotechnology/aimmo/commit/536e78ef01d6ed26a2277786476b2ba944e45d44))
+
 ## v2.5.16 (2023-03-13)
 ### Fix
 * Update kurono avatar ([#1749](https://github.com/ocadotechnology/aimmo/issues/1749)) ([`8595805`](https://github.com/ocadotechnology/aimmo/commit/859580592287b7984f7e5ca7f464091ba0d14023))

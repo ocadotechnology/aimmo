@@ -134,6 +134,7 @@ export class IDEEditor extends PureComponent {
         {this.renderEditor()}
         <MenuBar>
           <MenuButton
+            id="reset-code-button"
             variant="outlined"
             onClick={this.onResetCodeClicked}
             startIcon={<SettingsBackupRestore />}
@@ -141,6 +142,7 @@ export class IDEEditor extends PureComponent {
             Reset code
           </MenuButton>
           <MenuButton
+            id="game-pause-button"
             variant="outlined"
             onClick={this.onPauseClicked}
             startIcon={<PauseCircleFilled />}
