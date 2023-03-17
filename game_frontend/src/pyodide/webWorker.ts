@@ -111,8 +111,6 @@ export async function updateAvatarCode(
   try {
     await pyodide.runPythonAsync(userCode)
     if (gameState) {
-      // the game should resume after updating the code
-      // TODO: also update the state
       return computeNextAction(gameState, playerAvatarID, false)
     }
     return Promise.resolve({

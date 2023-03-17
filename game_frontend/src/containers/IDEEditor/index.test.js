@@ -53,6 +53,18 @@ describe('<IDEEditor />', () => {
     component.find('#reset-code-button').simulate('click')
     expect(props.resetCode).toBeCalled()
   })
+
+  it('togglePauseGame called after clicking pause', () => {
+    const props = {
+      getCode: jest.fn(),
+      togglePauseGame: jest.fn()
+    }
+
+    const component = createShallowWithTheme(<IDEEditor {...props} />, 'dark')
+
+    component.find('#game-pause-button').simulate('click')
+    expect(props.togglePauseGame).toBeCalled()
+  })
 })
 
 describe('<IDEEditorLayout />', () => {
