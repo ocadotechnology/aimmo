@@ -7,7 +7,7 @@ import RunCodeButton from 'components/RunCodeButton'
 import { connect } from 'react-redux'
 import { actions as editorActions } from 'features/Editor'
 import { actions as gameActions } from 'features/Game'
-import { PauseCircleFilled, SettingsBackupRestore } from '@material-ui/icons'
+import { PauseCircleFilled, SettingsBackupRestore, Refresh } from '@material-ui/icons'
 
 import 'ace-builds/src-noconflict/mode-python'
 // The monokai theme is modified and overridden, see handlebars_template.html
@@ -145,7 +145,7 @@ export class IDEEditor extends PureComponent {
             id="game-pause-button"
             variant="outlined"
             onClick={this.onPauseClicked}
-            startIcon={<PauseCircleFilled />}
+            startIcon={this.props.gamePaused ? <Refresh /> : <PauseCircleFilled />}
           >
             {this.props.gamePaused ? "Resume" : "Pause"}
           </MenuButton>

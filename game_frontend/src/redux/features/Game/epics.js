@@ -84,16 +84,17 @@ const codeUpdatingIntervalEpic = (action$, state$, dependencies, scheduler = bac
 const gamePausedEpic = (action$, state$) =>
   action$.pipe(
     ofType(types.TOGGLE_PAUSE_GAME),
-    filter(() => state$.value.game.gamePaused === true),
     map(() =>
-      avatarWorkerActions.avatarsNextActionComputed({ turnCount: state$.value.game.gameState.turnCount + 1, log: "You have paused the game" })
+      state$.value.game.gamePaused
+        ? avatarWorkerActions.avatarsNextActionComputed({ turnCount: state$.value.game.gameState.turnCount + 1, log: "You have paused the game" })
+        : avatarWorkerActions.avatarsNextActionComputed({ turnCount: state$.value.game.gameState.turnCount + 1, log: "You have resumed the game" })
     )
   );
 
 const gamePausedAnalyticsEpic = (action$, state$) =>
   action$.pipe(
     ofType(types.TOGGLE_PAUSE_GAME),
-    filter(() => state$.value.game.gamePaused === true),
+    filter(() => state$.value.game.gamePaused),
     mapTo(analyticActions.sendAnalyticsEvent('Kurono', 'Click', 'Pause'))
   );
 
