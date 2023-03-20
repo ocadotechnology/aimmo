@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.18 (2023-03-20)
+### Fix
+* Adding pause ([#1744](https://github.com/ocadotechnology/aimmo/issues/1744)) ([`764ae03`](https://github.com/ocadotechnology/aimmo/commit/764ae03620c2a8b9b8b2cc16e3bb58cb72fa4a4e))
+
 ## v2.5.17 (2023-03-16)
 ### Fix
 * Kurono ui update ([#1745](https://github.com/ocadotechnology/aimmo/issues/1745)) ([`536e78e`](https://github.com/ocadotechnology/aimmo/commit/536e78ef01d6ed26a2277786476b2ba944e45d44))
