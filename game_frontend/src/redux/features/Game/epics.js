@@ -1,6 +1,6 @@
 import actions from './actions'
 import types from './types'
-import { avatarWorkerTypes } from 'features/AvatarWorker'
+import { avatarWorkerTypes, avatarWorkerActions } from 'redux/features/AvatarWorker'
 import { editorTypes } from 'features/Editor'
 import { Scheduler, of } from 'rxjs'
 import {
@@ -13,6 +13,7 @@ import {
   timeInterval,
   retryWhen,
   delay,
+  filter,
 } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 import { actions as analyticActions } from 'redux/features/Analytics'
@@ -80,10 +81,29 @@ const codeUpdatingIntervalEpic = (action$, state$, dependencies, scheduler = bac
     )
   )
 
+const gamePausedEpic = (action$, state$) =>
+  action$.pipe(
+    ofType(types.TOGGLE_PAUSE_GAME),
+    map(() =>
+      state$.value.game.gamePaused
+        ? avatarWorkerActions.avatarsNextActionComputed({ turnCount: state$.value.game.gameState.turnCount + 1, log: "You have paused the game" })
+        : avatarWorkerActions.avatarsNextActionComputed({ turnCount: state$.value.game.gameState.turnCount + 1, log: "You have resumed the game" })
+    )
+  );
+
+const gamePausedAnalyticsEpic = (action$, state$) =>
+  action$.pipe(
+    ofType(types.TOGGLE_PAUSE_GAME),
+    filter(() => state$.value.game.gamePaused),
+    mapTo(analyticActions.sendAnalyticsEvent('Kurono', 'Click', 'Pause'))
+  );
+
 export default {
   getConnectionParametersEpic,
   connectToGameEpic,
   gameLoadedEpic,
   gameLoadedIntervalEpic,
   codeUpdatingIntervalEpic,
+  gamePausedEpic,
+  gamePausedAnalyticsEpic,
 }

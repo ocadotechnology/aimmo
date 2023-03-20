@@ -60,10 +60,10 @@ async function runIfWorkerReady(
   }
 }
 
-export const computeNextAction$ = (gameState: any, avatarState: object) =>
+export const computeNextAction$ = (gameState: any, avatarState: object, gamePaused: boolean) =>
   defer(() =>
     runIfWorkerReady(
-      () => worker.computeNextAction(gameState, avatarState),
+      () => worker.computeNextAction(gameState, avatarState, gamePaused),
       gameState.turnCount + 1
     )
   )

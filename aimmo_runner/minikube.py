@@ -2,6 +2,7 @@
 import atexit
 import os
 import platform
+import subprocess
 
 import kubernetes
 import yaml
@@ -61,7 +62,12 @@ def restart_pods(game_creator_yaml):
     """
     print("Restarting pods")
 
-    run_command(["kubectl", "create", "-f", "agones/fleet.yml"])
+    try:
+        run_command(["kubectl", "create", "-f", "agones/fleet.yml"])
+    except subprocess.CalledProcessError:
+        run_command("kubectl delete fleet aimmo-game --ignore-not-found".split(" "))
+        run_command("kubectl delete --all deployment -n default".split(" "))
+        run_command(["kubectl", "create", "-f", "agones/fleet.yml"])
 
     apps_api_instance = AppsV1Api()
     apps_api_instance.create_namespaced_deployment(

@@ -6,7 +6,8 @@ import { withTheme } from '@material-ui/core/styles'
 import RunCodeButton from 'components/RunCodeButton'
 import { connect } from 'react-redux'
 import { actions as editorActions } from 'features/Editor'
-import { PauseCircleFilled, SettingsBackupRestore } from '@material-ui/icons'
+import { actions as gameActions } from 'features/Game'
+import { PauseCircleFilled, SettingsBackupRestore, Refresh } from '@material-ui/icons'
 
 import 'ace-builds/src-noconflict/mode-python'
 // The monokai theme is modified and overridden, see handlebars_template.html
@@ -44,6 +45,9 @@ export class IDEEditor extends PureComponent {
     theme: PropTypes.object,
     postCode: PropTypes.func,
     runCodeButtonStatus: PropTypes.object,
+    togglePauseGame: PropTypes.func,
+    gamePaused: PropTypes.bool,
+    gameResume: PropTypes.func,
   }
 
   state = {
@@ -86,6 +90,7 @@ export class IDEEditor extends PureComponent {
 
   postCode = () => {
     this.props.postCode(this.state.code)
+    this.props.gameResume()
   }
 
   codeChanged = (code) => {
@@ -119,6 +124,10 @@ export class IDEEditor extends PureComponent {
     }
   }
 
+  onPauseClicked = () => {
+    this.props.togglePauseGame()
+  }
+
   render() {
     return (
       <IDEEditorLayout>
@@ -135,9 +144,10 @@ export class IDEEditor extends PureComponent {
           <MenuButton
             id="game-pause-button"
             variant="outlined"
-            startIcon={<PauseCircleFilled />}
+            onClick={this.onPauseClicked}
+            startIcon={this.props.gamePaused ? <Refresh /> : <PauseCircleFilled />}
           >
-            Pause
+            {this.props.gamePaused ? "Resume" : "Pause"}
           </MenuButton>
           <RunCodeButton
             runCodeButtonStatus={this.props.runCodeButtonStatus}
@@ -156,6 +166,7 @@ const mapStateToProps = (state) => ({
   codeOnServer: state.editor.code.codeOnServer,
   resetCodeTo: state.editor.code.resetCodeTo,
   runCodeButtonStatus: state.editor.runCodeButton,
+  gamePaused: state.game.gamePaused,
 })
 
 const mapDispatchToProps = {
@@ -163,6 +174,8 @@ const mapDispatchToProps = {
   codeReset: editorActions.codeReset,
   postCode: editorActions.postCodeRequest,
   resetCode: editorActions.resetCode,
+  togglePauseGame: gameActions.togglePauseGame,
+  gameResume: gameActions.gameResume,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme(IDEEditor))

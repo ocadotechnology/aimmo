@@ -10,6 +10,7 @@ const PYODIDE_WORKER_PROCESSING_TIME = 1000
  * @param {*} state$ The state observable that's passed to epics
  * @param {*} resetWorker The function that resets the pyodide worker
  */
+
 export const timeoutIfWorkerTakesTooLong =
   (state$, resetWorker, scheduler) => (computedTurnResult$) =>
     computedTurnResult$.pipe(

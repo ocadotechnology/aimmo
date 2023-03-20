@@ -58,6 +58,7 @@ exports[`<IDEEditor /> matches snapshot when code is loaded 1`] = `
     </Styled(WithStyles(ForwardRef(Button)))>
     <Styled(WithStyles(ForwardRef(Button)))
       id="game-pause-button"
+      onClick={[Function]}
       startIcon={<UNDEFINED />}
       variant="outlined"
     >
@@ -86,6 +87,7 @@ exports[`<IDEEditor /> matches snapshot when code isn't loaded 1`] = `
     </Styled(WithStyles(ForwardRef(Button)))>
     <Styled(WithStyles(ForwardRef(Button)))
       id="game-pause-button"
+      onClick={[Function]}
       startIcon={<UNDEFINED />}
       variant="outlined"
     >

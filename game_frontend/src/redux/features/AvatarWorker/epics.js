@@ -74,7 +74,8 @@ const computeNextActionEpic = (
         switchMap(({ payload: { gameState } }) =>
           computeNextAction$(
             gameState,
-            state$.value.game.connectionParameters.currentAvatarID
+            state$.value.game.connectionParameters.currentAvatarID,
+            state$.value.game.gamePaused,
           ).pipe(timeoutIfWorkerTakesTooLong(state$, resetWorker, scheduler))
         ),
         tap(socket.emitAction),
