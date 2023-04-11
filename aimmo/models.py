@@ -18,7 +18,7 @@ GAME_GENERATORS = [("Main", "Open World")] + [  # Default
 
 
 def generate_auth_token():
-    return urlsafe_b64encode(urandom(16))
+    return urlsafe_b64encode(urandom(16)).decode()[:Avatar.auth_token.max_length]
 
 
 class Game(models.Model):
