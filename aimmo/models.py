@@ -1,14 +1,13 @@
-from os import urandom
+import secrets
 
-from base64 import urlsafe_b64encode
 from common.models import Class
+from common.models import Teacher
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 
 from aimmo import app_settings
 from aimmo.worksheets import WORKSHEETS
-from common.models import Teacher
 
 DEFAULT_WORKSHEET_ID = 1
 
@@ -17,8 +16,8 @@ GAME_GENERATORS = [("Main", "Open World")] + [  # Default
 ]
 
 
-def generate_auth_token():
-    return urlsafe_b64encode(urandom(16))
+def generate_auth_token(nbytes, max_length):
+    return secrets.token_urlsafe(nbytes=nbytes)[:max_length]
 
 
 class Game(models.Model):
@@ -138,7 +137,7 @@ class Avatar(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     code = models.TextField()
-    auth_token = models.CharField(max_length=24, default=generate_auth_token)
+    auth_token = models.CharField(max_length=24, blank=True)
 
     class Meta:
         unique_together = ("owner", "game")
