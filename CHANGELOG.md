@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.19 (2023-04-12)
+### Fix
+* Fix avatar token generator ([#1758](https://github.com/ocadotechnology/aimmo/issues/1758)) ([`c730deb`](https://github.com/ocadotechnology/aimmo/commit/c730deb4b3aa2b6af2fc7071b00545bb08c07162))
+
 ## v2.5.18 (2023-03-20)
 ### Fix
 * Adding pause ([#1744](https://github.com/ocadotechnology/aimmo/issues/1744)) ([`764ae03`](https://github.com/ocadotechnology/aimmo/commit/764ae03620c2a8b9b8b2cc16e3bb58cb72fa4a4e))
