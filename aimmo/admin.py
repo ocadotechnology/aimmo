@@ -12,10 +12,9 @@ class GameDataAdmin(admin.ModelAdmin):
     readonly_fields = ["players", "auth_token"]
 
     def players(self, obj):
-        players = "\n".join(
-            [student.new_user.first_name for student in obj.game_class.students.all()]
-        )
-        players = players.join(obj.game_class.teacher.new_user.first_name)
+        teacher_user = obj.game_class.teacher.new_user
+        players = f"{teacher_user.first_name} {teacher_user.last_name}\n"
+        players += "\n".join([student.new_user.first_name for student in obj.game_class.students.all()])
         return players
 
     def school(self, obj):
@@ -23,6 +22,15 @@ class GameDataAdmin(admin.ModelAdmin):
             return obj.game_class.teacher.school
         else:
             return None
+
+
+def stop_game(game_admin, request, queryset):
+    for game in queryset:
+        game.status = "s"
+        game.save()
+
+
+stop_game.short_description = "Stop selected games"
 
 
 class AvatarDataAdmin(admin.ModelAdmin):
@@ -40,3 +48,5 @@ class AvatarDataAdmin(admin.ModelAdmin):
 
 admin.site.register(Game, GameDataAdmin)
 admin.site.register(Avatar, AvatarDataAdmin)
+
+GameDataAdmin.actions.append(stop_game)
