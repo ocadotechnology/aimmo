@@ -15,7 +15,7 @@ django-import-export = "*"
 
 [packages]
 aimmo = {editable = true, path = "."}
-kubernetes = "==23.6.0"
+kubernetes = "==26.1.0"
 eventlet = "*"
 docker = "<6"
 wheel = "*"

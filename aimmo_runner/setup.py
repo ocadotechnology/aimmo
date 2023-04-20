@@ -15,7 +15,7 @@ setup(
         "hypothesis",
         "psutil",
         "docker<6",
-        "kubernetes==23.6.0",
+        "kubernetes==26.1.0",
     ],
     zip_safe=False,
 )

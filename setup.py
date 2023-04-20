@@ -30,7 +30,7 @@ setup(
         "hypothesis==5.41.3",
         "cfl-common",
         "django-csp==3.7",
-        "kubernetes==23.6.0",
+        "kubernetes==26.1.0",
     ],
     tests_require=["docker >= 3.5, < 3.6", "PyYAML == 5.4"],
     version=version,
