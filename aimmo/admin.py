@@ -26,7 +26,7 @@ class GameDataAdmin(admin.ModelAdmin):
 
 def stop_game(game_admin, request, queryset):
     for game in queryset:
-        game.status = "s"
+        game.status = Game.STOPPED
         game.save()
 
 
