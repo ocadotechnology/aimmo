@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.7.0 (2023-04-27)
+### Feature
+* Upgrade Kubernetes to 1.26 ([#1762](https://github.com/ocadotechnology/aimmo/issues/1762)) ([`467860d`](https://github.com/ocadotechnology/aimmo/commit/467860d8e9daf8d69b8507b94183f2ca8bf65f53))
+
 ## v2.6.0 (2023-04-27)
 ### Feature
 * Create custom action to stop games in django admin ([#1761](https://github.com/ocadotechnology/aimmo/issues/1761)) ([`bce704d`](https://github.com/ocadotechnology/aimmo/commit/bce704d24a833ddb2a68cdf1c3d4dc54f4fff1ba))
