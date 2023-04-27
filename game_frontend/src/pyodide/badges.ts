@@ -1,71 +1,69 @@
 /* eslint-env worker */
 import ComputedTurnResult from './computedTurnResult'
+// import post from '../redux/api/post';
+import { ajax } from 'rxjs/ajax';
+import { map } from 'rxjs/operators';
 
-export function checkIfBadgeEarned(
+interface TestReport {
+  task_id: number
+}
+
+export async function checkIfBadgeEarned(
   badges: string,
   result: ComputedTurnResult,
   userCode: string,
-  gameState: any
-): string {
-  const userPythonCode = userCode.replace(/\s*#.*/gm, '') // Remove all comment lines from the user's code
-  const badgesPerWorksheet = [
-    { id: 1, worksheetID: 1, trigger: badge1Trigger(result) },
-    { id: 2, worksheetID: 1, trigger: badge2Trigger(result, userPythonCode) },
-    {
-      id: 3,
-      worksheetID: 1,
-      trigger: badge3Trigger(result, userPythonCode),
-    },
-  ]
+  gameState: any,
+  currentAvatarID: number
+): Promise<string> {
+  // const response = post('/', (action) => {
+  //   return {
+  //     source: { code: userCode },
+  //     current_avatar_id: currentAvatarID,
+  //     game_state: gameState
+  //   };
+  // });
 
-  for (const badge of badgesPerWorksheet) {
-    const badgeWorksheetPair = `${badge.worksheetID}:${badge.id}`
-    if (
-      !badges.includes(badgeWorksheetPair) &&
-      badge.worksheetID === gameState.worksheetID &&
-      badge.trigger
-    ) {
-      // Here is when a new badge is earned
-      // TODO on worksheet 2: This might have to order the badges, in case user does not do the worksheet in order
+  // ajax({
+  //   url: 'http://localhost:8080',
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify({
+  //     source: { code: userCode },
+  //     current_avatar_id: currentAvatarID,
+  //     game_state: gameState
+  //   })
+  // })
+  //   .pipe(
+  //     map((data) => data.response)
+  //   )
+  //   .subscribe((data) => console.log(data));
+
+  const response = await fetch("http://localhost:8080/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "x-requested-with"
+    },
+    body: JSON.stringify({
+      source: { code: userCode },
+      current_avatar_id: currentAvatarID,
+      game_state: gameState
+    })
+  });
+
+  const responseJson: {
+    passed: TestReport[]
+    failed: TestReport[]
+    xfailed: TestReport[]
+    skipped: TestReport[]
+  } = await response.json();
+
+  for (var i = 0; i < responseJson.passed.length; i++) {
+    const badgeWorksheetPair = `${gameState.worksheetID}:${responseJson.passed[i].task_id}`; // TODO: return in service
+    if (!badges.includes(badgeWorksheetPair)) {
       badges += `${badgeWorksheetPair},`
     }
   }
-  return badges
-}
 
-function badge1Trigger(result: any): boolean {
-  // Check the code returns a move action other than NORTH
-  return (
-    result.action.action_type === 'move' &&
-    JSON.stringify(result.action.options.direction) !== JSON.stringify({ x: 0, y: 1 })
-  )
-}
-
-function badge2Trigger(result: any, userPythonCode: string): boolean {
-  // Check code contains keywords to move in random directions
-  const substrings = [
-    'import random',
-    'randint(',
-    'direction.NORTH',
-    'direction.EAST',
-    'direction.SOUTH',
-    'direction.WEST',
-    'if ',
-    'elif ',
-    'else:',
-  ]
-  // Check the code contains certain keywords about moving in a random direction
-  const codeContainsKeywords = substrings.every((substring) => userPythonCode.includes(substring))
-
-  // And check it returns a move action
-  return result.action.action_type === 'move' && codeContainsKeywords
-}
-
-function badge3Trigger(result: any, userPythonCode: string): boolean {
-  // Check the code contains certain keywords about moving to a cell
-  const substrings = ['world_state.can_move_to(', 'print(', 'if ']
-  const codeContainsKeywords = substrings.every((substring) => userPythonCode.includes(substring))
-
-  // And check it returns a move action
-  return result.action.action_type === 'move' && codeContainsKeywords
+  return badges;
 }
