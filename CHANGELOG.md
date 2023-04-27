@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v2.6.0 (2023-04-27)
+### Feature
+* Create custom action to stop games in django admin ([#1761](https://github.com/ocadotechnology/aimmo/issues/1761)) ([`bce704d`](https://github.com/ocadotechnology/aimmo/commit/bce704d24a833ddb2a68cdf1c3d4dc54f4fff1ba))
+
+## v2.5.20 (2023-04-25)
+### Fix
+* Update lockfile ([`caa1685`](https://github.com/ocadotechnology/aimmo/commit/caa16858a3b3f15644855c20ee24f04cec314894))
+
 ## v2.5.19 (2023-04-12)
 ### Fix
 * Fix avatar token generator ([#1758](https://github.com/ocadotechnology/aimmo/issues/1758)) ([`c730deb`](https://github.com/ocadotechnology/aimmo/commit/c730deb4b3aa2b6af2fc7071b00545bb08c07162))
