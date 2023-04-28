@@ -4,7 +4,7 @@ const fs = require('fs')
 const Handlebars = require('handlebars')
 
 const file = Path.join(__dirname, './public/index.html')
-const outDir = Path.join(__dirname, '../aimmo/static/react')
+const outDir = Path.join(__dirname, '../static/react')
 
 const options = {
   outDir,

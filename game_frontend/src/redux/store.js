@@ -18,5 +18,8 @@ export default function configureStore(initialState) {
     composeWithDevTools(applyMiddleware(epicMiddleware))
   )
   epicMiddleware.run(rootEpic)
+  if (window.Cypress) {
+    window.store = store;
+  }
   return store
 }
