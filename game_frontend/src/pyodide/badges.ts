@@ -1,11 +1,8 @@
 /* eslint-env worker */
 import ComputedTurnResult from './computedTurnResult'
-// import post from '../redux/api/post';
-import { ajax } from 'rxjs/ajax';
-import { map } from 'rxjs/operators';
 
 interface TestReport {
-  task_id: number
+  task_id: number // eslint-disable-line
 }
 
 export async function checkIfBadgeEarned(
@@ -15,28 +12,7 @@ export async function checkIfBadgeEarned(
   gameState: any,
   currentAvatarID: number
 ): Promise<string> {
-  // const response = post('/', (action) => {
-  //   return {
-  //     source: { code: userCode },
-  //     current_avatar_id: currentAvatarID,
-  //     game_state: gameState
-  //   };
-  // });
-
-  // ajax({
-  //   url: 'http://localhost:8080',
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({
-  //     source: { code: userCode },
-  //     current_avatar_id: currentAvatarID,
-  //     game_state: gameState
-  //   })
-  // })
-  //   .pipe(
-  //     map((data) => data.response)
-  //   )
-  //   .subscribe((data) => console.log(data));
+  // TODO: dynamically get URL of service in Kubernetes environment.
 
   const response = await fetch("http://localhost:8080/", {
     method: "POST",
@@ -59,7 +35,7 @@ export async function checkIfBadgeEarned(
   } = await response.json();
 
   for (var i = 0; i < responseJson.passed.length; i++) {
-    const badgeWorksheetPair = `${gameState.worksheetID}:${responseJson.passed[i].task_id}`; // TODO: return in service
+    const badgeWorksheetPair = `${gameState.worksheetID}:${responseJson.passed[i].task_id}`;
     if (!badges.includes(badgeWorksheetPair)) {
       badges += `${badgeWorksheetPair},`
     }
