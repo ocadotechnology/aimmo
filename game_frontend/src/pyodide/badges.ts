@@ -12,13 +12,11 @@ export async function checkIfBadgeEarned(
   gameState: any,
   currentAvatarID: number
 ): Promise<string> {
-  // TODO: dynamically get URL of service in Kubernetes environment.
-
+  // TODO: replace URL with cloud URL once deployed
   const response = await fetch("http://localhost:8080/", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "x-requested-with"
+      "Content-Type": "application/json"
     },
     body: JSON.stringify({
       source: { code: userCode },
