@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.7.1 (2023-05-11)
+### Fix
+* **deps:** Bump django from 3.2.18 to 3.2.19 ([#1765](https://github.com/ocadotechnology/aimmo/issues/1765)) ([`573bdae`](https://github.com/ocadotechnology/aimmo/commit/573bdae3737cbfcaea03e96e68beab15a9a690f7))
+
 ## v2.7.0 (2023-04-27)
 ### Feature
 * Upgrade Kubernetes to 1.26 ([#1762](https://github.com/ocadotechnology/aimmo/issues/1762)) ([`467860d`](https://github.com/ocadotechnology/aimmo/commit/467860d8e9daf8d69b8507b94183f2ca8bf65f53))
