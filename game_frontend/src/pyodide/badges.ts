@@ -12,8 +12,7 @@ export async function checkIfBadgeEarned(
   gameState: any,
   currentAvatarID: number
 ): Promise<string> {
-  // TODO: replace URL with cloud URL once deployed
-  const response = await fetch("http://localhost:8080/", {
+  const response = await fetch("https://kurono-badges-dot-decent-digit-629.appspot.com", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
