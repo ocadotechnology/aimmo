@@ -11,9 +11,9 @@ const options = {
   outFile: 'index.html',
   publicUrl: '/static/react/',
   watch: process.env.NODE_ENV !== 'production',
-  minify: process.env.NODE_ENV === 'production',
+  minify: false, // process.env.NODE_ENV === 'production',
   target: 'browser',
-  cache: process.env.NODE_ENV === 'production',
+  cache: false // process.env.NODE_ENV === 'production',
 }
 
 const templateFolder = Path.resolve(Path.join(__dirname, '../aimmo/templates/players'))
