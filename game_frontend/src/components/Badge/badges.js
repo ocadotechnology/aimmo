@@ -31,8 +31,8 @@ export const badgeInfo = {
     name: 'Create subroutine'
   },
   '2:2': {
-    title: 'Nice find!',
-    message: 'You picked up your first artefact!',
+    title: 'You\'re an explorer!',
+    message: 'You\'re ready to pick up your first artefact!',
     img: PickupBadge,
     name: 'Pickup artefact'
   },
