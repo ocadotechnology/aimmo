@@ -1,5 +1,6 @@
 /* eslint-env worker */
 import ComputedTurnResult from './computedTurnResult'
+import fetch from 'node-fetch'
 
 interface TestReport {
   task_id: number // eslint-disable-line
@@ -12,7 +13,10 @@ export async function checkIfBadgeEarned(
   gameState: any,
   currentAvatarID: number
 ): Promise<string> {
-  const response = await fetch("https://kurono-badges-dot-decent-digit-629.appspot.com", {
+  const response = await fetch(
+    (process.env.REACT_APP_KURONO_BADGES_URL ??
+      "https://development-kurono-badges-dot-decent-digit-629.appspot.com"
+    ), {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
