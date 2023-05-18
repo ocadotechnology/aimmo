@@ -13,10 +13,12 @@ export async function checkIfBadgeEarned(
   gameState: any,
   currentAvatarID: number
 ): Promise<string> {
-  const response = await fetch(
-    (process.env.REACT_APP_KURONO_BADGES_URL ??
-      "https://development-kurono-badges-dot-decent-digit-629.appspot.com"
-    ), {
+  let serviceUrl = process.env.REACT_APP_KURONO_BADGES_URL;
+  if (serviceUrl === undefined) {
+    serviceUrl = "https://development-kurono-badges-dot-decent-digit-629.appspot.com"
+  }
+
+  const response = await fetch(serviceUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
