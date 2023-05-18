@@ -31,7 +31,7 @@ export async function checkIfBadgeEarned(
     skipped: TestReport[]
   } = await response.json();
 
-  for (var i = 0; i < responseJson.passed.length; i++) {
+  for (let i = 0; i < responseJson.passed.length; i++) {
     const badgeWorksheetPair = `${gameState.worksheetID}:${responseJson.passed[i].task_id}`;
     if (!badges.includes(badgeWorksheetPair)) {
       badges += `${badgeWorksheetPair},`
