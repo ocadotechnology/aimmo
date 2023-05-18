@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.8.2 (2023-05-18)
+### Fix
+* Downgrade react-scripts ([`a0b7057`](https://github.com/ocadotechnology/aimmo/commit/a0b70576a1ea3bdd47deda9a3a3c5740afa1d8b6))
+
 ## v2.8.1 (2023-05-18)
 ### Fix
 * Yarn add react-scripts ([#1768](https://github.com/ocadotechnology/aimmo/issues/1768)) ([`281e8c3`](https://github.com/ocadotechnology/aimmo/commit/281e8c300e3d27e728101c9ee5a674e7952d6075))
