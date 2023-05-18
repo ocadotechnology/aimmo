@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.8.1 (2023-05-18)
+### Fix
+* Yarn add react-scripts ([#1768](https://github.com/ocadotechnology/aimmo/issues/1768)) ([`281e8c3`](https://github.com/ocadotechnology/aimmo/commit/281e8c300e3d27e728101c9ee5a674e7952d6075))
+
 ## v2.8.0 (2023-05-18)
 ### Feature
 * 1752 kurono badges ([#1767](https://github.com/ocadotechnology/aimmo/issues/1767)) ([`b2c6ae4`](https://github.com/ocadotechnology/aimmo/commit/b2c6ae48439fe6a6b2551e134b6efd3b7d3a3974))
