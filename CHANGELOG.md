@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.8.0 (2023-05-18)
+### Feature
+* 1752 kurono badges ([#1767](https://github.com/ocadotechnology/aimmo/issues/1767)) ([`b2c6ae4`](https://github.com/ocadotechnology/aimmo/commit/b2c6ae48439fe6a6b2551e134b6efd3b7d3a3974))
+
 ## v2.7.1 (2023-05-11)
 ### Fix
 * **deps:** Bump django from 3.2.18 to 3.2.19 ([#1765](https://github.com/ocadotechnology/aimmo/issues/1765)) ([`573bdae`](https://github.com/ocadotechnology/aimmo/commit/573bdae3737cbfcaea03e96e68beab15a9a690f7))
