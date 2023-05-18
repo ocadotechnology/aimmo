@@ -20,9 +20,10 @@ export async function checkIfBadgeEarned(
   badges: string,
   result: ComputedTurnResult,
   userCode: string,
-  gameState: any
+  gameState: any,
+  currentAvatarID: number
 ): Promise<string> {
-  return worker.checkIfBadgeEarned(badges, result, userCode, gameState)
+  return await worker.checkIfBadgeEarned(badges, result, userCode, gameState, currentAvatarID)
 }
 
 export async function updateAvatarCode(

@@ -53,6 +53,7 @@ def setup_socketIO_server(application, async_handlers=True):
         async_handlers=async_handlers,
         cors_allowed_origins=[
             "http://localhost:8000",
+            "http://localhost:8080",
             "https://dev-dot-decent-digit-629.appspot.com",
             "https://staging-dot-decent-digit-629.appspot.com",
             "https://www.codeforlife.education",
