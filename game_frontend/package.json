@@ -71,6 +71,7 @@
     "react-dom": "^16.8.6",
     "react-ga": "^2.5.7",
     "react-redux": "^7.0.3",
+    "react-scripts": "^5.0.1",
     "redux": "^4.0.1",
     "redux-devtools-extension": "^2.13.8",
     "redux-observable": "^1.1.0",
