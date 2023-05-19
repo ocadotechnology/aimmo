@@ -13,6 +13,7 @@ export async function checkIfBadgeEarned(
   gameState: any,
   currentAvatarID: number
 ): Promise<string> {
+  // TODO: fix loading of environment variables. 
   let serviceUrl = process.env.REACT_APP_KURONO_BADGES_URL;
   if (serviceUrl === undefined) {
     serviceUrl = "https://production-kurono-badges-dot-decent-digit-629.appspot.com"
