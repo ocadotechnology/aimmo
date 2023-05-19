@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.8.3 (2023-05-19)
+### Fix
+* Add todo ([`408f5df`](https://github.com/ocadotechnology/aimmo/commit/408f5df0633337fc09c48aaee67e31a0da331b0d))
+
 ## v2.8.2 (2023-05-18)
 ### Fix
 * Downgrade react-scripts ([`a0b7057`](https://github.com/ocadotechnology/aimmo/commit/a0b70576a1ea3bdd47deda9a3a3c5740afa1d8b6))
