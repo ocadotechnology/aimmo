@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.8.4 (2023-05-23)
+### Fix
+* **deps:** Bump requests from 2.25.0 to 2.31.0 ([#1769](https://github.com/ocadotechnology/aimmo/issues/1769)) ([`07bf4b6`](https://github.com/ocadotechnology/aimmo/commit/07bf4b63fbb5db2ef2e0240fc464744b7e14e930))
+
 ## v2.8.3 (2023-05-19)
 ### Fix
 * Add todo ([`408f5df`](https://github.com/ocadotechnology/aimmo/commit/408f5df0633337fc09c48aaee67e31a0da331b0d))
