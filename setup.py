@@ -26,7 +26,7 @@ setup(
         "django-js-reverse==0.9.1",
         "djangorestframework==3.13.1",
         "eventlet==0.31.0",
-        "requests==2.25.0",
+        "requests==2.31.0",
         "hypothesis==5.41.3",
         "cfl-common",
         "django-csp==3.7",
