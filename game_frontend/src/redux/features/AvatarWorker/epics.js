@@ -148,8 +148,8 @@ const checkBadgesEarnedEpic = (action$, state$, { pyodideRunner: { checkIfBadgeE
               badges,
               computedTurnResult,
               state$.value.editor.code.codeOnServer,
-              state$.value.game.gameState,
-              state$.value.game.connectionParameters.currentAvatarID
+              state$.value.game.gameState
+              // state$.value.game.connectionParameters.currentAvatarID
             )
           )
         ),
