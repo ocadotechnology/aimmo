@@ -52,8 +52,16 @@ def capture_output(stdout=None, stderr=None):
 `)
 }
 
-async function computeNextAction(gameState, playerAvatarID): Promise<ComputedTurnResult> {
+export async function computeNextAction(gameState, playerAvatarID, gamePaused): Promise<ComputedTurnResult> {
   const avatarState = getAvatarStateFromGameState(gameState, playerAvatarID)
+  if (gamePaused) {
+    return Promise.resolve({
+      action: { action_type: 'wait' },
+      log: '',
+      turnCount: gameState.turnCount + 1,
+    })
+  }
+
   try {
     return await pyodide.runPythonAsync(`
 game_state = ${JSON.stringify(gameState)}
@@ -103,7 +111,7 @@ export async function updateAvatarCode(
   try {
     await pyodide.runPythonAsync(userCode)
     if (gameState) {
-      return computeNextAction(gameState, playerAvatarID)
+      return computeNextAction(gameState, playerAvatarID, false)
     }
     return Promise.resolve({
       action: { action_type: 'wait' },

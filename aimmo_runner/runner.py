@@ -67,7 +67,7 @@ def run(server_wait=True, using_cypress=False, capture_output=False, test_env=Fa
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "test_settings")
     else:
         sys.path.insert(0, os.path.join(ROOT_DIR_LOCATION, "example_project"))
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 
     django.setup()
 

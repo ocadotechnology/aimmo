@@ -160,3 +160,58 @@ describe('codeUpdatingIntervalEpic', () => {
     })
   })
 })
+
+describe('gamePausedEpic', () => {
+  it('generates correct parameters to avatarsNextActionComputed', () => {
+    const testScheduler = createTestScheduler()
+
+    testScheduler.run(({ hot, cold, expectObservable }) => {
+      const action$ = hot('-------a-', {
+        a: actions.togglePauseGame(),
+      })
+
+      const turnCount = 5
+      const logMessage = "You have paused the game"
+      const state$ = {
+        value: {
+          game: {
+            gamePaused: true,
+            gameState: {
+              turnCount: turnCount,
+            },
+          },
+        },
+      }
+      const output$ = epics.gamePausedEpic(action$, state$, {}, testScheduler)
+
+      expectObservable(output$).toBe('-------b-', {
+        b: avatarWorkerActions.avatarsNextActionComputed({ turnCount: turnCount + 1, log: logMessage })
+      })
+    })
+  })
+})
+
+describe('gamePausedAnalyticsEpic', () => {
+  it('sends a corresponding analytic event', () => {
+    const testScheduler = createTestScheduler()
+
+    testScheduler.run(({ hot, cold, expectObservable }) => {
+      const action$ = hot('-------a-', {
+        a: actions.togglePauseGame(),
+      })
+
+      const state$ = {
+        value: {
+          game: {
+            gamePaused: true,
+          },
+        },
+      }
+      const output$ = epics.gamePausedAnalyticsEpic(action$, state$, {}, testScheduler)
+
+      expectObservable(output$).toBe('-------b-', {
+        b: analyticActions.sendAnalyticsEvent('Kurono', 'Click', 'Pause'),
+      })
+    })
+  })
+})

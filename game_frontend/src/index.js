@@ -62,6 +62,7 @@ const initialState = (window.Cypress && window.initialState) || {
     timeoutStatus: false,
     gameLoaded: false,
     cameraCenteredOnUserAvatar: true,
+    gamePaused: false,
   },
 }
 

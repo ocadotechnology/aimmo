@@ -2,6 +2,78 @@
 
 <!--next-version-placeholder-->
 
+## v2.8.5 (2023-05-25)
+### Fix
+* Revert changes ([#1774](https://github.com/ocadotechnology/aimmo/issues/1774)) ([`c9c7fa9`](https://github.com/ocadotechnology/aimmo/commit/c9c7fa98223390dad9ac6e5fb95badfb551f30c9))
+
+## v2.8.4 (2023-05-23)
+### Fix
+* **deps:** Bump requests from 2.25.0 to 2.31.0 ([#1769](https://github.com/ocadotechnology/aimmo/issues/1769)) ([`07bf4b6`](https://github.com/ocadotechnology/aimmo/commit/07bf4b63fbb5db2ef2e0240fc464744b7e14e930))
+
+## v2.8.3 (2023-05-19)
+### Fix
+* Add todo ([`408f5df`](https://github.com/ocadotechnology/aimmo/commit/408f5df0633337fc09c48aaee67e31a0da331b0d))
+
+## v2.8.2 (2023-05-18)
+### Fix
+* Downgrade react-scripts ([`a0b7057`](https://github.com/ocadotechnology/aimmo/commit/a0b70576a1ea3bdd47deda9a3a3c5740afa1d8b6))
+
+## v2.8.1 (2023-05-18)
+### Fix
+* Yarn add react-scripts ([#1768](https://github.com/ocadotechnology/aimmo/issues/1768)) ([`281e8c3`](https://github.com/ocadotechnology/aimmo/commit/281e8c300e3d27e728101c9ee5a674e7952d6075))
+
+## v2.8.0 (2023-05-18)
+### Feature
+* 1752 kurono badges ([#1767](https://github.com/ocadotechnology/aimmo/issues/1767)) ([`b2c6ae4`](https://github.com/ocadotechnology/aimmo/commit/b2c6ae48439fe6a6b2551e134b6efd3b7d3a3974))
+
+## v2.7.1 (2023-05-11)
+### Fix
+* **deps:** Bump django from 3.2.18 to 3.2.19 ([#1765](https://github.com/ocadotechnology/aimmo/issues/1765)) ([`573bdae`](https://github.com/ocadotechnology/aimmo/commit/573bdae3737cbfcaea03e96e68beab15a9a690f7))
+
+## v2.7.0 (2023-04-27)
+### Feature
+* Upgrade Kubernetes to 1.26 ([#1762](https://github.com/ocadotechnology/aimmo/issues/1762)) ([`467860d`](https://github.com/ocadotechnology/aimmo/commit/467860d8e9daf8d69b8507b94183f2ca8bf65f53))
+
+## v2.6.0 (2023-04-27)
+### Feature
+* Create custom action to stop games in django admin ([#1761](https://github.com/ocadotechnology/aimmo/issues/1761)) ([`bce704d`](https://github.com/ocadotechnology/aimmo/commit/bce704d24a833ddb2a68cdf1c3d4dc54f4fff1ba))
+
+## v2.5.20 (2023-04-25)
+### Fix
+* Update lockfile ([`caa1685`](https://github.com/ocadotechnology/aimmo/commit/caa16858a3b3f15644855c20ee24f04cec314894))
+
+## v2.5.19 (2023-04-12)
+### Fix
+* Fix avatar token generator ([#1758](https://github.com/ocadotechnology/aimmo/issues/1758)) ([`c730deb`](https://github.com/ocadotechnology/aimmo/commit/c730deb4b3aa2b6af2fc7071b00545bb08c07162))
+
+## v2.5.18 (2023-03-20)
+### Fix
+* Adding pause ([#1744](https://github.com/ocadotechnology/aimmo/issues/1744)) ([`764ae03`](https://github.com/ocadotechnology/aimmo/commit/764ae03620c2a8b9b8b2cc16e3bb58cb72fa4a4e))
+
+## v2.5.17 (2023-03-16)
+### Fix
+* Kurono ui update ([#1745](https://github.com/ocadotechnology/aimmo/issues/1745)) ([`536e78e`](https://github.com/ocadotechnology/aimmo/commit/536e78ef01d6ed26a2277786476b2ba944e45d44))
+
+## v2.5.16 (2023-03-13)
+### Fix
+* Update kurono avatar ([#1749](https://github.com/ocadotechnology/aimmo/issues/1749)) ([`8595805`](https://github.com/ocadotechnology/aimmo/commit/859580592287b7984f7e5ca7f464091ba0d14023))
+
+## v2.5.15 (2023-02-17)
+### Fix
+* Debug commit author in github action ([#1742](https://github.com/ocadotechnology/aimmo/issues/1742)) ([`f7eeb98`](https://github.com/ocadotechnology/aimmo/commit/f7eeb9881a8f88a49053ef9dc3e30d3041b295b3))
+
+## v2.5.14 (2023-02-16)
+### Fix
+* Point to correct settings file locally ([#1741](https://github.com/ocadotechnology/aimmo/issues/1741)) ([`48370bf`](https://github.com/ocadotechnology/aimmo/commit/48370bf421b6bf4097f28eec51ebac70a39980d5))
+
+## v2.5.13 (2023-02-16)
+### Fix
+* **deps:** Bump django from 3.2.16 to 3.2.18 ([#1739](https://github.com/ocadotechnology/aimmo/issues/1739)) ([`d4d9053`](https://github.com/ocadotechnology/aimmo/commit/d4d9053a6b80b94ecc15d42a41554491d7c7c5de))
+
+## v2.5.12 (2023-02-06)
+### Fix
+* **deps:** Bump django from 3.2.16 to 3.2.17 ([#1738](https://github.com/ocadotechnology/aimmo/issues/1738)) ([`6a5f5d8`](https://github.com/ocadotechnology/aimmo/commit/6a5f5d85b33fea39f8bbe56db73a4191fee853ca))
+
 ## v2.5.11 (2023-01-11)
 ### Fix
 * Fix code not running when not near artefacts ([#1736](https://github.com/ocadotechnology/aimmo/issues/1736)) ([`504238b`](https://github.com/ocadotechnology/aimmo/commit/504238bcb3e56dbbcd8e8fe341de63718cf473be))

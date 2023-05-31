@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        "django==3.2.16",
+        "django==3.2.19",
         "django-forms-bootstrap",
         "django-js-reverse",
         "eventlet",
@@ -15,7 +15,7 @@ setup(
         "hypothesis",
         "psutil",
         "docker<6",
-        "kubernetes==23.6.0",
+        "kubernetes==26.1.0",
     ],
     zip_safe=False,
 )

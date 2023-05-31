@@ -20,8 +20,10 @@ export async function checkIfBadgeEarned(
   badges: string,
   result: ComputedTurnResult,
   userCode: string,
-  gameState: any
+  gameState: any,
+  // currentAvatarID: number
 ): Promise<string> {
+  // return await worker.checkIfBadgeEarned(badges, result, userCode, gameState, currentAvatarID)
   return worker.checkIfBadgeEarned(badges, result, userCode, gameState)
 }
 
@@ -60,10 +62,10 @@ async function runIfWorkerReady(
   }
 }
 
-export const computeNextAction$ = (gameState: any, avatarState: object) =>
+export const computeNextAction$ = (gameState: any, avatarState: object, gamePaused: boolean) =>
   defer(() =>
     runIfWorkerReady(
-      () => worker.computeNextAction(gameState, avatarState),
+      () => worker.computeNextAction(gameState, avatarState, gamePaused),
       gameState.turnCount + 1
     )
   )

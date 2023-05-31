@@ -11,7 +11,7 @@ black = "*"
 
 [packages]
 aimmo-game = {editable = true,path = "."}
-kubernetes = "==23.6.0"
+kubernetes = "==26.1.0"
 docker = "<6"
 
 [requires]

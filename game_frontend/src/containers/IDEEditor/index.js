@@ -6,34 +6,48 @@ import { withTheme } from '@material-ui/core/styles'
 import RunCodeButton from 'components/RunCodeButton'
 import { connect } from 'react-redux'
 import { actions as editorActions } from 'features/Editor'
+import { actions as gameActions } from 'features/Game'
+import { PauseCircleFilled, SettingsBackupRestore, Refresh } from '@material-ui/icons'
 
 import 'ace-builds/src-noconflict/mode-python'
 // The monokai theme is modified and overridden, see handlebars_template.html
 import 'ace-builds/src-noconflict/theme-monokai'
+import { Button } from '@material-ui/core'
 
 export const IDEEditorLayout = styled.div`
   position: relative;
   grid-area: ide-editor;
 `
 
-export const PositionedRunCodeButton = styled(RunCodeButton)`
-  && {
-    position: absolute;
-    right: ${(props) => props.theme.spacing(3)}px;
-    bottom: ${(props) => props.theme.spacing(3)}px;
-    z-index: 5;
-  }
+export const MenuBar = styled.div`
+  background: #2f3129;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  z-index: 10;
+  padding: 0.5rem 1.5rem 0.5rem 0rem;
+  gap: 1rem;
+  height: 12%;
+`
+
+export const MenuButton = styled(Button)`
+  border: none;
+  height: 48px;
 `
 
 export class IDEEditor extends PureComponent {
   static propTypes = {
     codeOnServer: PropTypes.string,
     getCode: PropTypes.func,
+    resetCode: PropTypes.func,
     resetCodeTo: PropTypes.string,
     codeReset: PropTypes.func,
     theme: PropTypes.object,
     postCode: PropTypes.func,
     runCodeButtonStatus: PropTypes.object,
+    togglePauseGame: PropTypes.func,
+    gamePaused: PropTypes.bool,
+    gameResume: PropTypes.func,
   }
 
   state = {
@@ -76,6 +90,7 @@ export class IDEEditor extends PureComponent {
 
   postCode = () => {
     this.props.postCode(this.state.code)
+    this.props.gameResume()
   }
 
   codeChanged = (code) => {
@@ -96,24 +111,52 @@ export class IDEEditor extends PureComponent {
           highlightActiveLine
           value={this.state.code}
           width="100%"
-          height="100%"
+          height="88%"
           setOptions={this.options()}
         />
       )
     }
   }
 
+  onResetCodeClicked = () => {
+    if (confirm('Are you sure you want to reset to the starter code?')) {
+      this.props.resetCode()
+    }
+  }
+
+  onPauseClicked = () => {
+    this.props.togglePauseGame()
+  }
+
   render() {
     return (
       <IDEEditorLayout>
         {this.renderEditor()}
-        <PositionedRunCodeButton
-          runCodeButtonStatus={this.props.runCodeButtonStatus}
-          isCodeOnServerDifferent={this.isCodeOnServerDifferent()}
-          aria-label="Run Code"
-          id="post-code-button"
-          whenClicked={this.postCode}
-        />
+        <MenuBar>
+          <MenuButton
+            id="reset-code-button"
+            variant="outlined"
+            onClick={this.onResetCodeClicked}
+            startIcon={<SettingsBackupRestore />}
+          >
+            Reset code
+          </MenuButton>
+          <MenuButton
+            id="game-pause-button"
+            variant="outlined"
+            onClick={this.onPauseClicked}
+            startIcon={this.props.gamePaused ? <Refresh /> : <PauseCircleFilled />}
+          >
+            {this.props.gamePaused ? "Resume" : "Pause"}
+          </MenuButton>
+          <RunCodeButton
+            runCodeButtonStatus={this.props.runCodeButtonStatus}
+            isCodeOnServerDifferent={this.isCodeOnServerDifferent()}
+            aria-label="Run Code"
+            id="post-code-button"
+            whenClicked={this.postCode}
+          />
+        </MenuBar>
       </IDEEditorLayout>
     )
   }
@@ -123,12 +166,16 @@ const mapStateToProps = (state) => ({
   codeOnServer: state.editor.code.codeOnServer,
   resetCodeTo: state.editor.code.resetCodeTo,
   runCodeButtonStatus: state.editor.runCodeButton,
+  gamePaused: state.game.gamePaused,
 })
 
 const mapDispatchToProps = {
   getCode: editorActions.getCodeRequest,
   codeReset: editorActions.codeReset,
   postCode: editorActions.postCodeRequest,
+  resetCode: editorActions.resetCode,
+  togglePauseGame: gameActions.togglePauseGame,
+  gameResume: gameActions.gameResume,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme(IDEEditor))

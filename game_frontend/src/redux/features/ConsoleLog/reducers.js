@@ -35,7 +35,10 @@ const consoleLogReducer = (state = { logs: new Map(), gameLog: '' }, action) => 
       }
       const nextState = produce(state, (draftState) => {
         const logs = draftState.logs
-        logs.set(turnCount, newLogMessage)
+        const currentLogMessage = logs.get(turnCount)
+        const newLogForTheTurn = currentLogMessage ? (currentLogMessage + newLogMessage) : newLogMessage
+        logs.set(turnCount, newLogForTheTurn)
+
         if (logs.size > MAX_NUMBER_OF_STORED_LOGS) {
           logs.delete(logs.keys().next().value)
         }
