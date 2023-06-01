@@ -70,7 +70,8 @@ class Game(models.Model):
     target_num_cells_per_avatar = models.FloatField(default=16)
     target_num_score_locations_per_avatar = models.FloatField(default=0.5)
     score_despawn_chance = models.FloatField(default=0.05)
-    target_num_pickups_per_avatar = models.FloatField(default=1.2)
+    # Set default pickup num to 0 to remove artefacts from worksheet 1
+    target_num_pickups_per_avatar = models.FloatField(default=0)
     pickup_spawn_chance = models.FloatField(default=0.1)
     obstacle_ratio = models.FloatField(default=0.1)
     start_height = models.IntegerField(default=31)

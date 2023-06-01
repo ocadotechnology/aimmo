@@ -2,7 +2,7 @@
 # For now it just duplicates a part of aimmo-game-creator/game_manager.py in order to recreate a game server.
 import logging
 import time
-
+import json
 import kubernetes
 from kubernetes.client import CoreV1Api
 from kubernetes.client.api.custom_objects_api import CustomObjectsApi
@@ -134,6 +134,12 @@ class GameManager:
 
         game_data = self.delete_game_server(game_id=game_id)
         game_data.update(game_data_updates)
+
+        if (game_data.get('settings') and game_data.get('worksheet_id')):
+            setting = json.loads(game_data['settings'])
+            setting['TARGET_NUM_PICKUPS_PER_AVATAR'] = 0 if game_data['worksheet_id'] == '1' else 1.2
+            game_data['settings'] = json.dumps(setting)
+
         game_server_name = self.create_game_server_allocation(
             game_id=game_id, game_data=game_data
         )
