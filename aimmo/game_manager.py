@@ -135,7 +135,7 @@ class GameManager:
         game_data = self.delete_game_server(game_id=game_id)
         game_data.update(game_data_updates)
 
-        if (game_data.get('settings') and game_data.get('worksheet_id')):
+        if (game_data.get('settings') and isinstance(game_data.get('settings') , str) and game_data.get('worksheet_id')):
             setting = json.loads(game_data['settings'])
             setting['TARGET_NUM_PICKUPS_PER_AVATAR'] = 0 if game_data['worksheet_id'] == '1' else 1.2
             game_data['settings'] = json.dumps(setting)
