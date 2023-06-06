@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.8.6 (2023-06-06)
+### Fix
+* Remove artefacts from Worksheet 1 ([#1775](https://github.com/ocadotechnology/aimmo/issues/1775)) ([`3e3c44a`](https://github.com/ocadotechnology/aimmo/commit/3e3c44a970a5c192872ebf1bd80f62b9ef1ebcaa))
+
 ## v2.8.5 (2023-05-25)
 ### Fix
 * Revert changes ([#1774](https://github.com/ocadotechnology/aimmo/issues/1774)) ([`c9c7fa9`](https://github.com/ocadotechnology/aimmo/commit/c9c7fa98223390dad9ac6e5fb95badfb551f30c9))
