@@ -57,7 +57,7 @@ export class NavigationBar extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    // Any time completedTasks change, pass the new info as state
+    // Any time completedBadges change, pass the new info as state
     if (props.completedBadges !== undefined && props.gameState !== undefined) {
       const worksheetID = props.gameState.worksheetID
       let badges = props.completedBadges.split(',')
@@ -69,8 +69,9 @@ export class NavigationBar extends Component {
 
       // convert to string for comparison
       const stateBadgesString = state.completedBadges.join() + ','
-
-      if (props.completedBadges !== stateBadgesString) {
+      const propsBadgesString = badges.join() + ','
+      // compare badges with the same worksheet
+      if (propsBadgesString !== stateBadgesString) {
         const lastBadge = badges[badges.length - 1] // assume the last element is the last badge
         // return badge info with popup if there is a new badge earned
         return {
