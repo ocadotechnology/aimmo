@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.8.7 (2023-06-16)
+
+### Fix
+
+* Go back to actual semantic release repo ([`1221aea`](https://github.com/ocadotechnology/aimmo/commit/1221aea5bfd57eab29b58567e69eaa480282f9f2))
+* Kurono badges trigger ([#1777](https://github.com/ocadotechnology/aimmo/issues/1777)) ([`3c3f4be`](https://github.com/ocadotechnology/aimmo/commit/3c3f4be9ab6a87b8663035ef557ea85b31942a23))
+
 ## v2.8.6 (2023-06-06)
 ### Fix
 * Remove artefacts from Worksheet 1 ([#1775](https://github.com/ocadotechnology/aimmo/issues/1775)) ([`3e3c44a`](https://github.com/ocadotechnology/aimmo/commit/3e3c44a970a5c192872ebf1bd80f62b9ef1ebcaa))
