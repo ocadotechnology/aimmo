@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.9.0 (2023-06-23)
+
+### Feature
+
+* Upgrade Python to 3.8 ([#1778](https://github.com/ocadotechnology/aimmo/issues/1778)) ([`ebf6131`](https://github.com/ocadotechnology/aimmo/commit/ebf6131d6ef54d57a6948fc7bc17bc70f98c0fcb))
+
 ## v2.8.7 (2023-06-16)
 
 ### Fix
