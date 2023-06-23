@@ -31,7 +31,7 @@ jobs:
       - name: Setup python-version
         uses: actions/setup-python@v4
         with:
-          python-version: "3.7"
+          python-version: "3.8"
           architecture: "x64"
       - name: Install Python dependencies
         run: |
@@ -40,7 +40,7 @@ jobs:
       - name: Generate requirements
         run: pip freeze --all > requirements.txt
       - name: Run Snyk to check for vulnerabilities in Python
-        uses: snyk/actions/python-3.7@master
+        uses: snyk/actions/python-3.8@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
