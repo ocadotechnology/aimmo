@@ -18,7 +18,7 @@ setup(
         "docker==4.4.4",
         "google-api-python-client==1.12.8",
         "google-cloud-logging==2.2.0",
-        "grpcio==1.43.0",
+        "grpcio==1.53.0",
     ],
     tests_require=[
         "pytest~=6.2",
