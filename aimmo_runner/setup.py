@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        "django==3.2.19",
+        "django==3.2.20",
         "django-forms-bootstrap",
         "django-js-reverse",
         "eventlet",
