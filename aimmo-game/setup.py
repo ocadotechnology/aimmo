@@ -10,7 +10,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        "aiohttp==3.7.4",
+        "aiohttp==3.8.5",
         "aiohttp-cors",
         "aiohttp-wsgi",
         "eventlet==0.31.0",
