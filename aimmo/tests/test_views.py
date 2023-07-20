@@ -1,4 +1,6 @@
 import json
+from unittest.mock import patch
+
 from common.models import Class, Teacher, UserProfile
 from common.tests.utils.classes import create_class_directly
 from common.tests.utils.student import (
@@ -9,15 +11,14 @@ from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.urls import reverse
 from portal.forms.add_game import AddGameForm
-from aimmo.game_creator import create_game
 from rest_framework import status
 
 from aimmo import app_settings, models
+from aimmo.game_creator import create_game
 from aimmo.models import Game
 from aimmo.serializers import GameSerializer
 from aimmo.views import get_avatar_id
 from aimmo.worksheets import WORKSHEETS, Worksheet
-from unittest.mock import patch
 
 app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
     "base %s" % game_id,
@@ -352,7 +353,9 @@ class TestViews(TestCase):
         assert response.status_code == 204
         assert models.Game.objects.all().count() == 2
         assert models.Game.objects.filter(is_archived=True).count() == 1
+        assert models.Game.objects.get(id=game2.id).status == Game.STOPPED
         assert models.Game.objects.filter(is_archived=False).count() == 1
+        assert models.Game.objects.get(id=self.game.id).status == Game.RUNNING
 
         # then test adding game again for the same class
         form = AddGameForm(

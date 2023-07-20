@@ -154,6 +154,7 @@ class GameViewSet(
         )
         for game in games:
             game.is_archived = True  # mark as deleted/archived
+            game.status = Game.STOPPED
             game.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
