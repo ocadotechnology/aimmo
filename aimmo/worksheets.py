@@ -38,7 +38,7 @@ WORKSHEETS = {
 #
 #    Task 3: Investigate location
 #       - Investigate what `print(avatar_state.location)` tells you and then
-#         check if you can move to the next location.If you can't move to the
+#         check if you can move to the next location. If you can't move to the
 #         next location, have your avatar wait until the next turn.
 #
 #  New commands:
