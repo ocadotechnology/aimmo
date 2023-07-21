@@ -1,10 +1,13 @@
 """Django settings for example_project project."""
 import mimetypes
 import os
+from subprocess import CalledProcessError
 
 from django.http import Http404
 from kubernetes.client.api.custom_objects_api import CustomObjectsApi
 from kubernetes.client.api_client import ApiClient
+
+from aimmo_runner.minikube import get_ip
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -139,12 +142,23 @@ CLOUD_STORAGE_PREFIX = "https://storage.googleapis.com/codeforlife-assets/"
 SITE_ID = 1
 
 
+def get_base_url_for_game():
+    try:
+        ip_address = get_ip()
+    except CalledProcessError:
+        ip_address = "localhost"
+
+    return f"http://{ip_address}:8000"
+
+
 def get_game_url_base_and_path(game_id: int) -> str:
+    print("yoyo")
     api_client = ApiClient()
     api_instance = CustomObjectsApi(api_client)
     result = api_instance.list_namespaced_custom_object(
         group="agones.dev", version="v1", namespace="default", plural="gameservers", label_selector=f"game-id={game_id}"
     )
+    print(result)
     try:
         result_items = result["items"]
         game_server = None
@@ -166,10 +180,10 @@ def get_game_url_base_and_path(game_id: int) -> str:
 
 AIMMO_GAME_SERVER_URL_FUNCTION = get_game_url_base_and_path
 AIMMO_GAME_SERVER_SSL_FLAG = False
+AIMMO_DJANGO_BASE_URL = get_base_url_for_game()
 
 try:
     from example_project.local_settings import *  # pylint: disable=E0611
 except ImportError:
     pass
 
-from common.csp_config import *

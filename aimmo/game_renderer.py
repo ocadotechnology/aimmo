@@ -33,6 +33,7 @@ def get_environment_connection_settings(game_id):
     :param game_id: Integer with the ID of the game.
     :return: A dict object with all relevant settings.
     """
+    print("hello again")
     game_url_base_and_path = app_settings.GAME_SERVER_URL_FUNCTION(game_id)
     return {
         "game_url_base": game_url_base_and_path[0],

@@ -1,4 +1,6 @@
 import json
+from unittest.mock import MagicMock, patch
+
 from common.models import Class, Teacher, UserProfile
 from common.tests.utils.classes import create_class_directly
 from common.tests.utils.student import (
@@ -9,15 +11,14 @@ from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.urls import reverse
 from portal.forms.add_game import AddGameForm
-from aimmo.game_creator import create_game
 from rest_framework import status
 
 from aimmo import app_settings, models
+from aimmo.game_creator import create_game
 from aimmo.models import Game
 from aimmo.serializers import GameSerializer
 from aimmo.views import get_avatar_id
 from aimmo.worksheets import WORKSHEETS, Worksheet
-from unittest.mock import patch
 
 app_settings.GAME_SERVER_URL_FUNCTION = lambda game_id: (
     "base %s" % game_id,
@@ -123,6 +124,34 @@ class TestViews(TestCase):
         response = c.get(reverse("kurono/play", kwargs={"id": 1}))
         assert response.status_code == 200
 
+    @patch("aimmo.views.GameManager")
+    def test_play_creates_game_server_if_not_running(self, mock_game_manager_cls: MagicMock):
+        c = self.login()
+        self.game.status = Game.STOPPED
+        self.game.save()
+        expected_game_data = GameSerializer(self.game).data
+
+        response = c.get(reverse("kurono/play", kwargs={"id": 1}))
+
+        assert response.status_code == 200
+        mock_game_manager_cls.return_value.create_game_server.assert_called_once_with(
+            game_id=self.game.id,
+            game_data=expected_game_data,
+        )
+        self.game.refresh_from_db()
+        assert self.game.status == Game.RUNNING
+
+    @patch("aimmo.views.GameManager")
+    def test_play_does_not_create_game_server_if_already_running(self, mock_game_manager_cls):
+        c = self.login()
+        self.game.status = Game.RUNNING
+        self.game.save()
+
+        response = c.get(reverse("kurono/play", kwargs={"id": 1}))
+
+        assert response.status_code == 200
+        assert not mock_game_manager_cls.called
+
     def test_play_for_non_existent_game(self):
         c = self.login()
         response = c.get(reverse("kurono/play", kwargs={"id": 2}))
@@ -162,7 +191,8 @@ class TestViews(TestCase):
         response = self._go_to_page("kurono/game_user_details", "id", 5)
         assert response.status_code == 404
 
-    def test_stop_game(self):
+    @patch("aimmo.serializers.GameManager")
+    def test_stop_game(self, mock_game_manager_cls):
         game = models.Game.objects.get(id=1)
         game.auth_token = "tokenso lorenzo"
         game.save()
@@ -177,8 +207,10 @@ class TestViews(TestCase):
         game = models.Game.objects.get(id=1)
         assert response.status_code == 200
         assert game.status == models.Game.STOPPED
+        mock_game_manager_cls.return_value.delete_game_server.assert_called_with(game_id=1)
 
-    def test_stop_game_no_token(self):
+    @patch("aimmo.serializers.GameManager")
+    def test_stop_game_no_token(self, mock_game_manager_cls):
         game = models.Game.objects.get(id=1)
         game.auth_token = "tokenso lorenzo"
         game.save()
@@ -192,6 +224,7 @@ class TestViews(TestCase):
         game = models.Game.objects.get(id=1)
         assert response.status_code == 403
         assert game.status == models.Game.RUNNING
+        assert not mock_game_manager_cls.return_value.delete_game_server.called
 
     def test_get_avatar_id_for_non_existent_game(self):
         _, response = get_avatar_id(self.user, 1)
@@ -330,9 +363,11 @@ class TestViews(TestCase):
         assert response.status_code == status.HTTP_200_OK
         assert models.Game.objects.get(id=1).auth_token == new_token
 
-    def test_delete_game(self):
+    @patch("aimmo.views.GameManager")
+    def test_delete_game(self, mock_game_manager_cls):
         """
-        Check for 204 when deleting a game
+        Check for 204 when deleting a game.
+        Check that GameManger attempts to delete associated game server too.
         """
         client = self.login()
 
@@ -353,6 +388,7 @@ class TestViews(TestCase):
         assert models.Game.objects.all().count() == 2
         assert models.Game.objects.filter(is_archived=True).count() == 1
         assert models.Game.objects.filter(is_archived=False).count() == 1
+        mock_game_manager_cls.return_value.delete_game_server.assert_called_once_with(game_id=game2.id)
 
         # then test adding game again for the same class
         form = AddGameForm(
@@ -423,7 +459,7 @@ class TestViews(TestCase):
         assert response.status_code == 200
 
     @patch("aimmo.game_creator.GameManager")
-    def test_adding_a_game_creates_an_avatar(self, mock_game_manager):
+    def test_adding_a_game_creates_an_avatar(self, mock_game_manager_cls):
         client = self.login()
         create_game(
             self.user,
@@ -435,8 +471,9 @@ class TestViews(TestCase):
             ),
         )
 
-        # GameManager is called when a game is created.
-        assert mock_game_manager.called
+        # Check that a game server is created when a game is created
+        assert mock_game_manager_cls.return_value.create_game_secret.called
+        assert mock_game_manager_cls.return_value.create_game_server.called
 
         game = models.Game.objects.get(pk=2)
         avatar = game.avatar_set.get(owner=client.session["_auth_user_id"])
@@ -477,7 +514,8 @@ class TestViews(TestCase):
         assert avatar1.code == self.worksheet2.starter_code
         assert avatar2.code == self.worksheet2.starter_code
 
-    def test_delete_games(self):
+    @patch("aimmo.views.GameManager")
+    def test_delete_games(self, mock_game_manager_cls):
         # Create a new teacher with a game to make sure it's not affected
         new_user: User = User.objects.create_user("test2", "test2@example.com", "password")
         new_user.is_staff = True
@@ -512,6 +550,7 @@ class TestViews(TestCase):
         assert Game.objects.filter(is_archived=False).count() == 1
         assert Game.objects.filter(is_archived=True).count() == 2
         assert Game.objects.get(pk=new_game.id)
+        assert len(mock_game_manager_cls.return_value.delete_game_server.mock_calls) == 2
 
     def test_list_running_games(self):
         self.game.main_user = self.user

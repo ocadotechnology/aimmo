@@ -1,8 +1,9 @@
 import json
+
 from rest_framework import serializers
 
-from aimmo.models import Game, Avatar
 from aimmo.game_manager import GameManager
+from aimmo.models import Game, Avatar
 from aimmo.worksheets import WORKSHEETS
 
 
@@ -36,13 +37,17 @@ class GameSerializer(serializers.Serializer):
         return json.dumps(game.settings_as_dict(), sort_keys=True)
 
     def update(self, instance, validated_data):
+        old_status = instance.status
         instance.name = validated_data.get("name", instance.name)
         instance.status = validated_data.get("status", instance.status)
-        instance.worksheet_id = validated_data.get(
-            "worksheet_id", instance.worksheet_id
-        )
+        instance.worksheet_id = validated_data.get("worksheet_id", instance.worksheet_id)
 
         instance.save()
+
+        if "status" in validated_data:
+            if instance.status == Game.STOPPED and old_status == Game.RUNNING:
+                game_manager = GameManager()
+                game_manager.delete_game_server(game_id=instance.id)
 
         if "worksheet_id" in validated_data:
             avatars = Avatar.objects.filter(game=instance)
