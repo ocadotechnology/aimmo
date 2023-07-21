@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.9.2 (2023-07-21)
+
+### Fix
+
+* Kurono code changes in game and starter/hint code ([#1792](https://github.com/ocadotechnology/aimmo/issues/1792)) ([`4630e7d`](https://github.com/ocadotechnology/aimmo/commit/4630e7d752e466bca73f5b50de424ceccc07b45e))
+
 ## v2.9.1 (2023-07-06)
 
 ### Fix
