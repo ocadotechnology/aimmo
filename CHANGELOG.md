@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.9.3 (2023-07-24)
+
+### Fix
+
+* Stop games on deletion ([#1791](https://github.com/ocadotechnology/aimmo/issues/1791)) ([`6066321`](https://github.com/ocadotechnology/aimmo/commit/6066321810ba33e9fa001899c426a0a1cc719259))
+
 ## v2.9.2 (2023-07-21)
 
 ### Fix
