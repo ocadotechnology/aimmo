@@ -38,10 +38,12 @@ WORKSHEETS = {
 #
 #    Task 3: Investigate location
 #       - Investigate what `print(avatar_state.location)` tells you and then
-#         check if you can move to the next location
+#         check if you can move to the next location. If you can't move to the
+#         next location, have your avatar wait until the next turn.
 #
 #  New commands:
 #       - MoveAction(DIRECTION)
+#       - WaitAction()
 #       - avatar_state.location -> LOCATION
 #       - world_state.can_move_to(LOCATION) -> True/False
 #
@@ -68,7 +70,8 @@ def next_turn(world_state, avatar_state):
 #  Worksheet 2 challenges:
 #    Task 1: Avoiding obstacles
 #       - Change the code so that your avatar tries a different direction if
-#         they are unable to move. To avoid repeating code, create a subroutine
+#         they are unable to move. Keep trying a new random direction, until your
+#         avatar can move. To avoid repeating code, create a subroutine
 #         called get_random_dir() and use it to return a random direction.
 #
 #    Task 2: Pick up an artefact
@@ -78,10 +81,12 @@ def next_turn(world_state, avatar_state):
 #
 #  New commands:
 #       - action = PickupAction()
+#       - world_state.cells[LOCATION].has_artefact() -> True/False
 #
 #  Previous commands:
 #       - avatar_state.location -> LOCATION
 #       - MoveAction(DIRECTION)
+#       - WaitAction()
 #       - world_state.can_move_to(LOCATION) -> True/False
 #-------------------------------------------------------------------------------
 import random
