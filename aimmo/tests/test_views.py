@@ -14,7 +14,6 @@ from portal.forms.add_game import AddGameForm
 from rest_framework import status
 
 from aimmo import app_settings, models
-from aimmo.game_creator import create_game
 from aimmo.models import Game
 from aimmo.serializers import GameSerializer
 from aimmo.views import get_avatar_id
@@ -47,8 +46,8 @@ class TestViews(TestCase):
         cls.user.save()
         cls.user_profile: UserProfile = UserProfile(user=cls.user)
         cls.user_profile.save()
-        teacher: Teacher = Teacher.objects.create(user=cls.user_profile, new_user=cls.user)
-        teacher.save()
+        cls.teacher: Teacher = Teacher.objects.create(user=cls.user_profile, new_user=cls.user)
+        cls.teacher.save()
         cls.klass, _, _ = create_class_directly(cls.user.email)
         cls.klass.save()
         cls.klass2, _, _ = create_class_directly(cls.user.email)
@@ -331,7 +330,8 @@ class TestViews(TestCase):
         assert response.status_code == status.HTTP_200_OK
         assert models.Game.objects.get(id=1).auth_token == new_token
 
-    def test_delete_game(self):
+    @patch("aimmo.models.GameManager")
+    def test_delete_game(self, mock_game_manager):
         """
         Check for 204 when deleting a game
         """
@@ -342,6 +342,9 @@ class TestViews(TestCase):
         form = AddGameForm(
             Class.objects.all(),
             data={"game_class": klass.id},
+            instance=Game(
+                game_class=klass, created_by=self.teacher
+            )
         )
 
         game2 = form.save()
@@ -361,6 +364,9 @@ class TestViews(TestCase):
         form = AddGameForm(
             Class.objects.all(),
             data={"game_class": klass.id},
+            instance=Game(
+                game_class=klass, created_by=self.teacher
+            )
         )
 
         game3 = form.save()
@@ -407,7 +413,7 @@ class TestViews(TestCase):
                 "status": "r",
                 "settings": '{"GENERATOR": "Main", "OBSTACLE_RATIO": 0.1, "PICKUP_SPAWN_CHANCE": 0.1, "SCORE_DESPAWN_CHANCE": 0.05, "START_HEIGHT": 31, "START_WIDTH": 31, "TARGET_NUM_CELLS_PER_AVATAR": 16.0, "TARGET_NUM_PICKUPS_PER_AVATAR": 0.0, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
                 "class_id": str(class_id),
-                "worksheet_id": str(worksheet_id),
+                "worksheet_id": worksheet_id,
             }
 
         expected_game_list = {
@@ -425,18 +431,19 @@ class TestViews(TestCase):
         response = client.get(reverse("game-detail", kwargs={"pk": self.game.id}))
         assert response.status_code == 200
 
-    @patch("aimmo.game_creator.GameManager")
+    @patch("aimmo.models.GameManager")
     def test_adding_a_game_creates_an_avatar(self, mock_game_manager):
         client = self.login()
-        create_game(
-            self.user,
-            AddGameForm(
-                Class.objects.all(),
-                data={
-                    "game_class": self.klass2.id,
-                },
-            ),
+
+        # then test adding game again for the same class
+        form = AddGameForm(
+            Class.objects.all(),
+            data={"game_class": self.klass2.id},
+            instance=Game(
+                game_class=self.klass2, created_by=self.teacher
+            )
         )
+        form.save()
 
         # GameManager is called when a game is created.
         assert mock_game_manager.called
@@ -480,7 +487,8 @@ class TestViews(TestCase):
         assert avatar1.code == self.worksheet2.starter_code
         assert avatar2.code == self.worksheet2.starter_code
 
-    def test_delete_games(self):
+    @patch("aimmo.models.GameManager")
+    def test_delete_games(self, mock_game_manager):
         # Create a new teacher with a game to make sure it's not affected
         new_user: User = User.objects.create_user("test2", "test2@example.com", "password")
         new_user.is_staff = True
@@ -539,7 +547,7 @@ class TestViews(TestCase):
                 "status": "r",
                 "settings": '{"GENERATOR": "Main", "OBSTACLE_RATIO": 0.1, "PICKUP_SPAWN_CHANCE": 0.1, "SCORE_DESPAWN_CHANCE": 0.05, "START_HEIGHT": 31, "START_WIDTH": 31, "TARGET_NUM_CELLS_PER_AVATAR": 16.0, "TARGET_NUM_PICKUPS_PER_AVATAR": 0.0, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
                 "class_id": str(class_id),
-                "worksheet_id": str(worksheet_id),
+                "worksheet_id": worksheet_id,
             }
 
         expected_game_list = {

@@ -22,7 +22,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from . import game_renderer
-from .avatar_creator import create_avatar_for_user
 from .exceptions import UserCannotPlayGameException
 from .models import Avatar, Game
 from .permissions import (
@@ -49,7 +48,7 @@ def code(request, id):
     try:
         avatar = game.avatar_set.get(owner=request.user)
     except Avatar.DoesNotExist:
-        avatar = create_avatar_for_user(request.user, id)
+        avatar = game.create_avatar_for_user(request.user)
 
     if request.method == "POST":
         avatar.code = request.POST["code"]
@@ -73,7 +72,7 @@ def badges(request, id):
     try:
         avatar = game.avatar_set.get(owner=request.user)
     except Avatar.DoesNotExist:
-        avatar = create_avatar_for_user(request.user, id)
+        avatar = game.create_avatar_for_user(request.user)
     avatar_user_profile = UserProfile.objects.get(user=avatar.owner)
 
     if request.method == "POST":

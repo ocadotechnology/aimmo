@@ -1,12 +1,16 @@
 import secrets
+import typing as t
 
 from common.models import Class
 from common.models import Teacher
 from django.contrib.auth.models import User
 from django.db import models
+from django.dispatch import receiver
 from django.utils import timezone
 
 from aimmo import app_settings
+from aimmo.exceptions import LimitExceeded
+from aimmo.game_manager import GameManager
 from aimmo.worksheets import WORKSHEETS
 
 DEFAULT_WORKSHEET_ID = 1
@@ -47,6 +51,8 @@ class Game(models.Model):
         User,
         related_name="playable_games",
         help_text="List of auth_user IDs of users who are allowed to play and have access to the game.",
+        blank=True,
+        null=True,
     )
     completed = models.BooleanField(default=False)
     main_user = models.ForeignKey(
@@ -129,9 +135,56 @@ class Game(models.Model):
             "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": self.target_num_score_locations_per_avatar,
         }
 
-    def save(self, *args, **kwargs):
-        super(Game, self).full_clean()
-        super(Game, self).save(*args, **kwargs)
+    def create_avatar_for_user(self, user):
+        """
+        Creates an Avatar object for a user.
+
+        :param user: The user the Avatar is for.
+        :return: The initialised Avatar object.
+        """
+        initial_code = self.worksheet.starter_code
+        avatar = Avatar.objects.create(owner=user, code=initial_code, game_id=self.id)
+        avatar.auth_token = generate_auth_token(16, 24)
+        return avatar
+
+    def save(self, **kwargs):
+        new_game = self.id is None
+
+        if new_game:
+            self.auth_token = generate_auth_token(32, 48)
+            self.generator = "Main"
+            self.owner = self.game_class.teacher.new_user
+            self.main_user = self.game_class.teacher.new_user
+
+            if self.created_by is None:
+                self.created_by = self.main_user.userprofile.teacher
+
+            super(Game, self).save(**kwargs)
+
+            if not Avatar.objects.filter(owner=self.created_by.new_user, game=self).exists():
+                self.create_avatar_for_user(self.created_by.new_user)
+
+            game_manager = GameManager()
+            game_manager.create_game_secret(game_id=self.id, token=self.auth_token)
+        else:
+            super(Game, self).save(**kwargs)
+
+    class Objects(models.query.QuerySet):
+        def update(self, **kwargs) -> int:
+            if (
+                kwargs.get("status", Game.STOPPED) == Game.RUNNING
+                and Game.objects.filter(status=Game.RUNNING).count() >= 15
+            ):
+                raise Exception()
+            return super().update(**kwargs)
+
+    objects: Objects = Objects.as_manager()
+
+
+@receiver(models.signals.pre_save, sender=Game)
+def check_limits(sender: t.Type[Game], instance: Game, **kwargs):
+    if instance.status == Game.RUNNING and sender.objects.filter(status=Game.RUNNING).count() >= 15:
+        raise LimitExceeded
 
 
 class Avatar(models.Model):
