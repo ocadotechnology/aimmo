@@ -158,3 +158,11 @@ class TestGameLimitExceededMiddleware(TestCase):
 
         assert Game.objects.filter(status=Game.RUNNING).count() == 1
         assert Game.objects.filter(status=Game.STOPPED).count() == 2
+
+        # Check update() still works if not exceeding the limit
+        game1.delete()
+
+        stopped_games.update(status=Game.RUNNING)
+
+        assert Game.objects.filter(status=Game.RUNNING).count() == 2
+        assert Game.objects.all().count() == 2
