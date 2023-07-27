@@ -9,7 +9,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 
 from aimmo import app_settings
-from aimmo.exceptions import LimitExceeded
+from aimmo.exceptions import GameLimitExceeded
 from aimmo.game_manager import GameManager
 from aimmo.worksheets import WORKSHEETS
 
@@ -18,6 +18,8 @@ DEFAULT_WORKSHEET_ID = 1
 GAME_GENERATORS = [("Main", "Open World")] + [  # Default
     ("Level%s" % i, "Level %s" % i) for i in range(1, app_settings.MAX_LEVEL + 1)
 ]
+
+MAX_GAMES_LIMIT = 15
 
 
 def generate_auth_token(nbytes, max_length):
@@ -52,7 +54,6 @@ class Game(models.Model):
         related_name="playable_games",
         help_text="List of auth_user IDs of users who are allowed to play and have access to the game.",
         blank=True,
-        null=True,
     )
     completed = models.BooleanField(default=False)
     main_user = models.ForeignKey(
@@ -170,21 +171,24 @@ class Game(models.Model):
             super(Game, self).save(**kwargs)
 
     class Objects(models.query.QuerySet):
+        """
+        Manager from the Game model to ensure the max game limit cannot be exceeded when calling update()
+        """
         def update(self, **kwargs) -> int:
             if (
                 kwargs.get("status", Game.STOPPED) == Game.RUNNING
-                and Game.objects.filter(status=Game.RUNNING).count() >= 15
+                and Game.objects.filter(status=Game.RUNNING).count() + self.count() > MAX_GAMES_LIMIT
             ):
-                raise Exception()
+                raise GameLimitExceeded
             return super().update(**kwargs)
 
     objects: Objects = Objects.as_manager()
 
 
 @receiver(models.signals.pre_save, sender=Game)
-def check_limits(sender: t.Type[Game], instance: Game, **kwargs):
-    if instance.status == Game.RUNNING and sender.objects.filter(status=Game.RUNNING).count() >= 15:
-        raise LimitExceeded
+def check_game_limit(sender: t.Type[Game], instance: Game, **kwargs):
+    if instance.status == Game.RUNNING and sender.objects.filter(status=Game.RUNNING).count() >= MAX_GAMES_LIMIT:
+        raise GameLimitExceeded
 
 
 class Avatar(models.Model):

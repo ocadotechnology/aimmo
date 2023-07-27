@@ -10,7 +10,7 @@ COPY --from=builder /usr/local/lib/python3.8/site-packages /usr/local/lib/python
 COPY . .
 
 FROM base as tester
-RUN pip install coverage
+#RUN pip install coverage
 CMD ./run_tests.sh -c
 
 FROM base as runner
