@@ -11,7 +11,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 
 from aimmo.exceptions import GameLimitExceeded
-from aimmo.models import Game
+from aimmo.models import Game, MAX_GAMES_LIMIT
 
 MOCKED_MAX_GAMES_LIMIT = 2
 
@@ -24,6 +24,9 @@ class TestGameLimitExceededMiddleware(TestCase):
 
         self.monkeypatch = MonkeyPatch()
         self.monkeypatch.setattr("aimmo.models.MAX_GAMES_LIMIT", MOCKED_MAX_GAMES_LIMIT)
+
+    def tearDown(self) -> None:
+        self.monkeypatch.setattr("aimmo.models.MAX_GAMES_LIMIT", MAX_GAMES_LIMIT)
 
     def _setup_teacher(self) -> Tuple[str, str]:
         teacher_email, teacher_password = signup_teacher_directly()
