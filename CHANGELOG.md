@@ -2,6 +2,18 @@
 
 <!--next-version-placeholder-->
 
+## v2.9.3 (2023-07-24)
+
+### Fix
+
+* Stop games on deletion ([#1791](https://github.com/ocadotechnology/aimmo/issues/1791)) ([`6066321`](https://github.com/ocadotechnology/aimmo/commit/6066321810ba33e9fa001899c426a0a1cc719259))
+
+## v2.9.2 (2023-07-21)
+
+### Fix
+
+* Kurono code changes in game and starter/hint code ([#1792](https://github.com/ocadotechnology/aimmo/issues/1792)) ([`4630e7d`](https://github.com/ocadotechnology/aimmo/commit/4630e7d752e466bca73f5b50de424ceccc07b45e))
+
 ## v2.9.1 (2023-07-06)
 
 ### Fix

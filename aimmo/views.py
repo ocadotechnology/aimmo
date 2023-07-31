@@ -164,6 +164,7 @@ class GameViewSet(
 
                     # Archive the games in the database
                     game.is_archived = True  # mark as deleted/archived
+                    game.status = Game.STOPPED
                     game.save()
             except Exception as exception:
                 LOGGER.error(f"Could not delete game servers for games: {', '.join(game_ids)}")

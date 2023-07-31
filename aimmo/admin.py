@@ -7,7 +7,7 @@ from .models import Avatar, Game
 
 class GameDataAdmin(admin.ModelAdmin):
     search_fields = ["id", "owner__username", "owner__email"]
-    list_display = ["id", "owner", "game_class", "school", "worksheet_id", "status"]
+    list_display = ["id", "owner", "game_class", "school", "worksheet_id", "status", "creation_time", "is_archived"]
     raw_id_fields = ["owner", "main_user", "can_play", "game_class"]
     readonly_fields = ["players", "auth_token"]
 
