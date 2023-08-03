@@ -22,8 +22,25 @@ GAME_GENERATORS = [("Main", "Open World")] + [  # Default
 MAX_GAMES_LIMIT = 15
 
 
-def generate_auth_token(nbytes, max_length):
-    return secrets.token_urlsafe(nbytes=nbytes)[:max_length]
+def generate_game_auth_token():
+    return secrets.token_urlsafe(nbytes=32)[:48]
+
+
+def generate_avatar_auth_token():
+    return secrets.token_urlsafe(nbytes=16)[:24]
+
+
+class GameQuerySet(models.QuerySet):
+    """
+    Manager from the Game model to ensure the max game limit cannot be exceeded when calling update()
+    """
+
+    def update(self, **kwargs) -> int:
+        running_games = Game.objects.filter(status=Game.RUNNING)
+
+        if kwargs.get("status") == Game.RUNNING and running_games.union(self).count() > MAX_GAMES_LIMIT:
+            raise GameLimitExceeded
+        return super().update(**kwargs)
 
 
 class Game(models.Model):
@@ -88,6 +105,8 @@ class Game(models.Model):
     is_archived = models.BooleanField(default=False)
     creation_time = models.DateTimeField(default=timezone.now, null=True)
 
+    objects: GameQuerySet = GameQuerySet.as_manager()
+
     @property
     def is_active(self):
         return not self.completed
@@ -136,24 +155,8 @@ class Game(models.Model):
             "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": self.target_num_score_locations_per_avatar,
         }
 
-    def create_avatar_for_user(self, user):
-        """
-        Creates an Avatar object for a user.
-
-        :param user: The user the Avatar is for.
-        :return: The initialised Avatar object.
-        """
-        initial_code = self.worksheet.starter_code
-        avatar = Avatar.objects.create(owner=user, code=initial_code, game_id=self.id)
-        avatar.auth_token = generate_auth_token(16, 24)
-        return avatar
-
     def save(self, **kwargs):
-        new_game = self.id is None
-
-        if new_game:
-            self.auth_token = generate_auth_token(32, 48)
-            self.generator = "Main"
+        if self.id is None:
             self.owner = self.game_class.teacher.new_user
             self.main_user = self.game_class.teacher.new_user
 
@@ -163,26 +166,12 @@ class Game(models.Model):
             super(Game, self).save(**kwargs)
 
             if not Avatar.objects.filter(owner=self.created_by.new_user, game=self).exists():
-                self.create_avatar_for_user(self.created_by.new_user)
+                Avatar.objects.create(game=self, owner=self.created_by.new_user)
 
             game_manager = GameManager()
             game_manager.create_game_secret(game_id=self.id, token=self.auth_token)
         else:
             super(Game, self).save(**kwargs)
-
-    class Objects(models.query.QuerySet):
-        """
-        Manager from the Game model to ensure the max game limit cannot be exceeded when calling update()
-        """
-        def update(self, **kwargs) -> int:
-            if (
-                kwargs.get("status", Game.STOPPED) == Game.RUNNING
-                and Game.objects.filter(status=Game.RUNNING).count() + self.count() > MAX_GAMES_LIMIT
-            ):
-                raise GameLimitExceeded
-            return super().update(**kwargs)
-
-    objects: Objects = Objects.as_manager()
 
 
 @receiver(models.signals.pre_save, sender=Game)
@@ -195,7 +184,13 @@ class Avatar(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     code = models.TextField()
-    auth_token = models.CharField(max_length=24, blank=True)
+    auth_token = models.CharField(max_length=24, blank=True, default=generate_avatar_auth_token)
+
+    def save(self, **kwargs):
+        if self.id is None and self.code == "":
+            self.code = self.game.worksheet.starter_code
+
+        super(Avatar, self).save(**kwargs)
 
     class Meta:
         unique_together = ("owner", "game")

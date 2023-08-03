@@ -48,7 +48,7 @@ def code(request, id):
     try:
         avatar = game.avatar_set.get(owner=request.user)
     except Avatar.DoesNotExist:
-        avatar = game.create_avatar_for_user(request.user)
+        avatar = Avatar.objects.create(game=game, owner=request.user)
 
     if request.method == "POST":
         avatar.code = request.POST["code"]
@@ -72,7 +72,7 @@ def badges(request, id):
     try:
         avatar = game.avatar_set.get(owner=request.user)
     except Avatar.DoesNotExist:
-        avatar = game.create_avatar_for_user(request.user)
+        avatar = Avatar.objects.create(game=game, owner=request.user)
     avatar_user_profile = UserProfile.objects.get(user=avatar.owner)
 
     if request.method == "POST":
