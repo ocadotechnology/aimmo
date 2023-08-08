@@ -136,6 +136,23 @@ class TestGameLimitExceededMiddleware(TestCase):
 
         assert game3.status == Game.STOPPED
 
+    def test_can_update_games_when_max_limit_reached(self):
+        """
+        Given two running games,
+        When a change is being made to a game,
+        That change can still be executed and doesn't raise a GameLimitExceeded exception.
+        """
+        game1 = Game(id=1, name="game1", game_class=self.classes[0], worksheet_id=1)
+        game1.save()
+
+        game2 = Game(id=2, name="game2", game_class=self.classes[1], worksheet_id=1)
+        game2.save()
+
+        game1.game_class = self.classes[2]
+        game1.save()
+
+        assert game1.game_class == self.classes[2]
+
     def test_cannot_update_games_to_exceed_max_limit(self):
         """
         Given one running game, and two stopped games,

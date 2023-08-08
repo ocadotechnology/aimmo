@@ -19,6 +19,8 @@ GAME_GENERATORS = [("Main", "Open World")] + [  # Default
     ("Level%s" % i, "Level %s" % i) for i in range(1, app_settings.MAX_LEVEL + 1)
 ]
 
+# TODO: We'd like to have this set in the settings file instead,
+#  but moving it here causes some issues with the Mock object in test_middleware.py
 MAX_GAMES_LIMIT = 15
 
 
@@ -50,7 +52,7 @@ class Game(models.Model):
     STATUS_CHOICES = ((RUNNING, "running"), (STOPPED, "stopped"), (PAUSED, "paused"))
 
     name = models.CharField(max_length=100, blank=True, null=True)
-    auth_token = models.CharField(max_length=48, blank=True)
+    auth_token = models.CharField(max_length=48, blank=True, default=generate_game_auth_token)
     owner = models.ForeignKey(
         User,
         blank=True,
@@ -176,8 +178,22 @@ class Game(models.Model):
 
 @receiver(models.signals.pre_save, sender=Game)
 def check_game_limit(sender: t.Type[Game], instance: Game, **kwargs):
-    if instance.status == Game.RUNNING and sender.objects.filter(status=Game.RUNNING).count() >= MAX_GAMES_LIMIT:
-        raise GameLimitExceeded
+    """
+    Signal which checks before any save() call on a Game object that the number of running games does not exceed the
+    max limit.
+    If the game instance is a new one that we are creating, it won't exist in the DB at the pre_save time, so we check
+    if we already have the max number of running games (hence >=).
+    If the game instance is an already running game, then we exclude it from the queryset since we want to be
+    able to edit without triggering the exception as it doesn't affect the number of running games.
+    :param sender: Game model object
+    :param instance: Game instance
+    """
+    if instance.status == Game.RUNNING:
+        queryset = sender.objects.filter(status=Game.RUNNING)
+        if instance.id is not None:
+            queryset = sender.objects.filter(status=Game.RUNNING).exclude(id=instance.id)
+        if queryset.count() >= MAX_GAMES_LIMIT:
+            raise GameLimitExceeded
 
 
 class Avatar(models.Model):
