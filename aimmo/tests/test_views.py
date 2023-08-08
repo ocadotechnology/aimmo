@@ -248,40 +248,6 @@ class TestViews(TestCase):
         assert len(games_api_users) == 1
         assert games_api_users[0]["id"] == 1
 
-    def test_token_view_get_token_multiple_requests(self):
-        """
-        Ensures we can make a get request for the token, and
-        that a request with a valid token is also accepted.
-        """
-        token = models.Game.objects.get(id=1).auth_token
-        client = Client()
-        response = client.get(reverse("kurono/game_token", kwargs={"id": 1}))
-        assert response.status_code == status.HTTP_200_OK
-        assert token == response.json()["token"]
-
-        # Token starts as empty, as long as it is empty, we can make more GET requests
-        response = client.get(reverse("kurono/game_token", kwargs={"id": 1}))
-        assert response.status_code == status.HTTP_200_OK
-        assert token == response.json()["token"]
-
-    def test_get_token_after_token_set(self):
-        token = models.Game.objects.get(id=1).auth_token
-        client = Client()
-        response = client.get(reverse("kurono/game_token", kwargs={"id": 1}))
-        assert response.status_code == status.HTTP_200_OK
-        assert token == response.json()["token"]
-
-        new_token = "aaaaaaaaaaa"
-        client.patch(
-            reverse("kurono/game_token", kwargs={"id": 1}),
-            json.dumps({"token": new_token}),
-            content_type="application/json",
-        )
-
-        # Token starts as empty, as long as it is empty, we can make more GET requests
-        response = client.get(reverse("kurono/game_token", kwargs={"id": 1}), HTTP_GAME_TOKEN=new_token)
-        assert response.status_code == status.HTTP_200_OK
-
     def test_patch_token_with_no_token(self):
         """
         Check for 401 when attempting to change game token.

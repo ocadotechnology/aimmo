@@ -27,7 +27,6 @@ from .models import Avatar, Game
 from .permissions import (
     CanDeleteGameOrReadOnly,
     CsrfExemptSessionAuthentication,
-    GameHasToken,
 )
 from .serializers import GameSerializer, GameIdsSerializer
 
@@ -93,7 +92,6 @@ def badges(request, id):
 
 class GameUsersView(APIView):
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
-    permission_classes = (GameHasToken,)
 
     def get(self, request, id):
         game = get_object_or_404(Game, id=id)
@@ -187,17 +185,6 @@ class GameTokenView(APIView):
     """
 
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
-    permission_classes = (GameHasToken,)
-
-    def get(self, request, id):
-        """
-        After the initial token request, we need to check where the
-        request comes from. So for subsequent requests we verify that
-        they came from the token-holder.
-        """
-        game = get_object_or_404(Game, id=id)
-        self.check_object_permissions(self.request, game)
-        return Response(data={"token": game.auth_token})
 
     def patch(self, request, id):
         game = get_object_or_404(Game, id=id)
