@@ -7,7 +7,7 @@ name = "pypi"
 kubernetes = "==26.1.0"
 docker = "<6"
 aimmo-game-worker = {editable = true, path = "."}
-restrictedpython = "==4.0.b7"
+restrictedpython = "==5.3"
 aiohttp = "==3.8.4"
 aiohttp-cors = "*"
 idna-ssl = "*"
