@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.9.4 (2023-08-10)
+
+### Fix
+
+* Try reverting package upgrades ([#1799](https://github.com/ocadotechnology/aimmo/issues/1799)) ([`086b9cb`](https://github.com/ocadotechnology/aimmo/commit/086b9cb9bb6edff2f1848901499b2aec73298108))
+
 ## v2.9.3 (2023-07-24)
 
 ### Fix
