@@ -9,8 +9,6 @@ docker = "<6"
 aimmo-game-worker = {editable = true, path = "."}
 restrictedpython = "==4.0.b7"
 aiohttp = "==3.8.4"
-google-auth = "==2.21.0"
-pyyaml = "==6.0"
 aiohttp-cors = "*"
 idna-ssl = "*"
 
