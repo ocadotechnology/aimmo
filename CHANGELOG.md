@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.10.0 (2023-08-11)
+
+### Feature
+
+* Implement max games limit ([#1797](https://github.com/ocadotechnology/aimmo/issues/1797)) ([`8d276de`](https://github.com/ocadotechnology/aimmo/commit/8d276de2a705c87eef73338b3e13b59390142a34))
+
 ## v2.9.4 (2023-08-10)
 
 ### Fix
