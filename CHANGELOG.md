@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.10.2 (2023-08-11)
+
+### Fix
+
+* Try downgrading greenlet ([`44c8898`](https://github.com/ocadotechnology/aimmo/commit/44c889870a77cba72c645429bb4eb57c394aa0d7))
+
 ## v2.10.1 (2023-08-11)
 
 ### Fix
