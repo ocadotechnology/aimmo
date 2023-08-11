@@ -64,7 +64,7 @@ class Migration(migrations.Migration):
                 (
                     "auth_token",
                     models.CharField(
-                        default=aimmo.models.generate_auth_token, max_length=24
+                        default=aimmo.models.generate_avatar_auth_token, max_length=24
                     ),
                 ),
             ],
@@ -85,7 +85,7 @@ class Migration(migrations.Migration):
                 (
                     "auth_token",
                     models.CharField(
-                        default=aimmo.models.generate_auth_token, max_length=24
+                        default=aimmo.models.generate_game_auth_token, max_length=24
                     ),
                 ),
                 ("public", models.BooleanField(default=True)),

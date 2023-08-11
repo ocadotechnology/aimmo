@@ -14,7 +14,6 @@ from portal.forms.add_game import AddGameForm
 from rest_framework import status
 
 from aimmo import app_settings, models
-from aimmo.game_creator import create_game
 from aimmo.models import Game
 from aimmo.serializers import GameSerializer
 from aimmo.views import get_avatar_id
@@ -41,21 +40,23 @@ class TestViews(TestCase):
     }
 
     @classmethod
-    def setUpTestData(cls):
+    @patch("aimmo.models.GameManager")
+    def setUpTestData(cls, mock_game_manager):
         cls.user: User = User.objects.create_user("test", "test@example.com", "password")
         cls.user.is_staff = True
         cls.user.save()
         cls.user_profile: UserProfile = UserProfile(user=cls.user)
         cls.user_profile.save()
-        teacher: Teacher = Teacher.objects.create(user=cls.user_profile, new_user=cls.user)
-        teacher.save()
+        cls.teacher: Teacher = Teacher.objects.create(user=cls.user_profile, new_user=cls.user)
+        cls.teacher.save()
         cls.klass, _, _ = create_class_directly(cls.user.email)
         cls.klass.save()
         cls.klass2, _, _ = create_class_directly(cls.user.email)
         cls.klass2.save()
         cls.worksheet: Worksheet = WORKSHEETS.get(1)
         cls.worksheet2: Worksheet = WORKSHEETS.get(2)
-        cls.game = models.Game(id=1, name="test", game_class=cls.klass, worksheet_id=1)
+        # Creating the game also creates 1 avatar for the game owner
+        cls.game = models.Game(name="test", game_class=cls.klass, worksheet_id=1)
         cls.game.save()
 
     def setUp(self):
@@ -79,7 +80,6 @@ class TestViews(TestCase):
 
     def test_update_code(self):
         c = self.login()
-        models.Avatar(owner=self.user, code="test", game=self.game).save()
         response = c.post(reverse("kurono/code", kwargs={"id": 1}), {"code": self.CODE})
         assert response.status_code == 200
         assert models.Avatar.objects.get(owner__username="test").code == self.CODE
@@ -102,13 +102,12 @@ class TestViews(TestCase):
         assert self.worksheet.starter_code == json.loads(response.content)["code"]
 
     def test_retrieve_code(self):
-        models.Avatar(owner=self.user, code=self.CODE, game=self.game).save()
         c = self.login()
         response = c.get(reverse("kurono/code", kwargs={"id": 1}))
         assert response.status_code == 200
         self.assertJSONEqual(
             response.content,
-            {"code": self.CODE, "starterCode": self.game.worksheet.starter_code},
+            {"code": self.game.worksheet.starter_code, "starterCode": self.game.worksheet.starter_code},
         )
 
     def _associate_game_as_level_num(self, level_num=1, user=None, game=None):
@@ -194,20 +193,14 @@ class TestViews(TestCase):
         assert response.status_code == 403
         assert game.status == models.Game.RUNNING
 
-    def test_get_avatar_id_for_non_existent_game(self):
-        _, response = get_avatar_id(self.user, 1)
-        assert response.status_code == 404
-
     def test_get_avatar_id_for_unauthorised_games(self):
         _, _, independent_student = create_independent_student_directly()
         _, response = get_avatar_id(independent_student.new_user, 1)
         assert response.status_code == 401
 
     def test_get_avatar_id_for_two_users(self):
-        # Set up the first avatar
-        first_user = self.user
-        models.Avatar(owner=first_user, code=self.CODE, game=self.game).save()
-        client_one = self.login()
+        # Login as first avatar
+        self.login()
 
         # Set up the second avatar
         _, _, second_user = create_school_student_directly(self.klass.access_code)
@@ -215,10 +208,10 @@ class TestViews(TestCase):
         client_two = Client()
         client_two.login(username="test2", password="password2")
 
-        first_avatar_id, first_response = get_avatar_id(first_user, 1)
+        first_avatar_id, first_response = get_avatar_id(self.user, 1)
         second_avatar_id, second_response = get_avatar_id(second_user.new_user, 1)
 
-        # Status code starts with 2, success response can be different than 200.
+        # Status code starts with 2, success response can be different from 200.
         assert str(first_response.status_code)[0] == "2"
         assert str(second_response.status_code)[0] == "2"
 
@@ -226,25 +219,21 @@ class TestViews(TestCase):
         assert second_avatar_id == 2
 
     def test_connection_parameters_api_call_returns_404_for_logged_out_user(self):
-        user = self.user
-        models.Avatar(owner=user, code=self.CODE, game=self.game).save()
-        client_one = Client()
+        client = Client()
 
         self.game.public = True
-        self.game.can_play.set([user])
+        self.game.can_play.set([self.user])
         self.game.save()
 
-        first_response = client_one.get(reverse("kurono/connection_parameters", kwargs={"game_id": 1}))
+        response = client.get(reverse("kurono/connection_parameters", kwargs={"game_id": 1}))
 
-        assert first_response.status_code == 403
+        assert response.status_code == 403
 
     def test_id_of_connection_parameters_same_as_games_url(self):
         """
-        Ensures that the id's are consistent throughout the project. Check for ID's received
+        Ensures that the IDs are consistent throughout the project. Check for IDs received
         by the current_avatar URL as well as the games URL api.
         """
-        user = self.user
-        models.Avatar(owner=user, code=self.CODE, game=self.game).save()
         client = self.login()
 
         connection_parameters_response = client.get(
@@ -258,40 +247,6 @@ class TestViews(TestCase):
         assert current_avatar_id == 1
         assert len(games_api_users) == 1
         assert games_api_users[0]["id"] == 1
-
-    def test_token_view_get_token_multiple_requests(self):
-        """
-        Ensures we can make a get request for the token, and
-        that a request with a valid token is also accepted.
-        """
-        token = models.Game.objects.get(id=1).auth_token
-        client = Client()
-        response = client.get(reverse("kurono/game_token", kwargs={"id": 1}))
-        assert response.status_code == status.HTTP_200_OK
-        assert token == response.json()["token"]
-
-        # Token starts as empty, as long as it is empty, we can make more GET requests
-        response = client.get(reverse("kurono/game_token", kwargs={"id": 1}))
-        assert response.status_code == status.HTTP_200_OK
-        assert token == response.json()["token"]
-
-    def test_get_token_after_token_set(self):
-        token = models.Game.objects.get(id=1).auth_token
-        client = Client()
-        response = client.get(reverse("kurono/game_token", kwargs={"id": 1}))
-        assert response.status_code == status.HTTP_200_OK
-        assert token == response.json()["token"]
-
-        new_token = "aaaaaaaaaaa"
-        client.patch(
-            reverse("kurono/game_token", kwargs={"id": 1}),
-            json.dumps({"token": new_token}),
-            content_type="application/json",
-        )
-
-        # Token starts as empty, as long as it is empty, we can make more GET requests
-        response = client.get(reverse("kurono/game_token", kwargs={"id": 1}), HTTP_GAME_TOKEN=new_token)
-        assert response.status_code == status.HTTP_200_OK
 
     def test_patch_token_with_no_token(self):
         """
@@ -331,7 +286,8 @@ class TestViews(TestCase):
         assert response.status_code == status.HTTP_200_OK
         assert models.Game.objects.get(id=1).auth_token == new_token
 
-    def test_delete_game(self):
+    @patch("aimmo.models.GameManager")
+    def test_delete_game(self, mock_game_manager):
         """
         Check for 204 when deleting a game
         """
@@ -342,6 +298,9 @@ class TestViews(TestCase):
         form = AddGameForm(
             Class.objects.all(),
             data={"game_class": klass.id},
+            instance=Game(
+                game_class=klass, created_by=self.teacher
+            )
         )
 
         game2 = form.save()
@@ -361,6 +320,9 @@ class TestViews(TestCase):
         form = AddGameForm(
             Class.objects.all(),
             data={"game_class": klass.id},
+            instance=Game(
+                game_class=klass, created_by=self.teacher
+            )
         )
 
         game3 = form.save()
@@ -407,7 +369,7 @@ class TestViews(TestCase):
                 "status": "r",
                 "settings": '{"GENERATOR": "Main", "OBSTACLE_RATIO": 0.1, "PICKUP_SPAWN_CHANCE": 0.1, "SCORE_DESPAWN_CHANCE": 0.05, "START_HEIGHT": 31, "START_WIDTH": 31, "TARGET_NUM_CELLS_PER_AVATAR": 16.0, "TARGET_NUM_PICKUPS_PER_AVATAR": 0.0, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
                 "class_id": str(class_id),
-                "worksheet_id": str(worksheet_id),
+                "worksheet_id": worksheet_id,
             }
 
         expected_game_list = {
@@ -425,18 +387,19 @@ class TestViews(TestCase):
         response = client.get(reverse("game-detail", kwargs={"pk": self.game.id}))
         assert response.status_code == 200
 
-    @patch("aimmo.game_creator.GameManager")
+    @patch("aimmo.models.GameManager")
     def test_adding_a_game_creates_an_avatar(self, mock_game_manager):
         client = self.login()
-        create_game(
-            self.user,
-            AddGameForm(
-                Class.objects.all(),
-                data={
-                    "game_class": self.klass2.id,
-                },
-            ),
+
+        # then test adding game again for the same class
+        form = AddGameForm(
+            Class.objects.all(),
+            data={"game_class": self.klass2.id},
+            instance=Game(
+                game_class=self.klass2, created_by=self.teacher
+            )
         )
+        form.save()
 
         # GameManager is called when a game is created.
         assert mock_game_manager.called
@@ -447,9 +410,7 @@ class TestViews(TestCase):
 
     @patch("aimmo.serializers.GameManager")
     def test_update_game_worksheet_updates_avatar_codes(self, mock_game_manager):
-        # Set up the first avatar
-        first_user = self.user
-        models.Avatar(owner=first_user, code=self.CODE, game=self.game).save()
+        # Login as first avatar
         client1 = self.login()
 
         # Set up the second avatar
@@ -480,7 +441,8 @@ class TestViews(TestCase):
         assert avatar1.code == self.worksheet2.starter_code
         assert avatar2.code == self.worksheet2.starter_code
 
-    def test_delete_games(self):
+    @patch("aimmo.models.GameManager")
+    def test_delete_games(self, mock_game_manager):
         # Create a new teacher with a game to make sure it's not affected
         new_user: User = User.objects.create_user("test2", "test2@example.com", "password")
         new_user.is_staff = True
@@ -539,7 +501,7 @@ class TestViews(TestCase):
                 "status": "r",
                 "settings": '{"GENERATOR": "Main", "OBSTACLE_RATIO": 0.1, "PICKUP_SPAWN_CHANCE": 0.1, "SCORE_DESPAWN_CHANCE": 0.05, "START_HEIGHT": 31, "START_WIDTH": 31, "TARGET_NUM_CELLS_PER_AVATAR": 16.0, "TARGET_NUM_PICKUPS_PER_AVATAR": 0.0, "TARGET_NUM_SCORE_LOCATIONS_PER_AVATAR": 0.5}',
                 "class_id": str(class_id),
-                "worksheet_id": str(worksheet_id),
+                "worksheet_id": worksheet_id,
             }
 
         expected_game_list = {

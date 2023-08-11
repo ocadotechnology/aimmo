@@ -11,7 +11,7 @@ class GameSerializer(serializers.Serializer):
     settings = serializers.SerializerMethodField("get_settings_as_dict")
     status = serializers.CharField(max_length=1, required=False)
     class_id = serializers.SerializerMethodField()
-    worksheet_id = serializers.CharField(max_length=1, required=False)
+    worksheet_id = serializers.IntegerField()
     era = serializers.SerializerMethodField("get_worksheet_era")
 
     def get_class_id(self, game: Game):
@@ -22,9 +22,9 @@ class GameSerializer(serializers.Serializer):
 
     def get_worksheet_id(self, game: Game):
         try:
-            return str(game.worksheet.id)
+            return game.worksheet.id
         except AttributeError:
-            return "2"
+            return 1
 
     def get_worksheet_era(self, game: Game):
         try:
