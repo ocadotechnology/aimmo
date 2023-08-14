@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.10.5 (2023-08-14)
+
+### Fix
+
+* Downgrade grpcio ([#1806](https://github.com/ocadotechnology/aimmo/issues/1806)) ([`ac4ec64`](https://github.com/ocadotechnology/aimmo/commit/ac4ec6424a273983180fce5d2de86eebc9302061))
+
 ## v2.10.4 (2023-08-14)
 
 ### Fix
