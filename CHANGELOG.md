@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.10.3 (2023-08-14)
+
+### Fix
+
+* Revert worksheet ID type ([#1804](https://github.com/ocadotechnology/aimmo/issues/1804)) ([`c951949`](https://github.com/ocadotechnology/aimmo/commit/c951949c0042c1f6a888a448645b3fbe194e5559))
+
 ## v2.10.2 (2023-08-11)
 
 ### Fix
