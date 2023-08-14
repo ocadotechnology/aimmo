@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.10.6 (2023-08-14)
+
+### Fix
+
+* Downgrade aiohttp ([`6ebe2cb`](https://github.com/ocadotechnology/aimmo/commit/6ebe2cb1745bf79fd18c8f01c99f38f344cf3732))
+
 ## v2.10.5 (2023-08-14)
 
 ### Fix
