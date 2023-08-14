@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.10.4 (2023-08-14)
+
+### Fix
+
+* Test revert the revert of pipfile packages ([#1805](https://github.com/ocadotechnology/aimmo/issues/1805)) ([`7830f5f`](https://github.com/ocadotechnology/aimmo/commit/7830f5f49304df693dfd719248417feb333d3429))
+
 ## v2.10.3 (2023-08-14)
 
 ### Fix
