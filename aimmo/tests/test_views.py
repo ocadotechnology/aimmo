@@ -422,8 +422,7 @@ class TestViews(TestCase):
         assert response.status_code == 200
 
     @patch("aimmo.models.GameManager")
-    @patch("aimmo.views.GameManager")
-    def test_adding_a_game_creates_an_avatar(self, mock_game_manager, mock_views_game_manager):
+    def test_adding_a_game_creates_an_avatar(self, mock_game_manager):
         client = self.login()
 
         # then test adding game again for the same class
@@ -478,7 +477,8 @@ class TestViews(TestCase):
         assert avatar2.code == self.worksheet2.starter_code
 
     @patch("aimmo.models.GameManager")
-    def test_delete_games(self, mock_game_manager):
+    @patch("aimmo.views.GameManager")
+    def test_delete_games(self, mock_game_manager, mock_views_game_manager):
         # Create a new teacher with a game to make sure it's not affected
         new_user: User = User.objects.create_user("test2", "test2@example.com", "password")
         new_user.is_staff = True
