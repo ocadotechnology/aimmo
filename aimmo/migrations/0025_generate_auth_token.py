@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 
-from aimmo.models import generate_auth_token
+from aimmo.models import generate_game_auth_token
 from aimmo.game_manager import GameManager
 
 
@@ -13,12 +13,9 @@ class Migration(migrations.Migration):
     ]
 
     def generate_auth_token_for_games(apps, schema_editor):
-        NUM_BYTES_FOR_TOKEN_GENERATOR = 32
-        TOKEN_MAX_LENGTH = 48
-
         Game = apps.get_model("aimmo", "Game")
         for game in Game.objects.all():
-            game.auth_token = generate_auth_token(NUM_BYTES_FOR_TOKEN_GENERATOR, TOKEN_MAX_LENGTH)
+            game.auth_token = generate_game_auth_token()
             game.save()
             game_manager = GameManager()
             game_manager.game_secret_manager.create_game_secret(game_id=game.id, game_name=game.name, token=game.auth_token)

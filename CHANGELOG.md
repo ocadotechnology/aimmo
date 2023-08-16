@@ -2,6 +2,54 @@
 
 <!--next-version-placeholder-->
 
+## v2.10.6 (2023-08-14)
+
+### Fix
+
+* Downgrade aiohttp ([`6ebe2cb`](https://github.com/ocadotechnology/aimmo/commit/6ebe2cb1745bf79fd18c8f01c99f38f344cf3732))
+
+## v2.10.5 (2023-08-14)
+
+### Fix
+
+* Downgrade grpcio ([#1806](https://github.com/ocadotechnology/aimmo/issues/1806)) ([`ac4ec64`](https://github.com/ocadotechnology/aimmo/commit/ac4ec6424a273983180fce5d2de86eebc9302061))
+
+## v2.10.4 (2023-08-14)
+
+### Fix
+
+* Test revert the revert of pipfile packages ([#1805](https://github.com/ocadotechnology/aimmo/issues/1805)) ([`7830f5f`](https://github.com/ocadotechnology/aimmo/commit/7830f5f49304df693dfd719248417feb333d3429))
+
+## v2.10.3 (2023-08-14)
+
+### Fix
+
+* Revert worksheet ID type ([#1804](https://github.com/ocadotechnology/aimmo/issues/1804)) ([`c951949`](https://github.com/ocadotechnology/aimmo/commit/c951949c0042c1f6a888a448645b3fbe194e5559))
+
+## v2.10.2 (2023-08-11)
+
+### Fix
+
+* Try downgrading greenlet ([`44c8898`](https://github.com/ocadotechnology/aimmo/commit/44c889870a77cba72c645429bb4eb57c394aa0d7))
+
+## v2.10.1 (2023-08-11)
+
+### Fix
+
+* Try proper reverts on package upgrades ([#1803](https://github.com/ocadotechnology/aimmo/issues/1803)) ([`9fd89f5`](https://github.com/ocadotechnology/aimmo/commit/9fd89f516ab25d16c29c88a3fa6aad737bd20409))
+
+## v2.10.0 (2023-08-11)
+
+### Feature
+
+* Implement max games limit ([#1797](https://github.com/ocadotechnology/aimmo/issues/1797)) ([`8d276de`](https://github.com/ocadotechnology/aimmo/commit/8d276de2a705c87eef73338b3e13b59390142a34))
+
+## v2.9.4 (2023-08-10)
+
+### Fix
+
+* Try reverting package upgrades ([#1799](https://github.com/ocadotechnology/aimmo/issues/1799)) ([`086b9cb`](https://github.com/ocadotechnology/aimmo/commit/086b9cb9bb6edff2f1848901499b2aec73298108))
+
 ## v2.9.3 (2023-07-24)
 
 ### Fix

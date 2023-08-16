@@ -18,12 +18,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from . import game_renderer
-from .avatar_creator import create_avatar_for_user
 from .exceptions import UserCannotPlayGameException
 from .game_manager.game_manager import GameManager
 from .models import Avatar, Game
-from .permissions import CanDeleteGameOrReadOnly, CsrfExemptSessionAuthentication, GameHasToken
-from .serializers import GameIdsSerializer, GameSerializer
+from .permissions import (
+    CanDeleteGameOrReadOnly,
+    CsrfExemptSessionAuthentication,
+)
+from .serializers import GameSerializer, GameIdsSerializer
 
 LOGGER = logging.getLogger(__name__)
 
@@ -42,7 +44,7 @@ def code(request, id):
     try:
         avatar = game.avatar_set.get(owner=request.user)
     except Avatar.DoesNotExist:
-        avatar = create_avatar_for_user(request.user, id)
+        avatar = Avatar.objects.create(game=game, owner=request.user)
 
     if request.method == "POST":
         avatar.code = request.POST["code"]
@@ -66,7 +68,7 @@ def badges(request, id):
     try:
         avatar = game.avatar_set.get(owner=request.user)
     except Avatar.DoesNotExist:
-        avatar = create_avatar_for_user(request.user, id)
+        avatar = Avatar.objects.create(game=game, owner=request.user)
     avatar_user_profile = UserProfile.objects.get(user=avatar.owner)
 
     if request.method == "POST":
@@ -87,7 +89,6 @@ def badges(request, id):
 
 class GameUsersView(APIView):
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
-    permission_classes = (GameHasToken,)
 
     def get(self, request, id):
         game = get_object_or_404(Game, id=id)
@@ -207,17 +208,6 @@ class GameTokenView(APIView):
     """
 
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
-    permission_classes = (GameHasToken,)
-
-    def get(self, request, id):
-        """
-        After the initial token request, we need to check where the
-        request comes from. So for subsequent requests we verify that
-        they came from the token-holder.
-        """
-        game = get_object_or_404(Game, id=id)
-        self.check_object_permissions(self.request, game)
-        return Response(data={"token": game.auth_token})
 
     def patch(self, request, id):
         game = get_object_or_404(Game, id=id)

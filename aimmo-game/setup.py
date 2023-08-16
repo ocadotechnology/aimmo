@@ -10,7 +10,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        "aiohttp==3.8.5",
+        "aiohttp==3.7.4",  # Downgraded because of this issue: https://github.com/aio-libs/aiohttp/pull/5572
         "aiohttp-cors",
         "aiohttp-wsgi",
         "eventlet==0.31.0",
@@ -18,7 +18,7 @@ setup(
         "docker==4.4.4",
         "google-api-python-client==1.12.8",
         "google-cloud-logging==2.2.0",
-        "grpcio==1.53.0",
+        "grpcio==1.43.0",  # Downgraded as future versions seemed to cause an issue with grpcio status
     ],
     tests_require=[
         "pytest~=6.2",

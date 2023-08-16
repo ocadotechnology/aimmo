@@ -25,7 +25,7 @@ class GameSerializer(serializers.Serializer):
         try:
             return str(game.worksheet.id)
         except AttributeError:
-            return "2"
+            return "1"
 
     def get_worksheet_era(self, game: Game):
         try:
@@ -51,7 +51,7 @@ class GameSerializer(serializers.Serializer):
 
         if "worksheet_id" in validated_data:
             avatars = Avatar.objects.filter(game=instance)
-            worksheet = WORKSHEETS.get(instance.worksheet_id)
+            worksheet = WORKSHEETS.get(int(instance.worksheet_id))
 
             for avatar in avatars:
                 avatar.code = worksheet.starter_code
