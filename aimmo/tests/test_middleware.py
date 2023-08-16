@@ -82,7 +82,6 @@ class TestGameLimitExceededMiddleware(TestCase):
         assert Game.objects.all().count() == 2
 
     @patch("aimmo.views.GameManager")
-    @patch("aimmo.views.GameManager")
     def test_cannot_start_stopped_game_when_max_limit_reached(self, mock_game_manager):
         """
         Given two running games and one stopped game,
