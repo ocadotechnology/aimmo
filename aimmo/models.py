@@ -11,6 +11,7 @@ from django.utils import timezone
 from aimmo import app_settings
 from aimmo.exceptions import GameLimitExceeded
 from aimmo.game_manager import GameManager
+from aimmo.serializers import GameSerializer
 from aimmo.worksheets import WORKSHEETS
 
 DEFAULT_WORKSHEET_ID = 1
@@ -172,6 +173,7 @@ class Game(models.Model):
 
             game_manager = GameManager()
             game_manager.create_game_secret(game_id=self.id, token=self.auth_token)
+            game_manager.create_game_server(game_id=self.id, game_data=GameSerializer(self).data)
         else:
             super(Game, self).save(**kwargs)
 
