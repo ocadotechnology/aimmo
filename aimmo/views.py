@@ -20,12 +20,11 @@ from rest_framework.views import APIView
 from . import game_renderer
 from .exceptions import UserCannotPlayGameException
 from .game_manager.game_manager import GameManager
-from .models import Avatar, Game
+from .models import Avatar, Game, GameSerializer, GameIdsSerializer
 from .permissions import (
     CanDeleteGameOrReadOnly,
     CsrfExemptSessionAuthentication,
 )
-from .serializers import GameSerializer, GameIdsSerializer
 
 LOGGER = logging.getLogger(__name__)
 

@@ -3,8 +3,7 @@ from typing import Any, List
 from django.core.management.base import BaseCommand
 
 from aimmo.game_manager import GameManager
-from aimmo.models import Game
-from aimmo.serializers import GameSerializer
+from aimmo.models import Game, GameSerializer
 
 
 class Command(BaseCommand):

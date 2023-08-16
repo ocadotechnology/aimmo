@@ -14,8 +14,7 @@ from portal.forms.add_game import AddGameForm
 from rest_framework import status
 
 from aimmo import app_settings, models
-from aimmo.models import Game
-from aimmo.serializers import GameSerializer
+from aimmo.models import Game, GameSerializer
 from aimmo.views import get_avatar_id
 from aimmo.worksheets import WORKSHEETS, Worksheet
 
@@ -190,7 +189,7 @@ class TestViews(TestCase):
         response = self._go_to_page("kurono/game_user_details", "id", 5)
         assert response.status_code == 404
 
-    @patch("aimmo.serializers.GameManager")
+    @patch("aimmo.models.GameManager")
     def test_stop_game(self, mock_game_manager_cls):
         game = models.Game.objects.get(id=1)
         game.auth_token = "tokenso lorenzo"
@@ -208,7 +207,7 @@ class TestViews(TestCase):
         assert game.status == models.Game.STOPPED
         mock_game_manager_cls.return_value.delete_game_server.assert_called_with(game_id=1)
 
-    @patch("aimmo.serializers.GameManager")
+    @patch("aimmo.models.GameManager")
     def test_stop_game_no_token(self, mock_game_manager_cls):
         game = models.Game.objects.get(id=1)
         game.auth_token = "tokenso lorenzo"
@@ -443,7 +442,7 @@ class TestViews(TestCase):
         avatar = game.avatar_set.get(owner=client.session["_auth_user_id"])
         assert avatar is not None
 
-    @patch("aimmo.serializers.GameManager")
+    @patch("aimmo.models.GameManager")
     def test_update_game_worksheet_updates_avatar_codes(self, mock_game_manager):
         # Login as first avatar
         client1 = self.login()
