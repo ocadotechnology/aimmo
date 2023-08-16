@@ -318,7 +318,8 @@ class TestViews(TestCase):
         assert models.Game.objects.get(id=1).auth_token == new_token
 
     @patch("aimmo.models.GameManager")
-    def test_delete_game(self, mock_game_manager):
+    @patch("aimmo.views.GameManager")
+    def test_delete_game(self, mock_game_manager, mock_views_game_manager):
         """
         Check for 204 when deleting a game.
         Check that GameManger attempts to delete associated game server too.
@@ -421,7 +422,8 @@ class TestViews(TestCase):
         assert response.status_code == 200
 
     @patch("aimmo.models.GameManager")
-    def test_adding_a_game_creates_an_avatar(self, mock_game_manager):
+    @patch("aimmo.views.GameManager")
+    def test_adding_a_game_creates_an_avatar(self, mock_game_manager, mock_views_game_manager):
         client = self.login()
 
         # then test adding game again for the same class
