@@ -3,17 +3,17 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
+[dev-packages]
+autopep8 = "*"
+
 [packages]
-kubernetes = "==26.1.0"
-docker = "<6"
 aimmo-game-worker = {editable = true, path = "."}
-restrictedpython = "==5.3"
 aiohttp = "*"
 aiohttp-cors = "*"
+docker = "<6"
 idna-ssl = "*"
+kubernetes = "==26.1.0"
+restrictedpython = "==5.3"
 
 [requires]
 python_version = "3.8"
-
-[dev-packages]
-"autopep8" = "*"

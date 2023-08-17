@@ -43,12 +43,11 @@ def build_docker_images(minikube=None, build_target=None):
     else:
         client = create_docker_client(use_raw_env=False, minikube=minikube)
 
-    directories = ("aimmo-game",)
-    for directory in directories:
-        path = os.path.join(BASE_DIR, directory)
-        tag = "ocadotechnology/%s:test" % directory
-        print("Building %s..." % tag)
-        client.images.build(path=path, tag=tag, encoding="gzip", target=build_target, rm=True)
+    path = os.path.join(BASE_DIR, "aimmo-game")
+    tag = "ocadotechnology/aimmo-game:test"
+    print("Building %s..." % tag)
+    client.images.build(path=path, tag=tag, encoding="gzip", target=build_target, rm=True)
+
 
 
 def delete_containers():
