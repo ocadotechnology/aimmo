@@ -152,14 +152,13 @@ def get_base_url_for_game():
     return f"http://{ip_address}:8000"
 
 
-def get_game_url_base_and_path(game_id: int) -> str:
-    print("yoyo")
+def get_game_url_base_and_path(game_id: int) -> (str, str):
     api_client = ApiClient()
     api_instance = CustomObjectsApi(api_client)
     result = api_instance.list_namespaced_custom_object(
         group="agones.dev", version="v1", namespace="default", plural="gameservers", label_selector=f"game-id={game_id}"
     )
-    print(result)
+
     try:
         result_items = result["items"]
         game_server = None
@@ -174,7 +173,7 @@ def get_game_url_base_and_path(game_id: int) -> str:
             raise Http404
 
         game_server_status = game_server["status"]
-        return (f"http://{game_server_status['address']}:{game_server_status['ports'][0]['port']}", "/socket.io")
+        return f"http://{game_server_status['address']}:{game_server_status['ports'][0]['port']}", "/socket.io"
     except (KeyError, IndexError):
         raise Http404
 

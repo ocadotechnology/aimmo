@@ -17,6 +17,7 @@ class GameServiceManager:
         self.custom_objects_api: CustomObjectsApi = CustomObjectsApi(self.api_client)
 
     def create_game_service(self, game_id, game_name, game_server_name):
+        LOGGER.warning(f"Creating service for game {game_id}")
         service_manifest = kubernetes.client.V1ServiceSpec(
             selector={"agones.dev/gameserver": game_server_name},
             ports=[kubernetes.client.V1ServicePort(name="tcp", protocol="TCP", port=80, target_port=5000)],
@@ -28,10 +29,10 @@ class GameServiceManager:
         )
 
         service = kubernetes.client.V1Service(metadata=service_metadata, spec=service_manifest)
-        result = self.api.create_namespaced_service(K8S_NAMESPACE, service)
-        print(result)
+        self.api.create_namespaced_service(K8S_NAMESPACE, service)
 
     def delete_game_service(self, game_id):
+        LOGGER.warning(f"Deleting game service for game {game_id}")
         app_label = "app=aimmo-game"
         game_label = "game_id={}".format(game_id)
 

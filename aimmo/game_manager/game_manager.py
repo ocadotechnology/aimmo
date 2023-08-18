@@ -70,7 +70,9 @@ class GameManager:
         try:
             self.game_ingress_manager.add_game_path_to_ingress(game_name=game_name)
         except ApiException as e:
-            LOGGER.exception(e)
+            # TODO: Filter out no-ingress exception on localhost
+            pass
+            # LOGGER.exception(e)
 
     def delete_game_server(self, game_id: int) -> dict:
         """

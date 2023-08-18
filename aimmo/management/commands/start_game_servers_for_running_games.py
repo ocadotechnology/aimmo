@@ -17,7 +17,4 @@ class Command(BaseCommand):
         game_manager: GameManager = GameManager()
 
         for game in running_games:
-            game_manager.create_game_server(
-                game_id=game.id,
-                game_data=GameSerializer(game).data,
-            )
+            game_manager.create_game_server(game_id=game.id, game_data=GameSerializer(game).data)

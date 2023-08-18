@@ -1,11 +1,11 @@
 import logging
 import time
 
-from aimmo.app_settings import DJANGO_BASE_URL_FOR_GAME_SERVER
 from kubernetes.client import CoreV1Api
 from kubernetes.client.api.custom_objects_api import CustomObjectsApi
 from kubernetes.client.api_client import ApiClient
 
+from aimmo.app_settings import DJANGO_BASE_URL_FOR_GAME_SERVER
 from .constants import AGONES_GROUP, K8S_NAMESPACE
 
 LOGGER = logging.getLogger(__name__)
@@ -19,6 +19,7 @@ class GameServerManager:
 
     def create_game_server_allocation(self, game_id: int, game_data: dict, retry_count: int = 0) -> str:
         game_data["GAME_API_URL"] = f"{DJANGO_BASE_URL_FOR_GAME_SERVER}/kurono/api/games/{game_id}/"
+
         result = self.custom_objects_api.create_namespaced_custom_object(
             group="allocation.agones.dev",
             version="v1",
@@ -40,11 +41,15 @@ class GameServerManager:
                 },
             },
         )
-        if result["status"]["state"] == "UnAllocated" and retry_count < 60:
+        if result["status"]["state"] == "UnAllocated" and retry_count < 10:
             LOGGER.warning(f"Failed to create game, retrying... retry_count={retry_count}")
             time.sleep(5)
             return self.create_game_server_allocation(game_id, game_data, retry_count=retry_count + 1)
         else:
+            if result["status"]["state"] == "Allocated":
+                LOGGER.warning(f"Game {game_id} is now allocated!")
+            else:
+                LOGGER.exception(f"Game {game_id} failed to allocate")
             return result["status"]["gameServerName"]
 
     def delete_game_server(self, game_id: int) -> dict:
@@ -54,6 +59,7 @@ class GameServerManager:
         :param game_id: Integer indicating the ID of the game to delete.
         :returns: A dictionary representing the game data.
         """
+        LOGGER.warning(f"Deleting game server for game {game_id}")
         game_data = {}
         result = self.custom_objects_api.list_namespaced_custom_object(
             group=AGONES_GROUP,
