@@ -1,4 +1,5 @@
 import logging
+import time
 
 import kubernetes
 from kubernetes.client import CoreV1Api
@@ -44,17 +45,34 @@ class GameServiceManager:
             LOGGER.info("Removing service: {}".format(resource.metadata.name))
             self.api.delete_namespaced_service(resource.metadata.name, K8S_NAMESPACE)
 
-    def patch_game_service(self, game_id, game_name, game_server_name):
-        service_manifest = kubernetes.client.V1ServiceSpec(
-            selector={"agones.dev/gameserver": game_server_name},
-            ports=[kubernetes.client.V1ServicePort(name="tcp", protocol="TCP", port=80, target_port=5000)],
-        )
+    # def patch_game_service(self, game_id, game_name, game_server_name, retry_count: int = 0):
+    #     service_manifest = kubernetes.client.V1ServiceSpec(
+    #         selector={"agones.dev/gameserver": game_server_name},
+    #         ports=[kubernetes.client.V1ServicePort(name="tcp", protocol="TCP", port=80, target_port=5000)],
+    #     )
+    #
+    #     service_metadata = kubernetes.client.V1ObjectMeta(
+    #         name=game_name,
+    #         labels={"app": "aimmo-game", "game_id": f"{game_id}"},
+    #     )
+    #
+    #     patched_service = kubernetes.client.V1Service(metadata=service_metadata, spec=service_manifest)
+    #
+    #     if retry_count < 10:
+    #         try:
+    #             self.api.patch_namespaced_service(game_name, K8S_NAMESPACE, patched_service)
+    #         except Exception:
+    #             LOGGER.warning(f"Failed to recreate game, retrying... retry_count={retry_count}")
+    #             time.sleep(5)
+    #             self.patch_game_service(game_id, game_name, game_server_name, retry_count=retry_count + 1)
 
-        service_metadata = kubernetes.client.V1ObjectMeta(
-            name=game_name,
-            labels={"app": "aimmo-game", "game_id": f"{game_id}"},
-        )
-
-        patched_service = kubernetes.client.V1Service(metadata=service_metadata, spec=service_manifest)
-
-        self.api.patch_namespaced_service(game_name, K8S_NAMESPACE, patched_service)
+        # if result["status"] == "Failure" and retry_count < 10:
+        #     LOGGER.warning(f"Failed to recreate game, retrying... retry_count={retry_count}")
+        #     time.sleep(5)
+        #     return
+        # else:
+        #     if result["status"] != "Failure":
+        #         LOGGER.warning(result)
+        #         LOGGER.warning(f"Game {game_id} is now allocated!")
+        #     else:
+        #         LOGGER.exception(f"Game {game_id} failed to allocate")

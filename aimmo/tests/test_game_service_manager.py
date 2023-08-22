@@ -59,21 +59,21 @@ def test_delete_game_service(game_service_manager: GameServiceManager, game_id):
     )
 
 
-def test_patch_game_service(game_service_manager: GameServiceManager, game_id):
-    game_name = "test-game-name"
-    game_server_name = "test"
-    expected_service = V1Service(
-        metadata=V1ObjectMeta(name=game_name, labels={"app": "aimmo-game", "game_id": str(game_id)}),
-        spec=V1ServiceSpec(
-            selector={"agones.dev/gameserver": game_server_name},
-            ports=[kubernetes.client.V1ServicePort(name="tcp", protocol="TCP", port=80, target_port=5000)],
-        ),
-    )
-
-    game_service_manager.patch_game_service(
-        game_id=game_id,
-        game_name=game_name,
-        game_server_name=game_server_name,
-    )
-
-    game_service_manager.api.patch_namespaced_service.assert_called_with(game_name, K8S_NAMESPACE, expected_service)
+# def test_patch_game_service(game_service_manager: GameServiceManager, game_id):
+#     game_name = "test-game-name"
+#     game_server_name = "test"
+#     expected_service = V1Service(
+#         metadata=V1ObjectMeta(name=game_name, labels={"app": "aimmo-game", "game_id": str(game_id)}),
+#         spec=V1ServiceSpec(
+#             selector={"agones.dev/gameserver": game_server_name},
+#             ports=[kubernetes.client.V1ServicePort(name="tcp", protocol="TCP", port=80, target_port=5000)],
+#         ),
+#     )
+#
+#     game_service_manager.patch_game_service(
+#         game_id=game_id,
+#         game_name=game_name,
+#         game_server_name=game_server_name,
+#     )
+#
+#     game_service_manager.api.patch_namespaced_service.assert_called_with(game_name, K8S_NAMESPACE, expected_service)
