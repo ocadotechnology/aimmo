@@ -10,7 +10,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[],
-    tests_require=[],
+    tests_require=["pytest"],
     setup_requires=["pytest-runner"],
     test_suite="tests",
     zip_safe=False,
