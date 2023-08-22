@@ -10,7 +10,17 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[],
-    tests_require=["pytest"],
+    tests_require=[
+        "pytest~=6.2",
+        "pytest-mock",
+        "pytest-asyncio==0.14.0",  # downgraded because of this issue: https://github.com/pytest-dev/pytest-asyncio/issues/209
+        "httmock",
+        "asynctest",
+        "hypothesis",
+        "mock",
+        "pytest-aiohttp==0.3.0",
+        "aioresponses",
+    ],
     setup_requires=["pytest-runner"],
     test_suite="tests",
     zip_safe=False,
