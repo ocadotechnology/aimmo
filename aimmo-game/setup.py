@@ -11,6 +11,7 @@ setup(
     include_package_data=True,
     install_requires=[],
     tests_require=[
+        # TODO: These have been left here so the tests can run but they're already defined in Pipfile
         "pytest~=6.2",
         "pytest-mock",
         "pytest-asyncio==0.14.0",  # downgraded because of this issue: https://github.com/pytest-dev/pytest-asyncio/issues/209

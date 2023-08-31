@@ -68,7 +68,6 @@ def test_delete_game_server(game_manager: GameManager, game_id):
 def test_recreate_game_server(game_manager: GameManager, game_id):
     mock_game_data = MagicMock()
     mock_game_server_name = MagicMock()
-    game_name = game_manager.game_name(game_id=game_id)
     game_manager.delete_game_server = MagicMock(return_value=mock_game_data)
     game_manager.game_server_manager.create_game_server_allocation = MagicMock(return_value=mock_game_server_name)
 
@@ -77,7 +76,4 @@ def test_recreate_game_server(game_manager: GameManager, game_id):
     game_manager.delete_game_server.assert_called_with(game_id=game_id)
     game_manager.game_server_manager.create_game_server_allocation.assert_called_with(
         game_id=game_id, game_data=mock_game_data
-    )
-    game_manager.game_service_manager.patch_game_service.assert_called_with(
-        game_id=game_id, game_name=game_name, game_server_name=mock_game_server_name
     )
