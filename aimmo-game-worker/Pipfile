@@ -13,7 +13,7 @@ aiohttp-cors = "*"
 docker = "<6"
 idna-ssl = "*"
 kubernetes = "==26.1.0"
-restrictedpython = "==5.3"
+restrictedpython = "==5.4"
 
 [requires]
 python_version = "3.8"
