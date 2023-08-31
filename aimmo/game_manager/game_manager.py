@@ -85,7 +85,7 @@ class GameManager:
         try:
             self.game_ingress_manager.remove_game_path_from_ingress(game_name=game_name)
         except ApiException as e:
-            LOGGER.exception(e)
+            print(e)
         self.game_service_manager.delete_game_service(game_id=game_id)
         return self.game_server_manager.delete_game_server(game_id=game_id)
 
