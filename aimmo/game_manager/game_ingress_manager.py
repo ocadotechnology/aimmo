@@ -29,7 +29,7 @@ class GameIngressManager:
         try:
             ingress: V1Ingress = self.networking_api.list_namespaced_ingress("default").items[0]
         except IndexError:
-            LOGGER.warning("No ingress found to remove path from.")
+            print("No ingress found to remove path from.")
             return
 
         paths = ingress.spec.rules[0].http.paths
