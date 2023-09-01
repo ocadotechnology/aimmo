@@ -32,12 +32,12 @@ LOGGER = logging.getLogger(__name__)
 @login_required
 def code(request, id):
     if not request.user:
-        LOGGER.info("This request doesn't have a user attached to it.")
+        print("This request doesn't have a user attached to it.")
         return HttpResponseForbidden()
     game = get_object_or_404(Game, id=id)
 
     if not game.can_user_play(request.user):
-        LOGGER.info("The user doesn't have access to the requested game.")
+        print("The user doesn't have access to the requested game.")
         raise Http404
 
     try:
@@ -56,12 +56,12 @@ def code(request, id):
 @login_required
 def badges(request, id):
     if not request.user:
-        LOGGER.info("This request doesn't have a user attached to it.")
+        print("This request doesn't have a user attached to it.")
         return HttpResponseForbidden()
     game = get_object_or_404(Game, id=id)
 
     if not game.can_user_play(request.user):
-        LOGGER.info("The user doesn't have access to the requested game.")
+        print("The user doesn't have access to the requested game.")
         raise Http404
 
     try:
@@ -78,7 +78,7 @@ def badges(request, id):
             avatar_user_profile.save()
             return HttpResponse()
         else:
-            LOGGER.info(f"Badges information {earned_badges} doesn't match the required format.")
+            print(f"Badges information {earned_badges} doesn't match the required format.")
             return HttpResponseBadRequest()
 
     else:
@@ -167,7 +167,7 @@ class GameViewSet(
                     game.status = Game.STOPPED
                     game.save()
             except Exception as exception:
-                LOGGER.error(f"Could not delete game servers for games: {', '.join(game_ids)}")
+                print(f"Could not delete game servers for games: {', '.join(game_ids)}")
                 # Re-raise exception so that atomic transaction reverts
                 raise exception
 
@@ -186,11 +186,7 @@ def connection_parameters(request, game_id):
     :param game_id: Integer with the ID of the game.
     :return: JsonResponse object with the contents.
     """
-    print("hello")
-
     env_connection_settings = game_renderer.get_environment_connection_settings(game_id)
-
-    print(env_connection_settings)
 
     avatar_id, response = get_avatar_id(request.user, game_id)
 
@@ -248,15 +244,15 @@ def get_avatar_id(user: User, game_id) -> Tuple[int, HttpResponse]:
     try:
         avatar_id = game_renderer.get_avatar_id_from_user(user=user, game_id=game_id)
     except UserCannotPlayGameException:
-        LOGGER.warning("HTTP 401 returned. User {} unauthorised to play.".format(user.id))
+        print("HTTP 401 returned. User {} unauthorised to play.".format(user.id))
         response = HttpResponse("User unauthorized to play", status=401)
     except Avatar.DoesNotExist:
-        LOGGER.warning("Avatar does not exist for user {} in game {}".format(user.id, game_id))
+        print("Avatar does not exist for user {} in game {}".format(user.id, game_id))
         response = HttpResponse("Avatar does not exist for this user", status=404)
     except Http404 as e:
         response = HttpResponse("Game does not exist", status=404)
     except Exception as e:
-        LOGGER.error(f"Unknown error occurred while getting connection parameters: {e}")
+        print(f"Unknown error occurred while getting connection parameters: {e}")
         response = HttpResponse("Unknown error occurred when getting the current avatar", status=500)
 
     return avatar_id, response
