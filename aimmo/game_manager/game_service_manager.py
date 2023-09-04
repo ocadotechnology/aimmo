@@ -65,14 +65,14 @@ class GameServiceManager:
     #             LOGGER.warning(f"Failed to recreate game, retrying... retry_count={retry_count}")
     #             time.sleep(5)
     #             self.patch_game_service(game_id, game_name, game_server_name, retry_count=retry_count + 1)
-
-        # if result["status"] == "Failure" and retry_count < 10:
-        #     LOGGER.warning(f"Failed to recreate game, retrying... retry_count={retry_count}")
-        #     time.sleep(5)
-        #     return
-        # else:
-        #     if result["status"] != "Failure":
-        #         LOGGER.warning(result)
-        #         LOGGER.warning(f"Game {game_id} is now allocated!")
-        #     else:
-        #         LOGGER.exception(f"Game {game_id} failed to allocate")
+    #
+    #     if result["status"] == "Failure" and retry_count < 10:
+    #         LOGGER.warning(f"Failed to recreate game, retrying... retry_count={retry_count}")
+    #         time.sleep(5)
+    #         return
+    #     else:
+    #         if result["status"] != "Failure":
+    #             LOGGER.warning(result)
+    #             LOGGER.warning(f"Game {game_id} is now allocated!")
+    #         else:
+    #             LOGGER.exception(f"Game {game_id} failed to allocate")

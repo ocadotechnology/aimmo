@@ -98,6 +98,8 @@ class GameManager:
         :param game_data_updates: Optional, a dictionary with game data updates.
         :returns: None
         """
+        print(f"Recreating game {game_id}")
+
         if game_data_updates is None:
             game_data_updates = {}
 
@@ -110,12 +112,4 @@ class GameManager:
             setting["TARGET_NUM_PICKUPS_PER_AVATAR"] = 0 if game_data["worksheet_id"] == "1" else 1.2
             game_data["settings"] = json.dumps(setting)
 
-        self.game_server_manager.create_game_server_allocation(
-            game_id=game_id,
-            game_data=game_data,
-        )
-        # self.game_service_manager.patch_game_service(
-        #     game_id=game_id,
-        #     game_name=game_name,
-        #     game_server_name=game_server_name,
-        # )
+        self.create_game_server(game_id, game_data)
