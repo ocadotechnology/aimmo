@@ -42,14 +42,14 @@ class GameServerManager:
             },
         )
         if result["status"]["state"] == "UnAllocated" and retry_count < 10:
-            print(f"Failed to create game, retrying... retry_count={retry_count}")
+            LOGGER.warning(f"Failed to create game, retrying... retry_count={retry_count}")
             time.sleep(5)
             return self.create_game_server_allocation(game_id, game_data, retry_count=retry_count + 1)
         else:
             if result["status"]["state"] == "Allocated":
-                print(f"Game {game_id} is now allocated!")
+                LOGGER.info(f"Game {game_id} is now allocated!")
             else:
-                print(f"Game {game_id} failed to allocate")
+                LOGGER.error(f"Game {game_id} failed to allocate")
             return result["status"]["gameServerName"]
 
     def delete_game_server(self, game_id: int) -> dict:
@@ -59,7 +59,7 @@ class GameServerManager:
         :param game_id: Integer indicating the ID of the game to delete.
         :returns: A dictionary representing the game data.
         """
-        print(f"Deleting game server for game {game_id}")
+        LOGGER.info(f"Deleting game server for game {game_id}")
         game_data = {}
         result = self.custom_objects_api.list_namespaced_custom_object(
             group=AGONES_GROUP,
@@ -71,9 +71,9 @@ class GameServerManager:
         game_servers_to_delete = result["items"]
 
         if len(game_servers_to_delete) == 0:
-            print(f"delete_game_server - No game server found with ID {game_id}")
+            LOGGER.warning(f"delete_game_server - No game server found with ID {game_id}")
         elif len(game_servers_to_delete) > 1:
-            print(f"delete_game_server - Multiple game servers found with ID {game_id}")
+            LOGGER.warning(f"delete_game_server - Multiple game servers found with ID {game_id}")
 
         for game_server in game_servers_to_delete:
             name = game_server["metadata"]["name"]

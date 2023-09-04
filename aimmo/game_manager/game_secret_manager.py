@@ -32,12 +32,12 @@ class GameSecretManager:
             try:
                 self.api.create_namespaced_secret(namespace=K8S_NAMESPACE, body=body)
             except ApiException:
-                print("Exception when calling create_namespaced_secret")
+                LOGGER.error("Exception when calling create_namespaced_secret")
         else:
             try:
                 self.api.patch_namespaced_secret(name=name, namespace=K8S_NAMESPACE, body=body)
             except ApiException:
-                print("Exception when calling patch_namespaced_secret")
+                LOGGER.error("Exception when calling patch_namespaced_secret")
 
     def delete_game_secret(self, game_id: int):
         app_label = "app=aimmo-game"
@@ -48,5 +48,5 @@ class GameSecretManager:
         )
 
         for resource in resources.items:
-            print("Removing game secret: {}".format(resource.metadata.name))
+            LOGGER.info("Removing game secret: {}".format(resource.metadata.name))
             self.api.delete_namespaced_secret(name=resource.metadata.name, namespace=K8S_NAMESPACE)

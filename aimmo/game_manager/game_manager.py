@@ -72,7 +72,7 @@ class GameManager:
         except ApiException as e:
             # TODO: Filter out no-ingress exception on localhost
             pass
-            # LOGGER.exception(e)
+            # LOGGER.error(e)
 
     def delete_game_server(self, game_id: int) -> dict:
         """
@@ -85,7 +85,7 @@ class GameManager:
         try:
             self.game_ingress_manager.remove_game_path_from_ingress(game_name=game_name)
         except ApiException as e:
-            print(e)
+            LOGGER.error(e)
         self.game_service_manager.delete_game_service(game_id=game_id)
         return self.game_server_manager.delete_game_server(game_id=game_id)
 
@@ -98,7 +98,7 @@ class GameManager:
         :param game_data_updates: Optional, a dictionary with game data updates.
         :returns: None
         """
-        print(f"Recreating game {game_id}")
+        LOGGER.info(f"Recreating game {game_id}")
 
         if game_data_updates is None:
             game_data_updates = {}

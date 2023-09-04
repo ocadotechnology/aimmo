@@ -8,7 +8,6 @@ from aimmo.models import Game, GameSerializer
 
 class Command(BaseCommand):
     help = """Start game servers for all games that have a status as running.
-    
     To be used on redeploy when the fleet is deleted.
     """
 

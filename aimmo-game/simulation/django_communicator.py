@@ -29,9 +29,6 @@ class DjangoCommunicator(object):
             raise GameMetadataFetchFailedError
 
     async def patch_token(self, data):
-        LOGGER.info("Trying to patch")
-        LOGGER.info(f"{self.django_api_url}token/")
-
         response = await self.session.patch(
             f"{self.django_api_url}token/",
             headers={"Game-token": os.environ["TOKEN"]},

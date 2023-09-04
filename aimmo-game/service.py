@@ -278,6 +278,5 @@ if __name__ == "__main__":
     setup_healthcheck(agones_stub)
     send_ready_state(agones_stub)
     game_metadata: GameAllocationInfo = event_loop.run_until_complete(wait_for_allocation(agones_stub))
-    logging.info(f"game_metadata.django_api_url: {game_metadata.django_api_url}")
     run_game(game_metadata.port, game_metadata.game_id, game_metadata.django_api_url)
     web.run_app(get_app(), port=game_metadata.port)
