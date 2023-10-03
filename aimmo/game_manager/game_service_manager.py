@@ -42,4 +42,7 @@ class GameServiceManager:
 
         for resource in resources.items:
             LOGGER.info("Removing service: {}".format(resource.metadata.name))
-            self.api.delete_namespaced_service(resource.metadata.name, K8S_NAMESPACE)
+            try:
+                self.api.delete_namespaced_service(resource.metadata.name, K8S_NAMESPACE)
+            except Exception as e:
+                LOGGER.exception(e)

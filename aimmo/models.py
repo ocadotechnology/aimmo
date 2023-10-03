@@ -199,6 +199,7 @@ def check_game_limit(sender: t.Type[Game], instance: Game, **kwargs):
             raise GameLimitExceeded
 
 
+# TODO: Replace with a ModelSerializer
 class GameSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=100, required=False)
     settings = serializers.SerializerMethodField("get_settings_as_dict")

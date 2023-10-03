@@ -1,10 +1,7 @@
-import logging
 import os
 from asyncio import TimeoutError
 
 import aiohttp
-
-LOGGER = logging.getLogger(__name__)
 
 
 class DjangoCommunicator(object):

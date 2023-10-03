@@ -1,6 +1,7 @@
-import logging
 import json
+import logging
 
+from django.conf import settings
 from kubernetes.client import CoreV1Api
 from kubernetes.client.api.custom_objects_api import CustomObjectsApi
 from kubernetes.client.api_client import ApiClient
@@ -40,6 +41,7 @@ class GameManager:
         """
         return f"game-{game_id}"
 
+    # TODO: Replace this with CORS implementation - include deletion of game secret too
     def create_game_secret(self, game_id: int, token: str):
         game_name = self.game_name(game_id=game_id)
         self.game_secret_manager.create_game_secret(
@@ -67,12 +69,14 @@ class GameManager:
             game_name=game_name,
             game_server_name=game_server_name,
         )
-        try:
-            self.game_ingress_manager.add_game_path_to_ingress(game_name=game_name)
-        except ApiException as e:
-            # TODO: Filter out no-ingress exception on localhost
-            pass
-            # LOGGER.error(e)
+
+        if not getattr(settings, "AIMMO_DJANGO_BASE_URL", "http://localhost:8000").endswith("8000"):
+            try:
+                self.game_ingress_manager.add_game_path_to_ingress(game_name=game_name)
+            except ApiException as e:
+                LOGGER.error(e)
+                self.game_service_manager.delete_game_service(game_id=game_id)
+                self.game_server_manager.delete_game_server(game_id=game_id)
 
     def delete_game_server(self, game_id: int) -> dict:
         """
