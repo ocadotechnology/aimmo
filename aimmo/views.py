@@ -103,12 +103,7 @@ class GameUsersView(APIView):
         return users
 
 
-class GameViewSet(
-    viewsets.GenericViewSet,
-    mixins.DestroyModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-):
+class GameViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.UpdateModelMixin):
     authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication)
     queryset = Game.objects.all()
     permission_classes = (CanDeleteGameOrReadOnly,)
@@ -120,12 +115,6 @@ class GameViewSet(
             serializer = GameSerializer(game)
             response[game.pk] = serializer.data
         return Response(response)
-
-    def destroy(self, request, *args, **kwargs):
-        game_manager = GameManager()
-        game: Game = self.get_object()
-        game_manager.delete_game_server(game_id=game.id)
-        return super().destroy(request, *args, **kwargs)
 
     @action(
         methods=["get"],

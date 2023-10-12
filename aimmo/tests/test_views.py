@@ -365,20 +365,6 @@ class TestViews(TestCase):
         # test only one active game at a time
         assert models.Game.objects.filter(game_class=klass, is_archived=False).count() == 1
 
-    def test_delete_non_existent_game(self):
-        c = self.login()
-        response = c.delete(reverse("game-detail", kwargs={"pk": 2}))
-        assert response.status_code == 404
-
-    def test_delete_for_unauthorized_user(self):
-        """
-        Check for 403 when attempting to delete a game without being authorized
-        """
-        username, password, _ = create_independent_student_directly()
-        c = self.login(username=username, password=password)
-        response = c.delete(reverse("game-detail", kwargs={"pk": self.game.id}))
-        assert response.status_code == 403
-
     def test_game_serializer_settings(self):
         """
         Check that the serializer gets the correct settings data from the game
