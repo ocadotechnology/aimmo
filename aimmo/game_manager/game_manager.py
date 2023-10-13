@@ -70,6 +70,8 @@ class GameManager:
             game_server_name=game_server_name,
         )
 
+        LOGGER.info(getattr(settings, "AIMMO_DJANGO_BASE_URL", "http://localhost:8000"))
+
         if not getattr(settings, "AIMMO_DJANGO_BASE_URL", "http://localhost:8000").endswith("8000"):
             try:
                 self.game_ingress_manager.add_game_path_to_ingress(game_name=game_name)
