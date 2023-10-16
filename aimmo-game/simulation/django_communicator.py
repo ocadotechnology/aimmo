@@ -1,6 +1,7 @@
-import aiohttp
 import os
 from asyncio import TimeoutError
+
+import aiohttp
 
 
 class DjangoCommunicator(object):
@@ -33,9 +34,7 @@ class DjangoCommunicator(object):
         return response
 
     async def patch_game(self, data):
-        response = await self.session.patch(
-            self.django_api_url, headers={"Game-token": os.environ["TOKEN"]}, json=data
-        )
+        response = await self.session.patch(self.django_api_url, headers={"Game-token": os.environ["TOKEN"]}, json=data)
         return response
 
     async def close_session(self, app):

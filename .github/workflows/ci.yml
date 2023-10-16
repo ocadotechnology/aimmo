@@ -82,28 +82,6 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
 
-  test-aimmo-game-creator:
-    name: Test aimmo-game-creator
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Build docker image
-        run: |
-          cd aimmo-game-creator
-          docker build -t ocadotechnology/aimmo-game-creator:test --target tester .
-      - name: Run tests
-        run: docker run -i -p 5000:5000 ocadotechnology/aimmo-game-creator:test /bin/bash -c "coverage run setup.py test && coverage xml"
-      - name: Get the coverage data from the container
-        run: |
-          read CONTAINERID <<< $(docker ps --all -q | head -1)
-          docker cp -a $CONTAINERID:.coverage $(pwd)/.coverage
-          docker cp -a $CONTAINERID:coverage.xml $(pwd)/coverage.xml
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-
   test-aimmo-game-worker:
     name: Test aimmo-game-worker
     runs-on: ubuntu-20.04

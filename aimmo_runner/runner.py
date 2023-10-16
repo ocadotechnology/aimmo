@@ -2,9 +2,9 @@ from __future__ import absolute_import
 
 import logging
 import os
+import sys
 
 import django
-import sys
 from django.conf import settings
 
 from .shell_api import log, run_command, run_command_async
@@ -39,7 +39,7 @@ def build_frontend(using_cypress, capture_output):
         PROCESSES.append(frontend_bundler)
 
 
-def start_game_servers(build_target, server_args):
+def start_game_servers(build_target, server_args, capture_output: bool):
     parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     sys.path.append(os.path.join(parent_dir, "aimmo_runner"))
     os.chdir(ROOT_DIR_LOCATION)
@@ -51,6 +51,11 @@ def start_game_servers(build_target, server_args):
 
     server_args.append("0.0.0.0:8000")
     os.environ["AIMMO_MODE"] = "minikube"
+
+    run_command(
+        ["python", _MANAGE_PY, "start_game_servers_for_running_games"],
+        capture_output=capture_output,
+    )
 
 
 def run(server_wait=True, using_cypress=False, capture_output=False, test_env=False, build_target=None):
@@ -82,7 +87,7 @@ def run(server_wait=True, using_cypress=False, capture_output=False, test_env=Fa
 
     server_args = []
     if not using_cypress:
-        start_game_servers(build_target, server_args)
+        start_game_servers(build_target, server_args, capture_output)
 
     os.environ["SERVER_ENV"] = "local"
     server = run_command_async(["python", _MANAGE_PY, "runserver"] + server_args, capture_output=capture_output)

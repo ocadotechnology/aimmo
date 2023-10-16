@@ -3,9 +3,7 @@ import pytest
 
 @pytest.mark.django_db
 def test_generate_auth_token_for_games(migrator):
-    old_state = migrator.apply_initial_migration(
-        ("aimmo", "0024_unique_class_per_game")
-    )
+    old_state = migrator.apply_initial_migration(("aimmo", "0024_unique_class_per_game"))
 
     Game = old_state.apps.get_model("aimmo", "Game")
     game = Game.objects.create()

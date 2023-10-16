@@ -4,15 +4,29 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
-pytest = "~=6.2"
-pytest-asyncio = "==0.14.0"
-pytest-pythonpath = "*"
+aioresponses= "*"
+asynctest = "*"
 black = "*"
+httmock = "*"
+hypothesis = "*"
+mock = "*"
+pytest = "~=6.2"
+pytest-aiohttp = "==0.3.0"
+pytest-asyncio = "==0.14.0"  # downgraded because of this issue: https://github.com/pytest-dev/pytest-asyncio/issues/209
+pytest-mock = "*"
+pytest-pythonpath = "*"
 
 [packages]
-aimmo-game = {editable = true,path = "."}
-kubernetes = "==26.1.0"
+aiohttp = "==3.7.4"  # Downgraded because of this issue: https://github.com/aio-libs/aiohttp/pull/5572
+aiohttp-cors = "*"
+aiohttp-wsgi = "*"
 docker = "<6"
+eventlet = "==0.31.0"
+google-api-python-client = "==1.12.8"
+google-cloud-logging = "==2.2.0"
+grpcio = "==1.43.0"  # Downgraded as future versions seemed to cause an issue with grpcio status
+kubernetes = "==26.1.0"
+python-socketio = "==5.0.3"
 
 [requires]
 python_version = "3.8"
