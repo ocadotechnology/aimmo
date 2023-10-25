@@ -6,29 +6,25 @@ from common.models import UserProfile
 from common.permissions import CanDeleteGame
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse, HttpResponseBadRequest
+from django.db import transaction
+from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import mixins, status, viewsets
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
-from rest_framework.decorators import (
-    api_view,
-    authentication_classes,
-    permission_classes,
-    action,
-)
+from rest_framework.decorators import action, api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from . import game_renderer
 from .exceptions import UserCannotPlayGameException
-from .models import Avatar, Game
+from .game_manager.game_manager import GameManager
+from .models import Avatar, Game, GameSerializer, GameIdsSerializer
 from .permissions import (
     CanDeleteGameOrReadOnly,
     CsrfExemptSessionAuthentication,
 )
-from .serializers import GameSerializer, GameIdsSerializer
 
 LOGGER = logging.getLogger(__name__)
 
@@ -107,12 +103,7 @@ class GameUsersView(APIView):
         return users
 
 
-class GameViewSet(
-    viewsets.GenericViewSet,
-    mixins.DestroyModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-):
+class GameViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.UpdateModelMixin):
     authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication)
     queryset = Game.objects.all()
     permission_classes = (CanDeleteGameOrReadOnly,)
@@ -125,7 +116,10 @@ class GameViewSet(
             response[game.pk] = serializer.data
         return Response(response)
 
-    @action(methods=["get"], detail=False)
+    @action(
+        methods=["get"],
+        detail=False,
+    )
     def running(self, request):
         response = {
             game.pk: GameSerializer(game).data for game in Game.objects.filter(status=Game.RUNNING, is_archived=False)
@@ -140,19 +134,32 @@ class GameViewSet(
     )
     def delete_games(self, request):
         game_ids = request.data.getlist("game_ids")
-        games = (
-            Game.objects.filter(
-                pk__in=game_ids,
-                game_class__teacher__school=request.user.userprofile.teacher.school,
-                is_archived=False,
+
+        with transaction.atomic():
+            games = (
+                Game.objects.filter(
+                    pk__in=game_ids,
+                    game_class__teacher__school=request.user.userprofile.teacher.school,
+                    is_archived=False,
+                )
+                if request.user.userprofile.teacher.is_admin
+                else Game.objects.filter(pk__in=game_ids, game_class__teacher__new_user=request.user, is_archived=False)
             )
-            if request.user.userprofile.teacher.is_admin
-            else Game.objects.filter(pk__in=game_ids, game_class__teacher__new_user=request.user, is_archived=False)
-        )
-        for game in games:
-            game.is_archived = True  # mark as deleted/archived
-            game.status = Game.STOPPED
-            game.save()
+            try:
+                game_manager = GameManager()
+                for game in games:
+                    # Shutdown the game server
+                    game_manager.delete_game_server(game_id=game.id)
+
+                    # Archive the games in the database
+                    game.is_archived = True  # mark as deleted/archived
+                    game.status = Game.STOPPED
+                    game.save()
+            except Exception as exception:
+                LOGGER.error(f"Could not delete game servers for games: {', '.join(game_ids)}")
+                # Re-raise exception so that atomic transaction reverts
+                raise exception
+
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -203,8 +210,19 @@ def watch_game(request, id):
     if not game.can_user_play(request.user):
         raise Http404
 
-    game.status = Game.RUNNING
-    game.save()
+    with transaction.atomic():
+        game: Game = Game.objects.select_for_update().get(id=game.id)
+
+        if game.status != Game.RUNNING:
+            # Create a game server for this game
+            game_manager = GameManager()
+            game_manager.create_game_server(
+                game_id=game.id,
+                game_data=GameSerializer(game).data,
+            )
+            game.status = Game.RUNNING
+            game.save()
+
     return game_renderer.render_game(request, game)
 
 

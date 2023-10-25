@@ -5,12 +5,11 @@ import platform
 import subprocess
 
 import kubernetes
-import yaml
-from kubernetes.client import AppsV1Api
+from kubernetes.client import AppsV1Api, CoreV1Api
 from kubernetes.config import load_kube_config
 
 from .docker_scripts import build_docker_images
-from .shell_api import BASE_DIR, run_command
+from .shell_api import run_command
 
 MINIKUBE_EXECUTABLE = "minikube"
 
@@ -26,24 +25,9 @@ def get_ip():
     return internal_ip
 
 
-def create_creator_yaml():
-    """
-    Loads a replication controller yaml file into a python object.
-    """
-    orig_path = os.path.join(
-        BASE_DIR, "aimmo-game-creator", "aimmo-game-creator-deployment.yaml"
-    )
-    with open(orig_path) as orig_file:
-        content = yaml.safe_load(
-            orig_file.read().replace(
-                "REPLACE_ME", f"http://{get_ip()}:8000/kurono/api/games/"
-            )
-        )
-    return content
-
-
 def delete_components():
     apps_api_instance = AppsV1Api()
+    api = CoreV1Api()
     for rs in apps_api_instance.list_namespaced_deployment("default").items:
         apps_api_instance.delete_namespaced_deployment(
             body=kubernetes.client.V1DeleteOptions(),
@@ -51,10 +35,13 @@ def delete_components():
             namespace="default",
             grace_period_seconds=0,
         )
+    for service in api.list_namespaced_service(namespace="default").items:
+        api.delete_namespaced_service(service.metadata.name, "default")
+
     delete_fleet_on_exit()
 
 
-def restart_pods(game_creator_yaml):
+def restart_pods():
     """
     Disables all the components running in the cluster and starts them again
     with fresh updated state.
@@ -68,11 +55,6 @@ def restart_pods(game_creator_yaml):
         run_command("kubectl delete fleet aimmo-game --ignore-not-found".split(" "))
         run_command("kubectl delete --all deployment -n default".split(" "))
         run_command(["kubectl", "create", "-f", "agones/fleet.yml"])
-
-    apps_api_instance = AppsV1Api()
-    apps_api_instance.create_namespaced_deployment(
-        body=game_creator_yaml, namespace="default"
-    )
 
 
 def create_roles():
@@ -111,7 +93,6 @@ def start(build_target=None):
 
     create_roles()
     build_docker_images(MINIKUBE_EXECUTABLE, build_target=build_target)
-    game_creator = create_creator_yaml()
-    restart_pods(game_creator)
+    restart_pods()
     atexit.register(delete_components)
     print("Cluster ready")

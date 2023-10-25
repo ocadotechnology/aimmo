@@ -3,7 +3,7 @@ kind: Fleet
 metadata:
   name: aimmo-game
 spec:
-  replicas: 3
+  replicas: 15
   strategy:
     type: Recreate
   template:

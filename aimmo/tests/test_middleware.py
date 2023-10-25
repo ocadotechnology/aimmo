@@ -1,4 +1,5 @@
 from typing import Tuple, List
+from unittest.mock import patch
 
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
@@ -80,7 +81,8 @@ class TestGameLimitExceededMiddleware(TestCase):
         )
         assert Game.objects.all().count() == 2
 
-    def test_cannot_start_stopped_game_when_max_limit_reached(self):
+    @patch("aimmo.views.GameManager")
+    def test_cannot_start_stopped_game_when_max_limit_reached(self, mock_game_manager):
         """
         Given two running games and one stopped game,
         When a teacher or a student tries to play the stopped game,

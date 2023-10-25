@@ -1,3 +1,4 @@
+import json
 import secrets
 import typing as t
 
@@ -7,6 +8,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.dispatch import receiver
 from django.utils import timezone
+from rest_framework import serializers
 
 from aimmo import app_settings
 from aimmo.exceptions import GameLimitExceeded
@@ -172,6 +174,7 @@ class Game(models.Model):
 
             game_manager = GameManager()
             game_manager.create_game_secret(game_id=self.id, token=self.auth_token)
+            game_manager.create_game_server(game_id=self.id, game_data=GameSerializer(self).data)
         else:
             super(Game, self).save(**kwargs)
 
@@ -194,6 +197,72 @@ def check_game_limit(sender: t.Type[Game], instance: Game, **kwargs):
             queryset = sender.objects.filter(status=Game.RUNNING).exclude(id=instance.id)
         if queryset.count() >= MAX_GAMES_LIMIT:
             raise GameLimitExceeded
+
+
+# TODO: Replace with a ModelSerializer
+class GameSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=100, required=False)
+    settings = serializers.SerializerMethodField("get_settings_as_dict")
+    status = serializers.CharField(max_length=1, required=False)
+    class_id = serializers.SerializerMethodField()
+    worksheet_id = serializers.CharField(max_length=1, required=False)
+    era = serializers.SerializerMethodField("get_worksheet_era")
+
+    def get_class_id(self, game: Game):
+        try:
+            return str(game.game_class.id)
+        except AttributeError:
+            return None
+
+    def get_worksheet_id(self, game: Game):
+        try:
+            return str(game.worksheet.id)
+        except AttributeError:
+            return "1"
+
+    def get_worksheet_era(self, game: Game):
+        try:
+            return str(game.worksheet.era)
+        except AttributeError:
+            return "1"
+
+    def get_settings_as_dict(self, game: Game):
+        return json.dumps(game.settings_as_dict(), sort_keys=True)
+
+    def update(self, instance, validated_data):
+        old_status = instance.status
+        instance.name = validated_data.get("name", instance.name)
+        instance.status = validated_data.get("status", instance.status)
+        instance.worksheet_id = validated_data.get("worksheet_id", instance.worksheet_id)
+
+        instance.save()
+
+        if "status" in validated_data:
+            if instance.status == Game.STOPPED and old_status == Game.RUNNING:
+                game_manager = GameManager()
+                game_manager.delete_game_server(game_id=instance.id)
+
+        if "worksheet_id" in validated_data:
+            avatars = Avatar.objects.filter(game=instance)
+            worksheet = WORKSHEETS.get(int(instance.worksheet_id))
+
+            for avatar in avatars:
+                avatar.code = worksheet.starter_code
+                avatar.save()
+
+            # If the game is running, the game server needs to be restarted
+            if instance.status == Game.RUNNING:
+                game_manager = GameManager()
+                game_manager.recreate_game_server(
+                    game_id=instance.id,
+                    game_data_updates={"worksheet_id": str(instance.worksheet_id)},
+                )
+
+        return instance
+
+
+class GameIdsSerializer(serializers.Serializer):
+    game_ids = serializers.MultipleChoiceField(choices=[])
 
 
 class Avatar(models.Model):

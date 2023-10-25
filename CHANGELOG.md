@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.10.7 (2023-10-16)
+
+### Fix
+
+* Move game creator to Django ([#1798](https://github.com/ocadotechnology/aimmo/issues/1798)) ([`7c2fe3e`](https://github.com/ocadotechnology/aimmo/commit/7c2fe3e54421a683f25c3cbcc4eb0c6b3c3c719b))
+
 ## v2.10.6 (2023-08-14)
 
 ### Fix
