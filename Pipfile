@@ -6,6 +6,7 @@ name = "pypi"
 [dev-packages]
 black = "*"
 codeforlife-portal = "*"
+django-import-export = "==3.3.1"
 django-test-migrations = "==1.2.0"
 pytest = "~=6.2"
 pytest-cov = "*"
@@ -15,7 +16,6 @@ pytest-pythonpath = "*"
 [packages]
 aimmo = {editable = true, path = "."}
 django-formtools = "==2.2"
-django-import-export = "*"
 django-otp = "==1.0.2"
 docker = "<6"
 eventlet = "*"
