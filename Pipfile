@@ -6,7 +6,7 @@ name = "pypi"
 [dev-packages]
 black = "*"
 codeforlife-portal = "*"
-django-import-export = "*"
+django-import-export = "==3.3.1"
 django-test-migrations = "==1.2.0"
 pytest = "~=6.2"
 pytest-cov = "*"
