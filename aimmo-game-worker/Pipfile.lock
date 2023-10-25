@@ -16,6 +16,10 @@
         ]
     },
     "default": {
+        "aimmo-game-worker": {
+            "editable": true,
+            "path": "."
+        },
         "aiohttp": {
             "hashes": [
                 "sha256:002f23e6ea8d3dd8d149e569fd580c999232b5fbc601c48d55398fbc2e582e8c",
@@ -107,7 +111,6 @@
                 "sha256:fdee8405931b0615220e5ddf8cd7edd8592c606a8e4ca2a00704883c396e4479"
             ],
             "index": "pypi",
-            "markers": "python_version >= '3.6'",
             "version": "==3.8.6"
         },
         "aiohttp-cors": {
@@ -260,7 +263,6 @@
                 "sha256:d916a26b62970e7c2f554110ed6af04c7ccff8e9f81ad17d0d40c75637e227fb"
             ],
             "index": "pypi",
-            "markers": "python_version >= '3.6'",
             "version": "==5.0.3"
         },
         "frozenlist": {
@@ -359,7 +361,6 @@
                 "sha256:e3db6800abf7e36c38d2629b5cb6b74d10988ee0cba6fba45595a7cbe60c0042"
             ],
             "index": "pypi",
-            "markers": "python_version >= '3.6'",
             "version": "==26.1.0"
         },
         "multidict": {
@@ -471,7 +472,7 @@
                 "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86",
                 "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2'",
             "version": "==2.8.2"
         },
         "pyyaml": {
@@ -552,7 +553,6 @@
                 "sha256:ed37aa82cf0b7caa0c5c5370990aa78a2b11cde53af92cd5414ff2d1534f5a06"
             ],
             "index": "pypi",
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '3.11'",
             "version": "==5.4"
         },
         "rsa": {
@@ -562,9 +562,6 @@
             ],
             "markers": "python_version >= '3.6' and python_version < '4'",
             "version": "==4.9"
-        },
-        "sanitized-package": {
-            "version": "==0.0.1"
         },
         "setuptools": {
             "hashes": [
@@ -579,7 +576,7 @@
                 "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926",
                 "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2'",
             "version": "==1.16.0"
         },
         "urllib3": {
@@ -587,7 +584,6 @@
                 "sha256:c97dfde1f7bd43a71c8d2a58e369e9b2bf692d1334ea9f9cae55add7d0dd0f84",
                 "sha256:fdb6d215c776278489906c2f8916e6e7d4f5a9b602ccbcfdf7f016fc8da0596e"
             ],
-            "index": "pypi",
             "markers": "python_version >= '3.7'",
             "version": "==2.0.7"
         },
@@ -687,7 +683,6 @@
                 "sha256:2913064abd97b3419d1cc83ea71f042cb821f87e45b9c88cad5ad3c4ea87fe0c"
             ],
             "index": "pypi",
-            "markers": "python_version >= '3.6'",
             "version": "==2.0.4"
         },
         "pycodestyle": {
