@@ -14,8 +14,8 @@ class Migration(migrations.Migration):
             model_name="game",
             name="status",
             field=models.CharField(
-                choices=[(b"r", b"running"), (b"s", b"stopped"), (b"p", b"paused")],
-                default=b"r",
+                choices=[("r", "running"), ("s", "stopped"), ("p", "paused")],
+                default="r",
                 max_length=1,
             ),
         )
