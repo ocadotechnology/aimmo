@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.10.8 (2023-11-02)
+
+### Fix
+
+* Fix default status issue ([#1822](https://github.com/ocadotechnology/aimmo/issues/1822)) ([`3f0be99`](https://github.com/ocadotechnology/aimmo/commit/3f0be99afff20f710b1b4509ee24a7f1a76ad661))
+
 ## v2.10.7 (2023-10-16)
 
 ### Fix
