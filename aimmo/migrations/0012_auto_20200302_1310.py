@@ -19,14 +19,5 @@ class Migration(migrations.Migration):
                 default="Main",
                 max_length=20,
             ),
-        ),
-        migrations.AlterField(
-            model_name="game",
-            name="status",
-            field=models.CharField(
-                choices=[("r", "running"), ("s", "stopped"), ("p", "paused")],
-                default="r",
-                max_length=1,
-            ),
-        ),
+        )
     ]
