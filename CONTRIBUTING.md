@@ -1,1 +1,3 @@
-Please review our contributing documentation at https://docs.codeforlife.education/
+# Contributing
+
+Find our contribution agreement [here](https://github.com/ocadotechnology/codeforlife-workspace/blob/main/CONTRIBUTING.md).
