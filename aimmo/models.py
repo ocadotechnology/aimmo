@@ -200,10 +200,7 @@ def check_game_limit(sender: t.Type[Game], instance: Game, **kwargs):
 
 @receiver(models.signals.pre_save, sender=Game)
 def create_worksheet_usage(
-    sender: t.Type[Game],
     instance: Game,
-    raw: bool,
-    using: str,
     update_fields: t.Optional[t.FrozenSet[str]],
     **kwargs,
 ):
