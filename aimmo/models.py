@@ -202,7 +202,7 @@ def check_game_limit(sender: t.Type[Game], instance: Game, **kwargs):
 def create_worksheet_usage(
     instance: Game,
     update_fields: t.Optional[t.FrozenSet[str]],
-    **kwargs,
+    **_kwargs,
 ):
     if instance.owner is None:
         return
