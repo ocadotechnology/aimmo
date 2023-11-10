@@ -233,10 +233,7 @@ class WorksheetBadge(models.Model):
 
 @receiver(models.signals.pre_save, sender=UserProfile)
 def create_worksheet_badge(
-    sender: t.Type[UserProfile],
     instance: UserProfile,
-    raw: bool,
-    using: str,
     update_fields: t.Optional[t.FrozenSet[str]],
     **kwargs,
 ):
