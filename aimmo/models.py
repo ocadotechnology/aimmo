@@ -215,10 +215,35 @@ def create_worksheet_usage(
         )
 
 
+@receiver(models.signals.pre_save, sender=Game)
+def save_load_times(instance: Game, **_kwargs):
+    if instance.pk is None:
+        return
+
+    if instance.status == Game.RUNNING:
+        old_instance: Game = Game.objects.get(pk=instance.pk)
+        if instance.status != old_instance.status:
+            worksheet_usage = (
+                WorksheetUsage.objects.filter(
+                    game=instance,
+                    worksheet_id=instance.worksheet_id,
+                    game_load_started_at=None,
+                    game_load_finished_at=None,
+                )
+                .order_by("created_at")
+                .last()
+            )
+            if worksheet_usage:
+                worksheet_usage.game_load_started_at = timezone.now()
+                worksheet_usage.save()
+
+
 class WorksheetUsage(models.Model):
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     worksheet_id = models.IntegerField()
     created_at = models.DateTimeField(default=timezone.now)
+    game_load_started_at = models.DateTimeField(null=True, blank=True)
+    game_load_finished_at = models.DateTimeField(null=True, blank=True)
 
 
 class WorksheetBadge(models.Model):
