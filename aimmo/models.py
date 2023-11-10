@@ -198,24 +198,9 @@ def check_game_limit(sender: t.Type[Game], instance: Game, **kwargs):
             raise GameLimitExceeded
 
 
-@receiver(models.signals.pre_save, sender=Game)
-def create_worksheet_usage(
-    instance: Game,
-    update_fields: t.Optional[t.FrozenSet[str]],
-    **_kwargs,
-):
-    if instance.owner is None:
-        return
-
-    if instance.id is None or update_fields is not None and "worksheet_id" in update_fields:
-        WorksheetUsage.objects.create(
-            user=instance.owner,
-            worksheet_id=instance.worksheet_id,
-        )
-
-
 class WorksheetUsage(models.Model):
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    klass = models.ForeignKey(Class, null=True, blank=True, on_delete=models.SET_NULL)
     worksheet_id = models.IntegerField()
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -250,13 +235,13 @@ class GameSerializer(serializers.Serializer):
     def get_settings_as_dict(self, game: Game):
         return json.dumps(game.settings_as_dict(), sort_keys=True)
 
-    def update(self, instance: Game, validated_data):
+    def update(self, instance, validated_data):
         old_status = instance.status
         instance.name = validated_data.get("name", instance.name)
         instance.status = validated_data.get("status", instance.status)
         instance.worksheet_id = validated_data.get("worksheet_id", instance.worksheet_id)
 
-        instance.save(update_fields=["name", "status", "worksheet_id"])
+        instance.save()
 
         if "status" in validated_data:
             if instance.status == Game.STOPPED and old_status == Game.RUNNING:
