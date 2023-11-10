@@ -199,47 +199,9 @@ def check_game_limit(sender: t.Type[Game], instance: Game, **kwargs):
             raise GameLimitExceeded
 
 
-@receiver(models.signals.pre_save, sender=Game)
-def create_worksheet_usage(
-    instance: Game,
-    update_fields: t.Optional[t.FrozenSet[str]],
-    **kwargs,
-):
-    if instance.owner is None:
-        return
-
-    if instance.id is None or update_fields is not None and "worksheet_id" in update_fields:
-        WorksheetUsage.objects.create(
-            user=instance.owner,
-            worksheet_id=instance.worksheet_id,
-        )
-
-
-@receiver(models.signals.pre_save, sender=Game)
-def save_load_times(instance: Game, **_kwargs):
-    if instance.pk is None:
-        return
-
-    if instance.status == Game.RUNNING:
-        old_instance: Game = Game.objects.get(pk=instance.pk)
-        if instance.status != old_instance.status:
-            worksheet_usage = (
-                WorksheetUsage.objects.filter(
-                    game=instance,
-                    worksheet_id=instance.worksheet_id,
-                    game_load_started_at=None,
-                    game_load_finished_at=None,
-                )
-                .order_by("created_at")
-                .last()
-            )
-            if worksheet_usage:
-                worksheet_usage.game_load_started_at = timezone.now()
-                worksheet_usage.save()
-
-
 class WorksheetUsage(models.Model):
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    klass = models.ForeignKey(Class, null=True, blank=True, on_delete=models.SET_NULL)
     worksheet_id = models.IntegerField()
     created_at = models.DateTimeField(default=timezone.now)
     game_load_started_at = models.DateTimeField(null=True, blank=True)
@@ -257,17 +219,15 @@ class WorksheetBadge(models.Model):
 
 
 @receiver(models.signals.pre_save, sender=UserProfile)
-def create_worksheet_badge(
-    instance: UserProfile,
-    update_fields: t.Optional[t.FrozenSet[str]],
-    **_kwargs,
-):
-    if instance.id is not None and (update_fields is None or not "aimmo_badges" in update_fields):
-        return
-
+def create_worksheet_badge(instance: UserProfile, **_kwargs):
     aimmo_badges: t.Optional[str] = instance.aimmo_badges
     if aimmo_badges is None:
         return
+
+    if instance.pk is not None:
+        old_instance: UserProfile = UserProfile.objects.get(pk=instance.pk)
+        if old_instance.aimmo_badges == instance.aimmo_badges:
+            return
 
     for badge in aimmo_badges.split(","):
         match = re.match(r"(\d+):(\d+)", badge)
@@ -314,13 +274,13 @@ class GameSerializer(serializers.Serializer):
     def get_settings_as_dict(self, game: Game):
         return json.dumps(game.settings_as_dict(), sort_keys=True)
 
-    def update(self, instance: Game, validated_data):
+    def update(self, instance, validated_data):
         old_status = instance.status
         instance.name = validated_data.get("name", instance.name)
         instance.status = validated_data.get("status", instance.status)
         instance.worksheet_id = validated_data.get("worksheet_id", instance.worksheet_id)
 
-        instance.save(update_fields=["name", "status", "worksheet_id"])
+        instance.save()
 
         if "status" in validated_data:
             if instance.status == Game.STOPPED and old_status == Game.RUNNING:
