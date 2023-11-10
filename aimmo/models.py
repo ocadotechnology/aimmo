@@ -204,8 +204,7 @@ class WorksheetUsage(models.Model):
     klass = models.ForeignKey(Class, null=True, blank=True, on_delete=models.SET_NULL)
     worksheet_id = models.IntegerField()
     created_at = models.DateTimeField(default=timezone.now)
-    game_load_started_at = models.DateTimeField(null=True, blank=True)
-    game_load_finished_at = models.DateTimeField(null=True, blank=True)
+    loaded_at = models.DateTimeField(null=True, blank=True)
 
 
 class WorksheetBadge(models.Model):
