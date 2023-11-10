@@ -20,11 +20,8 @@ from rest_framework.views import APIView
 from . import game_renderer
 from .exceptions import UserCannotPlayGameException
 from .game_manager.game_manager import GameManager
-from .models import Avatar, Game, GameSerializer, GameIdsSerializer
-from .permissions import (
-    CanDeleteGameOrReadOnly,
-    CsrfExemptSessionAuthentication,
-)
+from .models import Avatar, Game, GameIdsSerializer, GameSerializer
+from .permissions import CanDeleteGameOrReadOnly, CsrfExemptSessionAuthentication
 
 LOGGER = logging.getLogger(__name__)
 
@@ -75,7 +72,7 @@ def badges(request, id):
 
         if re.match("^([1-9]:\d+,)*$", earned_badges):
             avatar_user_profile.aimmo_badges = earned_badges
-            avatar_user_profile.save()
+            avatar_user_profile.save(update_fields=["aimmo_badges"])
             return HttpResponse()
         else:
             LOGGER.info(f"Badges information {earned_badges} doesn't match the required format.")
