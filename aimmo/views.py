@@ -72,7 +72,7 @@ def badges(request, id):
 
         if re.match("^([1-9]:\d+,)*$", earned_badges):
             avatar_user_profile.aimmo_badges = earned_badges
-            avatar_user_profile.save(update_fields=["aimmo_badges"])
+            avatar_user_profile.save()
             return HttpResponse()
         else:
             LOGGER.info(f"Badges information {earned_badges} doesn't match the required format.")

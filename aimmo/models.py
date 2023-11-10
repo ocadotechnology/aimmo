@@ -217,17 +217,15 @@ class WorksheetBadge(models.Model):
 
 
 @receiver(models.signals.pre_save, sender=UserProfile)
-def create_worksheet_badge(
-    instance: UserProfile,
-    update_fields: t.Optional[t.FrozenSet[str]],
-    **_kwargs,
-):
-    if instance.id is not None and (update_fields is None or not "aimmo_badges" in update_fields):
-        return
-
+def create_worksheet_badge(instance: UserProfile, **_kwargs):
     aimmo_badges: t.Optional[str] = instance.aimmo_badges
     if aimmo_badges is None:
         return
+
+    if instance.pk is not None:
+        old_instance: UserProfile = UserProfile.objects.get(pk=instance.pk)
+        if old_instance.aimmo_badges == instance.aimmo_badges:
+            return
 
     for badge in aimmo_badges.split(","):
         match = re.match(r"(\d+):(\d+)", badge)
