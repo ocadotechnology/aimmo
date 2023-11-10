@@ -235,7 +235,7 @@ class WorksheetBadge(models.Model):
 def create_worksheet_badge(
     instance: UserProfile,
     update_fields: t.Optional[t.FrozenSet[str]],
-    **kwargs,
+    **_kwargs,
 ):
     if instance.id is not None and (update_fields is None or not "aimmo_badges" in update_fields):
         return
