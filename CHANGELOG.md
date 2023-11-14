@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.10.11 (2023-11-14)
+
+### Fix
+
+* Track worksheet badges ([#1829](https://github.com/ocadotechnology/aimmo/issues/1829)) ([`e7dfe13`](https://github.com/ocadotechnology/aimmo/commit/e7dfe131e2a255aa5d53bb69462e8af07e9e4a6e))
+
 ## v2.10.10 (2023-11-14)
 
 ### Fix
