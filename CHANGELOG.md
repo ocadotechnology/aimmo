@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.10.12 (2023-11-14)
+
+### Fix
+
+* Track game load ([#1830](https://github.com/ocadotechnology/aimmo/issues/1830)) ([`166ca93`](https://github.com/ocadotechnology/aimmo/commit/166ca9360e8a0d7334e5586c37d8c039cb461eb3))
+
 ## v2.10.11 (2023-11-14)
 
 ### Fix
