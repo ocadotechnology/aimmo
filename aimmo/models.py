@@ -2,8 +2,7 @@ import json
 import secrets
 import typing as t
 
-from common.models import Class
-from common.models import Teacher
+from common.models import Class, Teacher
 from django.contrib.auth.models import User
 from django.db import models
 from django.dispatch import receiver
@@ -197,6 +196,13 @@ def check_game_limit(sender: t.Type[Game], instance: Game, **kwargs):
             queryset = sender.objects.filter(status=Game.RUNNING).exclude(id=instance.id)
         if queryset.count() >= MAX_GAMES_LIMIT:
             raise GameLimitExceeded
+
+
+class WorksheetUsage(models.Model):
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    klass = models.ForeignKey(Class, null=True, blank=True, on_delete=models.SET_NULL)
+    worksheet_id = models.IntegerField()
+    created_at = models.DateTimeField(default=timezone.now)
 
 
 # TODO: Replace with a ModelSerializer
