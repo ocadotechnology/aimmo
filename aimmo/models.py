@@ -1,8 +1,9 @@
 import json
+import re
 import secrets
 import typing as t
 
-from common.models import Class, Teacher
+from common.models import Class, Teacher, UserProfile
 from django.contrib.auth.models import User
 from django.db import models
 from django.dispatch import receiver
@@ -203,6 +204,42 @@ class WorksheetUsage(models.Model):
     klass = models.ForeignKey(Class, null=True, blank=True, on_delete=models.SET_NULL)
     worksheet_id = models.IntegerField()
     created_at = models.DateTimeField(default=timezone.now)
+
+
+class WorksheetBadge(models.Model):
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    worksheet_id = models.IntegerField()
+    badge_id = models.IntegerField()
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ("user", "worksheet_id", "badge_id")
+
+
+@receiver(models.signals.pre_save, sender=UserProfile)
+def create_worksheet_badge(instance: UserProfile, **_kwargs):
+    aimmo_badges: t.Optional[str] = instance.aimmo_badges
+    if aimmo_badges is None:
+        return
+
+    if instance.pk is not None:
+        old_instance: UserProfile = UserProfile.objects.get(pk=instance.pk)
+        if old_instance.aimmo_badges == instance.aimmo_badges:
+            return
+
+    for badge in aimmo_badges.split(","):
+        match = re.match(r"(\d+):(\d+)", badge)
+        if not match:
+            continue
+
+        worksheet_badge = {
+            "user": instance.user,
+            "worksheet_id": match.group(1),
+            "badge_id": match.group(2),
+        }
+
+        if not WorksheetBadge.objects.filter(**worksheet_badge).exists():
+            WorksheetBadge.objects.create(**worksheet_badge)
 
 
 # TODO: Replace with a ModelSerializer
