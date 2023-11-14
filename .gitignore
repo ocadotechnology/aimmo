@@ -6,8 +6,8 @@ __pycache__/
 *.so
 
 # Editors & workspaces
-.vscode/
-**.vscode/
+# .vscode/
+# **.vscode/
 *.code-workspace
 
 # Distribution / packaging
