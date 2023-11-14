@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.10.10 (2023-11-14)
+
+### Fix
+
+* Track worksheet usage ([#1828](https://github.com/ocadotechnology/aimmo/issues/1828)) ([`f1807fb`](https://github.com/ocadotechnology/aimmo/commit/f1807fbccf4230ebdcde3bac45d8b3c7c0fbce57))
+
 ## v2.10.9 (2023-11-02)
 
 ### Fix
