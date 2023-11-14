@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.db import transaction
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import mixins, status, viewsets
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
@@ -66,6 +67,19 @@ def badges(request, id):
     except Avatar.DoesNotExist:
         avatar = Avatar.objects.create(game=game, owner=request.user)
     avatar_user_profile = UserProfile.objects.get(user=avatar.owner)
+
+    worksheet_usage = (
+        WorksheetUsage.objects.filter(
+            user=request.user,
+            klass=game.game_class,
+            worksheet_id=game.worksheet_id,
+        )
+        .order_by("created_at")
+        .last()
+    )
+    if worksheet_usage and not worksheet_usage.loaded_at:
+        worksheet_usage.loaded_at = timezone.now()
+        worksheet_usage.save()
 
     if request.method == "POST":
         earned_badges = request.POST["badges"]
