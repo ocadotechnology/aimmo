@@ -17,7 +17,7 @@ pytest-mock = "*"
 pytest-pythonpath = "*"
 
 [packages]
-aiohttp = "==3.7.4"  # Downgraded because of this issue: https://github.com/aio-libs/aiohttp/pull/5572
+aiohttp = "==3.8.6"  # Downgraded because of this issue: https://github.com/aio-libs/aiohttp/pull/5572
 aiohttp-cors = "*"
 aiohttp-wsgi = "*"
 docker = "<6"
