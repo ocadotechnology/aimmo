@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.10.15 (2023-11-22)
+
+### Fix
+
+* Upgrade Django to 3.2.23 again (CI/CD measuring) ([#1837](https://github.com/ocadotechnology/aimmo/issues/1837)) ([`df8816b`](https://github.com/ocadotechnology/aimmo/commit/df8816b431820ee337b27138f6279011b72b2db0))
+
 ## v2.10.14 (2023-11-21)
 
 ### Fix
