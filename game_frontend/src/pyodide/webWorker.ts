@@ -1,7 +1,8 @@
 /* eslint-env worker */
-import { expose } from 'threads/worker'
-import { checkIfBadgeEarned, filterByWorksheet } from './badges'
-import ComputedTurnResult from './computedTurnResult'
+import { expose } from 'threads/worker';
+import { checkIfBadgeEarned, filterByWorksheet } from './badges';
+import ComputedTurnResult from './computedTurnResult';
+import { matchFromImports, matchImports } from './syntax';
 
 let pyodide: Pyodide
 
@@ -98,6 +99,31 @@ export function simplifyErrorMessageInLog(log: string): string {
   return log.split('\n').slice(-2).join('\n')
 }
 
+const IMPORT_WHITE_LIST: Array<{
+  name: string
+  allowAnySubmodule: boolean
+  from?: Set<string>
+}> = [
+    {
+      name: 'random',
+      allowAnySubmodule: true,
+    }
+  ];
+
+function validateImportInWhiteList(_import: string, turnCount: number) {
+  if (IMPORT_WHITE_LIST.every(({ name, allowAnySubmodule }) =>
+    _import !== name || (_import.startsWith(name) && !allowAnySubmodule)
+  )) {
+    return Promise.resolve({
+      action: { action_type: 'wait' },
+      log: `Import "${_import}" is not allowed.`,
+      turnCount: turnCount,
+    })
+  }
+
+  return undefined;
+}
+
 export async function updateAvatarCode(
   userCode: string,
   gameState: any,
@@ -109,6 +135,17 @@ export async function updateAvatarCode(
   }
 
   try {
+    for (const _import of matchImports(userCode)) {
+      const promise = validateImportInWhiteList(_import, turnCount);
+      if (promise) return promise;
+    }
+
+    for (const _import in matchFromImports(userCode)) {
+      const promise = validateImportInWhiteList(_import, turnCount);
+      if (promise) return promise;
+      // TODO: validate from imports
+    }
+
     await pyodide.runPythonAsync(userCode)
     if (gameState) {
       return computeNextAction(gameState, playerAvatarID, false)
