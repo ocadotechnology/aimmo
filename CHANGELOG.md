@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.11.0 (2023-11-29)
+
+### Feature
+
+* Validate imports ([#1838](https://github.com/ocadotechnology/aimmo/issues/1838)) ([`0c07148`](https://github.com/ocadotechnology/aimmo/commit/0c0714857984406c8a07b82e43ca2201d90a453c))
+
 ## v2.10.15 (2023-11-22)
 
 ### Fix
