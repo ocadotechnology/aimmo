@@ -55,7 +55,7 @@ jobs:
       - name: Trigger staging deployment
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+          github-token: ${{ secrets.CFL_BOT_GITHUB_TOKEN }}
           script: |
             github.rest.actions.createWorkflowDispatch({
               owner: 'ocadotechnology',
