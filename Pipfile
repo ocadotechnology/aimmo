@@ -22,7 +22,7 @@ eventlet = "*"
 importlib-metadata = "<5" # Using version 5 causes an issue when trying to run pytest. Not sure why, linked to: https://stackoverflow.com/questions/73929564/entrypoints-object-has-no-attribute-get-digital-ocean
 kubernetes = "==26.1.0"
 pyyaml = "==5.4.1"
-setuptools = "==62.1.0"
+setuptools = "==65.5.1"
 wheel = "*"
 
 [requires]
