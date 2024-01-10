@@ -1,0 +1,8 @@
+name: Contributing
+
+on:
+  pull_request:
+
+jobs:
+  validate-existing-contributors:
+    uses: ocadotechnology/codeforlife-workspace/.github/workflows/validate-existing-contributors.yaml@main
