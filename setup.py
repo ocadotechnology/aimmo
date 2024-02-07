@@ -23,7 +23,7 @@ setup(
     include_package_data=True,
     install_requires=[
         "cfl-common",
-        "django==3.2.23",
+        "django==3.2.24",
         "django-csp==3.7",
         "django-js-reverse==0.9.1",
         "djangorestframework==3.13.1",
