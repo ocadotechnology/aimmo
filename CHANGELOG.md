@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.11.1 (2024-02-08)
+
+### Fix
+
+* **deps:** Bump django from 3.2.23 to 3.2.24 ([#1851](https://github.com/ocadotechnology/aimmo/issues/1851)) ([`12b69cd`](https://github.com/ocadotechnology/aimmo/commit/12b69cd467e403ab20cf7a84883b82498d1e8c37))
+
 ## v2.11.0 (2023-11-29)
 
 ### Feature
