@@ -11,6 +11,25 @@
   </a>
 </p>
 
+## LICENCE
+In accordance with the [Terms of Use](https://www.codeforlife.education/terms#terms)
+of the Code for Life website, all copyright, trademarks, and other
+intellectual property rights in and relating to Code for Life (including all
+content of the Code for Life website, the Rapid Router application, the
+Kurono application, related software (including any drawn and/or animated
+avatars, whether or not such avatars have any modifications) and any other
+games, applications or any other content that we make available from time to
+time) are owned by Ocado Innovation Limited.
+
+The source code of the Code for Life portal, the Rapid Router application
+and the Kurono/aimmo application are [licensed under the GNU Affero General
+Public License](https://github.com/ocadotechnology/codeforlife-workspace/blob/main/LICENSE.md).
+All other assets including images, logos, sounds etc., are not covered by
+this licence and no-one may copy, modify, distribute, show in public or
+create any derivative work from these assets.
+
+## Kurono
+
 [Code for Life](https://www.codeforlife.education/) has been developed by Ocado Technology as a **free, open-source** project to inspire the next generation of computer scientists and to help teachers deliver the computing curriculum.
 
 **Kurono** is a [Code for Life](https://www.codeforlife.education/) project, aimed at teaching students and keen adults programming with Python. The game is designed to be played in a class or a group setting, as it simulates a multiplayer online game.
