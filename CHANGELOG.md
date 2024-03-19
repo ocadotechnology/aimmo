@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v2.11.2 (2024-03-19)
+
+### Fix
+
+* **deps:** Bump django from 3.2.24 to 3.2.25 ([#1856](https://github.com/ocadotechnology/aimmo/issues/1856)) ([`3decf52`](https://github.com/ocadotechnology/aimmo/commit/3decf52de4f37c499f20c074a60e6e9dc3903e28))
+
+### Documentation
+
+* Add licence info to Readme ([#1852](https://github.com/ocadotechnology/aimmo/issues/1852)) ([`501368f`](https://github.com/ocadotechnology/aimmo/commit/501368f8e06b89971007034933641f8636ee9f4c))
+
 ## v2.11.1 (2024-02-08)
 
 ### Fix
