@@ -49,6 +49,12 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "aimmo/static")]
 SECRET_KEY = "bad_test_secret"
 
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
+
+TIME_ZONE = "Europe/London"
+
 WSGI_APPLICATION = "wsgi.application"
 
 MIDDLEWARE = [
