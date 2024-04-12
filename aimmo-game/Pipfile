@@ -21,7 +21,7 @@ aiohttp = "==3.7.4"  # Downgraded because of this issue: https://github.com/aio-
 aiohttp-cors = "*"
 aiohttp-wsgi = "*"
 docker = "<6"
-eventlet = "==0.31.0"
+eventlet = "==0.35.2"
 google-api-python-client = "==1.12.8"
 google-cloud-logging = "==2.2.0"
 grpcio = "==1.43.0"  # Downgraded as future versions seemed to cause an issue with grpcio status
