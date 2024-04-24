@@ -2,7 +2,9 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3"}}
+DATABASES = {
+    "default": {"ENGINE": "django.db.backends.sqlite3", "ATOMIC_REQUESTS": True}
+}
 
 TEMPLATES = [
     {
@@ -80,11 +82,17 @@ PIPELINE = {
             "output_filename": "portal.css",
         },
         "popup": {
-            "source_filenames": (os.path.join(BASE_DIR, "static/portal/sass/partials/_popup.scss"),),
+            "source_filenames": (
+                os.path.join(
+                    BASE_DIR, "static/portal/sass/partials/_popup.scss"
+                ),
+            ),
             "output_filename": "popup.css",
         },
         "game-scss": {
-            "source_filenames": (os.path.join(BASE_DIR, "static/game/sass/game.scss"),),
+            "source_filenames": (
+                os.path.join(BASE_DIR, "static/game/sass/game.scss"),
+            ),
             "output_filename": "game.css",
         },
     },
@@ -98,7 +106,10 @@ STATICFILES_FINDERS = [
 ]
 STATICFILES_STORAGE = "pipeline.storage.PipelineStorage"
 
-GAME_SERVER_URL_FUNCTION = lambda game_id: ("base %s" % game_id, "path %s" % game_id)
+GAME_SERVER_URL_FUNCTION = lambda game_id: (
+    "base %s" % game_id,
+    "path %s" % game_id,
+)
 GAME_SERVER_PORT_FUNCTION = lambda game_id: 8001
 GAME_SERVER_SSL_FLAG = False
 
