@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.11.3 (2024-05-22)
+
+### Fix
+
+* **deps:** Bump requests from 2.31.0 to 2.32.2 ([`6cfcf76`](https://github.com/ocadotechnology/aimmo/commit/6cfcf76edbd096aa1eb5da98ebeb58a06ad8ce01))
+
 ## v2.11.2 (2024-03-19)
 
 ### Fix
