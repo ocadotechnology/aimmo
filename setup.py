@@ -30,7 +30,7 @@ setup(
         "eventlet==0.31.0",
         "hypothesis==5.41.3",
         "kubernetes==26.1.0",
-        "requests==2.31.0",
+        "requests==2.32.2",
     ],
     tests_require=["docker >= 3.5, < 3.6", "PyYAML == 5.4"],
     version=version,
