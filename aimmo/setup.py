@@ -8,7 +8,7 @@ setup(
     install_requires=[
         "eventlet",
         "requests",
-        "djangorestframework==3.12.2",
+        "djangorestframework==3.15.2",
     ],
     tests_require=[],
     test_suite="test_utils.test_suite.DjangoAutoTestSuite",
