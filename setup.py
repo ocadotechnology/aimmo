@@ -26,7 +26,7 @@ setup(
         "django==3.2.25",
         "django-csp==3.7",
         "django-js-reverse==0.9.1",
-        "djangorestframework==3.13.1",
+        "djangorestframework==3.15.2",
         "eventlet==0.31.0",
         "hypothesis==5.41.3",
         "kubernetes==26.1.0",
